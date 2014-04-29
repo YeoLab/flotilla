@@ -1,0 +1,6 @@
+[submodule "flotilla/project"]
+	path = flotilla/project
+	url = git@bitbucket.org:lovci/singlecell_data.git
+[submodule "flotilla/data"]
+	path = flotilla/data
+	url = git@bitbucket.org:lovci/flotilla_data.git
