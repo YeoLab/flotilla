@@ -22,6 +22,44 @@ from sklearn.ensemble import ExtraTreesRegressor, GradientBoostingRegressor
 from scipy import stats
 from barge import timeout, TimeoutError
 
+
+def binify(df, binsize, vmin=0, vmax=1):
+    """Makes a histogram of each row the provided binsize
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The dataframe whose rows you'd like to binify.
+    binsize : float
+        Size of bins
+    vmin : float
+        Minimum value of the bins
+    vmax : float
+        Maximum value of the bins
+
+    Returns
+    -------
+    binned : pandas.DataFrame
+
+    Raises
+    ------
+
+
+    """
+    bins = np.arange(vmin, vmax + binsize, binsize)
+    ncol = bins.shape[0] - 1
+    nrow = df.shape[0]
+    binned = np.zeros((nrow, ncol))
+
+    # TODO: make sure this works for numpy matrices
+    for i, (name, row) in enumerate(df.iterrows()):
+        binned[i, :] = np.histogram(row, bins=bins, normed=True)[0]
+
+    columns = ['{}-{}'.format(i, j) for i, j in zip(bins, bins[1:])]
+    binned = pd.DataFrame(binned, index=df.index, columns=columns)
+    return binned
+
+
 def get_regressor(x,y, n_estimators=1500, pCut=0.05, n_tries=5, verbose=False):
 
     if verbose:
@@ -276,6 +314,45 @@ class PCA(sklearn.decomposition.PCA):
         if type(self.X) == pd.DataFrame:
             pca_space = pd.DataFrame(pca_space, index=self.X.index).rename_axis(self.relabel_pcs, 1)
         return pca_space
+
+    def fit_transform(self, X):
+        try:
+            assert type(X) == pd.DataFrame
+        except:
+            print "Try again as a pandas data frame"
+            raise
+        self.fit(X)
+        return self.transform(X)
+
+
+class NMF(sklearn.decomposition.NMF):
+    """
+
+    Just like sklearn's PCA, but with prettied up DataFrames.
+
+    """
+
+    def relabel_pcs(self, x):
+        return "pc_" + str(int(x) + 1)
+
+    def fit(self, X):
+
+        try:
+            assert type(X) == pd.DataFrame
+        except:
+            print "Try again as a pandas data frame"
+            raise
+
+        self.X = X
+        super(NMF, self).fit(X)
+        self.components_ = pd.DataFrame(self.components_, columns=self.X.columns).rename_axis(self.relabel_pcs, 0)
+        return self
+
+    def transform(self, X):
+        component_space = super(NMF, self).transform(X)
+        if type(self.X) == pd.DataFrame:
+                component_space = pd.DataFrame(    component_space, index=self.X.index).rename_axis(self.relabel_pcs, 1)
+        return     component_space
 
     def fit_transform(self, X):
         try:
