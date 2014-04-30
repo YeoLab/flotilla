@@ -23,8 +23,6 @@ from flotilla_params import flotilla_data
 
 from skiff import link_to_list, hg19GO
 
-from ..project.data import *
-from ..project.project_params import *
 
 
 # <codecell>
@@ -32,18 +30,20 @@ from ..project.project_params import *
 rbps_file = os.path.join(flotilla_data, "rbps_list")
 confident_rbp_file = os.path.join(flotilla_data, "all_pfam_defined_rbps_uniq.txt")
 
-
+sys.stderr.write("importing GO...")
+go = hg19GO()
+sys.stderr.write("done.\n")
 try:
     rbps = pd.read_pickle(os.path.join(flotilla_data, "rbps.df"))
     confident_rbps = pd.read_pickle(os.path.join(flotilla_data, "confident_rpbs.df"))
     splicing_genes = pd.read_pickle(os.path.join(flotilla_data, "splicing_genes.df"))
     tfs = pd.read_pickle(os.path.join(flotilla_data, "tfs.df"))
 
+
 except:
 
     sys.stderr.write("rebuilding gene list objects from text and databases...\n")
 
-    go_tool = hg19GO()
 
     rbps = pd.read_table(rbps_file).set_index("Ensembl_ID")
     rbps.to_pickle(os.path.join(flotilla_data, "rbps.df"))
@@ -56,9 +56,9 @@ except:
 
     confident_rbps.to_pickle(os.path.join(flotilla_data, "confident_rpbs.df"))
 
-    splicing_genes = set(go_tool.GO['GO:0008380']['genes']) | \
-                     set(go_tool.GO['GO:0000381']['genes']) | \
-                     set(go_tool.GO['GO:0006397']['genes'])
+    splicing_genes = set(go.GO['GO:0008380']['genes']) | \
+                     set(go.GO['GO:0000381']['genes']) | \
+                     set(go.GO['GO:0006397']['genes'])
     splicing_genes = rbps.select(lambda x: x in splicing_genes)
 
     splicing_genes.to_pickle(os.path.join(flotilla_data, "splicing_genes.df"))
@@ -67,7 +67,7 @@ except:
 
     with open(os.path.join(flotilla_data, "gene_list_of_Homo_sapiens.txt"), 'r') as f:
         xx = f.readlines()
-        tfs = pd.Series(map(lambda x: go_tool.geneNames(x.strip()), xx), index= map(str.strip, xx))
+        tfs = pd.Series(map(lambda x: go.geneNames(x.strip()), xx), index= map(str.strip, xx))
     tfs.to_pickle(os.path.join(flotilla_data, "tfs.df"))
 #splicing_genes
 
@@ -75,6 +75,3 @@ except:
 
 
 
-sys.stderr.write("importing GO...")
-go = hg19GO()
-sys.stderr.write("done.\n")

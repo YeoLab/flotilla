@@ -143,9 +143,10 @@ def fill_database(mongodb, predictor, target, verbose=False):
 
     sys.stderr.write("database is full, checked %d events\n" % (event_i+1))
 
-
+import subprocess
 def get_mongo_db(db, mongoHost=mongoHost, mongoPort=mongoPort):
     from pymongo import MongoClient
+    #ssh = subprocess.Popen(["ssh", "-L", ("%s:localhost:%s" %(mongoPort, mongoPort)), mongoHost, "-N"])
     c = MongoClient(mongoHost, port=mongoPort)
     sys.stderr.write('connected to database on %s:%d\n' % (mongoHost, mongoPort))
     return c, c[db]

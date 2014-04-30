@@ -9,7 +9,9 @@ import networkx as nx
 from matplotlib.gridspec import GridSpec as GridSpec
 import numpy as np
 
-from gscripts.general.analysis_tools import PCA
+from ..project.data import descriptors, rpkms, psi, sparse_rpkms
+from ..project.project_params import min_cells
+from flotilla.src.frigate import PCA
 from flotilla.src.submarine import PCA_viz
 from cargo import *
 from skiff import neuro_genes_human

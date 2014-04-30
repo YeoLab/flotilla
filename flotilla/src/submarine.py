@@ -36,7 +36,7 @@ seaborn.set_color_palette('deep')
 
 import pylab
 
-from flotilla.src.frigate import PCA
+from flotilla.src.frigate import PCA, NMF
 
 def L1_distance(x,y):
     return abs(y) + abs(x)
@@ -45,7 +45,7 @@ def L2_distance(x,y):
     return math.sqrt((y ** 2) + (x ** 2))
 
 
-class PCA_viz(PCA):
+class Reduction_viz(object):
 
     """
         Given a pandas dataframe, performs PCA and plots the results in a
@@ -85,9 +85,9 @@ class PCA_viz(PCA):
                       'show_vector_labels':True,  'vector_label_size':None,
                       'show_point_labels':True, 'point_label_size':None, 'scale_by_variance':True}
 
-    _default_pca_args = {'whiten':True, 'n_components':None}
+    _default_reduction_args = { 'n_components':None}
 
-    _default_args = dict(_default_plotting_args.items() + _default_pca_args.items())
+    _default_args = dict(_default_plotting_args.items() + _default_reduction_args.items())
 
     def __init__(self, df, **kwargs):
 
@@ -96,12 +96,12 @@ class PCA_viz(PCA):
         self.plotting_args = self._default_plotting_args.copy()
         self.plotting_args.update([(k,v) for (k,v) in kwargs.items() if k in self._default_plotting_args.keys()])
 
-        self.pca_args = self._default_pca_args.copy()
-        self.pca_args.update([(k,v) for (k,v) in kwargs.items() if k in self._default_pca_args.keys()])
+        self.reduction_args = self._default_reduction_args.copy()
+        self.reduction_args.update([(k,v) for (k,v) in kwargs.items() if k in self._default_reduction_args.keys()])
 
-        super(PCA_viz, self).__init__(**self.pca_args) #initialize PCA object
+        super(Reduction_viz, self).__init__(**self.reduction_args) #initialize PCA object
         assert type(df) == pd.DataFrame
-        self.pca_space = self.fit_transform(df)
+        self.reduced_space = self.fit_transform(df)
 
     def __call__(self, ax=None, **kwargs):
         #self._validate_params(self._default_plotting_args, **kwargs)
@@ -118,14 +118,14 @@ class PCA_viz(PCA):
         else:
             gs = GridSpecFromSubplotSpec(gs_x,gs_y,ax.get_subplotspec())
 
-        ax_pca = pylab.subplot(gs[:, :5])
+        ax_components = pylab.subplot(gs[:, :5])
         ax_loading1 = pylab.subplot(gs[1:5, 5:])
         ax_loading2 = pylab.subplot(gs[6:11, 5:])
 
         passed_kwargs = kwargs
         local_kwargs = self.plotting_args.copy()
         local_kwargs.update(passed_kwargs)
-        local_kwargs.update({'ax':ax_pca})
+        local_kwargs.update({'ax':ax_components})
         self.plot_samples(**local_kwargs)
         self.plot_loadings(pc=local_kwargs['x_pc'], ax=ax_loading1)
         self.plot_loadings(pc=local_kwargs['y_pc'], ax=ax_loading2)
@@ -140,7 +140,7 @@ class PCA_viz(PCA):
                 assert key in valid.keys()
             except:
                 print self.__doc__
-                raise ValueError("unrecognized parameter for pca plot: "\
+                raise ValueError("unrecognized parameter for pc plot: "\
                                  "%s. acceptable values are:\n%s" % (key, "\n".join(valid.keys())))
 
     def plot_samples(self, **kwargs):
@@ -167,9 +167,9 @@ class PCA_viz(PCA):
             fig, ax = pylab.subplots(1,1, figsize=(5,5))
         self.ax = ax
 
-        pca_space = self.pca_space
-        x_list = pca_space[x_pc]
-        y_list = pca_space[y_pc]
+        reduced_space = self.reduced_space
+        x_list = reduced_space[x_pc]
+        y_list = reduced_space[y_pc]
 
         if not c_scale:
             c_scale = .75 * max([norm(point) for point in zip(x_list, y_list)]) / \
@@ -185,8 +185,12 @@ class PCA_viz(PCA):
         point_label_size = size_scale * 1.5 if not point_label_size else point_label_size
 
         # get amount of variance explained
-        var_1 = int(self.explained_variance_ratio_[x_pc] * 100)
-        var_2 = int(self.explained_variance_ratio_[y_pc] * 100)
+        try:
+            #not all reduction methods have this attr, if it doesn't assume equal , not true.. but easy!
+            var_1 = int(self.explained_variance_ratio_[x_pc] * 100)
+            var_2 = int(self.explained_variance_ratio_[y_pc] * 100)
+        except AttributeError:
+            var_1, var_2 = 1., 1.
 
         # sort features by magnitude/contribution to transformation
         comp_magn = []
@@ -287,8 +291,15 @@ class PCA_viz(PCA):
 
         seaborn.despine(ax=ax)
 
+class PCA_viz(Reduction_viz, PCA):
+    _default_reduction_args = { 'n_components':None, 'whiten':True}
+
+class NMF_viz(Reduction_viz, NMF):
+    pass
+
 def plot_pca(df, **kwargs):
     """ for backwards-compatibility """
     pcaObj = PCA_viz(df, **kwargs)
     return_me, ax = pcaObj.plot_samples()
     return return_me
+
