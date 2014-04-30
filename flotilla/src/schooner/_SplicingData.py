@@ -1,20 +1,38 @@
 import numpy as np
+from collections import defaultdict
+
+
 from _Data import Data
-from ..frigate import binify, NMF, PCA
+from ..submarine import NMF_viz, PCA_viz
+from ..frigate import binify, dropna_mean
 import pandas as pd
 from ...project.project_params import min_cells
-
+from sklearn.preprocessing import StandardScaler
 from ..skiff import link_to_list
-class SplicingData(Data):
 
+class SplicingData(Data):
+    _default_reducer_args = Data._default_reducer_args
     binned_reducer = None
     raw_reducer = None
     binsize=0.1,
     n_components = 2
+    _binsize=None
+    var_cut = 0.2
+
+    ###
+    #
+    # TODO: make these databases, so you don't have to re-calculate
+
     event_lists = {}
-    samplewise_reduction = {}
-    featurewise_reduction = {}
-    def __init__(self, psi, binsize = binsize, n_components=n_components,
+    samplewise_reduction = defaultdict(dict)
+    featurewise_reduction = defaultdict(dict)
+
+    #
+    ###
+
+    def __init__(self, psi, sample_descriptors,
+                 event_descriptors, binsize = binsize,
+                 var_cut = var_cut
                  ):
         """Instantiate a object for data scores with binned and reduced data
 
@@ -34,96 +52,67 @@ class SplicingData(Data):
         """
         self.psi = psi
         self.binsize = binsize
-        self.n_components = n_components
         psi_variant = pd.Index([i for i,j in (psi.var().dropna() > var_cut).iteritems() if j])
         self.event_lists['variant'] = psi_variant
-        self.event_lists['default'] = event_lists['variant']
+        self.event_lists['default'] = self.event_lists['variant']
+        self.sample_descriptors = sample_descriptors
+        self.event_descriptors = event_descriptors
 
-    def binify(self, binsize=binsize):
+    def set_binsize(self, binsize):
+        self.binsize = binsize
 
-        self.binned = binify(self.df, binsize=self.binsize)
-
-    def reduce(self, reducer=NMF,  n_components=2):
-        """
-        Reduces dimensionality of the binned df score data
-        """
-        reducer = reducer if reducer else self._reducer
-        assert reducer is not None
-
-        rdc = reducer(n_components=self.n_components)
-
-        self.reduced_binned = rdc.transform(self.binned)
-        if hasattr(self.reducer, 'explained_variance_ratio_'):
-            self.plot_explained_variance(self.reducer,
-                                         '{} on binned data'.format(self.reducer))
-        return self
-
-    def reduce_binned(self, reducer=None):
-        reducer = reducer(n_components=self.n_components) if reducer else self._reducer
-        reducer.fit(self.binned)
-        self.binned_reduced = self.reduce(self.binned, self._reducer)
-
-
-
-
-    def get_featurewise_reduced_dims(self, event_list, letter, min_cells=min_cells, reducer=PCA):
+    def get_binned_data(self):
         try:
-            return self.featurewise_reduction[event_list][letter]
+            assert hasattr(self, 'binned') #binned has been set
+            assert self._binsize == self.binsize #binsize hasn't changed
+        except:
+            #only bin once, until binsize is updated
+            self.binned = binify(self.df, binsize=self.binsize)
+            self._binsize = self.binsize
+        return self.binned
+
+    def get_binned_reduced_dims(self, reducer=NMF_viz):
+        binned = self.get_binned_data()
+        redc = reducer(binned)
+        self.binned_reduced = redc.reduced_space
+        return self.binned_reduced
+
+    def get_reduced_dims(self, event_list, group_id, min_cells=min_cells, reducer=PCA_viz, featurewise=False,
+                         reducer_args=_default_reducer_args):
+        if featurewise:
+            rdc_dict = self.featurewise_reduction
+        else:
+            rdc_dict = self.samplewise_reduction
+        try:
+            return rdc_dict[event_list][group_id]
         except:
 
-            if event_list not in event_lists:
-                event_lists[event_list] = link_to_list(event_list)
+            if event_list not in self.event_lists:
+                self.event_lists[event_list] = link_to_list(event_list)
 
-            event_list = event_lists[event_list]
-            sparse_subset = self.psi.ix[descriptors[letter+"_cell"], event_list]
-            frequent = pd.Index([i for i,j in (sparse_subset.count() > min_cells).iteritems() if j])
-            sparse_subset = sparse_subset[frequent]
+            event_list = self.event_lists[event_list]
+            #some samples, somefeatures
+            subset = self.psi.ix[self.sample_descriptors[group_id], event_list]
+            frequent = pd.Index([i for i,j in (subset.count() > min_cells).iteritems() if j])
+            subset = subset[frequent]
             #fill na with mean for each event
-            means = sparse_subset.apply(dropna_mean, axis=0)
-            mf_subset = sparse_subset.fillna(means,).fillna(0)
+            means = subset.apply(dropna_mean, axis=0)
+            mf_subset = subset.fillna(means,).fillna(0)
             #whiten, mean-center
+            naming_fun=self.get_naming_fun()
             ss = pd.DataFrame(StandardScaler().fit_transform(mf_subset), index=mf_subset.index,
-                              columns=mf_subset.columns).rename_axis(go.geneNames, 1)
+                              columns=mf_subset.columns).rename_axis(naming_fun, 1)
+
             #compute pca
-            pca_obj = PCA_viz(ss.T, whiten=False)
-            pca_obj.means = means
+            #compute pca
+            if featurewise:
+                ss = ss.T
+            rdc_obj = reducer(ss, **reducer_args)
+
+            rdc_obj.means = means
 
             #add mean gene_expression
-            featurewise_reduction[event_list][letter] = pca_obj
-        return featurewise_reduction[event_list][letter]
+            rdc_dict[event_list][group_id] = rdc_obj
+        return rdc_dict[event_list][group_id]
 
-
-
-def get_cellwise_event_pca(event_list, letter):
-    try:
-        return cellwise_psi_pca[event_list][letter]
-    except:
-
-        if event_list not in event_lists:
-            event_lists[event_list] = link_to_list(event_list)
-        other = event_lists[event_list]
-
-        variant = pd.Index([i for i,j in (psi.var().dropna() > var_cut).iteritems() if j])
-        event_list = variant
-        sparse_subset = psi.ix[descriptors[letter+"_cell"], event_list]
-        frequent = pd.Index([i for i,j in (sparse_subset.count() > min_cells).iteritems() if j])
-        sparse_subset = sparse_subset[frequent]
-        #fill na with mean for each gene
-        means = sparse_subset.apply(dropna_mean, axis=0)
-        mf_subset = sparse_subset.fillna(means,).fillna(0)
-        #whiten, mean-center
-        ss = pd.DataFrame(StandardScaler().fit_transform(mf_subset), index=mf_subset.index,
-                          columns=mf_subset.columns).rename_axis(go.geneNames, 1)
-        #compute pca
-        pca_obj = PCA_viz(ss, whiten=False)
-        pca_obj.means = means
-
-        #add mean gene_expression
-        cellwise_psi_pca[event_list][letter] = pca_obj
-    return cellwise_psi_pca[event_list][letter]
-event_lists = dict() # don't have any of these right now.
-
-
-
-var_cut = 0.2
 

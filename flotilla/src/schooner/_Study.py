@@ -1,5 +1,5 @@
 # from singlesail import parsers
-from singlesail.data_model import ExpressionData, SplicingData, EditingData
+import ExpressionData, SplicingData
 
 class Study(object):
     """
@@ -39,7 +39,7 @@ class Study(object):
         # sample_info_filename)
         self.expression = ExpressionData(expression_df)
         self.splicing = SplicingData(splicing_df)
-        self.editing = EditingData(editing_df)
+
 
 
     def detect_outliers(self):

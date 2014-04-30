@@ -52,20 +52,6 @@ class Data(object):
         """
         raise NotImplementedError
 
-    def plot_explained_variance(self, pca, title):
-        """If the reducer is a form of PCA, then plot the explained variance
-        ratio by the components.
-        """
-        # Plot the explained variance ratio
-        fig, ax = plt.subplots()
-        ax.plot(pca.explained_variance_ratio_, 'o-')
-        ax.set_xticks(range(pca.n_components))
-        ax.set_xticklabels(map(str, np.arange(pca.n_components)+1))
-        ax.set_xlabel('Principal component')
-        ax.set_ylabel('Fraction explained variance')
-        ax.set_title(title)
-        sns.despine()
-        return fig
 
     def pca(self):
         """Principal component analysis of all measurements, labeled by
@@ -79,15 +65,29 @@ class Data(object):
         raise NotImplementedError
 
 
-    def reduce(self, data, reducer=PCA, n_components=2):
-        """Reduces dimensionality of data, by default using PCA
+#    def reduce(self, data, reducer=PCA, n_components=2):
+#        """Reduces dimensionality of data, by default using PCA
+#
+#        Q: each scatter point in PCA an event or a cell?
+#        """
+#        self.reducer = reducer(n_components=n_components).fit(data)
+#        reduced_data = self.reducer.transform(data)
+#        if hasattr(self.reducer, 'explained_variance_ratio_'):
+#            self.plot_explained_variance(self.reducer,
+#                                         '{} on binned data'.format(
+#                                             self.reducer))
+#        return reduced_data
+    n_components = 6
 
-        Q: each scatter point in PCA an event or a cell?
-        """
-        self.reducer = reducer(n_components=n_components).fit(data)
-        reduced_data = self.reducer.transform(data)
-        if hasattr(self.reducer, 'explained_variance_ratio_'):
-            self.plot_explained_variance(self.reducer,
-                                         '{} on binned data'.format(
-                                             self.reducer))
-        return reduced_data
+    _naming_fun = lambda x: x
+    def get_naming_fun(self):
+        return self._naming_fun
+
+    def set_naming_fun(self, fun):
+        self._naming_fun = fun
+        try:
+            fun('foo')
+        except:
+            raise TypeError("not a naming function")
+
+    _default_reducer_args = {'whiten':False}
