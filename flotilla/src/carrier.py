@@ -204,10 +204,6 @@ def begin(db = 'events'):
     sys.stderr.write("finished loading raw data\n")
     return (SEpsis, rbpRpkms, mongodb)
 
-# <codecell>
-
-(SEpsis, rpkm, mongodb) = begin(db='misoevents')
-
 
 # load_event_list(mongodb, SEpsis, target_type="SE")
 
@@ -217,15 +213,10 @@ def begin(db = 'events'):
 
 
 if __name__ == "__main__":
+    (SEpsis, rpkm, mongodb) = begin(db='misoevents')
     fill_database(mongodb, rpkm, SEpsis, verbose=True)
     poll(mongodb)
-# <codecell>
-
-
-# <codecell>
 
 #mongodb.values.find_one({'nCells_all':{'$gt':10}})
-
-# <codecell>
 
 # mongodb.list.update({'started':True, 'finished':False}, {"$set":{"started":False}}, multi=True)

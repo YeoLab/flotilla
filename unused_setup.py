@@ -15,4 +15,5 @@ setup(
     package_data = {
         'flotilla' : ['data/*', 'project/data/*']
         },
+    entry_points = {'console_scripts':['metrics_runner.py = flotilla.src.carrier']}
 )
