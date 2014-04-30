@@ -34,10 +34,10 @@ confident_rbp_file = os.path.join(flotilla_data, "all_pfam_defined_rbps_uniq.txt
 
 
 try:
-    rbps = pd.read_pickle(flotilla_data + "rbps.df")
-    confident_rbps = pd.read_pickle(flotilla_data + "confident_rpbs.df")
-    splicing_genes = pd.read_pickle(flotilla_data + "splicing_genes.df")
-    tfs = pd.read_pickle(flotilla_data + "tfs.df")
+    rbps = pd.read_pickle(os.path.join(flotilla_data, "rbps.df"))
+    confident_rbps = pd.read_pickle(os.path.join(flotilla_data, "confident_rpbs.df"))
+    splicing_genes = pd.read_pickle(os.path.join(flotilla_data, "splicing_genes.df"))
+    tfs = pd.read_pickle(os.path.join(flotilla_data, "tfs.df"))
 
 except:
 
