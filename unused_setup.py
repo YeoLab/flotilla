@@ -11,7 +11,8 @@ setup(
     author = 'lovci',
     author_email = 'mlovci@ucsd.edu',
     description = '',
+    include_package_data=True,
     package_data = {
-        'flotilla' : ['data/*.gff', 'data/regions/*.bed']
+        'flotilla' : ['data/*', 'project/data/*']
         },
 )
