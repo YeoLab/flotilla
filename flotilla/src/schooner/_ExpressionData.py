@@ -50,7 +50,7 @@ class ExpressionData(Data):
         self.gene_lists.update(dict(('all_genes', pd.Series(map(naming_fun, self.rpkm.columns),
                                                            index = self.rpkm.columns))))
 
-    def get_reduced(self, gene_list=gene_lists['default'],
+    def get_reduced(self, gene_list='default',
                     group_id=_default_group_id, min_cells = min_cells,
                     reducer = PCA_viz, featurewise = False,
                          reducer_args = _default_reducer_args,
