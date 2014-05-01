@@ -3,5 +3,5 @@
 	url = git@github.com:YeoLab/singlecell_data.git
 [submodule "flotilla/data"]
 	path = flotilla/data
-	url = t@github.com:YeoLab/flotilla_data.git
+	url = git@github.com:YeoLab/flotilla_data.git
 
