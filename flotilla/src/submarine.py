@@ -78,7 +78,7 @@ class Reduction_viz(object):
         """
 
     _default_plotting_args = {'ax':None, 'x_pc':'pc_1', 'y_pc':'pc_2',
-                      'num_vectors':20, 'title':'PCA', 'title_size':None, 'axis_label_size':None,
+                      'num_vectors':20, 'title':'Dimensionality Reduction', 'title_size':None, 'axis_label_size':None,
                       'colors_dict':None, 'markers_dict':None, 'markers_size_dict':None,
                       'default_marker_size':100, 'distance_metric':'L1',
                       'show_vectors':True, 'c_scale':None, 'vector_width':None, 'vector_colors_dict':None,
@@ -99,7 +99,7 @@ class Reduction_viz(object):
         self.reduction_args = self._default_reduction_args.copy()
         self.reduction_args.update([(k,v) for (k,v) in kwargs.items() if k in self._default_reduction_args.keys()])
 
-        super(Reduction_viz, self).__init__(**self.reduction_args) #initialize PCA object
+        super(Reduction_viz, self).__init__(**self.reduction_args) #initialize PCA-like object
         assert type(df) == pd.DataFrame
         self.reduced_space = self.fit_transform(df)
 
@@ -291,8 +291,27 @@ class Reduction_viz(object):
 
         seaborn.despine(ax=ax)
 
+    def plot_explained_variance(self, title="PCA"):
+        """If the reducer is a form of PCA, then plot the explained variance
+        ratio by the components.
+        """
+        # Plot the explained variance ratio
+        assert hasattr(self, 'explained_variance_ratio_')
+        import matplotlib.pyplot as plt
+        import seaborn as sns
+        fig, ax = plt.subplots()
+        ax.plot(self.explained_variance_ratio_, 'o-')
+
+        ax.set_xticks(range(self.n_components))
+        ax.set_xticklabels(map(str, np.arange(self.n_components)+1))
+        ax.set_xlabel('Principal component')
+        ax.set_ylabel('Fraction explained variance')
+        ax.set_title(title)
+        sns.despine()
+        return fig
+
 class PCA_viz(Reduction_viz, PCA):
-    _default_reduction_args = { 'n_components':None, 'whiten':True}
+    _default_reduction_args = { 'n_components':None, 'whiten':False}
 
 class NMF_viz(Reduction_viz, NMF):
     pass
