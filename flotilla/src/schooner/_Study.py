@@ -1,5 +1,6 @@
 # from singlesail import parsers
-import ExpressionData, SplicingData
+from _ExpressionData import ExpressionData
+from _SplicingData import SplicingData
 
 class Study(object):
     """
