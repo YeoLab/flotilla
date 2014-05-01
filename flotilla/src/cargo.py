@@ -1,8 +1,4 @@
 __author__ = 'lovci'
-# -*- coding: utf-8 -*-
-# <nbformat>3.0</nbformat>
-
-# <codecell>
 
 """
 
@@ -12,8 +8,6 @@ commonly used data objects
 
 """
 
-# <codecell>
-
 import sys
 
 import pandas as pd
@@ -21,11 +15,8 @@ import os
 
 from flotilla_params import flotilla_data
 
-from skiff import link_to_list, hg19GO
+from skiff import link_to_list, hg19GO, neuro_genes_human
 
-
-
-# <codecell>
 
 rbps_file = os.path.join(flotilla_data, "rbps_list")
 confident_rbp_file = os.path.join(flotilla_data, "all_pfam_defined_rbps_uniq.txt")
@@ -33,6 +24,7 @@ confident_rbp_file = os.path.join(flotilla_data, "all_pfam_defined_rbps_uniq.txt
 sys.stderr.write("importing GO...")
 go = hg19GO()
 sys.stderr.write("done.\n")
+
 try:
     rbps = pd.read_pickle(os.path.join(flotilla_data, "rbps.df"))
     confident_rbps = pd.read_pickle(os.path.join(flotilla_data, "confident_rpbs.df"))
@@ -69,9 +61,13 @@ except:
         xx = f.readlines()
         tfs = pd.Series(map(lambda x: go.geneNames(x.strip()), xx), index= map(str.strip, xx))
     tfs.to_pickle(os.path.join(flotilla_data, "tfs.df"))
-#splicing_genes
 
-# <codecell>
+gene_lists = dict([('confident_rbps', confident_rbps),
+                   ('rbps', rbps),
+                   ('splicing_genes', splicing_genes),
+                   ('marker_genes', pd.Series(map(go.geneNames, neuro_genes_human), index = neuro_genes_human)),
+                   ('tfs', tfs)
+])
 
 
 
