@@ -67,7 +67,7 @@ class ExpressionData(Data):
                 self.gene_lists[gene_list] = link_to_list(gene_list)
 
             gene_list = self.gene_lists[gene_list]
-            subset = self.sparse_rpkm.ix[self.sample_descriptors[group_id], gene_list]
+            subset = self.sparse_rpkm.ix[self.sample_descriptors[group_id], gene_list.index]
             frequent = pd.Index([i for i, j in (subset.count() > min_cells).iteritems() if j])
             subset = subset[frequent]
             #fill na with mean for each event
