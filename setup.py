@@ -31,7 +31,7 @@ setup(
                         'statsmodels >= 0.5.0',
                         'patsy >= 0.2.1',
                         'networkx',
-                        'dcor_cpy' #needs to be built with extutils
+                        #'dcor_cpy' #needs to be built with extutils
                         ],
 
 )
