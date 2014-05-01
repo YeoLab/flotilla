@@ -30,7 +30,8 @@ setup(
                         'seaborn >= 0.3.1',
                         'statsmodels >= 0.5.0',
                         'patsy >= 0.2.1',
-                        'networkx'
+                        'networkx',
+                        'dcor_cpy' #needs to be built with extutils
                         ],
 
 )
