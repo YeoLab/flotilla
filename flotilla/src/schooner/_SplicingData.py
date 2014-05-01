@@ -12,6 +12,7 @@ from ..skiff import link_to_list
 
 class SplicingData(Data):
     _default_reducer_args = Data._default_reducer_args
+    _default_group_id = _default_group_id
     binned_reducer = None
     raw_reducer = None
     binsize=0.1,

@@ -18,9 +18,9 @@ seaborn.set_context('paper')
 
 class ExpressionData(Data):
     _default_reducer_args = Data._default_reducer_args
+    _default_group_id = _default_group_id
     ###
-    #
-    # TODO: make these databases, so you don't have to re-calculate
+    # RAM HOGS:
 
     gene_lists = {}
     samplewise_reduction = defaultdict(dict)
@@ -30,11 +30,11 @@ class ExpressionData(Data):
 
     def __init__(self, rpkm, sample_descriptors,
                  gene_descriptors = None,
-                 var_cut=0.2, expr_cut=0.1, load_cargo=False
+                 var_cut=0.2, expr_cut=0.1, load_cargo=True
     ):
 
         self.rpkm = rpkm
-        self.sparse_rpkm = scipy.sparse.csr_matrix(rpkm[rpkm > expr_cut])
+        self.sparse_rpkm = rpkm[rpkm > expr_cut]
         rpkm_variant = pd.Index([i for i, j in (rpkm.var().dropna() > var_cut).iteritems() if j])
         self.gene_lists['variant'] = rpkm_variant
         self.gene_lists['default'] = self.gene_lists['variant']
@@ -45,7 +45,7 @@ class ExpressionData(Data):
             from ..cargo import gene_lists, go
             self.gene_lists.update(gene_lists)
             self.gene_lists['default'] = self.gene_lists['confident_rbps']
-            self.set_naming_fun(lambda x: go.geneXref(x))
+            self.set_naming_fun(lambda x: go.geneNames(x))
         naming_fun = self.get_naming_fun()
         self.gene_lists.update({'all_genes':pd.Series(map(naming_fun, self.rpkm.columns),
                                                            index = self.rpkm.columns)})
@@ -76,9 +76,11 @@ class ExpressionData(Data):
 
             #whiten, mean-center
             if standardize:
-                mf_subset = StandardScaler().fit_transform(mf_subset)
+                data = StandardScaler().fit_transform(mf_subset)
+            else:
+                data = mf_subset
             naming_fun = self.get_naming_fun()
-            ss = pd.DataFrame(mf_subset, index = mf_subset.index,
+            ss = pd.DataFrame(data, index = mf_subset.index,
                               columns = mf_subset.columns).rename_axis(naming_fun, 1)
 
             #compute pca

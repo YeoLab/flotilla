@@ -7,6 +7,7 @@ import numpy as np
 from numpy.linalg import norm
 import pandas as pd
 import seaborn
+from ..project.project_params import _default_group_id
 
 seaborn.set_style({'axes.axisbelow': True,
                    'axes.edgecolor': '.15',
@@ -85,7 +86,7 @@ class Reduction_viz(object):
                       'show_vector_labels':True,  'vector_label_size':None,
                       'show_point_labels':True, 'point_label_size':None, 'scale_by_variance':True}
 
-    _default_reduction_args = { 'n_components':None}
+    _default_reduction_args = { 'n_components':None, 'whiten':False}
 
     _default_args = dict(_default_plotting_args.items() + _default_reduction_args.items())
 
@@ -385,3 +386,136 @@ def lavalamp(psi, color=None, title='', ax=None):
 
     # Return the figure for saving
     # return fig
+
+from .frigate import Networker
+from matplotlib.gridspec import GridSpec
+
+import networkx as nx
+from .barge import dict_to_str
+
+class Networker_Viz(Networker, Reduction_viz):
+
+    def __init__(self, data_obj):
+        self.data_obj = data_obj
+
+    def draw_graph(self, list_name='default', group_id=_default_group_id,
+                   x_pc=1, y_pc=2,
+                   n_pcs=5,
+                   pc_1=True, pc_2=True, pc_3=True, pc_4=True,
+                   degree_cut=2, cov_std_cut = 1.8,
+                   wt_fun = 'abs',
+                   featurewise=False, #else feature_components
+                   rpkms_not_events=False, #else event features
+                   feature_of_interest='RBFOX2', custom_list='', draw_labels=True,
+                   graph_file=''):
+
+        """
+        genelist_name - name of genelist used in making pcas
+        group_id - celltype code
+        x_pc - x component for PCA
+        y_pc - y component for PCA
+        n_pcs - n components to use for cells' covariance calculation
+        cov_std_cut - covariance cutoff for edges
+        pc{1-4} use these pcs in cov calculation (default True)
+        degree_cut - miniumum degree for a node to be included in graph display
+        wt_fun - weight function (arctan (arctan cov), sq (sq cov), abs (abs cov), arctan_sq (sqared arctan of cov))
+        gene_of_interest - map a gradient representing this gene's rpkm onto nodes
+
+
+
+        """
+        node_color_mapper = self._default_node_color_mapper
+        node_size_mapper = self._default_node_color_mapper
+        settings = locals().copy()
+        #not pertinent to the graph, these are what we want to be able to re-apply to the same graph if it exists
+        pca_settings = dict()
+        pca_settings['group_id'] = group_id
+
+        adjacency_settings = dict((k, settings[k]) for k in ['pc_1', 'pc_2', 'pc_3', 'pc_4', 'n_pcs'])
+
+        #del settings['gene_of_interest']
+        #del settings['graph_file']
+        #del settings['draw_labels']
+
+        f = pylab.figure(figsize=(24,18))
+        gs = GridSpec(3, 4)
+        ax1 = pylab.subplot(gs[0,0:2])
+        ax2 = pylab.subplot(gs[0,3])
+        ax3 = pylab.subplot(gs[0,2])
+        ax4 = pylab.subplot(gs[1:,:2])
+        ax5 = pylab.subplot(gs[1:,2:])
+
+        if custom_list != '':
+            list_name = custom_list
+
+        #decide which type of analysis to do.
+
+        pca = self.data_obj.get_reduced(list_name, group_id)
+
+        pca(show_point_labels=False,
+            markers_size_dict=lambda x: 400,
+            title=group_id + " cells", ax=ax1, show_vectors=False,
+            title_size=10,
+            axis_label_size=10,
+            x_pc = "pc_" + x_pc,#this only affects the plot, not the data.
+            y_pc = "pc_" + y_pc,#this only affects the plot, not the data.
+            )
+
+        if featurewise:
+            node_color_mapper = lambda x: 'r' if x == feature_of_interest else 'k'
+            node_size_mapper = lambda x: pca.X.feature_of_interest.ix[x]
+        else:
+            node_color_mapper = lambda x: self.sample_info.cell_color[x]
+            node_size_mapper = lambda x: 300
+
+        ax3.plot(pca.explained_variance_ratio_ * 100.)
+        ax3.axvline(n_pcs)
+        ax3.set_ylabel("% explained variance")
+        ax3.set_xlabel("component")
+        adjacency_name = "_".join(map(dict_to_str, [adjacency_settings, pca_settings]))
+        #adjacency_settings['name'] = adjacency_name
+        adjacency = self.get_adjacency(pca.pca_space, name=adjacency_name, **adjacency_settings)
+        #f.savefig("tmp/" + fname + ".pca.png")
+        cov_dist = np.array([i for i in adjacency.values.ravel() if np.abs(i) > 0])
+        cov_cut = np.mean(cov_dist) + cov_std_cut * np.std(cov_dist)
+
+        graph_settings = dict((k, settings[k]) for k in ['wt_fun', 'degree_cut', ])
+        graph_settings['cov_cut'] = cov_cut
+
+        this_graph_name = "_".join(map(dict_to_str, [pca_settings, adjacency_settings, graph_settings]))
+
+        seaborn.kdeplot(cov_dist, ax=ax2)
+        ax2.axvline(cov_cut)
+
+        g, pos = self.get_graph(adjacency, cov_cut, this_graph_name, **graph_settings)
+
+        nx.draw_networkx_nodes(g, pos, node_color=map(node_color_mapper, g.nodes()),
+                               node_size=map(node_size_mapper, g.nodes()),
+                               ax=ax4, alpha=0.5)
+        nx.draw_networkx_nodes(g, pos, node_color=map(node_color_mapper, g.nodes()),
+                               node_size=map(node_size_mapper, g.nodes()),
+                               ax=ax5, alpha=0.5)
+        try:
+            nx.draw_networkx_nodes(g, pos, node_color=map(lambda x: pca.X[feature_of_interest].ix[x], g.nodes()),
+                               cmap=pylab.cm.Greys,
+                               node_size=map(lambda x: node_size_mapper(x) * .75, g.nodes()), ax=ax5, alpha=1)
+        except:
+            pass
+        nmr = lambda x:x
+        labels = dict([(nm, nmr(nm)) for nm in g.nodes()])
+        if draw_labels:
+            nx.draw_networkx_labels(g, pos, labels = labels, ax=ax4)
+        #mst = nx.minimum_spanning_tree(g, weight='inv_weight')
+        nx.draw_networkx_edges(g, pos,ax = ax4,alpha=0.1)
+        #nx.draw_networkx_edges(g, pos, edgelist=mst.edges(), edge_color="m", edge_width=200, ax=ax4)
+        ax4.set_axis_off()
+        ax5.set_axis_off()
+        f.tight_layout(pad=5)
+        if graph_file != '':
+            try:
+                nx.write_gml(g, graph_file)
+            except Exception as e:
+                print "error writing graph file:"
+                print e
+
+        return g#, mst

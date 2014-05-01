@@ -1,6 +1,8 @@
 # from singlesail import parsers
 from _ExpressionData import ExpressionData
 from _SplicingData import SplicingData
+from ...project.project_params import _default_group_id
+from ..submarine import Networker_Viz
 
 class Study(object):
     """
@@ -15,7 +17,8 @@ class Study(object):
     """
 
     def __init__(self, sample_info, expression_df=None,
-                 splicing_df=None, mapping_stats_df=None, editing_df=None):
+                 splicing_df=None, mapping_stats_df=None, editing_df=None,
+                 event_descriptors=None):
         """Constructor for Study object containing gene expression and
         alternative splicing data.
 
@@ -38,8 +41,8 @@ class Study(object):
 
         self.sample_info = sample_info #parsers.read_sample_info(
         # sample_info_filename)
-        self.expression = ExpressionData(expression_df)
-        self.splicing = SplicingData(splicing_df)
+        self.expression = ExpressionData(expression_df, sample_info)
+        self.splicing = SplicingData(splicing_df, sample_info, event_descriptors)
 
 
 
@@ -70,12 +73,26 @@ class Study(object):
         self.expression.jsd()
         self.splicing.jsd()
 
-    def pca(self):
+    def pca(self, list_name='default', group_id=_default_group_id):
+
         """Performs PCA on both expression and splicing data
         """
-        self.expression.pca()
-        self.splicing.pca()
+        raise NotImplementedError
+        e_reduced = self.expression.get_reduced(list_name, group_id)
+        e_reduced.plot_samples()
 
-    def interactive_pca(self):
+        s_reduced = self.splicing.get_reduced(list_name, group_id)
+        s_reduced.plot_samples()
+
+    def interactive_pca(self, featurewise=False):
         from IPython.html.widgets import interactive
-        from ..yacht import get_graph
+        from ..submarine import Networker_Viz
+        try:
+            assert hasattr(self, 'gene_networks')
+        except:
+            pass
+        #    self.gene_networks = super(Networker_Viz, self).__init__()
+
+        #self.gene_networks.draw_graph(self.expression, featurewise=featurewise)
+
+

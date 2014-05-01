@@ -21,6 +21,25 @@ import pandas as pd
 from sklearn.ensemble import ExtraTreesRegressor, GradientBoostingRegressor
 from scipy import stats
 from barge import timeout, TimeoutError
+from collections import defaultdict
+import networkx as nx
+
+def get_weight_fun(fun_name):
+    _abs =  lambda x: x
+    _sq = lambda x: x ** 2
+    _arctan = lambda x: np.arctan(x)
+    _arctan_sq = lambda x: np.arctan(x) ** 2
+    if fun_name == 'abs':
+        wt = _abs
+    elif fun_name == 'sq':
+        wt = _sq
+    elif fun_name == 'arctan':
+        wt = _arctan
+    elif fun_name == 'arctan_sq':
+        wt = _arctan_sq
+    else:
+        raise ValueError
+    return wt
 
 def switchy_score(array):
     """Transform a 1D array of df scores to a vector of "switchy scores"
@@ -373,7 +392,7 @@ class PCA(Pretty_Reducer, sklearn.decomposition.PCA):
     pass
 
 class NMF(Pretty_Reducer, sklearn.decomposition.NMF):
-    here=False
+    here=True
     def fit(self, X):
 
         """
@@ -395,3 +414,65 @@ class NMF(Pretty_Reducer, sklearn.decomposition.NMF):
         super(sklearn.decomposition.NMF, self).fit_transform(X)  #notice this is fit_transform, not fit
         self.components_ = pd.DataFrame(self.components_, columns=self.X.columns).rename_axis(self.relabel_pcs, 0)
 
+
+
+
+
+class Networker(object):
+
+
+    adjacencies_ = defaultdict()
+    graphs_ = defaultdict()
+    _default_node_color_mapper = lambda x: 'r'
+    _default_node_size_mapper = lambda x: 300
+
+    def get_adjacency(self, reduced_space, name, pc_1=True, pc_2=True, pc_3=True, pc_4=True,
+                      n_pcs=5,):
+
+        try:
+            assert name is not None
+            return self.adjacencies_[name]
+        except:
+            total_pcs = reduced_space.shape[1]
+            use_pc = np.ones(total_pcs, dtype='bool')
+            use_pc[n_pcs:] = False
+            use_pc = use_pc * np.array([pc_1, pc_2, pc_3, pc_4] + [True,]*(total_pcs-4))
+
+            good_pc_space = reduced_space.loc[:,use_pc]
+            cov = np.cov(good_pc_space)
+            nRow, nCol = good_pc_space.shape
+            adjacency = pd.DataFrame(np.tril(cov * -(np.identity(nRow) - 1)),
+                                     index=good_pc_space.index, columns=reduced_space.index)
+            self.adjacencies_[name] = adjacency
+
+        return self.adjacencies_[name]
+
+    def get_graph(self, adjacency, cov_cut, graph_name,
+                  node_color_mapper=_default_node_color_mapper,
+                  node_size_mapper=_default_node_size_mapper,
+                  degree_cut = 2,
+                  wt_fun='abs'):
+
+        try:
+            g,pos = self.graphs_[graph_name]
+        except:
+            wt = get_weight_fun(wt_fun)
+            g = nx.Graph()
+            for node_label in adjacency.index:
+
+                node_color = node_color_mapper(node_label)
+                node_size = node_size_mapper(node_label)
+                g.add_node(node_label, node_size=node_size, node_color=node_color)
+        #    g.add_nodes_from(adjacency.index) #to add without setting attributes...neater, but does same thing as above loop
+            for cell1, others in adjacency.iterrows():
+                for cell2, value in others.iteritems():
+                    if value > cov_cut:
+                        #cast to floats because write_gml doesn't like numpy dtypes
+                        g.add_edge(cell1, cell2, weight=float(wt(value)),inv_weight=float(1/wt(value)), alpha=0.05)
+
+            g.remove_nodes_from([k for k, v in g.degree().iteritems() if v <= degree_cut])
+
+            pos = nx.spring_layout(g)
+            self.graphs_[graph_name] = (g, pos)
+
+        return g, pos

@@ -44,3 +44,7 @@ def serve_ipython(path=notebook_dir):
         c.wait()
     except KeyboardInterrupt:
         c.terminate()
+
+def dict_to_str(self, dic):
+        """join dictionary data into a string with that data"""
+        return "_".join([k+ ":" + str(v) for (k,v) in dic.items()])
