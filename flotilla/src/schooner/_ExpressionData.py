@@ -50,7 +50,7 @@ class ExpressionData(Data):
         self.gene_lists.update({'all_genes':pd.Series(map(naming_fun, self.rpkm.columns),
                                                            index = self.rpkm.columns)})
 
-    def get_reduced(self, gene_list='default',
+    def get_reduced(self, gene_list_name='default',
                     group_id=_default_group_id, min_cells = min_cells,
                     reducer = PCA_viz, featurewise = False,
                          reducer_args = _default_reducer_args,
@@ -60,13 +60,13 @@ class ExpressionData(Data):
         else:
             rdc_dict = self.samplewise_reduction
         try:
-            return rdc_dict[gene_list][group_id]
+            return rdc_dict[gene_list_name][group_id]
         except:
 
-            if gene_list not in self.gene_lists:
-                self.gene_lists[gene_list] = link_to_list(gene_list)
+            if gene_list_name not in self.gene_lists:
+                self.gene_lists[gene_list_name] = link_to_list(gene_list_name)
 
-            gene_list = self.gene_lists[gene_list]
+            gene_list = self.gene_lists[gene_list_name]
             subset = self.sparse_rpkm.ix[self.sample_descriptors[group_id], gene_list.index]
             frequent = pd.Index([i for i, j in (subset.count() > min_cells).iteritems() if j])
             subset = subset[frequent]

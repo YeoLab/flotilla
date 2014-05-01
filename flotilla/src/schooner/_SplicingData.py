@@ -78,20 +78,20 @@ class SplicingData(Data):
         self.binned_reduced = redc.reduced_space
         return self.binned_reduced
 
-    def get_reduced(self, event_list='default', group_id=_default_group_id, min_cells=min_cells, reducer=PCA_viz, featurewise=False,
+    def get_reduced(self, event_list_name='default', group_id=_default_group_id, min_cells=min_cells, reducer=PCA_viz, featurewise=False,
                          reducer_args=_default_reducer_args):
         if featurewise:
             rdc_dict = self.featurewise_reduction
         else:
             rdc_dict = self.samplewise_reduction
         try:
-            return rdc_dict[event_list][group_id]
+            return rdc_dict[event_list_name][group_id]
         except:
 
-            if event_list not in self.event_lists:
-                self.event_lists[event_list] = link_to_list(event_list)
+            if event_list_name not in self.event_lists:
+                self.event_lists[event_list_name] = link_to_list(event_list_name)
 
-            event_list = self.event_lists[event_list]
+            event_list = self.event_lists[event_list_name]
             #some samples, somefeatures
             subset = self.psi.ix[self.sample_descriptors[group_id], event_list]
             frequent = pd.Index([i for i,j in (subset.count() > min_cells).iteritems() if j])
