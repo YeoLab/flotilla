@@ -4,6 +4,7 @@ from scipy.spatial.distance import pdist, squareform
 from sklearn.decomposition import PCA
 import seaborn as sns
 
+
 class Data(object):
     """Generic data model for both splicing and expression data
 
@@ -78,8 +79,11 @@ class Data(object):
 #                                             self.reducer))
 #        return reduced_data
     n_components = 6
+    def _echo(self, x):
+        return x
 
-    _naming_fun = lambda x: x
+    _naming_fun = _echo
+
     def get_naming_fun(self):
         return self._naming_fun
 
