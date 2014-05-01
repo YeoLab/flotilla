@@ -6,7 +6,7 @@ from _Data import Data
 from ..submarine import NMF_viz, PCA_viz
 from ..frigate import binify, dropna_mean
 import pandas as pd
-from ...project.project_params import min_cells
+from ...project.project_params import min_cells, _default_group_id
 from sklearn.preprocessing import StandardScaler
 from ..skiff import link_to_list
 
@@ -71,13 +71,13 @@ class SplicingData(Data):
             self._binsize = self.binsize
         return self.binned
 
-    def get_binned_reduced_dims(self, reducer=NMF_viz):
+    def get_binned_reduced(self, reducer=NMF_viz):
         binned = self.get_binned_data()
         redc = reducer(binned)
         self.binned_reduced = redc.reduced_space
         return self.binned_reduced
 
-    def get_reduced_dims(self, event_list, group_id, min_cells=min_cells, reducer=PCA_viz, featurewise=False,
+    def get_reduced(self, event_list='default', group_id=_default_group_id, min_cells=min_cells, reducer=PCA_viz, featurewise=False,
                          reducer_args=_default_reducer_args):
         if featurewise:
             rdc_dict = self.featurewise_reduction
