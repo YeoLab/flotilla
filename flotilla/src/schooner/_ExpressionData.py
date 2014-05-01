@@ -47,8 +47,8 @@ class ExpressionData(Data):
             self.gene_lists['default'] = self.gene_lists['confident_rbps']
             self.set_naming_fun(lambda x: go.geneXref(x))
         naming_fun = self.get_naming_fun()
-        self.gene_lists.update(dict(('all_genes', pd.Series(map(naming_fun, self.rpkm.columns),
-                                                           index = self.rpkm.columns))))
+        self.gene_lists.update({'all_genes':pd.Series(map(naming_fun, self.rpkm.columns),
+                                                           index = self.rpkm.columns)})
 
     def get_reduced(self, gene_list='default',
                     group_id=_default_group_id, min_cells = min_cells,
