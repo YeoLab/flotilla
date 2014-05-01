@@ -75,3 +75,7 @@ class Study(object):
         """
         self.expression.pca()
         self.splicing.pca()
+
+    def interactive_pca(self):
+        from IPython.html.widgets import interactive
+        from ..yacht import get_graph

@@ -3,7 +3,10 @@ import numpy as np
 from scipy.spatial.distance import pdist, squareform
 from sklearn.decomposition import PCA
 import seaborn as sns
-
+import pandas as pd
+from collections import defaultdict
+import networkx as nx
+from ..frigate import get_weight_fun
 
 class Data(object):
     """Generic data model for both splicing and expression data
@@ -78,7 +81,7 @@ class Data(object):
 #                                         '{} on binned data'.format(
 #                                             self.reducer))
 #        return reduced_data
-    n_components = 6
+    #n_components = 6
     def _echo(self, x):
         return x
 
@@ -95,3 +98,4 @@ class Data(object):
             raise TypeError("not a naming function")
 
     _default_reducer_args = {'whiten':False}
+
