@@ -90,5 +90,5 @@ class ExpressionData(Data):
 
 
             #add mean gene_expression
-            rdc_dict[gene_list][group_id] = rdc_obj
-        return rdc_dict[gene_list][group_id]
+            rdc_dict[gene_list_name][group_id] = rdc_obj
+        return rdc_dict[gene_list_name][group_id]

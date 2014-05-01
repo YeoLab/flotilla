@@ -113,7 +113,7 @@ class SplicingData(Data):
             rdc_obj.means = means
 
             #add mean gene_expression
-            rdc_dict[event_list][group_id] = rdc_obj
-        return rdc_dict[event_list][group_id]
+            rdc_dict[event_list_name][group_id] = rdc_obj
+        return rdc_dict[event_list_name][group_id]
 
 
