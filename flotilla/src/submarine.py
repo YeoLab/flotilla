@@ -433,6 +433,7 @@ class Networker_Viz(Networker, Reduction_viz):
         #not pertinent to the graph, these are what we want to be able to re-apply to the same graph if it exists
         pca_settings = dict()
         pca_settings['group_id'] = group_id
+        pca_settings['featurewise'] = featurewise
 
         adjacency_settings = dict((k, settings[k]) for k in ['pc_1', 'pc_2', 'pc_3', 'pc_4', 'n_pcs'])
 
@@ -452,8 +453,9 @@ class Networker_Viz(Networker, Reduction_viz):
             list_name = custom_list
 
         #decide which type of analysis to do.
+        pca_name = "_".join(dict_to_str(pca_settings))
 
-        pca = self.data_obj.get_reduced(list_name, group_id, featurewise=featurewise)
+        pca = self.data_obj.get_reduced(list_name, group_id, name=pca_name, featurewise=featurewise)
 
         pca(show_point_labels=False,
             markers_size_dict=lambda x: 400,
@@ -485,7 +487,7 @@ class Networker_Viz(Networker, Reduction_viz):
         graph_settings = dict((k, settings[k]) for k in ['wt_fun', 'degree_cut', ])
         graph_settings['cov_cut'] = cov_cut
         this_graph_name = "_".join(map(dict_to_str, [pca_settings, adjacency_settings, graph_settings]))
-        graph_settings['graph_name'] = this_graph_name
+        graph_settings['name'] = this_graph_name
 
         seaborn.kdeplot(cov_dist, ax=ax2)
         ax2.axvline(cov_cut)

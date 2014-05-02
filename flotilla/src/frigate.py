@@ -426,11 +426,17 @@ class Networker(object):
     _default_node_color_mapper = lambda x: 'r'
     _default_node_size_mapper = lambda x: 300
 
-    def get_adjacency(self, reduced_space, name, pc_1=True, pc_2=True, pc_3=True, pc_4=True,
+    _last_adjacency_accessed = None
+    def get_adjacency(self, reduced_space, name=None, pc_1=True, pc_2=True, pc_3=True, pc_4=True,
                       n_pcs=5,):
+        if name is None:
+            if self._last_adjacency_accessed is None:
+                name = 'default'
+            else:
+                name = self._last_adjacency_accessed
+        self._last_adjacency_accessed = name
 
         try:
-            assert name is not None
             return self.adjacencies_[name]
         except:
             total_pcs = reduced_space.shape[1]
@@ -446,15 +452,21 @@ class Networker(object):
             self.adjacencies_[name] = adjacency
 
         return self.adjacencies_[name]
-
-    def get_graph(self, adjacency, cov_cut, graph_name,
+    
+    _last_graph_accessed = None
+    def get_graph(self, adjacency, cov_cut, name=None,
                   node_color_mapper=_default_node_color_mapper,
                   node_size_mapper=_default_node_size_mapper,
                   degree_cut = 2,
                   wt_fun='abs'):
-
+        if name is None:
+            if self._last_graph_accessed is None:
+                name = 'default'
+            else:
+                name = self._last_graph_accessed
+        self._last_graph_accessed = name
         try:
-            g,pos = self.graphs_[graph_name]
+            g,pos = self.graphs_[name]
         except:
             wt = get_weight_fun(wt_fun)
             g = nx.Graph()
@@ -473,6 +485,6 @@ class Networker(object):
             g.remove_nodes_from([k for k, v in g.degree().iteritems() if v <= degree_cut])
 
             pos = nx.spring_layout(g)
-            self.graphs_[graph_name] = (g, pos)
+            self.graphs_[name] = (g, pos)
 
         return g, pos
