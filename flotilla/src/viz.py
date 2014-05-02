@@ -7,7 +7,7 @@ import numpy as np
 from numpy.linalg import norm
 import pandas as pd
 import seaborn
-from ..project.project_params import _default_group_id
+# from ..project.project_params import _default_group_id
 
 seaborn.set_style({'axes.axisbelow': True,
                    'axes.edgecolor': '.15',
@@ -398,7 +398,7 @@ class Networker_Viz(Networker, Reduction_viz):
     def __init__(self, data_obj):
         self.data_obj = data_obj
 
-    def draw_graph(self, list_name='default', group_id=_default_group_id,
+    def draw_graph(self, list_name='default', group_id=None,
                    x_pc=1, y_pc=2,
                    n_pcs=5,
                    pc_1=True, pc_2=True, pc_3=True, pc_4=True,
