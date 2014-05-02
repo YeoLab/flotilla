@@ -39,7 +39,7 @@ from subprocess import PIPE
 from ..project.notebook import notebook_dir
 def serve_ipython(path=notebook_dir):
 
-    c = subprocess.Popen(['ipython', 'notebook', '--script', '--notebook-dir', path], stdin=PIPE)
+    c = subprocess.Popen(['ipython', 'notebook', '--script', '--notebook-dir', path, '--pylab', 'inline'], stdin=PIPE)
     try:
         c.wait()
     except KeyboardInterrupt:
