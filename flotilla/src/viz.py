@@ -37,7 +37,7 @@ seaborn.set_color_palette('deep')
 
 import pylab
 
-from flotilla.src.frigate import PCA, NMF
+from flotilla.src.compute import PCA, NMF
 
 def L1_distance(x,y):
     return abs(y) + abs(x)
@@ -325,7 +325,7 @@ def plot_pca(df, **kwargs):
 
 
 def lavalamp(psi, color=None, title='', ax=None):
-    from .frigate import get_switchy_score_order
+    from .compute import get_switchy_score_order
     """Make a 'lavalamp' scatter plot of many spliciang events
 
     Useful for visualizing many splicing events at once.
@@ -387,11 +387,11 @@ def lavalamp(psi, color=None, title='', ax=None):
     # Return the figure for saving
     # return fig
 
-from .frigate import Networker
+from .compute import Networker
 from matplotlib.gridspec import GridSpec
 
 import networkx as nx
-from .barge import dict_to_str
+from .utils import dict_to_str
 
 class Networker_Viz(Networker, Reduction_viz):
 

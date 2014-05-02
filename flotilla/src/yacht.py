@@ -11,12 +11,12 @@ import numpy as np
 
 from ..project.data import descriptors, rpkms, psi, sparse_rpkms
 from ..project.project_params import min_cells
-from flotilla.src.frigate import PCA
-from flotilla.src.submarine import PCA_viz
-from cargo import gene_lists
-from skiff import neuro_genes_human
-from frigate import dropna_mean
-from skiff import link_to_list
+from flotilla.src.compute import PCA
+from flotilla.src.viz import PCA_viz
+from common import gene_lists
+from gene_ontology import neuro_genes_human
+from compute import dropna_mean
+from gene_ontology import link_to_list
 
 
 

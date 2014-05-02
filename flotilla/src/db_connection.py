@@ -14,8 +14,8 @@ handles database connection, performs operations as a slave if run as a script.
 # <codecell>
 
 #!grep def slave.py
-from frigate import *
-from cargo import *
+from compute import *
+from common import *
 from ..project.project_params import letters, min_cells, mongoHost, mongoPort
 from ..project.loaders import load_transcriptome_data
 import random

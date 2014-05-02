@@ -2,7 +2,7 @@
 from _ExpressionData import ExpressionData
 from _SplicingData import SplicingData
 from ...project.project_params import _default_group_id
-from ..submarine import Networker_Viz
+from ..viz import Networker_Viz
 
 class Study(object):
     """
@@ -86,7 +86,7 @@ class Study(object):
 
     def interactive_pca(self, featurewise=False):
         from IPython.html.widgets import interactive
-        from ..submarine import Networker_Viz
+        from ..viz import Networker_Viz
         try:
             assert hasattr(self, 'gene_networks')
         except:

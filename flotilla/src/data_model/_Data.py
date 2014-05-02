@@ -6,7 +6,7 @@ import seaborn as sns
 import pandas as pd
 from collections import defaultdict
 import networkx as nx
-from ..frigate import get_weight_fun
+from ..compute import get_weight_fun
 
 class Data(object):
     """Generic data model for both splicing and expression data

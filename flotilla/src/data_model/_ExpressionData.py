@@ -7,10 +7,10 @@ from collections import defaultdict
 import seaborn
 from sklearn.preprocessing import StandardScaler
 
-from flotilla.src.submarine import PCA_viz
+from flotilla.src.viz import PCA_viz
 
-from ..frigate import dropna_mean
-from ..skiff import link_to_list
+from ..compute import dropna_mean
+from ..gene_ontology import link_to_list
 from ...project.project_params import min_cells, _default_group_id
 
 seaborn.set_context('paper')
@@ -42,7 +42,7 @@ class ExpressionData(Data):
         self.sample_descriptors = sample_descriptors
         self.gene_descriptors = gene_descriptors
         if load_cargo:
-            from ..cargo import gene_lists, go
+            from ..common import gene_lists, go
             self.gene_lists.update(gene_lists)
             self.gene_lists['default'] = self.gene_lists['confident_rbps']
             self.set_naming_fun(lambda x: go.geneNames(x))

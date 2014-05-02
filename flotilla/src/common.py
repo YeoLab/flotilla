@@ -15,7 +15,7 @@ import os
 
 from flotilla_params import flotilla_data
 
-from skiff import link_to_list, hg19GO, neuro_genes_human
+from gene_ontology import link_to_list, hg19GO, neuro_genes_human
 
 
 rbps_file = os.path.join(flotilla_data, "rbps_list")

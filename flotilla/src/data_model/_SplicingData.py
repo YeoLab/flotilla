@@ -3,12 +3,12 @@ from collections import defaultdict
 
 
 from _Data import Data
-from ..submarine import NMF_viz, PCA_viz
-from ..frigate import binify, dropna_mean
+from ..viz import NMF_viz, PCA_viz
+from ..compute import binify, dropna_mean
 import pandas as pd
 from ...project.project_params import min_cells, _default_group_id
 from sklearn.preprocessing import StandardScaler
-from ..skiff import link_to_list
+from ..gene_ontology import link_to_list
 
 class SplicingData(Data):
     _default_reducer_args = Data._default_reducer_args
