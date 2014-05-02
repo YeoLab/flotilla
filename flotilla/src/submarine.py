@@ -399,16 +399,19 @@ class Networker_Viz(Networker, Reduction_viz):
 
     def __init__(self, data_obj):
         self.data_obj = data_obj
+        Networker.__init__(self)
 
-    def draw_graph(self, list_name='default', group_id=_default_group_id,
-                   x_pc=1, y_pc=2,
+    def draw_graph(self,
                    n_pcs=5,
-                   pc_1=True, pc_2=True, pc_3=True, pc_4=True,
+                   use_pc_1=True, use_pc_2=True, use_pc_3=True, use_pc_4=True,
                    degree_cut=2, cov_std_cut = 1.8,
                    wt_fun = 'abs',
                    featurewise=False, #else feature_components
                    rpkms_not_events=False, #else event features
                    feature_of_interest='RBFOX2', custom_list='', draw_labels=True,
+                   reduction_name=None,
+                   list_name=None,
+                   group_id=None,
                    graph_file=''):
 
         """
@@ -426,7 +429,7 @@ class Networker_Viz(Networker, Reduction_viz):
 
 
         """
-        x_pc, y_pc = str(x_pc), str(y_pc)
+
         node_color_mapper = self._default_node_color_mapper
         node_size_mapper = self._default_node_color_mapper
         settings = locals().copy()
@@ -434,8 +437,10 @@ class Networker_Viz(Networker, Reduction_viz):
         pca_settings = dict()
         pca_settings['group_id'] = group_id
         pca_settings['featurewise'] = featurewise
+        pca_settings['list_name'] = list_name
+        pca_settings['obj_id'] = reduction_name
 
-        adjacency_settings = dict((k, settings[k]) for k in ['pc_1', 'pc_2', 'pc_3', 'pc_4', 'n_pcs'])
+        adjacency_settings = dict((k, settings[k]) for k in ['use_pc_1', 'use_pc_2', 'use_pc_3', 'use_pc_4', 'n_pcs', ])
 
         #del settings['gene_of_interest']
         #del settings['graph_file']
@@ -443,7 +448,7 @@ class Networker_Viz(Networker, Reduction_viz):
 
         f = pylab.figure(figsize=(24,18))
         gs = GridSpec(3, 4)
-        ax1 = pylab.subplot(gs[0,0:2])
+        #ax1 = pylab.subplot(gs[0,0:2])
         ax2 = pylab.subplot(gs[0,3])
         ax3 = pylab.subplot(gs[0,2])
         ax4 = pylab.subplot(gs[1:,:2])
@@ -452,19 +457,10 @@ class Networker_Viz(Networker, Reduction_viz):
         if custom_list != '':
             list_name = custom_list
 
-        #decide which type of analysis to do.
-        pca_name = "_".join(dict_to_str(pca_settings))
+        #import pdb
+        #pdb.set_trace()
+        pca = self.data_obj.get_reduced(**pca_settings)
 
-        pca = self.data_obj.get_reduced(list_name, group_id, name=pca_name, featurewise=featurewise)
-
-        pca(show_point_labels=False,
-            markers_size_dict=lambda x: 400,
-            title=group_id + " cells", ax=ax1, show_vectors=False,
-            title_size=10,
-            axis_label_size=10,
-            x_pc = "pc_" + x_pc,#this only affects the plot, not the data.
-            y_pc = "pc_" + y_pc,#this only affects the plot, not the data.
-            )
 
         if featurewise:
             node_color_mapper = lambda x: 'r' if x == feature_of_interest else 'k'
@@ -477,8 +473,11 @@ class Networker_Viz(Networker, Reduction_viz):
         ax3.axvline(n_pcs)
         ax3.set_ylabel("% explained variance")
         ax3.set_xlabel("component")
-        adjacency_name = "_".join(map(dict_to_str, [adjacency_settings, pca_settings]))
+        adjacency_name = "_".join([dict_to_str(adjacency_settings), pca.obj_id])
         #adjacency_settings['name'] = adjacency_name
+
+        #import pdb
+        #pdb.set_trace()
         adjacency = self.get_adjacency(pca.reduced_space, name=adjacency_name, **adjacency_settings)
         #f.savefig("tmp/" + fname + ".pca.png")
         cov_dist = np.array([i for i in adjacency.values.ravel() if np.abs(i) > 0])
@@ -523,4 +522,4 @@ class Networker_Viz(Networker, Reduction_viz):
                 print "error writing graph file:"
                 print e
 
-        return g#, mst
+        return self

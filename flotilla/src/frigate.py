@@ -421,40 +421,51 @@ class NMF(Pretty_Reducer, sklearn.decomposition.NMF):
 class Networker(object):
 
 
-    adjacencies_ = defaultdict()
-    graphs_ = defaultdict()
+    def __init__(self):
+        self.adjacencies_ = defaultdict()
+        self.graphs_ = defaultdict()
+
     _default_node_color_mapper = lambda x: 'r'
     _default_node_size_mapper = lambda x: 300
 
     _last_adjacency_accessed = None
-    def get_adjacency(self, reduced_space, name=None, pc_1=True, pc_2=True, pc_3=True, pc_4=True,
+    def get_adjacency(self, reduced_space=None, name=None, use_pc_1=True, use_pc_2=True, use_pc_3=True, use_pc_4=True,
                       n_pcs=5,):
+        print "name:", name
+        if reduced_space is None and self._last_adjacency_accessed is None:
+            raise AttributeError("this hasn't been called yet")
         if name is None:
             if self._last_adjacency_accessed is None:
                 name = 'default'
             else:
                 name = self._last_adjacency_accessed
         self._last_adjacency_accessed = name
-
         try:
-            return self.adjacencies_[name]
-        except:
+            if name in self.adjacencies_:
+                print "returning a pre-built adjacency"
+                return self.adjacencies_[name]
+            else:
+                raise ValueError("adjacency hasn't been built yet")
+        except ValueError:
+            print 'reduced space', reduced_space.shape
             total_pcs = reduced_space.shape[1]
             use_pc = np.ones(total_pcs, dtype='bool')
             use_pc[n_pcs:] = False
-            use_pc = use_pc * np.array([pc_1, pc_2, pc_3, pc_4] + [True,]*(total_pcs-4))
+            use_pc = use_pc * np.array([use_pc_1, use_pc_2, use_pc_3, use_pc_4] + [True,]*(total_pcs-4))
 
             good_pc_space = reduced_space.loc[:,use_pc]
             cov = np.cov(good_pc_space)
             nRow, nCol = good_pc_space.shape
             adjacency = pd.DataFrame(np.tril(cov * -(np.identity(nRow) - 1)),
                                      index=good_pc_space.index, columns=reduced_space.index)
+            print 'adjacency space', reduced_space.shape
+
             self.adjacencies_[name] = adjacency
 
         return self.adjacencies_[name]
-    
+
     _last_graph_accessed = None
-    def get_graph(self, adjacency, cov_cut, name=None,
+    def get_graph(self, adjacency=None, cov_cut=None, name=None,
                   node_color_mapper=_default_node_color_mapper,
                   node_size_mapper=_default_node_size_mapper,
                   degree_cut = 2,
