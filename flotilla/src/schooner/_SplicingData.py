@@ -6,30 +6,23 @@ from _Data import Data
 from ..submarine import NMF_viz, PCA_viz
 from ..frigate import binify, dropna_mean
 import pandas as pd
-from ...project.project_params import min_cells, _default_group_id
+from ...project.project_params import min_cells, _default_group_id, _default_group_ids
 from sklearn.preprocessing import StandardScaler
 from ..skiff import link_to_list
 
 class SplicingData(Data):
     _default_reducer_args = Data._default_reducer_args
     _default_group_id = _default_group_id
+    _default_group_ids = _default_group_ids
     binned_reducer = None
     raw_reducer = None
     binsize=0.1,
     n_components = 2
     _binsize=None
     var_cut = 0.2
-
-    ###
-    #
-    # TODO: make these databases, so you don't have to re-calculate
-
-    event_lists = {}
-    samplewise_reduction = defaultdict(dict)
-    featurewise_reduction = defaultdict(dict)
-
-    #
-    ###
+    lists = {}
+    samplewise_reduction = {}
+    featurewise_reduction = {}
 
     def __init__(self, psi, sample_descriptors,
                  event_descriptors, binsize = binsize,
@@ -54,8 +47,8 @@ class SplicingData(Data):
         self.psi = psi
         self.binsize = binsize
         psi_variant = pd.Index([i for i,j in (psi.var().dropna() > var_cut).iteritems() if j])
-        self.event_lists['variant'] = psi_variant
-        self.event_lists['default'] = 'variant'
+
+        self.lists['variant'] = pd.Series(psi_variant, index=psi_variant)
         self.sample_descriptors = sample_descriptors
         self.event_descriptors = event_descriptors
 
@@ -79,49 +72,35 @@ class SplicingData(Data):
         return self.binned_reduced
 
     _last_reducer_accessed = None
-    def get_reduced(self, event_list_name=None, group_id=_default_group_id, min_cells=min_cells, reducer=PCA_viz,
-                    featurewise=False, reducer_args=_default_reducer_args, name=None):
-        if event_list_name is None:
-            event_list_name = self._default_list
-        if name is None:
-            if self._last_reducer_accessed is None:
-                name = event_list_name
-            else:
-                name = self._last_reducer_accessed
-        self._last_reducer_accessed = name
+
+    def make_reduced(self, list_name, group_id,  min_cells=min_cells, reducer=PCA_viz,
+                    featurewise=False, reducer_args=_default_reducer_args):
+
+
+
+        if list_name not in self.lists:
+            self.lists[list_name] = link_to_list(list_name)
+
+        event_list = self.lists[list_name]
+        #some samples, somefeatures
+        subset = self.psi.ix[self.sample_descriptors[group_id], event_list]
+        frequent = pd.Index([i for i,j in (subset.count() > min_cells).iteritems() if j])
+        subset = subset[frequent]
+        #fill na with mean for each event
+        means = subset.apply(dropna_mean, axis=0)
+        mf_subset = subset.fillna(means,).fillna(0)
+        #whiten, mean-center
+        naming_fun=self.get_naming_fun()
+        ss = pd.DataFrame(StandardScaler().fit_transform(mf_subset), index=mf_subset.index,
+                          columns=mf_subset.columns).rename_axis(naming_fun, 1)
+
         if featurewise:
-            rdc_dict = self.featurewise_reduction
-        else:
-            rdc_dict = self.samplewise_reduction
-        try:
-            return rdc_dict[name][group_id]
-        except:
+            ss = ss.T
 
-            if event_list_name not in self.event_lists:
-                self.event_lists[event_list_name] = link_to_list(event_list_name)
+        rdc_obj = reducer(ss, **reducer_args)
 
-            event_list = self.event_lists[event_list_name]
-            #some samples, somefeatures
-            subset = self.psi.ix[self.sample_descriptors[group_id], event_list]
-            frequent = pd.Index([i for i,j in (subset.count() > min_cells).iteritems() if j])
-            subset = subset[frequent]
-            #fill na with mean for each event
-            means = subset.apply(dropna_mean, axis=0)
-            mf_subset = subset.fillna(means,).fillna(0)
-            #whiten, mean-center
-            naming_fun=self.get_naming_fun()
-            ss = pd.DataFrame(StandardScaler().fit_transform(mf_subset), index=mf_subset.index,
-                              columns=mf_subset.columns).rename_axis(naming_fun, 1)
+        rdc_obj.means = means.rename_axis(naming_fun) #always the mean of input features... i.e. featurewise doesn't change this.
 
-            if featurewise:
-                ss = ss.T
-
-            rdc_obj = reducer(ss, **reducer_args)
-
-            rdc_obj.means = means.rename_axis(naming_fun) #always the mean of input features... i.e. featurewise doesn't change this.
-
-            #add mean gene_expression
-            rdc_dict[name][group_id] = rdc_obj
-        return rdc_dict[name][group_id]
+        return rdc_obj
 
 

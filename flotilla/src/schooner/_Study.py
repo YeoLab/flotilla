@@ -42,9 +42,8 @@ class Study(object):
         self.sample_info = sample_info #parsers.read_sample_info(
         # sample_info_filename)
         self.expression = ExpressionData(expression_df, sample_info)
+
         self.splicing = SplicingData(splicing_df, sample_info, event_descriptors)
-
-
 
     def detect_outliers(self):
         """Detects outlier cells from expression, mapping, and splicing data and labels the outliers as such for future analysis.
@@ -77,31 +76,35 @@ class Study(object):
 
         """Performs PCA on both expression and splicing data
         """
-        raise NotImplementedError
-        e_reduced = self.expression.get_reduced(list_name, group_id)
+        e_reduced = self.expression.get_reduced(list_name=list_name, group_id=group_id)
         e_reduced.plot_samples()
 
-        s_reduced = self.splicing.get_reduced(list_name, group_id)
-        s_reduced.plot_samples()
+        #s_reduced = self.splicing.get_reduced(list_name, group_id)
+        #s_reduced.plot_samples()
 
-    def interactive_graph(self, data_type='expression'):
-        assert data_type in ('expression', 'splicing')
+    def graph(self, data_type='expression', **kwargs):
+        args = kwargs.copy()
 
-        from IPython.html.widgets import interactive
+        from IPython.html.widgets import interact, interactive
         from ..submarine import Networker_Viz
+        print kwargs
+
         if data_type == "expression":
             try:
                 assert hasattr(self, 'expression_networks')
             except:
                 self.expression_networks = Networker_Viz(self.expression)
-                interactive(self.expression_networks.draw_graph, list_name=self.expression.gene_lists.keys(),
-                            group_id=['any_cell', 'M_cell', 'N_cell', 'P_cell', 'S_cell', 'neuron_cell', '~outlier'])  #TODO: need a better way of getting group_ids
+
+            self.expression_networks.draw_graph(**kwargs)
+
         elif data_type == "splicing":
             try:
                 assert hasattr(self, 'splicing_networks')
             except:
-                self.expression_networks = Networker_Viz(self.expression)
+                self.splicing_networks = Networker_Viz(self.splicing)
 
-        #self.gene_networks.draw_graph(self.expression, featurewise=featurewise)
+            self.splicing_networks.draw_graph(**kwargs)
+
+
 
 
