@@ -35,7 +35,7 @@ seaborn.set_style({'axes.axisbelow': True,
                    'ytick.major.size': 0,
                    'ytick.minor.size': 0})
 
-seaborn.set_color_palette('deep')
+seaborn.set_palette('deep')
 
 import pylab
 
@@ -327,7 +327,6 @@ def plot_pca(df, **kwargs):
 
 
 def lavalamp(psi, color=None, title='', ax=None):
-    from .frigate import get_switchy_score_order
     """Make a 'lavalamp' scatter plot of many spliciang events
 
     Useful for visualizing many splicing events at once.
@@ -354,6 +353,7 @@ def lavalamp(psi, color=None, title='', ax=None):
         A figure object for saving.
     """
     import matplotlib.pyplot as plt
+    from .frigate import get_switchy_score_order
 
     if ax is None:
         fig, ax = plt.subplots(figsize=(16,4))
@@ -426,6 +426,7 @@ class Networker_Viz(Networker, Reduction_viz):
 
 
         """
+        x_pc, y_pc = str(x_pc), str(y_pc)
         node_color_mapper = self._default_node_color_mapper
         node_size_mapper = self._default_node_color_mapper
         settings = locals().copy()
@@ -452,7 +453,7 @@ class Networker_Viz(Networker, Reduction_viz):
 
         #decide which type of analysis to do.
 
-        pca = self.data_obj.get_reduced(list_name, group_id)
+        pca = self.data_obj.get_reduced(list_name, group_id, featurewise=featurewise)
 
         pca(show_point_labels=False,
             markers_size_dict=lambda x: 400,
@@ -465,9 +466,9 @@ class Networker_Viz(Networker, Reduction_viz):
 
         if featurewise:
             node_color_mapper = lambda x: 'r' if x == feature_of_interest else 'k'
-            node_size_mapper = lambda x: pca.X.feature_of_interest.ix[x]
+            node_size_mapper = lambda x: (pca.means.ix[x]**2)*100
         else:
-            node_color_mapper = lambda x: self.sample_info.cell_color[x]
+            node_color_mapper = lambda x: self.data_obj.sample_descriptors.color[x]
             node_size_mapper = lambda x: 300
 
         ax3.plot(pca.explained_variance_ratio_ * 100.)
@@ -476,20 +477,20 @@ class Networker_Viz(Networker, Reduction_viz):
         ax3.set_xlabel("component")
         adjacency_name = "_".join(map(dict_to_str, [adjacency_settings, pca_settings]))
         #adjacency_settings['name'] = adjacency_name
-        adjacency = self.get_adjacency(pca.pca_space, name=adjacency_name, **adjacency_settings)
+        adjacency = self.get_adjacency(pca.reduced_space, name=adjacency_name, **adjacency_settings)
         #f.savefig("tmp/" + fname + ".pca.png")
         cov_dist = np.array([i for i in adjacency.values.ravel() if np.abs(i) > 0])
         cov_cut = np.mean(cov_dist) + cov_std_cut * np.std(cov_dist)
 
         graph_settings = dict((k, settings[k]) for k in ['wt_fun', 'degree_cut', ])
         graph_settings['cov_cut'] = cov_cut
-
         this_graph_name = "_".join(map(dict_to_str, [pca_settings, adjacency_settings, graph_settings]))
+        graph_settings['graph_name'] = this_graph_name
 
         seaborn.kdeplot(cov_dist, ax=ax2)
         ax2.axvline(cov_cut)
 
-        g, pos = self.get_graph(adjacency, cov_cut, this_graph_name, **graph_settings)
+        g, pos = self.get_graph(adjacency, **graph_settings)
 
         nx.draw_networkx_nodes(g, pos, node_color=map(node_color_mapper, g.nodes()),
                                node_size=map(node_size_mapper, g.nodes()),
