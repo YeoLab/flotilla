@@ -325,8 +325,7 @@ def plot_pca(df, **kwargs):
 
 
 def lavalamp(psi, color=None, title='', ax=None):
-    from .compute import get_switchy_score_order
-    """Make a 'lavalamp' scatter plot of many spliciang events
+    """Make a 'lavalamp' scatter plot of many splicing events
 
     Useful for visualizing many splicing events at once.
 
@@ -351,6 +350,7 @@ def lavalamp(psi, color=None, title='', ax=None):
     fig : matplotlib.Figure
         A figure object for saving.
     """
+    from .compute import get_switchy_score_order
     import matplotlib.pyplot as plt
 
     if ax is None:
