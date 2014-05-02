@@ -30,7 +30,7 @@ class ExpressionData(Data):
 
     def __init__(self, rpkm, sample_descriptors,
                  gene_descriptors = None,
-                 var_cut=0.2, expr_cut=0.1, load_cargo=True
+                 var_cut=0.2, expr_cut=0.1, load_cargo=True, rename=True,
     ):
 
         self.rpkm = rpkm
@@ -45,16 +45,18 @@ class ExpressionData(Data):
             from ..cargo import gene_lists, go
             self.gene_lists.update(gene_lists)
             self.gene_lists['default'] = self.gene_lists['confident_rbps']
-            self.set_naming_fun(lambda x: go.geneNames(x))
+            if rename:
+                self.set_naming_fun(lambda x: go.geneNames(x))
         naming_fun = self.get_naming_fun()
         self.gene_lists.update({'all_genes':pd.Series(map(naming_fun, self.rpkm.columns),
                                                            index = self.rpkm.columns)})
 
     def get_reduced(self, gene_list_name='default',
-                    group_id=_default_group_id, min_cells = min_cells,
-                    reducer = PCA_viz, featurewise = False,
-                         reducer_args = _default_reducer_args,
-                         standardize = True):
+                    group_id=_default_group_id, min_cells=min_cells,
+                    reducer=PCA_viz,
+                    featurewise=False,
+                    reducer_args=_default_reducer_args,
+                    standardize=True):
         if featurewise:
             rdc_dict = self.featurewise_reduction
         else:
@@ -87,6 +89,7 @@ class ExpressionData(Data):
             if featurewise:
                 ss = ss.T
             rdc_obj = reducer(ss, **reducer_args)
+            rdc_obj.means = means.rename_axis(naming_fun) #always the mean of input features... i.e. featurewise doesn't change this.
 
 
             #add mean gene_expression

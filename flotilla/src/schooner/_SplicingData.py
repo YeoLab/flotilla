@@ -103,14 +103,14 @@ class SplicingData(Data):
             naming_fun=self.get_naming_fun()
             ss = pd.DataFrame(StandardScaler().fit_transform(mf_subset), index=mf_subset.index,
                               columns=mf_subset.columns).rename_axis(naming_fun, 1)
-
             #compute pca
             #compute pca
             if featurewise:
                 ss = ss.T
+
             rdc_obj = reducer(ss, **reducer_args)
 
-            rdc_obj.means = means
+            rdc_obj.means = means.rename_axis(naming_fun) #always the mean of input features... i.e. featurewise doesn't change this.
 
             #add mean gene_expression
             rdc_dict[event_list_name][group_id] = rdc_obj

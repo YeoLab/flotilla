@@ -84,14 +84,19 @@ class Study(object):
         s_reduced = self.splicing.get_reduced(list_name, group_id)
         s_reduced.plot_samples()
 
-    def interactive_pca(self, featurewise=False):
+    def interactive_graph(self, **kwargs):
         from IPython.html.widgets import interactive
         from ..submarine import Networker_Viz
+
         try:
-            assert hasattr(self, 'gene_networks')
+            assert hasattr(self, 'expression_networks')
         except:
-            pass
-        #    self.gene_networks = super(Networker_Viz, self).__init__()
+            self.expression_networks = Networker_Viz(self.expression)
+
+        try:
+            assert hasattr(self, 'splicing_networks')
+        except:
+            self.expression_networks = Networker_Viz(self.expression)
 
         #self.gene_networks.draw_graph(self.expression, featurewise=featurewise)
 
