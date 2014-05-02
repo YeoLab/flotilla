@@ -11,6 +11,9 @@ from functools import wraps
 import errno
 import os
 import signal
+import os,sys,subprocess
+from subprocess import PIPE
+# from ..project.notebook import notebook_dir
 
 class TimeoutError(Exception):
     pass
@@ -34,10 +37,7 @@ def timeout(seconds=10, error_message=os.strerror(errno.ETIME)):
     return decorator
 ###http://stackoverflow.com/questions/2281850/timeout-function-if-it-takes-too-long-to-finish###
 
-import os,sys,subprocess
-from subprocess import PIPE
-from ..project.notebook import notebook_dir
-def serve_ipython(path=notebook_dir):
+def serve_ipython(path=''):
 
     c = subprocess.Popen(['ipython', 'notebook', '--script', '--notebook-dir', path], stdin=PIPE)
     try:
