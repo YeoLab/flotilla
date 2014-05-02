@@ -98,4 +98,4 @@ class Data(object):
             raise TypeError("not a naming function")
 
     _default_reducer_args = {'whiten':False}
-
+    _default_list = 'variant'

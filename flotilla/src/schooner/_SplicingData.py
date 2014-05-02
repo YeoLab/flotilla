@@ -55,7 +55,7 @@ class SplicingData(Data):
         self.binsize = binsize
         psi_variant = pd.Index([i for i,j in (psi.var().dropna() > var_cut).iteritems() if j])
         self.event_lists['variant'] = psi_variant
-        self.event_lists['default'] = self.event_lists['variant']
+        self.event_lists['default'] = 'variant'
         self.sample_descriptors = sample_descriptors
         self.event_descriptors = event_descriptors
 
@@ -78,14 +78,23 @@ class SplicingData(Data):
         self.binned_reduced = redc.reduced_space
         return self.binned_reduced
 
-    def get_reduced(self, event_list_name='default', group_id=_default_group_id, min_cells=min_cells, reducer=PCA_viz, featurewise=False,
-                         reducer_args=_default_reducer_args):
+    _last_reducer_accessed = None
+    def get_reduced(self, event_list_name=None, group_id=_default_group_id, min_cells=min_cells, reducer=PCA_viz,
+                    featurewise=False, reducer_args=_default_reducer_args, name=None):
+        if event_list_name is None:
+            event_list_name = self._default_list
+        if name is None:
+            if self._last_reducer_accessed is None:
+                name = event_list_name
+            else:
+                name = self._last_reducer_accessed
+        self._last_reducer_accessed = name
         if featurewise:
             rdc_dict = self.featurewise_reduction
         else:
             rdc_dict = self.samplewise_reduction
         try:
-            return rdc_dict[event_list_name][group_id]
+            return rdc_dict[name][group_id]
         except:
 
             if event_list_name not in self.event_lists:
@@ -103,8 +112,7 @@ class SplicingData(Data):
             naming_fun=self.get_naming_fun()
             ss = pd.DataFrame(StandardScaler().fit_transform(mf_subset), index=mf_subset.index,
                               columns=mf_subset.columns).rename_axis(naming_fun, 1)
-            #compute pca
-            #compute pca
+
             if featurewise:
                 ss = ss.T
 
@@ -113,7 +121,7 @@ class SplicingData(Data):
             rdc_obj.means = means.rename_axis(naming_fun) #always the mean of input features... i.e. featurewise doesn't change this.
 
             #add mean gene_expression
-            rdc_dict[event_list_name][group_id] = rdc_obj
-        return rdc_dict[event_list_name][group_id]
+            rdc_dict[name][group_id] = rdc_obj
+        return rdc_dict[name][group_id]
 
 

@@ -37,39 +37,61 @@ class ExpressionData(Data):
         self.sparse_rpkm = rpkm[rpkm > expr_cut]
         rpkm_variant = pd.Index([i for i, j in (rpkm.var().dropna() > var_cut).iteritems() if j])
         self.gene_lists['variant'] = rpkm_variant
-        self.gene_lists['default'] = self.gene_lists['variant']
+
 
         self.sample_descriptors = sample_descriptors
         self.gene_descriptors = gene_descriptors
         if load_cargo:
             from ..cargo import gene_lists, go
             self.gene_lists.update(gene_lists)
-            self.gene_lists['default'] = self.gene_lists['confident_rbps']
+            self._default_list = 'confident_rbps'
             if rename:
                 self.set_naming_fun(lambda x: go.geneNames(x))
         naming_fun = self.get_naming_fun()
         self.gene_lists.update({'all_genes':pd.Series(map(naming_fun, self.rpkm.columns),
                                                            index = self.rpkm.columns)})
+    _last_reducer_accessed = None
 
-    def get_reduced(self, gene_list_name='default',
+    #TODO: refctor into get_reduced and make_reduced fxns
+    def get_reduced(self, gene_list_name=None,
                     group_id=_default_group_id, min_cells=min_cells,
                     reducer=PCA_viz,
-                    featurewise=False,
+                    featurewise=False, name=None,
                     reducer_args=_default_reducer_args,
                     standardize=True):
+
+        if gene_list_name is None:
+            gene_list_name = self._default_list
+
+        if name is None:
+            if self._last_reducer_accessed is None:
+
+                name = gene_list_name
+            else:
+                name = self._last_reducer_accessed
+
+        self._last_reducer_accessed = name
+
+
         if featurewise:
             rdc_dict = self.featurewise_reduction
         else:
             rdc_dict = self.samplewise_reduction
         try:
-            return rdc_dict[gene_list_name][group_id]
+            return rdc_dict[name][group_id]
         except:
 
             if gene_list_name not in self.gene_lists:
                 self.gene_lists[gene_list_name] = link_to_list(gene_list_name)
 
             gene_list = self.gene_lists[gene_list_name]
-            subset = self.sparse_rpkm.ix[self.sample_descriptors[group_id], gene_list.index]
+            if group_id.startswith("~"):
+                sample_ind = ~pd.Series(self.sample_descriptors[group_id.lstrip("~")], dtype='bool')
+            else:
+                sample_ind = pd.Series(self.sample_descriptors[group_id], dtype='bool')
+            import pdb
+            pdb.set_trace()
+            subset = self.sparse_rpkm.ix[sample_ind, gene_list.index]
             frequent = pd.Index([i for i, j in (subset.count() > min_cells).iteritems() if j])
             subset = subset[frequent]
             #fill na with mean for each event
@@ -93,5 +115,5 @@ class ExpressionData(Data):
 
 
             #add mean gene_expression
-            rdc_dict[gene_list_name][group_id] = rdc_obj
-        return rdc_dict[gene_list_name][group_id]
+            rdc_dict[name][group_id] = rdc_obj
+        return rdc_dict[name][group_id]

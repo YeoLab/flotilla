@@ -84,19 +84,23 @@ class Study(object):
         s_reduced = self.splicing.get_reduced(list_name, group_id)
         s_reduced.plot_samples()
 
-    def interactive_graph(self, **kwargs):
+    def interactive_graph(self, data_type='expression'):
+        assert data_type in ('expression', 'splicing')
+
         from IPython.html.widgets import interactive
         from ..submarine import Networker_Viz
-
-        try:
-            assert hasattr(self, 'expression_networks')
-        except:
-            self.expression_networks = Networker_Viz(self.expression)
-
-        try:
-            assert hasattr(self, 'splicing_networks')
-        except:
-            self.expression_networks = Networker_Viz(self.expression)
+        if data_type == "expression":
+            try:
+                assert hasattr(self, 'expression_networks')
+            except:
+                self.expression_networks = Networker_Viz(self.expression)
+                interactive(self.expression_networks.draw_graph, list_name=self.expression.gene_lists.keys(),
+                            group_id=['any_cell', 'M_cell', 'N_cell', 'P_cell', 'S_cell', 'neuron_cell', '~outlier'])  #TODO: need a better way of getting group_ids
+        elif data_type == "splicing":
+            try:
+                assert hasattr(self, 'splicing_networks')
+            except:
+                self.expression_networks = Networker_Viz(self.expression)
 
         #self.gene_networks.draw_graph(self.expression, featurewise=featurewise)
 
