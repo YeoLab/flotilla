@@ -68,11 +68,11 @@ class SplicingData(Data):
 
     _last_reducer_accessed = None
 
-    def make_reduced(self, list_name, group_id,  min_cells=min_cells, reducer=PCA_viz,
+    def make_reduced(self, list_name, group_id, reducer=PCA_viz,
                     featurewise=False, reducer_args=_default_reducer_args):
         """make and cache a reduced dimensionality representation of data """
 
-
+        min_samples = self.get_min_samples()
         if list_name not in self.lists:
             self.lists[list_name] = link_to_list(list_name)
 
@@ -86,7 +86,7 @@ class SplicingData(Data):
             sample_ind = pd.Series(self.sample_descriptors[group_id], dtype='bool')
 
         subset = self.psi.ix[sample_ind, event_list]
-        frequent = pd.Index([i for i,j in (subset.count() > min_cells).iteritems() if j])
+        frequent = pd.Index([i for i,j in (subset.count() > min_samples).iteritems() if j])
         subset = subset[frequent]
         #fill na with mean for each event
         means = subset.apply(dropna_mean, axis=0)

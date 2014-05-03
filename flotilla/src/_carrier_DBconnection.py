@@ -12,9 +12,11 @@ import random
 
 from ._frigate_compute import *
 from ._cargo_commonObjects import *
-from ..flotilla.neural_diff_project.src.project_params import letters, min_cells, mongoHost, mongoPort
-from ..neural_diff_project.loaders import load_transcriptome_data
-
+#from ..flotilla.neural_diff_project.src.project_params import letters, min_cells, mongoHost, mongoPort
+#from ..neural_diff_project.loaders import load_transcriptome_data
+mongoHost = ''
+mongoPort = ''
+min_cells = ''
 
 def fill_database(mongodb, predictor, target, verbose=False):
     """

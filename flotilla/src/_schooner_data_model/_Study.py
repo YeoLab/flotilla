@@ -164,8 +164,8 @@ class Study(Cargo):
                 feature_of_interest="RBFOX2"
                 )
 
-import ExpressionData
-import SplicingData
+import _ExpressionData as ExpressionData
+import _SplicingData as SplicingData
 cargo = Cargo()
 
 class SubStudy(object):
@@ -175,10 +175,10 @@ class SubStudy(object):
         self._default_group_ids = study._default_group_ids
         self._default_list_id = study._default_list_id
         self._default_list_ids = study._default_list_ids
-        study
 
 
-class ExpressionStudy(SubStudy, ExpressionData):
+
+class ExpressionStudy(ExpressionData, SubStudy, ):
 
     def __init__(self, study, load_cargo=False, **kwargs):
         assert hasattr(study, 'expression')
