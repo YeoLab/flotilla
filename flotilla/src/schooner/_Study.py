@@ -1,8 +1,7 @@
 # from singlesail import parsers
 from _ExpressionData import ExpressionData
 from _SplicingData import SplicingData
-from ...project.project_params import _default_group_id
-from ..submarine import Networker_Viz
+from ...project.project_params import min_cells, _default_group_id, _default_group_ids, _default_list_id, _default_list_ids
 
 class Study(object):
     """
@@ -44,6 +43,12 @@ class Study(object):
         self.expression = ExpressionData(expression_df, sample_info)
 
         self.splicing = SplicingData(splicing_df, sample_info, event_descriptors)
+        self._default_group_ids = _default_group_ids
+        self._default_group_id = _default_group_id
+        self._default_list_ids = _default_list_ids
+        self._default_list_id = _default_list_id
+        self._default_x_pc = 1
+        self._default_y_pc = 1
 
     def detect_outliers(self):
         """Detects outlier cells from expression, mapping, and splicing data and labels the outliers as such for future analysis.
@@ -72,22 +77,19 @@ class Study(object):
         self.expression.jsd()
         self.splicing.jsd()
 
-    def pca(self, list_name='default', group_id=_default_group_id):
+    def pca(self, data_type='expression', x_pc=1, y_pc=2, **kwargs):
 
         """Performs PCA on both expression and splicing data
         """
-        e_reduced = self.expression.get_reduced(list_name=list_name, group_id=group_id)
-        e_reduced.plot_samples()
-
-        #s_reduced = self.splicing.get_reduced(list_name, group_id)
-        #s_reduced.plot_samples()
+        if data_type == "expression":
+            self.expression.plot_dimensionality_reduction(x_pc=x_pc, y_pc=y_pc, **kwargs)
+        elif data_type == "splicing":
+            self.splicing.plot_dimensionality_reduction(x_pc=x_pc, y_pc=y_pc, **kwargs)
 
     def graph(self, data_type='expression', **kwargs):
         args = kwargs.copy()
 
-        from IPython.html.widgets import interact, interactive
         from ..submarine import Networker_Viz
-        print kwargs
 
         if data_type == "expression":
             try:
@@ -106,5 +108,62 @@ class Study(object):
             self.splicing_networks.draw_graph(**kwargs)
 
 
+    def interactive_pca(self):
+        from IPython.html.widgets import interact
+
+        #not sure why nested fxns are required for this, but they are... i think...
+        def do_interact(group_id=self._default_group_id, data_type='expression',
+                        featurewise=False, x_pc=1, y_pc=2, show_point_labels=False, list_link = '',
+                        list_name=self._default_list_id):
+
+            #note that this is not consistent with
+            if list_name != "custom" and list_link != "":
+                raise ValueError("set list_name to \"custom\" to use list_link")
+
+            if list_link == '':
+                list_name = None
+            else:
+                list_name = list_link
 
 
+            self.pca(group_id=group_id, data_type=data_type, featurewise=featurewise,
+                      x_pc=x_pc, y_pc=y_pc, show_point_labels=show_point_labels, list_name=list_name)
+
+        interact(do_interact,
+                 data_type=('expression', 'splicing'),
+                 group_id=self._default_group_ids,
+                 list_name = self._default_list_ids + ["custom"],
+                 featurewise=False,
+                 x_pc=(1,10),  y_pc=(1,10),
+                 show_point_labels=False, )
+
+    def interactive_graph(self):
+        from IPython.html.widgets import interact
+
+        #not sure why nested fxns are required for this, but they are... i think...
+        def do_interact(group_id=self._default_group_id, data_type='expression',
+                        featurewise=False, draw_labels=False, degree_cut=1,
+                        cov_std_cut=1.8, n_pcs=5, feature_of_interest="RBFOX2",
+                        list_name=self._default_list_id):
+
+            if data_type == 'expression':
+                assert(list_name in self.expression.lists.keys())
+            if data_type == 'splicing':
+                assert(list_name in self.expression.lists.keys())
+
+            self.graph(list_name=list_name, group_id=group_id, data_type=data_type,
+                       featurewise=featurewise, draw_labels=draw_labels,
+                       degree_cut=degree_cut, cov_std_cut=cov_std_cut, n_pcs = n_pcs,
+                       feature_of_interest=feature_of_interest)
+
+        all_lists = list(set(self.expression.lists.keys() + self.splicing.lists.keys()))
+        interact(do_interact, group_id=self._default_group_ids,
+                data_type=('expression', 'splicing'),
+                list_name=all_lists,
+                featurewise=False,
+                cov_std_cut = (0.1, 3),
+                degree_cut = (0,10),
+                n_pcs=(2,100),
+                draw_labels=False,
+                feature_of_interest="RBFOX2"
+                )

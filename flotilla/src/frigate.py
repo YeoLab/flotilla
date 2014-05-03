@@ -431,7 +431,7 @@ class Networker(object):
     _last_adjacency_accessed = None
     def get_adjacency(self, reduced_space=None, name=None, use_pc_1=True, use_pc_2=True, use_pc_3=True, use_pc_4=True,
                       n_pcs=5,):
-        print "name:", name
+        #print "name:", name
         if reduced_space is None and self._last_adjacency_accessed is None:
             raise AttributeError("this hasn't been called yet")
         if name is None:
@@ -442,12 +442,12 @@ class Networker(object):
         self._last_adjacency_accessed = name
         try:
             if name in self.adjacencies_:
-                print "returning a pre-built adjacency"
+                #print "returning a pre-built adjacency"
                 return self.adjacencies_[name]
             else:
                 raise ValueError("adjacency hasn't been built yet")
         except ValueError:
-            print 'reduced space', reduced_space.shape
+            #print 'reduced space', reduced_space.shape
             total_pcs = reduced_space.shape[1]
             use_pc = np.ones(total_pcs, dtype='bool')
             use_pc[n_pcs:] = False
@@ -458,7 +458,7 @@ class Networker(object):
             nRow, nCol = good_pc_space.shape
             adjacency = pd.DataFrame(np.tril(cov * -(np.identity(nRow) - 1)),
                                      index=good_pc_space.index, columns=reduced_space.index)
-            print 'adjacency space', reduced_space.shape
+            #print 'adjacency space', reduced_space.shape
 
             self.adjacencies_[name] = adjacency
 

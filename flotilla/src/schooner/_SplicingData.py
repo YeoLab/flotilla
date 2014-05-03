@@ -83,7 +83,14 @@ class SplicingData(Data):
 
         event_list = self.lists[list_name]
         #some samples, somefeatures
-        subset = self.psi.ix[self.sample_descriptors[group_id], event_list]
+
+        if group_id.startswith("~"):
+            #print 'not', group_id.lstrip("~")
+            sample_ind = ~pd.Series(self.sample_descriptors[group_id.lstrip("~")], dtype='bool')
+        else:
+            sample_ind = pd.Series(self.sample_descriptors[group_id], dtype='bool')
+
+        subset = self.psi.ix[sample_ind, event_list]
         frequent = pd.Index([i for i,j in (subset.count() > min_cells).iteritems() if j])
         subset = subset[frequent]
         #fill na with mean for each event

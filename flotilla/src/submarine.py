@@ -17,7 +17,7 @@ seaborn.set_style({'axes.axisbelow': True,
                    'axes.grid': False,
                    'axes.labelcolor': '.15',
                    'axes.linewidth': 1.25,
-                   'font.family': 'Helvetica',
+                   'font.family': 'Arial',
                    'grid.color': '.8',
                    'grid.linestyle': '-',
                    'image.cmap': 'Greys',
@@ -115,7 +115,7 @@ class Reduction_viz(object):
         gs_y = 12
 
         if ax is None:
-            fig, ax = pylab.subplots(1,1,figsize=(18,9))
+            fig, ax = pylab.subplots(1,1,figsize=(12,6))
             gs = GridSpec(gs_x,gs_y)
 
         else:
@@ -286,7 +286,9 @@ class Reduction_viz(object):
             ax = pylab.gca()
         ax.plot(np.r_[a,b], 'o')
         ax.set_xticks(np.arange(n_features))
-        _ = ax.set_xticklabels(np.r_[a.index, b.index], rotation=90)
+        labels = np.r_[a.index, b.index]
+        shorten = lambda x: "id too long" if len(x) > 15 else x
+        _ = ax.set_xticklabels(map(shorten, labels), rotation=90)
         ax.set_title("loadings on " + pc)
         x_offset = 0.5
         xmin, xmax = ax.get_xlim()
@@ -394,7 +396,7 @@ from matplotlib.gridspec import GridSpec
 
 import networkx as nx
 from .barge import dict_to_str
-
+import matplotlib.pyplot as plt
 class Networker_Viz(Networker, Reduction_viz):
 
     def __init__(self, data_obj):
@@ -408,14 +410,14 @@ class Networker_Viz(Networker, Reduction_viz):
                    wt_fun = 'abs',
                    featurewise=False, #else feature_components
                    rpkms_not_events=False, #else event features
-                   feature_of_interest='RBFOX2', custom_list='', draw_labels=True,
+                   feature_of_interest='RBFOX2', draw_labels=True,
                    reduction_name=None,
                    list_name=None,
                    group_id=None,
                    graph_file=''):
 
         """
-        genelist_name - name of genelist used in making pcas
+        list_name - name of genelist used in making pcas
         group_id - celltype code
         x_pc - x component for PCA
         y_pc - y component for PCA
@@ -425,9 +427,6 @@ class Networker_Viz(Networker, Reduction_viz):
         degree_cut - miniumum degree for a node to be included in graph display
         wt_fun - weight function (arctan (arctan cov), sq (sq cov), abs (abs cov), arctan_sq (sqared arctan of cov))
         gene_of_interest - map a gradient representing this gene's rpkm onto nodes
-
-
-
         """
 
         node_color_mapper = self._default_node_color_mapper
@@ -446,16 +445,16 @@ class Networker_Viz(Networker, Reduction_viz):
         #del settings['graph_file']
         #del settings['draw_labels']
 
-        f = pylab.figure(figsize=(24,18))
-        gs = GridSpec(3, 4)
-        #ax1 = pylab.subplot(gs[0,0:2])
-        ax2 = pylab.subplot(gs[0,3])
-        ax3 = pylab.subplot(gs[0,2])
-        ax4 = pylab.subplot(gs[1:,:2])
-        ax5 = pylab.subplot(gs[1:,2:])
+        f= plt.figure(figsize=(10,10))
+        #gs = GridSpec(2, 2)
+        plt.axis((-0.2, 1.2, -0.2, 1.2))
+        main_ax = plt.gca()
+        ax_pev = plt.axes([0.1, .8, .2, .15])
+        ax_cov = plt.axes([0.1, 0.1, .2, .15])
+        #ax3 = plt.subplot(gs[2])
+        #ax4 = pylab.subplot(gs[3])
+        #ax2.set_aspect(3)
 
-        if custom_list != '':
-            list_name = custom_list
 
         #import pdb
         #pdb.set_trace()
@@ -464,15 +463,18 @@ class Networker_Viz(Networker, Reduction_viz):
 
         if featurewise:
             node_color_mapper = lambda x: 'r' if x == feature_of_interest else 'k'
-            node_size_mapper = lambda x: (pca.means.ix[x]**2)*100
+            node_size_mapper = lambda x: (pca.means.ix[x]**2)*33
         else:
             node_color_mapper = lambda x: self.data_obj.sample_descriptors.color[x]
-            node_size_mapper = lambda x: 300
+            node_size_mapper = lambda x: 75
 
-        ax3.plot(pca.explained_variance_ratio_ * 100.)
-        ax3.axvline(n_pcs)
-        ax3.set_ylabel("% explained variance")
-        ax3.set_xlabel("component")
+        ax_pev.plot(pca.explained_variance_ratio_ * 100.)
+        ax_pev.axvline(n_pcs)
+        ax_pev.set_ylabel("% explained variance")
+        ax_pev.set_xlabel("component")
+        ax_pev.set_title("Explained variance from dim reduction")
+        seaborn.despine(ax=ax_pev)
+
         adjacency_name = "_".join([dict_to_str(adjacency_settings), pca.obj_id])
         #adjacency_settings['name'] = adjacency_name
 
@@ -488,33 +490,35 @@ class Networker_Viz(Networker, Reduction_viz):
         this_graph_name = "_".join(map(dict_to_str, [pca_settings, adjacency_settings, graph_settings]))
         graph_settings['name'] = this_graph_name
 
-        seaborn.kdeplot(cov_dist, ax=ax2)
-        ax2.axvline(cov_cut)
-
+        seaborn.kdeplot(cov_dist, ax=ax_cov)
+        ax_cov.axvline(cov_cut, label='cutoff')
+        ax_cov.set_title("covariance in dim reduction space")
+        ax_cov.legend()
+        seaborn.despine(ax=ax_cov)
         g, pos = self.get_graph(adjacency, **graph_settings)
 
         nx.draw_networkx_nodes(g, pos, node_color=map(node_color_mapper, g.nodes()),
                                node_size=map(node_size_mapper, g.nodes()),
-                               ax=ax4, alpha=0.5)
-        nx.draw_networkx_nodes(g, pos, node_color=map(node_color_mapper, g.nodes()),
-                               node_size=map(node_size_mapper, g.nodes()),
-                               ax=ax5, alpha=0.5)
+                               ax=main_ax, alpha=0.5)
+        #nx.draw_networkx_nodes(g, pos, node_color=map(node_color_mapper, g.nodes()),
+        #                       node_size=map(node_size_mapper, g.nodes()),
+        #                       ax=ax4, alpha=0.5)
         try:
             nx.draw_networkx_nodes(g, pos, node_color=map(lambda x: pca.X[feature_of_interest].ix[x], g.nodes()),
                                cmap=pylab.cm.Greys,
-                               node_size=map(lambda x: node_size_mapper(x) * .75, g.nodes()), ax=ax5, alpha=1)
+                               node_size=map(lambda x: node_size_mapper(x) * .5, g.nodes()), ax=main_ax, alpha=1)
         except:
             pass
         nmr = lambda x:x
         labels = dict([(nm, nmr(nm)) for nm in g.nodes()])
         if draw_labels:
-            nx.draw_networkx_labels(g, pos, labels = labels, ax=ax4)
+            nx.draw_networkx_labels(g, pos, labels = labels, ax=main_ax)
         #mst = nx.minimum_spanning_tree(g, weight='inv_weight')
-        nx.draw_networkx_edges(g, pos,ax = ax4,alpha=0.1)
-        #nx.draw_networkx_edges(g, pos, edgelist=mst.edges(), edge_color="m", edge_width=200, ax=ax4)
-        ax4.set_axis_off()
-        ax5.set_axis_off()
-        f.tight_layout(pad=5)
+        nx.draw_networkx_edges(g, pos,ax = main_ax,alpha=0.1)
+        #nx.draw_networkx_edges(g, pos, edgelist=mst.edges(), edge_color="m", edge_width=200, ax=main_ax)
+        main_ax.set_axis_off()
+
+        #f.tight_layout(pad=5)
         if graph_file != '':
             try:
                 nx.write_gml(g, graph_file)

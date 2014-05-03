@@ -61,8 +61,12 @@ class ExpressionData(Data):
         reducer_args = self._default_reducer_args.copy()
         reducer_args.update(input_reducer_args)
         reducer_args['title'] = list_name + " : " + group_id
+        naming_fun = self.get_naming_fun()
+
         if list_name not in self.lists:
-            self.lists[list_name] = link_to_list(list_name)
+            this_list = link_to_list(list_name)
+            self.lists[list_name] = pd.Series(map(naming_fun, this_list), index =this_list)
+
 
         gene_list = self.lists[list_name]
         if group_id.startswith("~"):
@@ -83,7 +87,7 @@ class ExpressionData(Data):
             data = StandardScaler().fit_transform(mf_subset)
         else:
             data = mf_subset
-        naming_fun = self.get_naming_fun()
+
         ss = pd.DataFrame(data, index = mf_subset.index,
                           columns = mf_subset.columns).rename_axis(naming_fun, 1)
 

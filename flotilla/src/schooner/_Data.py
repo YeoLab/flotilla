@@ -7,7 +7,7 @@ import pandas as pd
 from collections import defaultdict
 import networkx as nx
 from ..frigate import get_weight_fun
-from ...project.project_params import min_cells, _default_group_id, _default_group_ids
+from ...project.project_params import min_cells, _default_group_id, _default_group_ids, _default_list_id, _default_list_ids
 
 class Data(object):
     """Generic data model for both splicing and expression data
@@ -38,6 +38,7 @@ class Data(object):
         metric : str
             One of any valid scipy.distance metric strings
         """
+        raise NotImplementedError
         self.pdist = squareform(pdist(self.binned, metric=metric))
         return self
 
@@ -58,20 +59,6 @@ class Data(object):
         """
         raise NotImplementedError
 
-
-#    def reduce(self, data, reducer=PCA, n_components=2):
-#        """Reduces dimensionality of data, by default using PCA
-#
-#        Q: each scatter point in PCA an event or a cell?
-#        """
-#        self.reducer = reducer(n_components=n_components).fit(data)
-#        reduced_data = self.reducer.transform(data)
-#        if hasattr(self.reducer, 'explained_variance_ratio_'):
-#            self.plot_explained_variance(self.reducer,
-#                                         '{} on binned data'.format(
-#                                             self.reducer))
-#        return reduced_data
-    #n_components = 6
     def _echo(self, x):
         return x
 
@@ -89,7 +76,7 @@ class Data(object):
 
 
     _default_reducer_args = {'whiten':False, 'show_point_labels':False, }
-    _default_list = 'variant'
+    _default_list = _default_list_id
     _default_featurewise=False
     samplewise_reduction = {}
     featurewise_reduction = {}
@@ -101,12 +88,12 @@ class Data(object):
     #    interactive(self.auto_dim_reduction_plot, x_pc=(1,10), y_pc=(1,10), featurewise=False,
     #                group_id=_default_group_ids, list_name=self.lists.keys())
 
-    def plot_last_dim_reduction_plot(self, x_pc=1, y_pc=2):
-        """plot_dimensionality_reduction with some params hidden"""
-        self.plot_dimensionality_reduction(x_pc, y_pc)
+#    def plot_last_dim_reduction_plot(self, x_pc=1, y_pc=2):
+#        """plot_dimensionality_reduction with some params hidden"""
+#        self.plot_dimensionality_reduction(x_pc, y_pc)
 
     def plot_dimensionality_reduction(self, x_pc=1, y_pc=2, obj_id=None, group_id=None,
-                                      list_name=None, featurewise=None):
+                                      list_name=None, featurewise=None, **plotting_args):
 
         """Principal component-like analysis of measurements
 
@@ -114,16 +101,16 @@ class Data(object):
         -------
         self
         """
-
+        local_plotting_args = self.pca_plotting_args.copy()
+        local_plotting_args.update(plotting_args)
         pca = self.get_reduced(obj_id, list_name, group_id, featurewise=featurewise)
-        pca(show_point_labels=False,
-            markers_size_dict=lambda x: 400,
+        pca(markers_size_dict=lambda x: 400,
             show_vectors=False,
             title_size=10,
             axis_label_size=10,
             x_pc = "pc_" + str(x_pc),#this only affects the plot, not the data.
             y_pc = "pc_" + str(y_pc),#this only affects the plot, not the data.
-            **self.pca_plotting_args
+            **local_plotting_args
             )
         return self
 
