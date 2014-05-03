@@ -1,5 +1,7 @@
 from __future__ import division
 
+""" interface with external data sources i.e. GO files, web"""
+
 __author__ = 'lovci, yan_song, '
 import gzip
 import pandas as pd
@@ -9,13 +11,8 @@ from collections import defaultdict
 import gzip
 import numpy as np
 
-from flotilla_params import flotilla_data
 import os, subprocess, sys
 
-
-mm9GOFile = os.path.join(flotilla_data, "mm9.ENSG_to_GO.txt.gz")
-hg19GOFile = os.path.join(flotilla_data, "hg19.ENSG_to_GO.txt.gz")
-ce10GOFile = os.path.join(flotilla_data, "ce10.ENSG_to_GO.txt.gz")
 
 def generateOntology(df):
     from collections import defaultdict
@@ -130,22 +127,7 @@ class GO(object):
         list = link_to_list(list_link)
         pd.DataFrame(map(self.geneNames, list), index=list)
 
-
-class hg19GO(GO):
-    def __init__(self):
-        super(hg19GO, self).__init__(hg19GOFile)
-
-
-class mm9GO(GO):
-    def __init__(self):
-        super(mm9GO, self).__init__(mm9GOFile)
-
-
-class ce10GO(GO):
-    def __init__(self):
-        super(ce10GO, self).__init__(ce10GOFile)
-
-
+#TODO: move these to Cargo
 #from yan(gene symbols) -> mouse gene id
 neuro_genes_mouse = """ENSMUSG00000020932
 ENSMUSG00000030310

@@ -1,62 +1,53 @@
-from _Data import Data
-import scipy
-from scipy import sparse
 import pandas as pd
-from collections import defaultdict
-
 import seaborn
 from sklearn.preprocessing import StandardScaler
 
-from flotilla.src.submarine import PCA_viz
+from _Data import Data
+from .._Submaraine_viz import PCA_viz
+from .._Frigate_compute import dropna_mean
+from .._Skiff_external_sources import link_to_list
 
-from ..frigate import dropna_mean
-from ..skiff import link_to_list
-from ...project.project_params import min_cells, _default_group_id, _default_group_ids
 
 seaborn.set_context('paper')
 
 
 class ExpressionData(Data):
     _default_reducer_args = Data._default_reducer_args
-    _default_group_id = _default_group_id
-    _default_group_ids = _default_group_ids
+
     samplewise_reduction = {}
     featurewise_reduction = {}
     lists = {}
     var_cut=0.5
     expr_cut=0.1
-    def __init__(self, rpkm, sample_descriptors,
+    #=study.expression,
+    #                                         sample_descriptors= study.sample_info,
+    #                                         gene_descriptors=study.expression_info,
+    def __init__(self, expression_df, sample_descriptors,
                  gene_descriptors = None,
                  var_cut=var_cut, expr_cut=expr_cut, load_cargo=True, rename=True,
-    ):
-
-        self.rpkm = rpkm
-        self.sparse_rpkm = rpkm[rpkm > expr_cut]
-        rpkm_variant = pd.Index([i for i, j in (rpkm.var().dropna() > var_cut).iteritems() if j])
-        self.lists['variant'] = pd.Series(rpkm_variant, index=rpkm_variant)
-
-
+                 ):
         self.sample_descriptors = sample_descriptors
         self.gene_descriptors = gene_descriptors
-        if load_cargo:
-            from ..cargo import gene_lists, go
-            self.lists.update(gene_lists)
-            self._default_list = 'confident_rbps'
-            if rename:
-                self.set_naming_fun(lambda x: go.geneNames(x))
+        self.expression_df = expression_df
+        self.sparse_df = expression_df[expression_df > expr_cut]
+        rpkm_variant = pd.Index([i for i, j in (expression_df.var().dropna() > var_cut).iteritems() if j])
+        self.lists['variant'] = pd.Series(rpkm_variant, index=rpkm_variant)
+
         naming_fun = self.get_naming_fun()
-        self.lists.update({'all_genes':pd.Series(map(naming_fun, self.rpkm.columns),
-                                                           index = self.rpkm.columns)})
+        self.lists.update({'all_genes':pd.Series(map(naming_fun, self.expression_df.columns),
+                                                           index = self.expression_df.columns)})
         self._default_reducer_args.update({'colors_dict':self.sample_descriptors.color})
         self._default_reducer_args.update({'markers_dict':self.sample_descriptors.marker})
         self._default_reducer_args.update({'show_vectors':False})
 
+
     def make_reduced(self, list_name, group_id, featurewise=False,
-                    min_cells=min_cells,
                     reducer=PCA_viz,
                     standardize=True,
                     **reducer_args):
+        """make and cache a reduced dimensionality representation of data """
 
+        min_samples=self.get_min_samples()
         input_reducer_args = reducer_args.copy()
         reducer_args = self._default_reducer_args.copy()
         reducer_args.update(input_reducer_args)
@@ -75,8 +66,8 @@ class ExpressionData(Data):
         else:
             sample_ind = pd.Series(self.sample_descriptors[group_id], dtype='bool')
         sample_ind = sample_ind[sample_ind].index
-        subset = self.sparse_rpkm.ix[sample_ind, gene_list.index]
-        frequent = pd.Index([i for i, j in (subset.count() > min_cells).iteritems() if j])
+        subset = self.sparse_df.ix[sample_ind, gene_list.index]
+        frequent = pd.Index([i for i, j in (subset.count() > min_samples).iteritems() if j])
         subset = subset[frequent]
         #fill na with mean for each event
         means = subset.apply(dropna_mean, axis=0)

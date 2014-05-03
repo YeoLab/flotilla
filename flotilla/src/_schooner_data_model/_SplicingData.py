@@ -1,19 +1,14 @@
-import numpy as np
-from collections import defaultdict
-
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
 
 from _Data import Data
-from ..submarine import NMF_viz, PCA_viz
-from ..frigate import binify, dropna_mean
-import pandas as pd
-from ...project.project_params import min_cells, _default_group_id, _default_group_ids
-from sklearn.preprocessing import StandardScaler
-from ..skiff import link_to_list
+from .._Submaraine_viz import NMF_viz, PCA_viz
+from .._Frigate_compute import binify, dropna_mean
+from .._Skiff_external_sources import link_to_list
+
 
 class SplicingData(Data):
     _default_reducer_args = Data._default_reducer_args
-    _default_group_id = _default_group_id
-    _default_group_ids = _default_group_ids
     binned_reducer = None
     raw_reducer = None
     binsize=0.1,
@@ -24,11 +19,11 @@ class SplicingData(Data):
     samplewise_reduction = {}
     featurewise_reduction = {}
 
-    def __init__(self, psi, sample_descriptors,
+    def __init__(self, splicing, sample_descriptors,
                  event_descriptors, binsize = binsize,
                  var_cut = var_cut
                  ):
-        """Instantiate a object for data scores with binned and reduced data
+        """Instantiate a object for study_data scores with binned and reduced study_data
 
         Parameters
         ----------
@@ -37,16 +32,16 @@ class SplicingData(Data):
         n_components : int
             Number of components to use in the reducer
         binsize : float
-            Value between 0 and 1, the bin size for binning the data scores
+            Value between 0 and 1, the bin size for binning the study_data scores
         reducer : sklearn.decomposition object
-            An scikit-learn class that reduces the dimensionality of data
+            An scikit-learn class that reduces the dimensionality of study_data
             somehow. Must accept the parameter n_components, have the
             functions fit, transform, and have the attribute components_
 
         """
-        self.psi = psi
+        self.psi = splicing
         self.binsize = binsize
-        psi_variant = pd.Index([i for i,j in (psi.var().dropna() > var_cut).iteritems() if j])
+        psi_variant = pd.Index([i for i,j in (splicing.var().dropna() > var_cut).iteritems() if j])
 
         self.lists['variant'] = pd.Series(psi_variant, index=psi_variant)
         self.sample_descriptors = sample_descriptors
@@ -75,7 +70,7 @@ class SplicingData(Data):
 
     def make_reduced(self, list_name, group_id,  min_cells=min_cells, reducer=PCA_viz,
                     featurewise=False, reducer_args=_default_reducer_args):
-
+        """make and cache a reduced dimensionality representation of data """
 
 
         if list_name not in self.lists:

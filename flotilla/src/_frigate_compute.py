@@ -4,7 +4,7 @@ __author__ = 'lovci, obot'
 
 """
 
-metrics, math for data analysis
+metrics, math for study_data analysis
 
 
 """
@@ -20,7 +20,7 @@ import numpy as np
 import pandas as pd
 from sklearn.ensemble import ExtraTreesRegressor, GradientBoostingRegressor
 from scipy import stats
-from barge import timeout, TimeoutError
+from _Barge_utils import timeout, TimeoutError
 from collections import defaultdict
 import networkx as nx
 
@@ -56,8 +56,8 @@ def switchy_score(array):
     Returns
     -------
     float
-        The "switchy score" of the data which can then be compared to other
-        splicing event data
+        The "switchy score" of the study_data which can then be compared to other
+        splicing event study_data
 
     @author Michael T. Lovci
     """
@@ -360,7 +360,7 @@ class Pretty_Reducer(object):
         try:
             assert type(X) == pd.DataFrame
         except:
-            print "Try again as a pandas data frame"
+            print "Try again as a pandas study_data frame"
             raise
 
         self.X = X
@@ -383,7 +383,7 @@ class Pretty_Reducer(object):
         try:
             assert type(X) == pd.DataFrame
         except:
-            print "Try again as a pandas data frame"
+            print "Try again as a pandas study_data frame"
             raise
         self.fit(X)
         return self.transform(X)
@@ -407,7 +407,7 @@ class NMF(Pretty_Reducer, sklearn.decomposition.NMF):
         try:
             assert type(X) == pd.DataFrame
         except:
-            print "Try again as a pandas data frame"
+            print "Try again as a pandas study_data frame"
             raise
 
         self.X = X

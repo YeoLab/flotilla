@@ -1,16 +1,9 @@
-import matplotlib.pyplot as plt
-import numpy as np
 from scipy.spatial.distance import pdist, squareform
 from sklearn.decomposition import PCA
-import seaborn as sns
-import pandas as pd
-from collections import defaultdict
-import networkx as nx
-from ..frigate import get_weight_fun
-from ...project.project_params import min_cells, _default_group_id, _default_group_ids, _default_list_id, _default_list_ids
+
 
 class Data(object):
-    """Generic data model for both splicing and expression data
+    """Generic study_data model for both splicing and expression study_data
 
     Attributes
     ----------
@@ -20,6 +13,8 @@ class Data(object):
     -------
 
     """
+    _default_group_id = '~outlier'
+    _default_list_id = 'variant'
 
     def __init__(self, data, n_components, step=0.1, reducer=PCA):
         """Constructor for Data
@@ -76,7 +71,7 @@ class Data(object):
 
 
     _default_reducer_args = {'whiten':False, 'show_point_labels':False, }
-    _default_list = _default_list_id
+    #_default_list = _default_list_id
     _default_featurewise=False
     samplewise_reduction = {}
     featurewise_reduction = {}
@@ -108,8 +103,8 @@ class Data(object):
             show_vectors=False,
             title_size=10,
             axis_label_size=10,
-            x_pc = "pc_" + str(x_pc),#this only affects the plot, not the data.
-            y_pc = "pc_" + str(y_pc),#this only affects the plot, not the data.
+            x_pc = "pc_" + str(x_pc),#this only affects the plot, not the study_data.
+            y_pc = "pc_" + str(y_pc),#this only affects the plot, not the study_data.
             **local_plotting_args
             )
         return self
@@ -118,12 +113,12 @@ class Data(object):
     def get_reduced(self, obj_id=None, list_name=None, group_id=None, featurewise=None, **reducer_args):
         _used_default_group = False
         if group_id is None:
-            group_id = _default_group_id
+            group_id = self._default_group_id
             _used_default_group = True
 
         _used_default_list = False
         if list_name is None:
-            list_name = self._default_list
+            list_name = self._default_list_id
             _used_default_list = True
 
         _used_default_featurewise = False
@@ -155,3 +150,16 @@ class Data(object):
             rdc_dict[obj_id] = rdc_obj
 
         return rdc_dict[obj_id]
+
+
+    def get_min_samples(self):
+        if hasattr(self, 'samples'):
+            return self.samples
+        else:
+            return 12
+        return self
+
+    def set_min_samples(self, min_samples):
+
+        self.min_samples = min_samples
+        return self

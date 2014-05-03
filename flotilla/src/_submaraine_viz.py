@@ -9,7 +9,7 @@ import numpy as np
 from numpy.linalg import norm
 import pandas as pd
 import seaborn
-from ..project.project_params import _default_group_id
+# from ..neural_diff_project.project_params import _default_group_id
 
 seaborn.set_style({'axes.axisbelow': True,
                    'axes.edgecolor': '.15',
@@ -39,7 +39,7 @@ seaborn.set_palette('deep')
 
 import pylab
 
-from flotilla.src.frigate import PCA, NMF
+from ._Frigate_compute import PCA, NMF
 
 def L1_distance(x,y):
     return abs(y) + abs(x)
@@ -77,7 +77,7 @@ class Reduction_viz(object):
         @param show_vector_labels: Boolean. Can be helpful if the vector labels
         are gene names.
         @param scale_by_variance: Boolean. Scale vector components by explained variance
-        @return: x, y, marker, distance of each vector in the data.
+        @return: x, y, marker, distance of each vector in the study_data.
         """
 
     _default_plotting_args = {'ax':None, 'x_pc':'pc_1', 'y_pc':'pc_2',
@@ -354,8 +354,9 @@ def lavalamp(psi, color=None, title='', ax=None):
     fig : matplotlib.Figure
         A figure object for saving.
     """
+    from ._Frigate_compute import get_switchy_score_order
     import matplotlib.pyplot as plt
-    from .frigate import get_switchy_score_order
+
 
     if ax is None:
         fig, ax = plt.subplots(figsize=(16,4))
@@ -391,13 +392,14 @@ def lavalamp(psi, color=None, title='', ax=None):
     # Return the figure for saving
     # return fig
 
-from .frigate import Networker
+from _Frigate_compute import Networker
 from matplotlib.gridspec import GridSpec
 
 import networkx as nx
-from .barge import dict_to_str
+from ._Barge_utils import dict_to_str
 import matplotlib.pyplot as plt
-class Networker_Viz(Networker, Reduction_viz):
+
+class NetworkerViz(Networker, Reduction_viz):
 
     def __init__(self, data_obj):
         self.data_obj = data_obj
@@ -426,7 +428,7 @@ class Networker_Viz(Networker, Reduction_viz):
         pc{1-4} use these pcs in cov calculation (default True)
         degree_cut - miniumum degree for a node to be included in graph display
         wt_fun - weight function (arctan (arctan cov), sq (sq cov), abs (abs cov), arctan_sq (sqared arctan of cov))
-        gene_of_interest - map a gradient representing this gene's rpkm onto nodes
+        gene_of_interest - map a gradient representing this gene's df onto nodes
         """
 
         node_color_mapper = self._default_node_color_mapper

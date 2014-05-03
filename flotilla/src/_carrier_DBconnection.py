@@ -7,20 +7,14 @@ handles database connection, performs operations as a slave if run as a script.
 """
 
 
-
-# -*- coding: utf-8 -*-
-# <nbformat>3.0</nbformat>
-
-# <codecell>
-
 #!grep def slave.py
-from frigate import *
-from cargo import *
-from ..project.project_params import letters, min_cells, mongoHost, mongoPort
-from ..project.loaders import load_transcriptome_data
 import random
 
-# <codecell>
+from ._Frigate_compute import *
+from ._cargo_commonObjects import *
+from ..flotilla.neural_diff_project.src.project_params import letters, min_cells, mongoHost, mongoPort
+from ..neural_diff_project.loaders import load_transcriptome_data
+
 
 def fill_database(mongodb, predictor, target, verbose=False):
     """
@@ -143,7 +137,7 @@ def fill_database(mongodb, predictor, target, verbose=False):
 
     sys.stderr.write("database is full, checked %d events\n" % (event_i+1))
 
-import subprocess
+
 def get_mongo_db(db, mongoHost=mongoHost, mongoPort=mongoPort):
     from pymongo import MongoClient
     #ssh = subprocess.Popen(["ssh", "-L", ("%s:localhost:%s" %(mongoPort, mongoPort)), mongoHost, "-N"])
@@ -202,7 +196,7 @@ def begin(db = 'events'):
     rbpRpkms = rpkms.ix[pd.Series(rbps.index).dropna()].fillna(0)
 
     mongo_con, mongodb = get_mongo_db(db)
-    sys.stderr.write("finished loading raw data\n")
+    sys.stderr.write("finished loading raw study_data\n")
     return (SEpsis, rbpRpkms, mongodb)
 
 

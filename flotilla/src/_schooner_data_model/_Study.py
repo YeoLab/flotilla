@@ -1,9 +1,13 @@
-# from singlesail import parsers
-from _ExpressionData import ExpressionData
-from _SplicingData import SplicingData
-from ...project.project_params import min_cells, _default_group_id, _default_group_ids, _default_list_id, _default_list_ids
+"""
+Data models for "studies" studies include attributes about the data and are heavier in terms of data load
+"""
 
-class Study(object):
+
+from .._Submaraine_viz import NetworkerViz
+from .._cargo_commonObjects import Cargo
+
+
+class Study(Cargo):
     """
 
     Attributes
@@ -15,17 +19,19 @@ class Study(object):
 
     """
 
-    def __init__(self, sample_info, expression_df=None,
-                 splicing_df=None, mapping_stats_df=None, editing_df=None,
-                 event_descriptors=None):
+    _default_x_pc = 1
+    _default_y_pc = 2
+
+    def __init__(self, study):
         """Constructor for Study object containing gene expression and
-        alternative splicing data.
+        alternative splicing study_data.
 
         Parameters
         ----------
         sample_info_filename, expression_df, splicing_df
 
         Returns
+
         -------
 
 
@@ -33,25 +39,17 @@ class Study(object):
         ------
 
         """
-        # self._sample_info_filename = sample_info_filename
-        # self._expression_matrix_filename = expression_df
-        # self._splicing_info_filename = splicing_df
-        self.mapping_stats = mapping_stats_df
+        self.study = study
 
-        self.sample_info = sample_info #parsers.read_sample_info(
-        # sample_info_filename)
-        self.expression = ExpressionData(expression_df, sample_info)
+        self.sample_info = study.sample_info
 
-        self.splicing = SplicingData(splicing_df, sample_info, event_descriptors)
-        self._default_group_ids = _default_group_ids
-        self._default_group_id = _default_group_id
-        self._default_list_ids = _default_list_ids
-        self._default_list_id = _default_list_id
-        self._default_x_pc = 1
-        self._default_y_pc = 1
+        self.expression = ExpressionStudy(study)
+
+        self.splicing = SplicingStudy(study)
+
 
     def detect_outliers(self):
-        """Detects outlier cells from expression, mapping, and splicing data and labels the outliers as such for future analysis.
+        """Detects outlier cells from expression, mapping, and splicing study_data and labels the outliers as such for future analysis.
 
         Parameters
         ----------
@@ -68,7 +66,7 @@ class Study(object):
         raise NotImplementedError
 
     def jsd(self):
-        """Performs Jensen-Shannon Divergence on both splicing and expression data
+        """Performs Jensen-Shannon Divergence on both splicing and expression study_data
 
         Jensen-Shannon divergence is a method of quantifying the amount of
         change in distribution of one measurement (e.g. a splicing event or a
@@ -79,7 +77,7 @@ class Study(object):
 
     def pca(self, data_type='expression', x_pc=1, y_pc=2, **kwargs):
 
-        """Performs PCA on both expression and splicing data
+        """Performs PCA on both expression and splicing study_data
         """
         if data_type == "expression":
             self.expression.plot_dimensionality_reduction(x_pc=x_pc, y_pc=y_pc, **kwargs)
@@ -89,13 +87,11 @@ class Study(object):
     def graph(self, data_type='expression', **kwargs):
         args = kwargs.copy()
 
-        from ..submarine import Networker_Viz
-
         if data_type == "expression":
             try:
                 assert hasattr(self, 'expression_networks')
             except:
-                self.expression_networks = Networker_Viz(self.expression)
+                self.expression_networks = NetworkerViz(self.expression)
 
             self.expression_networks.draw_graph(**kwargs)
 
@@ -103,7 +99,7 @@ class Study(object):
             try:
                 assert hasattr(self, 'splicing_networks')
             except:
-                self.splicing_networks = Networker_Viz(self.splicing)
+                self.splicing_networks = NetworkerViz(self.splicing)
 
             self.splicing_networks.draw_graph(**kwargs)
 
@@ -167,3 +163,59 @@ class Study(object):
                 draw_labels=False,
                 feature_of_interest="RBFOX2"
                 )
+
+import ExpressionData
+import SplicingData
+cargo = Cargo()
+
+class SubStudy(object):
+    def __init__(self, study):
+        self.study=study
+        self._default_group_id = study._default_group_id
+        self._default_group_ids = study._default_group_ids
+        self._default_list_id = study._default_list_id
+        self._default_list_ids = study._default_list_ids
+        study
+
+
+class ExpressionStudy(SubStudy, ExpressionData):
+
+    def __init__(self, study, load_cargo=False, **kwargs):
+        assert hasattr(study, 'expression')
+        assert hasattr(study, 'sample_info')
+        assert hasattr(study, 'expression_info')
+
+        super(SubStudy, self).__init__(study)
+        super(ExpressionData, self).__init__(expression_df=study.expression,
+                                             sample_descriptors= study.sample_info,
+                                             gene_descriptors=study.expression_info,
+                                             **kwargs)
+
+
+
+    def load_cargo(self, species, rename=True, **kwargs):
+        try:
+            self.cargo = cargo.get_species_cargo(self.species)
+            self.go = self.cargo.go[species]
+            self.lists.update(self.cargo.gene_lists)
+            self._default_list = self.study._default_gene_list
+
+            if rename:
+                self.set_naming_fun(lambda x: self.go.geneNames(x))
+        except:
+            raise RuntimeError("cargo load failed")
+
+class SplicingStudy(SplicingData):
+
+
+    def __init__(self, study, load_cargo=False, **kwargs):
+
+        assert hasattr(study, 'splicing')
+        assert hasattr(study, 'sample_info')
+        assert hasattr(study, 'splicing_info')
+
+        super(SubStudy, self).__init__(study)
+        super(SplicingData, self).__init__(splicing=study.splicing,
+                                           sample_descriptors=study.sample_info,
+                                           event_descriptors=study.splicing_info,
+                                             **kwargs)
