@@ -3,7 +3,7 @@ Data models for "studies" studies include attributes about the data and are heav
 """
 
 
-from .._Submaraine_viz import NetworkerViz
+from .._submaraine_viz import NetworkerViz
 from .._cargo_commonObjects import Cargo
 
 

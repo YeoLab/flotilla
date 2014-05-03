@@ -20,7 +20,7 @@ import numpy as np
 import pandas as pd
 from sklearn.ensemble import ExtraTreesRegressor, GradientBoostingRegressor
 from scipy import stats
-from _Barge_utils import timeout, TimeoutError
+from _barge_utils import timeout, TimeoutError
 from collections import defaultdict
 import networkx as nx
 
