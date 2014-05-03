@@ -92,7 +92,6 @@ class Cargo(object):
         self.gene_lists = dict([('confident_rbps', confident_rbps),
                            ('rbps', rbps),
                            ('splicing_genes', splicing_genes),
-                           ('marker_genes', pd.Series(map(go.geneNames, data_path, species), index = data_path, species)),
                            ('tfs', tfs)
         ])
 

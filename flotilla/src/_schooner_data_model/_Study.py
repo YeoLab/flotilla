@@ -178,7 +178,7 @@ class SubStudy(object):
 
 
 
-class ExpressionStudy(ExpressionData, SubStudy, ):
+class ExpressionStudy(ExpressionData ):
 
     def __init__(self, study, load_cargo=False, **kwargs):
         assert hasattr(study, 'expression')
