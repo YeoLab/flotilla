@@ -3,7 +3,6 @@ from setuptools import find_packages
 
 setup(
     name='flotilla',
-    version='',
     packages=find_packages(),
     url='',
     license='',
