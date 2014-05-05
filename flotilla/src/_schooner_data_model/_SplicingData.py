@@ -39,7 +39,7 @@ class SplicingData(Data):
             functions fit, transform, and have the attribute components_
 
         """
-        self.psi = splicing
+        self.splicing_df = splicing
         self.binsize = binsize
         psi_variant = pd.Index([i for i,j in (splicing.var().dropna() > var_cut).iteritems() if j])
 
@@ -56,7 +56,7 @@ class SplicingData(Data):
             assert self._binsize == self.binsize #binsize hasn't changed
         except:
             #only bin once, until binsize is updated
-            self.binned = binify(self.psi, binsize=self.binsize)
+            self.binned = binify(self.splicing_df, binsize=self.binsize)
             self._binsize = self.binsize
         return self.binned
 
@@ -85,7 +85,7 @@ class SplicingData(Data):
         else:
             sample_ind = pd.Series(self.sample_descriptors[group_id], dtype='bool')
 
-        subset = self.psi.ix[sample_ind, event_list]
+        subset = self.splicing_df.ix[sample_ind, event_list]
         frequent = pd.Index([i for i,j in (subset.count() > min_samples).iteritems() if j])
         subset = subset[frequent]
         #fill na with mean for each event

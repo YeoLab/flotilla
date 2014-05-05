@@ -47,6 +47,12 @@ class Study(Cargo):
 
         self.splicing = SplicingStudy(study)
 
+        self.default_group_id = study.default_group_id
+        self.default_group_ids = study.default_group_ids
+
+        self.default_list_id = study.default_list_id
+        self.default_list_ids = study.default_list_ids
+
 
     def detect_outliers(self):
         """Detects outlier cells from expression, mapping, and splicing study_data and labels the outliers as such for future analysis.
@@ -108,27 +114,27 @@ class Study(Cargo):
         from IPython.html.widgets import interact
 
         #not sure why nested fxns are required for this, but they are... i think...
-        def do_interact(group_id=self._default_group_id, data_type='expression',
+        def do_interact(group_id=self.default_group_id, data_type='expression',
                         featurewise=False, x_pc=1, y_pc=2, show_point_labels=False, list_link = '',
-                        list_name=self._default_list_id):
+                        list_name=self.default_list_id):
 
-            #note that this is not consistent with
             if list_name != "custom" and list_link != "":
                 raise ValueError("set list_name to \"custom\" to use list_link")
 
-            if list_link == '':
-                list_name = None
-            else:
+            if list_name == "custom" and list_link == "":
+                raise ValueError("use a custom list name please")
+
+            if list_name == 'custom':
                 list_name = list_link
 
-
+            print list_name
             self.pca(group_id=group_id, data_type=data_type, featurewise=featurewise,
                       x_pc=x_pc, y_pc=y_pc, show_point_labels=show_point_labels, list_name=list_name)
 
         interact(do_interact,
                  data_type=('expression', 'splicing'),
-                 group_id=self._default_group_ids,
-                 list_name = self._default_list_ids + ["custom"],
+                 group_id=self.default_group_ids,
+                 list_name = self.default_list_ids + ["custom"],
                  featurewise=False,
                  x_pc=(1,10),  y_pc=(1,10),
                  show_point_labels=False, )
@@ -137,11 +143,10 @@ class Study(Cargo):
         from IPython.html.widgets import interact
 
         #not sure why nested fxns are required for this, but they are... i think...
-        def do_interact(group_id=self._default_group_id, data_type='expression',
+        def do_interact(group_id=self.default_group_id, data_type='expression',
                         featurewise=False, draw_labels=False, degree_cut=1,
                         cov_std_cut=1.8, n_pcs=5, feature_of_interest="RBFOX2",
-                        list_name=self._default_list_id):
-
+                        list_name=self.default_list_id):
             if data_type == 'expression':
                 assert(list_name in self.expression.lists.keys())
             if data_type == 'splicing':
@@ -153,7 +158,7 @@ class Study(Cargo):
                        feature_of_interest=feature_of_interest)
 
         all_lists = list(set(self.expression.lists.keys() + self.splicing.lists.keys()))
-        interact(do_interact, group_id=self._default_group_ids,
+        interact(do_interact, group_id=self.default_group_ids,
                 data_type=('expression', 'splicing'),
                 list_name=all_lists,
                 featurewise=False,
@@ -168,43 +173,42 @@ from _ExpressionData import ExpressionData
 from _SplicingData import SplicingData
 cargo = Cargo()
 
-class SubStudy(object):
-    def __init__(self, study):
-        self.study=study
-        self._default_group_id = study._default_group_id
-        self._default_group_ids = study._default_group_ids
-        self._default_list_id = study._default_list_id
-        self._default_list_ids = study._default_list_ids
 
+class ExpressionStudy(ExpressionData):
 
-
-class ExpressionStudy(ExpressionData, SubStudy):
-
-    def __init__(self, study, load_cargo=False, **kwargs):
+    def __init__(self, study, load_cargo=True, **kwargs):
 
         assert hasattr(study, 'expression')
         assert hasattr(study, 'sample_info')
         assert hasattr(study, 'expression_info')
 
-        super(SubStudy, self).__init__(study)
-        super(ExpressionData, self).__init__(expression_df=study.expression,
+        super(ExpressionStudy, self).__init__(expression_df=study.expression,
                                              sample_descriptors= study.sample_info,
                                              gene_descriptors=study.expression_info,
                                              **kwargs)
+        self.default_group_id = study.default_group_id
+        self.default_group_ids = study.default_group_ids
+        self.default_list_id = study.default_gene_list
+        self.species = study.species
+        if load_cargo:
+            self.load_cargo()
+            self.default_list_id = study.default_gene_list
+            study.default_list_ids.extend(self.lists.keys())
 
-    def load_cargo(self, species, rename=True, **kwargs):
+
+    def load_cargo(self, rename=True, **kwargs):
         try:
+            species = self.species
             self.cargo = cargo.get_species_cargo(self.species)
-            self.go = self.cargo.go[species]
+            self.go = self.cargo.get_go(species)
             self.lists.update(self.cargo.gene_lists)
-            self._default_list = self.study._default_gene_list
 
             if rename:
                 self.set_naming_fun(lambda x: self.go.geneNames(x))
         except:
-            raise RuntimeError("cargo load failed")
+            raise
 
-class SplicingStudy(SplicingData, SubStudy):
+class SplicingStudy(SplicingData):
 
     def __init__(self, study, load_cargo=False, **kwargs):
 
@@ -212,8 +216,14 @@ class SplicingStudy(SplicingData, SubStudy):
         assert hasattr(study, 'sample_info')
         assert hasattr(study, 'splicing_info')
 
-        super(SubStudy, self).__init__(study)
-        super(SplicingData, self).__init__(splicing=study.splicing,
+        super(SplicingStudy, self).__init__(splicing=study.splicing,
                                            sample_descriptors=study.sample_info,
                                            event_descriptors=study.splicing_info,
                                              **kwargs)
+        self.default_group_id = study.default_group_id
+        self.default_group_ids = study.default_group_ids
+        self.default_list_id = study.default_event_list
+        self.species = study.species
+
+    def load_cargo(self):
+        raise NotImplementedError

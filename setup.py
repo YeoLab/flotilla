@@ -33,5 +33,5 @@ setup(
                       'networkx',
                       #'dcor_cpy' #needs to be built with extutils
     ],
-
+    version = "0.0.1"
 )

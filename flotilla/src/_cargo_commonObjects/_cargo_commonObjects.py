@@ -34,8 +34,8 @@ class Cargo(object):
         except AssertionError:
             raise NotImplementedError("what is this %s you speak of?" % species)
 
-        if species in self.cargo.keys():
-            return self.cargo[species]
+        if species in self.go.keys():
+            return self.go[species]
         else:
             GOFile = os.path.join(data_path, species, go_file_name)
             sys.stderr.write("importing GO...")
@@ -51,14 +51,14 @@ class Cargo(object):
             raise NotImplementedError("only hg19 is allowed at this point")
 
         try:
-            rbps = pd.read_pickle(os.path.join(data_path, species, "rbps.df"))
-            confident_rbps = pd.read_pickle(os.path.join(data_path, species, "confident_rpbs.df"))
-            splicing_genes = pd.read_pickle(os.path.join(data_path, species, "splicing_genes.df"))
-            tfs = pd.read_pickle(os.path.join(data_path, species, "tfs.df"))
+            rbps = pd.read_pickle(os.path.join(data_path, species, "gene_lists", "rbps.df"))
+            confident_rbps = pd.read_pickle(os.path.join(data_path, species, "gene_lists", "confident_rpbs.df"))
+            splicing_genes = pd.read_pickle(os.path.join(data_path, species, "gene_lists", "splicing_genes.df"))
+            tfs = pd.read_pickle(os.path.join(data_path, species, "gene_lists", "tfs.df"))
 
 
         except:
-
+            raise
             sys.stderr.write("rebuilding gene list objects from text and databases...\n")
 
             rbps_file = os.path.join(data_path, "rbps_list")
