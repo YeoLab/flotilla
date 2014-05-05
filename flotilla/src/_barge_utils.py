@@ -10,9 +10,12 @@ from functools import wraps
 import errno
 import os
 import signal
-import sys,subprocess
+import sys
+import subprocess
 
 ###http://stackoverflow.com/questions/2281850/timeout-function-if-it-takes-too-long-to-finish###
+
+
 class TimeoutError(Exception):
     pass
 
@@ -56,7 +59,7 @@ def serve_ipython():
 
 def dict_to_str(dic):
         """join dictionary study_data into a string with that study_data"""
-        return "_".join([k+ ":" + str(v) for (k,v) in dic.items()])
+        return "_".join([k + ":" + str(v) for (k, v) in dic.items()])
 
 
 def path_to_this_file():
