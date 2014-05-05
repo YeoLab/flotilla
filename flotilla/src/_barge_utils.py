@@ -6,17 +6,16 @@ general utilities
 
 """
 
-###http://stackoverflow.com/questions/2281850/timeout-function-if-it-takes-too-long-to-finish###
 from functools import wraps
 import errno
 import os
 import signal
-import os,sys,subprocess
-from subprocess import PIPE
-# from ..neural_diff_project.notebook import notebook_dir
+import sys,subprocess
 
+###http://stackoverflow.com/questions/2281850/timeout-function-if-it-takes-too-long-to-finish###
 class TimeoutError(Exception):
     pass
+
 
 def timeout(seconds=10, error_message=os.strerror(errno.ETIME)):
     def decorator(func):
@@ -37,6 +36,7 @@ def timeout(seconds=10, error_message=os.strerror(errno.ETIME)):
     return decorator
 ###http://stackoverflow.com/questions/2281850/timeout-function-if-it-takes-too-long-to-finish###
 
+
 def serve_ipython():
     try:
 
@@ -53,9 +53,11 @@ def serve_ipython():
     except KeyboardInterrupt:
         c.terminate()
 
+
 def dict_to_str(dic):
         """join dictionary study_data into a string with that study_data"""
         return "_".join([k+ ":" + str(v) for (k,v) in dic.items()])
+
 
 def path_to_this_file():
 
