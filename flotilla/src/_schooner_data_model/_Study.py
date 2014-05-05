@@ -164,8 +164,8 @@ class Study(Cargo):
                 feature_of_interest="RBFOX2"
                 )
 
-import _ExpressionData as ExpressionData
-import _SplicingData as SplicingData
+from _ExpressionData import ExpressionData
+from _SplicingData import SplicingData
 cargo = Cargo()
 
 class SubStudy(object):
@@ -178,9 +178,10 @@ class SubStudy(object):
 
 
 
-class ExpressionStudy(ExpressionData ):
+class ExpressionStudy(ExpressionData, SubStudy):
 
     def __init__(self, study, load_cargo=False, **kwargs):
+
         assert hasattr(study, 'expression')
         assert hasattr(study, 'sample_info')
         assert hasattr(study, 'expression_info')
@@ -190,8 +191,6 @@ class ExpressionStudy(ExpressionData ):
                                              sample_descriptors= study.sample_info,
                                              gene_descriptors=study.expression_info,
                                              **kwargs)
-
-
 
     def load_cargo(self, species, rename=True, **kwargs):
         try:
@@ -205,8 +204,7 @@ class ExpressionStudy(ExpressionData ):
         except:
             raise RuntimeError("cargo load failed")
 
-class SplicingStudy(SplicingData):
-
+class SplicingStudy(SplicingData, SubStudy):
 
     def __init__(self, study, load_cargo=False, **kwargs):
 
