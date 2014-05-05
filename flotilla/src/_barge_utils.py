@@ -39,12 +39,13 @@ def timeout(seconds=10, error_message=os.strerror(errno.ETIME)):
 
 def serve_ipython():
     try:
+
         assert len(sys.argv) == 2
         path = sys.argv[1]
         assert os.path.exists(sys.argv[1])
 
     except:
-        ValueError("specify a notebook directory as the first and only argument")
+        raise ValueError("specify a notebook directory as the first and only argument")
 
     c = subprocess.Popen(['ipython', 'notebook', '--script', '--notebook-dir', path, '--pylab', 'inline'], stdin=PIPE)
     try:
