@@ -19,7 +19,7 @@ setup(
     'console_scripts': ['metrics_runner.py = flotilla.src.carrier',
                         'serve_flotilla_notebook = flotilla.src._barge_utils:serve_ipython']},
     install_requires=['setuptools',
-                      'numpy >= 1.6.1 ',
+                      'numpy >= 1.8.1 ',
                       'scipy >= 0.13.0',
                       'matplotlib >= 1.3.1',
                       'scikit-learn >= 0.13.0',
