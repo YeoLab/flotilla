@@ -31,6 +31,7 @@ setup(
                       'statsmodels >= 0.5.0',
                       'pandas >= 0.13.1',
                       'networkx',
+                      'tornado >= 3.2.1',
                       #'dcor_cpy' #needs to be built with extutils
     ],
     version = "0.0.1"
