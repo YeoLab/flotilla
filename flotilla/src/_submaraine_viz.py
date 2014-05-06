@@ -453,6 +453,7 @@ class NetworkerViz(Networker, Reduction_viz):
         main_ax = plt.gca()
         ax_pev = plt.axes([0.1, .8, .2, .15])
         ax_cov = plt.axes([0.1, 0.1, .2, .15])
+        ax_degree = plt.axes([0.9,.8,.2,.15])
         #ax3 = plt.subplot(gs[2])
         #ax4 = pylab.subplot(gs[3])
         #ax2.set_aspect(3)
@@ -471,7 +472,8 @@ class NetworkerViz(Networker, Reduction_viz):
             node_size_mapper = lambda x: 75
 
         ax_pev.plot(pca.explained_variance_ratio_ * 100.)
-        ax_pev.axvline(n_pcs)
+        ax_pev.axvline(n_pcs, label='cutoff')
+        ax_pev.legend()
         ax_pev.set_ylabel("% explained variance")
         ax_pev.set_xlabel("component")
         ax_pev.set_title("Explained variance from dim reduction")
@@ -519,7 +521,17 @@ class NetworkerViz(Networker, Reduction_viz):
         nx.draw_networkx_edges(g, pos,ax = main_ax,alpha=0.1)
         #nx.draw_networkx_edges(g, pos, edgelist=mst.edges(), edge_color="m", edge_width=200, ax=main_ax)
         main_ax.set_axis_off()
+        degree = nx.degree(g)
+        seaborn.kdeplot(np.array(degree.values()), ax=ax_degree)
+        try:
+            ax_degree.axvline(x=degree[feature_of_interest], label=feature_of_interest)
+            ax_degree.legend()
 
+        except Exception as e:
+            print e
+            pass
+
+        seaborn.despine(ax=ax_degree)
         #f.tight_layout(pad=5)
         if graph_file != '':
             try:
