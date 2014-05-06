@@ -5,7 +5,7 @@ Data models for "studies" studies include attributes about the data and are heav
 
 from .._submaraine_viz import NetworkerViz
 from .._cargo_commonObjects import Cargo
-
+import matplotlib.pyplot as plt
 
 class Study(Cargo):
     """
@@ -116,7 +116,7 @@ class Study(Cargo):
         #not sure why nested fxns are required for this, but they are... i think...
         def do_interact(group_id=self.default_group_id, data_type='expression',
                         featurewise=False, x_pc=1, y_pc=2, show_point_labels=False, list_link = '',
-                        list_name=self.default_list_id):
+                        list_name=self.default_list_id, savefile = ''):
 
             if list_name != "custom" and list_link != "":
                 raise ValueError("set list_name to \"custom\" to use list_link")
@@ -130,6 +130,9 @@ class Study(Cargo):
             print list_name
             self.pca(group_id=group_id, data_type=data_type, featurewise=featurewise,
                       x_pc=x_pc, y_pc=y_pc, show_point_labels=show_point_labels, list_name=list_name)
+            if savefile != '':
+                f = plt.gcf()
+                f.savefig(savefile)
 
         interact(do_interact,
                  data_type=('expression', 'splicing'),

@@ -497,6 +497,7 @@ class NetworkerViz(Networker, Reduction_viz):
         seaborn.kdeplot(cov_dist, ax=ax_cov)
         ax_cov.axvline(cov_cut, label='cutoff')
         ax_cov.set_title("covariance in dim reduction space")
+        ax_cov.set_ylabel("density")
         ax_cov.legend()
         seaborn.despine(ax=ax_cov)
         g, pos = self.get_graph(adjacency, **graph_settings)
@@ -523,6 +524,8 @@ class NetworkerViz(Networker, Reduction_viz):
         main_ax.set_axis_off()
         degree = nx.degree(g)
         seaborn.kdeplot(np.array(degree.values()), ax=ax_degree)
+        ax_degree.set_xlabel("degree")
+        ax_degree.set_ylabel("density")
         try:
             ax_degree.axvline(x=degree[feature_of_interest], label=feature_of_interest)
             ax_degree.legend()
