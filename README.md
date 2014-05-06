@@ -10,7 +10,9 @@ git clone https://github.com/YeoLab/neural_diff_project.git
 ```
 
 build/install with:
+note: for some reason patsy isn't installing automaticallt with pip, use easy_install first instead
 ```
+easy_install -U patsy
 cd flotilla
 pip install .
 cd ..
