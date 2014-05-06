@@ -2,7 +2,7 @@ flotilla
 ========
 download with:
 ```
-git clone --resursive https://github.com/YeoLab/flotilla.git
+git clone --recursive https://github.com/YeoLab/flotilla.git
 ```
 and download the singlecell project (for testing porpoises) with:
 ```
