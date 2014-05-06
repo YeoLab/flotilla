@@ -10,10 +10,10 @@ setup(
     author_email='mlovci@ucsd.edu',
     description='',
     include_package_data=True,
-    package_dir={'flotilla': 'src/_cargo_commonObjects/cargo_data/'},
+    #package_dir={'flotilla': 'flotilla'},
     package_data={
-        'flotilla': ['*/*txt.gz',
-        '*/gene_lists/*']
+        'flotilla': ['src/_cargo_commonObjects/cargo_data/*/*txt.gz',
+        'src/_cargo_commonObjects/cargo_data/*/gene_lists/*']
     },
     entry_points={
     'console_scripts': ['metrics_runner.py = flotilla.src.carrier',
