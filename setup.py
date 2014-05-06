@@ -11,7 +11,7 @@ setup(
     description='',
     include_package_data=True,
     package_data={
-        'flotilla': ['study_data/*', 'neural_diff_project/study_data/*']
+        'flotilla': ['src/_cargo_commonObjects/cargo_data/*']
     },
     entry_points={
     'console_scripts': ['metrics_runner.py = flotilla.src.carrier',
