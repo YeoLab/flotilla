@@ -27,8 +27,8 @@ setup(
                       'ipython >= 2.0.0',
                       'husl',
                       'seaborn >= 0.3.1',
+                      'patsy >= 0.2.1',                      
                       'statsmodels >= 0.5.0',
-                      'patsy >= 0.2.1',
                       'pandas >= 0.13.1',
                       'networkx',
                       #'dcor_cpy' #needs to be built with extutils
