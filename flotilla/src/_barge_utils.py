@@ -39,7 +39,7 @@ def timeout(seconds=10, error_message=os.strerror(errno.ETIME)):
     return decorator
 ###http://stackoverflow.com/questions/2281850/timeout-function-if-it-takes-too-long-to-finish###
 
-t
+
 def serve_ipython():
     try:
 
