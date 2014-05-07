@@ -1,4 +1,4 @@
-tfrom __future__ import division
+from __future__ import division
 __author__ = 'lovci, obot'
 
 
