@@ -4,7 +4,7 @@ __author__ = 'lovci'
 
 object library
 
-commonly used data objects for genomes
+commonly used data objects for genomest
 
 """
 
@@ -24,11 +24,19 @@ class Cargo(object):
     gene_lists = {}
 
     def get_species_cargo(self, species):
+        """
+        retrieve all cargo for a given species
+        >>> cargo = Cargo()
+        >>> hg19Cargo = cargo.get_species_cargo('hg19')
+        """
         self.get_go(species)
         self.get_lists(species)
         return self
 
     def get_go(self, species):
+        """
+        initialize gene ontology object, takes > 30 seconds
+        """
         try:
             assert(species in ["hg19", "mm9", "ce10"])
         except AssertionError:
@@ -44,7 +52,11 @@ class Cargo(object):
 
 
     def get_lists(self, species):
+        """
 
+        get gene lists from cargo_data for a given species
+
+        """
         try:
             assert(species == "hg19")
         except AssertionError:
@@ -96,4 +108,8 @@ class Cargo(object):
         ])
 
 
+    def get_conservation(self, species, interval):
+        raise NotImplementedError
 
+    def get_sequence(self, species, interval):
+        raise NotImplementedError

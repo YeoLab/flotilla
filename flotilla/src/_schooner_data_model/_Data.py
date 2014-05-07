@@ -57,6 +57,7 @@ class Data(object):
     def _echo(self, x):
         return x
 
+    #_naming_fun converts input feature names to something else. by default, just echo.
     _naming_fun = _echo
 
     def get_naming_fun(self):

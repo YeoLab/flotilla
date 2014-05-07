@@ -39,7 +39,7 @@ def timeout(seconds=10, error_message=os.strerror(errno.ETIME)):
     return decorator
 ###http://stackoverflow.com/questions/2281850/timeout-function-if-it-takes-too-long-to-finish###
 
-
+t
 def serve_ipython():
     try:
 
@@ -62,6 +62,6 @@ def dict_to_str(dic):
         return "_".join([k + ":" + str(v) for (k, v) in dic.items()])
 
 
-def path_to_this_file():
-
-    return os.path.join(os.path.dirname(__file__))
+#def path_to_this_file():
+#
+#    return os.path.join(os.path.dirname(__file__))
