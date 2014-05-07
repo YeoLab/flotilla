@@ -13,7 +13,7 @@ class Data(object):
     -------
 
     """
-    _default_group_id = '~outlier'
+    _default_group_id = 'any_cell'
     _default_list_id = 'variant'
 
     def __init__(self, data, n_components, step=0.1, reducer=PCA):
@@ -103,8 +103,8 @@ class Data(object):
             show_vectors=False,
             title_size=10,
             axis_label_size=10,
-            x_pc = "pc_" + str(x_pc),#this only affects the plot, not the study_data.
-            y_pc = "pc_" + str(y_pc),#this only affects the plot, not the study_data.
+            x_pc = "pc_" + str(x_pc), #this only affects the plot, not the study_data.
+            y_pc = "pc_" + str(y_pc), #this only affects the plot, not the study_data.
             **local_plotting_args
             )
         return self
@@ -153,8 +153,8 @@ class Data(object):
 
 
     def get_min_samples(self):
-        if hasattr(self, 'samples'):
-            return self.samples
+        if hasattr(self, 'min_samples'):
+            return self.min_samples
         else:
             return 12
         return self
