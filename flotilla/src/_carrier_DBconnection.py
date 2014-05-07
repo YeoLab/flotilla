@@ -7,7 +7,6 @@ handles database connection, performs operations as a slave if run as a script.
 """
 
 
-raise NotImplementedError
 
 #!grep def slave.py
 import random

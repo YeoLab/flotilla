@@ -150,6 +150,10 @@ class Study(Cargo):
                         featurewise=False, draw_labels=False, degree_cut=1,
                         cov_std_cut=1.8, n_pcs=5, feature_of_interest="RBFOX2",
                         list_name=self.default_list_id):
+
+            for k, v in locals().iteritems():
+                print k, ":", v
+
             if data_type == 'expression':
                 assert(list_name in self.expression.lists.keys())
             if data_type == 'splicing':

@@ -415,9 +415,6 @@ class NMF(Pretty_Reducer, sklearn.decomposition.NMF):
         self.components_ = pd.DataFrame(self.components_, columns=self.X.columns).rename_axis(self.relabel_pcs, 0)
 
 
-
-
-
 class Networker(object):
 
 

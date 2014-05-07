@@ -1,3 +1,4 @@
 1) add custom gene link to Study.interactive_pca
 2) sanity check, make sure gene lists are used for expression and splicing lists are used for splicing
 3) add graph collider
+4) CLIPdata data model
