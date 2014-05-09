@@ -81,6 +81,7 @@ class Study(Cargo):
         self.expression.jsd()
         self.splicing.jsd()
 
+
     def pca(self, data_type='expression', x_pc=1, y_pc=2, **kwargs):
 
         """Performs PCA on both expression and splicing study_data
@@ -89,6 +90,7 @@ class Study(Cargo):
             self.expression.plot_dimensionality_reduction(x_pc=x_pc, y_pc=y_pc, **kwargs)
         elif data_type == "splicing":
             self.splicing.plot_dimensionality_reduction(x_pc=x_pc, y_pc=y_pc, **kwargs)
+
 
     def graph(self, data_type='expression', **kwargs):
         args = kwargs.copy()
@@ -117,6 +119,11 @@ class Study(Cargo):
         def do_interact(group_id=self.default_group_id, data_type='expression',
                         featurewise=False, x_pc=1, y_pc=2, show_point_labels=False, list_link = '',
                         list_name=self.default_list_id, savefile = ''):
+
+            for k, v in locals().iteritems():
+                if k == 'self':
+                    continue
+                print k, ":", v
 
             if list_name != "custom" and list_link != "":
                 raise ValueError("set list_name to \"custom\" to use list_link")
@@ -152,6 +159,8 @@ class Study(Cargo):
                         list_name=self.default_list_id):
 
             for k, v in locals().iteritems():
+                if k == 'self':
+                    continue
                 print k, ":", v
 
             if data_type == 'expression':
