@@ -544,3 +544,248 @@ class NetworkerViz(Networker, Reduction_viz):
                 print e
 
         return self
+
+from ._frigate_compute import Predictor
+import itertools
+
+class PredictorViz(Predictor):
+
+    def __init__(self, parent=None, attributes=Predictor.default_attributes):
+
+        """Visualize results and do things on a Comparer object.
+        Takes a Comparer object as parent at initialization and fetches attrs from parent if they do not exist in self
+        parent - Initialized, fit and scored Comparer object
+        attributes - Tuple of (trait, classifier_name) for this visualizer to work with. Make new visualizers for each
+        trait/classifier_name combination
+        """
+        self._parent = parent
+        self.attributes = attributes
+        trait, classifier_name = self.attributes
+        #self.X - the subset of features that scored well with these attributes
+        self.X = self.classifiers[trait][classifier_name].subset
+
+    def __getattr__(self, name):
+
+        if name not in self.__dict__:
+            try:
+                return getattr(self._parent, name)
+            except AttributeError:
+                raise
+        return getattr(self, name)
+
+    def plot_classifier_scores(self, ax=None):
+        """
+        plot kernel density of classifier scores and draw a vertical line where the cutoff was selected
+        ax - ax to plot on. if None: pylab.gca()
+        """
+        trait, classifier_name = self.attributes
+        if ax==None:
+            ax = pylab.gca()
+        clf = self.classifiers[trait][classifier_name]
+        seaborn.kdeplot(clf.scores, shade=True, ax=ax)
+        ax.axvline(x=clf.score_cutoff)
+        [lab.set_rotation(90) for lab in ax.get_xticklabels()]
+
+    def do_pca(self, pca_args_dict={}, plotting_args_dict={}):
+
+        """
+        wraps pca on all (default) or on a subset of features
+        kwargs: non-default parameters for gscripts.general.plot_pca
+        """
+        pcaObj = PCA_viz(self.X, title=self.descrip, **pca_args_dict)
+        pcaObj(**plotting_args_dict)
+        return pcaObj
+
+    def generate_scatter_table(self,
+                              excel_out=None, external_xref=[]):
+        """
+        make a table to make scatterplots... maybe for plot.ly
+        excelOut: full path to an excel output location for scatter data
+        external_xref: list of tuples containing (attribute name, function to map row index -> an attribute)
+        """
+
+        trait, classifier_name = self.attributes
+        X = self.X
+        sorter = np.array([np.median(i[1]) - np.median(j[1]) for (i, j) in \
+                           itertools.izip(X[self.y[trait]==0].iteritems(),
+                                          X[self.y[trait]==1].iteritems())])
+
+        sort_by_sorter = X.columns[np.argsort(sorter)]
+        c0_values = X[sort_by_sorter][self.y[trait]==0]
+        c1_values = X[sort_by_sorter][self.y[trait]==1]
+
+        x = []
+        s = []
+        y1 = []
+        y2 = []
+        field_names = ['x-position', 'probe intensity', "condition0", "condition1"]
+        n_default_fields = len(field_names)
+        external_attrs = {}
+        for external_attr_name, external_attr_fun in external_xref:
+            external_attrs[external_attr_name] = []
+            field_names.append(external_attr_name)
+
+
+        for i, (a, b) in enumerate(itertools.izip(c0_values.iteritems(), c1_values.iteritems())):
+
+            mn = np.mean(np.r_[a[1], b[1]])
+            _ = [x.append(i) for _ in a[1]]
+            _ = [s.append(mn) for val in a[1]]
+            _ = [y1.append(val- mn) for val in a[1]]
+            _ = [y2.append(np.nan) for val in a[1]]
+
+            _ = [x.append(i) for _ in b[1]]
+            _ = [s.append(mn) for val in b[1]]
+            _ = [y1.append(np.nan) for val in b[1]]
+            _ = [y2.append(val - mn) for val in b[1]]
+
+
+            for external_attr_name, external_attr_fun in external_xref:
+                external_attrs[external_attr_name].extend([external_attr_fun(i) for i in a[1].index])
+                external_attrs[external_attr_name].extend([external_attr_fun(i) for i in b[1].index])
+
+        zz = pd.DataFrame([x, s, y1, y2] + [external_attrs[attr] for attr in field_names[n_default_fields:]],
+                          index=field_names)
+
+        if excel_out is not None:
+            try:
+                E = pd.ExcelWriter('%s' % excel_out)
+                zz.T.to_excel(E, self.descrip)
+                E.save()
+            except Exception as e:
+                print "excel save failed with error %s" % e
+
+        return zz
+
+    def check_a_gene(self, probe_name, sets, **vp_params):
+        """Make Violin Plots for a gene/probe's value in the sets defined in sets
+        probe_name - gene/probe id. must be in the index of self._parent.X
+        sets - list of sample ids
+        vp_params - extra parameters for violinplot
+
+        returns a list of lists with values for probe_name in each set of sets
+        """
+        xx = []
+        for i in sets:
+            xx.append(self._parent.X.ix[i][probe_name])
+        seaborn.violinplot(xx, linewidth=0,
+                   alpha=0.5, bw='silverman', inner='points', names=None, **vp_params)
+        seaborn.despine()
+        return xx
+
+
+
+def clusterGram(dataFrame, distance_metric = 'euclidean', linkage_method = 'average',
+            outfile = None, clusterRows=True, clusterCols=True, timeSeries=False, doCovar=False,
+            figsize=(8, 10), row_label_color_fun=lambda x: 'k',
+            col_label_color_fun=lambda x: 'k',
+            link_color_func = lambda x: 'k'):
+    import scipy
+    import pylab
+    import matplotlib.gridspec as gridspec
+    import numpy as np
+    import matplotlib as mpl
+    """
+
+    Run hierarchical clustering on data. Creates a heatmap of cluster-ordered data
+    heavy-lifting is done by:
+
+    gets distances between rows/columns
+
+    y_events = scipy.spatial.distance.pdist(data, distance_metric)
+
+    calculates the closest rows/columns
+
+    Z_events = scipy.cluster.hierarchy.linkage(y_events, linkage_method)
+
+    genereates dendrogram (tree)
+
+    d_events = scipy.cluster.hierarchy.dendrogram(Z_events, no_labels=True)
+
+    set outfile == "None" to inibit saving an eps file (only show it, don't save it)
+
+    """
+    data = np.array(dataFrame)
+    colLabels = dataFrame.columns
+    rowLabels = dataFrame.index
+    nRow, nCol = data.shape
+
+    if clusterRows:
+        print "getting row distance matrix"
+        y_events = scipy.spatial.distance.pdist(data, distance_metric)
+        print "calculating linkages"
+        Z_events = scipy.cluster.hierarchy.linkage(y_events, linkage_method, metric=distance_metric)
+
+    if clusterCols:
+        print "getting column distance matrix"
+        y_samples = scipy.spatial.distance.pdist(np.transpose(data), distance_metric)
+        print "calculating linkages"
+        Z_samples = scipy.cluster.hierarchy.linkage(y_samples, linkage_method, metric=distance_metric)
+    else:
+        if doCovar:
+            raise ValueError
+
+    fig = pylab.figure(figsize=figsize)
+
+    gs = gridspec.GridSpec(18,10)
+
+    ax1 = pylab.subplot(gs[1:, 0:2]) #row dendrogram
+
+    ax1.set_xticklabels([])
+    ax1.set_xticks([])
+    ax1.set_frame_on(False)
+
+    reordered = data
+    event_order = range(nRow)
+    if clusterRows:
+        d_events = scipy.cluster.hierarchy.dendrogram(Z_events, orientation='right',
+                                                      link_color_func=link_color_func,
+                                                      labels=rowLabels)
+        event_order = d_events['leaves']
+        reordered = data[event_order,:]
+
+    labels = ax1.get_yticklabels()
+
+
+    ax2 = pylab.subplot(gs[0:1, 2:9]) #column dendrogram
+
+    ax2.set_yticklabels([])
+    ax2.set_yticks([])
+    ax2.set_frame_on(False)
+
+    sample_order = range(nCol)
+    if clusterCols:
+        d_samples = scipy.cluster.hierarchy.dendrogram(Z_samples, labels=colLabels, leaf_rotation=90,
+                                                       link_color_func=link_color_func)
+        sample_order = d_samples['leaves']
+        reordered = reordered[:,sample_order]
+
+    axmatrix = pylab.subplot(gs[1:, 2:9])
+    bds = np.max(abs(reordered))
+    if timeSeries:
+        norm = mpl.colors.Normalize(vmin=-bds, vmax=bds)
+    else:
+        norm = None
+
+    if (np.max(reordered) * np.min(reordered)) > 0:
+        cmap = pylab.cm.Reds
+    else:
+        cmap= pylab.cm.RdBu_r
+
+    im = axmatrix.matshow(reordered, aspect='auto', origin='lower', cmap=cmap, norm=norm)
+    axmatrix.set_xticks([])
+    axmatrix.set_yticks([])
+    axcolor = pylab.subplot(gs[1:6, -1])
+
+    cbTicks = [np.min(data), np.mean(data), np.max(data)]
+    cb = pylab.colorbar(im, cax=axcolor, ticks=cbTicks, use_gridspec=True)
+    pylab.draw()
+    [i.set_color(row_label_color_fun(i.get_text())) for i in ax1.get_yticklabels()]
+    [i.set_color(col_label_color_fun(i.get_text())) for i in ax2.get_xticklabels()]
+
+
+    pylab.tight_layout()
+
+    if outfile is not None:
+        fig.savefig(outfile)
+    return event_order, sample_order
