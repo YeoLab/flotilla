@@ -50,7 +50,7 @@ def serve_ipython():
     except:
         raise ValueError("specify a notebook directory as the first and only argument")
 
-    c = subprocess.Popen(['ipython', 'notebook', '--script', '--notebook-dir', path, '--matplotlib', 'inline'])
+    c = subprocess.Popen(['ipython', 'notebook', '--script', '--notebook-dir', path])
     try:
         c.wait()
     except KeyboardInterrupt:
