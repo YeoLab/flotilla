@@ -22,7 +22,7 @@ class Study(Cargo):
     _default_x_pc = 1
     _default_y_pc = 2
 
-    def __init__(self, study):
+    def __init__(self, study, load_cargo=True):
         """Constructor for Study object containing gene expression and
         alternative splicing study_data.
 
@@ -43,7 +43,7 @@ class Study(Cargo):
 
         self.sample_info = study.sample_info
 
-        self.expression = ExpressionStudy(study)
+        self.expression = ExpressionStudy(study, load_cargo=load_cargo)
 
         self.splicing = SplicingStudy(study)
 
@@ -185,6 +185,7 @@ class Study(Cargo):
                 feature_of_interest="RBFOX2"
                 )
 
+    #TODO:draw_last_graph function.
 from _ExpressionData import ExpressionData
 from _SplicingData import SplicingData
 cargo = Cargo()
@@ -223,6 +224,7 @@ class ExpressionStudy(ExpressionData):
                 self.set_naming_fun(lambda x: self.go.geneNames(x))
         except:
             raise
+
 
 class SplicingStudy(SplicingData):
 

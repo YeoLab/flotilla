@@ -36,5 +36,5 @@ setup(
                       'tornado >= 3.2.1',
                       #'dcor_cpy' #needs to be built with extutils
     ],
-    version = "0.0.1dev"
+    version = "0.0.2"
 )
