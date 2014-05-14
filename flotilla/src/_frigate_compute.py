@@ -496,27 +496,27 @@ class Networker(object):
             self.graphs_[name] = (g, pos)
 
         return g, pos
-from sklearn.preprocessing import LabelEncoder
-from sklearn.ensemble import ExtraTreesClassifier, ExtraTreesRegressor
+
 class Predictor(object):
 
+    from sklearn.ensemble import ExtraTreesClassifier, ExtraTreesRegressor
 
-
-    extratrees_default_params = {'n_estimators':50000,
+    extratrees_default_params = {'n_estimators':100,
                                'bootstrap':True,
                                'max_features':'auto',
                                'random_state':0,
                                'verbose':1,
                                'oob_score':True,
-                               'n_jobs':1}
+                               'n_jobs':2,
+                               'verbose':True}
 
     extratreees_scoring_fun = lambda clf: clf.feature_importances_
     extratreees_scoring_cutoff_fun = lambda scores: np.mean(scores) + 2*np.std(scores) # 2 std's above mean
 
-    #from sklearn.ensemble import GradientBoostingClassifier
-    #boosting_classifier_params = {'n_estimators': 80,  'max_features':1000,  'learning_rate': 0.2,  'subsample': 0.6,}
-    #boosting_scoring_fun = lambda clf: clf.feature_importances_
-    #boosting_scoring_cutoff_fun = lambda scores: np.mean(scores) + 2*np.std(scores)
+    from sklearn.ensemble import GradientBoostingClassifier
+    boosting_classifier_params = {'n_estimators': 80,  'max_features':1000,  'learning_rate': 0.2,  'subsample': 0.6,}
+    boosting_scoring_fun = lambda clf: clf.feature_importances_
+    boosting_scoring_cutoff_fun = lambda scores: np.mean(scores) + 2*np.std(scores)
 
     default_classifier, default_classifier_name = ExtraTreesClassifier, "ExtraTreesClassifier"
     default_regressor, default_regressor_name = ExtraTreesRegressor, "ExtraTreesRegressor"
@@ -549,7 +549,7 @@ class Predictor(object):
 
         self.descrip = descriptive
         self.samples = sample_list
-        self.X = source_data[self.samples].T
+        self.X = source_data.ix[self.samples]
         self.traits = source_traits.groupby(critical_variable).describe().index.names[:-1]
 
 
@@ -569,6 +569,7 @@ class Predictor(object):
             self.categorical_traits = self.traits
 
         self.classifiers = {}
+        from sklearn.preprocessing import LabelEncoder
         for trait in self.categorical_traits:
             try:
                 assert len(source_traits.groupby(trait).describe().index.levels[0]) == 2
