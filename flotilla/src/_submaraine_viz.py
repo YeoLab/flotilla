@@ -416,7 +416,8 @@ class NetworkerViz(Networker, Reduction_viz):
                    reduction_name=None,
                    list_name=None,
                    group_id=None,
-                   graph_file=''):
+                   graph_file='',
+                   compare=""):
 
         """
         list_name - name of genelist used in making pcas
@@ -543,12 +544,12 @@ class NetworkerViz(Networker, Reduction_viz):
                 print "error writing graph file:"
                 print e
 
-        return self
+        return g, pos
 
 from ._frigate_compute import Predictor
 import itertools
 
-class PredictorViz(Predictor):
+class PredictorViz(Predictor, Reduction_viz):
 
     def __init__(self, parent=None, attributes=Predictor.default_attributes):
 
