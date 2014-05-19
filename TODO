@@ -1,5 +1,31 @@
-1) add custom gene link to Study.interactive_pca
-2) sanity check, make sure gene lists are used for expression and splicing lists are used for splicing
-3) add graph collider
-4) CLIPdata data model
-5) add title to NetworkerViz graph
+add custom gene link to Study.interactive_pca
+
+sanity check, make sure gene lists are used for expression and splicing lists are used for splicing
+
+add graph collider
+
+CLIPdata data model
+
+add title to NetworkerViz graph
+
+make Predictor less nested
+
+Study
+   interactive_predictor
+   predictor
+
+Data
+   get_predictor
+
+ExpressionData
+   make_predictor
+
+Submarine
+   PredictorViz
+
+Frigate
+   Predictor
+
+
+
+

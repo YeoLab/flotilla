@@ -77,6 +77,7 @@ class Data(object):
     samplewise_reduction = {}
     featurewise_reduction = {}
     pca_plotting_args = {}
+    predictors = {}
 
 
     #def interactive_dim_reduction_plot(self):
@@ -88,6 +89,31 @@ class Data(object):
 #        """plot_dimensionality_reduction with some params hidden"""
 #        self.plot_dimensionality_reduction(x_pc, y_pc)
 
+    def plot_classifier(self,  obj_id=None, group_id=None,
+                        list_name=None, **plotting_args):
+
+        """Principal component-like analysis of measurements
+        Params
+        -------
+        obj_id - key of the object getting plotted
+        group_id - classifier feature
+        list_name - subset of genes to use for building clas
+
+
+
+        Returns
+        -------
+        self
+        """
+        local_plotting_args = self.pca_plotting_args.copy()
+        local_plotting_args.update(plotting_args)
+
+        #clf = self.get_predictor(gene_list_name=None, sample_list_name=None, clf_var=None,
+        #              obj_id=None,
+        #              **predictor_args
+        #clf(plotting_args=local_plotting_args)
+
+        return self
     def plot_dimensionality_reduction(self, x_pc=1, y_pc=2, obj_id=None, group_id=None,
                                       list_name=None, featurewise=None, **plotting_args):
 
@@ -152,6 +178,46 @@ class Data(object):
 
         return rdc_dict[obj_id]
 
+    clf_dict = {}
+    _last_predictor_accessed = None
+
+    def get_predictor(self, gene_list_name=None, sample_list_name=None, clf_var=None,
+                      obj_id=None,
+                      **predictor_args):
+        """
+        list_name = list of features to use for this clf
+        obj_id = name of this classifier
+        clf_var = boolean or categorical pd.Series
+        """
+        _used_default_group = False
+        if sample_list_name is None:
+            sample_list_name = self._default_group_id
+            _used_default_group = True
+
+        _used_default_list = False
+        if gene_list_name is None:
+            gene_list_name = self._default_list_id
+            _used_default_list = True
+
+        if obj_id is None:
+            if self._last_predictor_accessed is None or \
+                    (not _used_default_list or not _used_default_group):
+                #if last_reducer_accessed hasn't been set or if the user asks for specific params,
+                #else return the last reducer gotten by this method
+
+                obj_id = gene_list_name + ":" + sample_list_name + ":" + clf_var
+            else:
+                obj_id = self._last_predictor_accessed
+
+        self._last_predictor_accessed = obj_id
+        try:
+            return self.clf_dict[obj_id]
+        except:
+            clf = self.make_predictor(gene_list_name, sample_list_name, clf_var, **predictor_args)
+            clf.obj_id = obj_id
+            self.clf_dict[obj_id] = clf
+
+        return self.clf_dict[obj_id]
 
     def get_min_samples(self):
         if hasattr(self, 'min_samples'):

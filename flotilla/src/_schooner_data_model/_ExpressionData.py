@@ -3,8 +3,8 @@ import seaborn
 from sklearn.preprocessing import StandardScaler
 
 from _Data import Data
-from .._submaraine_viz import PCA_viz
-from .._frigate_compute import dropna_mean
+from .._submaraine_viz import PCA_viz, PredictorViz
+from .._frigate_compute import dropna_mean, Predictor
 from .._skiff_external_sources import link_to_list
 
 
@@ -60,11 +60,13 @@ class ExpressionData(Data):
 
 
         gene_list = self.lists[list_name]
+
         if group_id.startswith("~"):
             #print 'not', group_id.lstrip("~")
             sample_ind = ~pd.Series(self.sample_descriptors[group_id.lstrip("~")], dtype='bool')
         else:
             sample_ind = pd.Series(self.sample_descriptors[group_id], dtype='bool')
+
         sample_ind = sample_ind[sample_ind].index
         subset = self.sparse_df.ix[sample_ind, gene_list.index]
         frequent = pd.Index([i for i, j in (subset.count() > min_samples).iteritems() if j])
@@ -91,6 +93,48 @@ class ExpressionData(Data):
 
         #add mean gene_expression
         return rdc_obj
+
+    def make_predictor(self, gene_list_name, group_id, categorical_trait,
+                       standardize=True, predictor=PredictorViz,
+                       ):
+        """
+        make and cache a predictor on a categorical trait (associated with samples) subset of genes
+         """
+
+        min_samples=self.get_min_samples()
+        naming_fun = self.get_naming_fun()
+
+        if gene_list_name not in self.lists:
+            this_list = link_to_list(gene_list_name)
+            self.lists[gene_list_name] = pd.Series(map(naming_fun, this_list), index =this_list)
+
+        gene_list = self.lists[gene_list_name]
+
+        if group_id.startswith("~"):
+            #print 'not', group_id.lstrip("~")
+            sample_ind = ~pd.Series(self.sample_descriptors[group_id.lstrip("~")], dtype='bool')
+        else:
+            sample_ind = pd.Series(self.sample_descriptors[group_id], dtype='bool')
+        sample_ind = sample_ind[sample_ind].index
+        subset = self.sparse_df.ix[sample_ind, gene_list.index]
+        frequent = pd.Index([i for i, j in (subset.count() > min_samples).iteritems() if j])
+        subset = subset[frequent]
+        #fill na with mean for each event
+        means = subset.apply(dropna_mean, axis=0)
+        mf_subset = subset.fillna(means, ).fillna(0)
+
+        #whiten, mean-center
+        if standardize:
+            data = StandardScaler().fit_transform(mf_subset)
+        else:
+            data = mf_subset
+
+        ss = pd.DataFrame(data, index = mf_subset.index,
+                          columns = mf_subset.columns).rename_axis(naming_fun, 1)
+        clf = predictor(ss, self.sample_descriptors,
+                        categorical_traits=[categorical_trait],)
+        clf.set_reducer_plotting_args(self._default_reducer_args)
+        return clf
 
 
 

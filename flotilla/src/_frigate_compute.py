@@ -525,67 +525,68 @@ class Predictor(object):
     default_classifier_scoring_cutoff_fun = default_regressor_scoring_cutoff_fun = extratreees_scoring_cutoff_fun
     default_classifier_params = default_regressor_params = extratrees_default_params
 
-    #Dx = "disease condition"
-    default_critical_variable = "Dx"
-    default_attributes = (default_critical_variable, default_classifier_name)
-    def __init__(self, descriptive, sample_list, source_data, source_traits,
-                 critical_variable=default_critical_variable,
+    def __init__(self, data_df, metadata_df,
+                 name="Classifier",
                  categorical_traits = None,
                  continuous_traits = None,
                  ):
         """
-        train regressors or classifiers on data.
+        train regressors_ or classifiers_ on data.
 
-        descriptive: titles for plots and things...
+        name: titles for plots and things...
         sample_list: a list of sample ids for this comparer
         critical_variable: a response variable to test or a list of them
-        source_data: pd.DataFrame containing arrays in question
-        source_traits: pd.DataFrame with metadata about source_data
+        data_df: pd.DataFrame containing arrays in question
+        metadata_df: pd.DataFrame with metadata about data_df
         categorical_traits: which traits are catgorical? - if None, assumed to be all traits
         continuous_traits: which traits are continuous - i.e. build a regressor, not a classifier
         """
 
-        print "Initializing %s" % descriptive
+        print "Initializing predictors for %s" % name
 
-        self.descrip = descriptive
-        self.samples = sample_list
-        self.X = source_data.ix[self.samples]
-        self.traits = source_traits.groupby(critical_variable).describe().index.names[:-1]
+        self.name = name
+        self.X = data_df
+        self.important_features = {}
+        self.traits = []
+        self.categorical_traits = categorical_traits
+        if categorical_traits is not None:
+            self.traits.extend(categorical_traits)
 
+        self.continuous_traits = continuous_traits
+        if continuous_traits is not None:
+            self.traits.extend(continuous_traits)
 
         print "Using traits: ", self.traits
 
-        self.trait_data = source_traits.ix[self.samples][self.traits] #traits from source
-        self.trait_description = source_traits.groupby(critical_variable).describe()
-        self.y = pd.DataFrame(index=self.trait_data.index) #traits encoded to do some work -- "target" variable
+        self.trait_data = metadata_df[self.traits] #traits from source, in case they're needed later
 
-        if categorical_traits is None:
-            if continuous_traits is None:
-                self.categorical_traits = self.traits
-            else:
-                self.categorical_traits = list(set(self.traits) - set(continuous_traits))
-        else:
-            #assume all traits are categorical
-            self.categorical_traits = self.traits
+        print self.X.shape
+        self.X, self.trait_data = self.X.align(self.trait_data, axis=0, join='inner')
+        print self.X.shape
+        self.y = pd.DataFrame(index=self.X.index, columns=self.traits) #traits encoded to do some work -- "target" variable
 
-        self.classifiers = {}
+        self.classifiers_ = {}
         from sklearn.preprocessing import LabelEncoder
+
+        for trait in self.traits:
+            self.important_features[trait] = {}
+
         for trait in self.categorical_traits:
             try:
-                assert len(source_traits.groupby(trait).describe().index.levels[0]) == 2
+                assert len(metadata_df.groupby(trait).describe().index.levels[0]) == 2
             except AssertionError:
                 print "WARNING: trait \"%s\" has >2 categories"
-            self.classifiers[trait] = {}
-            traitset = source_traits.groupby(trait).describe().index.levels[0]
+            self.classifiers_[trait] = {}
+            traitset = metadata_df.groupby(trait).describe().index.levels[0]
             le = LabelEncoder().fit(traitset)  #categorical encoder
             self.y[trait] = le.transform(self.trait_data[trait])  #categorical encoding
 
         self.continuous_traits = continuous_traits
-
+        self.regressors_ = {}
         if self.continuous_traits is not None:
-            self.regressors = {}
+
             for trait in self.continuous_traits:
-                self.regressors[trait] = {}
+                self.regressors_[trait] = {}
                 self.y[trait] = self.trait_data[trait]
 
     def fit_classifiers(self,
@@ -594,23 +595,27 @@ class Predictor(object):
                         classifier=default_classifier,
                         classifier_params=default_classifier_params,
                         ):
-        """ fit classifiers to the data
+        """ fit classifiers_ to the data
         traits - list of trait(s) to fit a classifier upon,
         if None, fit all traits that were initialized.
-        Classifiers on each trait will be stored in: self.classifiers[trait]
+        Classifiers on each trait will be stored in: self.classifiers_[trait]
 
-        classifier_name - a name for this classifier to be stored in self.classifiers[trait][classifier_name]
+        classifier_name - a name for this classifier to be stored in self.classifiers_[trait][classifier_name]
         classifier - sklearn classifier object such as ExtraTreesClassifier
         classifier_params - dictionary for paramters to classifier
         """
+
         if traits is None:
             traits = self.categorical_traits
+        else:
+            assert type(traits) == list or type(traits) == set
+            traits = traits
 
         for trait in traits:
             clf = classifier(**classifier_params)
             print "Fitting a classifier for trait %s... please wait." %trait
             clf.fit(self.X, self.y[trait])
-            self.classifiers[trait][classifier_name] = clf
+            self.classifiers_[trait][classifier_name] = clf
             print "Finished..."
 
     def score_classifiers(self,
@@ -619,9 +624,9 @@ class Predictor(object):
                           feature_scoring_fun=default_classifier_scoring_fun,
                           score_cutoff_fun=default_classifier_scoring_cutoff_fun):
         """
-        collect scores from classifiers
-        traits - list of trait(s) to score. Retrieved from self.classifiers[trait]
-        classifier_name - a name for this classifier to be retrieved from self.classifiers[trait][classifier_name]
+        collect scores from classifiers_
+        traits - list of trait(s) to score. Retrieved from self.classifiers_[trait]
+        classifier_name - a name for this classifier to be retrieved from self.classifiers_[trait][classifier_name]
         feature_scoring_fun - fxn that yields higher values for better features
         score_cutoff_fun - fxn that that takes output of feature_scoring_fun and returns a cutoff
         """
@@ -632,24 +637,25 @@ class Predictor(object):
         for trait in traits:
 
             try:
-                assert trait in self.classifiers
+                assert trait in self.classifiers_
             except:
                 print "trait: %s" % trait, "is missing, continuing"
                 continue
             try:
-                assert classifier_name in self.classifiers[trait]
+                assert classifier_name in self.classifiers_[trait]
             except:
                 print "classifier: %s" % classifier_name, "is missing, continuing"
                 continue
 
             print "Scoring classifier: %s for trait: %s... please wait." % (classifier_name, trait)
 
-            clf = self.classifiers[trait][classifier_name]
-            clf.scores = pd.Series(feature_scoring_fun(clf), index=self.X.columns)
-            clf.score_cutoff = score_cutoff_fun(clf.scores)
-            clf.good_features = clf.scores > clf.score_cutoff
-            clf.n_good_features = np.sum(clf.good_features)
-            clf.subset = self.X.T[clf.good_features].T
+            clf = self.classifiers_[trait][classifier_name]
+            clf.scores_ = pd.Series(feature_scoring_fun(clf), index=self.X.columns)
+            clf.score_cutoff_ = score_cutoff_fun(clf.scores_)
+            clf.good_features_ = clf.scores_ > clf.score_cutoff_
+            self.important_features[trait][classifier_name] = clf.good_features_
+            clf.n_good_features_ = np.sum(clf.good_features_)
+            clf.subset_ = self.X.T[clf.good_features_].T
 
             print "Finished..."
 
@@ -667,7 +673,7 @@ class Predictor(object):
             clf = regressor(**regressor_params)
             print "Fitting a classifier for trait %s... please wait." %trait
             clf.fit(self.X, self.y[trait])
-            self.regressors[trait][regressor_name] = clf
+            self.regressors_[trait][regressor_name] = clf
             print "Finished..."
 
     def score_regressors(self,
@@ -676,7 +682,7 @@ class Predictor(object):
                           feature_scoring_fun=default_regressor_scoring_fun,
                           score_cutoff_fun=default_regressor_scoring_cutoff_fun):
         """
-        collect scores from classifiers
+        collect scores from classifiers_
         feature_scoring_fun: fxn that yields higher values for better features
         score_cutoff_fun fxn that that takes output of feature_scoring_fun and returns a cutoff
         """
@@ -684,26 +690,26 @@ class Predictor(object):
         if traits is None:
             traits = self.continuous_traits
 
-
         for trait in traits:
 
             try:
-                assert trait in self.regressors
+                assert trait in self.regressors_
             except:
                 print "trait: %s" % trait, "is missing, continuing"
                 continue
             try:
-                assert regressor_name in self.regressors[trait]
+                assert regressor_name in self.regressors_[trait]
             except:
                 print "classifier: %s" % regressor_name, "is missing, continuing"
                 continue
 
             print "Scoring classifier: %s for trait: %s... please wait." % (regressor_name, trait)
 
-            clf = self.regressors[trait][regressor_name]
-            clf.scores = pd.Series(feature_scoring_fun(clf), index=self.X.columns)
-            clf.score_cutoff = score_cutoff_fun(clf.scores)
-            clf.good_features = clf.scores > clf.score_cutoff
-            clf.n_good_features = np.sum(clf.good_features)
-            clf.subset = self.X.T[clf.good_features].T
+            clf = self.regressors_[trait][regressor_name]
+            clf.scores_ = pd.Series(feature_scoring_fun(clf), index=self.X.columns)
+            clf.score_cutoff_ = score_cutoff_fun(clf.scores_)
+            self.important_features[trait][regressor_name] = clf.good_features_
+            clf.good_features_ = clf.scores_ > clf.score_cutoff_
+            clf.n_good_features_ = np.sum(clf.good_features_)
+            clf.subset_ = self.X.T[clf.good_features_].T
             print "Finished..."

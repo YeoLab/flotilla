@@ -20,7 +20,7 @@ setup(
                         'serve_flotilla_notebook = flotilla.src._barge_utils:serve_ipython']},
     install_requires=['setuptools',
                       'numpy >= 1.8.1 ',
-                      'scipy >= 0.13.0',
+                      'scipy >= 0.14.0',
                       'matplotlib >= 1.3.1',
                       'scikit-learn >= 0.13.0',
                       'gspread',
@@ -36,5 +36,5 @@ setup(
                       'tornado >= 3.2.1',
                       #'dcor_cpy' #needs to be built with extutils
     ],
-    version = "0.0.2"
+    version = "0.0.3"
 )
