@@ -110,8 +110,7 @@ class Reduction_viz(object):
         #self._validate_params(self._default_plotting_args, **kwargs)
         from matplotlib.gridspec import GridSpec, GridSpecFromSubplotSpec
         import pylab
-
-        gs_x = 12
+        gs_x = 13
         gs_y = 12
 
         if ax is None:
@@ -122,8 +121,9 @@ class Reduction_viz(object):
             gs = GridSpecFromSubplotSpec(gs_x,gs_y,ax.get_subplotspec())
 
         ax_components = pylab.subplot(gs[:, :5])
+        #ax_components.set_aspect('equal')
         ax_loading1 = pylab.subplot(gs[1:5, 5:])
-        ax_loading2 = pylab.subplot(gs[6:11, 5:])
+        ax_loading2 = pylab.subplot(gs[7:11, 5:])
 
         passed_kwargs = kwargs
         local_kwargs = self.plotting_args.copy()
@@ -555,42 +555,45 @@ class PredictorViz(Predictor, Reduction_viz):
     def set_reducer_plotting_args(self, rpa):
         self._reducer_plotting_args.update(rpa)
 
-    def __call__(self, traits=None, ax=None):
-        from matplotlib.gridspec import GridSpec, GridSpecFromSubplotSpec
+    def __call__(self, trait=None, ax=None, feature_score_std_cutoff=None):
+
+        if trait is None:
+            trait = self.traits[0]
+        else:
+            assert type(trait) == str or type(trait) == unicode
+
+        if feature_score_std_cutoff is None:
+            feature_scoring_cut_fun = self.default_classifier_scoring_cutoff_fun
+        else:
+            feature_scoring_cut_fun = lambda scores: np.mean(scores) + feature_score_std_cutoff*np.std(scores)
+
         if not self.has_been_fit_yet:
-            self.fit_classifiers(traits)
-        if not self.has_been_scored_yet:
-            self.score_classifiers(traits)
+            self.fit_classifiers([trait])
 
-        self.plot_classifier_scores(traits)
+        self.score_classifiers([trait], score_cutoff_fun=feature_scoring_cut_fun)
 
-        import pylab
+        from matplotlib.gridspec import GridSpec, GridSpecFromSubplotSpec
 
-        gs_x = 12
+        import matplotlib.pyplot as plt
+        gs_x = 18
         gs_y = 12
 
         if ax is None:
-            fig, ax = pylab.subplots(1,1,figsize=(12,6))
+            fig, ax = plt.subplots(1,1,figsize=(12,6))
             gs = GridSpec(gs_x,gs_y)
 
         else:
             gs = GridSpecFromSubplotSpec(gs_x,gs_y,ax.get_subplotspec())
+        ax_pca = plt.subplot(gs[:, 2:])
 
-        ax_components = pylab.subplot(gs[:, :5])
-        ax_loading1 = pylab.subplot(gs[1:5, 5:])
-        ax_loading2 = pylab.subplot(gs[6:11, 5:])
+        ax_scores= plt.subplot(gs[5:10, :2])
+        ax_scores.set_xlabel("Feature Importance")
+        ax_scores.set_ylabel("Density Estimate")
+        self.plot_classifier_scores([trait], ax=ax_scores)
+        pca = self.do_pca(trait, ax=ax_pca)
+        plt.tight_layout()
+        return pca
 
-        passed_kwargs = kwargs
-        local_kwargs = self.plotting_args.copy()
-        local_kwargs.update(passed_kwargs)
-        local_kwargs.update({'ax':ax_components})
-        self.plot_samples(**local_kwargs)
-        self.plot_loadings(pc=local_kwargs['x_pc'], ax=ax_loading1)
-        self.plot_loadings(pc=local_kwargs['y_pc'], ax=ax_loading2)
-        pylab.tight_layout()
-        return self
-
-        self.do_pca(ax=ax)
 
     def plot_classifier_scores(self, traits, ax=None, classifier_name=None):
         """
@@ -604,9 +607,12 @@ class PredictorViz(Predictor, Reduction_viz):
 
         if ax==None:
             ax = pylab.gca()
-        for trait in self.traits:
+
+        for trait in traits:
             clf = self.classifiers_[trait][classifier_name]
-            seaborn.kdeplot(clf.scores_, shade=True, ax=ax)
+            seaborn.kdeplot(clf.scores_, shade=True, ax=ax, label="%s, %d features" % (trait,
+                                                                                       np.sum(clf.good_features_)))
+
         ax.axvline(x=clf.score_cutoff_)
         [lab.set_rotation(90) for lab in ax.get_xticklabels()]
         seaborn.despine(ax=ax)
@@ -708,7 +714,7 @@ class PredictorViz(Predictor, Reduction_viz):
 
         local_plotting_args = self._reducer_plotting_args
         local_plotting_args.update(plotting_args)
-        pca = PCA_viz(self.X.ix[self.classifiers_[trait][classifier_name].good_features], **local_plotting_args)
+        pca = PCA_viz(self.X.ix[:, self.classifiers_[trait][classifier_name].good_features_], **local_plotting_args)
         pca(ax=ax)
         return pca
 

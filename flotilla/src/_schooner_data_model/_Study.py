@@ -135,7 +135,6 @@ class Study(Cargo):
             if list_name == 'custom':
                 list_name = list_link
 
-            print list_name
             self.pca(group_id=group_id, data_type=data_type, featurewise=featurewise,
                       x_pc=x_pc, y_pc=y_pc, show_point_labels=show_point_labels, list_name=list_name)
             if savefile != '':
@@ -191,42 +190,34 @@ class Study(Cargo):
         from IPython.html.widgets import interact
 
         #not sure why nested fxns are required for this, but they are... i think...
-        def do_interact(group_id=self.default_group_id, data_type='expression',
-                        draw_labels=False, feature_of_interest="RBFOX2",
-                        list_name=self.default_list_id, list_link=''):
+        def do_interact(data_type='expression',
+                        list_name=self.default_list_id, group_id=self.default_group_id,
+                        categorical_variable='outlier', feature_score_std_cutoff=2):
 
             for k, v in locals().iteritems():
                 if k == 'self':
                     continue
                 print k, ":", v
 
-            if list_name != "custom" and list_link != "":
-                raise ValueError("set list_name to \"custom\" to use list_link")
-
-            if list_name == "custom" and list_link == "":
-                raise ValueError("use a custom list name please")
-
-            if list_name == 'custom':
-                list_name = list_link
-
-            print list_name
             if data_type == 'expression':
-                assert(list_name in self.expression.lists.keys())
+                data_obj = self.expression
             if data_type == 'splicing':
-                assert(list_name in self.expression.lists.keys())
+                data_obj = self.splicing
 
-            prd = self.predictor(list_name=list_name, group_id=group_id, data_type=data_type,
-                           draw_labels=draw_labels, feature_of_interest=feature_of_interest)
+            assert(list_name in data_obj.lists.keys())
 
+            prd = data_obj.get_predictor(list_name, group_id, categorical_variable)
+            prd(categorical_variable, feature_score_std_cutoff=feature_score_std_cutoff)
+            print "retrieve this predictor with:\nprd=study.get_predictor('%s', '%s', '%s')\npca=prd('%s', %f)" \
+            % (list_name, group_id, categorical_variable, categorical_variable, feature_score_std_cutoff)
 
         all_lists = list(set(self.expression.lists.keys() + self.splicing.lists.keys()))
-        interact(do_interact, group_id=self.default_group_ids,
+        interact(do_interact,
                 data_type=('expression', 'splicing'),
                 list_name=all_lists,
-                featurewise=False,
-                cov_std_cut = (0.1, 3),
-                degree_cut = (0,10),
-                n_pcs=(2,100),
+                group_id=self.default_group_ids,
+                categorical_variable=[i for i in self.default_group_ids if not i.startswith("~")],
+                feature_score_std_cutoff = (0.1, 20),
                 draw_labels=False,
                 feature_of_interest="RBFOX2"
                 )

@@ -542,8 +542,6 @@ class Predictor(object):
         continuous_traits: which traits are continuous - i.e. build a regressor, not a classifier
         """
 
-        print "Initializing predictors for %s" % name
-
         self.has_been_fit_yet=False
         self.has_been_scored_yet=False
         self.name = name
@@ -558,13 +556,13 @@ class Predictor(object):
         if continuous_traits is not None:
             self.traits.extend(continuous_traits)
 
-        print "Using traits: ", self.traits
+        print "Initializing predictors for %s" % " and ".join(self.traits)
+
+
+        #print "Using traits: ", self.traits
 
         self.trait_data = metadata_df[self.traits] #traits from source, in case they're needed later
-
-        print self.X.shape
         self.X, self.trait_data = self.X.align(self.trait_data, axis=0, join='inner')
-        print self.X.shape
         self.y = pd.DataFrame(index=self.X.index, columns=self.traits) #traits encoded to do some work -- "target" variable
 
         self.classifiers_ = {}
