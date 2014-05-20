@@ -215,8 +215,9 @@ class Study(Cargo):
             if data_type == 'splicing':
                 assert(list_name in self.expression.lists.keys())
 
-            self.predictor(list_name=list_name, group_id=group_id, data_type=data_type,
+            prd = self.predictor(list_name=list_name, group_id=group_id, data_type=data_type,
                            draw_labels=draw_labels, feature_of_interest=feature_of_interest)
+
 
         all_lists = list(set(self.expression.lists.keys() + self.splicing.lists.keys()))
         interact(do_interact, group_id=self.default_group_ids,

@@ -555,29 +555,61 @@ class PredictorViz(Predictor, Reduction_viz):
     def set_reducer_plotting_args(self, rpa):
         self._reducer_plotting_args.update(rpa)
 
-    def plot_classifier_scores(self, ax=None, traits=None, classifier_name=None):
+    def __call__(self, traits=None, ax=None):
+        from matplotlib.gridspec import GridSpec, GridSpecFromSubplotSpec
+        if not self.has_been_fit_yet:
+            self.fit_classifiers(traits)
+        if not self.has_been_scored_yet:
+            self.score_classifiers(traits)
+
+        self.plot_classifier_scores(traits)
+
+        import pylab
+
+        gs_x = 12
+        gs_y = 12
+
+        if ax is None:
+            fig, ax = pylab.subplots(1,1,figsize=(12,6))
+            gs = GridSpec(gs_x,gs_y)
+
+        else:
+            gs = GridSpecFromSubplotSpec(gs_x,gs_y,ax.get_subplotspec())
+
+        ax_components = pylab.subplot(gs[:, :5])
+        ax_loading1 = pylab.subplot(gs[1:5, 5:])
+        ax_loading2 = pylab.subplot(gs[6:11, 5:])
+
+        passed_kwargs = kwargs
+        local_kwargs = self.plotting_args.copy()
+        local_kwargs.update(passed_kwargs)
+        local_kwargs.update({'ax':ax_components})
+        self.plot_samples(**local_kwargs)
+        self.plot_loadings(pc=local_kwargs['x_pc'], ax=ax_loading1)
+        self.plot_loadings(pc=local_kwargs['y_pc'], ax=ax_loading2)
+        pylab.tight_layout()
+        return self
+
+        self.do_pca(ax=ax)
+
+    def plot_classifier_scores(self, traits, ax=None, classifier_name=None):
         """
         plot kernel density of classifier scores and draw a vertical line where the cutoff was selected
         ax - ax to plot on. if None: pylab.gca()
         """
 
-        if traits is None:
-            traits = self.traits
-        else:
-            #assert type(traits) == list or type(traits) == set or type(traits) == pd.Index
-            pass
 
         if classifier_name is None:
             classifier_name = self.default_classifier_name
 
         if ax==None:
             ax = pylab.gca()
-
-        for trait in traits:
+        for trait in self.traits:
             clf = self.classifiers_[trait][classifier_name]
             seaborn.kdeplot(clf.scores_, shade=True, ax=ax)
-            ax.axvline(x=clf.score_cutoff_)
-            [lab.set_rotation(90) for lab in ax.get_xticklabels()]
+        ax.axvline(x=clf.score_cutoff_)
+        [lab.set_rotation(90) for lab in ax.get_xticklabels()]
+        seaborn.despine(ax=ax)
 
 
     def generate_scatter_table(self,
@@ -658,20 +690,25 @@ class PredictorViz(Predictor, Reduction_viz):
         seaborn.despine()
 
 
-    def do_pca(self, ax=None, **plotting_args):
+    def do_pca(self, trait, ax=None, classifier_name=None, **plotting_args):
 
         """
         plot kernel density of classifier scores and draw a vertical line where the cutoff was selected
         ax - ax to plot on. if None: pylab.gca()
         """
 
+        assert trait in self.traits
+        assert self.has_been_fit_yet
+        assert self.has_been_scored_yet
 
-        if ax==None:
+        if ax is None:
             ax = pylab.gca()
+        if classifier_name is None:
+            classifier_name = self.default_classifier_name
 
         local_plotting_args = self._reducer_plotting_args
         local_plotting_args.update(plotting_args)
-        pca = PCA_viz(self.X, **local_plotting_args)
+        pca = PCA_viz(self.X.ix[self.classifiers_[trait][classifier_name].good_features], **local_plotting_args)
         pca(ax=ax)
         return pca
 

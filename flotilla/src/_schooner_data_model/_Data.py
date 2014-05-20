@@ -89,15 +89,15 @@ class Data(object):
 #        """plot_dimensionality_reduction with some params hidden"""
 #        self.plot_dimensionality_reduction(x_pc, y_pc)
 
-    def plot_classifier(self,  obj_id=None, group_id=None,
-                        list_name=None, **plotting_args):
+    def plot_classifier(self, gene_list_name=None, sample_list_name=None, clf_var=None, predictor_args=None, plotting_args=None):
 
         """Principal component-like analysis of measurements
         Params
         -------
         obj_id - key of the object getting plotted
-        group_id - classifier feature
-        list_name - subset of genes to use for building clas
+        group_id -
+        categorical_trait - classifier feature
+        list_name - subset of genes to use for building class
 
 
 
@@ -105,13 +105,19 @@ class Data(object):
         -------
         self
         """
+        if predictor_args is None:
+            predictor_args = {}
+
+        if plotting_args is None:
+            plotting_args = {}
+
         local_plotting_args = self.pca_plotting_args.copy()
         local_plotting_args.update(plotting_args)
 
-        #clf = self.get_predictor(gene_list_name=None, sample_list_name=None, clf_var=None,
-        #              obj_id=None,
-        #              **predictor_args
-        #clf(plotting_args=local_plotting_args)
+        clf = self.get_predictor(gene_list_name=gene_list_name, sample_list_name=sample_list_name, clf_var=clf_var,
+                                 **predictor_args)
+        clf(plotting_args=local_plotting_args)
+
 
         return self
     def plot_dimensionality_reduction(self, x_pc=1, y_pc=2, obj_id=None, group_id=None,

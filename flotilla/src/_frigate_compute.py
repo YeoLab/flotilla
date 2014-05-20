@@ -544,6 +544,8 @@ class Predictor(object):
 
         print "Initializing predictors for %s" % name
 
+        self.has_been_fit_yet=False
+        self.has_been_scored_yet=False
         self.name = name
         self.X = data_df
         self.important_features = {}
@@ -617,6 +619,8 @@ class Predictor(object):
             clf.fit(self.X, self.y[trait])
             self.classifiers_[trait][classifier_name] = clf
             print "Finished..."
+        self.has_been_fit_yet=True
+
 
     def score_classifiers(self,
                           traits=None,
@@ -658,6 +662,7 @@ class Predictor(object):
             clf.subset_ = self.X.T[clf.good_features_].T
 
             print "Finished..."
+        self.has_been_scored_yet=True
 
     def fit_regressors(self,
                        traits=None,
@@ -665,6 +670,7 @@ class Predictor(object):
                        regressor=default_regressor,
                        regressor_params=default_regressor_params,
                       ):
+        raise NotImplementedError("Untested, should be close to working.")
 
         if traits is None:
             traits = self.continuous_traits
@@ -686,7 +692,7 @@ class Predictor(object):
         feature_scoring_fun: fxn that yields higher values for better features
         score_cutoff_fun fxn that that takes output of feature_scoring_fun and returns a cutoff
         """
-
+        raise NotImplementedError("Untested, should be close to working.")
         if traits is None:
             traits = self.continuous_traits
 
