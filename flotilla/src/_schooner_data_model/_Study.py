@@ -156,7 +156,7 @@ class Study(Cargo):
         def do_interact(group_id=self.default_group_id, data_type='expression',
                         featurewise=False, draw_labels=False, degree_cut=1,
                         cov_std_cut=1.8, n_pcs=5, feature_of_interest="RBFOX2",
-                        list_name=self.default_list_id):
+                        list_name=self.default_list_id, savefile=''):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -172,7 +172,8 @@ class Study(Cargo):
                        featurewise=featurewise, draw_labels=draw_labels,
                        degree_cut=degree_cut, cov_std_cut=cov_std_cut, n_pcs = n_pcs,
                        feature_of_interest=feature_of_interest)
-
+            if savefile is not '':
+                plt.gcf().savefig(savefile)
         all_lists = list(set(self.expression.lists.keys() + self.splicing.lists.keys()))
         interact(do_interact, group_id=self.default_group_ids,
                 data_type=('expression', 'splicing'),
@@ -192,7 +193,7 @@ class Study(Cargo):
         #not sure why nested fxns are required for this, but they are... i think...
         def do_interact(data_type='expression',
                         list_name=self.default_list_id, group_id=self.default_group_id,
-                        categorical_variable='outlier', feature_score_std_cutoff=2):
+                        categorical_variable='outlier', feature_score_std_cutoff=2, savefile=''):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -203,14 +204,16 @@ class Study(Cargo):
                 data_obj = self.expression
             if data_type == 'splicing':
                 data_obj = self.splicing
+                print "yay, splicing!"
 
             assert(list_name in data_obj.lists.keys())
 
             prd = data_obj.get_predictor(list_name, group_id, categorical_variable)
             prd(categorical_variable, feature_score_std_cutoff=feature_score_std_cutoff)
-            print "retrieve this predictor with:\nprd=study.get_predictor('%s', '%s', '%s')\npca=prd('%s', %f)" \
-            % (list_name, group_id, categorical_variable, categorical_variable, feature_score_std_cutoff)
-
+            print "retrieve this predictor with:\nprd=study.%s.get_predictor('%s', '%s', '%s')\npca=prd('%s', %f)" \
+            % (data_type, list_name, group_id, categorical_variable, categorical_variable, feature_score_std_cutoff)
+            if savefile is not '':
+                plt.gcf().savefig(savefile)
         all_lists = list(set(self.expression.lists.keys() + self.splicing.lists.keys()))
         interact(do_interact,
                 data_type=('expression', 'splicing'),

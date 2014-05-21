@@ -12,20 +12,18 @@ seaborn.set_context('paper')
 
 
 class ExpressionData(Data):
-    _default_reducer_args = Data._default_reducer_args
 
-    samplewise_reduction = {}
-    featurewise_reduction = {}
-    lists = {}
-    var_cut=0.5
-    expr_cut=0.1
-    #=study.expression,
-    #                                         sample_descriptors= study.sample_info,
-    #                                         gene_descriptors=study.expression_info,
+
+    _var_cut=0.5
+    _expr_cut=0.1
+
+
     def __init__(self, expression_df, sample_descriptors,
-                 gene_descriptors = None,
-                 var_cut=var_cut, expr_cut=expr_cut, load_cargo=True, rename=True,
+                 gene_descriptors= None,
+                 var_cut=_var_cut, expr_cut=_expr_cut, load_cargo=True, rename=True,
                  ):
+
+        super(ExpressionData, self).__init__()
         self.sample_descriptors = sample_descriptors
         self.gene_descriptors = gene_descriptors
         self.expression_df = expression_df

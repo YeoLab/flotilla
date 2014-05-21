@@ -1,5 +1,4 @@
 from scipy.spatial.distance import pdist, squareform
-from sklearn.decomposition import PCA
 
 
 class Data(object):
@@ -13,15 +12,21 @@ class Data(object):
     -------
 
     """
-    _default_group_id = 'any_cell'
-    _default_list_id = 'variant'
 
-    def __init__(self, data, n_components, step=0.1, reducer=PCA):
-        """Constructor for Data
+    def __init__(self):
 
-        Specific implementation in the SplicingData and ExpressionData classes
-        """
-        raise NotImplementedError
+        self.samplewise_reduction = {}
+        self.featurewise_reduction = {}
+        self.clf_dict = {}
+        self.lists = {}
+
+        self.pca_plotting_args = {}
+        self._default_reducer_args = {'whiten':False, 'show_point_labels':False, }
+        self._default_featurewise=False
+        self._last_reducer_accessed = None
+        self._last_predictor_accessed = None
+        self._default_group_id = 'any_cell'
+        self._default_list_id = 'variant'
 
     def calculate_distances(self, metric='euclidean'):
         """Creates a squareform distance matrix for clustering fun
@@ -71,13 +76,7 @@ class Data(object):
             raise TypeError("not a naming function")
 
 
-    _default_reducer_args = {'whiten':False, 'show_point_labels':False, }
-    #_default_list = _default_list_id
-    _default_featurewise=False
-    samplewise_reduction = {}
-    featurewise_reduction = {}
-    pca_plotting_args = {}
-    predictors = {}
+
 
 
     #def interactive_dim_reduction_plot(self):
@@ -118,8 +117,8 @@ class Data(object):
                                  **predictor_args)
         clf(plotting_args=local_plotting_args)
 
-
         return self
+
     def plot_dimensionality_reduction(self, x_pc=1, y_pc=2, obj_id=None, group_id=None,
                                       list_name=None, featurewise=None, **plotting_args):
 
@@ -142,7 +141,6 @@ class Data(object):
             )
         return self
 
-    _last_reducer_accessed = None
     def get_reduced(self, obj_id=None, list_name=None, group_id=None, featurewise=None, **reducer_args):
         _used_default_group = False
         if group_id is None:
@@ -184,9 +182,6 @@ class Data(object):
 
         return rdc_dict[obj_id]
 
-    clf_dict = {}
-    _last_predictor_accessed = None
-
     def get_predictor(self, gene_list_name=None, sample_list_name=None, clf_var=None,
                       obj_id=None,
                       **predictor_args):
@@ -195,6 +190,7 @@ class Data(object):
         obj_id = name of this classifier
         clf_var = boolean or categorical pd.Series
         """
+
         _used_default_group = False
         if sample_list_name is None:
             sample_list_name = self._default_group_id
@@ -216,6 +212,8 @@ class Data(object):
                 obj_id = self._last_predictor_accessed
 
         self._last_predictor_accessed = obj_id
+        #print "I am a %s" % type(self)
+        #print "here are my clf_dict keys: %s" % " ".join(self.clf_dict.keys())
         try:
             return self.clf_dict[obj_id]
         except:

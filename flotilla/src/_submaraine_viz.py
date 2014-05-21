@@ -110,7 +110,7 @@ class Reduction_viz(object):
         #self._validate_params(self._default_plotting_args, **kwargs)
         from matplotlib.gridspec import GridSpec, GridSpecFromSubplotSpec
         import pylab
-        gs_x = 13
+        gs_x = 14
         gs_y = 12
 
         if ax is None:
@@ -122,8 +122,8 @@ class Reduction_viz(object):
 
         ax_components = pylab.subplot(gs[:, :5])
         #ax_components.set_aspect('equal')
-        ax_loading1 = pylab.subplot(gs[1:5, 5:])
-        ax_loading2 = pylab.subplot(gs[7:11, 5:])
+        ax_loading1 = pylab.subplot(gs[:, 6:8])
+        ax_loading2 = pylab.subplot(gs[:, 10:14])
 
         passed_kwargs = kwargs
         local_kwargs = self.plotting_args.copy()
@@ -284,16 +284,17 @@ class Reduction_viz(object):
         b = x[-half_features:]
         if ax is None:
             ax = pylab.gca()
-        ax.plot(np.r_[a,b], 'o')
-        ax.set_xticks(np.arange(n_features))
+        dd = np.r_[a,b]
+        ax.plot(dd,np.arange(len(dd)), 'o', label='hi')
+        ax.set_yticks(np.arange(n_features))
         labels = np.r_[a.index, b.index]
         shorten = lambda x: "id too long" if len(x) > 15 else x
-        _ = ax.set_xticklabels(map(shorten, labels), rotation=90)
+        _ = ax.set_yticklabels(map(shorten, labels))#, rotation=90)
         ax.set_title("loadings on " + pc)
-        x_offset = 0.5
-        xmin, xmax = ax.get_xlim()
-        ax.set_xlim(left=xmin-x_offset, right=xmax-x_offset)
-
+        x_offset = max(dd) * .05
+        #xmin, xmax = ax.get_xlim()
+        ax.set_xlim(left=min(dd)-x_offset, right=max(dd)+x_offset)
+        [lab.set_rotation(90) for lab in ax.get_xticklabels()]
         seaborn.despine(ax=ax)
 
     def plot_explained_variance(self, title="PCA"):
@@ -579,7 +580,7 @@ class PredictorViz(Predictor, Reduction_viz):
         gs_y = 12
 
         if ax is None:
-            fig, ax = plt.subplots(1,1,figsize=(12,6))
+            fig, ax = plt.subplots(1,1,figsize=(18, 8))
             gs = GridSpec(gs_x,gs_y)
 
         else:
@@ -590,7 +591,7 @@ class PredictorViz(Predictor, Reduction_viz):
         ax_scores.set_xlabel("Feature Importance")
         ax_scores.set_ylabel("Density Estimate")
         self.plot_classifier_scores([trait], ax=ax_scores)
-        pca = self.do_pca(trait, ax=ax_pca)
+        pca = self.do_pca(trait, ax=ax_pca, show_vectors=True)
         plt.tight_layout()
         return pca
 
@@ -610,10 +611,11 @@ class PredictorViz(Predictor, Reduction_viz):
 
         for trait in traits:
             clf = self.classifiers_[trait][classifier_name]
-            seaborn.kdeplot(clf.scores_, shade=True, ax=ax, label="%s, %d features" % (trait,
-                                                                                       np.sum(clf.good_features_)))
+            seaborn.kdeplot(clf.scores_, shade=True, ax=ax, label="%s\n%d features\noob:%.2f" % (trait,
+                                                                                       np.sum(clf.good_features_),
+            clf.oob_score_))
+            ax.axvline(x=clf.score_cutoff_)
 
-        ax.axvline(x=clf.score_cutoff_)
         [lab.set_rotation(90) for lab in ax.get_xticklabels()]
         seaborn.despine(ax=ax)
 
