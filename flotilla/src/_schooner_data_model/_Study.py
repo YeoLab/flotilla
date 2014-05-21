@@ -119,7 +119,7 @@ class Study(Cargo):
         #not sure why nested fxns are required for this, but they are... i think...
         def do_interact(group_id=self.default_group_id, data_type='expression',
                         featurewise=False, x_pc=1, y_pc=2, show_point_labels=False, list_link = '',
-                        list_name=self.default_list_id, savefile = ''):
+                        list_name=self.default_list_id, savefile = 'last.pca.pdf'):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -156,7 +156,7 @@ class Study(Cargo):
         def do_interact(group_id=self.default_group_id, data_type='expression',
                         featurewise=False, draw_labels=False, degree_cut=1,
                         cov_std_cut=1.8, n_pcs=5, feature_of_interest="RBFOX2",
-                        list_name=self.default_list_id, savefile=''):
+                        list_name=self.default_list_id, savefile='last.graph.pdf'):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -191,9 +191,9 @@ class Study(Cargo):
         from IPython.html.widgets import interact
 
         #not sure why nested fxns are required for this, but they are... i think...
-        def do_interact(data_type='expression',
+        def do_interact(data_type='splicing',
                         list_name=self.default_list_id, group_id=self.default_group_id,
-                        categorical_variable='outlier', feature_score_std_cutoff=2, savefile=''):
+                        categorical_variable='outlier', feature_score_std_cutoff=2, savefile='last.clf.pdf'):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -204,13 +204,13 @@ class Study(Cargo):
                 data_obj = self.expression
             if data_type == 'splicing':
                 data_obj = self.splicing
-                print "yay, splicing!"
 
             assert(list_name in data_obj.lists.keys())
 
             prd = data_obj.get_predictor(list_name, group_id, categorical_variable)
             prd(categorical_variable, feature_score_std_cutoff=feature_score_std_cutoff)
-            print "retrieve this predictor with:\nprd=study.%s.get_predictor('%s', '%s', '%s')\npca=prd('%s', %f)" \
+            print "retrieve this predictor with:\nprd=study.%s.get_predictor('%s', '%s', '%s')\n\
+pca=prd('%s', feature_score_std_cutoff=%f)" \
             % (data_type, list_name, group_id, categorical_variable, categorical_variable, feature_score_std_cutoff)
             if savefile is not '':
                 plt.gcf().savefig(savefile)
@@ -222,7 +222,6 @@ class Study(Cargo):
                 categorical_variable=[i for i in self.default_group_ids if not i.startswith("~")],
                 feature_score_std_cutoff = (0.1, 20),
                 draw_labels=False,
-                feature_of_interest="RBFOX2"
                 )
     #TODO:draw_last_graph function.
 from _ExpressionData import ExpressionData

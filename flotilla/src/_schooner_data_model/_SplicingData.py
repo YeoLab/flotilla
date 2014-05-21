@@ -40,10 +40,23 @@ class SplicingData(Data):
         self.splicing_df = splicing
         self.binsize = binsize
         psi_variant = pd.Index([i for i,j in (splicing.var().dropna() > var_cut).iteritems() if j])
-
+        self.set_naming_fun(self.namer)
         self.lists['variant'] = pd.Series(psi_variant, index=psi_variant)
+        self.lists['all_genes'] =  pd.Series(splicing.index, index=splicing.index)
         self.sample_descriptors = sample_descriptors
         self.event_descriptors = event_descriptors
+        self.load_colors()
+        self.load_markers()
+
+    def namer(self, x):
+        "this is for miso psi IDs..."
+        shrt = ":".join(x.split("@")[1].split(":")[:2])
+        try:
+            dd = self.event_descriptors.set_index('event_name')
+            return dd['gene_symbol'].ix[x] + " " + shrt
+        except Exception as e:
+            #print e
+            return shrt
 
     def set_binsize(self, binsize):
         self.binsize = binsize
@@ -109,7 +122,7 @@ class SplicingData(Data):
 
 
     def make_predictor(self, list_name, group_id, categorical_trait,
-                       standardize=True, predictor=PredictorViz,
+                       standardize=False, predictor=PredictorViz,
                        ):
         """
         make and cache a predictor on a categorical trait (associated with samples) subset of genes

@@ -309,10 +309,14 @@ ENSG00000160710""".split("\n")
 
 def link_to_list(link):
     try:
-        assert link.startswith("http")
+        assert link.startswith("http") or os.path.exists(os.path.abspath(link))
     except:
-        raise ValueError("use a link that starts with http")
+        raise ValueError("use a link that starts with http or a file path")
 
-    sys.stderr.write("WARNING, downloading things from the internet, potential danger from untrusted sources")
-    xx = subprocess.check_output(["curl", "-k", '--location-trusted', link]).split("\n")
+    if link.startswith("http"):
+        sys.stderr.write("WARNING, downloading things from the internet, potential danger from untrusted sources")
+        xx = subprocess.check_output(["curl", "-k", '--location-trusted', link]).split("\n")
+    elif link.startswith("/"):
+        with open(os.path.exists(os.path.abspath(link)), 'r') as f:
+            xx = map(str.strip, f.readlines())
     return xx

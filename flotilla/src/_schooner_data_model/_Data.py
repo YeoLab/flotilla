@@ -1,4 +1,6 @@
 from scipy.spatial.distance import pdist, squareform
+from collections import defaultdict
+import sys
 
 
 class Data(object):
@@ -22,11 +24,26 @@ class Data(object):
 
         self.pca_plotting_args = {}
         self._default_reducer_args = {'whiten':False, 'show_point_labels':False, }
+
+        self._default_reducer_args.update({'show_vectors':False})
         self._default_featurewise=False
         self._last_reducer_accessed = None
         self._last_predictor_accessed = None
         self._default_group_id = 'any_cell'
         self._default_list_id = 'variant'
+    def load_colors(self):
+        try:
+            self._default_reducer_args.update({'colors_dict':self.sample_descriptors.color})
+        except:
+            sys.stderr.write("color loading failed")
+            self._default_reducer_args.update({'colors_dict':defaultdict(lambda : 'r')})
+
+    def load_markers(self):
+        try:
+            self._default_reducer_args.update({'markers_dict':self.sample_descriptors.marker})
+        except:
+            sys.stderr.write("marker loading failed")
+            self._default_reducer_args.update({'markers_dict': defaultdict(lambda : 'o')})
 
     def calculate_distances(self, metric='euclidean'):
         """Creates a squareform distance matrix for clustering fun
@@ -68,12 +85,13 @@ class Data(object):
     def get_naming_fun(self):
         return self._naming_fun
 
-    def set_naming_fun(self, fun):
+    def set_naming_fun(self, fun, test_name='foo'):
         self._naming_fun = fun
         try:
-            fun('foo')
+            fun(test_name)
         except:
-            raise TypeError("not a naming function")
+            pass
+            #print "might not be a good naming function, failed on %s" % test_name
 
 
 

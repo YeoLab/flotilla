@@ -34,9 +34,9 @@ class ExpressionData(Data):
         naming_fun = self.get_naming_fun()
         self.lists.update({'all_genes':pd.Series(map(naming_fun, self.expression_df.columns),
                                                            index = self.expression_df.columns)})
-        self._default_reducer_args.update({'colors_dict':self.sample_descriptors.color})
-        self._default_reducer_args.update({'markers_dict':self.sample_descriptors.marker})
-        self._default_reducer_args.update({'show_vectors':False})
+        self.load_colors()
+        self.load_markers()
+
 
 
     def make_reduced(self, list_name, group_id, featurewise=False,

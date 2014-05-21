@@ -17,7 +17,7 @@ seaborn.set_style({'axes.axisbelow': True,
                    'axes.grid': False,
                    'axes.labelcolor': '.15',
                    'axes.linewidth': 1.25,
-                   'font.family': 'Arial',
+                   'font.family': 'Helvetica',
                    'grid.color': '.8',
                    'grid.linestyle': '-',
                    'image.cmap': 'Greys',
@@ -280,15 +280,23 @@ class Reduction_viz(object):
         x = self.components_.ix[pc].copy()
         x.sort(ascending=True)
         half_features = int(n_features/2)
-        a = x[:half_features]
-        b = x[-half_features:]
+        if len(x) > half_features:
+
+            a = x[:half_features]
+            b = x[-half_features:]
+            dd = np.r_[a,b]
+            labels = np.r_[a.index, b.index]
+
+        else:
+            dd = x
+            labels=x.index
+
         if ax is None:
             ax = pylab.gca()
-        dd = np.r_[a,b]
+
         ax.plot(dd,np.arange(len(dd)), 'o', label='hi')
-        ax.set_yticks(np.arange(n_features))
-        labels = np.r_[a.index, b.index]
-        shorten = lambda x: "id too long" if len(x) > 15 else x
+        ax.set_yticks(np.arange(max(len(dd), n_features)))
+        shorten = lambda x: "id too long" if len(x) > 30 else x
         _ = ax.set_yticklabels(map(shorten, labels))#, rotation=90)
         ax.set_title("loadings on " + pc)
         x_offset = max(dd) * .05
@@ -329,13 +337,14 @@ def plot_pca(df, **kwargs):
     return return_me
 
 
-def lavalamp(psi, color=None, title='', ax=None):
+def lavalamp(psi, color=None, jitter=None, title='', ax=None):
     """Make a 'lavalamp' scatter plot of many spliciang events
 
     Useful for visualizing many splicing events at once.
 
     Parameters
     ----------
+    TODO: (n_events, n_samples).transpose()
     df : array
         A (n_events, n_samples) matrix either as a numpy array or as a pandas
         DataFrame
@@ -370,17 +379,27 @@ def lavalamp(psi, color=None, title='', ax=None):
 
     try:
         # This is a pandas Dataframe
-        y = psi.values.T
+        y = psi.values
     except AttributeError:
         # This is a numpy array
-        y = psi.T
+        y = psi
 
-    order = get_switchy_score_order(y)
+    if jitter is None:
+        jitter = np.zeros(len(color))
+    else:
+        assert np.all(np.abs(jitter) < 1)
+        assert np.min(jitter) > -.0000000001
+
+    order = get_switchy_score_order(y.T)
+    print order.shape
     y = y[:, order]
-
+    assert type(color) == pd.Series
     # Add one so the last value is actually included instead of cut off
     xmax = x.max() + 1
-    ax.scatter(x, y, color=color, alpha=0.5, edgecolor='#262626', linewidth=0.1)
+    x_jitter = np.apply_along_axis(lambda r: r+jitter, 0, x)
+
+    for co, ji, xx, yy in zip(color, jitter, x_jitter, y.T):
+        ax.scatter(xx, yy, color=co, alpha=0.5, edgecolor='#262626', linewidth=0.1)
     seaborn.despine()
     ax.set_ylabel('$\Psi$')
     ax.set_xlabel('{} splicing events'.format(nrow))
