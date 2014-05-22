@@ -83,7 +83,7 @@ def get_switchy_score_order(x):
     return np.argsort(switchy_scores)
 
 
-def binify(df, binsize, vmin=0, vmax=1):
+def binify(df, bins):
     """Makes a histogram of each row the provided binsize
 
     Parameters
@@ -106,7 +106,7 @@ def binify(df, binsize, vmin=0, vmax=1):
 
 
     """
-    bins = np.arange(vmin, vmax + binsize, binsize)
+    # bins = np.arange(vmin, vmax + binsize, binsize)
     ncol = bins.shape[0] - 1
     nrow = df.shape[0]
     binned = np.zeros((nrow, ncol))
