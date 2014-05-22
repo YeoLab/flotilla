@@ -10,7 +10,7 @@ handles database connection, performs operations as a slave if run as a script.
 #!grep def slave.py
 import random
 
-from ._frigate_compute import *
+from .compute import *
 from ._cargo_commonObjects import *
 from ..flotilla.neural_diff_project.src.project_params import letters, min_cells, mongoHost, mongoPort
 from ..neural_diff_project.loaders import load_transcriptome_data

@@ -13,7 +13,7 @@ import sys
 import pandas as pd
 import os
 
-from .._skiff_external_sources import link_to_list, GO
+from ..external import link_to_list, GO
 from .cargo_data import go_file_name, data_path
 
 

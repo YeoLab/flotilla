@@ -2,9 +2,9 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler
 
 from _Data import Data
-from .._submaraine_viz import NMF_viz, PCA_viz
-from .._frigate_compute import binify, dropna_mean
-from .._skiff_external_sources import link_to_list
+from ..viz import NMF_viz, PCA_viz
+from ..compute import binify, dropna_mean
+from ..external import link_to_list
 
 
 class SplicingData(Data):

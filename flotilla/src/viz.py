@@ -39,7 +39,7 @@ seaborn.set_palette('deep')
 
 import pylab
 
-from ._frigate_compute import PCA, NMF
+from .compute import PCA, NMF
 
 def L1_distance(x,y):
     return abs(y) + abs(x)
@@ -354,7 +354,7 @@ def lavalamp(psi, color=None, title='', ax=None):
     fig : matplotlib.Figure
         A figure object for saving.
     """
-    from ._frigate_compute import get_switchy_score_order
+    from .compute import get_switchy_score_order
     import matplotlib.pyplot as plt
 
 
@@ -392,11 +392,11 @@ def lavalamp(psi, color=None, title='', ax=None):
     # Return the figure for saving
     # return fig
 
-from _frigate_compute import Networker
+from compute import Networker
 from matplotlib.gridspec import GridSpec
 
 import networkx as nx
-from ._barge_utils import dict_to_str
+from .utils import dict_to_str
 import matplotlib.pyplot as plt
 
 class NetworkerViz(Networker, Reduction_viz):

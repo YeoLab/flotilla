@@ -1,7 +1,7 @@
 __author__ = 'lovci'
 
 import _cargo_commonObjects as cargo
-import _frigate_compute as frigate
-import _carrier_DBconnection as carrier
-import _barge_utils as barge
-import _schooner_data_model as schooner
+import compute as frigate
+import db as carrier
+import utils as barge
+import data_model as schooner
