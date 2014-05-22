@@ -83,19 +83,16 @@ def get_switchy_score_order(x):
     return np.argsort(switchy_scores)
 
 
-def binify(df, binsize, vmin=0, vmax=1):
+def binify(df, bins):
     """Makes a histogram of each row the provided binsize
 
     Parameters
     ----------
     df : pandas.DataFrame
         The dataframe whose rows you'd like to binify.
-    binsize : float
-        Size of bins
-    vmin : float
-        Minimum value of the bins
-    vmax : float
-        Maximum value of the bins
+    bins : numpy.array
+        Bins you would like to use for this data. Must include the final bin
+        value, e.g. (0, 0.5, 1) for the two bins (0, 0.5) and (0.5, 1)
 
     Returns
     -------
@@ -106,7 +103,6 @@ def binify(df, binsize, vmin=0, vmax=1):
 
 
     """
-    bins = np.arange(vmin, vmax + binsize, binsize)
     ncol = bins.shape[0] - 1
     nrow = df.shape[0]
     binned = np.zeros((nrow, ncol))
