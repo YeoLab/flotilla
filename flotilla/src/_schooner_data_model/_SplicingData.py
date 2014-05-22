@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from sklearn.preprocessing import StandardScaler
 
 from _Data import Data
@@ -67,7 +68,8 @@ class SplicingData(Data):
             assert self._binsize == self.binsize #binsize hasn't changed
         except:
             #only bin once, until binsize is updated
-            self.binned = binify(self.splicing_df, binsize=self.binsize)
+            bins = np.arange(0, 1+self.binsize, self.binsize)
+            self.binned = binify(self.splicing_df, bins)
             self._binsize = self.binsize
         return self.binned
 
