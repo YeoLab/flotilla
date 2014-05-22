@@ -1,6 +1,3 @@
-[submodule "flotilla/project"]
-	path = flotilla/project
-	url = git@github.com:YeoLab/singlecell_data.git
 [submodule "flotilla/data"]
 	path = flotilla/data
 	url = git@github.com:YeoLab/flotilla_data.git

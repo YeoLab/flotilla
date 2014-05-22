@@ -1,0 +1,7 @@
+*.pyc
+*egg-info
+build
+dist
+.idea*
+.idea/*
+*DS_store
