@@ -56,7 +56,8 @@ class SplicingData(Data):
             assert self._binsize == self.binsize #binsize hasn't changed
         except:
             #only bin once, until binsize is updated
-            self.binned = binify(self.psi, binsize=self.binsize)
+            self.binned = binify(self.psi, bins=np.arange(0, 1+self.binsize,
+                                                          self.binsize))
             self._binsize = self.binsize
         return self.binned
 
