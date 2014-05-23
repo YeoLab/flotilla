@@ -156,7 +156,7 @@ class Study(Cargo):
         def do_interact(group_id=self.default_group_id, data_type='expression',
                         featurewise=False, draw_labels=False, degree_cut=1,
                         cov_std_cut=1.8, n_pcs=5, feature_of_interest="RBFOX2",
-                        pc_1=True, pc_2=True, pc_3=True, pc_4=True, pc_5=True,
+
                         list_name=self.default_list_id, savefile='data/last.graph.pdf'):
 
             for k, v in locals().iteritems():
@@ -172,8 +172,7 @@ class Study(Cargo):
             self.graph(list_name=list_name, group_id=group_id, data_type=data_type,
                        featurewise=featurewise, draw_labels=draw_labels,
                        degree_cut=degree_cut, cov_std_cut=cov_std_cut, n_pcs = n_pcs,
-                       use_pc_1=pc_1, use_pc_2=pc_2, use_pc_3=pc_3, use_pc_4=pc_4,
-                       use_pc_5=pc_5, feature_of_interest=feature_of_interest)
+                       feature_of_interest=feature_of_interest)
             if savefile is not '':
                 plt.gcf().savefig(savefile)
         all_lists = list(set(self.expression.lists.keys() + self.splicing.lists.keys()))
