@@ -119,7 +119,7 @@ class Study(Cargo):
         #not sure why nested fxns are required for this, but they are... i think...
         def do_interact(group_id=self.default_group_id, data_type='expression',
                         featurewise=False, x_pc=1, y_pc=2, show_point_labels=False, list_link = '',
-                        list_name=self.default_list_id, savefile = 'last.pca.pdf'):
+                        list_name=self.default_list_id, savefile = 'data/last.pca.pdf'):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -156,7 +156,8 @@ class Study(Cargo):
         def do_interact(group_id=self.default_group_id, data_type='expression',
                         featurewise=False, draw_labels=False, degree_cut=1,
                         cov_std_cut=1.8, n_pcs=5, feature_of_interest="RBFOX2",
-                        list_name=self.default_list_id, savefile='last.graph.pdf'):
+                        pc_1=True, pc_2=True, pc_3=True, pc_4=True, pc_5=True,
+                        list_name=self.default_list_id, savefile='data/last.graph.pdf'):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -171,7 +172,8 @@ class Study(Cargo):
             self.graph(list_name=list_name, group_id=group_id, data_type=data_type,
                        featurewise=featurewise, draw_labels=draw_labels,
                        degree_cut=degree_cut, cov_std_cut=cov_std_cut, n_pcs = n_pcs,
-                       feature_of_interest=feature_of_interest)
+                       use_pc_1=pc_1, use_pc_2=pc_2, use_pc_3=pc_3, use_pc_4=pc_4,
+                       use_pc_5=pc_5, feature_of_interest=feature_of_interest)
             if savefile is not '':
                 plt.gcf().savefig(savefile)
         all_lists = list(set(self.expression.lists.keys() + self.splicing.lists.keys()))
@@ -193,7 +195,7 @@ class Study(Cargo):
         #not sure why nested fxns are required for this, but they are... i think...
         def do_interact(data_type='splicing',
                         list_name=self.default_list_id, group_id=self.default_group_id,
-                        categorical_variable='outlier', feature_score_std_cutoff=2, savefile='last.clf.pdf'):
+                        categorical_variable='outlier', feature_score_std_cutoff=2, savefile='data/last.clf.pdf'):
 
             for k, v in locals().iteritems():
                 if k == 'self':

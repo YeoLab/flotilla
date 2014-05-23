@@ -8,7 +8,9 @@ CLIPdata data model
 
 add title to NetworkerViz graph
 
-make Predictor less nested
+make Predictor.classifiers_ less nested (this is relic from old code)
+
+Predictor.has_been_*_yet should be dictionaries that manage each trait separately
 
 Study
    interactive_predictor

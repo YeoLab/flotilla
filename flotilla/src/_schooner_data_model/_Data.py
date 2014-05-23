@@ -31,6 +31,7 @@ class Data(object):
         self._last_predictor_accessed = None
         self._default_group_id = 'any_cell'
         self._default_list_id = 'variant'
+
     def load_colors(self):
         try:
             self._default_reducer_args.update({'colors_dict':self.sample_descriptors.color})

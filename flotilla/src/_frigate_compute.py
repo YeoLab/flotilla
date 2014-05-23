@@ -417,11 +417,11 @@ class Networker(object):
     def __init__(self):
         self.adjacencies_ = defaultdict()
         self.graphs_ = defaultdict()
+        self._default_node_color_mapper = lambda x: 'r'
+        self._default_node_size_mapper = lambda x: 300
+        self._last_adjacency_accessed = None
+        self._last_graph_accessed = None
 
-    _default_node_color_mapper = lambda x: 'r'
-    _default_node_size_mapper = lambda x: 300
-
-    _last_adjacency_accessed = None
     def get_adjacency(self, reduced_space=None, name=None, use_pc_1=True, use_pc_2=True, use_pc_3=True, use_pc_4=True,
                       n_pcs=5,):
         #print "name:", name
@@ -457,12 +457,16 @@ class Networker(object):
 
         return self.adjacencies_[name]
 
-    _last_graph_accessed = None
     def get_graph(self, adjacency=None, cov_cut=None, name=None,
-                  node_color_mapper=_default_node_color_mapper,
-                  node_size_mapper=_default_node_size_mapper,
+                  node_color_mapper=None,
+                  node_size_mapper=None,
                   degree_cut = 2,
                   wt_fun='abs'):
+        if node_color_mapper is None:
+            node_color_mapper = self._default_node_color_mapper
+        if node_size_mapper is None:
+            node_size_mapper = self._default_node_size_mapper
+
         if name is None:
             if self._last_graph_accessed is None:
                 name = 'default'

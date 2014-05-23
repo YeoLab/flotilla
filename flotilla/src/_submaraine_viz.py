@@ -487,7 +487,7 @@ class NetworkerViz(Networker, Reduction_viz):
 
         if featurewise:
             node_color_mapper = lambda x: 'r' if x == feature_of_interest else 'k'
-            node_size_mapper = lambda x: (pca.means.ix[x]**2)*33
+            node_size_mapper = lambda x: (pca.means.ix[x]**2) + 10
         else:
             node_color_mapper = lambda x: self.data_obj.sample_descriptors.color[x]
             node_size_mapper = lambda x: 75
