@@ -20,6 +20,7 @@ class Data(object):
         self.samplewise_reduction = {}
         self.featurewise_reduction = {}
         self.clf_dict = {}
+        self.localZ_dict = {}
         self.lists = {}
 
         self.pca_plotting_args = {}
@@ -256,6 +257,12 @@ class Data(object):
 
     def twoway(self, sample1, sample2, **kwargs):
         from .._submaraine_viz import TwoWayScatterViz
-        vz = TwoWayScatterViz(sample1, sample2, self.df, **kwargs)
+        pCut = kwargs['pCut']
+        this_name = "_".join([sample1, sample2, str(pCut)])
+        if this_name in self.localZ_dict:
+            vz = self.localZ_dict[this_name]
+        else:
+            vz = TwoWayScatterViz(sample1, sample2, self.df, **kwargs)
+            self.localZ_dict[this_name] = vz
         vz()
         return vz

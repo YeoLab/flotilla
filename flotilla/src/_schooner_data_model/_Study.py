@@ -55,7 +55,6 @@ class Study(Cargo):
         self.expression_networks = NetworkerViz(self.expression)
         self.splicing_networks = NetworkerViz(self.splicing)
 
-
     def detect_outliers(self):
         """Detects outlier cells from expression, mapping, and splicing study_data and labels the outliers as such for future analysis.
 
@@ -261,7 +260,7 @@ pca=prd('%s', feature_score_std_cutoff=%f)" \
                 print "sample: %s, is not in %s DataFrame, try a different sample ID" % (sample2, data_type)
                 return
             self.localZ_result = data_obj.twoway(sample1, sample2, pCut=pCut).result_
-            print "localZ finished, find the result in <this_obj>.localZ_result"
+            print "localZ finished, find the result in <this_obj>.localZ_result_"
         interact(do_interact,
                 data_type=('expression', 'splicing'),
                 sample1='replaceme',
