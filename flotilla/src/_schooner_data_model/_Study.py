@@ -114,11 +114,13 @@ class Study(Cargo):
 
 
     def interactive_pca(self):
+
         from IPython.html.widgets import interact
 
         #not sure why nested fxns are required for this, but they are... i think...
         def do_interact(group_id=self.default_group_id, data_type='expression',
                         featurewise=False, x_pc=1, y_pc=2, show_point_labels=False, list_link = '',
+
                         list_name=self.default_list_id, savefile = 'data/last.pca.pdf'):
 
             for k, v in locals().iteritems():
@@ -149,6 +151,7 @@ class Study(Cargo):
                  x_pc=(1,10),  y_pc=(1,10),
                  show_point_labels=False, )
 
+
     def interactive_graph(self):
         from IPython.html.widgets import interact
 
@@ -156,8 +159,9 @@ class Study(Cargo):
         def do_interact(group_id=self.default_group_id, data_type='expression',
                         featurewise=False, draw_labels=False, degree_cut=1,
                         cov_std_cut=1.8, n_pcs=5, feature_of_interest="RBFOX2",
-
-                        list_name=self.default_list_id, savefile='data/last.graph.pdf'):
+                        use_pc_1=True, use_pc_2=True, use_pc_3=True, use_pc_4=True,
+                        list_name=self.default_list_id, savefile='data/last.graph.pdf',
+                        weight_fun=['abs', 'arctan', 'arctan_sq', 'sq']):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -172,9 +176,12 @@ class Study(Cargo):
             self.graph(list_name=list_name, group_id=group_id, data_type=data_type,
                        featurewise=featurewise, draw_labels=draw_labels,
                        degree_cut=degree_cut, cov_std_cut=cov_std_cut, n_pcs = n_pcs,
-                       feature_of_interest=feature_of_interest)
+                       feature_of_interest=feature_of_interest,
+                       use_pc_1=use_pc_1, use_pc_2=use_pc_2, use_pc_3=use_pc_3, use_pc_4=use_pc_4,
+                       wt_fun=weight_fun)
             if savefile is not '':
                 plt.gcf().savefig(savefile)
+
         all_lists = list(set(self.expression.lists.keys() + self.splicing.lists.keys()))
         interact(do_interact, group_id=self.default_group_ids,
                 data_type=('expression', 'splicing'),
@@ -184,7 +191,8 @@ class Study(Cargo):
                 degree_cut = (0,10),
                 n_pcs=(2,100),
                 draw_labels=False,
-                feature_of_interest="RBFOX2"
+                feature_of_interest="RBFOX2",
+                use_pc_1=True, use_pc_2=True, use_pc_3=True, use_pc_4=True,
                 )
 
     def interactive_clf(self):
@@ -192,7 +200,7 @@ class Study(Cargo):
         from IPython.html.widgets import interact
 
         #not sure why nested fxns are required for this, but they are... i think...
-        def do_interact(data_type='splicing',
+        def do_interact(data_type='expression',
                         list_name=self.default_list_id, group_id=self.default_group_id,
                         categorical_variable='outlier', feature_score_std_cutoff=2, savefile='data/last.clf.pdf'):
 
@@ -224,11 +232,45 @@ pca=prd('%s', feature_score_std_cutoff=%f)" \
                 feature_score_std_cutoff = (0.1, 20),
                 draw_labels=False,
                 )
-    #TODO:draw_last_graph function.
+
+    def interactive_localZ(self):
+
+        from IPython.html.widgets import interact
+
+        def do_interact(data_type='expression', sample1='', sample2='', pCut='0.01'):
+
+            for k, v in locals().iteritems():
+                if k == 'self':
+                    continue
+                print k, ":", v
+            pCut = float(pCut)
+            assert pCut > 0
+            if data_type == 'expression':
+                data_obj = self.expression
+            if data_type == 'splicing':
+                data_obj = self.splicing
+
+            try:
+                assert sample1 in data_obj.df.index
+            except:
+                print "sample: %s, is not in %s DataFrame, try a different sample ID" % (sample1, data_type)
+                return
+            try:
+                assert sample2 in data_obj.df.index
+            except:
+                print "sample: %s, is not in %s DataFrame, try a different sample ID" % (sample2, data_type)
+                return
+            self.localZ_result = data_obj.twoway(sample1, sample2, pCut=pCut).result_
+            print "localZ finished, find the result in <this_obj>.localZ_result"
+        interact(do_interact,
+                data_type=('expression', 'splicing'),
+                sample1='replaceme',
+                sample2='replaceme',
+                pCut='0.01')
+
 from _ExpressionData import ExpressionData
 from _SplicingData import SplicingData
 cargo = Cargo()
-
 
 class ExpressionStudy(ExpressionData):
 

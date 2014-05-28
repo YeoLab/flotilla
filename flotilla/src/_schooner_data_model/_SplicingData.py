@@ -39,6 +39,7 @@ class SplicingData(Data):
         """
         super(SplicingData, self).__init__()
         self.splicing_df = splicing
+        self.df = splicing
         self.binsize = binsize
         psi_variant = pd.Index([i for i,j in (splicing.var().dropna() > var_cut).iteritems() if j])
         self.set_naming_fun(self.namer)

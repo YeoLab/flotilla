@@ -253,3 +253,9 @@ class Data(object):
 
         self.min_samples = min_samples
         return self
+
+    def twoway(self, sample1, sample2, **kwargs):
+        from .._submaraine_viz import TwoWayScatterViz
+        vz = TwoWayScatterViz(sample1, sample2, self.df, **kwargs)
+        vz()
+        return vz

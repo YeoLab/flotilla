@@ -36,10 +36,15 @@ seaborn.set_style({'axes.axisbelow': True,
                    'ytick.minor.size': 0})
 
 seaborn.set_palette('deep')
+blue = seaborn.color_palette()[0]
+green =seaborn.color_palette()[1]
+red = seaborn.color_palette()[2]
 
-import pylab
+import matplotlib.pyplot as plt
 
-from ._frigate_compute import PCA, NMF
+from ._frigate_compute import PCA, NMF, TwoWayGeneComparisonLocal, Networker, nx
+from matplotlib.gridspec import GridSpec, GridSpecFromSubplotSpec
+from ._barge_utils import dict_to_str
 
 def L1_distance(x,y):
     return abs(y) + abs(x)
@@ -81,15 +86,14 @@ class Reduction_viz(object):
         """
 
     _default_plotting_args = {'ax':None, 'x_pc':'pc_1', 'y_pc':'pc_2',
-                      'num_vectors':20, 'title':'Dimensionality Reduction', 'title_size':None, 'axis_label_size':None,
+                      'num_vectors':20, 'title':'Dimensionality Reduction',
+                      'title_size':None, 'axis_label_size':None,
                       'colors_dict':None, 'markers_dict':None, 'markers_size_dict':None,
                       'default_marker_size':100, 'distance_metric':'L1',
                       'show_vectors':True, 'c_scale':None, 'vector_width':None, 'vector_colors_dict':None,
                       'show_vector_labels':True,  'vector_label_size':None,
                       'show_point_labels':True, 'point_label_size':None, 'scale_by_variance':True}
-
     _default_reduction_args = { 'n_components':None, 'whiten':False}
-
     _default_args = dict(_default_plotting_args.items() + _default_reduction_args.items())
 
     def __init__(self, df, **kwargs):
@@ -108,22 +112,21 @@ class Reduction_viz(object):
 
     def __call__(self, ax=None, **kwargs):
         #self._validate_params(self._default_plotting_args, **kwargs)
-        from matplotlib.gridspec import GridSpec, GridSpecFromSubplotSpec
-        import pylab
         gs_x = 14
         gs_y = 12
 
         if ax is None:
-            fig, ax = pylab.subplots(1,1,figsize=(12,6))
+
+            fig, ax = plt.subplots(1,1,figsize=(12,6))
             gs = GridSpec(gs_x,gs_y)
 
         else:
             gs = GridSpecFromSubplotSpec(gs_x,gs_y,ax.get_subplotspec())
 
-        ax_components = pylab.subplot(gs[:, :5])
+        ax_components = plt.subplot(gs[:, :5])
         #ax_components.set_aspect('equal')
-        ax_loading1 = pylab.subplot(gs[:, 6:8])
-        ax_loading2 = pylab.subplot(gs[:, 10:14])
+        ax_loading1 = plt.subplot(gs[:, 6:8])
+        ax_loading2 = plt.subplot(gs[:, 10:14])
 
         passed_kwargs = kwargs
         local_kwargs = self.plotting_args.copy()
@@ -132,7 +135,7 @@ class Reduction_viz(object):
         self.plot_samples(**local_kwargs)
         self.plot_loadings(pc=local_kwargs['x_pc'], ax=ax_loading1)
         self.plot_loadings(pc=local_kwargs['y_pc'], ax=ax_loading2)
-        pylab.tight_layout()
+        plt.tight_layout()
         return self
 
 
@@ -147,7 +150,6 @@ class Reduction_viz(object):
                                  "%s. acceptable values are:\n%s" % (key, "\n".join(valid.keys())))
 
     def plot_samples(self, **kwargs):
-        from pylab import gcf
         self._validate_params(self._default_plotting_args, **kwargs)
         default_params = self.plotting_args.copy() #fill missing parameters
         default_params.update(kwargs)
@@ -167,7 +169,7 @@ class Reduction_viz(object):
         x_loading, y_loading = self.components_.ix[x_pc], self.components_.ix[y_pc]
 
         if ax is None:
-            fig, ax = pylab.subplots(1,1, figsize=(5,5))
+            fig, ax = plt.subplots(1,1, figsize=(5,5))
         self.ax = ax
 
         reduced_space = self.reduced_space
@@ -178,7 +180,7 @@ class Reduction_viz(object):
             c_scale = .75 * max([norm(point) for point in zip(x_list, y_list)]) / \
                       max([norm(vector) for vector in zip(x_loading, y_loading)])
 
-        figsize = tuple(gcf().get_size_inches())
+        figsize = tuple(plt.gcf().get_size_inches())
         size_scale = sqrt(figsize[0] * figsize[1]) / 1.5
         default_marker_size = size_scale*5 if not default_marker_size else default_marker_size
         vector_width = .5 if not vector_width else vector_width
@@ -276,7 +278,6 @@ class Reduction_viz(object):
 
     def plot_loadings(self, pc='pc_1', n_features=50, ax=None):
 
-        import pylab
         x = self.components_.ix[pc].copy()
         x.sort(ascending=True)
         half_features = int(n_features/2)
@@ -292,7 +293,7 @@ class Reduction_viz(object):
             labels=x.index
 
         if ax is None:
-            ax = pylab.gca()
+            ax = plt.gca()
 
         ax.plot(dd,np.arange(len(dd)), 'o', label='hi')
         ax.set_yticks(np.arange(max(len(dd), n_features)))
@@ -412,12 +413,6 @@ def lavalamp(psi, color=None, jitter=None, title='', ax=None):
     # Return the figure for saving
     # return fig
 
-from _frigate_compute import Networker
-from matplotlib.gridspec import GridSpec
-
-import networkx as nx
-from ._barge_utils import dict_to_str
-import matplotlib.pyplot as plt
 
 class NetworkerViz(Networker, Reduction_viz):
 
@@ -476,7 +471,7 @@ class NetworkerViz(Networker, Reduction_viz):
         ax_cov = plt.axes([0.1, 0.1, .2, .15])
         ax_degree = plt.axes([0.9,.8,.2,.15])
         #ax3 = plt.subplot(gs[2])
-        #ax4 = pylab.subplot(gs[3])
+        #ax4 = plt.subplot(gs[3])
         #ax2.set_aspect(3)
 
 
@@ -531,8 +526,8 @@ class NetworkerViz(Networker, Reduction_viz):
         #                       ax=ax4, alpha=0.5)
         try:
             nx.draw_networkx_nodes(g, pos, node_color=map(lambda x: pca.X[feature_of_interest].ix[x], g.nodes()),
-                               cmap=pylab.cm.Greys,
-                               node_size=map(lambda x: node_size_mapper(x) * .5, g.nodes()), ax=main_ax, alpha=1)
+                                   cmap=plt.cm.Greys,
+                                   node_size=map(lambda x: node_size_mapper(x) * .5, g.nodes()), ax=main_ax, alpha=1)
         except:
             pass
         nmr = lambda x:x
@@ -618,7 +613,7 @@ class PredictorViz(Predictor, Reduction_viz):
     def plot_classifier_scores(self, traits, ax=None, classifier_name=None):
         """
         plot kernel density of classifier scores and draw a vertical line where the cutoff was selected
-        ax - ax to plot on. if None: pylab.gca()
+        ax - ax to plot on. if None: plt.gca()
         """
 
 
@@ -626,7 +621,7 @@ class PredictorViz(Predictor, Reduction_viz):
             classifier_name = self.default_classifier_name
 
         if ax==None:
-            ax = pylab.gca()
+            ax = plt.gca()
 
         for trait in traits:
             clf = self.classifiers_[trait][classifier_name]
@@ -721,7 +716,7 @@ class PredictorViz(Predictor, Reduction_viz):
 
         """
         plot kernel density of classifier scores and draw a vertical line where the cutoff was selected
-        ax - ax to plot on. if None: pylab.gca()
+        ax - ax to plot on. if None: plt.gca()
         """
 
         assert trait in self.traits
@@ -729,7 +724,7 @@ class PredictorViz(Predictor, Reduction_viz):
         assert self.has_been_scored_yet
 
         if ax is None:
-            ax = pylab.gca()
+            ax = plt.gca()
         if classifier_name is None:
             classifier_name = self.default_classifier_name
 
@@ -738,9 +733,6 @@ class PredictorViz(Predictor, Reduction_viz):
         pca = PCA_viz(self.X.ix[:, self.classifiers_[trait][classifier_name].good_features_], **local_plotting_args)
         pca(ax=ax)
         return pca
-
-
-
 
 def clusterGram(dataFrame, distance_metric = 'euclidean', linkage_method = 'average',
             outfile = None, clusterRows=True, clusterCols=True, timeSeries=False, doCovar=False,
@@ -851,9 +843,43 @@ def clusterGram(dataFrame, distance_metric = 'euclidean', linkage_method = 'aver
     [i.set_color(row_label_color_fun(i.get_text())) for i in ax1.get_yticklabels()]
     [i.set_color(col_label_color_fun(i.get_text())) for i in ax2.get_xticklabels()]
 
-
     plt.tight_layout()
 
     if outfile is not None:
         fig.savefig(outfile)
     return event_order, sample_order
+
+
+class TwoWayScatterViz(TwoWayGeneComparisonLocal):
+
+    def __call__(self, **kwargs):
+        self.plot(**kwargs)
+
+    def plot(self, ax=None):
+
+        co = [] #colors container
+        for label, (pVal, logratio, isSig) in self.result_.get(["pValue", "log2Ratio", "isSig"]).iterrows():
+            if (pVal < self.pCut) and isSig:
+                if logratio > 0:
+                    co.append(red)
+                elif logratio < 0:
+                    co.append(green)
+                else:
+                    raise Exception
+            else:
+                co.append(blue)
+
+        if ax == None:
+            ax = plt.gca()
+
+        ax.set_aspect('equal')
+        minVal=np.min(np.c_[self.sample1, self.sample2])
+        ax.scatter(self.sample1, self.sample2, c=co, alpha=0.7, edgecolor='none')
+        ax.set_xlabel("%s %s" % (self.sampleNames[0], self.dtype))
+        ax.set_ylabel("%s %s" % (self.sampleNames[1], self.dtype))
+        ax.set_yscale('log')
+        ax.set_xscale('log')
+        ax.set_xlim(xmin=max(minVal, 0.1))
+        ax.set_ylim(ymin=max(minVal, 0.1))
+        if ax == None:
+            plt.tight_layout()

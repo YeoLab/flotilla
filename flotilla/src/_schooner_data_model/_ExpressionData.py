@@ -26,6 +26,7 @@ class ExpressionData(Data):
         super(ExpressionData, self).__init__()
         self.sample_descriptors = sample_descriptors
         self.gene_descriptors = gene_descriptors
+        self.df = expression_df
         self.expression_df = expression_df
         self.sparse_df = expression_df[expression_df > expr_cut]
         rpkm_variant = pd.Index([i for i, j in (expression_df.var().dropna() > var_cut).iteritems() if j])
@@ -36,7 +37,6 @@ class ExpressionData(Data):
                                                            index = self.expression_df.columns)})
         self.load_colors()
         self.load_markers()
-
 
 
     def make_reduced(self, list_name, group_id, featurewise=False,
@@ -66,7 +66,8 @@ class ExpressionData(Data):
             sample_ind = pd.Series(self.sample_descriptors[group_id], dtype='bool')
 
         sample_ind = sample_ind[sample_ind].index
-        subset = self.sparse_df.ix[sample_ind, gene_list.index]
+        subset = self.sparse_df.ix[sample_ind]
+        subset = subset.T.ix[gene_list.index].T
         frequent = pd.Index([i for i, j in (subset.count() > min_samples).iteritems() if j])
         subset = subset[frequent]
         #fill na with mean for each event
