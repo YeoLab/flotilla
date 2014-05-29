@@ -96,18 +96,6 @@ class Data(object):
             #print "might not be a good naming function, failed on %s" % test_name
 
 
-
-
-
-    #def interactive_dim_reduction_plot(self):
-    #    from IPython.html.widgets import interactive
-    #    interactive(self.auto_dim_reduction_plot, x_pc=(1,10), y_pc=(1,10), featurewise=False,
-    #                group_id=_default_group_ids, list_name=self.lists.keys())
-
-#    def plot_last_dim_reduction_plot(self, x_pc=1, y_pc=2):
-#        """plot_dimensionality_reduction with some params hidden"""
-#        self.plot_dimensionality_reduction(x_pc, y_pc)
-
     def plot_classifier(self, gene_list_name=None, sample_list_name=None, clf_var=None, predictor_args=None, plotting_args=None):
 
         """Principal component-like analysis of measurements
@@ -262,7 +250,9 @@ class Data(object):
         if this_name in self.localZ_dict:
             vz = self.localZ_dict[this_name]
         else:
-            vz = TwoWayScatterViz(sample1, sample2, self.df, **kwargs)
+            df = self.df
+            df.rename_axis(self.get_naming_fun(), 1)
+            vz = TwoWayScatterViz(sample1, sample2, df, **kwargs)
             self.localZ_dict[this_name] = vz
         vz()
         return vz
