@@ -424,7 +424,7 @@ class Networker(object):
         self._last_graph_accessed = None
 
     def get_adjacency(self, data=None, name=None, use_pc_1=True, use_pc_2=True,
-                      use_pc_3=True, use_pc_4=True, n_pcs=5, on_reduced=True):
+                      use_pc_3=True, use_pc_4=True, n_pcs=5):
 
         if data is None and self._last_adjacency_accessed is None:
             raise AttributeError("this hasn't been called yet")
@@ -447,8 +447,6 @@ class Networker(object):
             use_cols = np.ones(total_pcs, dtype='bool')
             use_cols[n_pcs:] = False
             use_cols = use_cols * np.array([use_pc_1, use_pc_2, use_pc_3, use_pc_4] + [True,]*(total_pcs-4))
-            if on_reduced:
-                use_cols[:] = True
             selected_cols = data.loc[:,use_cols]
             cov = np.cov(selected_cols)
             nRow, nCol = selected_cols.shape
