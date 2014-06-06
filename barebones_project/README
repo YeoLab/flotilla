@@ -1,0 +1,8 @@
+install with
+
+pip install -e .
+
+This installs in "development mode" this will make link to the data, not copy the data to site-packages.
+This seems more appropriate.
+
+Also, any changes made in this diretory will be immediately reflected in the import of packages.
