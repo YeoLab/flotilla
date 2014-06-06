@@ -26,4 +26,5 @@ start a notebook
 serve_flotilla_notebook neural_diff_project/notebook
 ```
 
-I hope this works.
+
+check intro to flotila.html for instructions
