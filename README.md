@@ -27,4 +27,22 @@ serve_flotilla_notebook neural_diff_project/notebook
 ```
 
 
+
 check intro to flotila.html/ipynb for instructions
+
+
+How to make a new flotilla project:
+
+from flotilla copy barebones_project/ into a new directory
+
+```
+cp -r ./barebones_project ../new_project
+```
+rename the directory inside barebones_project to your new project name
+
+```
+mv ../new_project/barebones_project ../new_project/new_project
+```
+
+
+
