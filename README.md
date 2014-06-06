@@ -27,4 +27,4 @@ serve_flotilla_notebook neural_diff_project/notebook
 ```
 
 
-check intro to flotila.html for instructions
+check intro to flotila.html/ipynb for instructions
