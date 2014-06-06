@@ -19,7 +19,8 @@ class SplicingData(Data):
 
     def __init__(self, splicing, sample_descriptors,
                  event_descriptors, binsize=_binsize,
-                 var_cut = _var_cut
+                 var_cut = _var_cut,
+                 drop_outliers=True,
                  ):
         """Instantiate a object for study_data scores with binned and reduced study_data
 
@@ -37,15 +38,18 @@ class SplicingData(Data):
             functions fit, transform, and have the attribute components_
 
         """
-        super(SplicingData, self).__init__()
+        super(SplicingData, self).__init__(sample_descriptors)
+        if drop_outliers:
+            splicing = self.drop_outliers(splicing)
+        self.sample_descriptors, splicing = self.sample_descriptors.align(splicing, join='inner', axis=0)
+
         self.splicing_df = splicing
-        self.df = splicing
+        self.df = self.splicing_df
         self.binsize = binsize
         psi_variant = pd.Index([i for i,j in (splicing.var().dropna() > var_cut).iteritems() if j])
         self.set_naming_fun(self.namer)
         self.lists['variant'] = pd.Series(psi_variant, index=psi_variant)
         self.lists['all_genes'] =  pd.Series(splicing.index, index=splicing.index)
-        self.sample_descriptors = sample_descriptors
         self.event_descriptors = event_descriptors
         self.load_colors()
         self.load_markers()
@@ -125,7 +129,7 @@ class SplicingData(Data):
 
 
     def make_predictor(self, list_name, group_id, categorical_trait,
-                       standardize=False, predictor=PredictorViz,
+                       standardize=True, predictor=PredictorViz,
                        ):
         """
         make and cache a predictor on a categorical trait (associated with samples) subset of genes

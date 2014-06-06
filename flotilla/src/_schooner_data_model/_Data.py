@@ -15,7 +15,9 @@ class Data(object):
 
     """
 
-    def __init__(self):
+    def __init__(self, sample_descriptors):
+
+        self.sample_descriptors = sample_descriptors
 
         self.samplewise_reduction = {}
         self.featurewise_reduction = {}
@@ -46,6 +48,23 @@ class Data(object):
         except:
             sys.stderr.write("marker loading failed")
             self._default_reducer_args.update({'markers_dict': defaultdict(lambda : 'o')})
+
+    def set_outliers(self):
+        self.outliers = set(self.sample_descriptors['outlier'].ix[map(bool, self.sample_descriptors['outlier'])].index)
+
+    def get_outliers(self):
+        try:
+            return self.outliers
+        except AttributeError:
+            self.set_outliers()
+            return self.outliers
+
+    def drop_outliers(self, df):
+        assert 'outlier' in self.sample_descriptors.columns
+        these_outliers = self.get_outliers().intersection(set(df.index))
+        print "dropping ", these_outliers
+        return df.drop(these_outliers)
+
 
     def calculate_distances(self, metric='euclidean'):
         """Creates a squareform distance matrix for clustering fun

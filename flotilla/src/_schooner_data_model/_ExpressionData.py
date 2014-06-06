@@ -21,13 +21,20 @@ class ExpressionData(Data):
     def __init__(self, expression_df, sample_descriptors,
                  gene_descriptors= None,
                  var_cut=_var_cut, expr_cut=_expr_cut, load_cargo=True, rename=True,
+                 drop_outliers=True,
                  ):
 
-        super(ExpressionData, self).__init__()
-        self.sample_descriptors = sample_descriptors
+        super(ExpressionData, self).__init__(sample_descriptors)
+        if drop_outliers:
+            expression_df = self.drop_outliers(expression_df)
+
+        a = self.sample_descriptors.align(expression_df, join='inner', axis=0)
+        self.sample_descriptors, expression_df = a
+
         self.gene_descriptors = gene_descriptors
         self.df = expression_df
-        self.expression_df = expression_df
+        self.expression_df = self.df
+
         self.sparse_df = expression_df[expression_df > expr_cut]
         rpkm_variant = pd.Index([i for i, j in (expression_df.var().dropna() > var_cut).iteritems() if j])
         self.lists['variant'] = pd.Series(rpkm_variant, index=rpkm_variant)

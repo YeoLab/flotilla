@@ -22,7 +22,7 @@ class Study(Cargo):
     _default_x_pc = 1
     _default_y_pc = 2
 
-    def __init__(self, study, load_cargo=True):
+    def __init__(self, study, load_cargo=True, drop_outliers=True):
         """Constructor for Study object containing gene expression and
         alternative splicing study_data.
 
@@ -43,8 +43,8 @@ class Study(Cargo):
 
         self.sample_info = study.sample_info
 
-        self.expression = ExpressionStudy(study, load_cargo=load_cargo)
-        self.splicing = SplicingStudy(study)
+        self.expression = ExpressionStudy(study, load_cargo=load_cargo, drop_outliers=drop_outliers)
+        self.splicing = SplicingStudy(study, load_cargo=load_cargo, drop_outliers=drop_outliers)
 
         self.default_group_id = study.default_group_id
         self.default_group_ids = study.default_group_ids
@@ -308,7 +308,7 @@ class ExpressionStudy(ExpressionData):
 
 class SplicingStudy(SplicingData):
 
-    def __init__(self, study, load_cargo=False, **kwargs):
+    def __init__(self, study, load_cargo=False,  **kwargs):
 
         assert hasattr(study, 'splicing')
         assert hasattr(study, 'sample_info')
