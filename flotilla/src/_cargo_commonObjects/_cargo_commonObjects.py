@@ -4,7 +4,7 @@ __author__ = 'lovci'
 
 object library
 
-commonly used data objects for genomest
+commonly used data objects for genomes
 
 """
 
