@@ -317,6 +317,7 @@ def link_to_list(link):
         sys.stderr.write("WARNING, downloading things from the internet, potential danger from untrusted sources")
         xx = subprocess.check_output(["curl", "-k", '--location-trusted', link]).split("\n")
     elif link.startswith("/"):
-        with open(os.path.exists(os.path.abspath(link)), 'r') as f:
+        assert os.path.exists(os.path.abspath(link))
+        with open(os.path.abspath(link), 'r') as f:
             xx = map(str.strip, f.readlines())
     return xx
