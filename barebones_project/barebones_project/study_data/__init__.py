@@ -4,7 +4,7 @@ import os, sys
 from ..src.utils import data_dir
 
 study_data_dir = data_dir()
-with open(os.path.join(study_data_dir, "messages.txt"), 'r') as f:
+with open(os.path.join(study_data_dir, "README"), 'r') as f:
     for line in f.readlines():
         if not line.startswith("#"):
             sys.stderr.write(line)
