@@ -8,19 +8,19 @@ import os
 import pandas as pd
 from .utils import data_dir
 
-
-def load_descriptors(sample_descriptors_pickle=None, gene_descriptors_pickle=None, event_descriptors_pickle=None):
+def load_descriptors(sample_descriptors_data_dump=None, gene_descriptors_data_dump=None,
+                     event_descriptors_data_dump=None):
     study_data_dir = data_dir()
     descrip = {'sample':None,
                'gene':None,
                'event':None}
     try:
-        if sample_descriptors_pickle is not None:
-            descrip['sample'] = pd.read_pickle(sample_descriptors_pickle)
-        if event_descriptors_pickle is not None:
-            descrip['event'] = pd.read_pickle(event_descriptors_pickle)
-        if gene_descriptors_pickle is not None:
-            descrip['gene'] = pd.read_pickle(gene_descriptors_pickle)
+        if sample_descriptors_data_dump is not None:
+            descrip['sample'] = pd.read_pickle(sample_descriptors_data_dump)
+        if event_descriptors_data_dump is not None:
+            descrip['event'] = pd.read_pickle(event_descriptors_data_dump)
+        if gene_descriptors_data_dump is not None:
+            descrip['gene'] = pd.read_pickle(gene_descriptors_data_dump)
 
     except Exception as E:
         sys.stderr.write("error loading descriptors: %s, \n\n .... entering pdb ... \n\n" % E)

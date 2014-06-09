@@ -1,9 +1,13 @@
-files:
+#This file will be displayed every time data from this project is imported. Lines starting with # will be skipped
+
+--barebones_project--
+
+user is required to build these files, or specify custom loaders in src/loaders.py:
 
 rpkm.df
 
 psi.df
 
-descriptors.df
+descriptors.df - req columns: outlier (bool), color (matplotlib-compatible), marker (matplotlib-compatible)
 
 miso_to_ids.df

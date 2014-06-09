@@ -1,12 +1,11 @@
 __author__ = 'lovci'
 #not updated/maintained. project-specific. this is an example file
-from .utils import data_dir
+from ..study_data import study_data_dir
 import gspread
 import numpy as np
 
 def build_descriptors():
     raise NotImplementedError
-    study_data_dir = data_dir()
     gc = gspread.login('uname', 'pass')
 
     wks = gc.open('Single-cell_metadata').sheet1

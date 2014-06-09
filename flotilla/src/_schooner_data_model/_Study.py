@@ -7,7 +7,31 @@ from .._submaraine_viz import NetworkerViz, PredictorViz
 from .._cargo_commonObjects import Cargo
 import matplotlib.pyplot as plt
 
-class Study(Cargo):
+
+class StudyContainer(object):
+
+    def populate_container(self, metadata_dict, metadata_loader, data_dict, data_loader, params_dict):
+        """
+        load essential data associated with a study. Users specify how to build the necessary components from
+        project-specific loaders (see barebones_project for example loaders)
+
+        This is what is required:
+
+        metadata_loader expands metadata_dict to return at least:
+        sample_info, gene_info, splicing_info, expression_info
+        self.sample_info, self.gene_info, self.splicing_info, self.expression_info = metadata_loader(**metadata_dict)
+
+        data_loader expands data_dict to return at least:
+        self.splicing, self.expression = data_loader(**data_dict)
+
+        parameter dictionary
+        self.params = params_dict.copy()
+        """
+        self.sample_info, self.gene_info, self.splicing_info, self.expression_info = metadata_loader(**metadata_dict)
+        self.splicing, self.expression = data_loader(**data_dict)
+        self.params = params_dict.copy()
+
+class InteractiveStudy(Cargo):
     """
 
     Attributes
@@ -22,16 +46,14 @@ class Study(Cargo):
     _default_x_pc = 1
     _default_y_pc = 2
 
-    def __init__(self, study, load_cargo=True, drop_outliers=True):
+    def initialize_interactive_obj(self, study_container, load_cargo=True, drop_outliers=True):
         """Constructor for Study object containing gene expression and
         alternative splicing study_data.
 
         Parameters
         ----------
-        sample_info_filename, expression_df, splicing_df
 
         Returns
-
         -------
 
 
@@ -39,18 +61,18 @@ class Study(Cargo):
         ------
 
         """
-        self.study = study
+        #self.study = study_container
 
-        self.sample_info = study.sample_info
+        self.sample_info = study_container.sample_info
 
-        self.expression = ExpressionStudy(study, load_cargo=load_cargo, drop_outliers=drop_outliers)
-        self.splicing = SplicingStudy(study, load_cargo=load_cargo, drop_outliers=drop_outliers)
+        self.expression = ExpressionStudy(study_container, load_cargo=load_cargo, drop_outliers=drop_outliers)
+        self.splicing = SplicingStudy(study_container, load_cargo=load_cargo, drop_outliers=drop_outliers)
 
-        self.default_group_id = study.default_group_id
-        self.default_group_ids = study.default_group_ids
+        self.default_group_id = study_container.default_group_id
+        self.default_group_ids = study_container.default_group_ids
 
-        self.default_list_id = study.default_list_id
-        self.default_list_ids = study.default_list_ids
+        self.default_list_id = study_container.default_list_id
+        self.default_list_ids = study_container.default_list_ids
 
         self.expression_networks = NetworkerViz(self.expression)
         self.splicing_networks = NetworkerViz(self.splicing)
@@ -266,6 +288,21 @@ pca=prd('%s', feature_score_std_cutoff=%f)" \
                 sample1='replaceme',
                 sample2='replaceme',
                 pCut='0.01')
+
+
+class FlotillaStudy(InteractiveStudy, StudyContainer):
+
+    """
+    Load data, imbue interactiveness
+    """
+
+    def __init__(self, metadata_dict, metadata_loader, data_dict, data_loader, params_dict, **interactive_args):
+
+        super(FlotillaStudy, self).populate_container(metadata_dict, metadata_loader,
+                                                      data_dict, data_loader, params_dict)
+
+        super(FlotillaStudy, self).initialize_interactive_obj(self, **interactive_args)
+
 
 from _ExpressionData import ExpressionData
 from _SplicingData import SplicingData
