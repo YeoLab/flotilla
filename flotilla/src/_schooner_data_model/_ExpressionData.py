@@ -20,7 +20,7 @@ class ExpressionData(Data):
 
     def __init__(self, expression_df, sample_descriptors,
                  gene_descriptors= None,
-                 var_cut=_var_cut, expr_cut=_expr_cut, load_cargo=True, rename=True,
+                 var_cut=_var_cut, expr_cut=_expr_cut,
                  drop_outliers=True,
                  ):
 
