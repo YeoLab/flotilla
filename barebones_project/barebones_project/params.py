@@ -14,12 +14,12 @@ letters = #[... group ids ... ]
 #original_rpkm_file = "/nas/nas0/scratch/ppliu/single_cell/analysis/final_groups/final_table"
 #original_splice_file = "/nas3/obot/projects/singlecell/miso_psis_filtered.json"
 
-sample_descriptors_data_dump = os.path.join(study_data_dir, "descriptors.df")
-event_descriptors_data_dump = os.path.join(study_data_dir, "miso_to_ids.df")
-gene_descriptors_data_dump = None
+sample_metadata_filename = os.path.join(study_data_dir, "descriptors.df")
+event_metadata_filename = os.path.join(study_data_dir, "miso_to_ids.df")
+gene_metadata_filename = None
 
-splicing_data_dump = os.path.join(study_data_dir, "psi.df")
-expression_data_dump = os.path.join(study_data_dir, "rpkm.df")
+splicing_filename = os.path.join(study_data_dir, "psi.df")
+expression_filename = os.path.join(study_data_dir, "rpkm.df")
 
 mongoHost, mongoPort = #host, port
 

@@ -84,6 +84,8 @@ class Study(Cargo):
         change in distribution of one measurement (e.g. a splicing event or a
         gene expression) from one celltype to another.
         """
+        #TODO: Check if JSD has not already been calculated (cacheing or
+        # memoizing)
         self.expression.jsd()
         self.splicing.jsd()
 
@@ -313,7 +315,7 @@ class ExpressionStudy(ExpressionData):
         assert hasattr(study, 'expression_info')
 
         super(ExpressionStudy, self).__init__(expression_df=study.expression,
-                                              sample_descriptors=study.sample_info,
+                                              sample_metadata=study.sample_info,
                                               gene_descriptors=study.expression_info,
                                               **kwargs)
         self.default_group_id = study.default_group_id
@@ -346,8 +348,8 @@ class SplicingStudy(SplicingData):
         assert hasattr(study, 'splicing_info')
 
         super(SplicingStudy, self).__init__(splicing=study.splicing,
-                                            sample_descriptors=study.sample_info,
-                                            event_descriptors=study.splicing_info,
+                                            sample_metadata=study.sample_info,
+                                            event_metadata=study.splicing_info,
                                             **kwargs)
         self.default_group_id = study.default_group_id
         self.default_group_ids = study.default_group_ids
