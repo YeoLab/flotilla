@@ -64,7 +64,7 @@ class DownsampledSplicingData(Data):
 
         event_count_dict = {}
 
-        for (splice_type, probability), df in summary.groupby(
+        for (splice_type, probability), df in self.df.groupby(
                 ['splice_type', 'probability']):
             print splice_type, probability, df.shape, \
                 df.event_name.unique().shape[0],
