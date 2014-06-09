@@ -47,7 +47,8 @@ class DownsampledSplicingData(Data):
 
         self.df = df
 
-    def _event_count_df(self):
+    @property
+    def shared_events(self):
         """
         Parameters
         ----------
@@ -55,25 +56,27 @@ class DownsampledSplicingData(Data):
 
         Returns
         -------
-
-
-        Raises
-        ------
+        event_count_df : pandas.DataFrame
+            Splicing events on the rows, splice types and probability as
+            column MultiIndex. Values are the number of iterations which
+            share this splicing event at that probability and splice type.
         """
 
+        if not hasattr(self, '_shared_events_df'):
+            shared_events_dict = {}
 
-        event_count_dict = {}
+            for (splice_type, probability), df in self.df.groupby(
+                    ['splice_type', 'probability']):
+                # print splice_type, probability, df.shape, \
+                #     df.event_name.unique().shape[0],
+                # n_iter = df.iteration.unique().shape[0]
+                event_count = collections.Counter(df.event_name)
+                # print sum(1 for k, v in event_count.iteritems() if v == n_iter)
+                shared_events_dict[(splice_type, probability)] = pd.Series(
+                    event_count)
 
-        for (splice_type, probability), df in self.df.groupby(
-                ['splice_type', 'probability']):
-            print splice_type, probability, df.shape, \
-                df.event_name.unique().shape[0],
-            n_iter = df.iteration.unique().shape[0]
-            event_count = collections.Counter(df.event_name)
-            print sum(1 for k, v in event_count.iteritems() if v == n_iter)
-            event_count_dict[(splice_type, probability)] = pd.Series(
-                event_count)
-
-        event_count_df = pd.DataFrame(event_count_dict)
-        event_count_df.columns = pd.MultiIndex.from_tuples(
-            event_count_df.columns.tolist())
+            self._shared_events_df = pd.DataFrame(shared_events_dict)
+            self._shared_events_df.columns = pd.MultiIndex.from_tuples(
+                self._shared_events_df.columns.tolist())
+        else:
+            return self._shared_events_df
