@@ -7,7 +7,7 @@ study_data_dir = data_dir()
 
 min_cells = 12
 
-letters = #[... group ids ... ]
+#letters = #[... group ids ... ]
 #transitions = ["PN", "NM", "MS", ] not used yet.
 
 #not used, but this is the data source.
@@ -21,10 +21,10 @@ gene_descriptors_data_dump = None
 splicing_data_dump = os.path.join(study_data_dir, "psi.df")
 expression_data_dump = os.path.join(study_data_dir, "rpkm.df")
 
-mongoHost, mongoPort = #host, port
+#mongoHost, mongoPort = #host, port
 
-default_group_id = 'any_cell'
-default_group_ids = ['any_cell',]
+default_group_id = 'any_cell' #default boolean column to use
+default_group_ids = ['any_cell',] #boolean columns in sample_descriptors
 
 
 default_list_id = 'variant' #default list to use
