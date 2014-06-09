@@ -10,6 +10,10 @@ import matplotlib.pyplot as plt
 
 class StudyContainer(object):
 
+    def _import_val(self, k, v):
+        assert not hasattr(self, k, v)
+        self.__setattr__(k,v)
+
     def populate_container(self, metadata_dict, metadata_loader, data_dict, data_loader, params_dict):
         """
         load essential data associated with a study. Users specify how to build the necessary components from
@@ -29,7 +33,7 @@ class StudyContainer(object):
         """
         self.sample_info, self.gene_info, self.splicing_info, self.expression_info = metadata_loader(**metadata_dict)
         self.splicing, self.expression = data_loader(**data_dict)
-        self.params = params_dict.copy()
+        [self._import_val(k,v) for (k,v) in params_dict.items()]
 
 
 class InteractiveStudy(Cargo):
