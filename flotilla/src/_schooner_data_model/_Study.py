@@ -70,6 +70,7 @@ class Study(Cargo):
         ------
 
         """
+        # TODO: Boyko/Patrick please implement
         raise NotImplementedError
 
     def jsd(self):
