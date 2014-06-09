@@ -7,7 +7,7 @@ import numpy as np
 def build_descriptors():
     raise NotImplementedError
     study_data_dir = data_dir()
-    gc = gspread.login('geneyeolab', 'yeogmail')
+    gc = gspread.login('uname', 'pass')
 
     wks = gc.open('Single-cell_metadata').sheet1
 
