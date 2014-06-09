@@ -6,7 +6,13 @@ from _Data import Data
 from .._submaraine_viz import NMF_viz, PCA_viz, PredictorViz
 from .._frigate_compute import binify, dropna_mean
 from .._skiff_external_sources import link_to_list
+import brewer2mpl
+import seaborn as sns
+import matplotlib.pyplot as plt
 
+sns.set(style='ticks', context='talk')
+
+PURPLES = brewer2mpl.get_map('Purples', 'sequential', 9).mpl_colors
 
 import collections
 
@@ -80,3 +86,90 @@ class DownsampledSplicingData(Data):
                 self._shared_events_df.columns.tolist())
         else:
             return self._shared_events_df
+
+    def shared_events_barplot(self, figure_dir='./'):
+        """PLot a "histogram" via colored bars of the number of events shared by
+        different iterations at a particular sampling probability
+
+        Parameters
+        ----------
+        figure_dir : str
+            Where to save the pdf figures created
+        """
+        figure_dir = figure_dir.rstrip('/')
+        colors = PURPLES + ['#262626']
+
+        # figure_dir = '/home/obotvinnik/Dropbox/figures2/singlecell/splicing/what_is_noise'
+
+        for splice_type, df in self.shared_events.groupby(level=0, axis=1):
+            print splice_type, df.dropna(how='all').shape
+
+            fig, ax = plt.subplots(figsize=(16, 4))
+
+            count_values = np.unique(df.values)
+            count_values = count_values[np.isfinite(count_values)]
+
+            height_so_far = np.zeros(df.shape[1])
+            left = np.arange(df.shape[1])
+
+            for count, color in zip(count_values, colors):
+                height = df[df == count].count()
+                ax.bar(left, height, bottom=height_so_far, color=color,
+                       label=str(int(count)))
+                height_so_far += height
+            ymax = max(height_so_far)
+            ax.set_ylim(0, ymax)
+
+            legend = ax.legend(loc='center left', bbox_to_anchor=(1, 0.5),
+                               title='Iterations sharing event')
+            ax.set_title(splice_type)
+            ax.set_xlabel('Percent downsampled')
+            ax.set_ylabel('number of events')
+            sns.despine()
+            fig.tight_layout()
+            fig.savefig('{}/downsampled_shared_events_{}.pdf'.format(figure_dir,
+                                                                     splice_type),
+                        bbox_extra_artists=(legend,), bbox_inches='tight')
+
+    def shared_events_percentage(self, min_iter_shared=5, figure_dir='./'):
+        """Plot the percentage of all events detected at that iteration,
+        shared by at least 'min_iter_shared'
+
+        Parameters
+        ----------
+        min_iter_shared : int
+            Minimum number of iterations sharing an event
+        figure_dir : str
+            Where to save the pdf figures created
+        """
+        figure_dir = figure_dir.rstrip('/')
+        sns.set(style='whitegrid', context='talk')
+
+        # figure_dir = '/home/obotvinnik/Dropbox/figures2/singlecell/splicing/what_is_noise'
+
+        for splice_type, df in self.shared_events.groupby(level=0, axis=1):
+            df = df.dropna()
+
+            fig, ax = plt.subplots(figsize=(16, 4))
+
+
+            left = np.arange(df.shape[1])
+            num_greater_than = df[df >= min_iter_shared].count()
+            percent_greater_than = num_greater_than / df.shape[0]
+
+            ax.plot(left, percent_greater_than,
+                    label='Shared with at least {} iter'.format(min_iter_shared))
+
+            ax.set_xticks(np.arange(0, 101, 10))
+
+            legend = ax.legend(loc='center left', bbox_to_anchor=(1, 0.5),
+                               title='Iterations sharing event')
+
+            ax.set_title(splice_type)
+            ax.set_xlabel('Percent downsampled')
+            ax.set_ylabel('Percent of events')
+            sns.despine()
+            fig.tight_layout()
+            fig.savefig('{}/downsampled_shared_events_{}_min_iter_shared{}.pdf'
+                        .format(figure_dir, splice_type, min_iter_shared),
+                        bbox_extra_artists=(legend,), bbox_inches='tight')
