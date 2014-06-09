@@ -3,15 +3,20 @@ Data models for "studies" studies include attributes about the data and are
 heavier in terms of data load
 """
 
-from .._submaraine_viz import NetworkerViz, PredictorViz
+from .._submaraine_viz import NetworkerViz, PredictorViz, plt
 from .._cargo_commonObjects import Cargo
-import matplotlib.pyplot as plt
-
+import sys
 
 class StudyContainer(object):
 
     def _import_val(self, k, v):
-        assert not hasattr(self, k, v)
+        try:
+            assert not hasattr(self, k)
+        except:
+            write_me = "WARNING: over-writing parameter ", k  + "\n" + \
+                       str(self.__getattribute__(k)) + \
+                       "\n new:" + str(v)
+            sys.stderr.write(write_me)
         self.__setattr__(k,v)
 
     def populate_container(self, metadata_dict, metadata_loader, data_dict, data_loader, params_dict):
@@ -31,9 +36,10 @@ class StudyContainer(object):
         parameter dictionary
         self.params = params_dict.copy()
         """
+        [self._import_val(k,v) for (k,v) in params_dict.items() if not k.startswith("_")]
         self.sample_info, self.gene_info, self.splicing_info, self.expression_info = metadata_loader(**metadata_dict)
         self.splicing, self.expression = data_loader(**data_dict)
-        [self._import_val(k,v) for (k,v) in params_dict.items()]
+
 
 
 class InteractiveStudy(Cargo):
