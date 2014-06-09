@@ -6,11 +6,10 @@ import sys
 import os
 
 import pandas as pd
-from .utils import data_dir
 
 def load_descriptors(sample_descriptors_data_dump=None, gene_descriptors_data_dump=None,
                      event_descriptors_data_dump=None):
-    study_data_dir = data_dir()
+
     descrip = {'sample':None,
                'gene':None,
                'event':None}
