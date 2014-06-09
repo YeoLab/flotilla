@@ -1,7 +1,7 @@
 """
-Data models for "studies" studies include attributes about the data and are heavier in terms of data load
+Data models for "studies" studies include attributes about the data and are
+heavier in terms of data load
 """
-
 
 from .._submaraine_viz import NetworkerViz, PredictorViz
 from .._cargo_commonObjects import Cargo
@@ -30,6 +30,7 @@ class StudyContainer(object):
         self.sample_info, self.gene_info, self.splicing_info, self.expression_info = metadata_loader(**metadata_dict)
         self.splicing, self.expression = data_loader(**data_dict)
         self.params = params_dict.copy()
+
 
 class InteractiveStudy(Cargo):
     """
@@ -65,8 +66,10 @@ class InteractiveStudy(Cargo):
 
         self.sample_info = study_container.sample_info
 
-        self.expression = ExpressionStudy(study_container, load_cargo=load_cargo, drop_outliers=drop_outliers)
-        self.splicing = SplicingStudy(study_container, load_cargo=load_cargo, drop_outliers=drop_outliers)
+        self.expression = ExpressionStudy(study_container, load_cargo=load_cargo,
+                                          drop_outliers=drop_outliers)
+        self.splicing = SplicingStudy(study_container, load_cargo=load_cargo,
+                                      drop_outliers=drop_outliers)
 
         self.default_group_id = study_container.default_group_id
         self.default_group_ids = study_container.default_group_ids
@@ -78,7 +81,8 @@ class InteractiveStudy(Cargo):
         self.splicing_networks = NetworkerViz(self.splicing)
 
     def detect_outliers(self):
-        """Detects outlier cells from expression, mapping, and splicing study_data and labels the outliers as such for future analysis.
+        """Detects outlier cells from expression, mapping, and splicing
+        study_data and labels the outliers as such for future analysis.
 
         Parameters
         ----------
@@ -92,6 +96,7 @@ class InteractiveStudy(Cargo):
         ------
 
         """
+        # TODO: Boyko/Patrick please implement
         raise NotImplementedError
 
     def jsd(self):
@@ -101,6 +106,8 @@ class InteractiveStudy(Cargo):
         change in distribution of one measurement (e.g. a splicing event or a
         gene expression) from one celltype to another.
         """
+        #TODO: Check if JSD has not already been calculated (cacheing or
+        # memoizing)
         self.expression.jsd()
         self.splicing.jsd()
 
@@ -110,9 +117,11 @@ class InteractiveStudy(Cargo):
         """Performs PCA on both expression and splicing study_data
         """
         if data_type == "expression":
-            self.expression.plot_dimensionality_reduction(x_pc=x_pc, y_pc=y_pc, **kwargs)
+            self.expression.plot_dimensionality_reduction(x_pc=x_pc, y_pc=y_pc,
+                                                          **kwargs)
         elif data_type == "splicing":
-            self.splicing.plot_dimensionality_reduction(x_pc=x_pc, y_pc=y_pc, **kwargs)
+            self.splicing.plot_dimensionality_reduction(x_pc=x_pc, y_pc=y_pc,
+                                                        **kwargs)
 
 
     def graph(self, data_type='expression', **kwargs):
@@ -140,9 +149,11 @@ class InteractiveStudy(Cargo):
 
         #not sure why nested fxns are required for this, but they are... i think...
         def do_interact(group_id=self.default_group_id, data_type='expression',
-                        featurewise=False, x_pc=1, y_pc=2, show_point_labels=False, list_link = '',
+                        featurewise=False, x_pc=1, y_pc=2,
+                        show_point_labels=False, list_link='',
 
-                        list_name=self.default_list_id, savefile = 'data/last.pca.pdf'):
+                        list_name=self.default_list_id,
+                        savefile='data/last.pca.pdf'):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -158,8 +169,10 @@ class InteractiveStudy(Cargo):
             if list_name == 'custom':
                 list_name = list_link
 
-            self.pca(group_id=group_id, data_type=data_type, featurewise=featurewise,
-                      x_pc=x_pc, y_pc=y_pc, show_point_labels=show_point_labels, list_name=list_name)
+            self.pca(group_id=group_id, data_type=data_type,
+                     featurewise=featurewise,
+                     x_pc=x_pc, y_pc=y_pc, show_point_labels=show_point_labels,
+                     list_name=list_name)
             if savefile != '':
                 f = plt.gcf()
                 f.savefig(savefile)
@@ -167,9 +180,9 @@ class InteractiveStudy(Cargo):
         interact(do_interact,
                  data_type=('expression', 'splicing'),
                  group_id=self.default_group_ids,
-                 list_name = self.default_list_ids + ["custom"],
+                 list_name=self.default_list_ids + ["custom"],
                  featurewise=False,
-                 x_pc=(1,10),  y_pc=(1,10),
+                 x_pc=(1, 10), y_pc=(1, 10),
                  show_point_labels=False, )
 
 
@@ -180,8 +193,10 @@ class InteractiveStudy(Cargo):
         def do_interact(group_id=self.default_group_id, data_type='expression',
                         featurewise=False, draw_labels=False, degree_cut=1,
                         cov_std_cut=1.8, n_pcs=5, feature_of_interest="RBFOX2",
-                        use_pc_1=True, use_pc_2=True, use_pc_3=True, use_pc_4=True,
-                        list_name=self.default_list_id, savefile='data/last.graph.pdf',
+                        use_pc_1=True, use_pc_2=True, use_pc_3=True,
+                        use_pc_4=True,
+                        list_name=self.default_list_id,
+                        savefile='data/last.graph.pdf',
                         weight_fun=['abs', 'arctan', 'arctan_sq', 'sq']):
 
             for k, v in locals().iteritems():
@@ -190,31 +205,35 @@ class InteractiveStudy(Cargo):
                 print k, ":", v
 
             if data_type == 'expression':
-                assert(list_name in self.expression.lists.keys())
+                assert (list_name in self.expression.lists.keys())
             if data_type == 'splicing':
-                assert(list_name in self.expression.lists.keys())
+                assert (list_name in self.expression.lists.keys())
 
-            self.graph(list_name=list_name, group_id=group_id, data_type=data_type,
+            self.graph(list_name=list_name, group_id=group_id,
+                       data_type=data_type,
                        featurewise=featurewise, draw_labels=draw_labels,
-                       degree_cut=degree_cut, cov_std_cut=cov_std_cut, n_pcs = n_pcs,
+                       degree_cut=degree_cut, cov_std_cut=cov_std_cut,
+                       n_pcs=n_pcs,
                        feature_of_interest=feature_of_interest,
-                       use_pc_1=use_pc_1, use_pc_2=use_pc_2, use_pc_3=use_pc_3, use_pc_4=use_pc_4,
+                       use_pc_1=use_pc_1, use_pc_2=use_pc_2, use_pc_3=use_pc_3,
+                       use_pc_4=use_pc_4,
                        wt_fun=weight_fun)
             if savefile is not '':
                 plt.gcf().savefig(savefile)
 
-        all_lists = list(set(self.expression.lists.keys() + self.splicing.lists.keys()))
+        all_lists = list(
+            set(self.expression.lists.keys() + self.splicing.lists.keys()))
         interact(do_interact, group_id=self.default_group_ids,
-                data_type=('expression', 'splicing'),
-                list_name=all_lists,
-                featurewise=False,
-                cov_std_cut = (0.1, 3),
-                degree_cut = (0,10),
-                n_pcs=(2,100),
-                draw_labels=False,
-                feature_of_interest="RBFOX2",
-                use_pc_1=True, use_pc_2=True, use_pc_3=True, use_pc_4=True,
-                )
+                 data_type=('expression', 'splicing'),
+                 list_name=all_lists,
+                 featurewise=False,
+                 cov_std_cut=(0.1, 3),
+                 degree_cut=(0, 10),
+                 n_pcs=(2, 100),
+                 draw_labels=False,
+                 feature_of_interest="RBFOX2",
+                 use_pc_1=True, use_pc_2=True, use_pc_3=True, use_pc_4=True,
+        )
 
     def interactive_clf(self):
 
@@ -222,8 +241,11 @@ class InteractiveStudy(Cargo):
 
         #not sure why nested fxns are required for this, but they are... i think...
         def do_interact(data_type='expression',
-                        list_name=self.default_list_id, group_id=self.default_group_id,
-                        categorical_variable='outlier', feature_score_std_cutoff=2, savefile='data/last.clf.pdf'):
+                        list_name=self.default_list_id,
+                        group_id=self.default_group_id,
+                        categorical_variable='outlier',
+                        feature_score_std_cutoff=2,
+                        savefile='data/last.clf.pdf'):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -235,30 +257,37 @@ class InteractiveStudy(Cargo):
             if data_type == 'splicing':
                 data_obj = self.splicing
 
-            assert(list_name in data_obj.lists.keys())
+            assert (list_name in data_obj.lists.keys())
 
-            prd = data_obj.get_predictor(list_name, group_id, categorical_variable)
-            prd(categorical_variable, feature_score_std_cutoff=feature_score_std_cutoff)
+            prd = data_obj.get_predictor(list_name, group_id,
+                                         categorical_variable)
+            prd(categorical_variable,
+                feature_score_std_cutoff=feature_score_std_cutoff)
             print "retrieve this predictor with:\nprd=study.%s.get_predictor('%s', '%s', '%s')\n\
 pca=prd('%s', feature_score_std_cutoff=%f)" \
-            % (data_type, list_name, group_id, categorical_variable, categorical_variable, feature_score_std_cutoff)
+                  % (data_type, list_name, group_id, categorical_variable,
+                     categorical_variable, feature_score_std_cutoff)
             if savefile is not '':
                 plt.gcf().savefig(savefile)
-        all_lists = list(set(self.expression.lists.keys() + self.splicing.lists.keys()))
+
+        all_lists = list(
+            set(self.expression.lists.keys() + self.splicing.lists.keys()))
         interact(do_interact,
-                data_type=('expression', 'splicing'),
-                list_name=all_lists,
-                group_id=self.default_group_ids,
-                categorical_variable=[i for i in self.default_group_ids if not i.startswith("~")],
-                feature_score_std_cutoff = (0.1, 20),
-                draw_labels=False,
-                )
+                 data_type=('expression', 'splicing'),
+                 list_name=all_lists,
+                 group_id=self.default_group_ids,
+                 categorical_variable=[i for i in self.default_group_ids if
+                                       not i.startswith("~")],
+                 feature_score_std_cutoff=(0.1, 20),
+                 draw_labels=False,
+        )
 
     def interactive_localZ(self):
 
         from IPython.html.widgets import interact
 
-        def do_interact(data_type='expression', sample1='', sample2='', pCut='0.01'):
+        def do_interact(data_type='expression', sample1='', sample2='',
+                        pCut='0.01'):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -274,20 +303,25 @@ pca=prd('%s', feature_score_std_cutoff=%f)" \
             try:
                 assert sample1 in data_obj.df.index
             except:
-                print "sample: %s, is not in %s DataFrame, try a different sample ID" % (sample1, data_type)
+                print "sample: %s, is not in %s DataFrame, try a different sample ID" % (
+                sample1, data_type)
                 return
             try:
                 assert sample2 in data_obj.df.index
             except:
-                print "sample: %s, is not in %s DataFrame, try a different sample ID" % (sample2, data_type)
+                print "sample: %s, is not in %s DataFrame, try a different sample ID" % (
+                sample2, data_type)
                 return
-            self.localZ_result = data_obj.twoway(sample1, sample2, pCut=pCut).result_
+            self.localZ_result = data_obj.twoway(sample1, sample2,
+                                                 pCut=pCut).result_
             print "localZ finished, find the result in <this_obj>.localZ_result_"
+
         interact(do_interact,
-                data_type=('expression', 'splicing'),
-                sample1='replaceme',
-                sample2='replaceme',
-                pCut='0.01')
+                 data_type=('expression', 'splicing'),
+                 sample1='replaceme',
+                 sample2='replaceme',
+                 pCut='0.01')
+
 
 
 class FlotillaStudy(InteractiveStudy, StudyContainer):
@@ -306,10 +340,11 @@ class FlotillaStudy(InteractiveStudy, StudyContainer):
 
 from _ExpressionData import ExpressionData
 from _SplicingData import SplicingData
+
 cargo = Cargo()
 
-class ExpressionStudy(ExpressionData):
 
+class ExpressionStudy(ExpressionData):
     def __init__(self, study, load_cargo=True, **kwargs):
 
         assert hasattr(study, 'expression')
@@ -317,9 +352,9 @@ class ExpressionStudy(ExpressionData):
         assert hasattr(study, 'expression_info')
 
         super(ExpressionStudy, self).__init__(expression_df=study.expression,
-                                             sample_descriptors= study.sample_info,
-                                             gene_descriptors=study.expression_info,
-                                             **kwargs)
+                                              sample_metadata=study.sample_info,
+                                              gene_descriptors=study.expression_info,
+                                              **kwargs)
         self.default_group_id = study.default_group_id
         self.default_group_ids = study.default_group_ids
         self.default_list_id = study.default_gene_list
@@ -344,17 +379,15 @@ class ExpressionStudy(ExpressionData):
 
 
 class SplicingStudy(SplicingData):
-
-    def __init__(self, study, load_cargo=False,  **kwargs):
-
+    def __init__(self, study, load_cargo=False, **kwargs):
         assert hasattr(study, 'splicing')
         assert hasattr(study, 'sample_info')
         assert hasattr(study, 'splicing_info')
 
         super(SplicingStudy, self).__init__(splicing=study.splicing,
-                                           sample_descriptors=study.sample_info,
-                                           event_descriptors=study.splicing_info,
-                                             **kwargs)
+                                            sample_metadata=study.sample_info,
+                                            event_metadata=study.splicing_info,
+                                            **kwargs)
         self.default_group_id = study.default_group_id
         self.default_group_ids = study.default_group_ids
         self.default_list_id = study.default_event_list

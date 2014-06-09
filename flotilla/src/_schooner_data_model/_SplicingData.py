@@ -17,8 +17,8 @@ class SplicingData(Data):
     _var_cut = 0.2
 
 
-    def __init__(self, splicing, sample_descriptors,
-                 event_descriptors, binsize=_binsize,
+    def __init__(self, splicing, sample_metadata,
+                 event_metadata, binsize=_binsize,
                  var_cut = _var_cut,
                  drop_outliers=True,
                  ):
@@ -38,7 +38,7 @@ class SplicingData(Data):
             functions fit, transform, and have the attribute components_
 
         """
-        super(SplicingData, self).__init__(sample_descriptors)
+        super(SplicingData, self).__init__(sample_metadata)
         if drop_outliers:
             splicing = self.drop_outliers(splicing)
         self.sample_descriptors, splicing = self.sample_descriptors.align(splicing, join='inner', axis=0)
@@ -50,7 +50,7 @@ class SplicingData(Data):
         self.set_naming_fun(self.namer)
         self.lists['variant'] = pd.Series(psi_variant, index=psi_variant)
         self.lists['all_genes'] =  pd.Series(splicing.index, index=splicing.index)
-        self.event_descriptors = event_descriptors
+        self.event_descriptors = event_metadata
         self.load_colors()
         self.load_markers()
 

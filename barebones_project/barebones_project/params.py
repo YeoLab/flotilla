@@ -9,14 +9,13 @@ min_samples = 12
 min_cells = min_samples
 # TODO: remove min_cells references
 
-#metadat about samples, psi columns and genes
-sample_descriptors_data_dump = os.path.join(study_data_dir, "descriptors.df")
-event_descriptors_data_dump = os.path.join(study_data_dir, "miso_to_ids.df")
-gene_descriptors_data_dump = None
+sample_metadata_filename = os.path.join(study_data_dir, "descriptors.df")
+event_metadata_filename = os.path.join(study_data_dir, "miso_to_ids.df")
+gene_metadata_filename = None
 
-#pickled pandas DataFrames:
-splicing_data_dump = os.path.join(study_data_dir, "psi.df")
-expression_data_dump = os.path.join(study_data_dir, "rpkm.df")
+splicing_filename = os.path.join(study_data_dir, "psi.df")
+expression_filename = os.path.join(study_data_dir, "rpkm.df")
+
 
 #fill this in if you want to use carrier
 #mongoHost, mongoPort = #host, port
