@@ -3,11 +3,9 @@ __author__ = 'lovci'
 """ loads pre-made pickle files """
 
 import sys
-import os
-
 import pandas as pd
 
-def load_descriptors(sample_descriptors_data_dump=None, gene_descriptors_data_dump=None,
+def load_metadata(sample_descriptors_data_dump=None, gene_descriptors_data_dump=None,
                      event_descriptors_data_dump=None):
 
     descrip = {'sample':None,
@@ -30,12 +28,18 @@ def load_descriptors(sample_descriptors_data_dump=None, gene_descriptors_data_du
             'gene_metadata': descrip['gene'],
             'event_metadata': descrip['event']}
 
+def load_splicing_data(splicing_data_file):
+    return {'splicing': pd.read_pickle(splicing_data_file)}
+
+def load_expression_data(expression_data_file):
+    return {'expression': pd.read_pickle(expression_data_file)}
 
 def load_transcriptome_data(expression_data_dump, splicing_data_dump):
     try:
-        splicing = pd.read_pickle(splicing_data_dump)
-        expression = pd.read_pickle(expression_data_dump)
+        splicing = load_splicing_data(splicing_data_dump)['splicing']
+        expression = load_expression_data(expression_data_dump)['expression']
         sparse_expression = expression[expression > 0]
+
     except Exception as E:
         sys.stderr.write("error loading transcriptome data: %s, \n\n .... entering pdb ... \n\n" % E)
         import pdb

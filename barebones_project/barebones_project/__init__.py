@@ -1,23 +1,43 @@
 __author__ = 'lovci'
 
 import params
-from .src.loaders import load_descriptors, load_transcriptome_data
+from params import sample_metadata_filename, event_metadata_filename, gene_metadata_filename, \
+    expression_filename, splicing_filename
+from .src.loaders import load_metadata, load_expression_data, load_splicing_data
 from flotilla import schooner
 
+data_loaders = []
 
-def embark(load_cargo=True, drop_outliers=False,):
+if sample_metadata_filename is not None and event_metadata_filename is not None:
+    from .src.loaders import load_metadata
 
-    """return a flotilla study"""
-    interactive_args = {'load_cargo': load_cargo, 'drop_outliers': drop_outliers}
     metadata_dict = {
-        'sample_descriptors_data_dump': params.sample_metadata_filename,
-        'gene_descriptors_data_dump': params.gene_metadata_filename,
-        'event_descriptors_data_dump': params.event_metadata_filename,
+        'sample_metadata_filename': sample_metadata_filename,
+        'gene_metadata_filename': gene_metadata_filename,
+        'event_metadata_filename': event_metadata_filename,
     }
-    data_dict = {
-        'splicing_data_dump': params.splicing_filename,
-        'expression_data_dump': params.expression_filename
+    data_loaders.append(metadata_dict, load_metadata)
+
+if expression_filename is not None:
+    from .src.loaders import load_expression_data
+    expression_dict = {
+        'expression_filename': expression_filename
     }
-    return schooner.FlotillaStudy(metadata_dict = metadata_dict, metadata_loader = load_descriptors,
-                                  data_dict = data_dict, data_loader = load_transcriptome_data,
-                                  params_dict=vars(params), **interactive_args)
+    data_loaders.append(expression_dict, load_expression_data)
+
+if splicing_filename is not None:
+    from .src.loaders import load_splicing_data
+    splicing_dict = {
+        'splicing_filename':splicing_filename,
+    }
+    data_loaders.append(splicing_dict, load_splicing_data)
+
+study = None
+def embark(load_cargo=True, drop_outliers=False, datatypes='all'):
+
+    """return a flotilla study with the works
+    datatypes = 'all' or a list of acceptable *Data schooner classes to load"""
+    interactive_args = {'load_cargo': load_cargo, 'drop_outliers': drop_outliers}
+    study = schooner.FlotillaStudy(data_loaders, datatypes=datatypes,
+                                   params_dict=vars(params), **interactive_args)
+    return study

@@ -1,24 +1,37 @@
-__author__ = 'lovci'
-
 import os
+
+#essential params
 from .study_data import study_data_dir
-
-#minimum number of samples for analyses
 min_samples = 12
-#not all studies are single-cell studies... but the terms are mixed, for backwards-compatibility, keep both
-min_cells = min_samples
-# TODO: remove min_cells references
 
-sample_metadata_filename = os.path.join(study_data_dir, "metadata.tsv")
-event_metadata_filename = os.path.join(study_data_dir, "miso_to_ids.df")
+#recommended parameters:
+#minimum number of samples for analyses
+
+sample_metadata_filename = None
+#sample_metadata_filename = os.path.join(study_data_dir, "metadata.tsv")
+
+event_metadata_filename = None
+#event_metadata_filename = os.path.join(study_data_dir, "miso_to_ids.df")
+
 gene_metadata_filename = None
 
-splicing_filename = os.path.join(study_data_dir, "splicing.tsv")
-expression_filename = os.path.join(study_data_dir, "expression.tsv")
+expression_filename = None
+#expression_filename = os.path.join(study_data_dir, "expression.pickle")
 
+splicing_filename = None
+#splicing_filename = os.path.join(study_data_dir, "splicing.pickle")
 
-#fill this in if you want to use carrier
+subclasses = []
+#subclasses = ['expression', 'splicing'] #optional subclasses to initialize on load
+
+#optional params
+###fill this in if you want to use carrier (you don't)
+
 #mongoHost, mongoPort = #host, port
+
+###end carrier-optional params
+
+###fill this in if you want to use the schooner.InteractiveStudy
 
 #default boolean column to in interactive widgets
 default_group_id = 'any_cell'
@@ -42,3 +55,5 @@ default_event_ids = [] # lists of interesting splicing events
 study_name = "barebones_project" # not used but helpful in the future, probably.
 
 species = "hg19"
+
+###end schooner.InteractiveStudy-optional params
