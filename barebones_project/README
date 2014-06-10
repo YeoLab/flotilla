@@ -1,8 +1,36 @@
+barebones_project
+=================
+
 install with
 
-pip install -e .
+    pip install -e .
 
 This installs in "development mode" this will make link to the data, not copy the data to site-packages.
 This seems more appropriate.
 
-Also, any changes made in this diretory will be immediately reflected in the import of packages.
+Also, any changes made in this directory will be immediately reflected in the
+import of packages.
+
+How to create a new project
+===========================
+
+Goal: `barebones_project/__init__.py` must create one or more of the `pandas
+.DataFrame`s. All of these have samples as the row names (`index` in `pandas`
+ parlance) and the other dimension as the columns.
+
+* `expression`: RPKM/TPM expression scores (@mlovci: logged or no?)
+* `splicing`: Psi splicing scores (between 0 and 1)
+* `sample_metadata`: Celltype and other information (e.g. the plotting
+"marker" or "color")
+* `expression_metadata`:
+* `splicing_metadata`: Splicing event name to gene names and Ensembl IDs
+* `spikein`: Expression of just the spikeins
+* `splice_junction`: Splice junction and `psi` scores from STAR's `SJ.out
+.tab` files
+
+1. Add your expression and splicing files to `barebones_project/study_data`
+2. Edit `barebones_project/params.py` to have `expression_filename` and
+such to use the names of the files you just added
+3. Edit `barebones_project/__init__.py` to load your files into pandas
+dataframes
+    1. Optional: add a `loaders.py` file for more complicated loading

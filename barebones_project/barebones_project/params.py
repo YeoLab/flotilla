@@ -9,12 +9,12 @@ min_samples = 12
 min_cells = min_samples
 # TODO: remove min_cells references
 
-sample_metadata_filename = os.path.join(study_data_dir, "descriptors.df")
+sample_metadata_filename = os.path.join(study_data_dir, "metadata.tsv")
 event_metadata_filename = os.path.join(study_data_dir, "miso_to_ids.df")
 gene_metadata_filename = None
 
-splicing_filename = os.path.join(study_data_dir, "psi.df")
-expression_filename = os.path.join(study_data_dir, "rpkm.df")
+splicing_filename = os.path.join(study_data_dir, "splicing.tsv")
+expression_filename = os.path.join(study_data_dir, "expression.tsv")
 
 
 #fill this in if you want to use carrier
