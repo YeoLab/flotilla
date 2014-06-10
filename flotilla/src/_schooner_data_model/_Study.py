@@ -4,12 +4,21 @@ heavier in terms of data load
 """
 
 from .._submaraine_viz import NetworkerViz, PredictorViz, plt
-from .._cargo_commonObjects import Cargo
 import sys
+from _ExpressionData import ExpressionData
+from _SplicingData import SplicingData
 
-class StudyContainer(object):
+class BaseStudy(object):
 
-    def _import_val(self, k, v):
+    def __init__(self):
+        self.initialize_base()
+
+    def initialize_base(self):
+        self.minimal_study_parameters = set(['study_data_dir'])
+
+    def _set(self, k, v):
+        """set attributes, warn if re-setting"""
+
         try:
             assert not hasattr(self, k)
         except:
@@ -17,78 +26,129 @@ class StudyContainer(object):
                        str(self.__getattribute__(k)) + \
                        "\n new:" + str(v)
             sys.stderr.write(write_me)
-        self.__setattr__(k,v)
+        super(BaseStudy, self).__setattr__(k,v)
 
-    def populate_container(self, metadata_dict, metadata_loader, data_dict, data_loader, params_dict):
-        """
-        load essential data associated with a study. Users specify how to build the necessary components from
-        project-specific loaders (see barebones_project for example loaders)
-
-        This is what is required:
-
-        metadata_loader expands metadata_dict to return at least:
-        sample_info, gene_info, splicing_info, expression_info
-        self.sample_info, self.gene_info, self.splicing_info, self.expression_info = metadata_loader(**metadata_dict)
-
-        data_loader expands data_dict to return at least:
-        self.splicing, self.expression = data_loader(**data_dict)
-
-        parameter dictionary
-        self.params = params_dict.copy()
-        """
-        [self._import_val(k,v) for (k,v) in params_dict.items() if not k.startswith("_")]
-        self.sample_info, self.gene_info, self.splicing_info, self.expression_info = metadata_loader(**metadata_dict)
-        self.splicing, self.expression = data_loader(**data_dict)
+    def validate_params(self):
+        """make sure that all necessary attributes are present"""
+        for param in self.minimal_study_parameters:
+            try:
+                assert hasattr(self, param)
+            except:
+                raise AssertionError("missing minimal parameter %s" % param)
 
 
-
-class InteractiveStudy(Cargo):
+class StudyContainer(BaseStudy):
+    """
+    store essential data associated with a study. Users specify how to build the necessary components from
+    project-specific loaders (see barebones_project for example loaders)
     """
 
-    Attributes
-    ----------
+    def __init__(self, params_dict, data_loaders=None):
+        super(StudyContainer, self).__init__()
+        [self.minimal_study_parameters.add(i) for i in ['sample_metadata_filename', ]]
+        self.initialize_container(params_dict, data_loaders)
+        self.run_wrapped_loaders(data_loaders)
 
 
-    Methods
-    -------
+    def initialize_container(self, params_dict, data_loaders=None):
+        [self._set(k,v) for (k,v) in params_dict.items() if not k.startswith("_")]
+        self.data_loaders = data_loaders
+        self.validate_params()
 
-    """
-
-    _default_x_pc = 1
-    _default_y_pc = 2
-
-    def initialize_interactive_obj(self, study_container, load_cargo=True, drop_outliers=True):
-        """Constructor for Study object containing gene expression and
-        alternative splicing study_data.
-
-        Parameters
-        ----------
-
-        Returns
-        -------
-
-
-        Raises
-        ------
-
+    def run_wrapped_loaders(self, data_loaders):
+        """fill this container with loaded objects.
+        loaders recieve kwards from data,
+        data_loaders is an iterable of 2-length iterables item[0] is a dict of kwargs for item[1], which is a fxn
         """
-        #self.study = study_container
+        for data, loader in data_loaders:
+            #formerly explicitly set things
+            for (k,v) in loader(**data).items():
+                try:
+                    self._set(k,v)
+                except Exception as e:
+                    raise e
 
-        self.sample_info = study_container.sample_info
 
-        self.expression = ExpressionStudy(study_container, load_cargo=load_cargo,
-                                          drop_outliers=drop_outliers)
-        self.splicing = SplicingStudy(study_container, load_cargo=load_cargo,
-                                      drop_outliers=drop_outliers)
 
-        self.default_group_id = study_container.default_group_id
-        self.default_group_ids = study_container.default_group_ids
+    def initialize_all_subclasses(self, load_cargo=False, drop_outliers=False):
+        """
+        run all initializers
+        """
 
-        self.default_list_id = study_container.default_list_id
-        self.default_list_ids = study_container.default_list_ids
+        #TODO: would be great if this worked, untested:
+        #for subclass in self.subclasses:
+        #    initializer = getattr(self, 'intialize_', subclass, '_subclass')
+        #    initializer(self)
 
-        self.expression_networks = NetworkerViz(self.expression)
-        self.splicing_networks = NetworkerViz(self.splicing)
+        self.initialize_sample_metadata_subclass(load_cargo=load_cargo, drop_outliers=drop_outliers)
+        self.initialize_expression_subclass(load_expression_cargo=load_cargo, drop_outliers=drop_outliers)
+        self.initialize_splicing_subclass(load_splicing_cargo=False, drop_outliers=drop_outliers)
+
+
+    def initialize_sample_metadata_subclass(self, **kwargs):
+        #TODO: this should be an actual schooner.*Data type, but now it's just set by a loader
+        assert hasattr(self, 'sample_metadata')
+
+
+    def initialize_expression_subclass(self, load_expression_cargo=True, drop_outliers=True):
+
+        [self.minimal_study_parameters.add(i) for i in ['expression_data_filename']]
+        self.validate_params()
+        #TODO:don't over-write self.expression
+        self.expression = ExpressionData(expression_df=self.expression,
+                                         sample_metadata=self.sample_metadata,
+                                         gene_descriptors=self.expression_metadata,
+                                         load_cargo=load_expression_cargo, drop_outliers=drop_outliers)
+        self.expression.networks = NetworkerViz(self.expression)
+        self.default_list_ids.extend(self.expression.lists.keys())
+
+    def initialize_splicing_subclass(self, load_splicing_cargo=False, drop_outliers=True):
+
+        [self.minimal_study_parameters.add(i) for i in ['splicing_data_filename']]
+        self.validate_params()
+        #TODO:don't over-write self.splicing
+        self.splicing = SplicingData(splicing=self.splicing, sample_metadata=self.sample_metadata,
+                                     event_metadata=self.event_metadata,load_cargo=load_splicing_cargo,
+                                           drop_outliers=drop_outliers)
+
+        self.splicing.networks = NetworkerViz(self.splicing)
+
+
+class StudyLocalCalls(StudyContainer):
+    """only very very quick things"""
+    def get_mapping_stats(self):
+        raise NotImplementedError
+
+
+class StudySystemCalls(StudyContainer):
+
+    #For things done offline that update study_data
+
+    def main(self):
+        raise NotImplementedError
+        #TODO: make this an entry-point, parse flotilla package to load from cmd line, do something
+        #this is for the user... who will know little to nothing about queues and the way jobs are done on the backend
+
+        usage = "run_flotilla_cmd cmd_name runner_name"
+        # def runner_concept(self, flotilla_package_target = "barebones_package", tool_name):
+        #
+        #     #a constructor for a new study, takes a long time and maybe runs in parallel. Probably on a cluster...
+        #     #same as `import flotilla_package_target as imported_package`
+        #
+        #     imported_package = __import__(flotilla_package_target)
+        #     study = StudyContainer.__new__()
+        #
+        #     #should use importlib though...
+        #
+        #
+        #     if this_is_not a parallel process
+        #         try:
+        #             make a new runner_name.lock file
+        #         except: #exists(runner_name.lock)
+        #             raise RuntimeError
+        #
+        #     study.do_something()
+
 
     def detect_outliers(self):
         """Detects outlier cells from expression, mapping, and splicing
@@ -106,23 +166,46 @@ class InteractiveStudy(Cargo):
         ------
 
         """
-        # TODO: Boyko/Patrick please implement
+        #TODO: Boyko/Patrick please implement
         raise NotImplementedError
 
-    def jsd(self):
+
+    def compute_jsd(self):
         """Performs Jensen-Shannon Divergence on both splicing and expression study_data
 
         Jensen-Shannon divergence is a method of quantifying the amount of
         change in distribution of one measurement (e.g. a splicing event or a
         gene expression) from one celltype to another.
         """
-        #TODO: Check if JSD has not already been calculated (cacheing or
-        # memoizing)
+
+        #TODO: Check if JSD has not already been calculated (cacheing or memoizing)
+
         self.expression.jsd()
         self.splicing.jsd()
 
+        raise NotImplementedError
 
-    def pca(self, data_type='expression', x_pc=1, y_pc=2, **kwargs):
+
+    def normalize_to_spikein(self):
+        raise NotImplementedError
+
+    def compute_expression_splicing_covariance(self):
+        raise NotImplementedError
+
+
+class StudyGraphics(StudyContainer):
+    """
+    """
+    def __init__(self, *args, **kwargs):
+
+        super(StudyGraphics, self).__init__(*args, **kwargs)
+        [self.minimal_study_parameters.add(i) for i in ['expression', 'splicing' ]]
+
+    def jsd(self):
+
+        raise NotImplementedError
+
+    def plot_pca(self, data_type='expression', x_pc=1, y_pc=2, **kwargs):
 
         """Performs PCA on both expression and splicing study_data
         """
@@ -133,36 +216,67 @@ class InteractiveStudy(Cargo):
             self.splicing.plot_dimensionality_reduction(x_pc=x_pc, y_pc=y_pc,
                                                         **kwargs)
 
-
-    def graph(self, data_type='expression', **kwargs):
-        args = kwargs.copy()
+    def plot_graph(self, data_type='expression', **kwargs):
 
         if data_type == "expression":
-            self.expression_networks.draw_graph(**kwargs)
+            self.expression.networks.draw_graph(**kwargs)
 
         elif data_type == "splicing":
-            self.splicing_networks.draw_graph(**kwargs)
+            self.splicing.networks.draw_graph(**kwargs)
 
-    def predictor(self, data_type='expression', **kwargs):
+    def plot_classifier(self, data_type='expression', **kwargs):
 
-        """Performs PCA on both expression and splicing study_data
+        """
         """
         if data_type == "expression":
             self.expression.plot_classifier(**kwargs)
         elif data_type == "splicing":
             self.splicing.plot_classifier(**kwargs)
 
+    def plot_regressor(self, data_type='expression', **kwargs):
+
+        """
+        """
+        raise NotImplementedError
+        if data_type == "expression":
+            self.expression.plot_regressor(**kwargs)
+        elif data_type == "splicing":
+            self.splicing.plot_regressor(**kwargs)
+
+
+class InteractiveStudy(StudyGraphics):
+    """
+
+    Attributes
+    ----------
+
+
+    Methods
+    -------
+
+    """
+    def __init__(self, *args, **kwargs):
+        super(InteractiveStudy, self).__init__(*args, **kwargs)
+        self._default_x_pc = 1
+        self._default_y_pc = 2
+        [self.minimal_study_parameters.add(param) for param in  ['default_group_id', 'default_group_ids',
+                                                                    'default_list_id', 'default_list_ids',]]
+        [self.minimal_study_parameters.add(i) for i in ['sample_metadata', ]]
+        self.validate_params()
 
     def interactive_pca(self):
 
         from IPython.html.widgets import interact
 
         #not sure why nested fxns are required for this, but they are... i think...
-        def do_interact(group_id=self.default_group_id, data_type='expression',
-                        featurewise=False, x_pc=1, y_pc=2,
-                        show_point_labels=False, list_link='',
-
+        def do_interact(data_type='expression',
+                        featurewise=False,
+                        group_id=self.default_group_id,
                         list_name=self.default_list_id,
+                        list_link='',
+                        x_pc=1, y_pc=2,
+                        show_point_labels=False,
+
                         savefile='data/last.pca.pdf'):
 
             for k, v in locals().iteritems():
@@ -179,7 +293,7 @@ class InteractiveStudy(Cargo):
             if list_name == 'custom':
                 list_name = list_link
 
-            self.pca(group_id=group_id, data_type=data_type,
+            self.plot_pca(group_id=group_id, data_type=data_type,
                      featurewise=featurewise,
                      x_pc=x_pc, y_pc=y_pc, show_point_labels=show_point_labels,
                      list_name=list_name)
@@ -207,7 +321,7 @@ class InteractiveStudy(Cargo):
                         use_pc_4=True,
                         list_name=self.default_list_id,
                         savefile='data/last.graph.pdf',
-                        weight_fun=['abs', 'arctan', 'arctan_sq', 'sq']):
+                        weight_fun=NetworkerViz.weight_funs):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -219,8 +333,10 @@ class InteractiveStudy(Cargo):
             if data_type == 'splicing':
                 assert (list_name in self.expression.lists.keys())
 
-            self.graph(list_name=list_name, group_id=group_id,
-                       data_type=data_type,
+            self.plot_graph(data_type=data_type,
+                            group_id=group_id,
+                            list_name=list_name,
+
                        featurewise=featurewise, draw_labels=draw_labels,
                        degree_cut=degree_cut, cov_std_cut=cov_std_cut,
                        n_pcs=n_pcs,
@@ -233,8 +349,9 @@ class InteractiveStudy(Cargo):
 
         all_lists = list(
             set(self.expression.lists.keys() + self.splicing.lists.keys()))
-        interact(do_interact, group_id=self.default_group_ids,
+        interact(do_interact,
                  data_type=('expression', 'splicing'),
+                 group_id=self.default_group_ids,
                  list_name=all_lists,
                  featurewise=False,
                  cov_std_cut=(0.1, 3),
@@ -269,11 +386,11 @@ class InteractiveStudy(Cargo):
 
             assert (list_name in data_obj.lists.keys())
 
-            prd = data_obj.get_predictor(list_name, group_id,
+            prd = data_obj.get_classifier(list_name, group_id,
                                          categorical_variable)
             prd(categorical_variable,
                 feature_score_std_cutoff=feature_score_std_cutoff)
-            print "retrieve this predictor with:\nprd=study.%s.get_predictor('%s', '%s', '%s')\n\
+            print "retrieve this classifier with:\nprd=study.%s.get_predictor('%s', '%s', '%s')\n\
 pca=prd('%s', feature_score_std_cutoff=%f)" \
                   % (data_type, list_name, group_id, categorical_variable,
                      categorical_variable, feature_score_std_cutoff)
@@ -284,8 +401,8 @@ pca=prd('%s', feature_score_std_cutoff=%f)" \
             set(self.expression.lists.keys() + self.splicing.lists.keys()))
         interact(do_interact,
                  data_type=('expression', 'splicing'),
-                 list_name=all_lists,
                  group_id=self.default_group_ids,
+                 list_name=all_lists,
                  categorical_variable=[i for i in self.default_group_ids if
                                        not i.startswith("~")],
                  feature_score_std_cutoff=(0.1, 20),
@@ -332,76 +449,18 @@ pca=prd('%s', feature_score_std_cutoff=%f)" \
                  sample2='replaceme',
                  pCut='0.01')
 
-
-
-class FlotillaStudy(InteractiveStudy, StudyContainer):
+class FlotillaStudy(InteractiveStudy, StudyLocalCalls, StudySystemCalls):
 
     """
     Load data, imbue interactiveness
     """
 
-    def __init__(self, metadata_dict, metadata_loader, data_dict, data_loader, params_dict, **interactive_args):
+    def __init__(self, params_dict, data_loaders, load_cargo=True, drop_outliers=True, datatypes='all'):
+        super(FlotillaStudy, self).__init__(params_dict, data_loaders=data_loaders)
 
-        super(FlotillaStudy, self).populate_container(metadata_dict, metadata_loader,
-                                                      data_dict, data_loader, params_dict)
-
-        super(FlotillaStudy, self).initialize_interactive_obj(self, **interactive_args)
-
-
-from _ExpressionData import ExpressionData
-from _SplicingData import SplicingData
-
-cargo = Cargo()
-
-
-class ExpressionStudy(ExpressionData):
-    def __init__(self, study, load_cargo=True, **kwargs):
-
-        assert hasattr(study, 'expression')
-        assert hasattr(study, 'sample_info')
-        assert hasattr(study, 'expression_info')
-
-        super(ExpressionStudy, self).__init__(expression_df=study.expression,
-                                              sample_metadata=study.sample_info,
-                                              gene_descriptors=study.expression_info,
-                                              **kwargs)
-        self.default_group_id = study.default_group_id
-        self.default_group_ids = study.default_group_ids
-        self.default_list_id = study.default_gene_list
-        self.species = study.species
-        if load_cargo:
-            self.load_cargo()
-            self.default_list_id = study.default_gene_list
-            study.default_list_ids.extend(self.lists.keys())
-
-
-    def load_cargo(self, rename=True, **kwargs):
-        try:
-            species = self.species
-            self.cargo = cargo.get_species_cargo(self.species)
-            self.go = self.cargo.get_go(species)
-            self.lists.update(self.cargo.gene_lists)
-
-            if rename:
-                self.set_naming_fun(lambda x: self.go.geneNames(x))
-        except:
-            raise
-
-
-class SplicingStudy(SplicingData):
-    def __init__(self, study, load_cargo=False, **kwargs):
-        assert hasattr(study, 'splicing')
-        assert hasattr(study, 'sample_info')
-        assert hasattr(study, 'splicing_info')
-
-        super(SplicingStudy, self).__init__(splicing=study.splicing,
-                                            sample_metadata=study.sample_info,
-                                            event_metadata=study.splicing_info,
-                                            **kwargs)
-        self.default_group_id = study.default_group_id
-        self.default_group_ids = study.default_group_ids
-        self.default_list_id = study.default_event_list
-        self.species = study.species
-
-    def load_cargo(self):
-        raise NotImplementedError
+        if datatypes == 'all':
+            super(FlotillaStudy, self).initialize_all_subclasses(load_cargo=load_cargo, drop_outliers=drop_outliers)
+        else:
+            #TODO: import specific data types only
+            raise NotImplementedError
+        self.validate_params()

@@ -21,6 +21,7 @@ class SplicingData(Data):
                  event_metadata, binsize=_binsize,
                  var_cut = _var_cut,
                  drop_outliers=True,
+                 load_cargo=False,
                  ):
         """Instantiate a object for study_data scores with binned and reduced study_data
 
@@ -51,8 +52,8 @@ class SplicingData(Data):
         self.lists['variant'] = pd.Series(psi_variant, index=psi_variant)
         self.lists['all_genes'] =  pd.Series(splicing.index, index=splicing.index)
         self.event_descriptors = event_metadata
-        self.load_colors()
-        self.load_markers()
+        self.set_reducer_colors()
+        self.set_reducer_markers()
 
     def namer(self, x):
         "this is for miso psi IDs..."
@@ -87,7 +88,7 @@ class SplicingData(Data):
     _last_reducer_accessed = None
 
     def make_reduced(self, list_name, group_id, reducer=PCA_viz,
-                    featurewise=False, reducer_args=None):
+                    featurewise=False, reducer_args=None, standardize=True):
         """make and cache a reduced dimensionality representation of data """
 
         if reducer_args is None:
@@ -114,8 +115,15 @@ class SplicingData(Data):
         mf_subset = subset.fillna(means,).fillna(0)
         #whiten, mean-center
         naming_fun=self.get_naming_fun()
-        ss = pd.DataFrame(StandardScaler().fit_transform(mf_subset), index=mf_subset.index,
-                          columns=mf_subset.columns).rename_axis(naming_fun, 1)
+        #whiten, mean-center
+
+        if standardize:
+            data = StandardScaler().fit_transform(mf_subset)
+        else:
+            data = mf_subset
+
+        ss = pd.DataFrame(data, index = mf_subset.index,
+                          columns = mf_subset.columns).rename_axis(naming_fun, 1)
 
         if featurewise:
             ss = ss.T
@@ -126,13 +134,11 @@ class SplicingData(Data):
 
         return rdc_obj
 
-
-
-    def make_predictor(self, list_name, group_id, categorical_trait,
-                       standardize=True, predictor=PredictorViz,
+    def make_classifier(self, list_name, group_id, categorical_trait,
+                       standardize=True, classifier=PredictorViz,
                        ):
         """
-        make and cache a predictor on a categorical trait (associated with samples) subset of genes
+        make and cache a classifier on a categorical trait (associated with samples) subset of genes
          """
 
         min_samples=self.get_min_samples()
@@ -162,10 +168,13 @@ class SplicingData(Data):
         naming_fun = self.get_naming_fun()
         ss = pd.DataFrame(data, index = mf_subset.index,
                           columns = mf_subset.columns).rename_axis(naming_fun, 1)
-        clf = predictor(ss, self.sample_descriptors,
+        clf = classifier(ss, self.sample_descriptors,
                         categorical_traits=[categorical_trait],)
         clf.set_reducer_plotting_args(self._default_reducer_args)
         return clf
+
+    def load_cargo(self):
+        raise NotImplementedError
 
 
 
