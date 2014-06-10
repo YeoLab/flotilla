@@ -22,6 +22,7 @@ class SplicingData(Data):
                  var_cut = _var_cut,
                  drop_outliers=True,
                  load_cargo=False,
+                 **kwargs
                  ):
         """Instantiate a object for study_data scores with binned and reduced study_data
 
@@ -39,7 +40,7 @@ class SplicingData(Data):
             functions fit, transform, and have the attribute components_
 
         """
-        super(SplicingData, self).__init__(sample_metadata)
+        super(SplicingData, self).__init__(sample_metadata, **kwargs)
         if drop_outliers:
             splicing = self.drop_outliers(splicing)
         self.sample_descriptors, splicing = self.sample_descriptors.align(splicing, join='inner', axis=0)

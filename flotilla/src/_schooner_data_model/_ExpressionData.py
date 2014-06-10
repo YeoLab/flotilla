@@ -21,10 +21,11 @@ class ExpressionData(Data):
     def __init__(self, expression_df, sample_metadata,
                  gene_descriptors= None,
                  var_cut=_var_cut, expr_cut=_expr_cut,
-                 drop_outliers=True, load_cargo=False
+                 drop_outliers=True, load_cargo=False,
+                 **kwargs
                  ):
 
-        super(ExpressionData, self).__init__(sample_metadata)
+        super(ExpressionData, self).__init__(sample_metadata, **kwargs)
         if drop_outliers:
             expression_df = self.drop_outliers(expression_df)
 

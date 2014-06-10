@@ -399,7 +399,7 @@ class NMF(Pretty_Reducer, sklearn.decomposition.NMF):
 class Networker(object):
     weight_funs=['abs', 'sq', 'arctan', 'arctan_sq']
 
-    def get_weight_fun(fun_name):
+    def get_weight_fun(self, fun_name):
         _abs =  lambda x: x
         _sq = lambda x: x ** 2
         _arctan = lambda x: np.arctan(x)

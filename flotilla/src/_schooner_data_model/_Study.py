@@ -68,8 +68,6 @@ class StudyContainer(BaseStudy):
                 except Exception as e:
                     raise e
 
-
-
     def initialize_all_subclasses(self, load_cargo=False, drop_outliers=False):
         """
         run all initializers
@@ -98,7 +96,8 @@ class StudyContainer(BaseStudy):
         self.expression = ExpressionData(expression_df=self.expression,
                                          sample_metadata=self.sample_metadata,
                                          gene_descriptors=self.expression_metadata,
-                                         load_cargo=load_expression_cargo, drop_outliers=drop_outliers)
+                                         load_cargo=load_expression_cargo, drop_outliers=drop_outliers,
+                                         species=self.species)
         self.expression.networks = NetworkerViz(self.expression)
         self.default_list_ids.extend(self.expression.lists.keys())
 
@@ -109,7 +108,7 @@ class StudyContainer(BaseStudy):
         #TODO:don't over-write self.splicing
         self.splicing = SplicingData(splicing=self.splicing, sample_metadata=self.sample_metadata,
                                      event_metadata=self.event_metadata,load_cargo=load_splicing_cargo,
-                                           drop_outliers=drop_outliers)
+                                     drop_outliers=drop_outliers, species=self.species)
 
         self.splicing.networks = NetworkerViz(self.splicing)
 
@@ -270,9 +269,9 @@ class InteractiveStudy(StudyGraphics):
 
         #not sure why nested fxns are required for this, but they are... i think...
         def do_interact(data_type='expression',
-                        featurewise=False,
                         group_id=self.default_group_id,
                         list_name=self.default_list_id,
+                        featurewise=False,
                         list_link='',
                         x_pc=1, y_pc=2,
                         show_point_labels=False,
@@ -314,14 +313,16 @@ class InteractiveStudy(StudyGraphics):
         from IPython.html.widgets import interact
 
         #not sure why nested fxns are required for this, but they are... i think...
-        def do_interact(group_id=self.default_group_id, data_type='expression',
-                        featurewise=False, draw_labels=False, degree_cut=1,
-                        cov_std_cut=1.8, n_pcs=5, feature_of_interest="RBFOX2",
+        def do_interact(data_type='expression', group_id=self.default_group_id,
+                        list_name=self.default_list_id,weight_fun=NetworkerViz.weight_funs,
+                        featurewise=False,
                         use_pc_1=True, use_pc_2=True, use_pc_3=True,
-                        use_pc_4=True,
-                        list_name=self.default_list_id,
+                        use_pc_4=True,degree_cut=1,
+                        cov_std_cut=1.8, n_pcs=5,
+                        feature_of_interest="RBFOX2",
+                        draw_labels=False,
                         savefile='data/last.graph.pdf',
-                        weight_fun=NetworkerViz.weight_funs):
+                        ):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -368,8 +369,8 @@ class InteractiveStudy(StudyGraphics):
 
         #not sure why nested fxns are required for this, but they are... i think...
         def do_interact(data_type='expression',
-                        list_name=self.default_list_id,
                         group_id=self.default_group_id,
+                        list_name=self.default_list_id,
                         categorical_variable='outlier',
                         feature_score_std_cutoff=2,
                         savefile='data/last.clf.pdf'):

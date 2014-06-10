@@ -16,7 +16,7 @@ class Data(object):
     """
 
 
-    def __init__(self, sample_descriptors):
+    def __init__(self, sample_descriptors, species=None):
         self._default_reducer_args = {'whiten':False, 'show_point_labels':False, 'show_vectors':False}
         self.samplewise_reduction = {}
         self.featurewise_reduction = {}
@@ -33,6 +33,7 @@ class Data(object):
         self.sample_descriptors = sample_descriptors
         self.set_reducer_colors()
         self.set_reducer_markers()
+        self.species=species
 
     def set_reducer_colors(self):
         try:
