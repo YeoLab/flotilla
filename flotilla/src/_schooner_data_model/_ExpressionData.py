@@ -18,13 +18,14 @@ class ExpressionData(Data):
     _expr_cut=0.1
 
 
-    def __init__(self, expression_df, sample_descriptors,
+    def __init__(self, expression_df, sample_metadata,
                  gene_descriptors= None,
                  var_cut=_var_cut, expr_cut=_expr_cut,
-                 drop_outliers=True,
+                 drop_outliers=True, load_cargo=False,
+                 **kwargs
                  ):
 
-        super(ExpressionData, self).__init__(sample_descriptors)
+        super(ExpressionData, self).__init__(sample_metadata, **kwargs)
         if drop_outliers:
             expression_df = self.drop_outliers(expression_df)
 
@@ -42,8 +43,10 @@ class ExpressionData(Data):
         naming_fun = self.get_naming_fun()
         self.lists.update({'all_genes':pd.Series(map(naming_fun, self.expression_df.columns),
                                                            index = self.expression_df.columns)})
-        self.load_colors()
-        self.load_markers()
+        self.set_reducer_colors()
+        self.set_reducer_markers()
+        if load_cargo:
+            self.load_cargo()
 
 
     def make_reduced(self, list_name, group_id, featurewise=False,
@@ -100,11 +103,11 @@ class ExpressionData(Data):
         #add mean gene_expression
         return rdc_obj
 
-    def make_predictor(self, gene_list_name, group_id, categorical_trait,
+    def make_classifier(self, gene_list_name, group_id, categorical_trait,
                        standardize=True, predictor=PredictorViz,
                        ):
         """
-        make and cache a predictor on a categorical trait (associated with samples) subset of genes
+        make and cache a classifier on a categorical trait (associated with samples) subset of genes
          """
 
         min_samples=self.get_min_samples()
@@ -142,5 +145,16 @@ class ExpressionData(Data):
         clf.set_reducer_plotting_args(self._default_reducer_args)
         return clf
 
+    def load_cargo(self, rename=True, **kwargs):
+        try:
+            species = self.species
+            self.cargo = cargo.get_species_cargo(self.species)
+            self.go = self.cargo.get_go(species)
+            self.lists.update(self.cargo.gene_lists)
+
+            if rename:
+                self.set_naming_fun(lambda x: self.go.geneNames(x))
+        except:
+            raise
 
 

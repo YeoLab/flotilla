@@ -1,7 +1,7 @@
 from scipy.spatial.distance import pdist, squareform
 from collections import defaultdict
 import sys
-
+from .._cargo_commonObjects import cargo
 
 class Data(object):
     """Generic study_data model for both splicing and expression study_data
@@ -15,34 +15,34 @@ class Data(object):
 
     """
 
-    def __init__(self, sample_descriptors):
 
-        self.sample_descriptors = sample_descriptors
-
+    def __init__(self, sample_descriptors, species=None):
+        self._default_reducer_args = {'whiten':False, 'show_point_labels':False, 'show_vectors':False}
         self.samplewise_reduction = {}
         self.featurewise_reduction = {}
         self.clf_dict = {}
         self.localZ_dict = {}
         self.lists = {}
-
         self.pca_plotting_args = {}
-        self._default_reducer_args = {'whiten':False, 'show_point_labels':False, }
-
-        self._default_reducer_args.update({'show_vectors':False})
         self._default_featurewise=False
         self._last_reducer_accessed = None
         self._last_predictor_accessed = None
         self._default_group_id = 'any_cell'
         self._default_list_id = 'variant'
+        self.cargo = cargo
+        self.sample_descriptors = sample_descriptors
+        self.set_reducer_colors()
+        self.set_reducer_markers()
+        self.species=species
 
-    def load_colors(self):
+    def set_reducer_colors(self):
         try:
             self._default_reducer_args.update({'colors_dict':self.sample_descriptors.color})
         except:
             sys.stderr.write("color loading failed")
             self._default_reducer_args.update({'colors_dict':defaultdict(lambda : 'r')})
 
-    def load_markers(self):
+    def set_reducer_markers(self):
         try:
             self._default_reducer_args.update({'markers_dict':self.sample_descriptors.marker})
         except:
@@ -115,7 +115,8 @@ class Data(object):
             #print "might not be a good naming function, failed on %s" % test_name
 
 
-    def plot_classifier(self, gene_list_name=None, sample_list_name=None, clf_var=None, predictor_args=None, plotting_args=None):
+    def plot_classifier(self, gene_list_name=None, sample_list_name=None, clf_var=None,
+                        predictor_args=None, plotting_args=None):
 
         """Principal component-like analysis of measurements
         Params
@@ -140,7 +141,9 @@ class Data(object):
         local_plotting_args = self.pca_plotting_args.copy()
         local_plotting_args.update(plotting_args)
 
-        clf = self.get_predictor(gene_list_name=gene_list_name, sample_list_name=sample_list_name, clf_var=clf_var,
+        clf = self.get_predictor(gene_list_name=gene_list_name,
+                                 sample_list_name=sample_list_name,
+                                 clf_var=clf_var,
                                  **predictor_args)
         clf(plotting_args=local_plotting_args)
 
@@ -209,9 +212,9 @@ class Data(object):
 
         return rdc_dict[obj_id]
 
-    def get_predictor(self, gene_list_name=None, sample_list_name=None, clf_var=None,
+    def get_classifier(self, gene_list_name=None, sample_list_name=None, clf_var=None,
                       obj_id=None,
-                      **predictor_args):
+                      **classifier_args):
         """
         list_name = list of features to use for this clf
         obj_id = name of this classifier
@@ -244,7 +247,7 @@ class Data(object):
         try:
             return self.clf_dict[obj_id]
         except:
-            clf = self.make_predictor(gene_list_name, sample_list_name, clf_var, **predictor_args)
+            clf = self.make_classifier(gene_list_name, sample_list_name, clf_var, **classifier_args)
             clf.obj_id = obj_id
             self.clf_dict[obj_id] = clf
 
@@ -273,5 +276,10 @@ class Data(object):
             df.rename_axis(self.get_naming_fun(), 1)
             vz = TwoWayScatterViz(sample1, sample2, df, **kwargs)
             self.localZ_dict[this_name] = vz
+
+        return vz
+
+    def plot_twoway(self, sample1, sample2, **kwargs):
+        vz = self.twoway(sample1, sample2, **kwargs)
         vz()
         return vz

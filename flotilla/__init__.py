@@ -1,4 +1,4 @@
 __author__ = 'lovci'
 
 
-from src import *
+from .src import *
