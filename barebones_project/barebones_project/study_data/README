@@ -1,6 +1,5 @@
-#This file will be displayed every time data from this project is imported. Lines starting with # will be skipped
-
---barebones_project--
+# This file will be displayed every time data from this project is imported.
+# Lines starting with "#" will be skipped
 
 user is required to build these files, or specify custom loaders in src/loaders.py:
 
