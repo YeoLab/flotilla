@@ -5,6 +5,13 @@ __author__ = 'lovci'
 import sys
 import pandas as pd
 
+class DataLoaderManager(object):
+    def __new__(self, *args, **kwargs):
+        self.loaders = []
+
+    def register_loader(self, loader, **kwargs):
+        self.loaders.append(kwargs.copy(), loader)
+
 def load_metadata(sample_descriptors_data_dump=None, gene_descriptors_data_dump=None,
                      event_descriptors_data_dump=None):
 
