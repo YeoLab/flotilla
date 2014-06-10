@@ -26,18 +26,22 @@ def load_descriptors(sample_descriptors_data_dump=None, gene_descriptors_data_du
         import pdb
         pdb.set_trace()
         raise
-    return descrip['sample'], descrip['gene'], descrip['event']
+    return {'sample_metadata': descrip['sample'],
+            'gene_metadata': descrip['gene'],
+            'event_metadata': descrip['event']}
 
 
 def load_transcriptome_data(expression_data_dump, splicing_data_dump):
     try:
         splicing = pd.read_pickle(splicing_data_dump)
         expression = pd.read_pickle(expression_data_dump)
-
+        sparse_expression = expression[expression > 0]
     except Exception as E:
         sys.stderr.write("error loading transcriptome data: %s, \n\n .... entering pdb ... \n\n" % E)
         import pdb
         pdb.set_trace()
         raise
 
-    return (splicing, expression)
+    return {'splicing': splicing,
+            'expression': expression,
+            'sparse_expression': sparse_expression}
