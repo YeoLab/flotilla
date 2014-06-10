@@ -1,6 +1,9 @@
+barebones_project
+=================
+
 install with
 
-pip install -e .
+    pip install -e .
 
 This installs in "development mode" this will make link to the data, not copy the data to site-packages.
 This seems more appropriate.
