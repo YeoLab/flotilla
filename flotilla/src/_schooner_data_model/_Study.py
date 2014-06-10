@@ -457,10 +457,10 @@ class FlotillaStudy(InteractiveStudy, StudyLocalCalls, StudySystemCalls):
     """
 
     def __init__(self, params_dict, data_loaders, load_cargo=True, drop_outliers=True, datatypes='all'):
-        super(FlotillaStudy, self).__init__(params_dict, data_loaders=data_loaders)
+        super(FlotillaStudy, self).__init__(params_dict, data_loaders=data_loaders) #from StudyContainer
 
         if datatypes == 'all':
-            super(FlotillaStudy, self).initialize_all_subclasses(load_cargo=load_cargo, drop_outliers=drop_outliers)
+            super(FlotillaStudy, self).initialize_all_subclasses(load_cargo=load_cargo, drop_outliers=drop_outliers) #from StudyContainer
         else:
             #TODO: import specific data types only
             raise NotImplementedError
