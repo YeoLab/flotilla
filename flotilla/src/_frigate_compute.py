@@ -26,23 +26,6 @@ import networkx as nx
 import math
 import itertools
 
-def get_weight_fun(fun_name):
-    _abs =  lambda x: x
-    _sq = lambda x: x ** 2
-    _arctan = lambda x: np.arctan(x)
-    _arctan_sq = lambda x: np.arctan(x) ** 2
-    if fun_name == 'abs':
-        wt = _abs
-    elif fun_name == 'sq':
-        wt = _sq
-    elif fun_name == 'arctan':
-        wt = _arctan
-    elif fun_name == 'arctan_sq':
-        wt = _arctan_sq
-    else:
-        raise ValueError
-    return wt
-
 def switchy_score(array):
     """Transform a 1D array of df scores to a vector of "switchy scores"
 
@@ -414,6 +397,24 @@ class NMF(Pretty_Reducer, sklearn.decomposition.NMF):
 
 
 class Networker(object):
+    weight_funs=['abs', 'sq', 'arctan', 'arctan_sq']
+
+    def get_weight_fun(fun_name):
+        _abs =  lambda x: x
+        _sq = lambda x: x ** 2
+        _arctan = lambda x: np.arctan(x)
+        _arctan_sq = lambda x: np.arctan(x) ** 2
+        if fun_name == 'abs':
+            wt = _abs
+        elif fun_name == 'sq':
+            wt = _sq
+        elif fun_name == 'arctan':
+            wt = _arctan
+        elif fun_name == 'arctan_sq':
+            wt = _arctan_sq
+        else:
+            raise ValueError
+        return wt
 
     def __init__(self):
         self.adjacencies_ = defaultdict()
