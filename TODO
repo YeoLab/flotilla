@@ -14,13 +14,13 @@ Predictor.has_been_*_yet should be dictionaries that manage each trait separatel
 
 Study
    interactive_predictor
-   predictor
+   classifier
 
 Data
    get_predictor
 
 ExpressionData
-   make_predictor
+   make_classifier
 
 Submarine
    PredictorViz
