@@ -28,6 +28,9 @@ class BaseStudy(object):
             sys.stderr.write(write_me)
         super(BaseStudy, self).__setattr__(k,v)
 
+    def update(self, dict):
+        [self._set(k,v) for (k,v) in dict.items()]
+
     def validate_params(self):
         """make sure that all necessary attributes are present"""
         for param in self.minimal_study_parameters:
@@ -36,37 +39,155 @@ class BaseStudy(object):
             except:
                 raise AssertionError("missing minimal parameter %s" % param)
 
+class DataOnDiskManager(BaseStudy):
 
-class StudyContainer(BaseStudy):
     """
-    store essential data associated with a study. Users specify how to build the necessary components from
-    project-specific loaders (see barebones_project for example loaders)
+    manage constructing data from files on disk
+    getters accept named kwargs, they return named outputs,
+    the outputs are then added as named instance attributes
     """
 
-    def __init__(self, params_dict, data_loaders=None):
-        super(StudyContainer, self).__init__()
-        [self.minimal_study_parameters.add(i) for i in ['sample_metadata_filename', ]]
-        self.initialize_container(params_dict, data_loaders)
-        self.run_wrapped_loaders(data_loaders)
+    def initialize_datamanager(self):
+        self.getters=[]
 
+    _accepted_filetypes = []
+    _accepted_filetypes.append('pickle_df')
+    def _load_pickle_df(self, file_type):
+        import pandas as pd
+        return pd.read_pickle(file_type)
 
-    def initialize_container(self, params_dict, data_loaders=None):
-        [self._set(k,v) for (k,v) in params_dict.items() if not k.startswith("_")]
-        self.data_loaders = data_loaders
-        self.validate_params()
+    _accepted_filetypes.append('gzip_pickle_df')
+    def _load_gzip_pickle_df(self, file_type):
+        import gzip, cPickle
+        with gzip.open(file_type, 'r') as f:
+            return cPickle.load(f)
 
-    def run_wrapped_loaders(self, data_loaders):
-        """fill this container with loaded objects.
-        loaders recieve kwards from data,
-        data_loaders is an iterable of 2-length iterables item[0] is a dict of kwargs for item[1], which is a fxn
+    _accepted_filetypes.append('tsv')
+    def _load_tsv(self, file_type):
+        import pandas as pd
+        return pd.read_table(file_type, index_col=0)
+
+    _accepted_filetypes.append('csv')
+    def _load_csv(self, file_type):
+        import pandas as pd
+        return pd.read_csv(file_type, index_col=0)
+
+    def _get_loading_method(self, file_type):
+        """loading_methods for loading from file"""
+        return getattr(self, "_load_" + file_type)
+
+    def load(self, file_name, file_type='pickle_df'):
+        self._get_loading_method(file_type)(file_name)
+
+    def register_new_getter(self, getter_name, **kwargs):
+        self.getters.append((kwargs.copy(), getter_name))
+
+    def apply_getters(self):
         """
-        for data, loader in data_loaders:
+        update instance namespace with outputs of registered getters.
+        """
+        for data, getter in self.getters:
             #formerly explicitly set things
-            for (k,v) in loader(**data).items():
+            for (k,v) in getter(**data).items():
                 try:
                     self._set(k,v)
                 except Exception as e:
                     raise e
+
+    def _example_getter(self, named_attribute1=None):
+        #perform operations on named inputs
+        #return named outputs
+        return {'output1':None}
+
+    def get_metadata(self, sample_metadata_filename=None, gene_metadata_filename=None,
+                     event_metadata_filename=None):
+
+        metadata = {'sample':None,
+                   'gene':None,
+                   'event':None}
+        try:
+            if sample_metadata_filename is not None:
+                metadata['sample'] = self.load(*sample_metadata_filename)
+            if event_metadata_filename is not None:
+                metadata['event'] = self.load(*event_metadata_filename)
+            if gene_metadata_filename is not None:
+                metadata['gene'] = self.load(*gene_metadata_filename)
+
+        except Exception as E:
+            sys.stderr.write("error loading descriptors: %s, \n\n .... entering pdb ... \n\n" % E)
+            raise E
+        return {'sample_metadata': metadata['sample'],
+                'gene_metadata': metadata['gene'],
+                'event_metadata': metadata['event'],
+                'expression_metadata': None}
+
+    def get_splicing_data(self, splicing_data_filename):
+        return {'splicing': self.load(*splicing_data_filename)}
+
+    def get_expression_data(self, expression_data_filename):
+        return {'expression': self.load(*expression_data_filename)}
+
+    def get_transcriptome_data(self, expression_data_filename, splicing_data_filename):
+        try:
+            splicing = self.get_splicing_data(splicing_data_filename)['splicing']
+            expression = self.get_expression_data(expression_data_filename)['expression']
+            sparse_expression = expression[expression > 0]
+
+        except Exception as E:
+            sys.stderr.write("error loading transcriptome data: %s, \n\n .... entering pdb ... \n\n" % E)
+            raise E
+
+        return {'splicing': splicing,
+                'expression': expression,
+                'sparse_expression': sparse_expression}
+
+class StudyFactory(DataOnDiskManager):
+    """
+    store essential data associated with a study. Users specify how to build the necessary components from
+    project-specific getters (see barebones_project for example getters)
+    """
+
+    def __init__(self, params_dict=None):
+        self.initialize_base()
+        if params_dict is None:
+            params_dict = {}
+        self.update(params_dict)
+        self.initialize_datamanager()
+        self.initialize_required_getters()
+        self.apply_getters()
+        self.initialize_all_subclasses()
+        self.validate_params()
+
+    def initialize_container(self, params_dict):
+        super(StudyFactory, self).initialize_base()
+        self.default_list_ids = []
+        [self.minimal_study_parameters.add(i) for i in ['sample_metadata_filename', 'species']]
+        self.getters = []
+        self.import_params(params_dict)
+        self.validate_params()
+
+    def initialize_required_getters(self):
+
+        if self.sample_metadata_filename is not None and self.event_metadata_filename is not None:
+
+            self.register_new_getter(self.get_metadata,
+                                         sample_metadata_filename=self.sample_metadata_filename,
+                                         gene_metadata_filename=self.gene_metadata_filename,
+                                         event_metadata_filename=self.event_metadata_filename,
+                                         )
+        else:
+            raise RuntimeError("at least set sample_metadata_filename and event_metadata_filename")
+
+        if self.expression_data_filename is not None:
+            self.register_new_getter(self.get_expression_data, expression_data_filename=self.expression_data_filename)
+
+        else:
+            raise RuntimeError("at least set expression_data_filename")
+
+        if self.splicing_data_filename is not None:
+            self.register_new_getter(self.get_splicing_data, splicing_data_filename=self.splicing_data_filename)
+        else:
+            raise RuntimeError("at least set splicing_data_filename")
 
     def initialize_all_subclasses(self, load_cargo=False, drop_outliers=False):
         """
@@ -90,7 +211,7 @@ class StudyContainer(BaseStudy):
 
     def initialize_expression_subclass(self, load_expression_cargo=True, drop_outliers=True):
 
-        [self.minimal_study_parameters.add(i) for i in ['expression_data_filename']]
+        [self.minimal_study_parameters.add(i) for i in ['expression', 'expression_metadata']]
         self.validate_params()
         #TODO:don't over-write self.expression
         self.expression = ExpressionData(expression_df=self.expression,
@@ -103,7 +224,7 @@ class StudyContainer(BaseStudy):
 
     def initialize_splicing_subclass(self, load_splicing_cargo=False, drop_outliers=True):
 
-        [self.minimal_study_parameters.add(i) for i in ['splicing_data_filename']]
+        [self.minimal_study_parameters.add(i) for i in ['splicing', 'event_metadata']]
         self.validate_params()
         #TODO:don't over-write self.splicing
         self.splicing = SplicingData(splicing=self.splicing, sample_metadata=self.sample_metadata,
@@ -112,14 +233,47 @@ class StudyContainer(BaseStudy):
 
         self.splicing.networks = NetworkerViz(self.splicing)
 
+    def create_new_study(self, input_dict, study_name, write_location):
+        raise NotImplementedError
+        self.clone_barebones(study_name)
+        self.rename_diectories()
+        self.write_params_to_file()
+        self.write_required_loaders()
 
-class StudyLocalCalls(StudyContainer):
+    def run_builders(self):
+        raise NotImplementedError
+
+    def clone_barebones(self, study_name, write_location):
+        raise NotImplementedError
+
+    def rename_diectories(self):
+        raise NotImplementedError
+
+    def write_params_to_file(self):
+        raise NotImplementedError
+        write_these_params = ['min_samples',
+                              'sample_metadata_filename', 'event_metadata_filename', 'expression_data_filename',
+                              'splicing_data_filename', 'expression_data_filename']
+
+    def doc(self):
+        raise NotImplementedError
+        self.docs = {
+            'min_samples': 'minimum number of samples for analyses',
+            'sample_metadata_filename': 'sample metadata',
+            'event_metadata_filename': 'splicing feature metadata',
+            'expression_data_filename': 'expression data filename',
+            #TODO: fill this in
+        }
+
+
+
+class StudyLocalCalls(StudyFactory):
     """only very very quick things"""
     def get_mapping_stats(self):
         raise NotImplementedError
 
 
-class StudySystemCalls(StudyContainer):
+class StudySystemCalls(StudyFactory):
 
     #For things done offline that update study_data
 
@@ -135,7 +289,7 @@ class StudySystemCalls(StudyContainer):
         #     #same as `import flotilla_package_target as imported_package`
         #
         #     imported_package = __import__(flotilla_package_target)
-        #     study = StudyContainer.__new__()
+        #     study = StudyFactory.__new__()
         #
         #     #should use importlib though...
         #
@@ -192,7 +346,7 @@ class StudySystemCalls(StudyContainer):
         raise NotImplementedError
 
 
-class StudyGraphics(StudyContainer):
+class StudyGraphics(StudyFactory):
     """
     """
     def __init__(self, *args, **kwargs):
@@ -363,7 +517,7 @@ class InteractiveStudy(StudyGraphics):
                  use_pc_1=True, use_pc_2=True, use_pc_3=True, use_pc_4=True,
         )
 
-    def interactive_clf(self):
+    def interactive_classifier(self):
 
         from IPython.html.widgets import interact
 
@@ -449,19 +603,3 @@ pca=prd('%s', feature_score_std_cutoff=%f)" \
                  sample1='replaceme',
                  sample2='replaceme',
                  pCut='0.01')
-
-class FlotillaStudy(InteractiveStudy, StudyLocalCalls, StudySystemCalls):
-
-    """
-    Load data, imbue interactiveness
-    """
-
-    def __init__(self, params_dict, data_loaders, load_cargo=True, drop_outliers=True, datatypes='all'):
-        super(FlotillaStudy, self).__init__(params_dict, data_loaders=data_loaders) #from StudyContainer
-
-        if datatypes == 'all':
-            super(FlotillaStudy, self).initialize_all_subclasses(load_cargo=load_cargo, drop_outliers=drop_outliers) #from StudyContainer
-        else:
-            #TODO: import specific data types only
-            raise NotImplementedError
-        self.validate_params()
