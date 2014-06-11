@@ -22,14 +22,16 @@ class BaseStudy(object):
         try:
             assert not hasattr(self, k)
         except:
-            write_me = "WARNING: over-writing parameter ", k  + "\n" + \
-                       str(self.__getattribute__(k)) + \
-                       "\n new:" + str(v)
+            write_me = "WARNING: over-writing parameter " + k + "\n" #+ \
+                       #str(self.__getattribute__(k)) + \
+                       #"\n new:" + str(v)
             sys.stderr.write(write_me)
+            import pdb
+            pdb.set_trace()
         super(BaseStudy, self).__setattr__(k,v)
 
     def update(self, dict):
-        [self._set(k,v) for (k,v) in dict.items()]
+        [self._set(k,v) for (k,v) in dict.items() if not k.startswith("_")] #skip private variables
 
     def validate_params(self):
         """make sure that all necessary attributes are present"""
@@ -57,27 +59,27 @@ class DataOnDiskManager(BaseStudy):
         return pd.read_pickle(file_type)
 
     _accepted_filetypes.append('gzip_pickle_df')
-    def _load_gzip_pickle_df(self, file_type):
+    def _load_gzip_pickle_df(self, file_name):
         import gzip, cPickle
-        with gzip.open(file_type, 'r') as f:
+        with gzip.open(file_name, 'r') as f:
             return cPickle.load(f)
 
     _accepted_filetypes.append('tsv')
-    def _load_tsv(self, file_type):
+    def _load_tsv(self, file_name):
         import pandas as pd
-        return pd.read_table(file_type, index_col=0)
+        return pd.read_table(file_name, index_col=0)
 
     _accepted_filetypes.append('csv')
-    def _load_csv(self, file_type):
+    def _load_csv(self, file_name):
         import pandas as pd
-        return pd.read_csv(file_type, index_col=0)
+        return pd.read_csv(file_name, index_col=0)
 
-    def _get_loading_method(self, file_type):
+    def _get_loading_method(self, file_name):
         """loading_methods for loading from file"""
-        return getattr(self, "_load_" + file_type)
+        return getattr(self, "_load_" + file_name)
 
     def load(self, file_name, file_type='pickle_df'):
-        self._get_loading_method(file_type)(file_name)
+        return self._get_loading_method(file_type)(file_name)
 
     def register_new_getter(self, getter_name, **kwargs):
         self.getters.append((kwargs.copy(), getter_name))
@@ -89,14 +91,13 @@ class DataOnDiskManager(BaseStudy):
         for data, getter in self.getters:
             #formerly explicitly set things
             for (k,v) in getter(**data).items():
-                try:
-                    self._set(k,v)
-                except Exception as e:
-                    raise e
+                self._set(k,v)
+        self.initialize_datamanager() #reset, getters only need to run once.
 
-    def _example_getter(self, named_attribute1=None):
+    def _example_getter(self, named_attribute=None):
         #perform operations on named inputs
         #return named outputs
+
         return {'output1':None}
 
     def get_metadata(self, sample_metadata_filename=None, gene_metadata_filename=None,
@@ -116,30 +117,31 @@ class DataOnDiskManager(BaseStudy):
         except Exception as E:
             sys.stderr.write("error loading descriptors: %s, \n\n .... entering pdb ... \n\n" % E)
             raise E
+
         return {'sample_metadata': metadata['sample'],
                 'gene_metadata': metadata['gene'],
                 'event_metadata': metadata['event'],
                 'expression_metadata': None}
 
     def get_splicing_data(self, splicing_data_filename):
-        return {'splicing': self.load(*splicing_data_filename)}
+        return {'splicing_df': self.load(*splicing_data_filename)}
 
     def get_expression_data(self, expression_data_filename):
-        return {'expression': self.load(*expression_data_filename)}
+        return {'expression_df': self.load(*expression_data_filename)}
 
     def get_transcriptome_data(self, expression_data_filename, splicing_data_filename):
         try:
-            splicing = self.get_splicing_data(splicing_data_filename)['splicing']
-            expression = self.get_expression_data(expression_data_filename)['expression']
+            splicing = self.get_splicing_data(splicing_data_filename)['splicing_df']
+            expression = self.get_expression_data(expression_data_filename)['expression_df']
             sparse_expression = expression[expression > 0]
 
         except Exception as E:
             sys.stderr.write("error loading transcriptome data: %s, \n\n .... entering pdb ... \n\n" % E)
             raise E
 
-        return {'splicing': splicing,
-                'expression': expression,
-                'sparse_expression': sparse_expression}
+        return {'splicing_df': splicing,
+                'expression_df': expression,
+                'sparse_expression_df': sparse_expression}
 
 class StudyFactory(DataOnDiskManager):
     """
@@ -147,7 +149,7 @@ class StudyFactory(DataOnDiskManager):
     project-specific getters (see barebones_project for example getters)
     """
 
-    def __init__(self, params_dict=None):
+    def __init__(self, params_dict=None, load_cargo=False, drop_outliers=False):
         self.initialize_base()
         if params_dict is None:
             params_dict = {}
@@ -155,16 +157,10 @@ class StudyFactory(DataOnDiskManager):
         self.initialize_datamanager()
         self.initialize_required_getters()
         self.apply_getters()
-        self.initialize_all_subclasses()
+        self.initialize_all_subclasses(load_cargo=load_cargo, drop_outliers=drop_outliers)
+        sys.stderr.write("subclasses initialized\n")
         self.validate_params()
-
-    def initialize_container(self, params_dict):
-        super(StudyFactory, self).initialize_base()
-        self.default_list_ids = []
-        [self.minimal_study_parameters.add(i) for i in ['sample_metadata_filename', 'species']]
-        self.getters = []
-        self.import_params(params_dict)
-        self.validate_params()
+        sys.stderr.write("package validated\n")
 
     def initialize_required_getters(self):
 
@@ -176,7 +172,7 @@ class StudyFactory(DataOnDiskManager):
                                          event_metadata_filename=self.event_metadata_filename,
                                          )
         else:
-            raise RuntimeError("at least set sample_metadata_filename and event_metadata_filename")
+            raise RuntimeError("at least s-et sample_metadata_filename and event_metadata_filename")
 
         if self.expression_data_filename is not None:
             self.register_new_getter(self.get_expression_data, expression_data_filename=self.expression_data_filename)
@@ -199,8 +195,11 @@ class StudyFactory(DataOnDiskManager):
         #    initializer = getattr(self, 'intialize_', subclass, '_subclass')
         #    initializer(self)
 
+        sys.stderr.write("initializing metadata\n")
         self.initialize_sample_metadata_subclass(load_cargo=load_cargo, drop_outliers=drop_outliers)
+        sys.stderr.write("initializing expression\n")
         self.initialize_expression_subclass(load_expression_cargo=load_cargo, drop_outliers=drop_outliers)
+        sys.stderr.write("initializing splicing\n")
         self.initialize_splicing_subclass(load_splicing_cargo=False, drop_outliers=drop_outliers)
 
 
@@ -211,12 +210,12 @@ class StudyFactory(DataOnDiskManager):
 
     def initialize_expression_subclass(self, load_expression_cargo=True, drop_outliers=True):
 
-        [self.minimal_study_parameters.add(i) for i in ['expression', 'expression_metadata']]
+        [self.minimal_study_parameters.add(i) for i in ['expression_df', 'expression_metadata']]
         self.validate_params()
         #TODO:don't over-write self.expression
-        self.expression = ExpressionData(expression_df=self.expression,
+        self.expression = ExpressionData(expression_df=self.expression_df,
                                          sample_metadata=self.sample_metadata,
-                                         gene_descriptors=self.expression_metadata,
+                                         gene_metadata=self.expression_metadata,
                                          load_cargo=load_expression_cargo, drop_outliers=drop_outliers,
                                          species=self.species)
         self.expression.networks = NetworkerViz(self.expression)
@@ -224,13 +223,12 @@ class StudyFactory(DataOnDiskManager):
 
     def initialize_splicing_subclass(self, load_splicing_cargo=False, drop_outliers=True):
 
-        [self.minimal_study_parameters.add(i) for i in ['splicing', 'event_metadata']]
+        [self.minimal_study_parameters.add(i) for i in ['splicing_df', 'event_metadata']]
         self.validate_params()
         #TODO:don't over-write self.splicing
-        self.splicing = SplicingData(splicing=self.splicing, sample_metadata=self.sample_metadata,
+        self.splicing = SplicingData(splicing=self.splicing_df, sample_metadata=self.sample_metadata,
                                      event_metadata=self.event_metadata,load_cargo=load_splicing_cargo,
                                      drop_outliers=drop_outliers, species=self.species)
-
         self.splicing.networks = NetworkerViz(self.splicing)
 
     def create_new_study(self, input_dict, study_name, write_location):
@@ -266,16 +264,10 @@ class StudyFactory(DataOnDiskManager):
         }
 
 
-
-class StudyLocalCalls(StudyFactory):
+class StudyCalls(StudyFactory):
     """only very very quick things"""
     def get_mapping_stats(self):
         raise NotImplementedError
-
-
-class StudySystemCalls(StudyFactory):
-
-    #For things done offline that update study_data
 
     def main(self):
         raise NotImplementedError
@@ -395,7 +387,6 @@ class StudyGraphics(StudyFactory):
             self.expression.plot_regressor(**kwargs)
         elif data_type == "splicing":
             self.splicing.plot_regressor(**kwargs)
-
 
 class InteractiveStudy(StudyGraphics):
     """

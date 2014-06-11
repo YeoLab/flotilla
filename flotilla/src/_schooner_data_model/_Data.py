@@ -15,8 +15,7 @@ class Data(object):
 
     """
 
-
-    def __init__(self, sample_descriptors, species=None):
+    def __init__(self, sample_metadata, species=None):
         self._default_reducer_args = {'whiten':False, 'show_point_labels':False, 'show_vectors':False}
         self.samplewise_reduction = {}
         self.featurewise_reduction = {}
@@ -30,27 +29,27 @@ class Data(object):
         self._default_group_id = 'any_cell'
         self._default_list_id = 'variant'
         self.cargo = cargo
-        self.sample_descriptors = sample_descriptors
+        self.sample_metadata = sample_metadata
         self.set_reducer_colors()
         self.set_reducer_markers()
         self.species=species
 
     def set_reducer_colors(self):
         try:
-            self._default_reducer_args.update({'colors_dict':self.sample_descriptors.color})
+            self._default_reducer_args.update({'colors_dict':self.sample_metadata.color})
         except:
             sys.stderr.write("color loading failed")
             self._default_reducer_args.update({'colors_dict':defaultdict(lambda : 'r')})
 
     def set_reducer_markers(self):
         try:
-            self._default_reducer_args.update({'markers_dict':self.sample_descriptors.marker})
+            self._default_reducer_args.update({'markers_dict':self.sample_metadata.marker})
         except:
             sys.stderr.write("marker loading failed")
             self._default_reducer_args.update({'markers_dict': defaultdict(lambda : 'o')})
 
     def set_outliers(self):
-        self.outliers = set(self.sample_descriptors['outlier'].ix[map(bool, self.sample_descriptors['outlier'])].index)
+        self.outliers = set(self.sample_metadata['outlier'].ix[map(bool, self.sample_metadata['outlier'])].index)
 
     def get_outliers(self):
         try:
@@ -60,7 +59,7 @@ class Data(object):
             return self.outliers
 
     def drop_outliers(self, df):
-        assert 'outlier' in self.sample_descriptors.columns
+        assert 'outlier' in self.sample_metadata.columns
         these_outliers = self.get_outliers().intersection(set(df.index))
         print "dropping ", these_outliers
         return df.drop(these_outliers)

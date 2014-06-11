@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 
-from _Data import Data
+from _Data import Data, cargo
 from .._submaraine_viz import NMF_viz, PCA_viz, PredictorViz
 from .._frigate_compute import binify, dropna_mean
 from .._skiff_external_sources import link_to_list
@@ -43,16 +43,15 @@ class SplicingData(Data):
         super(SplicingData, self).__init__(sample_metadata, **kwargs)
         if drop_outliers:
             splicing = self.drop_outliers(splicing)
-        self.sample_descriptors, splicing = self.sample_descriptors.align(splicing, join='inner', axis=0)
+        self.sample_metadata, splicing = self.sample_metadata.align(splicing, join='inner', axis=0)
 
-        self.splicing_df = splicing
-        self.df = self.splicing_df
+        self.df = splicing
         self.binsize = binsize
         psi_variant = pd.Index([i for i,j in (splicing.var().dropna() > var_cut).iteritems() if j])
         self.set_naming_fun(self.namer)
         self.lists['variant'] = pd.Series(psi_variant, index=psi_variant)
         self.lists['all_genes'] =  pd.Series(splicing.index, index=splicing.index)
-        self.event_descriptors = event_metadata
+        self.event_metadata = event_metadata
         self.set_reducer_colors()
         self.set_reducer_markers()
 
@@ -60,7 +59,7 @@ class SplicingData(Data):
         "this is for miso psi IDs..."
         shrt = ":".join(x.split("@")[1].split(":")[:2])
         try:
-            dd = self.event_descriptors.set_index('event_name')
+            dd = self.event_metadata.set_index('event_name')
             return dd['gene_symbol'].ix[x] + " " + shrt
         except Exception as e:
             #print e
@@ -76,7 +75,7 @@ class SplicingData(Data):
         except:
             #only bin once, until binsize is updated
             bins = np.arange(0, 1+self.binsize, self.binsize)
-            self.binned = binify(self.splicing_df, bins)
+            self.binned = binify(self.df, bins)
             self._binsize = self.binsize
         return self.binned
 
@@ -104,11 +103,11 @@ class SplicingData(Data):
 
         if group_id.startswith("~"):
             #print 'not', group_id.lstrip("~")
-            sample_ind = ~pd.Series(self.sample_descriptors[group_id.lstrip("~")], dtype='bool')
+            sample_ind = ~pd.Series(self.sample_metadata[group_id.lstrip("~")], dtype='bool')
         else:
-            sample_ind = pd.Series(self.sample_descriptors[group_id], dtype='bool')
+            sample_ind = pd.Series(self.sample_metadata[group_id], dtype='bool')
 
-        subset = self.splicing_df.ix[sample_ind, event_list]
+        subset = self.df.ix[sample_ind, event_list]
         frequent = pd.Index([i for i,j in (subset.count() > min_samples).iteritems() if j])
         subset = subset[frequent]
         #fill na with mean for each event
@@ -150,11 +149,11 @@ class SplicingData(Data):
 
         if group_id.startswith("~"):
             #print 'not', group_id.lstrip("~")
-            sample_ind = ~pd.Series(self.sample_descriptors[group_id.lstrip("~")], dtype='bool')
+            sample_ind = ~pd.Series(self.sample_metadata[group_id.lstrip("~")], dtype='bool')
         else:
-            sample_ind = pd.Series(self.sample_descriptors[group_id], dtype='bool')
+            sample_ind = pd.Series(self.sample_metadata[group_id], dtype='bool')
         sample_ind = sample_ind[sample_ind].index
-        subset = self.splicing_df.ix[sample_ind, event_list]
+        subset = self.df.ix[sample_ind, event_list]
         frequent = pd.Index([i for i, j in (subset.count() > min_samples).iteritems() if j])
         subset = subset[frequent]
         #fill na with mean for each event
@@ -169,7 +168,7 @@ class SplicingData(Data):
         naming_fun = self.get_naming_fun()
         ss = pd.DataFrame(data, index = mf_subset.index,
                           columns = mf_subset.columns).rename_axis(naming_fun, 1)
-        clf = classifier(ss, self.sample_descriptors,
+        clf = classifier(ss, self.sample_metadata,
                         categorical_traits=[categorical_trait],)
         clf.set_reducer_plotting_args(self._default_reducer_args)
         return clf
