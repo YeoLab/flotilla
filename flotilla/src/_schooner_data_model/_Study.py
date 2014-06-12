@@ -4,9 +4,11 @@ heavier in terms of data load
 """
 
 from .._submaraine_viz import NetworkerViz, PredictorViz, plt
-import sys
+import sys, os, subprocess
 from _ExpressionData import ExpressionData
 from _SplicingData import SplicingData
+import pandas as pd
+
 
 class BaseStudy(object):
 
@@ -26,8 +28,6 @@ class BaseStudy(object):
                        #str(self.__getattribute__(k)) + \
                        #"\n new:" + str(v)
             sys.stderr.write(write_me)
-            import pdb
-            pdb.set_trace()
         super(BaseStudy, self).__setattr__(k,v)
 
     def update(self, dict):
@@ -54,9 +54,12 @@ class DataOnDiskManager(BaseStudy):
 
     _accepted_filetypes = []
     _accepted_filetypes.append('pickle_df')
-    def _load_pickle_df(self, file_type):
-        import pandas as pd
-        return pd.read_pickle(file_type)
+    def _load_pickle_df(self, file_name):
+        return pd.read_pickle(file_name)
+
+    def _write_pickle_df(self, df, file_name):
+        df.to_pickle(file_name)
+
 
     _accepted_filetypes.append('gzip_pickle_df')
     def _load_gzip_pickle_df(self, file_name):
@@ -64,15 +67,30 @@ class DataOnDiskManager(BaseStudy):
         with gzip.open(file_name, 'r') as f:
             return cPickle.load(f)
 
+    def _write_gzip_pickle_df(self, df, file_name):
+        import tempfile
+        tmpfile_h, tmpfile = tempfile.mkstemp()
+        df.to_pickle(tmpfile)
+        import subprocess
+        subprocess.call(['gzip -f %s' % tempfile])
+        subprocess.call(['mv %s %s' % (tempfile, file_name)])
+
+
     _accepted_filetypes.append('tsv')
     def _load_tsv(self, file_name):
-        import pandas as pd
         return pd.read_table(file_name, index_col=0)
+
+    def _write_tsv(self, df, file_name):
+        df.to_csv(file_name, sep='\t')
+
 
     _accepted_filetypes.append('csv')
     def _load_csv(self, file_name):
-        import pandas as pd
         return pd.read_csv(file_name, index_col=0)
+
+    def _write_csv(self, df, file_name):
+        df.to_csv(file_name)
+
 
     def _get_loading_method(self, file_name):
         """loading_methods for loading from file"""
@@ -143,7 +161,17 @@ class DataOnDiskManager(BaseStudy):
                 'expression_df': expression,
                 'sparse_expression_df': sparse_expression}
 
-class StudyFactory(DataOnDiskManager):
+    def doc(self):
+        raise NotImplementedError
+        self.docs = {
+            'min_samples': 'minimum number of samples for analyses',
+            'sample_metadata_filename': 'sample metadata',
+            'event_metadata_filename': 'splicing feature metadata',
+            'expression_data_filename': 'expression data filename',
+            #TODO: fill this in
+        }
+
+class StudyData(DataOnDiskManager):
     """
     store essential data associated with a study. Users specify how to build the necessary components from
     project-specific getters (see barebones_project for example getters)
@@ -199,9 +227,11 @@ class StudyFactory(DataOnDiskManager):
         self.initialize_sample_metadata_subclass(load_cargo=load_cargo, drop_outliers=drop_outliers)
         sys.stderr.write("initializing expression\n")
         self.initialize_expression_subclass(load_expression_cargo=load_cargo, drop_outliers=drop_outliers)
-        sys.stderr.write("initializing splicing\n")
-        self.initialize_splicing_subclass(load_splicing_cargo=False, drop_outliers=drop_outliers)
-
+        try:
+            sys.stderr.write("initializing splicing\n")
+            self.initialize_splicing_subclass(load_splicing_cargo=False, drop_outliers=drop_outliers)
+        except:
+            sys.stderr.write("failed to load splicing")
 
     def initialize_sample_metadata_subclass(self, **kwargs):
         #TODO: this should be an actual schooner.*Data type, but now it's just set by a loader
@@ -231,45 +261,104 @@ class StudyFactory(DataOnDiskManager):
                                      drop_outliers=drop_outliers, species=self.species)
         self.splicing.networks = NetworkerViz(self.splicing)
 
-    def create_new_study(self, input_dict, study_name, write_location):
-        raise NotImplementedError
-        self.clone_barebones(study_name)
-        self.rename_diectories()
-        self.write_params_to_file()
-        self.write_required_loaders()
+from .._barge_utils import install_development_package
 
-    def run_builders(self):
-        raise NotImplementedError
+def to_base_file_tuple(tup):
+    """for making new packages, auto-loadable data!"""
+    assert len(tup) == 2
+    return "os.path.join(study_data_dir, %s)" % os.path.basename(tup[0]), tup[1]
 
-    def clone_barebones(self, study_name, write_location):
-        raise NotImplementedError
+new_package_params = ['min_samples','species',
+                       'sample_metadata_filename', 'event_metadata_filename', 'expression_data_filename',
+                       'splicing_data_filename', 'expression_data_filename', 'gene_metadata_filename',
+                       'event_metadata_filename',
+                        'default_group_id', 'default_group_ids', 'default_list_id', 'default_list_ids']
+class StudyCalls(StudyData):
 
-    def rename_diectories(self):
-        raise NotImplementedError
+    def write_package(self, study_name, write_location=None, install=False):
+        old_min_params = self.minimal_study_parameters
+        write_these = new_package_params
+        data_resources = ['sample_metadata', 'expression_df', 'splicing_df', 'event_metadata']
 
-    def write_params_to_file(self):
-        raise NotImplementedError
-        write_these_params = ['min_samples',
-                              'sample_metadata_filename', 'event_metadata_filename', 'expression_data_filename',
-                              'splicing_data_filename', 'expression_data_filename']
+        [self.minimal_study_parameters.add(i) for i in write_these]
+        self.validate_params()
 
-    def doc(self):
-        raise NotImplementedError
-        self.docs = {
-            'min_samples': 'minimum number of samples for analyses',
-            'sample_metadata_filename': 'sample metadata',
-            'event_metadata_filename': 'splicing feature metadata',
-            'expression_data_filename': 'expression data filename',
-            #TODO: fill this in
-        }
+        new_package_data_location = self._clone_barebones(study_name, write_location=write_location)
+
+        #new_package_data_location is os.path.join(write_location, study_name)
+
+        self._write_params_file(new_package_data_location, params_to_write = write_these)
+        for resource_name in data_resources:
+            data = getattr(self, resource_name)
+            try:
+                self._add_package_data_resource(resource_name, data, new_package_data_location,
+                file_write_mode='tsv')
+            except:
+                sys.stderr.write("couldn't add data resource: %s\n" % resource_name)
+
+        if install:
+            install_development_package(os.path.abspath(write_location))
+
+    def _clone_barebones(self, study_name, write_location=None):
+        import flotilla
+        flotilla_install_location = os.path.dirname(os.path.abspath(flotilla.__file__))
+        test_package_location = os.path.join(flotilla_install_location, "flotilla_test_project")
+        starting_position = os.getcwd()
+        try:
+            if write_location is None:
+                write_location = os.path.abspath(starting_position)
+            else:
+                #TODO: check whether user specificed a real writable location
+                pass
+            if os.path.exists(write_location):
+                raise Exception("do not use an existing path for write_location")
+
+            subprocess.call(['git clone -b barebones %s %s' % (test_package_location, write_location)], shell=True)
+            os.chdir(write_location)
+            subprocess.call(['git mv barebones_project %s' % study_name], shell=True)
+            with open("setup.py", 'r') as f:
+                setup_script = f.readlines()
 
 
-class StudyCalls(StudyFactory):
-    """only very very quick things"""
-    def get_mapping_stats(self):
-        raise NotImplementedError
+            with open("setup.py", 'w') as f:
+                for i in setup_script:
+
+                    f.write(i.replace("barebones_project", study_name))
+            os.chdir(starting_position)
+
+        except:
+            sys.stderr.write("error, did not complete cloning")
+            os.chdir(starting_position)
+            raise
+        return os.path.join(write_location, study_name)
+
+    def _write_params_file(self, package_location, params_to_write=new_package_params):
+        import os
+        with open(os.path.join(package_location, "params.py"), 'w') as f:
+            f.write("from .study_data import study_data_dir\n\n")
+            f.write("")
+            for param in params_to_write:
+
+                try:
+                    f.write("#%s" % self.doc(param))
+                except:
+                    pass
+                value = getattr(self, param)
+                if "filename" in param:
+                    if value is not None:
+                        value = to_base_file_tuple(value)
+
+                f.write("%s = %s\n\n" % (param, repr(value)))
+
+    def _add_package_data_resource(self, file_name, data_df, toplevel_package_dir, file_write_mode="tsv"):
+        writer = getattr(self, "_write_" + file_write_mode)
+        file_base = os.path.basename(file_name)
+        rsc_file = os.path.join(toplevel_package_dir, "study_data", file_base + "." + file_write_mode)
+        writer(data_df, rsc_file)
+        return (rsc_file, file_write_mode)
 
     def main(self):
+
         raise NotImplementedError
         #TODO: make this an entry-point, parse flotilla package to load from cmd line, do something
         #this is for the user... who will know little to nothing about queues and the way jobs are done on the backend
@@ -281,7 +370,7 @@ class StudyCalls(StudyFactory):
         #     #same as `import flotilla_package_target as imported_package`
         #
         #     imported_package = __import__(flotilla_package_target)
-        #     study = StudyFactory.__new__()
+        #     study = StudyData.__new__()
         #
         #     #should use importlib though...
         #
@@ -338,7 +427,7 @@ class StudyCalls(StudyFactory):
         raise NotImplementedError
 
 
-class StudyGraphics(StudyFactory):
+class StudyGraphics(StudyData):
     """
     """
     def __init__(self, *args, **kwargs):
@@ -388,7 +477,7 @@ class StudyGraphics(StudyFactory):
         elif data_type == "splicing":
             self.splicing.plot_regressor(**kwargs)
 
-class InteractiveStudy(StudyGraphics):
+class InteractiveStudy(StudyGraphics, StudyCalls):
     """
 
     Attributes
