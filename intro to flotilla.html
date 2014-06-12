@@ -8602,7 +8602,7 @@ lFJKKaWUUkoppdSx7f8HKEx/2zUtVUsAAAAASUVORK5CYII=
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="interactive_clf"><b>interactive_clf</b></h2>
+<h2 id="interactive_clf"><b>interactive_classifier</b></h2>
 <p>makes a classifier, plots PCA of samples using only important features from the classifier. (default classifier is ExtraTreesClassifier, extremely randomized forests)</p>
 <p>data_type - designates whether you'd like to do PCA with either splicing or gene expression as features<br> list_name - contains pre-loaded lists and custom lists added with custom &quot;list_link&quot; in interactive_pca<br> group_id - a subset of samples to use<br> categorical_variable - a column in expression.sample_descriptors upon which to train a classifier<br> feature_score_std_cutoff - mean + (this x std) is used to select the top features<br> safefile - a file to output</p>
 </div>
@@ -8615,7 +8615,7 @@ In&nbsp;[7]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython"><pre><span class="n">sc_study</span><span class="o">.</span><span class="n">interactive_clf</span><span class="p">()</span>
+<div class=" highlight hl-ipython"><pre><span class="n">sc_study</span><span class="o">.</span><span class="n">interactive_classifier</span><span class="p">()</span>
 </pre></div>
 
 </div>
