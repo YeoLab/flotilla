@@ -456,7 +456,7 @@ pca=prd('%s', feature_score_std_cutoff=%f)" \
                 print "sample: %s, is not in %s DataFrame, try a different sample ID" % (
                 sample2, data_type)
                 return
-            self.localZ_result = data_obj.twoway(sample1, sample2,
+            self.localZ_result = data_obj.plot_twoway(sample1, sample2,
                                                  pCut=pCut).result_
             print "localZ finished, find the result in <this_obj>.localZ_result_"
 
