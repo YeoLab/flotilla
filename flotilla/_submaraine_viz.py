@@ -720,7 +720,6 @@ class PredictorViz(Predictor, Reduction_viz):
         ax - ax to plot on. if None: plt.gca()
         """
 
-
         if classifier_name is None:
             classifier_name = self.default_classifier_name
 
