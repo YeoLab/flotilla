@@ -12,13 +12,13 @@ setup(
     include_package_data=True,
     #package_dir={'flotilla': 'flotilla'},
     package_data={
-        'flotilla': ['src/_cargo_commonObjects/cargo_data/*/*txt.gz',
-        'src/_cargo_commonObjects/cargo_data/*/gene_lists/*'
-        'flotilla_test_project/*']
+        'flotilla': ['_cargo_commonObjects/cargo_data/*/*txt.gz',
+        '_cargo_commonObjects/cargo_data/*/gene_lists/*'
+        ]
     },
     entry_points={
-    'console_scripts': ['metrics_runner.py = flotilla.src.carrier',
-                        'serve_flotilla_notebook = flotilla.src._barge_utils:serve_ipython']},
+    'console_scripts': ['metrics_runner.py = flotilla.carrier',
+                        'serve_flotilla_notebook = flotilla._barge_utils:serve_ipython']},
     install_requires=['setuptools',
                       'numpy >= 1.8.1 ',
                       'scipy >= 0.14.0',

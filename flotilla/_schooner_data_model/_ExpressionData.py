@@ -156,3 +156,6 @@ class ExpressionData(Data):
             raise
 
 
+
+    def _get(self, expression_data_filename):
+        return {'expression_df': self.load(*expression_data_filename)}
