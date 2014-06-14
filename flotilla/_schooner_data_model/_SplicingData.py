@@ -176,5 +176,9 @@ class SplicingData(Data):
     def load_cargo(self):
         raise NotImplementedError
 
+    def _get(self, splicing_data_filename):
+        return {'splicing_df': self.load(*splicing_data_filename)}
+
+
 
 
