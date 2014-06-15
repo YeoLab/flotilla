@@ -343,7 +343,7 @@ def plot_pca(df, **kwargs):
 
 
 def lavalamp(psi, color=None, jitter=None, title='', ax=None):
-    """Make a 'lavalamp' scatter plot of many spliciang events
+    """Make a 'lavalamp' scatter plot of many splicing events
 
     Useful for visualizing many splicing events at once.
 
