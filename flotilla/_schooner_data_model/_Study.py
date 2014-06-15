@@ -11,10 +11,6 @@ import pandas as pd
 from .._barge_utils import FlotillaFactory
 
 
-
-
-
-
 class StudyData(FlotillaFactory):
     """
     store essential data associated with a study. Users specify how to build the necessary components from
