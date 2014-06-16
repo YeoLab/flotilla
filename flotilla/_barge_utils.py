@@ -127,6 +127,7 @@ class FlotillaFactory(object):
 
             subprocess.call(['git clone -b barebones %s %s' % (test_package_location, write_location)], shell=True)
             os.chdir(write_location)
+            subprocess.call(['git checkout -B %s' % study_name], shell=True)
             subprocess.call(['git mv barebones_project %s' % study_name], shell=True)
             with open("setup.py", 'r') as f:
                 setup_script = f.readlines()
