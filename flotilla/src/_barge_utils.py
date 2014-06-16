@@ -61,6 +61,11 @@ def dict_to_str(dic):
         """join dictionary study_data into a string with that study_data"""
         return "_".join([k + ":" + str(v) for (k, v) in dic.items()])
 
+def install_development_package(package_location):
+    original_location = os.getcwd()
+    os.chdir(package_location)
+    subprocess.call(['pip install -e %s' % package_location], shell=True)
+    os.chdir(original_location)
 
 #def path_to_this_file():
 #
