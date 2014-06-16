@@ -1,5 +1,10 @@
 __author__ = 'olga'
 
+"""
+This file will be auto-imported for every testing session, so you can use
+these objects and functions across test files.
+"""
+
 import pytest
 import pandas as pd
 
