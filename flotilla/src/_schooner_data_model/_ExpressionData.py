@@ -2,11 +2,10 @@ import pandas as pd
 import seaborn
 from sklearn.preprocessing import StandardScaler
 
-from _Data import Data
+from _Data import Data, cargo
 from .._submaraine_viz import PCA_viz, PredictorViz
 from .._frigate_compute import dropna_mean, Predictor
 from .._skiff_external_sources import link_to_list
-
 
 seaborn.set_context('paper')
 
@@ -18,32 +17,34 @@ class ExpressionData(Data):
     _expr_cut=0.1
 
 
-    def __init__(self, expression_df, sample_descriptors,
-                 gene_descriptors= None,
-                 var_cut=_var_cut, expr_cut=_expr_cut, load_cargo=True, rename=True,
-                 drop_outliers=True,
+    def __init__(self, expression_df, sample_metadata,
+                 gene_metadata= None,
+                 var_cut=_var_cut, expr_cut=_expr_cut,
+                 drop_outliers=True, load_cargo=False,
+                 **kwargs
                  ):
 
-        super(ExpressionData, self).__init__(sample_descriptors)
+        super(ExpressionData, self).__init__(sample_metadata, **kwargs)
         if drop_outliers:
             expression_df = self.drop_outliers(expression_df)
 
-        a = self.sample_descriptors.align(expression_df, join='inner', axis=0)
-        self.sample_descriptors, expression_df = a
+        a = self.sample_metadata.align(expression_df, join='inner', axis=0)
+        self.sample_metadata, expression_df = a
 
-        self.gene_descriptors = gene_descriptors
+        self.gene_metadata = gene_metadata
         self.df = expression_df
-        self.expression_df = self.df
 
         self.sparse_df = expression_df[expression_df > expr_cut]
         rpkm_variant = pd.Index([i for i, j in (expression_df.var().dropna() > var_cut).iteritems() if j])
         self.lists['variant'] = pd.Series(rpkm_variant, index=rpkm_variant)
 
         naming_fun = self.get_naming_fun()
-        self.lists.update({'all_genes':pd.Series(map(naming_fun, self.expression_df.columns),
-                                                           index = self.expression_df.columns)})
-        self.load_colors()
-        self.load_markers()
+        self.lists.update({'all_genes':pd.Series(map(naming_fun, self.df.columns),
+                                                           index = self.df.columns)})
+        self.set_reducer_colors()
+        self.set_reducer_markers()
+        if load_cargo:
+            self.load_cargo()
 
 
     def make_reduced(self, list_name, group_id, featurewise=False,
@@ -68,9 +69,9 @@ class ExpressionData(Data):
 
         if group_id.startswith("~"):
             #print 'not', group_id.lstrip("~")
-            sample_ind = ~pd.Series(self.sample_descriptors[group_id.lstrip("~")], dtype='bool')
+            sample_ind = ~pd.Series(self.sample_metadata[group_id.lstrip("~")], dtype='bool')
         else:
-            sample_ind = pd.Series(self.sample_descriptors[group_id], dtype='bool')
+            sample_ind = pd.Series(self.sample_metadata[group_id], dtype='bool')
 
         sample_ind = sample_ind[sample_ind].index
         subset = self.sparse_df.ix[sample_ind]
@@ -100,11 +101,11 @@ class ExpressionData(Data):
         #add mean gene_expression
         return rdc_obj
 
-    def make_predictor(self, gene_list_name, group_id, categorical_trait,
+    def make_classifier(self, gene_list_name, group_id, categorical_trait,
                        standardize=True, predictor=PredictorViz,
                        ):
         """
-        make and cache a predictor on a categorical trait (associated with samples) subset of genes
+        make and cache a classifier on a categorical trait (associated with samples) subset of genes
          """
 
         min_samples=self.get_min_samples()
@@ -118,9 +119,9 @@ class ExpressionData(Data):
 
         if group_id.startswith("~"):
             #print 'not', group_id.lstrip("~")
-            sample_ind = ~pd.Series(self.sample_descriptors[group_id.lstrip("~")], dtype='bool')
+            sample_ind = ~pd.Series(self.sample_metadata[group_id.lstrip("~")], dtype='bool')
         else:
-            sample_ind = pd.Series(self.sample_descriptors[group_id], dtype='bool')
+            sample_ind = pd.Series(self.sample_metadata[group_id], dtype='bool')
         sample_ind = sample_ind[sample_ind].index
         subset = self.sparse_df.ix[sample_ind, gene_list.index]
         frequent = pd.Index([i for i, j in (subset.count() > min_samples).iteritems() if j])
@@ -137,10 +138,21 @@ class ExpressionData(Data):
 
         ss = pd.DataFrame(data, index = mf_subset.index,
                           columns = mf_subset.columns).rename_axis(naming_fun, 1)
-        clf = predictor(ss, self.sample_descriptors,
+        clf = predictor(ss, self.sample_metadata,
                         categorical_traits=[categorical_trait],)
         clf.set_reducer_plotting_args(self._default_reducer_args)
         return clf
 
+    def load_cargo(self, rename=True, **kwargs):
+        try:
+            species = self.species
+            self.cargo = cargo.get_species_cargo(self.species)
+            self.go = self.cargo.get_go(species)
+            self.lists.update(self.cargo.gene_lists)
+
+            if rename:
+                self.set_naming_fun(lambda x: self.go.geneNames(x))
+        except:
+            raise
 
 

@@ -13,7 +13,8 @@ setup(
     #package_dir={'flotilla': 'flotilla'},
     package_data={
         'flotilla': ['src/_cargo_commonObjects/cargo_data/*/*txt.gz',
-        'src/_cargo_commonObjects/cargo_data/*/gene_lists/*']
+        'src/_cargo_commonObjects/cargo_data/*/gene_lists/*'
+        'flotilla_test_project/*']
     },
     entry_points={
     'console_scripts': ['metrics_runner.py = flotilla.src.carrier',
@@ -36,5 +37,5 @@ setup(
                       'tornado >= 3.2.1',
                       #'dcor_cpy' #needs to be built with extutils
     ],
-    version = "0.0.3"
+    version = "0.0.4"
 )

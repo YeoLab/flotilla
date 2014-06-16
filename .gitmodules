@@ -1,4 +1,6 @@
 [submodule "flotilla/src/_cargo_commonObjects/cargo_data"]
 	path = flotilla/src/_cargo_commonObjects/cargo_data
 	url = git@github.com:YeoLab/flotilla_data.git
-
+[submodule "flotilla_test_project"]
+	path = flotilla_test_project
+	url = git@github.com:YeoLab/flotilla_project.git
