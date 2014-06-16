@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 
-from _Data import Data
+from _Data import BaseData
 from .._submaraine_viz import NMF_viz, PCA_viz, PredictorViz
 from .._frigate_compute import binify, dropna_mean
 from .._skiff_external_sources import link_to_list
@@ -16,7 +16,7 @@ PURPLES = brewer2mpl.get_map('Purples', 'sequential', 9).mpl_colors
 
 import collections
 
-class DownsampledSplicingData(Data):
+class DownsampledSplicingData(BaseData):
     binned_reducer = None
     raw_reducer = None
 

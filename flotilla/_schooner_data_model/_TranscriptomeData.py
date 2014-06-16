@@ -1,5 +1,5 @@
 __author__ = 'lovci'
-from _Data import Data
+from _Data import BaseData
 from _ExpressionData import ExpressionData
 from _SplicingData import SplicingData
 

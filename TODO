@@ -16,7 +16,7 @@ Study
    interactive_predictor
    classifier
 
-Data
+BaseData
    get_predictor
 
 ExpressionData

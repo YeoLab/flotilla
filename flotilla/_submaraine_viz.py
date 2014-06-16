@@ -419,7 +419,7 @@ def lavalamp(psi, color=None, jitter=None, title='', ax=None):
 
 class NetworkerViz(Networker, Reduction_viz):
     #TODO: needs to be decontaminated, as it requires methods from data_object;
-    #maybe this class should move to schooner.Data
+    #maybe this class should move to schooner.BaseData
     def __init__(self, data_obj):
         self.data_obj = data_obj
         Networker.__init__(self)
