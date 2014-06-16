@@ -1,6 +1,6 @@
 __author__ = 'olga'
 
-from _Data import BaseData
+from _BaseData import BaseData
 
 class MappingStatsData(BaseData):
     """Constructor for mapping statistics data from STAR

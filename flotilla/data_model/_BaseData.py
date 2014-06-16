@@ -2,7 +2,7 @@ from scipy.spatial.distance import pdist, squareform
 from collections import defaultdict
 import sys
 from ..cargo import cargo
-from .._barge_utils import FlotillaFactory
+from ..barge import FlotillaFactory
 
 class BaseData(FlotillaFactory):
     """Generic study_data model for both splicing and expression study_data
@@ -33,7 +33,7 @@ class BaseData(FlotillaFactory):
         self.sample_metadata = sample_metadata
         self.set_reducer_colors()
         self.set_reducer_markers()
-        self.species=species
+        self.species = species
 
     def set_reducer_colors(self):
         try:
@@ -266,7 +266,7 @@ class BaseData(FlotillaFactory):
         return self
 
     def twoway(self, sample1, sample2, **kwargs):
-        from .._submaraine_viz import TwoWayScatterViz
+        from ..submarine import TwoWayScatterViz
         pCut = kwargs['pCut']
         this_name = "_".join([sample1, sample2, str(pCut)])
         if this_name in self.localZ_dict:
