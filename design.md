@@ -56,6 +56,9 @@ Access data that's out there:
     cardiac.monocle()
     cardiac.splicing.modalities()
 
+    import neural_diff_project
+
+    neural_diff = flotilla.embark([])
 
 Next steps
 ----------
@@ -63,4 +66,7 @@ Next steps
 * Rewrite `_*Data.py` to have `Data` objects which inherit from `pandas.DataFrame`
     * Rename `Data` --> `BaseData` to be explicit that it's a Base class and
     can't do anything
+    * Look into efficient memoization/cacheing for storing results of
+    PCA/JSD/NMF so don't need to be calculated again.
+        * a database potentially?
 
