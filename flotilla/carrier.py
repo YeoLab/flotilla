@@ -11,8 +11,8 @@ handles database connection, performs operations as a slave if run as a script.
 #!grep def slave.py
 import random
 
-from ._frigate_compute import *
-from ._cargo_commonObjects import *
+from .frigate import *
+from .cargo import *
 
 mongoHost = ''
 mongoPort = ''

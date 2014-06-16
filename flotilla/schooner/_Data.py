@@ -1,7 +1,7 @@
 from scipy.spatial.distance import pdist, squareform
 from collections import defaultdict
 import sys
-from .._cargo_commonObjects import cargo
+from ..cargo import cargo
 from .._barge_utils import FlotillaFactory
 
 class BaseData(FlotillaFactory):

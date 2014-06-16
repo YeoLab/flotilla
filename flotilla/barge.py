@@ -112,7 +112,7 @@ class FlotillaFactory(object):
     def _clone_barebones(self, study_name, write_location=None):
         import flotilla
         flotilla_install_location = os.path.dirname(os.path.abspath(flotilla.__file__))
-        test_package_location = os.path.join(flotilla_install_location, "_cargo_commonObjects/cargo_data/"\
+        test_package_location = os.path.join(flotilla_install_location, "cargo/cargo_data/"\
                                                                         "barebones_project")
         starting_position = os.getcwd()
         try:
