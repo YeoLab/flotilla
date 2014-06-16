@@ -4,8 +4,10 @@ from sklearn.preprocessing import StandardScaler
 
 from _BaseData import BaseData, cargo
 from ..visualize import PCA_viz, PredictorViz
-from ..computation import dropna_mean, Predictor
+from ..compute.generic import dropna_mean
+from ..compute.predict import Predictor
 from ..external import link_to_list
+from ..util import memoize
 
 seaborn.set_context('paper')
 
@@ -46,8 +48,8 @@ class ExpressionData(BaseData):
         if load_cargo:
             self.load_cargo()
 
-
-    def make_reduced(self, list_name, group_id, featurewise=False,
+    @memoize
+    def reduced(self, list_name, group_id, featurewise=False,
                     reducer=PCA_viz,
                     standardize=True,
                     **reducer_args):
@@ -101,6 +103,7 @@ class ExpressionData(BaseData):
         #add mean gene_expression
         return rdc_obj
 
+    @memoize
     def make_classifier(self, gene_list_name, group_id, categorical_trait,
                        standardize=True, predictor=PredictorViz,
                        ):

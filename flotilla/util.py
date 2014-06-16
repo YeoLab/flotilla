@@ -12,10 +12,9 @@ import os
 import signal
 import sys
 import subprocess
-import pandas as pd
+import functools
 
 ###http://stackoverflow.com/questions/2281850/timeout-function-if-it-takes-too-long-to-finish###
-
 class TimeoutError(Exception):
     pass
 
@@ -70,3 +69,21 @@ def install_development_package(package_location):
 #def path_to_this_file():
 #
 #    return os.path.join(os.path.dirname(__file__))
+
+def memoize(obj):
+    """
+    'memoize' aka remember the output from a function and return that,
+    rather than recalculating
+
+    Stolen from:
+    https://wiki.python.org/moin/PythonDecoratorLibrary#CA-237e205c0d5bd1459c3663a3feb7f78236085e0a_1
+    """
+    cache = obj.cache = {}
+
+    @functools.wraps(obj)
+    def memoizer(*args, **kwargs):
+        key = str(args) + str(kwargs)
+        if key not in cache:
+            cache[key] = obj(*args, **kwargs)
+        return cache[key]
+    return memoizer
