@@ -8,10 +8,10 @@ import seaborn
 
 from ..compute.network import Networker
 from ..util import dict_to_str
-from ..visualize.reduce import ReducerViz
+from ..visualize.decomposition import DecompositionViz
 
 
-class NetworkerViz(Networker, ReducerViz):
+class NetworkerViz(Networker, DecompositionViz):
     #TODO: needs to be decontaminated, as it requires methods from data_object;
     #maybe this class should move to data_model.BaseData
     def __init__(self, data_obj):

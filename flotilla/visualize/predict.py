@@ -1,7 +1,9 @@
 __author__ = 'olga'
 
+from ..compute.predict import Predictor
+from decomposition import DecompositionViz
 
-class PredictorViz(Predictor, ReductionViz):
+class PredictorViz(Predictor, DecompositionViz):
 
     _reducer_plotting_args = {}
     def set_reducer_plotting_args(self, rpa):

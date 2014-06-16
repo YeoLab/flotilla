@@ -3,8 +3,9 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 
 from _BaseData import BaseData
-from ..visualize import NMF_viz, PCA_viz, PredictorViz
-from ..computation import binify, dropna_mean
+from ..visualize.decomposition import NMFviz, PCAviz
+from ..visualize.predict import PredictorViz
+from ..compute.generic import binify, dropna_mean
 from ..external import link_to_list
 import brewer2mpl
 import seaborn as sns
