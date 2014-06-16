@@ -12,7 +12,7 @@ def L2_distance(x,y):
 
 
 
-class ReductionViz(object):
+class ReducerViz(object):
 
     """
         Given a pandas dataframe, performs PCA and plots the results in a
@@ -65,7 +65,7 @@ class ReductionViz(object):
         self.reduction_args = self._default_reduction_args.copy()
         self.reduction_args.update([(k,v) for (k,v) in kwargs.items() if k in self._default_reduction_args.keys()])
 
-        super(ReductionViz, self).__init__(**self.reduction_args) #initialize PCA-like object
+        super(ReducerViz, self).__init__(**self.reduction_args) #initialize PCA-like object
         assert type(df) == pd.DataFrame
         self.reduced_space = self.fit_transform(df)
 
@@ -286,10 +286,10 @@ class ReductionViz(object):
         sns.despine()
         return fig
 
-class PCAViz(ReductionViz, PCA):
+class PCAViz(ReducerViz, PCA):
     _default_reduction_args = { 'n_components':None, 'whiten':False}
 
-class NMFViz(ReductionViz, NMF):
+class NMFViz(ReducerViz, NMF):
     pass
 
 def plot_pca(df, **kwargs):

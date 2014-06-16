@@ -1,6 +1,13 @@
 __author__ = 'olga'
 
 import matplotlib.pyplot as plt
+from .network import NetworkerViz
+from .reduce import ReducerViz
+
+"""
+Named `ipython_interact.py` rather than just `interact.py` to differentiate
+between IPython interactive visualizations vs D3 interactive visualizations.
+"""
 
 class Interactive(object):
     """
@@ -14,7 +21,7 @@ class Interactive(object):
 
     """
     def __init__(self, *args, **kwargs):
-        super(InteractiveStudy, self).__init__(*args, **kwargs)
+        # super(InteractiveStudy, self).__init__(*args, **kwargs)
         self._default_x_pc = 1
         self._default_y_pc = 2
         [self.minimal_study_parameters.add(param) for param in  ['default_group_id', 'default_group_ids',
@@ -73,7 +80,8 @@ class Interactive(object):
 
         #not sure why nested fxns are required for this, but they are... i think...
         def do_interact(data_type='expression', group_id=self.default_group_id,
-                        list_name=self.default_list_id,weight_fun=NetworkerViz.weight_funs,
+                        list_name=self.default_list_id,
+                        weight_fun=NetworkerViz.weight_funs,
                         featurewise=False,
                         use_pc_1=True, use_pc_2=True, use_pc_3=True,
                         use_pc_4=True,degree_cut=1,

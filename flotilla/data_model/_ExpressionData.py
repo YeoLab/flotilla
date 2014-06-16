@@ -159,3 +159,23 @@ class ExpressionData(BaseData):
 
     def _get(self, expression_data_filename):
         return {'expression_df': self.load(*expression_data_filename)}
+
+    def twoway(self, sample1, sample2, **kwargs):
+        from ..visualize.expression import TwoWayScatterViz
+
+        pCut = kwargs['pCut']
+        this_name = "_".join([sample1, sample2, str(pCut)])
+        if this_name in self.localZ_dict:
+            vz = self.localZ_dict[this_name]
+        else:
+            df = self.df
+            df.rename_axis(self.get_naming_fun(), 1)
+            vz = TwoWayScatterViz(sample1, sample2, df, **kwargs)
+            self.localZ_dict[this_name] = vz
+
+        return vz
+
+    def plot_twoway(self, sample1, sample2, **kwargs):
+        vz = self.twoway(sample1, sample2, **kwargs)
+        vz()
+        return vz
