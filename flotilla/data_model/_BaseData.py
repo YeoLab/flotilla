@@ -2,7 +2,7 @@ from scipy.spatial.distance import pdist, squareform
 from collections import defaultdict
 import sys
 from ..cargo import cargo
-from ..barge import FlotillaFactory
+from ..util import FlotillaFactory
 
 class BaseData(FlotillaFactory):
     """Generic study_data model for both splicing and expression study_data
@@ -266,7 +266,7 @@ class BaseData(FlotillaFactory):
         return self
 
     def twoway(self, sample1, sample2, **kwargs):
-        from ..submarine import TwoWayScatterViz
+        from ..visualize import TwoWayScatterViz
         pCut = kwargs['pCut']
         this_name = "_".join([sample1, sample2, str(pCut)])
         if this_name in self.localZ_dict:

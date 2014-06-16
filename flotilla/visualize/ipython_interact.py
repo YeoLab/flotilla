@@ -1,5 +1,6 @@
 __author__ = 'olga'
 
+import matplotlib.pyplot as plt
 
 class Interactive(object):
     """
