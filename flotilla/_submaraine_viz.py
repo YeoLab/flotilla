@@ -343,7 +343,7 @@ def plot_pca(df, **kwargs):
 
 
 def lavalamp(psi, color=None, jitter=None, title='', ax=None):
-    """Make a 'lavalamp' scatter plot of many spliciang events
+    """Make a 'lavalamp' scatter plot of many splicing events
 
     Useful for visualizing many splicing events at once.
 
@@ -478,7 +478,7 @@ class NetworkerViz(Networker, Reduction_viz):
             node_color_mapper = lambda x: 'r' if x == feature_of_interest else 'k'
             node_size_mapper = lambda x: (pca.means.ix[x]**2) + 10
         else:
-            node_color_mapper = lambda x: self.data_obj.sample_descriptors.color[x]
+            node_color_mapper = lambda x: self.data_obj.sample_metadata.color[x]
             node_size_mapper = lambda x: 75
 
         ax_pev.plot(pca.explained_variance_ratio_ * 100.)
@@ -597,7 +597,7 @@ class NetworkerViz(Networker, Reduction_viz):
             node_color_mapper = lambda x: 'r' if x == feature_of_interest else 'k'
             node_size_mapper = lambda x: (data.mean().ix[x]**2) + 10
         else:
-            node_color_mapper = lambda x: self.data_obj.sample_descriptors.color[x]
+            node_color_mapper = lambda x: self.data_obj.sample_metadata.color[x]
             node_size_mapper = lambda x: 75
 
         adjacency_name = "_".join([dict_to_str(adjacency_settings)])
@@ -719,7 +719,6 @@ class PredictorViz(Predictor, Reduction_viz):
         plot kernel density of classifier scores and draw a vertical line where the cutoff was selected
         ax - ax to plot on. if None: plt.gca()
         """
-
 
         if classifier_name is None:
             classifier_name = self.default_classifier_name
