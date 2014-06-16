@@ -89,7 +89,8 @@ class FlotillaFactory(object):
         write_these = self.minimal_study_parameters
 
         data_resources = ['sample_metadata', 'expression_df', 'splicing_df', 'event_metadata']
-
+        write_these = ['sample_metadata_filename', 'expression_data_filename', 'splicing_data_filename', 'event_metadata_filename',
+                       'expression_metadata_filename', 'gene_metadata_filename', 'species']
         [self.minimal_study_parameters.add(i) for i in write_these]
         self.validate_params()
 
