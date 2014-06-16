@@ -2,9 +2,10 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 
-from _BaseData import BaseData, cargo
-from ..visualize import NMF_viz, PCA_viz, PredictorViz
-from ..computation import binify, dropna_mean
+from _BaseData import BaseData
+from ..visualize.reduce import NMFViz, PCAViz
+from ..visualize.predict import PredictorViz
+from ..compute.generic import binify, dropna_mean
 from ..external import link_to_list
 
 

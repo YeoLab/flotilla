@@ -2,8 +2,9 @@ import pandas as pd
 import seaborn
 from sklearn.preprocessing import StandardScaler
 
-from _BaseData import BaseData, cargo
-from ..visualize import PCA_viz, PredictorViz
+from _BaseData import BaseData
+from ..visualize.reduce import PCAViz
+from ..visualize.predict import PredictorViz
 from ..compute.generic import dropna_mean
 from ..compute.predict import Predictor
 from ..external import link_to_list

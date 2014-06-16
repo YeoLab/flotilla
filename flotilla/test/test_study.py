@@ -1,12 +1,4 @@
-from ..schooner import Study
-import pandas as pd
-
-@pytest.fixture(scope='module')
-def example_data():
-    expression = pd.read_table('data/expression.tsv', index_col=0)
-    splicing = pd.read_table('data/splicing.tsv', index_col=0)
-    metadata = pd.read_table('data/metadata.tsv', index_col=0)
-    return expression, splicing, metadata
+from ..data_model import Study
 
 
 def test_explicit_init(example_data):
