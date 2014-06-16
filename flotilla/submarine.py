@@ -44,7 +44,7 @@ import matplotlib.pyplot as plt
 
 from ._frigate_compute import PCA, NMF, TwoWayGeneComparisonLocal, Networker, nx
 from matplotlib.gridspec import GridSpec, GridSpecFromSubplotSpec
-from ._barge_utils import dict_to_str
+from .barge import dict_to_str
 
 def L1_distance(x,y):
     return abs(y) + abs(x)
