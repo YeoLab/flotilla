@@ -10,9 +10,9 @@ handles database connection, performs operations as a slave if run as a script.
 
 #!grep def slave.py
 import random
-
-from .computation import *
-from .cargo import *
+import sys
+# from .computation import *
+# from .cargo import *
 
 mongoHost = ''
 mongoPort = ''

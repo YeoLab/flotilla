@@ -1,13 +1,17 @@
 __author__ = 'olga'
 
-import networx as nx
+import networkx as nx
 import numpy as np
+import matplotlib.pyplot as plt
 import seaborn
 
-from flotilla.computation import Networker
-from flotilla.visualize import ReductionViz
 
-class NetworkerViz(Networker, ReductionViz):
+from ..compute.network import Networker
+from ..util import dict_to_str
+from ..visualize.reduce import ReducerViz
+
+
+class NetworkerViz(Networker, ReducerViz):
     #TODO: needs to be decontaminated, as it requires methods from data_object;
     #maybe this class should move to data_model.BaseData
     def __init__(self, data_obj):
@@ -53,7 +57,7 @@ class NetworkerViz(Networker, ReductionViz):
 
         adjacency_settings = dict((k, settings[k]) for k in ['use_pc_1', 'use_pc_2', 'use_pc_3', 'use_pc_4', 'n_pcs', ])
 
-        f= plt.figure(figsize=(10,10))
+        f = plt.figure(figsize=(10,10))
 
         plt.axis((-0.2, 1.2, -0.2, 1.2))
         main_ax = plt.gca()
