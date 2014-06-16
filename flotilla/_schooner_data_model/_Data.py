@@ -4,7 +4,7 @@ import sys
 from .._cargo_commonObjects import cargo
 from .._barge_utils import FlotillaFactory
 
-class Data(FlotillaFactory):
+class BaseData(FlotillaFactory):
     """Generic study_data model for both splicing and expression study_data
 
     Attributes

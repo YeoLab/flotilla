@@ -73,7 +73,7 @@ class StudyData(FlotillaFactory):
             sys.stderr.write("failed to load splicing")
 
     def initialize_sample_metadata_subclass(self, **kwargs):
-        #TODO: this should be an actual schooner.*Data type, but now it's just set by a loader
+        #TODO: this should be an actual schooner.*BaseData type, but now it's just set by a loader
         assert hasattr(self, 'sample_metadata')
 
 

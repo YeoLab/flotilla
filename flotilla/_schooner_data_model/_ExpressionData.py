@@ -2,7 +2,7 @@ import pandas as pd
 import seaborn
 from sklearn.preprocessing import StandardScaler
 
-from _Data import Data, cargo
+from _Data import BaseData, cargo
 from .._submaraine_viz import PCA_viz, PredictorViz
 from .._frigate_compute import dropna_mean, Predictor
 from .._skiff_external_sources import link_to_list
@@ -10,7 +10,7 @@ from .._skiff_external_sources import link_to_list
 seaborn.set_context('paper')
 
 
-class ExpressionData(Data):
+class ExpressionData(BaseData):
 
 
     _var_cut=0.5
