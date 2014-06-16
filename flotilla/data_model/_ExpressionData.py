@@ -2,10 +2,10 @@ import pandas as pd
 import seaborn
 from sklearn.preprocessing import StandardScaler
 
-from _Data import BaseData, cargo
-from .._submaraine_viz import PCA_viz, PredictorViz
-from .._frigate_compute import dropna_mean, Predictor
-from .._skiff_external_sources import link_to_list
+from _BaseData import BaseData, cargo
+from ..submarine import PCA_viz, PredictorViz
+from ..frigate import dropna_mean, Predictor
+from ..skiff import link_to_list
 
 seaborn.set_context('paper')
 

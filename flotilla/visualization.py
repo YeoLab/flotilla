@@ -42,9 +42,9 @@ red = seaborn.color_palette()[2]
 
 import matplotlib.pyplot as plt
 
-from ._frigate_compute import PCA, NMF, TwoWayGeneComparisonLocal, Networker, nx
+from .compute import PCA, NMF, TwoWayGeneComparisonLocal, Networker, nx
 from matplotlib.gridspec import GridSpec, GridSpecFromSubplotSpec
-from .barge import dict_to_str
+from .utils import dict_to_str
 
 def L1_distance(x,y):
     return abs(y) + abs(x)
@@ -369,7 +369,7 @@ def lavalamp(psi, color=None, jitter=None, title='', ax=None):
     fig : matplotlib.Figure
         A figure object for saving.
     """
-    from ._frigate_compute import get_switchy_score_order
+    from .compute import get_switchy_score_order
     import matplotlib.pyplot as plt
 
 
@@ -419,7 +419,7 @@ def lavalamp(psi, color=None, jitter=None, title='', ax=None):
 
 class NetworkerViz(Networker, Reduction_viz):
     #TODO: needs to be decontaminated, as it requires methods from data_object;
-    #maybe this class should move to schooner.BaseData
+    #maybe this class should move to data_model.BaseData
     def __init__(self, data_obj):
         self.data_obj = data_obj
         Networker.__init__(self)
@@ -665,7 +665,7 @@ class NetworkerViz(Networker, Reduction_viz):
 
         return g, pos
 
-from ._frigate_compute import Predictor
+from .compute import Predictor
 import itertools
 
 class PredictorViz(Predictor, Reduction_viz):

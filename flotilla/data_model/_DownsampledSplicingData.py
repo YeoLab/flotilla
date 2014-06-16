@@ -2,10 +2,10 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 
-from _Data import BaseData
-from .._submaraine_viz import NMF_viz, PCA_viz, PredictorViz
-from .._frigate_compute import binify, dropna_mean
-from .._skiff_external_sources import link_to_list
+from _BaseData import BaseData
+from ..submarine import NMF_viz, PCA_viz, PredictorViz
+from ..frigate import binify, dropna_mean
+from ..skiff import link_to_list
 import brewer2mpl
 import seaborn as sns
 import matplotlib.pyplot as plt

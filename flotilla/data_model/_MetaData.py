@@ -1,6 +1,6 @@
 __author__ = 'lovci'
 import sys
-from _Data import BaseData
+from _BaseData import BaseData
 class MetaData(BaseData):
     def _get(self, sample_metadata_filename=None, gene_metadata_filename=None,
                      event_metadata_filename=None):

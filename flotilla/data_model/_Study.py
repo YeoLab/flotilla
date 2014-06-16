@@ -3,12 +3,12 @@ Data models for "studies" studies include attributes about the data and are
 heavier in terms of data load
 """
 
-from .._submaraine_viz import NetworkerViz, PredictorViz, plt
+from ..submarine import NetworkerViz, PredictorViz, plt
 import sys, os, subprocess
 from _ExpressionData import ExpressionData
 from _SplicingData import SplicingData
 import pandas as pd
-from .._barge_utils import FlotillaFactory
+from ..barge import FlotillaFactory
 
 
 class StudyData(FlotillaFactory):
@@ -73,7 +73,7 @@ class StudyData(FlotillaFactory):
             sys.stderr.write("failed to load splicing")
 
     def initialize_sample_metadata_subclass(self, **kwargs):
-        #TODO: this should be an actual schooner.*BaseData type, but now it's just set by a loader
+        #TODO: this should be an actual data_model.*Data type, but now it's just set by a loader
         assert hasattr(self, 'sample_metadata')
 
 
