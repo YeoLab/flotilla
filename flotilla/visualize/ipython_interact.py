@@ -2,7 +2,7 @@ __author__ = 'olga'
 
 import matplotlib.pyplot as plt
 from .network import NetworkerViz
-from .reduce import ReducerViz
+from .decomposition import DecompositionViz
 
 """
 Named `ipython_interact.py` rather than just `interact.py` to differentiate

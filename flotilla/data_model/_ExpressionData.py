@@ -3,7 +3,7 @@ import seaborn
 from sklearn.preprocessing import StandardScaler
 
 from _BaseData import BaseData
-from ..visualize.reduce import PCAViz
+from ..visualize.decomposition import PCAViz
 from ..visualize.predict import PredictorViz
 from ..compute.generic import dropna_mean
 from ..compute.predict import Predictor
@@ -51,7 +51,7 @@ class ExpressionData(BaseData):
 
     @memoize
     def reduced(self, list_name, group_id, featurewise=False,
-                    reducer=PCA_viz,
+                    reducer=PCAViz,
                     standardize=True,
                     **reducer_args):
         """make and cache a reduced dimensionality representation of data """
@@ -150,7 +150,7 @@ class ExpressionData(BaseData):
     def load_cargo(self, rename=True, **kwargs):
         try:
             species = self.species
-            self.cargo = cargo.get_species_cargo(self.species)
+            # self.cargo = cargo.get_species_cargo(self.species)
             self.go = self.cargo.get_go(species)
             self.lists.update(self.cargo.gene_lists)
 

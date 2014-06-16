@@ -1,6 +1,6 @@
 __author__ = 'olga'
 import math
-
+from sklearn.decomposition import NMF, PCA
 
 def L1_distance(x, y):
     """Really should just be using scipy.linalg.norm with order=1"""
@@ -12,7 +12,7 @@ def L2_distance(x,y):
 
 
 
-class ReducerViz(object):
+class DecompositionViz(object):
 
     """
         Given a pandas dataframe, performs PCA and plots the results in a
@@ -65,7 +65,7 @@ class ReducerViz(object):
         self.reduction_args = self._default_reduction_args.copy()
         self.reduction_args.update([(k,v) for (k,v) in kwargs.items() if k in self._default_reduction_args.keys()])
 
-        super(ReducerViz, self).__init__(**self.reduction_args) #initialize PCA-like object
+        super(DecompositionViz, self).__init__(**self.reduction_args) #initialize PCA-like object
         assert type(df) == pd.DataFrame
         self.reduced_space = self.fit_transform(df)
 
@@ -286,10 +286,10 @@ class ReducerViz(object):
         sns.despine()
         return fig
 
-class PCAViz(ReducerViz, PCA):
+class PCAViz(DecompositionViz, PCA):
     _default_reduction_args = { 'n_components':None, 'whiten':False}
 
-class NMFViz(ReducerViz, NMF):
+class NMFViz(DecompositionViz, NMF):
     pass
 
 def plot_pca(df, **kwargs):

@@ -3,7 +3,7 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 
 from _BaseData import BaseData
-from ..visualize.reduce import NMFViz, PCAViz
+from ..visualize.decomposition import NMFViz, PCAViz
 from ..visualize.predict import PredictorViz
 from ..compute.generic import binify, dropna_mean
 from ..external import link_to_list
@@ -80,7 +80,7 @@ class SplicingData(BaseData):
             self._binsize = self.binsize
         return self.binned
 
-    def get_binned_reduced(self, reducer=NMF_viz):
+    def get_binned_reduced(self, reducer=NMFViz):
         binned = self.get_binned_data()
         redc = reducer(binned)
         self.binned_reduced = redc.reduced_space
@@ -88,7 +88,7 @@ class SplicingData(BaseData):
 
     _last_reducer_accessed = None
 
-    def make_reduced(self, list_name, group_id, reducer=PCA_viz,
+    def make_reduced(self, list_name, group_id, reducer=PCAViz,
                     featurewise=False, reducer_args=None, standardize=True):
         """make and cache a reduced dimensionality representation of data """
 
