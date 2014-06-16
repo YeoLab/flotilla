@@ -40,11 +40,8 @@ seaborn.set_style({'axes.axisbelow': True,
                    'ytick.major.size': 0,
                    'ytick.minor.size': 0})
 
-seaborn.set_palette('deep')
-blue = seaborn.color_palette()[0]
-green =seaborn.color_palette()[1]
-red = seaborn.color_palette()[2]
+
 
 from network import Networker, NetworkerViz
-from predictor import PredictorViz
+from predict import PredictorViz
 from ipython_interact import Interactive

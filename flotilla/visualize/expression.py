@@ -1,7 +1,10 @@
 __author__ = 'olga'
 
+import matplotlib.pyplot as plt
+import numpy as np
 
-from flotilla.computation import TwoWayGeneComparisonLocal
+from .color import red, green, blue
+from ..compute.expression import TwoWayGeneComparisonLocal
 
 class TwoWayScatterViz(TwoWayGeneComparisonLocal):
 
@@ -26,13 +29,13 @@ class TwoWayScatterViz(TwoWayGeneComparisonLocal):
             ax = plt.gca()
 
         ax.set_aspect('equal')
-        minVal=np.min(np.c_[self.sample1, self.sample2])
+        vmin = np.min(np.c_[self.sample1, self.sample2])
         ax.scatter(self.sample1, self.sample2, c=co, alpha=0.7, edgecolor='none')
         ax.set_xlabel("%s %s" % (self.sampleNames[0], self.dtype))
         ax.set_ylabel("%s %s" % (self.sampleNames[1], self.dtype))
         ax.set_yscale('log', basey=2)
         ax.set_xscale('log', basex=2)
-        ax.set_xlim(xmin=max(minVal, 0.1))
-        ax.set_ylim(ymin=max(minVal, 0.1))
+        ax.set_xlim(xmin=max(vmin, 0.1))
+        ax.set_ylim(ymin=max(vmin, 0.1))
         if ax == None:
             plt.tight_layout()

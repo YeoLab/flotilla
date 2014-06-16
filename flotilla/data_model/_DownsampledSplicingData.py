@@ -3,9 +3,9 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 
 from _BaseData import BaseData
-from ..submarine import NMF_viz, PCA_viz, PredictorViz
-from ..frigate import binify, dropna_mean
-from ..skiff import link_to_list
+from ..visualize import NMF_viz, PCA_viz, PredictorViz
+from ..computation import binify, dropna_mean
+from ..external import link_to_list
 import brewer2mpl
 import seaborn as sns
 import matplotlib.pyplot as plt

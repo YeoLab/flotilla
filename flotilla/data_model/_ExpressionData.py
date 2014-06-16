@@ -3,9 +3,9 @@ import seaborn
 from sklearn.preprocessing import StandardScaler
 
 from _BaseData import BaseData, cargo
-from ..submarine import PCA_viz, PredictorViz
-from ..frigate import dropna_mean, Predictor
-from ..skiff import link_to_list
+from ..visualize import PCA_viz, PredictorViz
+from ..computation import dropna_mean, Predictor
+from ..external import link_to_list
 
 seaborn.set_context('paper')
 
