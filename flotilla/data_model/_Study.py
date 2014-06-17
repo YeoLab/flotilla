@@ -11,14 +11,14 @@ import pandas as pd
 from _StudyFactory import StudyFactory
 
 
-class StudyData(StudyFactory):
+class Study(StudyFactory):
     """
     store essential data associated with a study. Users specify how to build the necessary components from
     project-specific getters (see barebones_project for example getters)
     """
 
     def __init__(self, params_dict=None, load_cargo=False, drop_outliers=False):
-        super(StudyData, self).__init__()
+        super(Study, self).__init__()
         if params_dict is None:
             params_dict = {}
         self.update(params_dict)
@@ -133,7 +133,7 @@ class StudyData(StudyFactory):
 
 
 
-class StudyCalls(StudyData):
+class StudyCalls(Study):
 
     def main(self):
 
@@ -148,7 +148,7 @@ class StudyCalls(StudyData):
         #     #same as `import flotilla_package_target as imported_package`
         #
         #     imported_package = __import__(flotilla_package_target)
-        #     study = StudyData.__new__()
+        #     study = Study.__new__()
         #
         #     #should use importlib though...
         #
@@ -205,7 +205,7 @@ class StudyCalls(StudyData):
         raise NotImplementedError
 
 
-class StudyGraphics(StudyData):
+class StudyGraphics(Study):
     """
     """
     def __init__(self, *args, **kwargs):

@@ -44,8 +44,8 @@ class ExpressionData(BaseData):
         naming_fun = self.get_naming_fun()
         self.lists.update({'all_genes':pd.Series(map(naming_fun, self.df.columns),
                                                            index = self.df.columns)})
-        self.set_reducer_colors()
-        self.set_reducer_markers()
+        self._set_plot_colors()
+        self._set_plot_markers()
         if load_cargo:
             self.load_cargo()
 
