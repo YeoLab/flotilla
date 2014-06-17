@@ -53,8 +53,8 @@ class SplicingData(BaseData):
         self.lists['variant'] = pd.Series(psi_variant, index=psi_variant)
         self.lists['all_genes'] =  pd.Series(splicing.index, index=splicing.index)
         self.event_metadata = event_metadata
-        self.set_reducer_colors()
-        self.set_reducer_markers()
+        self._set_plot_colors()
+        self._set_plot_markers()
 
     def namer(self, x):
         "this is for miso psi IDs..."

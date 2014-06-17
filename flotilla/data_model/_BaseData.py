@@ -4,10 +4,12 @@ from scipy.spatial.distance import pdist, squareform
 import six
 import sys
 
+from ..visualize.color import red, blue, green
+
 MINIMUM_SAMPLES = 12
 
 
-class BaseData(pd.DataFrame):
+class BaseData(object):
     """Generic study_data model for both splicing and expression study_data
 
     Attributes
@@ -21,66 +23,65 @@ class BaseData(pd.DataFrame):
 
     #_naming_fun converts input feature names to something else. by default, just echo.
     _naming_fun = lambda x: six.print_(x)
-    _default_reducer_kwargs = {'whiten':False, 'show_point_labels':False,
-                               'show_vectors':False}
+    _default_reducer_kwargs = {'whiten' : False,
+                               'show_point_labels': False,
+                               'show_vectors': False}
+    _default_plot_kwargs = {'marker': 'o', 'color': blue}
 
-    def __init__(self, sample_metadata, data, index=None, columns=None,
-                 dtype=None, copy=False, species=None):
-        """
+    def __init__(self, sample_metadata, data, species=None):
+        """Base class for biological data measurements
+
         Parameters
         ----------
         sample_metadata : pandas.DataFrame
-            Metadata on the samples
+            Metadata on the samples, with sample names as rows and columns as
+            attributes. Any boolean column will be added as an option to
+            interactive_pca
+        data : pandas.DataFrame
+            A dataframe of samples x features (samples on rows, features on
+            columns) with some kind of measurements of cells,
+            e.g. gene expression values such as TPM, RPKM or FPKM, alternative
+            splicing "Percent-spliced-in" (PSI) values, or RNA editing scores.
+        species : str, optional
+            The species in which this was measured
 
-        Returns
-        -------
-
-
-        Raises
-        ------
         """
-        self._data = super(BaseData).__init__(data=data, index=index,
-                                              columns=columns, dtype=dtype,
-                                              copy=False)
-        self.sample_metadata = super(BaseData).__init__(data=sample_metadata)
+        self.data = data
+        self.sample_metadata = sample_metadata
         self.species = species
-        self.set_reducer_colors()
-        self.set_reducer_markers()
+        self._set_plot_colors()
+        self._set_plot_markers()
 
-        # self._default_reducer_args =
-        # self.samplewise_reduction = {}
-        # self.featurewise_reduction = {}
-        # self.clf_dict = {}
-        # self.localZ_dict = {}
-        # self.lists = {}
-        # self.pca_plotting_args = {}
-        # self._default_featurewise = False
-        # self._last_reducer_accessed = None
-        # self._last_predictor_accessed = None
-        # self._default_group_id = 'any_cell'
-        # self._default_list_id = 'variant'
-        # self.cargo = cargo
-        # self.sample_metadata = sample_metadata
-        # self.set_reducer_colors()
-        # self.set_reducer_markers()
-        # self.species = species
-
-    def set_reducer_colors(self):
+    def _set_plot_colors(self):
+        """If there is a column 'color' in the sample metadata, specify this
+        as the plotting color
+        """
         try:
-            self._default_reducer_args.update({'colors_dict':
-                                                   self.sample_metadata.color})
-        except:
-            sys.stderr.write("color loading failed")
-            self._default_reducer_args.update({'colors_dict':
-                                                   defaultdict(lambda : 'r')})
+            self._default_reducer_kwargs.update(
+                {'colors_dict': self.sample_metadata.color})
+            self._default_plot_kwargs.update(
+                {'color': self.sample_metadata.color.tolist()})
+        except AttributeError:
+            sys.stderr.write("There is no column named 'color' in the "
+                             "metadata, defaulting to blue for all samples")
+            self._default_reducer_kwargs.update(
+                {'colors_dict': defaultdict(lambda : blue)})
 
-    def set_reducer_markers(self):
+    def _set_plot_markers(self):
+        """If there is a column 'marker' in the sample metadata, specify this
+        as the plotting marker (aka the plotting shape). Only valid matplotlib
+        symbols are allowed. See http://matplotlib.org/api/markers_api.html
+        for a more complete description.
+        """
         try:
-            self._default_reducer_args.update({'markers_dict':
-                                                   self.sample_metadata.marker})
-        except:
-            sys.stderr.write("marker loading failed")
-            self._default_reducer_args.update({'markers_dict':
+            self._default_reducer_kwargs.update(
+                {'markers_dict': self.sample_metadata.marker})
+            self._default_plot_kwargs.update(
+                {'marker': self.sample_metadata.marker.tolist()})
+        except AttributeError:
+            sys.stderr.write("There is no column named 'marker' in the sample "
+                             "metadata, defaulting to a circle for all samples")
+            self._default_reducer_kwargs.update({'markers_dict':
                                                    defaultdict(lambda : 'o')})
 
     def set_outliers(self):
@@ -95,9 +96,9 @@ class BaseData(pd.DataFrame):
 
     def drop_outliers(self, df):
         assert 'outlier' in self.sample_metadata.columns
-        these_outliers = self.get_outliers().intersection(set(df.index))
-        print "dropping ", these_outliers
-        return df.drop(these_outliers)
+        outliers = self.get_outliers().intersection(set(df.index))
+        print "dropping ", outliers
+        return df.drop(outliers)
 
 
     def calculate_distances(self, metric='euclidean'):
@@ -107,27 +108,35 @@ class BaseData(pd.DataFrame):
 
         Parameters
         ----------
-        metric : str
-            One of any valid scipy.distance metric strings
+        metric : str, optional
+            One of any valid scipy.distance metric strings. Default 'euclidean'
         """
         raise NotImplementedError
         self.pdist = squareform(pdist(self.binned, metric=metric))
         return self
 
-    def correlate(self, method='spearman', between='measurements'):
+    def correlate(self, method='spearman', between='features'):
         """Find correlations between either splicing/expression measurements
         or cells
+
+        Parameters
+        ----------
+        method : str
+            Specify to calculate either 'spearman' (rank-based) or 'pearson'
+            (linear) correlation. Default 'spearman'
+        between : str
+            Either 'features' or 'samples'. Default 'features'
         """
         raise NotImplementedError
+        # Stub for choosing between features or samples
+        if 'features'.startswith(between):
+            pass
+        elif 'samples'.startswith(between):
+            pass
 
     def jsd(self):
         """Jensen-Shannon divergence showing most varying measurements within a
         celltype and between celltypes
-
-        Returns
-        -------
-        fig : matplotlib.Figure
-            A figure object for saving.
         """
         raise NotImplementedError
 
@@ -144,19 +153,20 @@ class BaseData(pd.DataFrame):
             #print "might not be a good naming function, failed on %s" % test_name
 
 
+    # TODO: Specify dtypes in docstring
     def plot_classifier(self, gene_list_name=None, sample_list_name=None, clf_var=None,
                         predictor_args=None, plotting_args=None):
-
         """Principal component-like analysis of measurements
+
         Params
         -------
-        obj_id:
+        obj_id : dtype?
             key of the object getting plotted
-        group_id:
+        group_id : dtype?
 
-        categorical_trait:
+        categorical_trait : dtype?
             classifier feature
-        list_name: str
+        list_name : str
             subset of genes to use for building class
 
 
