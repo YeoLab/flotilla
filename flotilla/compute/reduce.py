@@ -51,14 +51,14 @@ class PCA(Pretty_Reducer, sklearn.decomposition.PCA):
     pass
 
 class NMF(Pretty_Reducer, sklearn.decomposition.NMF):
-    here=True
+    here = True
     def fit(self, X):
-
         """
-        duplicated fit code for NMF because sklearn's NMF cheats for efficiency and calls fit_transform.
-        MRO resolves the closest (in this package) fit_transform first and so there's a recursion error:
-            def fit(self, X, y=None, **params):
+        duplicated fit code for NMF because sklearn's NMF cheats for efficiency
+        and calls fit_transform. MRO resolves the closest (in this package)
+        fit_transform first and so there's a recursion error:
 
+            def fit(self, X, y=None, **params):
                 self.fit_transform(X, **params)
                 return self
         """

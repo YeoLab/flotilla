@@ -9,10 +9,10 @@ import subprocess
 import sys
 import warnings
 
-from expression import ExpressionData
-from splicing import SplicingData
-from experiment_design import ExperimentDesign
-from  ..util import install_development_package
+from .expression import ExpressionData
+from .splicing import SplicingData
+from .experiment_design import ExperimentDesign
+from ..util import install_development_package
 from ..visualize import NetworkerViz, PredictorViz
 from ..visualize.ipython_interact import Interactive
 
