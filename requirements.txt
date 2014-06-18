@@ -9,7 +9,7 @@ scikit-learn >= 0.13.0
 gspread
 brewer2mpl
 pymongo >= 2.7
-ipyt hon >= 2.0.0
+ipython >= 2.0.0
 husl
 patsy >= 0.2.1
 statsmodels >= 0.5.0

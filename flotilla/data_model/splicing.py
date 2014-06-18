@@ -92,7 +92,7 @@ class SplicingData(BaseData):
     _last_reducer_accessed = None
 
     @memoize
-    def reduce(self, list_name, group_id, reducer=PCAViz,
+    def reduce(self, list_name, group_id, reducer=NMFViz,
                     featurewise=False, reducer_args=None, standardize=True):
         """make and cache a reduced dimensionality representation of data """
 
