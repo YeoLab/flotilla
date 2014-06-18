@@ -1,0 +1,32 @@
+language: python
+python:
+#  - "2.6"
+  - "2.7"
+  - "3.3"
+  - "3.4"
+# command to install dependencies
+install:
+  - conda create -n testenv --yes python=$TRAVIS_PYTHON_VERSION
+  - source activate testenv
+  # install as much as we can via conda
+  - conda install --yes pip numpy scipy matplotlib nose six scikit-learn ipython networkx pandas tornado statsmodels setuptools pytest
+  # Install the rest via pip (brewer2mpl, gspread, seaborn, etc)
+  - pip install -r requirements.txt
+  - pip install .
+
+
+# command to run tests
+script: py.test
+before_install:
+  - if [ ${TRAVIS_PYTHON_VERSION:0:1} == "2" ]; then wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh; else wget http://repo.continuum.io/miniconda/Miniconda3-3.4.2-Linux-x86_64.sh -O miniconda.sh; fi
+  - chmod +x miniconda.sh
+  - ./miniconda.sh -b
+  - if [ ${TRAVIS_PYTHON_VERSION:0:1} == "2" ]; then export PATH=~/miniconda/bin:$PATH; else export PATH=~/miniconda3/bin/:$PATH; fi
+  - conda update --yes conda
+
+# For slack notifications
+notifications:
+  slack:
+    rooms:
+      - yeolab:HxLwrd5FGhZQ8SyBD9Fvh3dn#drylab
+      - yeolab:HxLwrd5FGhZQ8SyBD9Fvh3dn#flotilla
