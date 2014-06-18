@@ -1,6 +1,10 @@
 __author__ = 'lovci'
+
 import sys
 from base import BaseData
+
+# Any informational data goes here
+
 class MetaData(BaseData):
     def _get(self, sample_metadata_filename=None, gene_metadata_filename=None,
                      event_metadata_filename=None):
@@ -24,3 +28,33 @@ class MetaData(BaseData):
                 'gene_metadata': metadata['gene'],
                 'event_metadata': metadata['event'],
                 'expression_metadata': None}
+
+class MappingStatsData(BaseData):
+    """Constructor for mapping statistics data from STAR
+
+    Attributes
+    ----------
+
+
+    Methods
+    -------
+
+    """
+
+    def __init__(self, df, sample_descriptors):
+        """Constructor for MappingStatsData
+
+        Parameters
+        ----------
+        df, sample_descriptors
+
+        Returns
+        -------
+
+
+        Raises
+        ------
+
+        """
+        super(MappingStatsData).__init__()
+        pass
