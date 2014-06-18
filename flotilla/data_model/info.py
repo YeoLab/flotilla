@@ -46,7 +46,7 @@ class MappingStatsData(BaseData):
 
     """
 
-    def __init__(self, df, sample_descriptors):
+    def __init__(self, data):
         """Constructor for MappingStatsData
 
         Parameters
@@ -63,3 +63,4 @@ class MappingStatsData(BaseData):
         """
         super(MappingStatsData).__init__()
         pass
+
