@@ -9,7 +9,7 @@ import pandas as pd
 import seaborn
 from sklearn.preprocessing import StandardScaler
 
-from base import BaseData
+from .base import BaseData
 from ..visualize.decomposition import PCAViz
 from ..visualize.predict import PredictorViz
 from ..compute.generic import dropna_mean

@@ -6,7 +6,7 @@ stats data
 
 
 import sys
-from base import BaseData
+from .base import BaseData
 
 # Any informational data goes here
 

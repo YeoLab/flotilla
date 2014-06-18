@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 
-from base import BaseData
+from .base import BaseData
 from ..visualize.decomposition import NMFViz, PCAViz
 from ..visualize.color import purples
 from ..visualize.predict import PredictorViz
