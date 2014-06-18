@@ -1,4 +1,9 @@
 __author__ = 'lovci'
+"""
+Data model for anything informational, like metadata about samples or mapping
+stats data
+"""
+
 
 import sys
 from base import BaseData
