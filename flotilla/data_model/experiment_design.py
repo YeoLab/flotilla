@@ -10,7 +10,7 @@ from .base import BaseData
 
 # Any informational data goes here
 
-class ExperimentDesign(BaseData):
+class ExperimentDesignData(BaseData):
     def _get(self, sample_metadata_filename=None, gene_metadata_filename=None,
                      event_metadata_filename=None):
 
