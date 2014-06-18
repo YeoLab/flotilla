@@ -17,7 +17,7 @@ class StudyFactory(object):
     def __init__(self):
         self.minimal_study_parameters = set()
         self.new_study_params = set()
-        self.getters=[]
+        self.getters = []
 
     def write_package(self, study_name, write_location=None, install=False):
         write_these = self.minimal_study_parameters

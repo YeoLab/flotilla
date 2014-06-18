@@ -7,7 +7,7 @@ from ..visualize.decomposition import NMFViz, PCAViz
 from ..visualize.predict import PredictorViz
 from ..compute.generic import binify, dropna_mean
 from ..external import link_to_list
-
+from ..util import memoize
 
 class SplicingData(BaseData):
     binned_reducer = None
@@ -49,22 +49,22 @@ class SplicingData(BaseData):
         self.df = splicing
         self.binsize = binsize
         psi_variant = pd.Index([i for i,j in (splicing.var().dropna() > var_cut).iteritems() if j])
-        self.set_naming_fun(self.namer)
+        self._set_naming_fun(self.feature_rename)
         self.lists['variant'] = pd.Series(psi_variant, index=psi_variant)
         self.lists['all_genes'] =  pd.Series(splicing.index, index=splicing.index)
         self.event_metadata = event_metadata
         self._set_plot_colors()
         self._set_plot_markers()
 
-    def namer(self, x):
+    def feature_rename(self, x):
         "this is for miso psi IDs..."
-        shrt = ":".join(x.split("@")[1].split(":")[:2])
+        short = ":".join(x.split("@")[1].split(":")[:2])
         try:
             dd = self.event_metadata.set_index('event_name')
-            return dd['gene_symbol'].ix[x] + " " + shrt
+            return dd['gene_symbol'].ix[x] + " " + short
         except Exception as e:
             #print e
-            return shrt
+            return short
 
     def set_binsize(self, binsize):
         self.binsize = binsize
@@ -88,7 +88,8 @@ class SplicingData(BaseData):
 
     _last_reducer_accessed = None
 
-    def make_reduced(self, list_name, group_id, reducer=PCAViz,
+    @memoize
+    def reduce(self, list_name, group_id, reducer=PCAViz,
                     featurewise=False, reducer_args=None, standardize=True):
         """make and cache a reduced dimensionality representation of data """
 
@@ -135,7 +136,8 @@ class SplicingData(BaseData):
 
         return rdc_obj
 
-    def make_classifier(self, list_name, group_id, categorical_trait,
+    @memoize
+    def classify(self, list_name, group_id, categorical_trait,
                        standardize=True, classifier=PredictorViz,
                        ):
         """

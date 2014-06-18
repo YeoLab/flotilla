@@ -146,7 +146,7 @@ class BaseData(object):
     def get_naming_fun(self):
         return self._feature_rename
 
-    def set_naming_fun(self, fun, test_name='foo'):
+    def _set_naming_fun(self, fun, test_name='foo'):
         self._feature_rename = fun
         try:
             fun(test_name)
