@@ -60,7 +60,7 @@ class Cargo(object):
         try:
             assert(species == "hg19")
         except AssertionError:
-            raise NotImplementedError("only hg19 is allowed at this point")
+            return {}
 
         try:
             rbps = pd.read_pickle(os.path.join(data_path, species, "gene_lists", "rbps.df"))
