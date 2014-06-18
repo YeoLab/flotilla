@@ -1,6 +1,6 @@
 __author__ = 'olga'
 
-from ..data_model._BaseData import BaseData
+from ..data_model.base import BaseData
 import pandas.util.testing as pdt
 
 def test_init(example_data):
