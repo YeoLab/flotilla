@@ -20,3 +20,10 @@ before_install:
   - ./miniconda.sh -b
   - if [ ${TRAVIS_PYTHON_VERSION:0:1} == "2" ]; then export PATH=~/miniconda/bin:$PATH; else export PATH=~/miniconda3/bin/:$PATH; fi
   - conda update --yes conda
+
+# For slack notifications
+notifications:
+  slack:
+    rooms:
+      - yeolab:HxLwrd5FGhZQ8SyBD9Fvh3dn#drylab
+      - yeolab:HxLwrd5FGhZQ8SyBD9Fvh3dn#flotilla
