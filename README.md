@@ -71,10 +71,18 @@ When in doubt, please defer to [Python Enhancement Proposal 8 (aka PEP8))
 Docstring conventions
 ---------------------
 
-We will attempt to stick to the `numpy` docstring specification (aka
-"`numpydoc`"), described here: https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt
+We will attempt to stick to the [`numpy` docstring specification](https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt) (aka
+"`numpydoc`").
 
 To make this easier, I use ["Live Templates" in PyCharm]
 (http://peter-hoffmann.com/2010/python-live-templates-for-pycharm.html),
 check out the instructions [here](https://github
 .com/YeoLab/PyCharm-Python-Templates) for how to install and use them.
+
+What flotilla is not
+====================
+
+Flotilla does not claim to solve the data management problem of biology,
+i.e. how you store all the data associated with a particular study that was
+investigating a specific biological question. Flotilla only makes it easy to
+integrate all those data parts together.

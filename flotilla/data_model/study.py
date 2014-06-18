@@ -13,7 +13,8 @@ from expression import ExpressionData
 from splicing import SplicingData
 from info import MetaData
 from  ..util import install_development_package
-from ..visualize import NetworkerViz, PredictorViz, plt
+from ..visualize import NetworkerViz, PredictorViz
+from ..visualize.ipython_interact import Interactive
 
 class StudyFactory(object):
 
@@ -22,7 +23,8 @@ class StudyFactory(object):
                        #'splicing_data_filename', 'expression_data_filename', 'gene_metadata_filename',
                        #'event_metadata_filename',
                        # 'default_group_id', 'default_group_ids', 'default_list_id', 'default_list_ids']
-    _accepted_filetypes = ['pickle_df', 'gzip_pickle_df', 'tsv', 'csv']
+    _accepted_filetypes = 'tsv'
+    # _accepted_filetypes = ['pickle_df', 'gzip_pickle_df', 'tsv', 'csv']
 
     def __init__(self):
         self.minimal_study_parameters = set()
@@ -36,7 +38,7 @@ class StudyFactory(object):
             warnings.warn('Over-writing attribute {}'.format(key))
         super(StudyFactory, self).__setattr__(key, value)
 
-    def write_package(self, study_name, write_location=None, install=False):
+    def write_package(self, study_name, where=None, install=False):
         write_these = self.minimal_study_parameters
 
         data_resources = ['phenotype_data', 'expression_df', 'splicing_df', 'event_metadata']
@@ -44,9 +46,9 @@ class StudyFactory(object):
         self.minimal_study_parameters.extend(write_these)
         self.validate_params()
 
-        new_package_data_location = self._clone_barebones(study_name, write_location=write_location)
+        new_package_data_location = self._clone_barebones(study_name, write_location=where)
 
-        #new_package_data_location is os.path.join(write_location, study_name)
+        #new_package_data_location is os.path.join(where, study_name)
 
         self._write_params_file(new_package_data_location, params_to_write = write_these)
         for resource_name in data_resources:
@@ -58,7 +60,7 @@ class StudyFactory(object):
                 sys.stderr.write("couldn't add data resource: %s\n" % resource_name)
 
         if install:
-            install_development_package(os.path.abspath(write_location))
+            install_development_package(os.path.abspath(where))
 
     def _clone_barebones(self, study_name, write_location=None):
         import flotilla
@@ -187,23 +189,23 @@ class StudyFactory(object):
     def load(self, file_name, file_type='pickle_df'):
         return self._get_loading_method(file_type)(file_name)
 
-    def register_new_getter(self, getter_name, **kwargs):
-        self.getters.append((kwargs.copy(), getter_name))
-
-    def apply_getters(self):
-        """
-        update instance namespace with outputs of registered getters.
-        """
-        for data, getter in self.getters:
-            #formerly explicitly set things
-            for (k,v) in getter(**data).items():
-                self._set(k,v)
-        self.getters = [] #reset, getters only need to run once.
-
-    def _example_getter(self, named_attribute=None):
-        """Perform operations on named inputs and return named outputs
-        """
-        return {'output1': None}
+    # def register_new_getter(self, getter_name, **kwargs):
+    #     self.getters.append((kwargs.copy(), getter_name))
+    #
+    # def apply_getters(self):
+    #     """
+    #     update instance namespace with outputs of registered getters.
+    #     """
+    #     for data, getter in self.getters:
+    #         #formerly explicitly set things
+    #         for (k,v) in getter(**data).items():
+    #             self._set(k,v)
+    #     self.getters = [] #reset, getters only need to run once.
+    #
+    # def _example_getter(self, named_attribute=None):
+    #     """Perform operations on named inputs and return named outputs
+    #     """
+    #     return {'output1': None}
 
 
 class Study(StudyFactory):
@@ -241,10 +243,14 @@ class Study(StudyFactory):
         # if params_dict is None:
         #     params_dict = {}
         # self.update(params_dict)
-        self.initialize_required_getters()
-        self.apply_getters()
-        self._initialize_all_data(load_cargo=load_cargo,
-                                       drop_outliers=drop_outliers)
+        # self.initialize_required_getters()
+        # self.apply_getters()
+        self._initialize_all_data(phenotype_data,
+                                   expression_data,
+                                   splicing_data, expression_feature_data,
+                                   splicing_feature_data,
+                                   load_cargo=load_cargo,
+                                  drop_outliers=drop_outliers)
         sys.stderr.write("subclasses initialized\n")
         self.validate_params()
         sys.stderr.write("package validated\n")
@@ -257,6 +263,7 @@ class Study(StudyFactory):
                                           other.phenotype_data])
         self.expression.data = pd.concat([self.expression.data,
                                           other.phenotype_data])
+        # self.species = # dict of sample ids to species?
 
     # def initialize_required_getters(self):
     #     if self.sample_metadata_filename is not None and self.event_metadata_filename is not None:
@@ -280,7 +287,11 @@ class Study(StudyFactory):
     #     else:
     #         raise RuntimeError("at least set splicing_data_filename")
 
-    def _initialize_all_data(self, load_cargo=False, drop_outliers=False):
+    def _initialize_all_data(self, phenotype_data,
+                             expression_data, splicing_data,
+                             expression_feature_data,
+                             splicing_feature_data, load_cargo=False,
+                             drop_outliers=False):
         """Initialize all the datasets
         """
         #TODO: would be great if this worked, untested:
@@ -288,8 +299,8 @@ class Study(StudyFactory):
         #    initializer = getattr(self, 'intialize_', subclass, '_subclass')
         #    initializer(self)
 
-        sys.stderr.write("initializing metadata\n")
-        self._initialize_sample_metadata(load_cargo=load_cargo,
+
+        self._initialize_phenotype_data(load_cargo=load_cargo,
                                          drop_outliers=drop_outliers)
         sys.stderr.write("initializing expression\n")
         self._initialize_expression(load_cargo=load_cargo,
@@ -301,9 +312,10 @@ class Study(StudyFactory):
         except:
             warnings.warn("Failed to load splicing")
 
-    def _initialize_sample_metadata(self, **kwargs):
+    def _initialize_phenotype_data(self, phenotype_data):
         #TODO: this should be an actual data_model.*Data type, but now it's just set by a loader
-        assert hasattr(self, 'phenotype_data')
+        sys.stderr.write("initializing phenotype data\n")
+        self.phenotype = MetaData
 
 
     def _initialize_expression(self, load_cargo=True, drop_outliers=True,
@@ -513,3 +525,8 @@ class Study(StudyFactory):
         elif data_type == "splicing":
             self.splicing.plot_regressor(**kwargs)
 
+# Add interactive visualizations
+Study.interactive_classifier = Interactive.interactive_classifier
+Study.interactive_graph = Interactive.interactive_graph
+Study.interactive_pca = Interactive.interactive_pca
+Study.interactive_localZ = Interactive.interactive_localZ
