@@ -44,8 +44,8 @@ class TwoWayGeneComparisonLocal(object):
                  dtype="RPKM"):
         """ Run a two-sample RPKM experiment.
             Give control sample first, it will go on the x-axis
-            df is a pandas dataframe with features (genes) on columns and samples on rows
-            sample1 and sample2 are the names of rows in df (sample IDs)
+            data is a pandas dataframe with features (genes) on columns and samples on rows
+            sample1 and sample2 are the names of rows in data (sample IDs)
             pCut - P value cutoff
             local_fraction - by default the closest 10% of genes are used for local z-score calculation
             bonferroni - p-values are adjusted for MHT with bonferroni correction

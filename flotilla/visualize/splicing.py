@@ -9,7 +9,7 @@ def lavalamp(psi, color=None, jitter=None, title='', ax=None):
     Parameters
     ----------
     TODO: (n_events, n_samples).transpose()
-    df : array
+    data : array
         A (n_events, n_samples) matrix either as a numpy array or as a pandas
         DataFrame
 

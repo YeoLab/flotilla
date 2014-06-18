@@ -8,7 +8,7 @@ from ..util import timeout, TimeoutError
 
 
 def switchy_score(array):
-    """Transform a 1D array of df scores to a vector of "switchy scores"
+    """Transform a 1D array of data scores to a vector of "switchy scores"
 
     Calculates std deviation and mean of sine- and cosine-transformed
     versions of the array. Better than sorting by just the mean which doesn't
@@ -33,7 +33,7 @@ def switchy_score(array):
     return variance * mean_value
 
 def get_switchy_score_order(x):
-    """Apply switchy scores to a 2D array of df scores
+    """Apply switchy scores to a 2D array of data scores
 
     Parameters
     ----------
@@ -54,7 +54,7 @@ def binify(df, bins):
 
     Parameters
     ----------
-    df : pandas.DataFrame
+    data : pandas.DataFrame
         The dataframe whose rows you'd like to binify.
     bins : numpy.array
         Bins you would like to use for this data. Must include the final bin

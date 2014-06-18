@@ -22,8 +22,10 @@ class BaseData(object):
 
     """
 
-    #_feature_rename converts input feature names to something else. by default, just echo.
-    _feature_rename = lambda x: x
+    #_feature_renamer converts input feature names to something else. by
+    # default, just echo.
+    # _feature_renamer = lambda x: x
+
     _default_reducer_kwargs = {'whiten' : False,
                                'show_point_labels': False,
                                'show_vectors': False}
@@ -67,7 +69,7 @@ class BaseData(object):
                 {'color': self.phenotype_data.color.tolist()})
         except AttributeError:
             sys.stderr.write("There is no column named 'color' in the "
-                             "metadata, defaulting to blue for all samples")
+                             "metadata, defaulting to blue for all samples\n")
             self._default_reducer_kwargs.update(
                 {'colors_dict': defaultdict(lambda : blue)})
 
@@ -84,7 +86,8 @@ class BaseData(object):
                 {'marker': self.phenotype_data.marker.tolist()})
         except AttributeError:
             sys.stderr.write("There is no column named 'marker' in the sample "
-                             "metadata, defaulting to a circle for all samples")
+                             "metadata, defaulting to a circle for all "
+                             "samples\n")
             self._default_reducer_kwargs.update({'markers_dict':
                                                    defaultdict(lambda : 'o')})
 
@@ -146,9 +149,12 @@ class BaseData(object):
         """
         raise NotImplementedError
 
+    def _feature_renamer(self, x):
+        return x
+
 
     def get_feature_renamer(self):
-        return self._feature_rename
+        return self._feature_renamer
 
     def _set_naming_fun(self, fun, test_name='foo'):
         self._feature_rename = fun

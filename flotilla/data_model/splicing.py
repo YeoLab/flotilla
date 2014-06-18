@@ -21,7 +21,7 @@ class SplicingData(BaseData):
 
 
     def __init__(self, splicing, phenotype_data,
-                 event_metadata, binsize=_binsize,
+                 event_metadata=None, binsize=_binsize,
                  var_cut = _var_cut,
                  drop_outliers=True,
                  load_cargo=False,
@@ -31,7 +31,7 @@ class SplicingData(BaseData):
 
         Parameters
         ----------
-        df : pandas.DataFrame
+        data : pandas.DataFrame
             A [n_events, n_samples] dataframe of splicing events
         n_components : int
             Number of components to use in the reducer
@@ -203,7 +203,7 @@ class SpliceJunctionData(SplicingData):
 
         Parameters
         ----------
-        df, phenotype_data
+        data, phenotype_data
 
         Returns
         -------
@@ -231,7 +231,7 @@ class DownsampledSplicingData(BaseData):
 
         Parameters
         ----------
-        df : pandas.DataFrame
+        data : pandas.DataFrame
             A "tall" dataframe of all miso summary events, with the usual
             MISO summary columns, and these are required: 'splice_type',
             'probability', 'iteration.' Where "probability" indicates the
@@ -274,9 +274,9 @@ class DownsampledSplicingData(BaseData):
 
             for (splice_type, probability), df in self.df.groupby(
                     ['splice_type', 'probability']):
-                # print splice_type, probability, df.shape, \
-                #     df.event_name.unique().shape[0],
-                # n_iter = df.iteration.unique().shape[0]
+                # print splice_type, probability, data.shape, \
+                #     data.event_name.unique().shape[0],
+                # n_iter = data.iteration.unique().shape[0]
                 event_count = collections.Counter(df.event_name)
                 # print sum(1 for k, v in event_count.iteritems() if v == n_iter)
                 shared_events_dict[(splice_type, probability)] = pd.Series(
