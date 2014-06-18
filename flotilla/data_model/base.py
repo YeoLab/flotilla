@@ -29,12 +29,12 @@ class BaseData(object):
                                'show_vectors': False}
     _default_plot_kwargs = {'marker': 'o', 'color': blue}
 
-    def __init__(self, sample_metadata, data, species=None):
+    def __init__(self, phenotype_data, data, feature_data=None, species=None):
         """Base class for biological data measurements
 
         Parameters
         ----------
-        sample_metadata : pandas.DataFrame
+        phenotype_data : pandas.DataFrame
             Metadata on the samples, with sample names as rows and columns as
             attributes. Any boolean column will be added as an option to
             interactive_pca
@@ -48,7 +48,8 @@ class BaseData(object):
 
         """
         self.data = data
-        self.sample_metadata = sample_metadata
+        self.phenotype_data = phenotype_data
+        self.feature_data = feature_data
         self.species = species
         self._set_plot_colors()
         self._set_plot_markers()
@@ -59,9 +60,9 @@ class BaseData(object):
         """
         try:
             self._default_reducer_kwargs.update(
-                {'colors_dict': self.sample_metadata.color})
+                {'colors_dict': self.phenotype_data.color})
             self._default_plot_kwargs.update(
-                {'color': self.sample_metadata.color.tolist()})
+                {'color': self.phenotype_data.color.tolist()})
         except AttributeError:
             sys.stderr.write("There is no column named 'color' in the "
                              "metadata, defaulting to blue for all samples")
@@ -76,9 +77,9 @@ class BaseData(object):
         """
         try:
             self._default_reducer_kwargs.update(
-                {'markers_dict': self.sample_metadata.marker})
+                {'markers_dict': self.phenotype_data.marker})
             self._default_plot_kwargs.update(
-                {'marker': self.sample_metadata.marker.tolist()})
+                {'marker': self.phenotype_data.marker.tolist()})
         except AttributeError:
             sys.stderr.write("There is no column named 'marker' in the sample "
                              "metadata, defaulting to a circle for all samples")
@@ -87,17 +88,17 @@ class BaseData(object):
 
     @property
     def outliers(self):
-        """If there is a column called 'outliers' in the sample_metadata,
+        """If there is a column called 'outliers' in the phenotype_data,
         then return the samples where this is True for them
         """
         try:
-            return set(self.sample_metadata.ix[self.sample_metadata['outlier'].map(
+            return set(self.phenotype_data.ix[self.phenotype_data['outlier'].map(
                 bool), 'outlier'].index)
         except:
             return set([])
 
     def drop_outliers(self, df):
-        assert 'outlier' in self.sample_metadata.columns
+        assert 'outlier' in self.phenotype_data.columns
         outliers = self.get_outliers().intersection(set(df.index))
         print "dropping ", outliers
         return df.drop(outliers)

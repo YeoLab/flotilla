@@ -26,7 +26,7 @@ class Interactive(object):
         self._default_y_pc = 2
         [self.minimal_study_parameters.add(param) for param in  ['default_group_id', 'default_group_ids',
                                                                     'default_list_id', 'default_list_ids',]]
-        [self.minimal_study_parameters.add(i) for i in ['sample_metadata', ]]
+        [self.minimal_study_parameters.add(i) for i in ['phenotype_data', ]]
         self.validate_params()
 
     def interactive_pca(self):

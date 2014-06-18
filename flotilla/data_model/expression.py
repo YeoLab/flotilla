@@ -20,19 +20,19 @@ class ExpressionData(BaseData):
     _expr_cut=0.1
 
 
-    def __init__(self, expression_df, sample_metadata,
+    def __init__(self, expression_df, phenotype_data,
                  gene_metadata= None,
                  var_cut=_var_cut, expr_cut=_expr_cut,
                  drop_outliers=True, load_cargo=False,
                  **kwargs
                  ):
 
-        super(ExpressionData, self).__init__(sample_metadata, **kwargs)
+        super(ExpressionData, self).__init__(phenotype_data, **kwargs)
         if drop_outliers:
             expression_df = self.drop_outliers(expression_df)
 
-        a = self.sample_metadata.align(expression_df, join='inner', axis=0)
-        self.sample_metadata, expression_df = a
+        a = self.phenotype_data.align(expression_df, join='inner', axis=0)
+        self.phenotype_data, expression_df = a
 
         self.gene_metadata = gene_metadata
         self.df = expression_df
@@ -72,9 +72,9 @@ class ExpressionData(BaseData):
 
         if group_id.startswith("~"):
             #print 'not', group_id.lstrip("~")
-            sample_ind = ~pd.Series(self.sample_metadata[group_id.lstrip("~")], dtype='bool')
+            sample_ind = ~pd.Series(self.phenotype_data[group_id.lstrip("~")], dtype='bool')
         else:
-            sample_ind = pd.Series(self.sample_metadata[group_id], dtype='bool')
+            sample_ind = pd.Series(self.phenotype_data[group_id], dtype='bool')
 
         sample_ind = sample_ind[sample_ind].index
         subset = self.sparse_df.ix[sample_ind]
@@ -123,9 +123,9 @@ class ExpressionData(BaseData):
 
         if group_id.startswith("~"):
             #print 'not', group_id.lstrip("~")
-            sample_ind = ~pd.Series(self.sample_metadata[group_id.lstrip("~")], dtype='bool')
+            sample_ind = ~pd.Series(self.phenotype_data[group_id.lstrip("~")], dtype='bool')
         else:
-            sample_ind = pd.Series(self.sample_metadata[group_id], dtype='bool')
+            sample_ind = pd.Series(self.phenotype_data[group_id], dtype='bool')
         sample_ind = sample_ind[sample_ind].index
         subset = self.sparse_df.ix[sample_ind, gene_list.index]
         frequent = pd.Index([i for i, j in (subset.count() > min_samples).iteritems() if j])
@@ -142,7 +142,7 @@ class ExpressionData(BaseData):
 
         ss = pd.DataFrame(data, index = mf_subset.index,
                           columns = mf_subset.columns).rename_axis(naming_fun, 1)
-        clf = predictor(ss, self.sample_metadata,
+        clf = predictor(ss, self.phenotype_data,
                         categorical_traits=[categorical_trait],)
         clf.set_reducer_plotting_args(self._default_reducer_kwargs)
         return clf
@@ -196,12 +196,12 @@ class SpikeInData(ExpressionData):
 
     """
 
-    def __init__(self, df, sample_metadata):
+    def __init__(self, df, phenotype_data):
         """Constructor for
 
         Parameters
         ----------
-        df, sample_metadata
+        df, phenotype_data
 
         Returns
         -------
