@@ -50,7 +50,7 @@ class ExpressionData(BaseData):
             self.load_cargo()
 
     @memoize
-    def reduced(self, list_name, group_id, featurewise=False,
+    def reduce(self, list_name, group_id, featurewise=False,
                     reducer=PCAViz,
                     standardize=True,
                     **reducer_args):
@@ -58,7 +58,7 @@ class ExpressionData(BaseData):
 
         min_samples=self.get_min_samples()
         input_reducer_args = reducer_args.copy()
-        reducer_args = self._default_reducer_args.copy()
+        reducer_args = self._default_reducer_kwargs.copy()
         reducer_args.update(input_reducer_args)
         reducer_args['title'] = list_name + " : " + group_id
         naming_fun = self.get_naming_fun()
@@ -105,7 +105,7 @@ class ExpressionData(BaseData):
         return rdc_obj
 
     @memoize
-    def make_classifier(self, gene_list_name, group_id, categorical_trait,
+    def classify(self, gene_list_name, group_id, categorical_trait,
                        standardize=True, predictor=PredictorViz,
                        ):
         """
@@ -144,7 +144,7 @@ class ExpressionData(BaseData):
                           columns = mf_subset.columns).rename_axis(naming_fun, 1)
         clf = predictor(ss, self.sample_metadata,
                         categorical_traits=[categorical_trait],)
-        clf.set_reducer_plotting_args(self._default_reducer_args)
+        clf.set_reducer_plotting_args(self._default_reducer_kwargs)
         return clf
 
     def load_cargo(self, rename=True, **kwargs):
