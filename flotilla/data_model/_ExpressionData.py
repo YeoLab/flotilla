@@ -155,7 +155,7 @@ class ExpressionData(BaseData):
             self.lists.update(self.cargo.gene_lists)
 
             if rename:
-                self.set_naming_fun(lambda x: self.go.geneNames(x))
+                self._set_naming_fun(lambda x: self.go.geneNames(x))
         except:
             raise
 
