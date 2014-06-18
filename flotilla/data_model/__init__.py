@@ -1,5 +1,5 @@
 __author__ = 'olga'
 
-from splicing import SplicingData
-from expression import ExpressionData
-from study import *
+from splicing import SplicingData, SpliceJunctionData, DownsampledSplicingData
+from expression import ExpressionData, SpikeInData
+from study import Study, StudyFactory

@@ -223,8 +223,11 @@ class Study(StudyFactory):
     """
     def __init__(self, sample_metadata, expression=None, splicing=None,
                  expression_metadata=None, splicing_metadata=None,
-                 load_cargo=False,
-                 drop_outliers=False):
+                 load_cargo=False, drop_outliers=False,
+                 default_group_id=None, default_group_ids=None,
+                 default_list_id='variant', default_list=('variant'),
+                 default_genes=('variant'),
+                 default_events=('variant'), species=None):
         """Construct a biological study
 
         This class only accepts data, no filenames. All data must already
@@ -241,6 +244,15 @@ class Study(StudyFactory):
         sys.stderr.write("subclasses initialized\n")
         self.validate_params()
         sys.stderr.write("package validated\n")
+
+    def __add__(self, other):
+        """Sanely concatenate one or more Study objects
+        """
+        raise NotImplementedError
+        self.sample_metadata = pd.concat([self.sample_metadata,
+                                          other.sample_metadata])
+        self.expression.data = pd.concat([self.expression.data,
+                                          other.sample_metadata])
 
     def initialize_required_getters(self):
         if self.sample_metadata_filename is not None and self.event_metadata_filename is not None:

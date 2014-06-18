@@ -10,11 +10,11 @@ import pandas as pd
 
 class ExampleData(object):
     __slots__ = ('metadata', 'expression', 'splicing', 'data')
-    def __init__(self, metadata, expression, splicing):
-        self.metadata = metadata
+    def __init__(self, sample_metadata, expression, splicing):
+        self.sample_metadata = sample_metadata
         self.expression = expression
         self.splicing = splicing
-        self.data = (metadata, expression, splicing)
+        self.data = (sample_metadata, expression, splicing)
 
 
 @pytest.fixture(scope='module')
