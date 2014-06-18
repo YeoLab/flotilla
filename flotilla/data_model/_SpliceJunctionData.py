@@ -1,6 +1,6 @@
 __author__ = 'olga'
 
-from _SplicingData import SplicingData
+from splicing import SplicingData
 
 class SpliceJunctionData(SplicingData):
     """Class to hold splice junction information from SJ.out.tab files from STAR

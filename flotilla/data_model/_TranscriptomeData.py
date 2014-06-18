@@ -1,7 +1,7 @@
 __author__ = 'lovci'
-from _BaseData import BaseData
-from _ExpressionData import ExpressionData
-from _SplicingData import SplicingData
+from base import BaseData
+from expression import ExpressionData
+from splicing import SplicingData
 
 class Transcriptome(object):
 

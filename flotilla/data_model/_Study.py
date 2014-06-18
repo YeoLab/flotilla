@@ -5,8 +5,8 @@ heavier in terms of data load
 
 from ..visualize import NetworkerViz, PredictorViz, plt
 import sys, os, subprocess
-from _ExpressionData import ExpressionData
-from _SplicingData import SplicingData
+from expression import ExpressionData
+from splicing import SplicingData
 import pandas as pd
 from _StudyFactory import StudyFactory
 
