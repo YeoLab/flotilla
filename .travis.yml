@@ -8,8 +8,10 @@ python:
 install:
   - conda create -n testenv --yes python=$TRAVIS_PYTHON_VERSION
   - source activate testenv
-  - conda install --yes pip
-  - conda install --yes --file requirements.txt
+  # install as much as we can via conda
+  - conda install --yes pip numpy scipy matplotlib nose six scikit-learn ipython networkx pandas tornado
+  # Install the rest via pip
+  - pip install -r requirements.txt
   - pip install .
 
 
