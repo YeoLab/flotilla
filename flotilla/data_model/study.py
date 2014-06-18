@@ -11,7 +11,7 @@ import warnings
 
 from .expression import ExpressionData
 from .splicing import SplicingData
-from .experiment_design import ExperimentDesign
+from .experiment_design import ExperimentDesignData
 from ..util import install_development_package
 from ..visualize import NetworkerViz, PredictorViz
 from ..visualize.ipython_interact import Interactive
@@ -339,7 +339,7 @@ class Study(StudyFactory):
     def _initialize_phenotype_data(self, phenotype_data):
         #TODO.md: this should be an actual data_model.*Data type, but now it's just set by a loader
         sys.stderr.write("initializing phenotype data\n")
-        self.phenotype = ExperimentDesign(phenotype_data)
+        self.phenotype = ExperimentDesignData(phenotype_data)
 
 
     def _initialize_expression(self, expression_data,
