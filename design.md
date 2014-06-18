@@ -63,8 +63,8 @@ Access data that's out there:
 Next steps
 ----------
 
-* Rewrite `_*Data.py` to have `Data` objects which inherit from `pandas.DataFrame`
-    * Rename `Data` --> `BaseData` to be explicit that it's a Base class and
+* Rewrite `_*BaseData.py` to have `BaseData` objects which inherit from `pandas.DataFrame`
+    * Rename `BaseData` --> `BaseData` to be explicit that it's a Base class and
     can't do anything
     * Look into efficient memoization/cacheing for storing results of
     PCA/JSD/NMF so don't need to be calculated again.
