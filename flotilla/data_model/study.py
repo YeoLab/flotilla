@@ -146,7 +146,7 @@ class StudyFactory(object):
             try:
                 x = getattr(self, param)
             except KeyError:
-                raise AssertionError("missing minimal parameter %s" % param)
+                raise AssertionError("Missing minimal parameter %s" % param)
 
     _accepted_filetypes = []
     _accepted_filetypes.append('pickle_df')
@@ -217,18 +217,27 @@ class StudyFactory(object):
 
 class Study(StudyFactory):
     """
-    store essential data associated with a study. Users specify how to build the necessary components from
-    project-specific getters (see barebones_project for example getters)
+    store essential data associated with a study. Users specify how to build the
+    necessary components from project-specific getters (see barebones_project
+    for example getters)
     """
+    def __init__(self, sample_metadata, expression=None, splicing=None,
+                 expression_metadata=None, splicing_metadata=None,
+                 load_cargo=False,
+                 drop_outliers=False):
+        """Construct a biological study
 
-    def __init__(self, params_dict=None, load_cargo=False, drop_outliers=False):
+        This class only accepts data, no filenames. All data must already
+        have been loaded in
+        """
         super(Study, self).__init__()
-        if params_dict is None:
-            params_dict = {}
-        self.update(params_dict)
+        # if params_dict is None:
+        #     params_dict = {}
+        # self.update(params_dict)
         self.initialize_required_getters()
         self.apply_getters()
-        self.initialize_all_subclasses(load_cargo=load_cargo, drop_outliers=drop_outliers)
+        self.initialize_all_subclasses(load_cargo=load_cargo,
+                                       drop_outliers=drop_outliers)
         sys.stderr.write("subclasses initialized\n")
         self.validate_params()
         sys.stderr.write("package validated\n")
@@ -279,7 +288,8 @@ class Study(StudyFactory):
         assert hasattr(self, 'sample_metadata')
 
 
-    def initialize_expression_subclass(self, load_expression_cargo=True, drop_outliers=True):
+    def initialize_expression_subclass(self, load_expression_cargo=True,
+                                       drop_outliers=True):
 
         [self.minimal_study_parameters.add(i) for i in ['expression_df', 'expression_metadata']]
         self.validate_params()
@@ -292,7 +302,8 @@ class Study(StudyFactory):
         self.expression.networks = NetworkerViz(self.expression)
         self.default_list_ids.extend(self.expression.lists.keys())
 
-    def initialize_splicing_subclass(self, load_splicing_cargo=False, drop_outliers=True):
+    def initialize_splicing_subclass(self, load_splicing_cargo=False,
+                                     drop_outliers=True):
 
         [self.minimal_study_parameters.add(i) for i in ['splicing_df', 'event_metadata']]
         self.validate_params()
@@ -310,7 +321,8 @@ class Study(StudyFactory):
     def get_splicing_data(self, splicing_data_filename):
         return {'splicing_df': self.load(*splicing_data_filename)}
 
-    def get_metadata(self, sample_metadata_filename=None, gene_metadata_filename=None,
+    def get_metadata(self, sample_metadata_filename=None,
+                     gene_metadata_filename=None,
                      event_metadata_filename=None):
 
         metadata = {'sample':None,
