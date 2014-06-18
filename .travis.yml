@@ -9,8 +9,8 @@ install:
   - conda create -n testenv --yes python=$TRAVIS_PYTHON_VERSION
   - source activate testenv
   # install as much as we can via conda
-  - conda install --yes pip numpy scipy matplotlib nose six scikit-learn ipython networkx pandas tornado
-  # Install the rest via pip
+  - conda install --yes pip numpy scipy matplotlib nose six scikit-learn ipython networkx pandas tornado statsmodels
+  # Install the rest via pip (brewer2mpl, gspread, seaborn, etc)
   - pip install -r requirements.txt
   - pip install .
 
