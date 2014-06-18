@@ -20,7 +20,7 @@ class SplicingData(BaseData):
     _var_cut = 0.2
 
 
-    def __init__(self, splicing, sample_metadata,
+    def __init__(self, splicing, phenotype_data,
                  event_metadata, binsize=_binsize,
                  var_cut = _var_cut,
                  drop_outliers=True,
@@ -43,10 +43,10 @@ class SplicingData(BaseData):
             functions fit, transform, and have the attribute components_
 
         """
-        super(SplicingData, self).__init__(sample_metadata, **kwargs)
+        super(SplicingData, self).__init__(phenotype_data, **kwargs)
         if drop_outliers:
             splicing = self.drop_outliers(splicing)
-        self.sample_metadata, splicing = self.sample_metadata.align(splicing, join='inner', axis=0)
+        self.phenotype_data, splicing = self.phenotype_data.align(splicing, join='inner', axis=0)
 
         self.df = splicing
         self.binsize = binsize
@@ -107,9 +107,9 @@ class SplicingData(BaseData):
 
         if group_id.startswith("~"):
             #print 'not', group_id.lstrip("~")
-            sample_ind = ~pd.Series(self.sample_metadata[group_id.lstrip("~")], dtype='bool')
+            sample_ind = ~pd.Series(self.phenotype_data[group_id.lstrip("~")], dtype='bool')
         else:
-            sample_ind = pd.Series(self.sample_metadata[group_id], dtype='bool')
+            sample_ind = pd.Series(self.phenotype_data[group_id], dtype='bool')
 
         subset = self.df.ix[sample_ind, event_list]
         frequent = pd.Index([i for i,j in (subset.count() > min_samples).iteritems() if j])
@@ -154,9 +154,9 @@ class SplicingData(BaseData):
 
         if group_id.startswith("~"):
             #print 'not', group_id.lstrip("~")
-            sample_ind = ~pd.Series(self.sample_metadata[group_id.lstrip("~")], dtype='bool')
+            sample_ind = ~pd.Series(self.phenotype_data[group_id.lstrip("~")], dtype='bool')
         else:
-            sample_ind = pd.Series(self.sample_metadata[group_id], dtype='bool')
+            sample_ind = pd.Series(self.phenotype_data[group_id], dtype='bool')
         sample_ind = sample_ind[sample_ind].index
         subset = self.df.ix[sample_ind, event_list]
         frequent = pd.Index([i for i, j in (subset.count() > min_samples).iteritems() if j])
@@ -173,7 +173,7 @@ class SplicingData(BaseData):
         naming_fun = self.get_naming_fun()
         ss = pd.DataFrame(data, index = mf_subset.index,
                           columns = mf_subset.columns).rename_axis(naming_fun, 1)
-        clf = classifier(ss, self.sample_metadata,
+        clf = classifier(ss, self.phenotype_data,
                         categorical_traits=[categorical_trait],)
         clf.set_reducer_plotting_args(self._default_reducer_args)
         return clf
@@ -198,12 +198,12 @@ class SpliceJunctionData(SplicingData):
 
     """
 
-    def __init__(self, df, sample_metadata):
+    def __init__(self, df, phenotype_data):
         """Constructor for SpliceJunctionData
 
         Parameters
         ----------
-        df, sample_metadata
+        df, phenotype_data
 
         Returns
         -------
@@ -238,7 +238,7 @@ class DownsampledSplicingData(BaseData):
             randomly sampling probability from the bam file used to generate
             these reads, and "iteration" indicates the integer iteration
             performed, e.g. if multiple resamplings were performed.
-        sample_metadata: pandas.DataFrame
+        phenotype_data: pandas.DataFrame
 
         Notes
         -----

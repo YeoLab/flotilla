@@ -29,7 +29,7 @@ class MetaData(BaseData):
             sys.stderr.write("error loading descriptors: %s, \n\n .... entering pdb ... \n\n" % E)
             raise E
 
-        return {'sample_metadata': metadata['sample'],
+        return {'phenotype_data': metadata['sample'],
                 'gene_metadata': metadata['gene'],
                 'event_metadata': metadata['event'],
                 'expression_metadata': None}
