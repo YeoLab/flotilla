@@ -5,6 +5,7 @@ import six
 import sys
 
 from ..visualize.color import red, blue, green
+from ..util import memoize
 
 MINIMUM_SAMPLES = 12
 
@@ -21,8 +22,8 @@ class BaseData(object):
 
     """
 
-    #_naming_fun converts input feature names to something else. by default, just echo.
-    _naming_fun = lambda x: six.print_(x)
+    #_feature_rename converts input feature names to something else. by default, just echo.
+    _feature_rename = lambda x: x
     _default_reducer_kwargs = {'whiten' : False,
                                'show_point_labels': False,
                                'show_vectors': False}
@@ -84,15 +85,16 @@ class BaseData(object):
             self._default_reducer_kwargs.update({'markers_dict':
                                                    defaultdict(lambda : 'o')})
 
-    def set_outliers(self):
-        self.outliers = set(self.sample_metadata.ix[self.sample_metadata['outlier'].map(bool), 'outlier'].index)
-
-    def get_outliers(self):
+    @property
+    def outliers(self):
+        """If there is a column called 'outliers' in the sample_metadata,
+        then return the samples where this is True for them
+        """
         try:
-            return self.outliers
-        except AttributeError:
-            self.set_outliers()
-            return self.outliers
+            return set(self.sample_metadata.ix[self.sample_metadata['outlier'].map(
+                bool), 'outlier'].index)
+        except:
+            return set([])
 
     def drop_outliers(self, df):
         assert 'outlier' in self.sample_metadata.columns
@@ -142,10 +144,10 @@ class BaseData(object):
 
 
     def get_naming_fun(self):
-        return self._naming_fun
+        return self._feature_rename
 
     def set_naming_fun(self, fun, test_name='foo'):
-        self._naming_fun = fun
+        self._feature_rename = fun
         try:
             fun(test_name)
         except:
@@ -160,11 +162,11 @@ class BaseData(object):
 
         Params
         -------
-        obj_id : dtype?
+        obj_id : str
             key of the object getting plotted
-        group_id : dtype?
-
-        categorical_trait : dtype?
+        group_id : str
+            ???
+        categorical_trait : str
             classifier feature
         list_name : str
             subset of genes to use for building class
@@ -184,7 +186,7 @@ class BaseData(object):
         local_plotting_args = self.pca_plotting_args.copy()
         local_plotting_args.update(plotting_args)
 
-        clf = self.get_predictor(gene_list_name=gene_list_name,
+        clf = self.classify(gene_list_name=gene_list_name,
                                  sample_list_name=sample_list_name,
                                  clf_var=clf_var,
                                  **predictor_args)
@@ -192,27 +194,63 @@ class BaseData(object):
 
         return self
 
-    def plot_dimensionality_reduction(self, x_pc=1, y_pc=2, obj_id=None, group_id=None,
-                                      list_name=None, featurewise=None, **plotting_args):
+    def plot_dimensionality_reduction(self, x_pc=1, y_pc=2, obj_id=None,
+                                      group_id=None,
+                                      list_name=None, featurewise=None,
+                                      **plotting_kwargs):
 
         """Principal component-like analysis of measurements
+
+        Parameters
+        ----------
+        x_pc : int
+            Which principal component to plot on the x-axis
+        y_pc : int
+            Which principal component to plot on the y-axis
+        obj_id : str
+            Key of the object getting plotted
+        group_id : str
+            ???
+
+
+        Returns
+        -------
+
+
+        Raises
+        ------
 
         Returns
         -------
         self
         """
-        local_plotting_args = self.pca_plotting_args.copy()
-        local_plotting_args.update(plotting_args)
-        pca = self.get_reduced(obj_id, list_name, group_id, featurewise=featurewise)
+        local_plotting_kwargs = self.pca_plotting_kwargs.copy()
+        local_plotting_kwargs.update(plotting_kwargs)
+        pca = self.reduce(obj_id, list_name, group_id,
+                           featurewise=featurewise)
         pca(markers_size_dict=lambda x: 400,
             show_vectors=False,
             title_size=10,
             axis_label_size=10,
             x_pc = "pc_" + str(x_pc), #this only affects the plot, not the study_data.
             y_pc = "pc_" + str(y_pc), #this only affects the plot, not the study_data.
-            **local_plotting_args
+            **local_plotting_kwargs
             )
         return self
+
+    @memoize
+    def reduce(self, *args, **kwargs):
+        """Reduce the dimensionality of the data. Must be implemented for
+        each specific data sub-type
+        """
+        raise NotImplementedError
+
+    @memoize
+    def classify(self, *args, **kwargs):
+        """Run a classifier on the data. Must be implemented for each
+        specific data sub-type
+        """
+        raise NotImplementedError
 
     # @memoize
     # def get_reduced(self, obj_id=None, list_name=None, group_id=None, featurewise=None, **reducer_args):
@@ -291,20 +329,18 @@ class BaseData(object):
     #     try:
     #         return self.clf_dict[obj_id]
     #     except:
-    #         clf = self.make_classifier(gene_list_name, sample_list_name, clf_var, **classifier_args)
+    #         clf = self.classify(gene_list_name, sample_list_name, clf_var, **classifier_args)
     #         clf.obj_id = obj_id
     #         self.clf_dict[obj_id] = clf
     #
     #     return self.clf_dict[obj_id]
 
     def get_min_samples(self):
-        if hasattr(self, 'min_samples'):
+        try:
             return self.min_samples
-        else:
+        except AttributeError:
             return MINIMUM_SAMPLES
-        return self
 
     def set_min_samples(self, min_samples):
         self.min_samples = min_samples
-        return self
 
