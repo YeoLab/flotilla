@@ -11,10 +11,13 @@ import warnings
 
 from expression import ExpressionData
 from splicing import SplicingData
-from info import MetaData
+from experiment_design import ExperimentDesign
 from  ..util import install_development_package
 from ..visualize import NetworkerViz, PredictorViz
 from ..visualize.ipython_interact import Interactive
+
+import flotilla
+FLOTILLA_DIR = os.path.dirname(flotilla.__file__)
 
 class StudyFactory(object):
 
@@ -43,7 +46,7 @@ class StudyFactory(object):
 
         data_resources = ['phenotype_data', 'expression_df', 'splicing_df', 'event_metadata']
 
-        self.minimal_study_parameters.extend(write_these)
+        self.minimal_study_parameters.update(write_these)
         self.validate_params()
 
         new_package_data_location = self._clone_barebones(study_name, write_location=where)
@@ -74,20 +77,27 @@ class StudyFactory(object):
             else:
                 #TODO: check whether user specificed a real writable location
                 pass
-            if os.path.exists(write_location):
+            try:
+                path_exists = os.path.exists(write_location)
+            except TypeError:
+                # Need this for testing, which creates a LocalPath instead of
+                #  a string
+                path_exists = False
+                write_location = str(write_location)
+
+            if path_exists:
                 raise Exception("do not use an existing path for write_location")
 
             subprocess.call(['git clone -b barebones %s %s' % (test_package_location, write_location)], shell=True)
             os.chdir(write_location)
             subprocess.call(['git mv barebones_project %s' % study_name], shell=True)
-            with open("setup.py", 'r') as f:
+            with open("{}/setup.py".format(FLOTILLA_DIR), 'r') as f:
                 setup_script = f.readlines()
-
 
             with open("setup.py", 'w') as f:
                 for i in setup_script:
-
                     f.write(i.replace("barebones_project", study_name))
+
             os.chdir(starting_position)
 
         except:
@@ -120,7 +130,8 @@ class StudyFactory(object):
         assert len(tup) == 2
         return "os.path.join(study_data_dir, %s)" % os.path.basename(tup[0]), tup[1]
 
-    def _add_package_data_resource(self, file_name, data_df, toplevel_package_dir,
+    def _add_package_data_resource(self, file_name, data_df,
+                                   toplevel_package_dir,
                                    file_write_mode="tsv"):
         writer = getattr(self, "_write_" + file_write_mode)
         file_base = os.path.basename(file_name)
@@ -214,6 +225,7 @@ class Study(StudyFactory):
     necessary components from project-specific getters (see barebones_project
     for example getters)
     """
+    default_feature_set_ids = []
     def __init__(self, phenotype_data, expression_data=None, splicing_data=None,
                  expression_feature_data=None, splicing_feature_data=None,
                  load_cargo=False, drop_outliers=False,
@@ -230,6 +242,14 @@ class Study(StudyFactory):
         ----------
         phenotype_data : pandas.DataFrame
             Only required parameter.
+        expression_data : pandas.DataFrame
+            Samples x feature dataframe of gene expression measurements,
+            e.g. from an RNA-Seq or a microarray experiment. Assumed to be
+            log-normal (i.e. not log-transformed)
+        expression_feature_data : pandas.DatFrame
+            features x other_features dataframe describing other parameters
+            of the gene expression features, e.g. mapping Ensembl IDs to gene
+            symbols or gene biotypes.
 
         Returns
         -------
@@ -245,6 +265,8 @@ class Study(StudyFactory):
         # self.update(params_dict)
         # self.initialize_required_getters()
         # self.apply_getters()
+        self.species = species
+        
         self._initialize_all_data(phenotype_data,
                                    expression_data,
                                    splicing_data, expression_feature_data,
@@ -300,14 +322,16 @@ class Study(StudyFactory):
         #    initializer(self)
 
 
-        self._initialize_phenotype_data(load_cargo=load_cargo,
-                                         drop_outliers=drop_outliers)
+        self._initialize_phenotype_data(phenotype_data)
         sys.stderr.write("initializing expression\n")
-        self._initialize_expression(load_cargo=load_cargo,
+        self._initialize_expression(expression_data,
+                                    expression_feature_data,
+                                    load_cargo=load_cargo,
                                     drop_outliers=drop_outliers)
         try:
             sys.stderr.write("initializing splicing\n")
-            self._initialize_splicing(load_cargo=False,
+            self._initialize_splicing(splicing_data, splicing_feature_data,
+                                      load_cargo=False,
                                       drop_outliers=drop_outliers)
         except:
             warnings.warn("Failed to load splicing")
@@ -315,15 +339,25 @@ class Study(StudyFactory):
     def _initialize_phenotype_data(self, phenotype_data):
         #TODO: this should be an actual data_model.*Data type, but now it's just set by a loader
         sys.stderr.write("initializing phenotype data\n")
-        self.phenotype = MetaData
+        self.phenotype = ExperimentDesign(phenotype_data)
 
 
-    def _initialize_expression(self, load_cargo=True, drop_outliers=True,
+    def _initialize_expression(self, expression_data,
+                               expression_feature_data,
+                               load_cargo=True, drop_outliers=True,
                                force=False):
         """Initialize ExpressionData object
 
         Parameters
         ----------
+        expression_data : pandas.DataFrame
+            Samples x feature dataframe of gene expression measurements,
+            e.g. from an RNA-Seq or a microarray experiment. Assumed to be
+            log-normal (i.e. not log-transformed)
+        expression_feature_data : pandas.DatFrame
+            features x other_features dataframe describing other parameters
+            of the gene expression features, e.g. mapping Ensembl IDs to gene
+            symbols or gene biotypes.
         load_cargo : bool
             Whether or not to load the "cargo" (aka feature metadata)
             associated with gene expression in this species
@@ -347,16 +381,17 @@ class Study(StudyFactory):
                                  'not overwriting. Set "force=True" to force '
                                  'overwriting')
         else:
-            self.expression = ExpressionData(expression_data=self.expression_df,
-                                             phenotype_data=self.phenotype_data,
-                                             gene_metadata=self.expression_metadata,
+            self.expression = ExpressionData(data=expression_data,
+                                             feature_data=expression_feature_data,
                                              load_cargo=load_cargo,
                                              drop_outliers=drop_outliers,
                                              species=self.species)
             self.expression.networks = NetworkerViz(self.expression)
-            self.default_list_ids.extend(self.expression.lists.keys())
+            self.default_feature_set_ids.extend(self.expression.feature_sets
+                                            .keys())
 
-    def _initialize_splicing(self, load_cargo=False, drop_outliers=True,
+    def _initialize_splicing(self, splicing_data, splicing_feature_data,
+                             load_cargo=False, drop_outliers=True,
                              force=False):
         """Initialize SplicingData object
 
@@ -385,9 +420,11 @@ class Study(StudyFactory):
                                  'not overwriting. Set "force=True" to force '
                                  'overwriting.')
         else:
-            self.splicing = SplicingData(splicing=self.splicing_df, phenotype_data=self.phenotype_data,
-                                         event_metadata=self.event_metadata,load_cargo=load_cargo,
-                                         drop_outliers=drop_outliers, species=self.species)
+            self.splicing = SplicingData(data=splicing_data,
+                                         feature_data=splicing_feature_data,
+                                         load_cargo=load_cargo,
+                                         drop_outliers=drop_outliers,
+                                         species=self.species)
             self.splicing.networks = NetworkerViz(self.splicing)
 
 
@@ -418,7 +455,7 @@ class Study(StudyFactory):
     #         raise E
     #
     #     return {'phenotype_data': metadata['sample'],
-    #             'gene_metadata': metadata['gene'],
+    #             'feature_data': metadata['gene'],
     #             'event_metadata': metadata['event'],
     #             'expression_metadata': None}
 

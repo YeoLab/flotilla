@@ -33,7 +33,8 @@ class BaseData(object):
 
     feature_sets = {}
 
-    def __init__(self, phenotype_data, data, feature_data=None, species=None):
+    def __init__(self, data=None, feature_data=None,
+                 species=None):
         """Base class for biological data measurements
 
         Parameters
@@ -52,7 +53,7 @@ class BaseData(object):
 
         """
         self.data = data
-        self.phenotype_data = phenotype_data
+        # self.phenotype_data = phenotype_data
         self.feature_data = feature_data
         self.species = species
         self._set_plot_colors()

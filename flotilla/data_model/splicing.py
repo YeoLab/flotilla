@@ -20,8 +20,8 @@ class SplicingData(BaseData):
     _var_cut = 0.2
 
 
-    def __init__(self, splicing, phenotype_data,
-                 event_metadata=None, binsize=_binsize,
+    def __init__(self, data,
+                 feature_data=None, binsize=_binsize,
                  var_cut = _var_cut,
                  drop_outliers=True,
                  load_cargo=False,
@@ -32,7 +32,7 @@ class SplicingData(BaseData):
         Parameters
         ----------
         data : pandas.DataFrame
-            A [n_events, n_samples] dataframe of splicing events
+            A [n_events, n_samples] dataframe of data events
         n_components : int
             Number of components to use in the reducer
         binsize : float
@@ -43,18 +43,19 @@ class SplicingData(BaseData):
             functions fit, transform, and have the attribute components_
 
         """
-        super(SplicingData, self).__init__(phenotype_data, **kwargs)
+        super(SplicingData, self).__init__(data,
+                                           **kwargs)
         if drop_outliers:
-            splicing = self.drop_outliers(splicing)
-        self.phenotype_data, splicing = self.phenotype_data.align(splicing, join='inner', axis=0)
+            self.data = self.drop_outliers(data)
+        # self.phenotype_data, data = self.phenotype_data.align(data, join='inner', axis=0)
 
-        self.df = splicing
+        # self.data = data
         self.binsize = binsize
-        psi_variant = pd.Index([i for i,j in (splicing.var().dropna() > var_cut).iteritems() if j])
+        psi_variant = pd.Index([i for i,j in (data.var().dropna() > var_cut).iteritems() if j])
         self._set_naming_fun(self.feature_rename)
         self.feature_sets['variant'] = pd.Series(psi_variant, index=psi_variant)
-        self.feature_sets['all_genes'] =  pd.Series(splicing.index, index=splicing.index)
-        self.event_metadata = event_metadata
+        self.feature_sets['all_genes'] =  pd.Series(data.index, index=data.index)
+        self.feature_data = feature_data
         self._set_plot_colors()
         self._set_plot_markers()
 
@@ -78,7 +79,7 @@ class SplicingData(BaseData):
         except:
             #only bin once, until binsize is updated
             bins = np.arange(0, 1+self.binsize, self.binsize)
-            self.binned = binify(self.df, bins)
+            self.binned = binify(self.data, bins)
             self._binsize = self.binsize
         return self.binned
 
@@ -111,7 +112,7 @@ class SplicingData(BaseData):
         else:
             sample_ind = pd.Series(self.phenotype_data[group_id], dtype='bool')
 
-        subset = self.df.ix[sample_ind, event_list]
+        subset = self.data.ix[sample_ind, event_list]
         frequent = pd.Index([i for i,j in (subset.count() > min_samples).iteritems() if j])
         subset = subset[frequent]
         #fill na with mean for each event
@@ -158,7 +159,7 @@ class SplicingData(BaseData):
         else:
             sample_ind = pd.Series(self.phenotype_data[group_id], dtype='bool')
         sample_ind = sample_ind[sample_ind].index
-        subset = self.df.ix[sample_ind, event_list]
+        subset = self.data.ix[sample_ind, event_list]
         frequent = pd.Index([i for i, j in (subset.count() > min_samples).iteritems() if j])
         subset = subset[frequent]
         #fill na with mean for each event

@@ -1,13 +1,12 @@
-__author__ = 'olga'
+"""
+Named `ipython_interact.py` rather than just `interact.py` to differentiate
+between IPython interactive visualizations vs D3 interactive visualizations.
+"""
 
 import matplotlib.pyplot as plt
 from .network import NetworkerViz
 from .decomposition import DecompositionViz
 
-"""
-Named `ipython_interact.py` rather than just `interact.py` to differentiate
-between IPython interactive visualizations vs D3 interactive visualizations.
-"""
 
 class Interactive(object):
     """
