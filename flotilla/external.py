@@ -94,7 +94,7 @@ class GO(object):
     >>> go = hg19GO()
     >>> go.geneXref['ENSG00000100320']
     'RBFOX2'
-    >>> df = go.enrichment(list, background)
+    >>> data = go.enrichment(list, background)
 
     """
 

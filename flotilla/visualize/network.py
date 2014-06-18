@@ -42,7 +42,7 @@ class NetworkerViz(Networker, DecompositionViz):
         pc{1-4} use these pcs in cov calculation (default True)
         degree_cut - miniumum degree for a node to be included in graph display
         wt_fun - weight function (arctan (arctan cov), sq (sq cov), abs (abs cov), arctan_sq (sqared arctan of cov))
-        gene_of_interest - map a gradient representing this gene's df onto nodes
+        gene_of_interest - map a gradient representing this gene's data onto nodes
         """
 
         node_color_mapper = self._default_node_color_mapper
@@ -164,7 +164,7 @@ class NetworkerViz(Networker, DecompositionViz):
         pc{1-4} use these pcs in cov calculation (default True)
         degree_cut - miniumum degree for a node to be included in graph display
         wt_fun - weight function (arctan (arctan cov), sq (sq cov), abs (abs cov), arctan_sq (sqared arctan of cov))
-        gene_of_interest - map a gradient representing this gene's df onto nodes
+        gene_of_interest - map a gradient representing this gene's data onto nodes
         """
 
         node_color_mapper = self._default_node_color_mapper

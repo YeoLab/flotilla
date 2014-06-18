@@ -27,29 +27,29 @@ class ExpressionData(BaseData):
 
 
 
-    def __init__(self, phenotype_data, expression_df,
+    def __init__(self, phenotype_data, expression_data,
                  gene_metadata= None,
                  var_cut=_var_cut, expr_cut=_expr_cut,
                  drop_outliers=True, load_cargo=False,
                  **kwargs):
 
-        super(ExpressionData, self).__init__(phenotype_data, expression_df)
+        super(ExpressionData, self).__init__(phenotype_data, expression_data)
         if drop_outliers:
-            expression_df = self.drop_outliers(expression_df)
+            expression_data = self.drop_outliers(expression_data)
 
-        self.phenotype_data, expression_df = \
-            self.phenotype_data.align(expression_df, join='inner', axis=0)
+        self.phenotype_data, expression_data = \
+            self.phenotype_data.align(expression_data, join='inner', axis=0)
 
         self.gene_metadata = gene_metadata
-        self.df = expression_df
+        self.data = expression_data
 
-        self.sparse_df = expression_df[expression_df > expr_cut]
-        rpkm_variant = pd.Index([i for i, j in (expression_df.var().dropna() > var_cut).iteritems() if j])
+        self.sparse_data = expression_data[expression_data > expr_cut]
+        rpkm_variant = pd.Index([i for i, j in (expression_data.var().dropna() > var_cut).iteritems() if j])
         self.feature_sets['variant'] = pd.Series(rpkm_variant, index=rpkm_variant)
 
         feature_renamer = self.get_feature_renamer()
-        self.feature_sets.update({'all_genes':pd.Series(map(feature_renamer, self.df.columns),
-                                                           index=self.df.columns)})
+        self.feature_sets.update({'all_genes': pd.Series(
+            self.data.columns.map(feature_renamer), index=self.data.columns)})
         self._set_plot_colors()
         self._set_plot_markers()
         if load_cargo:
@@ -84,7 +84,7 @@ class ExpressionData(BaseData):
             sample_ind = pd.Series(self.phenotype_data[group_id], dtype='bool')
 
         sample_ind = sample_ind[sample_ind].index
-        subset = self.sparse_df.ix[sample_ind]
+        subset = self.sparse_data.ix[sample_ind]
         subset = subset.T.ix[gene_list.index].T
         frequent = pd.Index([i for i, j in (subset.count() > min_samples).iteritems() if j])
         subset = subset[frequent]
@@ -99,8 +99,7 @@ class ExpressionData(BaseData):
             data = mf_subset
 
         ss = pd.DataFrame(data, index=mf_subset.index,
-                          columns=mf_subset.columns).rename_axis(
-            feature_renamer, 1)
+                          columns=mf_subset.columns).rename_axis(feature_renamer, 1)
 
         #compute pca
         if featurewise:
@@ -133,7 +132,7 @@ class ExpressionData(BaseData):
         else:
             sample_ind = pd.Series(self.phenotype_data[group_id], dtype='bool')
         sample_ind = sample_ind[sample_ind].index
-        subset = self.sparse_df.ix[sample_ind, gene_list.index]
+        subset = self.sparse_data.ix[sample_ind, gene_list.index]
         frequent = pd.Index([i for i, j in (subset.count() > min_samples).iteritems() if j])
         subset = subset[frequent]
         #fill na with mean for each event
@@ -165,10 +164,9 @@ class ExpressionData(BaseData):
         except:
             raise
 
-
-
-    def _get(self, expression_data_filename):
-        return {'expression_df': self.load(*expression_data_filename)}
+    #
+    # def _get(self, expression_data_filename):
+    #     return {'expression_df': self.load(*expression_data_filename)}
 
     def twoway(self, sample1, sample2, **kwargs):
         from ..visualize.expression import TwoWayScatterViz
@@ -178,7 +176,7 @@ class ExpressionData(BaseData):
         if this_name in self.localZ_dict:
             vz = self.localZ_dict[this_name]
         else:
-            df = self.df
+            df = self.data
             df.rename_axis(self.get_feature_renamer(), 1)
             vz = TwoWayScatterViz(sample1, sample2, df, **kwargs)
             self.localZ_dict[this_name] = vz
@@ -207,7 +205,7 @@ class SpikeInData(ExpressionData):
 
         Parameters
         ----------
-        df, phenotype_data
+        data, phenotype_data
 
         Returns
         -------

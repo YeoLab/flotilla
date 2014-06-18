@@ -347,7 +347,7 @@ class Study(StudyFactory):
                                  'not overwriting. Set "force=True" to force '
                                  'overwriting')
         else:
-            self.expression = ExpressionData(expression_df=self.expression_df,
+            self.expression = ExpressionData(expression_data=self.expression_df,
                                              phenotype_data=self.phenotype_data,
                                              gene_metadata=self.expression_metadata,
                                              load_cargo=load_cargo,

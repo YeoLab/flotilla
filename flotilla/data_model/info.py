@@ -51,7 +51,7 @@ class MappingStatsData(BaseData):
 
         Parameters
         ----------
-        df, sample_descriptors
+        data, sample_descriptors
 
         Returns
         -------
