@@ -1,3 +1,7 @@
+To-dos
+======
+
+
 add custom gene link to Study.interactive_pca
 
 sanity check, make sure gene lists are used for expression and splicing lists are used for splicing
@@ -12,8 +16,9 @@ make Predictor.classifiers_ less nested (this is relic from old code)
 
 Predictor.has_been_*_yet should be dictionaries that manage each trait separately
 
-Study
-   interactive_predictor
+## Study
+
+[ ] interactive_predictor
    classifier
 
 BaseData
@@ -27,7 +32,6 @@ Submarine
 
 Frigate
    Predictor
-
 
 
 

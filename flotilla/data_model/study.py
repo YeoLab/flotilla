@@ -75,7 +75,7 @@ class StudyFactory(object):
             if write_location is None:
                 write_location = os.path.abspath(starting_position)
             else:
-                #TODO: check whether user specificed a real writable location
+                #TODO.md: check whether user specificed a real writable location
                 pass
             try:
                 path_exists = os.path.exists(write_location)
@@ -316,7 +316,7 @@ class Study(StudyFactory):
                              drop_outliers=False):
         """Initialize all the datasets
         """
-        #TODO: would be great if this worked, untested:
+        #TODO.md: would be great if this worked, untested:
         #for subclass in self.subclasses:
         #    initializer = getattr(self, 'intialize_', subclass, '_subclass')
         #    initializer(self)
@@ -337,7 +337,7 @@ class Study(StudyFactory):
             warnings.warn("Failed to load splicing")
 
     def _initialize_phenotype_data(self, phenotype_data):
-        #TODO: this should be an actual data_model.*Data type, but now it's just set by a loader
+        #TODO.md: this should be an actual data_model.*Data type, but now it's just set by a loader
         sys.stderr.write("initializing phenotype data\n")
         self.phenotype = ExperimentDesign(phenotype_data)
 
@@ -375,7 +375,7 @@ class Study(StudyFactory):
         # [self.minimal_study_parameters.add(i) for i in ['expression_df', 'expression_metadata']]
         # self.validate_params()
 
-        #TODO:don't over-write self.expression
+        #TODO.md:don't over-write self.expression
         if hasattr(self, 'expression') and not force:
             raise AttributeError('Already have attribute "expression", '
                                  'not overwriting. Set "force=True" to force '
@@ -414,7 +414,7 @@ class Study(StudyFactory):
 
         # [self.minimal_study_parameters.add(i) for i in ['splicing_df', 'event_metadata']]
         # self.validate_params()
-        #TODO:don't over-write self.splicing
+        #TODO.md:don't over-write self.splicing
         if hasattr(self, 'splicing') and not force:
             raise AttributeError('Already have attribute "splicing" set, '
                                  'not overwriting. Set "force=True" to force '
@@ -461,7 +461,7 @@ class Study(StudyFactory):
 
     def main(self):
         raise NotImplementedError
-        #TODO: make this an entry-point, parse flotilla package to load from cmd line, do something
+        #TODO.md: make this an entry-point, parse flotilla package to load from cmd line, do something
         #this is for the user... who will know little to nothing about queues and the way jobs are done on the backend
 
         usage = "run_flotilla_cmd cmd_name runner_name"
@@ -501,7 +501,7 @@ class Study(StudyFactory):
         ------
 
         """
-        #TODO: Boyko/Patrick please implement
+        #TODO.md: Boyko/Patrick please implement
         raise NotImplementedError
 
 
@@ -513,7 +513,7 @@ class Study(StudyFactory):
         gene expression) from one celltype to another.
         """
         raise NotImplementedError
-        #TODO: Check if JSD has not already been calculated (cacheing or memoizing)
+        #TODO.md: Check if JSD has not already been calculated (cacheing or memoizing)
 
         self.expression.jsd()
         self.splicing.jsd()

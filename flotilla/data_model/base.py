@@ -166,7 +166,7 @@ class BaseData(object):
             #print "might not be a good naming function, failed on %s" % test_name
 
 
-    # TODO: Specify dtypes in docstring
+    # TODO.md: Specify dtypes in docstring
     def plot_classifier(self, gene_list_name=None, sample_list_name=None, clf_var=None,
                         predictor_args=None, plotting_args=None):
         """Principal component-like analysis of measurements

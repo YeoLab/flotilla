@@ -73,7 +73,7 @@ def binify(df, bins):
     nrow = df.shape[0]
     binned = np.zeros((nrow, ncol))
 
-    # TODO: make sure this works for numpy matrices
+    # TODO.md: make sure this works for numpy matrices
     for i, (name, row) in enumerate(df.iterrows()):
         binned[i, :] = np.histogram(row, bins=bins, normed=True)[0]
 

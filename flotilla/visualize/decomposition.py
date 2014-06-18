@@ -122,7 +122,7 @@ class DecompositionViz(object):
             # the following makes several errors appear in pycharm. they're not errors~~! laziness? :(
             #
             # imports variables from dictionaries and uses them as variable names in the code ... cheating because
-            # TODO: needs to be refactored
+            # TODO.md: needs to be refactored
             #
             exec(key + " = kwargs['" + key + "']")
         x_loading, y_loading = self.components_.ix[x_pc], self.components_.ix[y_pc]

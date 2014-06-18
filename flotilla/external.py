@@ -127,7 +127,7 @@ class GO(object):
         list = link_to_list(list_link)
         pd.DataFrame(map(self.geneNames, list), index=list)
 
-#TODO: move these to Cargo
+#TODO.md: move these to Cargo
 #from yan(gene symbols) -> mouse gene id
 neuro_genes_mouse = """ENSMUSG00000020932
 ENSMUSG00000030310
