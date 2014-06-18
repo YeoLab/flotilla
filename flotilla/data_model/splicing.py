@@ -19,7 +19,6 @@ class SplicingData(BaseData):
     _binsize=0.1
     _var_cut = 0.2
 
-
     def __init__(self, data,
                  feature_data=None, binsize=_binsize,
                  var_cut = _var_cut,
@@ -69,19 +68,23 @@ class SplicingData(BaseData):
             #print e
             return short
 
-    def set_binsize(self, binsize):
-        self.binsize = binsize
+    @memoize
+    def binify(self, bins):
+        return binify(self.data, bins)
 
-    def get_binned_data(self):
-        try:
-            assert hasattr(self, 'binned') #binned has been set
-            assert self._binsize == self.binsize #binsize hasn't changed
-        except:
-            #only bin once, until binsize is updated
-            bins = np.arange(0, 1+self.binsize, self.binsize)
-            self.binned = binify(self.data, bins)
-            self._binsize = self.binsize
-        return self.binned
+    # def set_binsize(self, binsize):
+    #     self.binsize = binsize
+    #
+    # def get_binned_data(self):
+    #     try:
+    #         assert hasattr(self, 'binned') #binned has been set
+    #         assert self._binsize == self.binsize #binsize hasn't changed
+    #     except:
+    #         #only bin once, until binsize is updated
+    #         bins = np.arange(0, 1+self.binsize, self.binsize)
+    #         self.binned = binify(self.data, bins)
+    #         self._binsize = self.binsize
+    #     return self.binned
 
     def get_binned_reduced(self, reducer=NMFViz):
         binned = self.get_binned_data()
