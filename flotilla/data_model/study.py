@@ -3,15 +3,16 @@ Data models for "studies" studies include attributes about the data and are
 heavier in terms of data load
 """
 
-from ..visualize import NetworkerViz, PredictorViz, plt
-from expression import ExpressionData
-from splicing import SplicingData
-
 import sys
 import os
-from  ..util import install_development_package
 import pandas as pd
 import subprocess
+
+from expression import ExpressionData
+from splicing import SplicingData
+from info import MetaData
+from  ..util import install_development_package
+from ..visualize import NetworkerViz, PredictorViz, plt
 
 class StudyFactory(object):
 
@@ -125,7 +126,7 @@ class StudyFactory(object):
                        #str(self.__getattribute__(k)) + \
                        #"\n new:" + str(v)
             sys.stderr.write(write_me)
-        super(StudyFactory, self).__setattr__(k,v)
+        super(StudyFactory, self).__setattr__(k, v)
 
     def update(self, dict):
         [self._set(k,v) for (k,v) in dict.items() if not k.startswith("_")] #skip private variables
@@ -134,8 +135,8 @@ class StudyFactory(object):
         """make sure that all necessary attributes are present"""
         for param in self.minimal_study_parameters:
             try:
-                assert hasattr(self, param)
-            except:
+                x = getattr(self, param)
+            except KeyError:
                 raise AssertionError("missing minimal parameter %s" % param)
 
     _accepted_filetypes = []
@@ -203,6 +204,7 @@ class StudyFactory(object):
         #return named outputs
 
         return {'output1':None}
+
 
 class Study(StudyFactory):
     """
@@ -322,9 +324,6 @@ class Study(StudyFactory):
                 'event_metadata': metadata['event'],
                 'expression_metadata': None}
 
-
-
-class StudyCalls(Study):
     def main(self):
         raise NotImplementedError
         #TODO: make this an entry-point, parse flotilla package to load from cmd line, do something
