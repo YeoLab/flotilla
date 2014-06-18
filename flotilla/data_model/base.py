@@ -29,6 +29,8 @@ class BaseData(object):
                                'show_vectors': False}
     _default_plot_kwargs = {'marker': 'o', 'color': blue}
 
+    feature_sets = {}
+
     def __init__(self, phenotype_data, data, feature_data=None, species=None):
         """Base class for biological data measurements
 
@@ -92,14 +94,15 @@ class BaseData(object):
         then return the samples where this is True for them
         """
         try:
-            return set(self.phenotype_data.ix[self.phenotype_data['outlier'].map(
-                bool), 'outlier'].index)
-        except:
+            return set(self.phenotype_data.ix[
+                           self.phenotype_data.outlier.map(bool),
+                           'outlier'].index)
+        except AttributeError:
             return set([])
 
     def drop_outliers(self, df):
-        assert 'outlier' in self.phenotype_data.columns
-        outliers = self.get_outliers().intersection(set(df.index))
+        # assert 'outlier' in self.phenotype_data.columns
+        outliers = self.outliers.intersection(df.index)
         print "dropping ", outliers
         return df.drop(outliers)
 
@@ -144,7 +147,7 @@ class BaseData(object):
         raise NotImplementedError
 
 
-    def get_naming_fun(self):
+    def get_feature_renamer(self):
         return self._feature_rename
 
     def _set_naming_fun(self, fun, test_name='foo'):
@@ -199,7 +202,6 @@ class BaseData(object):
                                       group_id=None,
                                       list_name=None, featurewise=None,
                                       **plotting_kwargs):
-
         """Principal component-like analysis of measurements
 
         Parameters

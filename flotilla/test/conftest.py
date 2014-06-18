@@ -9,12 +9,12 @@ import pytest
 import pandas as pd
 
 class ExampleData(object):
-    __slots__ = ('metadata', 'expression', 'splicing', 'data')
-    def __init__(self, sample_metadata, expression, splicing):
-        self.sample_metadata = sample_metadata
+    __slots__ = ('phenotype_data', 'expression', 'splicing', 'data')
+    def __init__(self, phenotype_data, expression, splicing):
+        self.phenotype_data = phenotype_data
         self.expression = expression
         self.splicing = splicing
-        self.data = (sample_metadata, expression, splicing)
+        self.data = (phenotype_data, expression, splicing)
 
 
 @pytest.fixture(scope='module')
@@ -23,3 +23,7 @@ def example_data():
     splicing = pd.read_table('data/splicing.tsv', index_col=0)
     metadata = pd.read_table('data/metadata.tsv', index_col=0)
     return ExampleData(metadata, expression, splicing)
+
+@pytest.fixture(scope='module')
+def example_study():
+    return None
