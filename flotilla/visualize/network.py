@@ -12,7 +12,7 @@ from ..visualize.decomposition import DecompositionViz
 
 
 class NetworkerViz(Networker, DecompositionViz):
-    #TODO: needs to be decontaminated, as it requires methods from data_object;
+    #TODO.md: needs to be decontaminated, as it requires methods from data_object;
     #maybe this class should move to data_model.BaseData
     def __init__(self, data_obj):
         self.data_obj = data_obj
