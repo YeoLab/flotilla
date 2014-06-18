@@ -27,24 +27,24 @@ class ExpressionData(BaseData):
 
 
 
-    def __init__(self, phenotype_data, expression_data,
-                 gene_metadata= None,
+    def __init__(self, data,
+                 feature_data= None,
                  var_cut=_var_cut, expr_cut=_expr_cut,
                  drop_outliers=True, load_cargo=False,
                  **kwargs):
 
-        super(ExpressionData, self).__init__(phenotype_data, expression_data)
+        super(ExpressionData, self).__init__(data)
         if drop_outliers:
-            expression_data = self.drop_outliers(expression_data)
+            self.data = self.drop_outliers(data)
 
-        self.phenotype_data, expression_data = \
-            self.phenotype_data.align(expression_data, join='inner', axis=0)
+        # self.phenotype_data, data = \
+        #     self.phenotype_data.align(data, join='inner', axis=0)
 
-        self.gene_metadata = gene_metadata
-        self.data = expression_data
+        self.feature_data = feature_data
+        # self.data = data
 
-        self.sparse_data = expression_data[expression_data > expr_cut]
-        rpkm_variant = pd.Index([i for i, j in (expression_data.var().dropna() > var_cut).iteritems() if j])
+        self.sparse_data = data[data > expr_cut]
+        rpkm_variant = pd.Index([i for i, j in (data.var().dropna() > var_cut).iteritems() if j])
         self.feature_sets['variant'] = pd.Series(rpkm_variant, index=rpkm_variant)
 
         feature_renamer = self.get_feature_renamer()

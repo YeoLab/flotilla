@@ -1,12 +1,12 @@
-__author__ = 'olga'
-
 """
 This file will be auto-imported for every testing session, so you can use
 these objects and functions across test files.
 """
-
+import os
 import pytest
 import pandas as pd
+
+CURRENT_DIR = os.path.dirname(__file__)
 
 class ExampleData(object):
     __slots__ = ('phenotype_data', 'expression', 'splicing', 'data')
@@ -19,9 +19,11 @@ class ExampleData(object):
 
 @pytest.fixture(scope='module')
 def example_data():
-    expression = pd.read_table('data/expression.tsv', index_col=0)
-    splicing = pd.read_table('data/splicing.tsv', index_col=0)
-    metadata = pd.read_table('data/metadata.tsv', index_col=0)
+    data_dir = '{}/data'.format(CURRENT_DIR.rstrip('/'))
+    expression = pd.read_table('{}/expression.tsv'.format(data_dir),
+                               index_col=0)
+    splicing = pd.read_table('{}/splicing.tsv'.format(data_dir), index_col=0)
+    metadata = pd.read_table('{}/metadata.tsv'.format(data_dir), index_col=0)
     return ExampleData(metadata, expression, splicing)
 
 @pytest.fixture(scope='module')
