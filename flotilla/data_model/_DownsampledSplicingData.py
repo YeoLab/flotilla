@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 
-from _BaseData import BaseData
+from base import BaseData
 from ..visualize.decomposition import NMFviz, PCAviz
 from ..visualize.predict import PredictorViz
 from ..compute.generic import binify, dropna_mean
