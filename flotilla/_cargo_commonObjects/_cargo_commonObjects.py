@@ -38,7 +38,7 @@ class Cargo(object):
         initialize gene ontology object, takes > 30 seconds
         """
         try:
-            assert(species in ["hg19", "mm9", "ce10"])
+            assert(species in ["hg19", "mm9", "ce10", "mm10"])
         except AssertionError:
             raise NotImplementedError("what is this %s you speak of?" % species)
 
