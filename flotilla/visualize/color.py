@@ -8,4 +8,4 @@ blue = deep[0]
 green = deep[1]
 red = deep[2]
 
-purples = seaborn.color_palette('purples', 9)
+purples = seaborn.color_palette('Purples', 9)

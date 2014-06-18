@@ -52,8 +52,8 @@ class SplicingData(BaseData):
         self.binsize = binsize
         psi_variant = pd.Index([i for i,j in (splicing.var().dropna() > var_cut).iteritems() if j])
         self._set_naming_fun(self.feature_rename)
-        self.lists['variant'] = pd.Series(psi_variant, index=psi_variant)
-        self.lists['all_genes'] =  pd.Series(splicing.index, index=splicing.index)
+        self.feature_sets['variant'] = pd.Series(psi_variant, index=psi_variant)
+        self.feature_sets['all_genes'] =  pd.Series(splicing.index, index=splicing.index)
         self.event_metadata = event_metadata
         self._set_plot_colors()
         self._set_plot_markers()
@@ -99,10 +99,10 @@ class SplicingData(BaseData):
             reducer_args = self._default_reducer_args
 
         min_samples = self.get_min_samples()
-        if list_name not in self.lists:
-            self.lists[list_name] = link_to_list(list_name)
+        if list_name not in self.feature_sets:
+            self.feature_sets[list_name] = link_to_list(list_name)
 
-        event_list = self.lists[list_name]
+        event_list = self.feature_sets[list_name]
         #some samples, somefeatures
 
         if group_id.startswith("~"):
@@ -118,7 +118,7 @@ class SplicingData(BaseData):
         means = subset.apply(dropna_mean, axis=0)
         mf_subset = subset.fillna(means,).fillna(0)
         #whiten, mean-center
-        naming_fun=self.get_naming_fun()
+        naming_fun=self.get_feature_renamer()
         #whiten, mean-center
 
         if standardize:
@@ -147,10 +147,10 @@ class SplicingData(BaseData):
          """
 
         min_samples=self.get_min_samples()
-        if list_name not in self.lists:
-            self.lists[list_name] = link_to_list(list_name)
+        if list_name not in self.feature_sets:
+            self.feature_sets[list_name] = link_to_list(list_name)
 
-        event_list = self.lists[list_name]
+        event_list = self.feature_sets[list_name]
 
         if group_id.startswith("~"):
             #print 'not', group_id.lstrip("~")
@@ -170,7 +170,7 @@ class SplicingData(BaseData):
             data = StandardScaler().fit_transform(mf_subset)
         else:
             data = mf_subset
-        naming_fun = self.get_naming_fun()
+        naming_fun = self.get_feature_renamer()
         ss = pd.DataFrame(data, index = mf_subset.index,
                           columns = mf_subset.columns).rename_axis(naming_fun, 1)
         clf = classifier(ss, self.phenotype_data,

@@ -1,4 +1,7 @@
-
+"""
+This tests whether the Study object was created correctly. No
+computation or visualization tests yet.
+"""
 import pandas.util.testing as pdt
 from flotilla.data_model import ExpressionData, SplicingData, Study
 
