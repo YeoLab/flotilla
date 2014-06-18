@@ -3,10 +3,11 @@ Data models for "studies" studies include attributes about the data and are
 heavier in terms of data load
 """
 
-import sys
 import os
 import pandas as pd
 import subprocess
+import sys
+import warnings
 
 from expression import ExpressionData
 from splicing import SplicingData
@@ -26,6 +27,13 @@ class StudyFactory(object):
         self.minimal_study_parameters = set()
         self.new_study_params = set()
         self.getters = []
+
+    def __setattr__(self, key, value):
+        """Check if the attribute already exists and warns on overwrite.
+        """
+        if hasattr(self, key):
+            warnings.warn('Over-writing attribute {}'.format(key))
+        super(StudyFactory, self).__setattr__(key, value)
 
     def write_package(self, study_name, write_location=None, install=False):
         write_these = self.minimal_study_parameters
@@ -109,27 +117,28 @@ class StudyFactory(object):
         assert len(tup) == 2
         return "os.path.join(study_data_dir, %s)" % os.path.basename(tup[0]), tup[1]
 
-    def _add_package_data_resource(self, file_name, data_df, toplevel_package_dir, file_write_mode="tsv"):
+    def _add_package_data_resource(self, file_name, data_df, toplevel_package_dir,
+                                   file_write_mode="tsv"):
         writer = getattr(self, "_write_" + file_write_mode)
         file_base = os.path.basename(file_name)
         rsc_file = os.path.join(toplevel_package_dir, "study_data", file_base + "." + file_write_mode)
         writer(data_df, rsc_file)
         return (rsc_file, file_write_mode)
 
-    def _set(self, k, v):
-        """set attributes, warn if re-setting"""
+    # def _set(self, k, v):
+    #     """set attributes, warn if re-setting"""
+    #
+    #     try:
+    #         assert not hasattr(self, k)
+    #     except:
+    #         write_me = "WARNING: over-writing parameter " + k + "\n" #+ \
+    #                    #str(self.__getattribute__(k)) + \
+    #                    #"\n new:" + str(v)
+    #         sys.stderr.write(write_me)
+    #     super(StudyFactory, self).__setattr__(k, v)
 
-        try:
-            assert not hasattr(self, k)
-        except:
-            write_me = "WARNING: over-writing parameter " + k + "\n" #+ \
-                       #str(self.__getattribute__(k)) + \
-                       #"\n new:" + str(v)
-            sys.stderr.write(write_me)
-        super(StudyFactory, self).__setattr__(k, v)
-
-    def update(self, dict):
-        [self._set(k,v) for (k,v) in dict.items() if not k.startswith("_")] #skip private variables
+    # def update(self, dict):
+    #     [self._set(k,v) for (k,v) in dict.items() if not k.startswith("_")] #skip private variables
 
     def validate_params(self):
         """make sure that all necessary attributes are present"""

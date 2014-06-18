@@ -1,7 +1,11 @@
 __author__ = 'olga'
 import seaborn
 
+
 seaborn.set_palette('deep')
-blue = seaborn.color_palette()[0]
-green = seaborn.color_palette()[1]
-red = seaborn.color_palette()[2]
+deep = seaborn.color_palette('deep')
+blue = deep[0]
+green = deep[1]
+red = deep[2]
+
+purples = seaborn.color_palette('purples', 9)
