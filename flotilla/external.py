@@ -23,7 +23,7 @@ def generateOntology(df):
         ontology[GO]['genes'].add(gene)
         ontology[GO]['name'].add(name)
         ontology[GO]['domain'].add(domain)
-        ontology[GO]['nGenes'] = len(ontology[GO]['genes'])
+        ontology[GO]['n_genes'] = len(ontology[GO]['genes'])
     return ontology, allGenesInOntologies
    
 def GO_enrichment(geneList, ontology, expressedGenes = None, printIt=False, pCut = 1000000, xRef = {}):
