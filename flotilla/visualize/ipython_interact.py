@@ -208,7 +208,7 @@ pca=prd('%s', feature_score_std_cutoff=%f)" \
                 return
             self.localZ_result = data_obj.plot_twoway(sample1, sample2,
                                                  pCut=pCut).result_
-            print "localZ finished, find the result in <this_obj>.localZ_result_"
+            print "local_z finished, find the result in <this_obj>.localZ_result_"
 
         interact(do_interact,
                  data_type=('expression', 'splicing'),

@@ -171,7 +171,7 @@ class ExpressionData(BaseData):
     def twoway(self, sample1, sample2, **kwargs):
         from ..visualize.expression import TwoWayScatterViz
 
-        pCut = kwargs['pCut']
+        pCut = kwargs['p_value_cutoff']
         this_name = "_".join([sample1, sample2, str(pCut)])
         if this_name in self.localZ_dict:
             vz = self.localZ_dict[this_name]
