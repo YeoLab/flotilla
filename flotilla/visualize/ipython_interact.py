@@ -4,8 +4,8 @@ between IPython interactive visualizations vs D3 interactive visualizations.
 """
 
 import matplotlib.pyplot as plt
+
 from .network import NetworkerViz
-from .decomposition import DecompositionViz
 
 
 class Interactive(object):
@@ -25,10 +25,12 @@ class Interactive(object):
         self._default_y_pc = 2
         [self.minimal_study_parameters.add(param) for param in  ['default_group_id', 'default_group_ids',
                                                                     'default_list_id', 'default_list_ids',]]
-        [self.minimal_study_parameters.add(i) for i in ['phenotype_data', ]]
+        [self.minimal_study_parameters.add(i) for i in
+         ['experiment_design_data', ]]
         self.validate_params()
 
-    def interactive_pca(self):
+    @staticmethod
+    def interactive_pca():
 
         from IPython.html.widgets import interact
 
@@ -73,7 +75,7 @@ class Interactive(object):
                  x_pc=(1, 10), y_pc=(1, 10),
                  show_point_labels=False, )
 
-
+    @staticmethod
     def interactive_graph(self):
         from IPython.html.widgets import interact
 
@@ -176,6 +178,7 @@ pca=prd('%s', feature_score_std_cutoff=%f)" \
                  draw_labels=False,
         )
 
+    @staticmethod
     def interactive_localZ(self):
 
         from IPython.html.widgets import interact

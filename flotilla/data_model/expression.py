@@ -13,22 +13,20 @@ from .base import BaseData
 from ..visualize.decomposition import PCAViz
 from ..visualize.predict import PredictorViz
 from ..compute.generic import dropna_mean
-from ..compute.predict import Predictor
 from ..external import link_to_list
 from ..util import memoize
+
 
 seaborn.set_context('paper')
 
 
 class ExpressionData(BaseData):
-
     _var_cut = 0.5
     _expr_cut = 0.1
 
 
-
     def __init__(self, data,
-                 feature_data= None,
+                 feature_data=None,
                  var_cut=_var_cut, expr_cut=_expr_cut,
                  drop_outliers=True, load_cargo=False,
                  **kwargs):
@@ -37,15 +35,17 @@ class ExpressionData(BaseData):
         if drop_outliers:
             self.data = self.drop_outliers(data)
 
-        # self.phenotype_data, data = \
-        #     self.phenotype_data.align(data, join='inner', axis=0)
+        # self.experiment_design_data, data = \
+        #     self.experiment_design_data.align(data, join='inner', axis=0)
 
         self.feature_data = feature_data
         # self.data = data
 
         self.sparse_data = data[data > expr_cut]
-        rpkm_variant = pd.Index([i for i, j in (data.var().dropna() > var_cut).iteritems() if j])
-        self.feature_sets['variant'] = pd.Series(rpkm_variant, index=rpkm_variant)
+        rpkm_variant = pd.Index(
+            [i for i, j in (data.var().dropna() > var_cut).iteritems() if j])
+        self.feature_sets['variant'] = pd.Series(rpkm_variant,
+                                                 index=rpkm_variant)
 
         feature_renamer = self.get_feature_renamer()
         self.feature_sets.update({'all_genes': pd.Series(
@@ -57,12 +57,12 @@ class ExpressionData(BaseData):
 
     @memoize
     def reduce(self, list_name, group_id, featurewise=False,
-                    reducer=PCAViz,
-                    standardize=True,
-                    **reducer_args):
+               reducer=PCAViz,
+               standardize=True,
+               **reducer_args):
         """make and cache a reduced dimensionality representation of data """
 
-        min_samples=self.get_min_samples()
+        min_samples = self.get_min_samples()
         input_reducer_args = reducer_args.copy()
         reducer_args = self._default_reducer_kwargs.copy()
         reducer_args.update(input_reducer_args)
@@ -71,8 +71,9 @@ class ExpressionData(BaseData):
 
         if list_name not in self.feature_sets:
             this_list = link_to_list(list_name)
-            self.feature_sets[list_name] = pd.Series(map(feature_renamer, this_list),
-                                              index=this_list)
+            self.feature_sets[list_name] = pd.Series(
+                map(feature_renamer, this_list),
+                index=this_list)
 
         gene_list = self.feature_sets[list_name]
 
@@ -86,7 +87,8 @@ class ExpressionData(BaseData):
         sample_ind = sample_ind[sample_ind].index
         subset = self.sparse_data.ix[sample_ind]
         subset = subset.T.ix[gene_list.index].T
-        frequent = pd.Index([i for i, j in (subset.count() > min_samples).iteritems() if j])
+        frequent = pd.Index(
+            [i for i, j in (subset.count() > min_samples).iteritems() if j])
         subset = subset[frequent]
         #fill na with mean for each event
         means = subset.apply(dropna_mean, axis=0)
@@ -99,41 +101,46 @@ class ExpressionData(BaseData):
             data = mf_subset
 
         ss = pd.DataFrame(data, index=mf_subset.index,
-                          columns=mf_subset.columns).rename_axis(feature_renamer, 1)
+                          columns=mf_subset.columns).rename_axis(
+            feature_renamer, 1)
 
         #compute pca
         if featurewise:
             ss = ss.T
         rdc_obj = reducer(ss, **reducer_args)
-        rdc_obj.means = means.rename_axis(feature_renamer) #always the mean of input features... i.e. featurewise doesn't change this.
+        rdc_obj.means = means.rename_axis(
+            feature_renamer)  #always the mean of input features... i.e. featurewise doesn't change this.
 
         #add mean gene_expression
         return rdc_obj
 
     @memoize
     def classify(self, gene_list_name, group_id, categorical_trait,
-                       standardize=True, predictor=PredictorViz):
+                 standardize=True, predictor=PredictorViz):
         """
         make and cache a classifier on a categorical trait (associated with samples) subset of genes
          """
 
-        min_samples=self.get_min_samples()
+        min_samples = self.get_min_samples()
         feature_renamer = self.get_feature_renamer()
 
         if gene_list_name not in self.feature_sets:
             this_list = link_to_list(gene_list_name)
-            self.feature_sets[gene_list_name] = pd.Series(map(feature_renamer, this_list), index =this_list)
+            self.feature_sets[gene_list_name] = pd.Series(
+                map(feature_renamer, this_list), index=this_list)
 
         gene_list = self.feature_sets[gene_list_name]
 
         if group_id.startswith("~"):
             #print 'not', group_id.lstrip("~")
-            sample_ind = ~pd.Series(self.phenotype_data[group_id.lstrip("~")], dtype='bool')
+            sample_ind = ~pd.Series(self.phenotype_data[group_id.lstrip("~")],
+                                    dtype='bool')
         else:
             sample_ind = pd.Series(self.phenotype_data[group_id], dtype='bool')
         sample_ind = sample_ind[sample_ind].index
         subset = self.sparse_data.ix[sample_ind, gene_list.index]
-        frequent = pd.Index([i for i, j in (subset.count() > min_samples).iteritems() if j])
+        frequent = pd.Index(
+            [i for i, j in (subset.count() > min_samples).iteritems() if j])
         subset = subset[frequent]
         #fill na with mean for each event
         means = subset.apply(dropna_mean, axis=0)
@@ -145,10 +152,11 @@ class ExpressionData(BaseData):
         else:
             data = mf_subset
 
-        ss = pd.DataFrame(data, index = mf_subset.index,
-                          columns = mf_subset.columns).rename_axis(feature_renamer, 1)
+        ss = pd.DataFrame(data, index=mf_subset.index,
+                          columns=mf_subset.columns).rename_axis(
+            feature_renamer, 1)
         clf = predictor(ss, self.phenotype_data,
-                        categorical_traits=[categorical_trait],)
+                        categorical_traits=[categorical_trait], )
         clf.set_reducer_plotting_args(self._default_reducer_kwargs)
         return clf
 
@@ -205,7 +213,7 @@ class SpikeInData(ExpressionData):
 
         Parameters
         ----------
-        data, phenotype_data
+        data, experiment_design_data
 
         Returns
         -------

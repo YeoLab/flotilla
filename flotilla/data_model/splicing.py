@@ -1,15 +1,17 @@
 import collections
+
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 
 from .base import BaseData
-from ..visualize.decomposition import NMFViz, PCAViz
+from ..visualize.decomposition import NMFViz
 from ..visualize.color import purples
 from ..visualize.predict import PredictorViz
 from ..compute.generic import binify, dropna_mean
 from ..external import link_to_list
 from ..util import memoize
+
 
 class SplicingData(BaseData):
     binned_reducer = None
@@ -46,7 +48,7 @@ class SplicingData(BaseData):
                                            **kwargs)
         if drop_outliers:
             self.data = self.drop_outliers(data)
-        # self.phenotype_data, data = self.phenotype_data.align(data, join='inner', axis=0)
+        # self.experiment_design_data, data = self.experiment_design_data.align(data, join='inner', axis=0)
 
         # self.data = data
         self.binsize = binsize
@@ -207,7 +209,7 @@ class SpliceJunctionData(SplicingData):
 
         Parameters
         ----------
-        data, phenotype_data
+        data, experiment_design_data
 
         Returns
         -------
@@ -242,7 +244,7 @@ class DownsampledSplicingData(BaseData):
             randomly sampling probability from the bam file used to generate
             these reads, and "iteration" indicates the integer iteration
             performed, e.g. if multiple resamplings were performed.
-        phenotype_data: pandas.DataFrame
+        experiment_design_data: pandas.DataFrame
 
         Notes
         -----
