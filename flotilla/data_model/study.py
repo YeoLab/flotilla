@@ -5,18 +5,20 @@ heavier in terms of data load
 
 from collections import defaultdict
 import os
-import pandas as pd
 import subprocess
 import sys
 import warnings
+
+import pandas as pd
 
 from .expression import ExpressionData
 from .splicing import SplicingData
 from .experiment_design import ExperimentDesignData
 from ..util import install_development_package
-from ..visualize import NetworkerViz, PredictorViz
-from ..visualize.color import red, blue, green
+from ..visualize import NetworkerViz
+from ..visualize.color import blue
 from ..visualize.ipython_interact import Interactive
+
 
 # import flotilla
 # FLOTILLA_DIR = os.path.dirname(flotilla.__file__)
@@ -46,7 +48,8 @@ class StudyFactory(object):
     def write_package(self, study_name, where=None, install=False):
         write_these = self.minimal_study_parameters
 
-        data_resources = ['phenotype_data', 'expression_df', 'splicing_df', 'event_metadata']
+        data_resources = ['experiment_design_data', 'expression_df',
+                          'splicing_df', 'event_metadata']
 
         self.minimal_study_parameters.update(write_these)
         self.validate_params()
@@ -278,13 +281,15 @@ class Study(StudyFactory):
         sys.stderr.write("subclasses initialized\n")
         self.validate_params()
         sys.stderr.write("package validated\n")
+        # self._set_plot_colors()
+        # self._set_plot_markers()
 
     def __add__(self, other):
         """Sanely concatenate one or more Study objects
         """
         raise NotImplementedError
-        self.phenotype_data = pd.concat([self.phenotype_data,
-                                          other.phenotype_data])
+        self.experiment_design_data = pd.concat([self.experiment_design_data,
+                                                 other.phenotype_data])
         self.expression.data = pd.concat([self.expression.data,
                                           other.phenotype_data])
         # self.species = # dict of sample ids to species?
@@ -343,8 +348,6 @@ class Study(StudyFactory):
         sys.stderr.write("initializing phenotype data\n")
         self.phenotype = ExperimentDesignData(phenotype_data)
 
-        self._set_plot_colors()
-        self._set_plot_markers()
 
     def _set_plot_colors(self):
         """If there is a column 'color' in the sample metadata, specify this
@@ -352,9 +355,9 @@ class Study(StudyFactory):
         """
         try:
             self._default_reducer_kwargs.update(
-                {'colors_dict': self.phenotype_data.color})
+                {'colors_dict': self.experiment_design_data.color})
             self._default_plot_kwargs.update(
-                {'color': self.phenotype_data.color.tolist()})
+                {'color': self.experiment_design_data.color.tolist()})
         except AttributeError:
             sys.stderr.write("There is no column named 'color' in the "
                              "metadata, defaulting to blue for all samples\n")
@@ -369,9 +372,9 @@ class Study(StudyFactory):
         """
         try:
             self._default_reducer_kwargs.update(
-                {'markers_dict': self.phenotype_data.marker})
+                {'markers_dict': self.experiment_design_data.marker})
             self._default_plot_kwargs.update(
-                {'marker': self.phenotype_data.marker.tolist()})
+                {'marker': self.experiment_design_data.marker.tolist()})
         except AttributeError:
             sys.stderr.write("There is no column named 'marker' in the sample "
                              "metadata, defaulting to a circle for all "
@@ -496,7 +499,7 @@ class Study(StudyFactory):
     #         sys.stderr.write("error loading descriptors: %s, \n\n .... entering pdb ... \n\n" % E)
     #         raise E
     #
-    #     return {'phenotype_data': metadata['sample'],
+    #     return {'experiment_design_data': metadata['sample'],
     #             'feature_data': metadata['gene'],
     #             'event_metadata': metadata['event'],
     #             'expression_metadata': None}

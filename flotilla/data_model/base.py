@@ -1,11 +1,11 @@
-from collections import defaultdict
-import pandas as pd
-from scipy.spatial.distance import pdist, squareform
-import six
 import sys
 
-from ..visualize.color import red, blue, green
+from scipy.spatial.distance import pdist, squareform
+
+from ..visualize.color import blue
+
 from ..util import memoize
+
 
 MINIMUM_SAMPLES = 12
 
@@ -39,7 +39,7 @@ class BaseData(object):
 
         Parameters
         ----------
-        phenotype_data : pandas.DataFrame
+        experiment_design_data : pandas.DataFrame
             Metadata on the samples, with sample names as rows and columns as
             attributes. Any boolean column will be added as an option to
             interactive_pca
@@ -53,14 +53,14 @@ class BaseData(object):
 
         """
         self.data = data
-        # self.phenotype_data = phenotype_data
+        # self.experiment_design_data = experiment_design_data
         self.feature_data = feature_data
         self.species = species
 
 
     @property
     def outliers(self):
-        """If there is a column called 'outliers' in the phenotype_data,
+        """If there is a column called 'outliers' in the experiment_design_data,
         then return the samples where this is True for them
         """
         try:
@@ -71,7 +71,7 @@ class BaseData(object):
             return set([])
 
     def drop_outliers(self, df):
-        # assert 'outlier' in self.phenotype_data.columns
+        # assert 'outlier' in self.experiment_design_data.columns
         outliers = self.outliers.intersection(df.index)
         sys.stdout.write("dropping {}".format(outliers))
         return df.drop(outliers)
