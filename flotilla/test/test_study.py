@@ -3,10 +3,12 @@ This tests whether the Study object was created correctly. No
 computation or visualization tests yet.
 """
 import pandas.util.testing as pdt
+
 from flotilla.data_model import ExpressionData, SplicingData, Study
 
+
 def test_study_init(example_data):
-    study = Study(phenotype_data=example_data.phenotype_data,
+    study = Study(experiment_design_data=example_data.phenotype_data,
                   expression_data=example_data.expression,
                   splicing_data=example_data.splicing)
     expression = ExpressionData(data=example_data.expression)
@@ -20,7 +22,7 @@ def test_study_init(example_data):
 #     from flotilla.data_model import StudyFactory
 #
 #     new_study = StudyFactory()
-#     new_study.phenotype_data = None
+#     new_study.experiment_design_data = None
 #     new_study.event_metadata = None
 #     new_study.expression_metadata = None
 #     new_study.expression_df = None
