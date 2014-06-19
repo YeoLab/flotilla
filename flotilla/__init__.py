@@ -1,17 +1,9 @@
 __author__ = 'lovci'
 
 import urllib2
-
-import simplejson
+import json
 
 from .data_model.study import StudyFactory, Study
-
-
-# import computation as frigate
-# import database as carrier
-# import util as barge
-# import data_model as schooner
-# import visualize as submarine
 
 
 def call_main():
@@ -38,7 +30,7 @@ class Embark(object):
         req = urllib2.Request(self.data_package_url)
         opener = urllib2.build_opener()
         f = opener.open(req)
-        return simplejson.load(f)
+        return json.load(f)
 
     def create_package(self):
         """
