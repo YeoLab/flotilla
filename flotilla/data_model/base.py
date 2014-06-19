@@ -107,7 +107,7 @@ class BaseData(object):
     def drop_outliers(self, df):
         # assert 'outlier' in self.phenotype_data.columns
         outliers = self.outliers.intersection(df.index)
-        print "dropping ", outliers
+        sys.stdout.write("dropping {}".format(outliers))
         return df.drop(outliers)
 
 
