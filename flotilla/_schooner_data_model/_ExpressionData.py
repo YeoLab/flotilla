@@ -13,7 +13,7 @@ seaborn.set_context('paper')
 class ExpressionData(Data):
 
 
-    _var_cut=0.5
+
     _expr_cut=0.1
 
 
@@ -35,7 +35,8 @@ class ExpressionData(Data):
         self.df = expression_df
 
         self.sparse_df = expression_df[expression_df > expr_cut]
-        rpkm_variant = pd.Index([i for i, j in (expression_df.var().dropna() > var_cut).iteritems() if j])
+        self._var_cut = expression_df.var().dropna().mean() + 2 *  expression_df.var().dropna().std()
+        rpkm_variant = pd.Index([i for i, j in (expression_df.var().dropna() > self._var_cut).iteritems() if j])
         self.lists['variant'] = pd.Series(rpkm_variant, index=rpkm_variant)
 
         naming_fun = self.get_naming_fun()
