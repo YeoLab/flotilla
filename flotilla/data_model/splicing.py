@@ -57,8 +57,8 @@ class SplicingData(BaseData):
         self.feature_sets['variant'] = pd.Series(psi_variant, index=psi_variant)
         self.feature_sets['all_genes'] =  pd.Series(data.index, index=data.index)
         self.feature_data = feature_data
-        self._set_plot_colors()
-        self._set_plot_markers()
+        # self._set_plot_colors()
+        # self._set_plot_markers()
 
     def feature_rename(self, x):
         "this is for miso psi IDs..."

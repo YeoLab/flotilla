@@ -50,8 +50,8 @@ class ExpressionData(BaseData):
         feature_renamer = self.get_feature_renamer()
         self.feature_sets.update({'all_genes': pd.Series(
             self.data.columns.map(feature_renamer), index=self.data.columns)})
-        self._set_plot_colors()
-        self._set_plot_markers()
+        # self._set_plot_colors()
+        # self._set_plot_markers()
         if load_cargo:
             self.load_cargo()
 

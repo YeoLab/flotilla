@@ -1,6 +1,6 @@
 __author__ = 'lovci'
 
-import argparse
+from embark import Embark
 
 # import computation as frigate
 # import database as carrier
@@ -18,3 +18,7 @@ def call_main():
 
 def main():
     pass
+
+
+def embark(datapackge_url):
+    return Embark(datapackge_url)
