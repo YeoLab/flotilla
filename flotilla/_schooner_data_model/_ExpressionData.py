@@ -19,7 +19,7 @@ class ExpressionData(Data):
 
     def __init__(self, expression_df, sample_metadata,
                  gene_metadata= None,
-                 var_cut=_var_cut, expr_cut=_expr_cut,
+                 var_std_cut=0.5, expr_cut=_expr_cut,
                  drop_outliers=True, load_cargo=False,
                  **kwargs
                  ):
@@ -35,7 +35,7 @@ class ExpressionData(Data):
         self.df = expression_df
 
         self.sparse_df = expression_df[expression_df > expr_cut]
-        self._var_cut = expression_df.var().dropna().mean() + 2 *  expression_df.var().dropna().std()
+        self._var_cut = expression_df.var().dropna().mean() + (var_std_cut *  expression_df.var().dropna().std())
         rpkm_variant = pd.Index([i for i, j in (expression_df.var().dropna() > self._var_cut).iteritems() if j])
         self.lists['variant'] = pd.Series(rpkm_variant, index=rpkm_variant)
 
