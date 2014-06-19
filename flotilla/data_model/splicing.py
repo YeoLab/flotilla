@@ -272,8 +272,8 @@ class DownsampledSplicingData(BaseData):
             share this splicing event at that probability and splice type.
         """
 
-        if not hasattr(self, '_shared_events_df'):
-            shared_events_dict = {}
+        if not hasattr(self, '_shared_events'):
+            shared_events = {}
 
             for (splice_type, probability), df in self.df.groupby(
                     ['splice_type', 'probability']):
@@ -282,14 +282,14 @@ class DownsampledSplicingData(BaseData):
                 # n_iter = data.iteration.unique().shape[0]
                 event_count = collections.Counter(df.event_name)
                 # print sum(1 for k, v in event_count.iteritems() if v == n_iter)
-                shared_events_dict[(splice_type, probability)] = pd.Series(
+                shared_events[(splice_type, probability)] = pd.Series(
                     event_count)
 
-            self._shared_events_df = pd.DataFrame(shared_events_dict)
-            self._shared_events_df.columns = pd.MultiIndex.from_tuples(
+            self._shared_events = pd.DataFrame(shared_events)
+            self._shared_events.columns = pd.MultiIndex.from_tuples(
                 self._shared_events_df.columns.tolist())
         else:
-            return self._shared_events_df
+            return self._shared_events
 
     def shared_events_barplot(self, figure_dir='./'):
         """PLot a "histogram" via colored bars of the number of events shared by
