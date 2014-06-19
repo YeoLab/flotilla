@@ -6,6 +6,7 @@ from scipy import stats
 import pandas as pd
 import math
 from __future__ import division
+import sys
 
 def benjamini_hochberg(p_values, fdr=0.1):
     """ benjamini-hochberg correction for MHT
@@ -137,9 +138,12 @@ class TwoWayGeneComparisonLocal(object):
                     raise ValueError
 
     def gstats(self):
-        print "I used a p-value cutoff of %e" %self.pCut
-        print "There are", len(self.upGenes), "up-regulated genes in %s vs %s" %(self.sampleNames[1],
-                                                                                 self.sampleNames[0])
-        print "There are", len(self.dnGenes), "down-regulated genes in %s vs %s" %(self.sampleNames[1],
-                                                                                   self.sampleNames[0])
-        print "There are", len(self.expressedGenes), "expressed genes in both %s and %s" %self.sampleNames
+        sys.stdout.write("I used a p-value cutoff of {:.2e}\n".format(self.pCut))
+        sys.stdout.write("\tThere are {} up-regulated genes in {} vs {}\n"
+                         .format(len(self.upGenes), self.sampleNames[1],
+                                 self.sampleNames[0]))
+        sys.stdout.write("\tThere are {} down-regulated genes in %s vs %s"
+                         .format(len(self.dnGenes), self.sampleNames[1],
+                                 self.sampleNames[0]))
+        sys.stdout.write("There are {} expressed genes in both {} and {}"
+                         .format(len(self.expressedGenes), *self.sampleNames))
