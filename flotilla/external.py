@@ -11,7 +11,9 @@ from collections import defaultdict
 import gzip
 import numpy as np
 
-import os, subprocess, sys
+import os
+import subprocess
+import sys
 
 
 def generateOntology(df):
