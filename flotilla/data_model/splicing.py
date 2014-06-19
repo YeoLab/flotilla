@@ -264,7 +264,6 @@ class DownsampledSplicingData(BaseData):
         Parameters
         ----------
 
-
         Returns
         -------
         event_count_df : pandas.DataFrame
