@@ -30,7 +30,7 @@ class Interactive(object):
         self.validate_params()
 
     @staticmethod
-    def interactive_pca():
+    def interactive_pca(self):
 
         from IPython.html.widgets import interact
 
@@ -131,6 +131,7 @@ class Interactive(object):
                  use_pc_1=True, use_pc_2=True, use_pc_3=True, use_pc_4=True,
         )
 
+    @staticmethod
     def interactive_classifier(self):
 
         from IPython.html.widgets import interact
