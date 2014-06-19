@@ -56,41 +56,7 @@ class BaseData(object):
         # self.phenotype_data = phenotype_data
         self.feature_data = feature_data
         self.species = species
-        self._set_plot_colors()
-        self._set_plot_markers()
 
-    def _set_plot_colors(self):
-        """If there is a column 'color' in the sample metadata, specify this
-        as the plotting color
-        """
-        try:
-            self._default_reducer_kwargs.update(
-                {'colors_dict': self.phenotype_data.color})
-            self._default_plot_kwargs.update(
-                {'color': self.phenotype_data.color.tolist()})
-        except AttributeError:
-            sys.stderr.write("There is no column named 'color' in the "
-                             "metadata, defaulting to blue for all samples\n")
-            self._default_reducer_kwargs.update(
-                {'colors_dict': defaultdict(lambda : blue)})
-
-    def _set_plot_markers(self):
-        """If there is a column 'marker' in the sample metadata, specify this
-        as the plotting marker (aka the plotting shape). Only valid matplotlib
-        symbols are allowed. See http://matplotlib.org/api/markers_api.html
-        for a more complete description.
-        """
-        try:
-            self._default_reducer_kwargs.update(
-                {'markers_dict': self.phenotype_data.marker})
-            self._default_plot_kwargs.update(
-                {'marker': self.phenotype_data.marker.tolist()})
-        except AttributeError:
-            sys.stderr.write("There is no column named 'marker' in the sample "
-                             "metadata, defaulting to a circle for all "
-                             "samples\n")
-            self._default_reducer_kwargs.update({'markers_dict':
-                                                   defaultdict(lambda : 'o')})
 
     @property
     def outliers(self):
