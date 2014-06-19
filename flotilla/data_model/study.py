@@ -3,6 +3,7 @@ Data models for "studies" studies include attributes about the data and are
 heavier in terms of data load
 """
 
+from collections import defaultdict
 import os
 import pandas as pd
 import subprocess
@@ -14,10 +15,11 @@ from .splicing import SplicingData
 from .experiment_design import ExperimentDesignData
 from ..util import install_development_package
 from ..visualize import NetworkerViz, PredictorViz
+from ..visualize.color import red, blue, green
 from ..visualize.ipython_interact import Interactive
 
-import flotilla
-FLOTILLA_DIR = os.path.dirname(flotilla.__file__)
+# import flotilla
+# FLOTILLA_DIR = os.path.dirname(flotilla.__file__)
 
 class StudyFactory(object):
 
@@ -226,7 +228,7 @@ class Study(StudyFactory):
     for example getters)
     """
     default_feature_set_ids = []
-    def __init__(self, phenotype_data, expression_data=None, splicing_data=None,
+    def __init__(self, experiment_design_data, expression_data=None, splicing_data=None,
                  expression_feature_data=None, splicing_feature_data=None,
                  load_cargo=False, drop_outliers=False,
                  default_group_id=None, default_group_ids=None,
@@ -240,8 +242,8 @@ class Study(StudyFactory):
 
         Parameters
         ----------
-        phenotype_data : pandas.DataFrame
-            Only required parameter.
+        experiment_design_data : pandas.DataFrame
+            Only required parameter. Samples as the index, with
         expression_data : pandas.DataFrame
             Samples x feature dataframe of gene expression measurements,
             e.g. from an RNA-Seq or a microarray experiment. Assumed to be
@@ -267,7 +269,7 @@ class Study(StudyFactory):
         # self.apply_getters()
         self.species = species
         
-        self._initialize_all_data(phenotype_data,
+        self._initialize_all_data(experiment_design_data,
                                    expression_data,
                                    splicing_data, expression_feature_data,
                                    splicing_feature_data,
@@ -341,6 +343,41 @@ class Study(StudyFactory):
         sys.stderr.write("initializing phenotype data\n")
         self.phenotype = ExperimentDesignData(phenotype_data)
 
+        self._set_plot_colors()
+        self._set_plot_markers()
+
+    def _set_plot_colors(self):
+        """If there is a column 'color' in the sample metadata, specify this
+        as the plotting color
+        """
+        try:
+            self._default_reducer_kwargs.update(
+                {'colors_dict': self.phenotype_data.color})
+            self._default_plot_kwargs.update(
+                {'color': self.phenotype_data.color.tolist()})
+        except AttributeError:
+            sys.stderr.write("There is no column named 'color' in the "
+                             "metadata, defaulting to blue for all samples\n")
+            self._default_reducer_kwargs.update(
+                {'colors_dict': defaultdict(lambda: blue)})
+
+    def _set_plot_markers(self):
+        """If there is a column 'marker' in the sample metadata, specify this
+        as the plotting marker (aka the plotting shape). Only valid matplotlib
+        symbols are allowed. See http://matplotlib.org/api/markers_api.html
+        for a more complete description.
+        """
+        try:
+            self._default_reducer_kwargs.update(
+                {'markers_dict': self.phenotype_data.marker})
+            self._default_plot_kwargs.update(
+                {'marker': self.phenotype_data.marker.tolist()})
+        except AttributeError:
+            sys.stderr.write("There is no column named 'marker' in the sample "
+                             "metadata, defaulting to a circle for all "
+                             "samples\n")
+            self._default_reducer_kwargs.update({'markers_dict':
+                                                     defaultdict(lambda: 'o')})
 
     def _initialize_expression(self, expression_data,
                                expression_feature_data,
@@ -397,6 +434,11 @@ class Study(StudyFactory):
 
         Parameters
         ----------
+        splicing_data : pandas.DataFrame
+            Samples x features dataframe of "percent spliced-in" PSI scores
+        splicing_feature_data : pandas.DataFrame
+            Samples x features dataframe describing features of the splicing
+            events
         load_cargo : bool
             Whether or not to load the "cargo" (aka feature metadata)
             associated with alternative splicing in this species
