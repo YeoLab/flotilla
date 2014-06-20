@@ -31,7 +31,7 @@ class BaseData(object):
                                'show_vectors': False}
     _default_plot_kwargs = {'marker': 'o', 'color': blue}
 
-    feature_sets = {}
+
 
     def __init__(self, data=None, feature_data=None,
                  species=None):
@@ -56,7 +56,7 @@ class BaseData(object):
         # self.experiment_design_data = experiment_design_data
         self.feature_data = feature_data
         self.species = species
-
+        self.feature_sets = {}
 
     @property
     def outliers(self):
