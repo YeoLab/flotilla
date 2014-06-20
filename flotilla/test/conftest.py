@@ -14,11 +14,11 @@ CURRENT_DIR = os.path.dirname(__file__)
 class ExampleData(object):
     __slots__ = ('experiment_design_data', 'expression', 'splicing', 'data')
 
-    def __init__(self, phenotype_data, expression, splicing):
-        self.phenotype_data = phenotype_data
+    def __init__(self, experiment_design_data, expression, splicing):
+        self.experiment_design_data = experiment_design_data
         self.expression = expression
         self.splicing = splicing
-        self.data = (phenotype_data, expression, splicing)
+        self.data = (experiment_design_data, expression, splicing)
 
 
 @pytest.fixture(scope='module')
