@@ -292,6 +292,23 @@ class Study(StudyFactory):
         # self._set_plot_colors()
         # self._set_plot_markers()
 
+    @classmethod
+    def from_data_package_url(cls, data_package_url):
+        req = urllib2.Request(self.data_package_url)
+        opener = urllib2.build_opener()
+        f = opener.open(req)
+        data_package = json.load(f)
+
+        dfs = {}
+        for resource in self.data_package['resources']:
+            resource_url = resource['url']
+
+            dfs[resource['name']] = cls._load_tsv(resource_url)
+
+        return Study(experiment_design_data=dfs['experiment_design'],
+                     expression_data=dfs['expression'],
+                     splicing_data=dfs['splicing'])
+
     def __add__(self, other):
         """Sanely concatenate one or more Study objects
         """
@@ -479,6 +496,7 @@ class Study(StudyFactory):
                                          drop_outliers=drop_outliers,
                                          species=self.species)
             self.splicing.networks = NetworkerViz(self.splicing)
+
 
 
     # def get_expression_data(self, expression_data_filename):
