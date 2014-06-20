@@ -51,5 +51,4 @@ class Embark(object):
 
 
 def embark(data_package_url):
-    study = Embark(data_package_url)
-    return study.create_package()
+    return Study.from_data_package_url(data_package_url)
