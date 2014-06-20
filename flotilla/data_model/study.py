@@ -23,6 +23,7 @@ from ..visualize.ipython_interact import Interactive
 
 
 
+
 # import flotilla
 # FLOTILLA_DIR = os.path.dirname(flotilla.__file__)
 
@@ -282,7 +283,7 @@ class Study(StudyFactory):
         # self.initialize_required_getters()
         # self.apply_getters()
         self.species = species
-        
+
         self._initialize_all_data(experiment_design_data,
                                    expression_data,
                                    splicing_data, expression_feature_data,
@@ -299,11 +300,25 @@ class Study(StudyFactory):
     def from_data_package_url(cls, data_package_url):
         """Create a study from a url of a datapackage.json file
 
+        Parameters
+        ----------
         data_package_url : str
             HTTP url of a datapackage.json file, following the specification
             described here: http://dataprotocols.org/data-packages/ and
             requiring the following data resources: experiment_design,
             expression, splicing
+
+        Returns
+        -------
+        study : Study
+            A "study" object containing the data described in the
+            data_package_url file
+
+        Raises
+        ------
+        AttributeError
+            If the datapackage.json file does not contain the required
+            resources of experiment_design, expression, and splicing.
         """
         req = urllib2.Request(data_package_url)
         opener = urllib2.build_opener()
@@ -316,9 +331,16 @@ class Study(StudyFactory):
 
             dfs[resource['name']] = cls._load_tsv(resource_url)
 
-        return Study(experiment_design_data=dfs['experiment_design'],
-                     expression_data=dfs['expression'],
-                     splicing_data=dfs['splicing'])
+        try:
+            study = Study(experiment_design_data=dfs['experiment_design'],
+                          expression_data=dfs['expression'],
+                          splicing_data=dfs['splicing'])
+        except KeyError:
+            raise AttributeError('The datapackage.json file is required to '
+                                 'have these three resources: '
+                                 '"experiment_design", "expression", '
+                                 '"splicing"')
+        return study
 
     def __add__(self, other):
         """Sanely concatenate one or more Study objects
