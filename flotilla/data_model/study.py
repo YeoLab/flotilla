@@ -24,16 +24,16 @@ from ..visualize.ipython_interact import Interactive
 
 
 
+
 # import flotilla
 # FLOTILLA_DIR = os.path.dirname(flotilla.__file__)
 
 class StudyFactory(object):
-
     #'min_samples','species',
-                       #'sample_metadata_filename', 'event_metadata_filename', 'expression_data_filename',
-                       #'splicing_data_filename', 'expression_data_filename', 'gene_metadata_filename',
-                       #'event_metadata_filename',
-                       # 'default_group_id', 'default_group_ids', 'default_list_id', 'default_list_ids']
+    #'sample_metadata_filename', 'event_metadata_filename', 'expression_data_filename',
+    #'splicing_data_filename', 'expression_data_filename', 'gene_metadata_filename',
+    #'event_metadata_filename',
+    # 'default_group_id', 'default_group_ids', 'default_list_id', 'default_list_ids']
     _accepted_filetypes = 'tsv'
     # _accepted_filetypes = ['pickle_df', 'gzip_pickle_df', 'tsv', 'csv']
 
@@ -58,27 +58,34 @@ class StudyFactory(object):
         self.minimal_study_parameters.update(write_these)
         self.validate_params()
 
-        new_package_data_location = self._clone_barebones(study_name, write_location=where)
+        new_package_data_location = self._clone_barebones(study_name,
+                                                          write_location=where)
 
         #new_package_data_location is os.path.join(where, study_name)
 
-        self._write_params_file(new_package_data_location, params_to_write = write_these)
+        self._write_params_file(new_package_data_location,
+                                params_to_write=write_these)
         for resource_name in data_resources:
             data = getattr(self, resource_name)
             try:
-                self._add_package_data_resource(resource_name, data, new_package_data_location,
-                file_write_mode='tsv')
+                self._add_package_data_resource(resource_name, data,
+                                                new_package_data_location,
+                                                file_write_mode='tsv')
             except:
-                sys.stderr.write("couldn't add data resource: %s\n" % resource_name)
+                sys.stderr.write(
+                    "couldn't add data resource: %s\n" % resource_name)
 
         if install:
             install_development_package(os.path.abspath(where))
 
     def _clone_barebones(self, study_name, write_location=None):
         import flotilla
-        flotilla_install_location = os.path.dirname(os.path.abspath(flotilla.__file__))
-        test_package_location = os.path.join(flotilla_install_location, "cargo/cargo_data/"\
-                                                                        "barebones_project")
+
+        flotilla_install_location = os.path.dirname(
+            os.path.abspath(flotilla.__file__))
+        test_package_location = os.path.join(flotilla_install_location,
+                                             "cargo/cargo_data/" \
+                                             "barebones_project")
         starting_position = os.getcwd()
         try:
             if write_location is None:
@@ -95,11 +102,14 @@ class StudyFactory(object):
                 write_location = str(write_location)
 
             if path_exists:
-                raise Exception("do not use an existing path for write_location")
+                raise Exception(
+                    "do not use an existing path for write_location")
 
-            subprocess.call(['git clone -b barebones %s %s' % (test_package_location, write_location)], shell=True)
+            subprocess.call(['git clone -b barebones %s %s' % (
+                test_package_location, write_location)], shell=True)
             os.chdir(write_location)
-            subprocess.call(['git mv barebones_project %s' % study_name], shell=True)
+            subprocess.call(['git mv barebones_project %s' % study_name],
+                            shell=True)
             with open("{}/setup.py".format(FLOTILLA_DIR), 'r') as f:
                 setup_script = f.readlines()
 
@@ -118,6 +128,7 @@ class StudyFactory(object):
     def _write_params_file(self, package_location, params_to_write):
 
         import os
+
         with open(os.path.join(package_location, "params.py"), 'w') as f:
             f.write("from .study_data import study_data_dir\n\n")
             f.write("")
@@ -137,14 +148,16 @@ class StudyFactory(object):
     def _to_base_file_tuple(self, tup):
         """for making new packages, auto-loadable data!"""
         assert len(tup) == 2
-        return "os.path.join(study_data_dir, %s)" % os.path.basename(tup[0]), tup[1]
+        return "os.path.join(study_data_dir, %s)" % os.path.basename(tup[0]), \
+               tup[1]
 
     def _add_package_data_resource(self, file_name, data_df,
                                    toplevel_package_dir,
                                    file_write_mode="tsv"):
         writer = getattr(self, "_write_" + file_write_mode)
         file_base = os.path.basename(file_name)
-        rsc_file = os.path.join(toplevel_package_dir, "study_data", file_base + "." + file_write_mode)
+        rsc_file = os.path.join(toplevel_package_dir, "study_data",
+                                file_base + "." + file_write_mode)
         writer(data_df, rsc_file)
         return (rsc_file, file_write_mode)
 
@@ -182,15 +195,18 @@ class StudyFactory(object):
     @staticmethod
     def _load_gzip_pickle_df(file_name):
         import gzip, cPickle
+
         with gzip.open(file_name, 'r') as f:
             return cPickle.load(f)
 
     @staticmethod
     def _write_gzip_pickle_df(df, file_name):
         import tempfile
+
         tmpfile_h, tmpfile = tempfile.mkstemp()
         df.to_pickle(tmpfile)
         import subprocess
+
         subprocess.call(['gzip -f %s' % tempfile])
         subprocess.call(['mv %s %s' % (tempfile, file_name)])
 
@@ -217,23 +233,23 @@ class StudyFactory(object):
     def load(self, file_name, file_type='pickle_df'):
         return self._get_loading_method(file_type)(file_name)
 
-    # def register_new_getter(self, getter_name, **kwargs):
-    #     self.getters.append((kwargs.copy(), getter_name))
-    #
-    # def apply_getters(self):
-    #     """
-    #     update instance namespace with outputs of registered getters.
-    #     """
-    #     for data, getter in self.getters:
-    #         #formerly explicitly set things
-    #         for (k,v) in getter(**data).items():
-    #             self._set(k,v)
-    #     self.getters = [] #reset, getters only need to run once.
-    #
-    # def _example_getter(self, named_attribute=None):
-    #     """Perform operations on named inputs and return named outputs
-    #     """
-    #     return {'output1': None}
+        # def register_new_getter(self, getter_name, **kwargs):
+        #     self.getters.append((kwargs.copy(), getter_name))
+        #
+        # def apply_getters(self):
+        #     """
+        #     update instance namespace with outputs of registered getters.
+        #     """
+        #     for data, getter in self.getters:
+        #         #formerly explicitly set things
+        #         for (k,v) in getter(**data).items():
+        #             self._set(k,v)
+        #     self.getters = [] #reset, getters only need to run once.
+        #
+        # def _example_getter(self, named_attribute=None):
+        #     """Perform operations on named inputs and return named outputs
+        #     """
+        #     return {'output1': None}
 
 
 class Study(StudyFactory):
@@ -243,7 +259,9 @@ class Study(StudyFactory):
     for example getters)
     """
     default_feature_set_ids = []
-    def __init__(self, experiment_design_data, expression_data=None, splicing_data=None,
+
+    def __init__(self, experiment_design_data, expression_data=None,
+                 splicing_data=None,
                  expression_feature_data=None, splicing_feature_data=None,
                  load_cargo=False, drop_outliers=False,
                  default_group_id=None, default_group_ids=None,
@@ -285,10 +303,10 @@ class Study(StudyFactory):
         self.species = species
 
         self._initialize_all_data(experiment_design_data,
-                                   expression_data,
-                                   splicing_data, expression_feature_data,
-                                   splicing_feature_data,
-                                   load_cargo=load_cargo,
+                                  expression_data,
+                                  splicing_data, expression_feature_data,
+                                  splicing_feature_data,
+                                  load_cargo=load_cargo,
                                   drop_outliers=drop_outliers)
         sys.stderr.write("subclasses initialized\n")
         self.validate_params()
@@ -486,7 +504,7 @@ class Study(StudyFactory):
                                              species=self.species)
             self.expression.networks = NetworkerViz(self.expression)
             self.default_feature_set_ids.extend(self.expression.feature_sets
-                                            .keys())
+                                                .keys())
 
     def _initialize_splicing(self, splicing_data, splicing_feature_data,
                              load_cargo=False, drop_outliers=True,
@@ -529,7 +547,6 @@ class Study(StudyFactory):
                                          drop_outliers=drop_outliers,
                                          species=self.species)
             self.splicing.networks = NetworkerViz(self.splicing)
-
 
 
     # def get_expression_data(self, expression_data_filename):
