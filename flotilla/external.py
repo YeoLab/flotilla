@@ -1,19 +1,19 @@
+""" interface with external data sources i.e. GO files, web"""
+__author__ = 'lovci, yan_song, '
+
 from __future__ import division
 
-""" interface with external data sources i.e. GO files, web"""
-
-__author__ = 'lovci, yan_song, '
-import gzip
-import pandas as pd
-import itertools
-from scipy.stats import hypergeom
 from collections import defaultdict
 import gzip
-import numpy as np
-
+import json
 import os
 import subprocess
 import sys
+import urllib2
+
+import numpy as np
+import pandas as pd
+from scipy.stats import hypergeom
 
 
 def generateOntology(df):
@@ -323,3 +323,10 @@ def link_to_list(link):
         with open(os.path.abspath(link), 'r') as f:
             xx = map(str.strip, f.readlines())
     return xx
+
+
+def data_package_url_to_dict(data_package_url):
+    req = urllib2.Request(data_package_url)
+    opener = urllib2.build_opener()
+    f = opener.open(req)
+    return json.load(f)
