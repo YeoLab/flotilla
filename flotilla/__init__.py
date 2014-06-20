@@ -21,7 +21,6 @@ class Embark(object):
     """
     Begin your journey of data exploration
     """
-
     def __init__(self, data_package_url):
         self.data_package_url = data_package_url
         self.data_package = self.fetch_data_package()

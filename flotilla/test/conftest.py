@@ -34,3 +34,8 @@ def example_data():
 @pytest.fixture(scope='module')
 def example_study():
     return None
+
+
+@pytest.fixture(scope='module')
+def example_url():
+    return 'http://sauron.ucsd.edu/flotilla_projects/test_data/datapackage.json'
