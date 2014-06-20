@@ -26,6 +26,7 @@ from ..external import data_package_url_to_dict
 
 
 
+
 # import flotilla
 # FLOTILLA_DIR = os.path.dirname(flotilla.__file__)
 
@@ -316,7 +317,7 @@ class Study(StudyFactory):
         # self._set_plot_markers()
 
     @classmethod
-    def from_data_package_url(cls, data_package_url):
+    def from_data_package_url(cls, data_package_url, species_data_url=None):
         """Create a study from a url of a datapackage.json file
 
         Parameters
@@ -352,6 +353,15 @@ class Study(StudyFactory):
             resource_url = resource['url']
 
             dfs[resource['name']] = cls._load_tsv(resource_url)
+
+        if species_data_url is not None:
+            species_data = data_package_url_to_dict(species_data_url)
+            dfs = {}
+
+            for resource in data_package['resources']:
+                resource_url = resource['url']
+
+                dfs[resource['name']] = pd.read_json(resource_url)
 
         try:
             study = Study(experiment_design_data=dfs['experiment_design'],
