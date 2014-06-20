@@ -167,18 +167,22 @@ class StudyFactory(object):
             except KeyError:
                 raise AssertionError("Missing minimal parameter %s" % param)
 
-    def _load_pickle_df(self, file_name):
+    @staticmethod
+    def _load_pickle_df(file_name):
         return pd.read_pickle(file_name)
 
-    def _write_pickle_df(self, df, file_name):
+    @staticmethod
+    def _write_pickle_df(df, file_name):
         df.to_pickle(file_name)
 
-    def _load_gzip_pickle_df(self, file_name):
+    @staticmethod
+    def _load_gzip_pickle_df(file_name):
         import gzip, cPickle
         with gzip.open(file_name, 'r') as f:
             return cPickle.load(f)
 
-    def _write_gzip_pickle_df(self, df, file_name):
+    @staticmethod
+    def _write_gzip_pickle_df(df, file_name):
         import tempfile
         tmpfile_h, tmpfile = tempfile.mkstemp()
         df.to_pickle(tmpfile)
@@ -186,16 +190,20 @@ class StudyFactory(object):
         subprocess.call(['gzip -f %s' % tempfile])
         subprocess.call(['mv %s %s' % (tempfile, file_name)])
 
-    def _load_tsv(self, file_name):
+    @staticmethod
+    def _load_tsv(file_name):
         return pd.read_table(file_name, index_col=0)
 
-    def _write_tsv(self, df, file_name):
+    @staticmethod
+    def _write_tsv(df, file_name):
         df.to_csv(file_name, sep='\t')
 
-    def _load_csv(self, file_name):
+    @staticmethod
+    def _load_csv(file_name):
         return pd.read_csv(file_name, index_col=0)
 
-    def _write_csv(self, df, file_name):
+    @staticmethod
+    def _write_csv(df, file_name):
         df.to_csv(file_name)
 
     def _get_loading_method(self, file_name):
