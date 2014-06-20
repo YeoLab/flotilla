@@ -25,6 +25,7 @@ from ..visualize.ipython_interact import Interactive
 
 
 
+
 # import flotilla
 # FLOTILLA_DIR = os.path.dirname(flotilla.__file__)
 
@@ -338,6 +339,9 @@ class Study(StudyFactory):
             If the datapackage.json file does not contain the required
             resources of experiment_design, expression, and splicing.
         """
+        # TODO: This should actually download the data to a know directory like
+        # ~/flotilla_projects so it can be searched, and double check if it's
+        # already downloaded (elegantly fail) and instantiate from those files.
         req = urllib2.Request(data_package_url)
         opener = urllib2.build_opener()
         f = opener.open(req)
@@ -392,7 +396,7 @@ class Study(StudyFactory):
     #     else:
     #         raise RuntimeError("at least set splicing_data_filename")
 
-    def _initialize_all_data(self, phenotype_data,
+    def _initialize_all_data(self, experiment_design_data,
                              expression_data, splicing_data,
                              expression_feature_data,
                              splicing_feature_data, load_cargo=False,
@@ -405,7 +409,7 @@ class Study(StudyFactory):
         #    initializer(self)
 
 
-        self._initialize_phenotype_data(phenotype_data)
+        self._initialize_experiment_design_data(experiment_design_data)
         sys.stderr.write("initializing expression\n")
         self._initialize_expression(expression_data,
                                     expression_feature_data,
@@ -419,10 +423,11 @@ class Study(StudyFactory):
         except:
             warnings.warn("Failed to load splicing")
 
-    def _initialize_phenotype_data(self, phenotype_data):
+    def _initialize_experiment_design_data(self, experiment_design_data):
         #TODO.md: this should be an actual data_model.*Data type, but now it's just set by a loader
-        sys.stderr.write("initializing phenotype data\n")
-        self.phenotype = ExperimentDesignData(phenotype_data)
+        sys.stderr.write("initializing experiment_design_data data\n")
+        self.experiment_design_data = ExperimentDesignData(
+            experiment_design_data)
 
 
     def _set_plot_colors(self):
@@ -479,7 +484,7 @@ class Study(StudyFactory):
             associated with gene expression in this species
         drop_outliers : bool
             Whether or not to remove the samples specified as outliers in the
-            phenotype data
+            experiment_design_data data
         force : bool
             Whether or not to overwrite an existing 'expression' object (if
             it exists)
@@ -523,7 +528,7 @@ class Study(StudyFactory):
             associated with alternative splicing in this species
         drop_outliers : bool
             Whether or not to remove the samples specified as outliers in the
-            phenotype data
+            experiment_design_data data
         force : bool
             Whether or not to overwrite an existing 'expression' object (if
             it exists)

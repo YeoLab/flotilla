@@ -18,6 +18,7 @@ def main():
 
 def embark(data_package_url):
     """
-    Begin your journey of data exploration
+    Begin your journey of data exploration.
     """
+    # TODO: This
     return Study.from_data_package_url(data_package_url)
