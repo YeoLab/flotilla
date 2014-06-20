@@ -4,11 +4,10 @@ heavier in terms of data load
 """
 
 from collections import defaultdict
-import json
 import os
 import subprocess
 import sys
-import urllib2
+
 import warnings
 
 import pandas as pd
@@ -20,6 +19,7 @@ from ..util import install_development_package
 from ..visualize import NetworkerViz
 from ..visualize.color import blue
 from ..visualize.ipython_interact import Interactive
+from ..external import data_package_url_to_dict
 
 
 
@@ -342,10 +342,10 @@ class Study(StudyFactory):
         # TODO: This should actually download the data to a know directory like
         # ~/flotilla_projects so it can be searched, and double check if it's
         # already downloaded (elegantly fail) and instantiate from those files.
-        req = urllib2.Request(data_package_url)
-        opener = urllib2.build_opener()
-        f = opener.open(req)
-        data_package = json.load(f)
+        # req = urllib2.Request(data_package_url)
+        # opener = urllib2.build_opener()
+        # f = opener.open(req)
+        data_package = data_package_url_to_dict(data_package_url)
 
         dfs = {}
         for resource in data_package['resources']:
