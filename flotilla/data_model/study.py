@@ -4,9 +4,11 @@ heavier in terms of data load
 """
 
 from collections import defaultdict
+import json
 import os
 import subprocess
 import sys
+import urllib2
 import warnings
 
 import pandas as pd
@@ -18,6 +20,7 @@ from ..util import install_development_package
 from ..visualize import NetworkerViz
 from ..visualize.color import blue
 from ..visualize.ipython_interact import Interactive
+
 
 
 # import flotilla
@@ -294,13 +297,21 @@ class Study(StudyFactory):
 
     @classmethod
     def from_data_package_url(cls, data_package_url):
-        req = urllib2.Request(self.data_package_url)
+        """Create a study from a url of a datapackage.json file
+
+        data_package_url : str
+            HTTP url of a datapackage.json file, following the specification
+            described here: http://dataprotocols.org/data-packages/ and
+            requiring the following data resources: experiment_design,
+            expression, splicing
+        """
+        req = urllib2.Request(data_package_url)
         opener = urllib2.build_opener()
         f = opener.open(req)
         data_package = json.load(f)
 
         dfs = {}
-        for resource in self.data_package['resources']:
+        for resource in data_package['resources']:
             resource_url = resource['url']
 
             dfs[resource['name']] = cls._load_tsv(resource_url)
