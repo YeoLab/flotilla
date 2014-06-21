@@ -16,7 +16,7 @@ import pandas as pd
 from scipy.stats import hypergeom
 
 
-FLOTILLA_DOWNLOAD_DIR = '~/flotilla_projects'
+FLOTILLA_DOWNLOAD_DIR = os.path.expanduser('~/flotilla_projects')
 
 
 def generateOntology(df):
@@ -179,7 +179,10 @@ def link_to_list(link):
 
 def data_package_url_to_dict(data_package_url):
     filename = check_if_already_downloaded(data_package_url)
-    return json.load(filename)
+
+    with open(filename) as f:
+        data_package = json.load(f)
+    return data_package
 
 
 def check_if_already_downloaded(url, download_dir=FLOTILLA_DOWNLOAD_DIR):
@@ -196,27 +199,28 @@ def check_if_already_downloaded(url, download_dir=FLOTILLA_DOWNLOAD_DIR):
         Location of the file on your system
     """
     try:
-        sys.stout.write('Creating a directory for saving your flotilla '
-                        'projects: {}'.format(download_dir))
         os.mkdir(download_dir)
+        sys.stdout.write('Creating a directory for saving your flotilla '
+                         'projects: {}\n'.format(download_dir))
     except OSError:
         pass
-    suffix = '/'.join(url.lstrip('http://sauron.ucsd.edu/')
-                          .split('/')[:-1])
-    package_dir = '{}/{}'.format(download_dir,
-                                 suffix)
+    suffix = '/'.join(url.rsplit('/', 2)[1:-1])
+    package_dir = '{}/{}'.format(download_dir, suffix)
 
     try:
         os.mkdir(package_dir)
+        sys.stdout.write('Creating a directory for saving the data for this '
+                         'project: {}\n'.format(package_dir))
     except OSError:
         pass
 
     name = url.rsplit('/', 1)[-1]
-    filename = os.path.join(suffix, name)
+    filename = os.path.expanduser(os.path.join(package_dir, name))
 
     if not os.path.isfile(filename):
-        sys.stdout.write('{} has not been downloaded before. Downloading now '
-                         'to {}'.format(url, filename))
+        sys.stdout.write('{} has not been downloaded before.\n\tDownloading '
+                         'now '
+                         'to {}\n'.format(url, filename))
         req = urllib2.Request(url)
         opener = urllib2.build_opener()
         opened_url = opener.open(req)

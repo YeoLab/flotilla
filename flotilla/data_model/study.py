@@ -18,7 +18,7 @@ from ..util import install_development_package
 from ..visualize import NetworkerViz
 from ..visualize.color import blue
 from ..visualize.ipython_interact import Interactive
-from ..external import data_package_url_to_dict
+from ..external import data_package_url_to_dict, check_if_already_downloaded
 
 
 
@@ -371,7 +371,8 @@ class Study(StudyFactory):
             name = resource['name']
 
             if name != 'species':
-                dfs[name] = cls._load_tsv(resource_url)
+                filename = check_if_already_downloaded(resource_url)
+                dfs[name] = cls._load_tsv(filename)
 
         if 'species' in data_package:
             species_data_url = '{}/{}/datapackage.json'.format(
@@ -384,7 +385,8 @@ class Study(StudyFactory):
 
                 reader = getattr(cls, '_load_' + resource['format'])
 
-                species_dfs[resource['name']] = reader(resource_url)
+                filename = check_if_already_downloaded(resource_url)
+                species_dfs[resource['name']] = reader(filename)
         else:
             species_dfs = {}
 
