@@ -184,9 +184,11 @@ class SplicingData(BaseData):
             data = StandardScaler().fit_transform(mf_subset)
         else:
             data = mf_subset
-        naming_fun = self.feature_renamer()
+        # naming_fun = self.feature_renamer()
         ss = pd.DataFrame(data, index=mf_subset.index,
-                          columns=mf_subset.columns).rename_axis(naming_fun, 1)
+                          columns=mf_subset.columns).rename_axis(self
+                                                                 .feature_renamer,
+                                                                 1)
         clf = classifier(ss, self.phenotype_data,
                          categorical_traits=[categorical_trait], )
         clf.set_reducer_plotting_args(self._default_reducer_args)
