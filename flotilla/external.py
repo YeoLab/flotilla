@@ -22,18 +22,24 @@ FLOTILLA_DOWNLOAD_DIR = '~/flotilla_projects'
 def generateOntology(df):
     from collections import defaultdict
     import itertools
-    ontology = defaultdict(lambda:  {'genes': set(), 'name': set(), 'domain': set()})
+
+    ontology = defaultdict(
+        lambda: {'genes': set(), 'name': set(), 'domain': set()})
     allGenesInOntologies = set(df.get('Ensembl Gene ID'))
-    for GO, gene, domain, name in itertools.izip(df.get('GO Term Accession'), df.get('Ensembl Gene ID'), df.get('GO domain'), df.get('GO Term Name')):
+    for GO, gene, domain, name in itertools.izip(df.get('GO Term Accession'),
+                                                 df.get('Ensembl Gene ID'),
+                                                 df.get('GO domain'),
+                                                 df.get('GO Term Name')):
         ontology[GO]['genes'].add(gene)
         ontology[GO]['name'].add(name)
         ontology[GO]['domain'].add(domain)
         ontology[GO]['n_genes'] = len(ontology[GO]['genes'])
     return ontology, allGenesInOntologies
-   
-def GO_enrichment(geneList, ontology, expressedGenes = None, printIt=False, pCut = 1000000, xRef = {}):
 
-    lenAllGenes, lenTheseGenes =  len(expressedGenes), len(geneList)
+
+def GO_enrichment(geneList, ontology, expressedGenes=None, printIt=False,
+                  pCut=1000000, xRef={}):
+    lenAllGenes, lenTheseGenes = len(expressedGenes), len(geneList)
     pValues = defaultdict()
     nCmps = 0
 
@@ -44,24 +50,29 @@ def GO_enrichment(geneList, ontology, expressedGenes = None, printIt=False, pCut
             pValues[GOTerm] = 'notest'
             continue
         #survival function is more accurate on small p-values...
-        pVal = hypergeom.sf(len(inBoth), lenAllGenes, len(expressedGOGenes), lenTheseGenes)
+        pVal = hypergeom.sf(len(inBoth), lenAllGenes, len(expressedGOGenes),
+                            lenTheseGenes)
         if pVal < 0:
-            pVal = 0 
+            pVal = 0
         symbols = []
         for ensg in inBoth:
             if ensg in xRef:
                 symbols.append(xRef[ensg])
             else:
                 symbols.append(ensg)
-        pValues[GOTerm] = (pVal, len(inBoth), len(expressedGOGenes), len(GOGenes['genes']), inBoth, symbols)
-        
+        pValues[GOTerm] = (
+            pVal, len(inBoth), len(expressedGOGenes), len(GOGenes['genes']),
+            inBoth,
+            symbols)
+
     for k, v in pValues.items():
         try:
-            pValues[k][0] = v * float(nCmps) #bonferroni correction
+            pValues[k][0] = v * float(nCmps)  #bonferroni correction
         except:
             pass
     import operator
-    y  = []
+
+    y = []
 
     sorted_x = sorted(pValues.iteritems(), key=operator.itemgetter(1))
 
@@ -75,24 +86,37 @@ def GO_enrichment(geneList, ontology, expressedGenes = None, printIt=False, pCut
                 continue
             if printIt:
                 #[k, "|".join(ontology[k]['name']), v[0], v[1], v[2], v[3], ",".join(v[4]),  ",".join(v[5])]
-                print k, "|".join(ontology[k]['name']), "%.3e" %v[0], v[1], v[2], v[3], "|".join(v[3])
+                print k, "|".join(ontology[k]['name']), "%.3e" % v[0], v[1], v[
+                    2], v[3], "|".join(v[3])
                 pass
-            y.append([k, "|".join(ontology[k]['name']), v[0], v[1], v[2], v[3], ",".join(v[4]), ",".join(v[5])])
-            
+            y.append([k, "|".join(ontology[k]['name']), v[0], v[1], v[2], v[3],
+                      ",".join(v[4]), ",".join(v[5])])
+
         except:
             pass
 
     try:
-        df = pd.DataFrame(y, columns=['GO Term ID', 'GO Term Description', 'Bonferroni-corrected Hypergeometric p-Value', 'N Genes in List and GO Category', 'N Expressed Genes in GO Category', 'N Genes in GO category', 'Ensembl Gene IDs in List', 'Gene symbols in List'])
+        df = pd.DataFrame(y, columns=['GO Term ID', 'GO Term Description',
+                                      'Bonferroni-corrected Hypergeometric p-Value',
+                                      'N Genes in List and GO Category',
+                                      'N Expressed Genes in GO Category',
+                                      'N Genes in GO category',
+                                      'Ensembl Gene IDs in List',
+                                      'Gene symbols in List'])
         df.set_index('GO Term ID', inplace=True)
     except:
-        df = pd.DataFrame(None, columns=['GO Term ID', 'GO Term Description', 'Bonferroni-corrected Hypergeometric p-Value', 'N Genes in List and GO Category', 'N Expressed Genes in GO Category', 'N Genes in GO category', 'Ensembl Gene IDs in List', 'Gene symbols in List'])
+        df = pd.DataFrame(None, columns=['GO Term ID', 'GO Term Description',
+                                         'Bonferroni-corrected Hypergeometric p-Value',
+                                         'N Genes in List and GO Category',
+                                         'N Expressed Genes in GO Category',
+                                         'N Genes in GO category',
+                                         'Ensembl Gene IDs in List',
+                                         'Gene symbols in List'])
 
     return df
-        
+
 
 class GO(object):
-
     """
     gene ontology tool
 
@@ -107,7 +131,8 @@ class GO(object):
         with gzip.open(GOFile) as file_handle:
             GO_to_ENSG = pd.read_table(file_handle)
         geneXref = defaultdict()
-        for k in np.array(GO_to_ENSG.get(["Ensembl Gene ID", "Associated Gene Name"])):
+        for k in np.array(
+                GO_to_ENSG.get(["Ensembl Gene ID", "Associated Gene Name"])):
             ensg = k[0]
             gene = k[1]
             geneXref[ensg] = gene
@@ -116,11 +141,12 @@ class GO(object):
         self.GO = GO
         self.allGenes = allGenes
         self.geneXref = geneXref
-        
+
     def enrichment(self, geneList, background=None, **kwargs):
         if background == None:
             background = self.allGenes
-        return GO_enrichment(geneList, self.GO, expressedGenes = background, xRef = self.geneXref)
+        return GO_enrichment(geneList, self.GO, expressedGenes=background,
+                             xRef=self.geneXref)
 
     def geneNames(self, x):
         try:
@@ -140,8 +166,10 @@ def link_to_list(link):
         raise ValueError("use a link that starts with http or a file path")
 
     if link.startswith("http"):
-        sys.stderr.write("WARNING, downloading things from the internet, potential danger from untrusted sources")
-        xx = subprocess.check_output(["curl", "-k", '--location-trusted', link]).split("\n")
+        sys.stderr.write(
+            "WARNING, downloading things from the internet, potential danger from untrusted sources")
+        xx = subprocess.check_output(
+            ["curl", "-k", '--location-trusted', link]).split("\n")
     elif link.startswith("/"):
         assert os.path.exists(os.path.abspath(link))
         with open(os.path.abspath(link), 'r') as f:
@@ -150,7 +178,48 @@ def link_to_list(link):
 
 
 def data_package_url_to_dict(data_package_url):
-    req = urllib2.Request(data_package_url)
-    opener = urllib2.build_opener()
-    f = opener.open(req)
-    return json.load(f)
+    filename = check_if_already_downloaded(data_package_url)
+    return json.load(filename)
+
+
+def check_if_already_downloaded(url, download_dir=FLOTILLA_DOWNLOAD_DIR):
+    """If a url filename has already been downloaded, don't download it again.
+
+    Parameters
+    ----------
+    url : str
+        HTTP url of a file you want to downlaod
+
+    Returns
+    -------
+    filename : str
+        Location of the file on your system
+    """
+    try:
+        sys.stout.write('Creating a directory for saving your flotilla '
+                        'projects: {}'.format(download_dir))
+        os.mkdir(download_dir)
+    except OSError:
+        pass
+    suffix = '/'.join(url.lstrip('http://sauron.ucsd.edu/')
+                          .split('/')[:-1])
+    package_dir = '{}/{}'.format(download_dir,
+                                 suffix)
+
+    try:
+        os.mkdir(package_dir)
+    except OSError:
+        pass
+
+    name = url.rsplit('/', 1)[-1]
+    filename = os.path.join(suffix, name)
+
+    if not os.path.isfile(filename):
+        sys.stdout.write('{} has not been downloaded before. Downloading now '
+                         'to {}'.format(url, filename))
+        req = urllib2.Request(url)
+        opener = urllib2.build_opener()
+        opened_url = opener.open(req)
+        with open(filename, 'w') as f:
+            f.write(opened_url.read())
+    return filename
