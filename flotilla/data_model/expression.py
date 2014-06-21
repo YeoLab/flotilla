@@ -47,7 +47,7 @@ class ExpressionData(BaseData):
         self.feature_sets['variant'] = pd.Series(rpkm_variant,
                                                  index=rpkm_variant)
 
-        feature_renamer = self.get_feature_renamer()
+        feature_renamer = self.feature_renamer()
         self.feature_sets.update({'all_genes': pd.Series(
             self.data.columns.map(feature_renamer), index=self.data.columns)})
         # self._set_plot_colors()
@@ -67,7 +67,7 @@ class ExpressionData(BaseData):
         reducer_args = self._default_reducer_kwargs.copy()
         reducer_args.update(input_reducer_args)
         reducer_args['title'] = list_name + " : " + group_id
-        feature_renamer = self.get_feature_renamer()
+        feature_renamer = self.feature_renamer()
 
         if list_name not in self.feature_sets:
             this_list = link_to_list(list_name)
@@ -122,7 +122,7 @@ class ExpressionData(BaseData):
          """
 
         min_samples = self.get_min_samples()
-        feature_renamer = self.get_feature_renamer()
+        feature_renamer = self.feature_renamer()
 
         if gene_list_name not in self.feature_sets:
             this_list = link_to_list(gene_list_name)
@@ -185,7 +185,7 @@ class ExpressionData(BaseData):
             vz = self.localZ_dict[this_name]
         else:
             df = self.data
-            df.rename_axis(self.get_feature_renamer(), 1)
+            df.rename_axis(self.feature_renamer(), 1)
             vz = TwoWayScatterViz(sample1, sample2, df, **kwargs)
             self.localZ_dict[this_name] = vz
 

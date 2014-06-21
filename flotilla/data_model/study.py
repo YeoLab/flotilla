@@ -29,6 +29,7 @@ from ..external import data_package_url_to_dict
 
 
 
+
 # import flotilla
 # FLOTILLA_DIR = os.path.dirname(flotilla.__file__)
 
@@ -314,6 +315,7 @@ class Study(StudyFactory):
         # self.initialize_required_getters()
         # self.apply_getters()
         self.species = species
+        self.gene_ontology = gene_ontology
 
         self._initialize_all_data(experiment_design_data,
                                   expression_data,
