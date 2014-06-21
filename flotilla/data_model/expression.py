@@ -21,13 +21,11 @@ seaborn.set_context('paper')
 
 
 class ExpressionData(BaseData):
-    _var_cut = 0.5
     _expr_cut = 0.1
 
 
     def __init__(self, data,
-                 feature_data=None,
-                 var_cut=_var_cut, expr_cut=_expr_cut,
+                 feature_data=None, expr_cut=_expr_cut,
                  drop_outliers=True, load_cargo=False,
                  feature_rename_col=None
                                     ** kwargs):
@@ -36,6 +34,15 @@ class ExpressionData(BaseData):
         if drop_outliers:
             self.data = self.drop_outliers(data)
 
+        self._var_cut = data.var().dropna().mean() + 2 * data.var() \
+            .dropna().std()
+        rpkm_variant = pd.Index([i for i, j in
+                                 (
+                                 data.var().dropna() > self._var_cut).iteritems()
+                                 if j])
+        self.feature_sets['variant'] = pd.Series(rpkm_variant,
+                                                 index=rpkm_variant)
+
         # self.experiment_design_data, data = \
         #     self.experiment_design_data.align(data, join='inner', axis=0)
 
@@ -43,10 +50,6 @@ class ExpressionData(BaseData):
         # self.data = data
 
         self.sparse_data = data[data > expr_cut]
-        rpkm_variant = pd.Index(
-            [i for i, j in (data.var().dropna() > var_cut).iteritems() if j])
-        self.feature_sets['variant'] = pd.Series(rpkm_variant,
-                                                 index=rpkm_variant)
 
         self.feature_sets.update({'all_genes': pd.Series(
             self.data.columns.map(self.feature_renamer), index=self.data

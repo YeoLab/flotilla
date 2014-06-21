@@ -127,7 +127,7 @@ class SplicingData(BaseData):
         means = subset.apply(dropna_mean, axis=0)
         mf_subset = subset.fillna(means, ).fillna(0)
         #whiten, mean-center
-        naming_fun = self.feature_renamer()
+        # naming_fun = self.feature_renamer()
         #whiten, mean-center
 
         if standardize:
@@ -136,15 +136,17 @@ class SplicingData(BaseData):
             data = mf_subset
 
         ss = pd.DataFrame(data, index=mf_subset.index,
-                          columns=mf_subset.columns).rename_axis(naming_fun, 1)
+                          columns=mf_subset.columns).rename_axis(self
+                                                                 .feature_renamer,
+                                                                 1)
 
         if featurewise:
             ss = ss.T
 
         rdc_obj = reducer(ss, **reducer_args)
 
-        rdc_obj.means = means.rename_axis(
-            naming_fun)  #always the mean of input features... i.e. featurewise doesn't change this.
+        #always the mean of input features... i.e. featurewise doesn't change this.
+        rdc_obj.means = means.rename_axis(self.feature_renamer)
 
         return rdc_obj
 
