@@ -27,8 +27,7 @@ class ExpressionData(BaseData):
     def __init__(self, data,
                  feature_data=None, expr_cut=_expr_cut,
                  drop_outliers=True, load_cargo=False,
-                 feature_rename_col=None
-                                    ** kwargs):
+                 feature_rename_col=None, **kwargs):
 
         super(ExpressionData, self).__init__(data)
         if drop_outliers:
