@@ -28,6 +28,7 @@ from ..external import data_package_url_to_dict
 
 
 
+
 # import flotilla
 # FLOTILLA_DIR = os.path.dirname(flotilla.__file__)
 
@@ -171,7 +172,8 @@ class StudyFactory(object):
     #         assert not hasattr(self, k)
     #     except:
     #         write_me = "WARNING: over-writing parameter " + k + "\n" #+ \
-    #                    #str(self.__getattribute__(k)) + \
+    #                    #
+    # str(self.__getattribute__(k)) + \
     #                    #"\n new:" + str(v)
     #         sys.stderr.write(write_me)
     #     super(StudyFactory, self).__setattr__(k, v)
@@ -216,6 +218,14 @@ class StudyFactory(object):
     @staticmethod
     def _load_tsv(file_name):
         return pd.read_table(file_name, index_col=0)
+
+    @staticmethod
+    def _load_csv(file_name):
+        return pd.read_csv(file_name, index_col=0)
+
+    @staticmethod
+    def _load_json(file_name):
+        return pd.read_json(file_name)
 
     @staticmethod
     def _write_tsv(df, file_name):
@@ -370,7 +380,9 @@ class Study(StudyFactory):
             for resource in species_data_package['resources']:
                 resource_url = resource['url']
 
-                species_dfs[resource['name']] = pd.read_json(resource_url)
+                reader = getattr(cls, '_load_' + resource['format'])
+
+                species_dfs[resource['name']] = reader(resource_url)
         else:
             species_dfs = {}
 
