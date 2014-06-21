@@ -57,6 +57,7 @@ class BaseData(object):
         self.feature_data = feature_data
         self.species = species
         self.feature_sets = {}
+        self._feature_renamer = None
 
     @property
     def outliers(self):
@@ -116,20 +117,21 @@ class BaseData(object):
         """
         raise NotImplementedError
 
-    def _feature_renamer(self, x):
-        return x
-
-
-    def get_feature_renamer(self):
+    # def _feature_renamer(self, x):
+    #     return x
+    #
+    @property
+    def feature_renamer(self):
         return self._feature_renamer
 
-    def _set_naming_fun(self, fun, test_name='foo'):
-        self._feature_rename = fun
-        try:
-            fun(test_name)
-        except:
-            pass
-            #print "might not be a good naming function, failed on %s" % test_name
+    @feature_renamer.setter
+    def feature_renamer(self, renamer, test_name='foo'):
+        self._feature_renamer = renamer
+        # try:
+        #     fun(test_name)
+        # except:
+        #     pass
+        #print "might not be a good naming function, failed on %s" % test_name
 
 
     # TODO.md: Specify dtypes in docstring
