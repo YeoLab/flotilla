@@ -7,7 +7,6 @@ from collections import defaultdict
 import os
 import subprocess
 import sys
-
 import warnings
 
 import pandas as pd
@@ -20,6 +19,7 @@ from ..visualize import NetworkerViz
 from ..visualize.color import blue
 from ..visualize.ipython_interact import Interactive
 from ..external import data_package_url_to_dict
+
 
 
 
@@ -269,7 +269,7 @@ class Study(StudyFactory):
                  default_group_id=None, default_group_ids=None,
                  default_list_id='variant', default_list=('variant'),
                  default_genes=('variant'),
-                 default_events=('variant'), species=None):
+                 default_events=('variant'), species=None, gene_ontology=None):
         """Construct a biological study
 
         This class only accepts data, no filenames. All data must already
@@ -316,8 +316,11 @@ class Study(StudyFactory):
         # self._set_plot_colors()
         # self._set_plot_markers()
 
+    SPECIES_DATA_PACKAGE_BASE_URL = 'http://sauron.ucsd.edu/flotilla_packages'
+
     @classmethod
-    def from_data_package_url(cls, data_package_url, species_data_url=None):
+    def from_data_package_url(cls, data_package_url,
+                              species_data_package_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
         """Create a study from a url of a datapackage.json file
 
         Parameters
@@ -352,21 +355,28 @@ class Study(StudyFactory):
         for resource in data_package['resources']:
             resource_url = resource['url']
 
-            dfs[resource['name']] = cls._load_tsv(resource_url)
+            name = resource['name']
 
-        if species_data_url is not None:
-            species_data = data_package_url_to_dict(species_data_url)
-            dfs = {}
+            if name != 'species':
+                dfs[name] = cls._load_tsv(resource_url)
 
-            for resource in data_package['resources']:
+        if 'species' in data_package:
+            species_data_url = '{}/{}/datapackage.json'.format(
+                species_data_package_base_url, data_package['species'])
+            species_data_package = data_package_url_to_dict(species_data_url)
+            species_dfs = {}
+
+            for resource in species_data_package['resources']:
                 resource_url = resource['url']
 
-                dfs[resource['name']] = pd.read_json(resource_url)
+                species_dfs[resource['name']] = pd.read_json(resource_url)
+        else:
+            species_dfs = {}
 
         try:
             study = Study(experiment_design_data=dfs['experiment_design'],
                           expression_data=dfs['expression'],
-                          splicing_data=dfs['splicing'])
+                          splicing_data=dfs['splicing'], **species_dfs)
         except KeyError:
             raise AttributeError('The datapackage.json file is required to '
                                  'have these three resources: '
