@@ -27,6 +27,7 @@ from ..external import data_package_url_to_dict
 
 
 
+
 # import flotilla
 # FLOTILLA_DIR = os.path.dirname(flotilla.__file__)
 
@@ -316,7 +317,7 @@ class Study(StudyFactory):
         # self._set_plot_colors()
         # self._set_plot_markers()
 
-    SPECIES_DATA_PACKAGE_BASE_URL = 'http://sauron.ucsd.edu/flotilla_packages'
+    SPECIES_DATA_PACKAGE_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects'
 
     @classmethod
     def from_data_package_url(cls, data_package_url,
