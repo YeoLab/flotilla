@@ -29,7 +29,8 @@ class ExpressionData(BaseData):
                  feature_data=None,
                  var_cut=_var_cut, expr_cut=_expr_cut,
                  drop_outliers=True, load_cargo=False,
-                 **kwargs):
+                 feature_rename_col=None
+                                    ** kwargs):
 
         super(ExpressionData, self).__init__(data)
         if drop_outliers:
@@ -47,9 +48,9 @@ class ExpressionData(BaseData):
         self.feature_sets['variant'] = pd.Series(rpkm_variant,
                                                  index=rpkm_variant)
 
-        feature_renamer = self.feature_renamer()
         self.feature_sets.update({'all_genes': pd.Series(
-            self.data.columns.map(feature_renamer), index=self.data.columns)})
+            self.data.columns.map(self.feature_renamer), index=self.data
+            .columns)})
         # self._set_plot_colors()
         # self._set_plot_markers()
         if load_cargo:
@@ -67,12 +68,12 @@ class ExpressionData(BaseData):
         reducer_args = self._default_reducer_kwargs.copy()
         reducer_args.update(input_reducer_args)
         reducer_args['title'] = list_name + " : " + group_id
-        feature_renamer = self.feature_renamer()
+        # feature_renamer = self.feature_renamer()
 
         if list_name not in self.feature_sets:
             this_list = link_to_list(list_name)
             self.feature_sets[list_name] = pd.Series(
-                map(feature_renamer, this_list),
+                map(self.feature_renamer, this_list),
                 index=this_list)
 
         gene_list = self.feature_sets[list_name]
@@ -109,7 +110,8 @@ class ExpressionData(BaseData):
             ss = ss.T
         rdc_obj = reducer(ss, **reducer_args)
         rdc_obj.means = means.rename_axis(
-            feature_renamer)  #always the mean of input features... i.e. featurewise doesn't change this.
+            self.feature_renamer)  #always the mean of input features... i.e.
+        # featurewise doesn't change this.
 
         #add mean gene_expression
         return rdc_obj
@@ -122,12 +124,12 @@ class ExpressionData(BaseData):
          """
 
         min_samples = self.get_min_samples()
-        feature_renamer = self.feature_renamer()
+        # feature_renamer = self.feature_renamer()
 
         if gene_list_name not in self.feature_sets:
             this_list = link_to_list(gene_list_name)
             self.feature_sets[gene_list_name] = pd.Series(
-                map(feature_renamer, this_list), index=this_list)
+                map(self.feature_renamer, this_list), index=this_list)
 
         gene_list = self.feature_sets[gene_list_name]
 
@@ -154,23 +156,23 @@ class ExpressionData(BaseData):
 
         ss = pd.DataFrame(data, index=mf_subset.index,
                           columns=mf_subset.columns).rename_axis(
-            feature_renamer, 1)
+            self.feature_renamer, 1)
         clf = predictor(ss, self.phenotype_data,
                         categorical_traits=[categorical_trait], )
         clf.set_reducer_plotting_args(self._default_reducer_kwargs)
         return clf
 
-    def load_cargo(self, rename=True, **kwargs):
-        try:
-            species = self.species
-            # self.cargo = cargo.get_species_cargo(self.species)
-            self.go = self.cargo.get_go(species)
-            self.feature_sets.update(self.cargo.gene_lists)
-
-            if rename:
-                self._set_feature_renamer(lambda x: self.go.geneNames(x))
-        except:
-            raise
+    # def load_cargo(self, rename=True, **kwargs):
+    #     try:
+    #         species = self.species
+    #         # self.cargo = cargo.get_species_cargo(self.species)
+    #         self.go = self.cargo.get_go(species)
+    #         self.feature_sets.update(self.cargo.gene_lists)
+    #
+    #         if rename:
+    #             self._set_feature_renamer(lambda x: self.go.geneNames(x))
+    #     except:
+    #         raise
 
     #
     # def _get(self, expression_data_filename):
