@@ -72,6 +72,8 @@ class DecompositionViz(object):
 
         super(DecompositionViz, self).__init__(**self.reduction_args) #initialize PCA-like object
         assert isinstance(df, pd.DataFrame)
+        self.df = df
+
         self.reduced_space = self.fit_transform(df)
 
     def __call__(self, ax=None, **kwargs):
