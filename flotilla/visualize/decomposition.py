@@ -1,6 +1,11 @@
 __author__ = 'olga'
 import math
+
+import numpy as np
+import pandas as pd
+import seaborn as sns
 from sklearn.decomposition import NMF, PCA
+
 
 def L1_distance(x, y):
     """Really should just be using scipy.linalg.norm with order=1"""
@@ -66,7 +71,7 @@ class DecompositionViz(object):
         self.reduction_args.update([(k,v) for (k,v) in kwargs.items() if k in self._default_reduction_args.keys()])
 
         super(DecompositionViz, self).__init__(**self.reduction_args) #initialize PCA-like object
-        assert type(df) == pd.DataFrame
+        assert isinstance(df, pd.DataFrame)
         self.reduced_space = self.fit_transform(df)
 
     def __call__(self, ax=None, **kwargs):
@@ -265,7 +270,7 @@ class DecompositionViz(object):
         #xmin, xmax = ax.get_xlim()
         ax.set_xlim(left=min(dd)-x_offset, right=max(dd)+x_offset)
         [lab.set_rotation(90) for lab in ax.get_xticklabels()]
-        seaborn.despine(ax=ax)
+        sns.despine(ax=ax)
 
     def plot_explained_variance(self, title="PCA"):
         """If the reducer is a form of PCA, then plot the explained variance
