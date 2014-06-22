@@ -17,3 +17,7 @@ def test_go_enrichment():
 def test_reduce(example_data):
     expression = ExpressionData(example_data.expression)
     expression_reduced = expression.reduce()
+
+    data = example_data.expression.dropna(axis=0)
+    means = data.fillna(data.mean())
+    data = data.fillna()

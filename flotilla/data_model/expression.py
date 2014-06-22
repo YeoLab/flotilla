@@ -18,6 +18,7 @@ from ..util import memoize
 
 
 
+
 #
 # seaborn.set_context('paper')
 
@@ -75,6 +76,26 @@ class ExpressionData(BaseData):
         if load_cargo:
             self.load_cargo()
 
+    def _subset_and_standardize_data(self, data, sample_ids, feature_ids,
+                                     standardize=True):
+        subset = data.ix[sample_ids]
+        subset = subset.T.ix[feature_ids].T
+        subset = subset.ix[:, subset.count() > self.min_samples]
+        #fill na with mean for each event
+        means = subset.mean()
+        subset = subset.fillna(means).fillna(0)
+
+        # whiten, mean-center
+        if standardize:
+            data = StandardScaler().fit_transform(subset)
+        else:
+            data = subset
+
+        subset = pd.DataFrame(data, index=subset.index,
+                              columns=subset.columns).rename_axis(
+            self.feature_renamer, 1)
+        return subset
+
     @memoize
     def reduce(self, sample_ids=None, feature_ids=None,
                featurewise=False,
@@ -96,24 +117,11 @@ class ExpressionData(BaseData):
         reducer_kwargs['title'] = title
         # feature_renamer = self.feature_renamer()
 
-        subset = self.sparse_data.ix[sample_ids]
-        subset = subset.T.ix[feature_ids].T
-        subset = subset[subset.count() > self.min_samples]
-        #fill na with mean for each event
-        means = subset.apply(dropna_mean, axis=0)
-        subset = subset.fillna(means).fillna(0)
+        subset = self._subset_and_standardize_data(self.sparse_data,
+                                                   sample_ids, feature_ids,
+                                                   standardize)
 
-        #whiten, mean-center
-        if standardize:
-            data = StandardScaler().fit_transform(subset)
-        else:
-            data = subset
-
-        subset = pd.DataFrame(data, index=subset.index,
-                              columns=subset.columns).rename_axis(
-            self.feature_renamer, 1)
-
-        #compute pca
+        # compute reduction
         if featurewise:
             subset = subset.T
         reducer_object = reducer(subset, **reducer_kwargs)
