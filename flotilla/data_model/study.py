@@ -8,6 +8,7 @@ import os
 import sys
 import warnings
 
+import numpy as np
 import pandas as pd
 
 from .experiment_design import ExperimentDesignData
@@ -160,6 +161,12 @@ class Study(StudyFactory):
                'json': StudyFactory._load_json,
                'pickle_df': StudyFactory._load_pickle_df,
                'gzip_pickle_df': StudyFactory._load_gzip_pickle_df}
+
+    _default_reducer_kwargs = {'whiten': False,
+                               'show_point_labels': False,
+                               'show_vectors': False}
+
+    _default_plot_kwargs = {'marker': 'o', 'color': blue}
 
     def __init__(self, experiment_design_data, expression_data=None,
                  splicing_data=None,
@@ -485,15 +492,106 @@ class Study(StudyFactory):
     def jsd(self):
         raise NotImplementedError
 
-    def plot_pca(self, data_type='expression', x_pc=1, y_pc=2, **kwargs):
-        """Performs PCA on both expression and splicing study_data
+    def feature_subset_to_feature_ids(self, data_type, feature_subset=None,
+                                      rename=False):
+        """Given a name of a feature subset, get the associated feature ids
+
+        Parameters
+        ----------
+        data_type : str
+            A string describing the data type, e.g. "expression"
+        feature_subset : str
+            A string describing the subset of data type (must be already
+            calculated)
+
+        Returns
+        -------
+        feature_ids : list of strings
+            List of features ids from the specified datatype
         """
-        if data_type == "expression":
-            self.expression.plot_dimensionality_reduction(x_pc=x_pc, y_pc=y_pc,
-                                                          **kwargs)
-        elif data_type == "splicing":
-            self.splicing.plot_dimensionality_reduction(x_pc=x_pc, y_pc=y_pc,
-                                                        **kwargs)
+        if 'expression'.startswith(data_type):
+            if feature_subset is not None:
+                feature_ids = self.expression.feature_sets[feature_subset]
+            else:
+                feature_ids = self.expression.data.columns
+            if rename:
+                feature_ids = feature_ids.map(self.expression.feature_renamer)
+        elif 'splicing'.startswith(data_type):
+            if feature_subset is not None:
+                feature_ids = self.splicing.feature_sets[feature_subset]
+            else:
+                feature_ids = self.splicing.data.columns
+            if rename:
+                feature_ids = feature_ids.map(self.expression.feature_renamer)
+        return feature_ids
+
+    def phenotype_subset_to_sample_ids(self, phenotype_subset=None):
+        """Convert a string naming a subset of phenotypes in the data in to 
+        sample ids
+        
+        Parameters
+        ----------
+        phenotype_subset : str
+            A valid string describing a boolean phenotype described in the
+            experiment_design data
+        
+        Returns
+        -------
+        sample_ids : list of strings
+            List of sample ids in the data
+            
+        Raises
+        ------
+        
+        """
+        if phenotype_subset is None:
+            sample_ind = np.ones(self.experiment_design.data.shape[0],
+                                 dtype=bool)
+        elif phenotype_subset.startswith("~"):
+            sample_ind = ~pd.Series(
+                self.experiment_design.data[phenotype_subset.lstrip("~")],
+                dtype='bool')
+        else:
+            sample_ind = pd.Series(self.experiment_design.data[
+                                       phenotype_subset], dtype='bool')
+        sample_ids = sample_ind[sample_ind].index
+        return sample_ids
+
+    def plot_pca(self, data_type='expression', x_pc=1, y_pc=2,
+                 phenotype_subset=None, feature_subset=None,
+                 title='',
+                 **kwargs):
+        """Performs PCA on both expression and splicing study_data
+
+        Parameters
+        ----------
+        data_type : str
+            One of the names of the data types
+
+        Returns
+        -------
+
+
+        Raises
+        ------
+
+        """
+        sample_ids = self.phenotype_subset_to_sample_ids(phenotype_subset)
+        feature_ids = self.feature_subset_to_feature_ids(data_type,
+                                                         feature_subset,
+                                                         rename=True)
+
+        kwargs = {}
+        kwargs['x_pc'] = x_pc
+        kwargs['y_pc'] = y_pc
+        kwargs['sample_ids'] = sample_ids
+        kwargs['feature_ids'] = feature_ids
+        kwargs['title'] = title
+
+        if "expression".startswith(data_type):
+            self.expression.plot_dimensionality_reduction(**kwargs)
+        elif "splicing".startswith(data_type):
+            self.splicing.plot_dimensionality_reduction(**kwargs)
 
     def plot_graph(self, data_type='expression', **kwargs):
         if data_type == "expression":

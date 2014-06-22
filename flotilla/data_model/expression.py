@@ -6,7 +6,6 @@ symbols of ensembl IDs and GO terms.
 """
 
 import pandas as pd
-import seaborn
 from sklearn.preprocessing import StandardScaler
 
 from .base import BaseData
@@ -17,7 +16,8 @@ from ..external import link_to_list
 from ..util import memoize
 
 
-seaborn.set_context('paper')
+#
+# seaborn.set_context('paper')
 
 
 class ExpressionData(BaseData):
@@ -27,7 +27,7 @@ class ExpressionData(BaseData):
     def __init__(self, data,
                  feature_data=None, expr_cut=_expr_cut,
                  drop_outliers=True, load_cargo=False,
-                 feature_rename_col=None, **kwargs):
+                 feature_rename_col=None, outliers=None):
         """
         Parameters
         ----------
@@ -73,10 +73,11 @@ class ExpressionData(BaseData):
             self.load_cargo()
 
     @memoize
-    def reduce(self, feature_set=None, phenotype_group_id=None,
+    def reduce(self, sample_ids, feature_ids,
                featurewise=False,
                reducer=PCAViz,
                standardize=True,
+               title='',
                **reducer_args):
         """make and cache a reduced dimensionality representation of data """
 
@@ -84,58 +85,38 @@ class ExpressionData(BaseData):
         input_reducer_args = reducer_args.copy()
         reducer_args = self._default_reducer_kwargs.copy()
         reducer_args.update(input_reducer_args)
-        reducer_args['title'] = feature_set + " : " + phenotype_group_id
+        reducer_args['title'] = title
         # feature_renamer = self.feature_renamer()
 
-        if feature_set not in self.feature_sets:
-            this_list = link_to_list(feature_set)
-            self.feature_sets[feature_set] = pd.Series(
-                map(self.feature_renamer, this_list),
-                index=this_list)
-
-        gene_list = self.feature_sets[feature_set]
-
-        if phenotype_group_id is None:
-        # sample_ind = self.phe
-        if phenotype_group_id.startswith("~"):
-            #print 'not', phenotype_group_id.lstrip("~")
-            sample_ind = ~pd.Series(
-                self.phenotype_data[phenotype_group_id.lstrip("~")],
-                dtype='bool')
-        else:
-            sample_ind = pd.Series(self.phenotype_data[phenotype_group_id],
-                                   dtype='bool')
-
-        sample_ind = sample_ind[sample_ind].index
-        subset = self.sparse_data.ix[sample_ind]
-        subset = subset.T.ix[gene_list.index].T
+        subset = self.sparse_data.ix[sample_ids]
+        subset = subset.T.ix[feature_ids].T
         frequent = pd.Index(
             [i for i, j in (subset.count() > min_samples).iteritems() if j])
         subset = subset[frequent]
         #fill na with mean for each event
         means = subset.apply(dropna_mean, axis=0)
-        mf_subset = subset.fillna(means, ).fillna(0)
+        subset = subset.fillna(means).fillna(0)
 
         #whiten, mean-center
         if standardize:
-            data = StandardScaler().fit_transform(mf_subset)
+            data = StandardScaler().fit_transform(subset)
         else:
-            data = mf_subset
+            data = subset
 
-        ss = pd.DataFrame(data, index=mf_subset.index,
-                          columns=mf_subset.columns).rename_axis(
+        subset = pd.DataFrame(data, index=subset.index,
+                              columns=subset.columns).rename_axis(
             self.feature_renamer, 1)
 
         #compute pca
         if featurewise:
-            ss = ss.T
-        rdc_obj = reducer(ss, **reducer_args)
-        rdc_obj.means = means.rename_axis(
+            subset = subset.T
+        reducer_object = reducer(subset, **reducer_args)
+        reducer_object.means = means.rename_axis(
             self.feature_renamer)  #always the mean of input features... i.e.
         # featurewise doesn't change this.
 
         #add mean gene_expression
-        return rdc_obj
+        return reducer_object
 
     @memoize
     def classify(self, gene_list_name, phenotype_group_id, categorical_trait,

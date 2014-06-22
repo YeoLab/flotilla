@@ -7,7 +7,6 @@ import sys
 import pandas as pd
 from scipy.spatial.distance import pdist, squareform
 
-from ..visualize.color import blue
 from ..util import memoize
 
 
@@ -29,11 +28,6 @@ class BaseData(object):
     #_feature_renamer converts input feature names to something else. by
     # default, just echo.
     # _feature_renamer = lambda x: x
-
-    _default_reducer_kwargs = {'whiten' : False,
-                               'show_point_labels': False,
-                               'show_vectors': False}
-    _default_plot_kwargs = {'marker': 'o', 'color': blue}
 
 
 
@@ -202,9 +196,9 @@ class BaseData(object):
 
         return self
 
-    def plot_dimensionality_reduction(self, x_pc=1, y_pc=2, obj_id=None,
-                                      group_id=None,
-                                      list_name=None, featurewise=None,
+    def plot_dimensionality_reduction(self, x_pc=1, y_pc=2,  #obj_id=None,
+                                      sample_ids=None, feature_ids=None,
+                                      featurewise=False,
                                       **plotting_kwargs):
         """Principal component-like analysis of measurements
 
@@ -214,27 +208,25 @@ class BaseData(object):
             Which principal component to plot on the x-axis
         y_pc : int
             Which principal component to plot on the y-axis
-        obj_id : str
-            Key of the object getting plotted
-        group_id : str
-            ???
+        sample_ids : None or list of strings
+            If None, plot all the samples. If a list of strings, must be
+            valid sample ids of the data
+        feature_ids : None or list of strings
+            If None, plot all the features. If a list of strings
 
-
-        Returns
-        -------
-
-
-        Raises
-        ------
 
         Returns
         -------
         self
+
+        Raises
+        ------
+
         """
-        local_plotting_kwargs = self.pca_plotting_kwargs.copy()
-        local_plotting_kwargs.update(plotting_kwargs)
-        pca = self.reduce(obj_id, list_name, group_id,
-                           featurewise=featurewise)
+        # local_plotting_kwargs = self.pca_plotting_kwargs.copy()
+        # local_plotting_kwargs.update(plotting_kwargs)
+        pca = self.reduce(tuple(sample_ids), feature_ids,
+                          featurewise=featurewise)
         pca(markers_size_dict=lambda x: 400,
             show_vectors=False,
             title_size=10,
