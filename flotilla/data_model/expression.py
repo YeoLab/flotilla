@@ -73,33 +73,38 @@ class ExpressionData(BaseData):
             self.load_cargo()
 
     @memoize
-    def reduce(self, list_name, group_id, featurewise=False,
+    def reduce(self, feature_set=None, phenotype_group_id=None,
+               featurewise=False,
                reducer=PCAViz,
                standardize=True,
                **reducer_args):
         """make and cache a reduced dimensionality representation of data """
 
-        min_samples = self.get_min_samples()
+        min_samples = self.min_samples
         input_reducer_args = reducer_args.copy()
         reducer_args = self._default_reducer_kwargs.copy()
         reducer_args.update(input_reducer_args)
-        reducer_args['title'] = list_name + " : " + group_id
+        reducer_args['title'] = feature_set + " : " + phenotype_group_id
         # feature_renamer = self.feature_renamer()
 
-        if list_name not in self.feature_sets:
-            this_list = link_to_list(list_name)
-            self.feature_sets[list_name] = pd.Series(
+        if feature_set not in self.feature_sets:
+            this_list = link_to_list(feature_set)
+            self.feature_sets[feature_set] = pd.Series(
                 map(self.feature_renamer, this_list),
                 index=this_list)
 
-        gene_list = self.feature_sets[list_name]
+        gene_list = self.feature_sets[feature_set]
 
-        if group_id.startswith("~"):
-            #print 'not', group_id.lstrip("~")
-            sample_ind = ~pd.Series(self.phenotype_data[group_id.lstrip("~")],
-                                    dtype='bool')
+        if phenotype_group_id is None:
+        # sample_ind = self.phe
+        if phenotype_group_id.startswith("~"):
+            #print 'not', phenotype_group_id.lstrip("~")
+            sample_ind = ~pd.Series(
+                self.phenotype_data[phenotype_group_id.lstrip("~")],
+                dtype='bool')
         else:
-            sample_ind = pd.Series(self.phenotype_data[group_id], dtype='bool')
+            sample_ind = pd.Series(self.phenotype_data[phenotype_group_id],
+                                   dtype='bool')
 
         sample_ind = sample_ind[sample_ind].index
         subset = self.sparse_data.ix[sample_ind]
@@ -133,7 +138,7 @@ class ExpressionData(BaseData):
         return rdc_obj
 
     @memoize
-    def classify(self, gene_list_name, group_id, categorical_trait,
+    def classify(self, gene_list_name, phenotype_group_id, categorical_trait,
                  standardize=True, predictor=PredictorViz):
         """
         make and cache a classifier on a categorical trait (associated with samples) subset of genes
@@ -149,12 +154,14 @@ class ExpressionData(BaseData):
 
         gene_list = self.feature_sets[gene_list_name]
 
-        if group_id.startswith("~"):
-            #print 'not', group_id.lstrip("~")
-            sample_ind = ~pd.Series(self.phenotype_data[group_id.lstrip("~")],
-                                    dtype='bool')
+        if phenotype_group_id.startswith("~"):
+            #print 'not', phenotype_group_id.lstrip("~")
+            sample_ind = ~pd.Series(
+                self.phenotype_data[phenotype_group_id.lstrip("~")],
+                dtype='bool')
         else:
-            sample_ind = pd.Series(self.phenotype_data[group_id], dtype='bool')
+            sample_ind = pd.Series(self.phenotype_data[phenotype_group_id],
+                                   dtype='bool')
         sample_ind = sample_ind[sample_ind].index
         subset = self.sparse_data.ix[sample_ind, gene_list.index]
         frequent = pd.Index(
