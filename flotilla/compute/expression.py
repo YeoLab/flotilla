@@ -6,6 +6,7 @@ from scipy import stats
 import pandas as pd
 import math
 from __future__ import division
+import sys
 
 def benjamini_hochberg(p_values, fdr=0.1):
     """ benjamini-hochberg correction for MHT
@@ -39,14 +40,14 @@ def benjamini_hochberg(p_values, fdr=0.1):
 
 class TwoWayGeneComparisonLocal(object):
 
-    def __init__(self, sample1_name, sample2_name, df, pCut = 0.001,
+    def __init__(self, sample1_name, sample2_name, df, p_value_cutoff = 0.001,
                  local_fraction = 0.1, bonferroni = True, FDR=None,
                  dtype="RPKM"):
         """ Run a two-sample RPKM experiment.
             Give control sample first, it will go on the x-axis
             data is a pandas dataframe with features (genes) on columns and samples on rows
             sample1 and sample2 are the names of rows in data (sample IDs)
-            pCut - P value cutoff
+            p_value_cutoff - P value cutoff
             local_fraction - by default the closest 10% of genes are used for local z-score calculation
             bonferroni - p-values are adjusted for MHT with bonferroni correction
             BH - benjamini-hochberg FDR filtering - check result, proceed with caution. sometimes breaks :(
@@ -55,8 +56,7 @@ class TwoWayGeneComparisonLocal(object):
         sample1 = df.ix[sample1_name]
         sample2 = df.ix[sample2_name]
 
-        sampleNames = (sample1.name, sample2.name)
-        self.sampleNames = sampleNames
+        self.sample_names = (sample1.name, sample2.name)
 
         sample1 = sample1.replace(0, np.nan).dropna()
         sample2 = sample2.replace(0, np.nan).dropna()
@@ -67,79 +67,82 @@ class TwoWayGeneComparisonLocal(object):
         self.sample2 = sample2
         labels = sample1.index
 
-        self.nGenes = len(labels)
+        self.n_genes = len(labels)
         if bonferroni:
-            correction = self.nGenes
+            correction = self.n_genes
         else:
             correction = 1
 
-        localCount = int(math.ceil(self.nGenes * local_fraction))
-        self.pCut = pCut
-        self.upGenes = set()
-        self.dnGenes = set()
-        self.expressedGenes = set([labels[i] for i, t in enumerate(np.any(np.c_[sample1, sample2] > 1, axis=1)) if t])
-        self.log2Ratio = np.log2(sample2 / sample1)
+        local_count = int(math.ceil(self.n_genes * local_fraction))
+        self.p_value_cutoff = p_value_cutoff
+        self.upregulated_genes = set()
+        self.downregulated_genes = set()
+        self.expressed_genes = set([labels[i] for i, t in enumerate(np.any(np.c_[sample1, sample2] > 1, axis=1)) if t])
+        self.log2_ratio = np.log2(sample2 / sample1)
         self.average_expression = (sample2 + sample1)/2.
         self.ranks = np.argsort(np.argsort(self.average_expression))
-        self.pValues = pd.Series(index = labels)
-        self.localMean = pd.Series(index = labels)
-        self.localStd = pd.Series(index = labels)
-        self.localZ = pd.Series(index = labels)
+        self.p_values = pd.Series(index = labels)
+        self.local_mean = pd.Series(index = labels)
+        self.local_std = pd.Series(index = labels)
+        self.local_z = pd.Series(index = labels)
         self.dtype=dtype
 
         for g, r in itertools.izip(self.ranks.index, self.ranks):
-            if r < localCount:
+            if r < local_count:
                 start = 0
-                stop = localCount
+                stop = local_count
 
-            elif r > self.nGenes - localCount:
-                start = self.nGenes - localCount
-                stop = self.nGenes
+            elif r > self.n_genes - local_count:
+                start = self.n_genes - local_count
+                stop = self.n_genes
 
             else:
-                start = r - int(math.floor(localCount/2.))
-                stop = r + int(math.ceil(localCount/2.))
+                start = r - int(math.floor(local_count/2.))
+                stop = r + int(math.ceil(local_count/2.))
 
-            localGenes = self.ranks[self.ranks.between(start, stop)].index
-            self.localMean.ix[g] = np.mean(self.log2Ratio.ix[localGenes])
-            self.localStd.ix[g] = np.std(self.log2Ratio.ix[localGenes])
-            self.pValues.ix[g] = stats.norm.pdf(self.log2Ratio.ix[g],
-                                                self.localMean.ix[g],
-                                                self.localStd.ix[g]) * correction
-            self.localZ.ix[g] = (self.log2Ratio.ix[g]- self.localMean.ix[g])/self.localStd.ix[g]
+            local_genes = self.ranks[self.ranks.between(start, stop)].index
+            self.local_mean.ix[g] = np.mean(self.log2_ratio.ix[local_genes])
+            self.local_std.ix[g] = np.std(self.log2_ratio.ix[local_genes])
+            self.p_values.ix[g] = stats.norm.pdf(self.log2_ratio.ix[g],
+                                                self.local_mean.ix[g],
+                                                self.local_std.ix[g]) * correction
+            self.local_z.ix[g] = (self.log2_ratio.ix[g]- self.local_mean.ix[g])/self.local_std.ix[g]
 
         data = pd.DataFrame(index = labels)
         data["rank"] = self.ranks
-        data["log2Ratio"] = self.log2Ratio
-        data["localMean"] = self.localMean
-        data["localStd"] = self.localStd
-        data["pValue"] = self.pValues
+        data["log2_ratio"] = self.log2_ratio
+        data["local_mean"] = self.local_mean
+        data["local_std"] = self.local_std
+        data["pValue"] = self.p_values
 
         if FDR == None:
-            data["isSig"] = self.pValues < pCut
+            data["isSig"] = self.p_values < p_value_cutoff
         else:
-            data["isSig"] = benjamini_hochberg(self.pValues, fdr=FDR)
+            data["isSig"] = benjamini_hochberg(self.p_values, fdr=FDR)
 
         data["meanExpression"] = self.average_expression
-        data["localZ"] = self.localZ
-        data[sampleNames[0]] = sample1
-        data[sampleNames[1]] = sample2
+        data["local_z"] = self.local_z
+        data[self.sample_names[0]] = sample1
+        data[self.sample_names[1]] = sample2
 
         self.result_ = data
 
-        for label, (pVal, logratio, isSig) in data.get(["pValue", "log2Ratio", "isSig"]).iterrows():
-            if (pVal < pCut) and isSig:
+        for label, (pVal, logratio, isSig) in data.get(["pValue", "log2_ratio", "isSig"]).iterrows():
+            if (pVal < p_value_cutoff) and isSig:
                 if logratio > 0:
-                    self.upGenes.add(label)
+                    self.upregulated_genes.add(label)
                 elif logratio < 0:
-                   self.dnGenes.add(label)
+                   self.downregulated_genes.add(label)
                 else:
                     raise ValueError
 
     def gstats(self):
-        print "I used a p-value cutoff of %e" %self.pCut
-        print "There are", len(self.upGenes), "up-regulated genes in %s vs %s" %(self.sampleNames[1],
-                                                                                 self.sampleNames[0])
-        print "There are", len(self.dnGenes), "down-regulated genes in %s vs %s" %(self.sampleNames[1],
-                                                                                   self.sampleNames[0])
-        print "There are", len(self.expressedGenes), "expressed genes in both %s and %s" %self.sampleNames
+        sys.stdout.write("I used a p-value cutoff of {:.2e}\n".format(self.p_value_cutoff))
+        sys.stdout.write("\tThere are {} up-regulated genes in {} vs {}\n"
+                         .format(len(self.upregulated_genes), self.sample_names[1],
+                                 self.sample_names[0]))
+        sys.stdout.write("\tThere are {} down-regulated genes in %s vs %s"
+                         .format(len(self.downregulated_genes), self.sample_names[1],
+                                 self.sample_names[0]))
+        sys.stdout.write("There are {} expressed genes in both {} and {}"
+                         .format(len(self.expressed_genes), *self.sample_names))

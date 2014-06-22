@@ -4,8 +4,8 @@ between IPython interactive visualizations vs D3 interactive visualizations.
 """
 
 import matplotlib.pyplot as plt
+
 from .network import NetworkerViz
-from .decomposition import DecompositionViz
 
 
 class Interactive(object):
@@ -25,16 +25,18 @@ class Interactive(object):
         self._default_y_pc = 2
         [self.minimal_study_parameters.add(param) for param in  ['default_group_id', 'default_group_ids',
                                                                     'default_list_id', 'default_list_ids',]]
-        [self.minimal_study_parameters.add(i) for i in ['phenotype_data', ]]
+        [self.minimal_study_parameters.add(i) for i in
+         ['experiment_design_data', ]]
         self.validate_params()
 
+    @staticmethod
     def interactive_pca(self):
 
         from IPython.html.widgets import interact
 
         #not sure why nested fxns are required for this, but they are... i think...
         def do_interact(data_type='expression',
-                        group_id=self.default_group_id,
+                        phenotype_group_id=self.default_group_id,
                         list_name=self.default_list_id,
                         featurewise=False,
                         list_link='',
@@ -57,8 +59,8 @@ class Interactive(object):
             if list_name == 'custom':
                 list_name = list_link
 
-            self.plot_pca(group_id=group_id, data_type=data_type,
-                     featurewise=featurewise,
+            self.plot_pca(group_id=phenotype_group_id, data_type=data_type,
+                          featurewise=featurewise,
                      x_pc=x_pc, y_pc=y_pc, show_point_labels=show_point_labels,
                      list_name=list_name)
             if savefile != '':
@@ -73,7 +75,7 @@ class Interactive(object):
                  x_pc=(1, 10), y_pc=(1, 10),
                  show_point_labels=False, )
 
-
+    @staticmethod
     def interactive_graph(self):
         from IPython.html.widgets import interact
 
@@ -129,6 +131,7 @@ class Interactive(object):
                  use_pc_1=True, use_pc_2=True, use_pc_3=True, use_pc_4=True,
         )
 
+    @staticmethod
     def interactive_classifier(self):
 
         from IPython.html.widgets import interact
@@ -176,6 +179,7 @@ pca=prd('%s', feature_score_std_cutoff=%f)" \
                  draw_labels=False,
         )
 
+    @staticmethod
     def interactive_localZ(self):
 
         from IPython.html.widgets import interact
@@ -208,7 +212,7 @@ pca=prd('%s', feature_score_std_cutoff=%f)" \
                 return
             self.localZ_result = data_obj.plot_twoway(sample1, sample2,
                                                  pCut=pCut).result_
-            print "localZ finished, find the result in <this_obj>.localZ_result_"
+            print "local_z finished, find the result in <this_obj>.localZ_result_"
 
         interact(do_interact,
                  data_type=('expression', 'splicing'),
