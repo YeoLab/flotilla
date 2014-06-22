@@ -17,6 +17,7 @@ from ..util import memoize
 
 
 
+
 #
 # seaborn.set_context('paper')
 
@@ -97,10 +98,7 @@ class ExpressionData(BaseData):
 
         subset = self.sparse_data.ix[sample_ids]
         subset = subset.T.ix[feature_ids].T
-        frequent = pd.Index(
-            [i for i, j in (subset.count() > self.min_samples).iteritems()
-             if j])
-        subset = subset[frequent]
+        subset = subset[subset.count() > self.min_samples]
         #fill na with mean for each event
         means = subset.apply(dropna_mean, axis=0)
         subset = subset.fillna(means).fillna(0)

@@ -1,7 +1,9 @@
 __author__ = 'olga'
 
-from flotilla.data_model import ExpressionData
 import pandas.util.testing as pdt
+
+from flotilla.data_model import ExpressionData
+
 
 def test_init(example_data):
     expression_data = ExpressionData(example_data.expression)
@@ -10,3 +12,8 @@ def test_init(example_data):
 
 def test_go_enrichment():
     pass
+
+
+def test_reduce(example_data):
+    expression = ExpressionData(example_data.expression)
+    expression_reduced = expression.reduce()
