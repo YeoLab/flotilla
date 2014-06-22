@@ -5,27 +5,19 @@ heavier in terms of data load
 
 from collections import defaultdict
 import os
-import subprocess
 import sys
 import warnings
 
 import pandas as pd
 
-from .expression import ExpressionData
-from .splicing import SplicingData
 from .experiment_design import ExperimentDesignData
-from ..util import install_development_package
+from .expression import ExpressionData, SpikeInData
+from .quality_control import MappingStatsData
+from .splicing import SplicingData
 from ..visualize import NetworkerViz
 from ..visualize.color import blue
 from ..visualize.ipython_interact import Interactive
 from ..external import data_package_url_to_dict, check_if_already_downloaded
-
-
-
-
-
-
-
 
 
 
@@ -54,101 +46,101 @@ class StudyFactory(object):
             warnings.warn('Over-writing attribute {}'.format(key))
         super(StudyFactory, self).__setattr__(key, value)
 
-    def write_package(self, study_name, where=None, install=False):
-        write_these = self.minimal_study_parameters
-
-        data_resources = ['experiment_design_data', 'expression_df',
-                          'splicing_df', 'event_metadata']
-
-        self.minimal_study_parameters.update(write_these)
-        self.validate_params()
-
-        new_package_data_location = self._clone_barebones(study_name,
-                                                          write_location=where)
-
-        #new_package_data_location is os.path.join(where, study_name)
-
-        self._write_params_file(new_package_data_location,
-                                params_to_write=write_these)
-        for resource_name in data_resources:
-            data = getattr(self, resource_name)
-            try:
-                self._add_package_data_resource(resource_name, data,
-                                                new_package_data_location,
-                                                file_write_mode='tsv')
-            except:
-                sys.stderr.write(
-                    "couldn't add data resource: %s\n" % resource_name)
-
-        if install:
-            install_development_package(os.path.abspath(where))
-
-    def _clone_barebones(self, study_name, write_location=None):
-        import flotilla
-
-        flotilla_install_location = os.path.dirname(
-            os.path.abspath(flotilla.__file__))
-        test_package_location = os.path.join(flotilla_install_location,
-                                             "cargo/cargo_data/" \
-                                             "barebones_project")
-        starting_position = os.getcwd()
-        try:
-            if write_location is None:
-                write_location = os.path.abspath(starting_position)
-            else:
-                #TODO.md: check whether user specificed a real writable location
-                pass
-            try:
-                path_exists = os.path.exists(write_location)
-            except TypeError:
-                # Need this for testing, which creates a LocalPath instead of
-                #  a string
-                path_exists = False
-                write_location = str(write_location)
-
-            if path_exists:
-                raise Exception(
-                    "do not use an existing path for write_location")
-
-            subprocess.call(['git clone -b barebones %s %s' % (
-                test_package_location, write_location)], shell=True)
-            os.chdir(write_location)
-            subprocess.call(['git mv barebones_project %s' % study_name],
-                            shell=True)
-            with open("{}/setup.py".format(FLOTILLA_DIR), 'r') as f:
-                setup_script = f.readlines()
-
-            with open("setup.py", 'w') as f:
-                for i in setup_script:
-                    f.write(i.replace("barebones_project", study_name))
-
-            os.chdir(starting_position)
-
-        except:
-            sys.stderr.write("error, did not complete cloning")
-            os.chdir(starting_position)
-            raise
-        return os.path.join(write_location, study_name)
-
-    def _write_params_file(self, package_location, params_to_write):
-
-        import os
-
-        with open(os.path.join(package_location, "params.py"), 'w') as f:
-            f.write("from .study_data import study_data_dir\n\n")
-            f.write("")
-            for param in params_to_write:
-
-                try:
-                    f.write("#%s" % self.doc(param))
-                except:
-                    pass
-                value = getattr(self, param)
-                if "filename" in param:
-                    if value is not None:
-                        value = self._to_base_file_tuple(value)
-
-                f.write("%s = %s\n\n" % (param, repr(value)))
+    # def write_package(self, study_name, where=None, install=False):
+    #     write_these = self.minimal_study_parameters
+    #
+    #     data_resources = ['experiment_design_data', 'expression_df',
+    #                       'splicing_df', 'event_metadata']
+    #
+    #     self.minimal_study_parameters.update(write_these)
+    #     self.validate_params()
+    #
+    #     new_package_data_location = self._clone_barebones(study_name,
+    #                                                       write_location=where)
+    #
+    #     #new_package_data_location is os.path.join(where, study_name)
+    #
+    #     self._write_params_file(new_package_data_location,
+    #                             params_to_write=write_these)
+    #     for resource_name in data_resources:
+    #         data = getattr(self, resource_name)
+    #         try:
+    #             self._add_package_data_resource(resource_name, data,
+    #                                             new_package_data_location,
+    #                                             file_write_mode='tsv')
+    #         except:
+    #             sys.stderr.write(
+    #                 "couldn't add data resource: %s\n" % resource_name)
+    #
+    #     if install:
+    #         install_development_package(os.path.abspath(where))
+    #
+    # def _clone_barebones(self, study_name, write_location=None):
+    #     import flotilla
+    #
+    #     flotilla_install_location = os.path.dirname(
+    #         os.path.abspath(flotilla.__file__))
+    #     test_package_location = os.path.join(flotilla_install_location,
+    #                                          "cargo/cargo_data/" \
+    #                                          "barebones_project")
+    #     starting_position = os.getcwd()
+    #     try:
+    #         if write_location is None:
+    #             write_location = os.path.abspath(starting_position)
+    #         else:
+    #             #TODO.md: check whether user specificed a real writable location
+    #             pass
+    #         try:
+    #             path_exists = os.path.exists(write_location)
+    #         except TypeError:
+    #             # Need this for testing, which creates a LocalPath instead of
+    #             #  a string
+    #             path_exists = False
+    #             write_location = str(write_location)
+    #
+    #         if path_exists:
+    #             raise Exception(
+    #                 "do not use an existing path for write_location")
+    #
+    #         subprocess.call(['git clone -b barebones %s %s' % (
+    #             test_package_location, write_location)], shell=True)
+    #         os.chdir(write_location)
+    #         subprocess.call(['git mv barebones_project %s' % study_name],
+    #                         shell=True)
+    #         with open("{}/setup.py".format(FLOTILLA_DIR), 'r') as f:
+    #             setup_script = f.readlines()
+    #
+    #         with open("setup.py", 'w') as f:
+    #             for i in setup_script:
+    #                 f.write(i.replace("barebones_project", study_name))
+    #
+    #         os.chdir(starting_position)
+    #
+    #     except:
+    #         sys.stderr.write("error, did not complete cloning")
+    #         os.chdir(starting_position)
+    #         raise
+    #     return os.path.join(write_location, study_name)
+    #
+    # def _write_params_file(self, package_location, params_to_write):
+    #
+    #     import os
+    #
+    #     with open(os.path.join(package_location, "params.py"), 'w') as f:
+    #         f.write("from .study_data import study_data_dir\n\n")
+    #         f.write("")
+    #         for param in params_to_write:
+    #
+    #             try:
+    #                 f.write("#%s" % self.doc(param))
+    #             except:
+    #                 pass
+    #             value = getattr(self, param)
+    #             if "filename" in param:
+    #                 if value is not None:
+    #                     value = self._to_base_file_tuple(value)
+    #
+    #             f.write("%s = %s\n\n" % (param, repr(value)))
 
     def _to_base_file_tuple(self, tup):
         """for making new packages, auto-loadable data!"""
@@ -217,24 +209,35 @@ class StudyFactory(object):
         subprocess.call(['mv %s %s' % (tempfile, file_name)])
 
     @staticmethod
-    def _load_tsv(file_name):
-        return pd.read_table(file_name, index_col=0)
+    def _load_tsv(file_name, compression=None):
+        return pd.read_table(file_name, index_col=0, compression=compression)
 
     @staticmethod
-    def _load_csv(file_name):
-        return pd.read_csv(file_name, index_col=0)
+    def _load_json(filename, compression=None):
+        """
+        Parameters
+        ----------
+        filename : str
+            Name of the json file toread
+        compression : str
+            Not used, only for  compatibility with other load functions
 
-    @staticmethod
-    def _load_json(file_name):
-        return pd.read_json(file_name)
+        Returns
+        -------
+
+
+        Raises
+        ------
+        """
+        return pd.read_json(filename)
 
     @staticmethod
     def _write_tsv(df, file_name):
         df.to_csv(file_name, sep='\t')
 
     @staticmethod
-    def _load_csv(file_name):
-        return pd.read_csv(file_name, index_col=0)
+    def _load_csv(file_name, compression=None):
+        return pd.read_csv(file_name, index_col=0, compression=compression)
 
     @staticmethod
     def _write_csv(df, file_name):
@@ -274,6 +277,12 @@ class Study(StudyFactory):
     """
     default_feature_set_ids = []
 
+    initializers = {'experiment_design': ExperimentDesignData,
+                    'expression': ExpressionData,
+                    'splicing': SplicingData,
+                    'mapping_stats': MappingStatsData,
+                    'spikein': SpikeInData}
+
     def __init__(self, experiment_design_data, expression_data=None,
                  splicing_data=None,
                  expression_feature_data=None, splicing_feature_data=None,
@@ -281,7 +290,8 @@ class Study(StudyFactory):
                  default_group_id=None, default_group_ids=None,
                  default_list_id='variant', default_list=('variant'),
                  default_genes=('variant'),
-                 default_events=('variant'), species=None, gene_ontology=None):
+                 default_events=('variant'), species=None,
+                 gene_ontology_data=None):
         """Construct a biological study
 
         This class only accepts data, no filenames. All data must already
@@ -315,7 +325,7 @@ class Study(StudyFactory):
         # self.initialize_required_getters()
         # self.apply_getters()
         self.species = species
-        self.gene_ontology = gene_ontology
+        self.gene_ontology_data = gene_ontology_data
 
         self._initialize_all_data(experiment_design_data,
                                   expression_data,
@@ -386,7 +396,10 @@ class Study(StudyFactory):
                 reader = getattr(cls, '_load_' + resource['format'])
 
                 filename = check_if_already_downloaded(resource_url)
-                species_dfs[resource['name']] = reader(filename)
+                compression = None if 'compression' not in resource else \
+                    resource['compression']
+                species_dfs[resource['name']] = reader(filename,
+                                                       compression=compression)
         else:
             species_dfs = {}
 
