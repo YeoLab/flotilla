@@ -3,29 +3,36 @@ Data models for "studies" studies include attributes about the data and are
 heavier in terms of data load
 """
 
+from collections import defaultdict
 import os
-import pandas as pd
-import subprocess
 import sys
 import warnings
 
-from .expression import ExpressionData
-from .splicing import SplicingData
-from .experiment_design import ExperimentDesignData
-from ..util import install_development_package
-from ..visualize import NetworkerViz, PredictorViz
-from ..visualize.ipython_interact import Interactive
+import pandas as pd
 
-import flotilla
-FLOTILLA_DIR = os.path.dirname(flotilla.__file__)
+from .experiment_design import ExperimentDesignData
+from .expression import ExpressionData, SpikeInData
+from .quality_control import MappingStatsData
+from .splicing import SplicingData
+from ..visualize import NetworkerViz
+from ..visualize.color import blue
+from ..visualize.ipython_interact import Interactive
+from ..external import data_package_url_to_dict, check_if_already_downloaded
+
+
+SPECIES_DATA_PACKAGE_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects'
+
+
+
+# import flotilla
+# FLOTILLA_DIR = os.path.dirname(flotilla.__file__)
 
 class StudyFactory(object):
-
     #'min_samples','species',
-                       #'sample_metadata_filename', 'event_metadata_filename', 'expression_data_filename',
-                       #'splicing_data_filename', 'expression_data_filename', 'gene_metadata_filename',
-                       #'event_metadata_filename',
-                       # 'default_group_id', 'default_group_ids', 'default_list_id', 'default_list_ids']
+    #'sample_metadata_filename', 'event_metadata_filename', 'expression_data_filename',
+    #'splicing_data_filename', 'expression_data_filename', 'gene_metadata_filename',
+    #'event_metadata_filename',
+    # 'default_group_id', 'default_group_ids', 'default_list_id', 'default_list_ids']
     _accepted_filetypes = 'tsv'
     # _accepted_filetypes = ['pickle_df', 'gzip_pickle_df', 'tsv', 'csv']
 
@@ -41,101 +48,115 @@ class StudyFactory(object):
             warnings.warn('Over-writing attribute {}'.format(key))
         super(StudyFactory, self).__setattr__(key, value)
 
-    def write_package(self, study_name, where=None, install=False):
-        write_these = self.minimal_study_parameters
-
-        data_resources = ['phenotype_data', 'expression_df', 'splicing_df', 'event_metadata']
-
-        self.minimal_study_parameters.update(write_these)
-        self.validate_params()
-
-        new_package_data_location = self._clone_barebones(study_name, write_location=where)
-
-        #new_package_data_location is os.path.join(where, study_name)
-
-        self._write_params_file(new_package_data_location, params_to_write = write_these)
-        for resource_name in data_resources:
-            data = getattr(self, resource_name)
-            try:
-                self._add_package_data_resource(resource_name, data, new_package_data_location,
-                file_write_mode='tsv')
-            except:
-                sys.stderr.write("couldn't add data resource: %s\n" % resource_name)
-
-        if install:
-            install_development_package(os.path.abspath(where))
-
-    def _clone_barebones(self, study_name, write_location=None):
-        import flotilla
-        flotilla_install_location = os.path.dirname(os.path.abspath(flotilla.__file__))
-        test_package_location = os.path.join(flotilla_install_location, "cargo/cargo_data/"\
-                                                                        "barebones_project")
-        starting_position = os.getcwd()
-        try:
-            if write_location is None:
-                write_location = os.path.abspath(starting_position)
-            else:
-                #TODO.md: check whether user specificed a real writable location
-                pass
-            try:
-                path_exists = os.path.exists(write_location)
-            except TypeError:
-                # Need this for testing, which creates a LocalPath instead of
-                #  a string
-                path_exists = False
-                write_location = str(write_location)
-
-            if path_exists:
-                raise Exception("do not use an existing path for write_location")
-
-            subprocess.call(['git clone -b barebones %s %s' % (test_package_location, write_location)], shell=True)
-            os.chdir(write_location)
-            subprocess.call(['git mv barebones_project %s' % study_name], shell=True)
-            with open("{}/setup.py".format(FLOTILLA_DIR), 'r') as f:
-                setup_script = f.readlines()
-
-            with open("setup.py", 'w') as f:
-                for i in setup_script:
-                    f.write(i.replace("barebones_project", study_name))
-
-            os.chdir(starting_position)
-
-        except:
-            sys.stderr.write("error, did not complete cloning")
-            os.chdir(starting_position)
-            raise
-        return os.path.join(write_location, study_name)
-
-    def _write_params_file(self, package_location, params_to_write):
-
-        import os
-        with open(os.path.join(package_location, "params.py"), 'w') as f:
-            f.write("from .study_data import study_data_dir\n\n")
-            f.write("")
-            for param in params_to_write:
-
-                try:
-                    f.write("#%s" % self.doc(param))
-                except:
-                    pass
-                value = getattr(self, param)
-                if "filename" in param:
-                    if value is not None:
-                        value = self._to_base_file_tuple(value)
-
-                f.write("%s = %s\n\n" % (param, repr(value)))
+    # def write_package(self, study_name, where=None, install=False):
+    #     write_these = self.minimal_study_parameters
+    #
+    #     data_resources = ['experiment_design_data', 'expression_df',
+    #                       'splicing_df', 'event_metadata']
+    #
+    #     self.minimal_study_parameters.update(write_these)
+    #     self.validate_params()
+    #
+    #     new_package_data_location = self._clone_barebones(study_name,
+    #                                                       write_location=where)
+    #
+    #     #new_package_data_location is os.path.join(where, study_name)
+    #
+    #     self._write_params_file(new_package_data_location,
+    #                             params_to_write=write_these)
+    #     for resource_name in data_resources:
+    #         data = getattr(self, resource_name)
+    #         try:
+    #             self._add_package_data_resource(resource_name, data,
+    #                                             new_package_data_location,
+    #                                             file_write_mode='tsv')
+    #         except:
+    #             sys.stderr.write(
+    #                 "couldn't add data resource: %s\n" % resource_name)
+    #
+    #     if install:
+    #         install_development_package(os.path.abspath(where))
+    #
+    # def _clone_barebones(self, study_name, write_location=None):
+    #     import flotilla
+    #
+    #     flotilla_install_location = os.path.dirname(
+    #         os.path.abspath(flotilla.__file__))
+    #     test_package_location = os.path.join(flotilla_install_location,
+    #                                          "cargo/cargo_data/" \
+    #                                          "barebones_project")
+    #     starting_position = os.getcwd()
+    #     try:
+    #         if write_location is None:
+    #             write_location = os.path.abspath(starting_position)
+    #         else:
+    #             #TODO.md: check whether user specificed a real writable location
+    #             pass
+    #         try:
+    #             path_exists = os.path.exists(write_location)
+    #         except TypeError:
+    #             # Need this for testing, which creates a LocalPath instead of
+    #             #  a string
+    #             path_exists = False
+    #             write_location = str(write_location)
+    #
+    #         if path_exists:
+    #             raise Exception(
+    #                 "do not use an existing path for write_location")
+    #
+    #         subprocess.call(['git clone -b barebones %s %s' % (
+    #             test_package_location, write_location)], shell=True)
+    #         os.chdir(write_location)
+    #         subprocess.call(['git mv barebones_project %s' % study_name],
+    #                         shell=True)
+    #         with open("{}/setup.py".format(FLOTILLA_DIR), 'r') as f:
+    #             setup_script = f.readlines()
+    #
+    #         with open("setup.py", 'w') as f:
+    #             for i in setup_script:
+    #                 f.write(i.replace("barebones_project", study_name))
+    #
+    #         os.chdir(starting_position)
+    #
+    #     except:
+    #         sys.stderr.write("error, did not complete cloning")
+    #         os.chdir(starting_position)
+    #         raise
+    #     return os.path.join(write_location, study_name)
+    #
+    # def _write_params_file(self, package_location, params_to_write):
+    #
+    #     import os
+    #
+    #     with open(os.path.join(package_location, "params.py"), 'w') as f:
+    #         f.write("from .study_data import study_data_dir\n\n")
+    #         f.write("")
+    #         for param in params_to_write:
+    #
+    #             try:
+    #                 f.write("#%s" % self.doc(param))
+    #             except:
+    #                 pass
+    #             value = getattr(self, param)
+    #             if "filename" in param:
+    #                 if value is not None:
+    #                     value = self._to_base_file_tuple(value)
+    #
+    #             f.write("%s = %s\n\n" % (param, repr(value)))
 
     def _to_base_file_tuple(self, tup):
         """for making new packages, auto-loadable data!"""
         assert len(tup) == 2
-        return "os.path.join(study_data_dir, %s)" % os.path.basename(tup[0]), tup[1]
+        return "os.path.join(study_data_dir, %s)" % os.path.basename(tup[0]), \
+               tup[1]
 
     def _add_package_data_resource(self, file_name, data_df,
                                    toplevel_package_dir,
                                    file_write_mode="tsv"):
         writer = getattr(self, "_write_" + file_write_mode)
         file_base = os.path.basename(file_name)
-        rsc_file = os.path.join(toplevel_package_dir, "study_data", file_base + "." + file_write_mode)
+        rsc_file = os.path.join(toplevel_package_dir, "study_data",
+                                file_base + "." + file_write_mode)
         writer(data_df, rsc_file)
         return (rsc_file, file_write_mode)
 
@@ -146,7 +167,8 @@ class StudyFactory(object):
     #         assert not hasattr(self, k)
     #     except:
     #         write_me = "WARNING: over-writing parameter " + k + "\n" #+ \
-    #                    #str(self.__getattribute__(k)) + \
+    #                    #
+    # str(self.__getattribute__(k)) + \
     #                    #"\n new:" + str(v)
     #         sys.stderr.write(write_me)
     #     super(StudyFactory, self).__setattr__(k, v)
@@ -162,35 +184,65 @@ class StudyFactory(object):
             except KeyError:
                 raise AssertionError("Missing minimal parameter %s" % param)
 
-    def _load_pickle_df(self, file_name):
+    @staticmethod
+    def _load_pickle_df(file_name):
         return pd.read_pickle(file_name)
 
-    def _write_pickle_df(self, df, file_name):
+    @staticmethod
+    def _write_pickle_df(df, file_name):
         df.to_pickle(file_name)
 
-    def _load_gzip_pickle_df(self, file_name):
+    @staticmethod
+    def _load_gzip_pickle_df(file_name):
         import gzip, cPickle
+
         with gzip.open(file_name, 'r') as f:
             return cPickle.load(f)
 
-    def _write_gzip_pickle_df(self, df, file_name):
+    @staticmethod
+    def _write_gzip_pickle_df(df, file_name):
         import tempfile
+
         tmpfile_h, tmpfile = tempfile.mkstemp()
         df.to_pickle(tmpfile)
         import subprocess
+
         subprocess.call(['gzip -f %s' % tempfile])
         subprocess.call(['mv %s %s' % (tempfile, file_name)])
 
-    def _load_tsv(self, file_name):
-        return pd.read_table(file_name, index_col=0)
+    @staticmethod
+    def _load_tsv(file_name, compression=None):
+        return pd.read_table(file_name, index_col=0, compression=compression)
 
-    def _write_tsv(self, df, file_name):
+    @staticmethod
+    def _load_json(filename, compression=None):
+        """
+        Parameters
+        ----------
+        filename : str
+            Name of the json file toread
+        compression : str
+            Not used, only for  compatibility with other load functions
+
+        Returns
+        -------
+
+
+        Raises
+        ------
+        """
+        return pd.read_json(filename)
+
+    @staticmethod
+    def _write_tsv(df, file_name):
         df.to_csv(file_name, sep='\t')
 
-    def _load_csv(self, file_name):
-        return pd.read_csv(file_name, index_col=0)
+    @staticmethod
+    def _load_csv(file_name, compression=None):
+        return pd.read_csv(file_name, index_col=0, compression=compression)
 
-    def _write_csv(self, df, file_name):
+    @staticmethod
+    def _write_csv(df, file_name):
         df.to_csv(file_name)
 
     def _get_loading_method(self, file_name):
@@ -200,23 +252,23 @@ class StudyFactory(object):
     def load(self, file_name, file_type='pickle_df'):
         return self._get_loading_method(file_type)(file_name)
 
-    # def register_new_getter(self, getter_name, **kwargs):
-    #     self.getters.append((kwargs.copy(), getter_name))
-    #
-    # def apply_getters(self):
-    #     """
-    #     update instance namespace with outputs of registered getters.
-    #     """
-    #     for data, getter in self.getters:
-    #         #formerly explicitly set things
-    #         for (k,v) in getter(**data).items():
-    #             self._set(k,v)
-    #     self.getters = [] #reset, getters only need to run once.
-    #
-    # def _example_getter(self, named_attribute=None):
-    #     """Perform operations on named inputs and return named outputs
-    #     """
-    #     return {'output1': None}
+        # def register_new_getter(self, getter_name, **kwargs):
+        #     self.getters.append((kwargs.copy(), getter_name))
+        #
+        # def apply_getters(self):
+        #     """
+        #     update instance namespace with outputs of registered getters.
+        #     """
+        #     for data, getter in self.getters:
+        #         #formerly explicitly set things
+        #         for (k,v) in getter(**data).items():
+        #             self._set(k,v)
+        #     self.getters = [] #reset, getters only need to run once.
+        #
+        # def _example_getter(self, named_attribute=None):
+        #     """Perform operations on named inputs and return named outputs
+        #     """
+        #     return {'output1': None}
 
 
 class Study(StudyFactory):
@@ -226,13 +278,32 @@ class Study(StudyFactory):
     for example getters)
     """
     default_feature_set_ids = []
-    def __init__(self, phenotype_data, expression_data=None, splicing_data=None,
-                 expression_feature_data=None, splicing_feature_data=None,
+
+    initializers = {'experiment_design_data': ExperimentDesignData,
+                    'expression_data': ExpressionData,
+                    'splicing_data': SplicingData,
+                    'mapping_stats_data': MappingStatsData,
+                    'spikein_data': SpikeInData}
+
+    readers = {'tsv': StudyFactory._load_tsv,
+               'csv': StudyFactory._load_csv,
+               'json': StudyFactory._load_json,
+               'pickle_df': StudyFactory._load_pickle_df,
+               'gzip_pickle_df': StudyFactory._load_gzip_pickle_df}
+
+    def __init__(self, experiment_design_data, expression_data=None,
+                 splicing_data=None,
+                 expression_feature_data=None,
+                 expression_feature_rename_col=None,
+                 splicing_feature_data=None,
+                 splicing_feature_rename_col=None,
+                 mapping_stats_data=None, spikein_data=None,
                  load_cargo=False, drop_outliers=False,
                  default_group_id=None, default_group_ids=None,
                  default_list_id='variant', default_list=('variant'),
                  default_genes=('variant'),
-                 default_events=('variant'), species=None):
+                 default_events=('variant'), species=None,
+                 gene_ontology_data=None):
         """Construct a biological study
 
         This class only accepts data, no filenames. All data must already
@@ -240,8 +311,8 @@ class Study(StudyFactory):
 
         Parameters
         ----------
-        phenotype_data : pandas.DataFrame
-            Only required parameter.
+        experiment_design_data : pandas.DataFrame
+            Only required parameter. Samples as the index, with
         expression_data : pandas.DataFrame
             Samples x feature dataframe of gene expression measurements,
             e.g. from an RNA-Seq or a microarray experiment. Assumed to be
@@ -266,23 +337,178 @@ class Study(StudyFactory):
         # self.initialize_required_getters()
         # self.apply_getters()
         self.species = species
-        
-        self._initialize_all_data(phenotype_data,
-                                   expression_data,
-                                   splicing_data, expression_feature_data,
-                                   splicing_feature_data,
-                                   load_cargo=load_cargo,
-                                  drop_outliers=drop_outliers)
+        self.gene_ontology_data = gene_ontology_data
+
+        # THis code is fragile!
+        #TODO: make feature_rename_col an attribute in the datapackage
+        self.experiment_design = ExperimentDesignData(experiment_design_data)
+        if expression_data is not None:
+            self.expression = ExpressionData(expression_data,
+                                             expression_feature_data,
+                                             feature_rename_col='gene_name',
+                                             drop_outliers=drop_outliers)
+            self.expression.networks = NetworkerViz(self.expression)
+            self.default_feature_set_ids.extend(self.expression.feature_sets
+                                                .keys())
+        if splicing_data is not None:
+            self.splicing = SplicingData(splicing_data, splicing_feature_data,
+                                         feature_rename_col='gene_name',
+                                         drop_outliers=drop_outliers)
+            self.splicing.networks = NetworkerViz(self.splicing)
+        if mapping_stats_data is not None:
+            self.mapping_stats = MappingStatsData(mapping_stats_data)
+        if spikein_data is not None:
+            self.spikein = SpikeInData(spikein_data)
+
+
+
+        # self._initialize_all_data(experiment_design_data,
+        #                           expression_data,
+        #                           splicing_data, expression_feature_data,
+        #                           splicing_feature_data,
+        #                           load_cargo=load_cargo,
+        #                           drop_outliers=drop_outliers)
         sys.stderr.write("subclasses initialized\n")
         self.validate_params()
         sys.stderr.write("package validated\n")
+        # self._set_plot_colors()
+        # self._set_plot_markers()
+
+    @property
+    def expression(self):
+        if hasattr(self, '_expression'):
+            return self._expression
+        else:
+            sys.stderr.write('This study does not have expression data')
+            return None
+
+    @expression.setter
+    def expression(self, value):
+        self._expression = value
+
+    @property
+    def splicing(self):
+        if hasattr(self, '_splicing'):
+            return self._splicing
+        else:
+            sys.stderr.write('This study does not have splicing data')
+            return None
+
+    @splicing.setter
+    def splicing(self, value):
+        self._splicing = value
+
+
+    @property
+    def mapping_stats(self):
+        if hasattr(self, '_mapping_stats'):
+            return self._mapping_stats
+        else:
+            sys.stderr.write('This study does not have mapping_stats data')
+            return None
+
+    @mapping_stats.setter
+    def mapping_stats(self, value):
+        self._mapping_stats = value
+
+
+    @property
+    def spikein(self):
+        if hasattr(self, '_spikein'):
+            return self._spikein
+        else:
+            sys.stderr.write('This study does not have spikein data')
+            return None
+
+    @spikein.setter
+    def spikein(self, value):
+        self._spikein = value
+
+
+    @classmethod
+    def from_data_package_url(cls, data_package_url,
+                              species_data_package_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
+        """Create a study from a url of a datapackage.json file
+
+        Parameters
+        ----------
+        data_package_url : str
+            HTTP url of a datapackage.json file, following the specification
+            described here: http://dataprotocols.org/data-packages/ and
+            requiring the following data resources: experiment_design,
+            expression, splicing
+
+        Returns
+        -------
+        study : Study
+            A "study" object containing the data described in the
+            data_package_url file
+
+        Raises
+        ------
+        AttributeError
+            If the datapackage.json file does not contain the required
+            resources of experiment_design, expression, and splicing.
+        """
+        # TODO: This should actually download the data to a know directory like
+        # ~/flotilla_projects so it can be searched, and double check if it's
+        # already downloaded (elegantly fail) and instantiate from those files.
+        # req = urllib2.Request(data_package_url)
+        # opener = urllib2.build_opener()
+        # f = opener.open(req)
+        data_package = data_package_url_to_dict(data_package_url)
+
+        dfs = {}
+        for resource in data_package['resources']:
+            resource_url = resource['url']
+
+            name = resource['name']
+
+            filename = check_if_already_downloaded(resource_url)
+            reader = cls.readers[resource['format']]
+            dfs[name] = reader(filename)
+
+        if 'species' in data_package:
+            species_data_url = '{}/{}/datapackage.json'.format(
+                species_data_package_base_url, data_package['species'])
+            species_data_package = data_package_url_to_dict(species_data_url)
+            species_dfs = {}
+
+            for resource in species_data_package['resources']:
+                resource_url = resource['url']
+
+                # reader = getattr(cls, '_load_' + resource['format'])
+                reader = cls.readers[resource['format']]
+
+                filename = check_if_already_downloaded(resource_url)
+                compression = None if 'compression' not in resource else \
+                    resource['compression']
+                species_dfs[resource['name']] = reader(filename,
+                                                       compression=compression)
+        else:
+            species_dfs = {}
+
+        try:
+            experiment_design_data = dfs['experiment_design']
+            expression_data = dfs['expression']
+            splicing_data = dfs['splicing']
+        except KeyError:
+            raise AttributeError('The datapackage.json file is required to '
+                                 'have these three resources with the '
+                                 'specified names: '
+                                 '"experiment_design", "expression", '
+                                 '"splicing"')
+        study = Study(experiment_design_data=experiment_design_data,
+                      expression_data=expression_data,
+                      splicing_data=splicing_data, **species_dfs)
+        return study
 
     def __add__(self, other):
         """Sanely concatenate one or more Study objects
         """
         raise NotImplementedError
-        self.phenotype_data = pd.concat([self.phenotype_data,
-                                          other.phenotype_data])
+        self.experiment_design_data = pd.concat([self.experiment_design_data,
+                                                 other.phenotype_data])
         self.expression.data = pd.concat([self.expression.data,
                                           other.phenotype_data])
         # self.species = # dict of sample ids to species?
@@ -309,123 +535,162 @@ class Study(StudyFactory):
     #     else:
     #         raise RuntimeError("at least set splicing_data_filename")
 
-    def _initialize_all_data(self, phenotype_data,
-                             expression_data, splicing_data,
-                             expression_feature_data,
-                             splicing_feature_data, load_cargo=False,
-                             drop_outliers=False):
-        """Initialize all the datasets
+    # def _initialize_all_data(self, experiment_design_data,
+    #                          expression_data, splicing_data,
+    #                          expression_feature_data,
+    #                          splicing_feature_data, load_cargo=False,
+    #                          drop_outliers=False):
+    #     """Initialize all the datasets
+    #     """
+    #     #TODO.md: would be great if this worked, untested:
+    #     #for subclass in self.subclasses:
+    #     #    initializer = getattr(self, 'intialize_', subclass, '_subclass')
+    #     #    initializer(self)
+    #
+    #
+    #     self._initialize_experiment_design_data(experiment_design_data)
+    #     sys.stderr.write("initializing expression\n")
+    #     self._initialize_expression(expression_data,
+    #                                 expression_feature_data,
+    #                                 load_cargo=load_cargo,
+    #                                 drop_outliers=drop_outliers)
+    #     try:
+    #         sys.stderr.write("initializing splicing\n")
+    #         self._initialize_splicing(splicing_data, splicing_feature_data,
+    #                                   load_cargo=False,
+    #                                   drop_outliers=drop_outliers)
+    #     except:
+    #         warnings.warn("Failed to load splicing")
+    #
+    # def _initialize_experiment_design_data(self, experiment_design_data):
+    #     #TODO.md: this should be an actual data_model.*Data type, but now it's just set by a loader
+    #     sys.stderr.write("initializing experiment_design_data data\n")
+    #     self.experiment_design_data = ExperimentDesignData(
+    #         experiment_design_data)
+
+
+    def _set_plot_colors(self):
+        """If there is a column 'color' in the sample metadata, specify this
+        as the plotting color
         """
-        #TODO.md: would be great if this worked, untested:
-        #for subclass in self.subclasses:
-        #    initializer = getattr(self, 'intialize_', subclass, '_subclass')
-        #    initializer(self)
-
-
-        self._initialize_phenotype_data(phenotype_data)
-        sys.stderr.write("initializing expression\n")
-        self._initialize_expression(expression_data,
-                                    expression_feature_data,
-                                    load_cargo=load_cargo,
-                                    drop_outliers=drop_outliers)
         try:
-            sys.stderr.write("initializing splicing\n")
-            self._initialize_splicing(splicing_data, splicing_feature_data,
-                                      load_cargo=False,
-                                      drop_outliers=drop_outliers)
-        except:
-            warnings.warn("Failed to load splicing")
+            self._default_reducer_kwargs.update(
+                {'colors_dict': self.experiment_design_data.color})
+            self._default_plot_kwargs.update(
+                {'color': self.experiment_design_data.color.tolist()})
+        except AttributeError:
+            sys.stderr.write("There is no column named 'color' in the "
+                             "metadata, defaulting to blue for all samples\n")
+            self._default_reducer_kwargs.update(
+                {'colors_dict': defaultdict(lambda: blue)})
 
-    def _initialize_phenotype_data(self, phenotype_data):
-        #TODO.md: this should be an actual data_model.*Data type, but now it's just set by a loader
-        sys.stderr.write("initializing phenotype data\n")
-        self.phenotype = ExperimentDesignData(phenotype_data)
-
-
-    def _initialize_expression(self, expression_data,
-                               expression_feature_data,
-                               load_cargo=True, drop_outliers=True,
-                               force=False):
-        """Initialize ExpressionData object
-
-        Parameters
-        ----------
-        expression_data : pandas.DataFrame
-            Samples x feature dataframe of gene expression measurements,
-            e.g. from an RNA-Seq or a microarray experiment. Assumed to be
-            log-normal (i.e. not log-transformed)
-        expression_feature_data : pandas.DatFrame
-            features x other_features dataframe describing other parameters
-            of the gene expression features, e.g. mapping Ensembl IDs to gene
-            symbols or gene biotypes.
-        load_cargo : bool
-            Whether or not to load the "cargo" (aka feature metadata)
-            associated with gene expression in this species
-        drop_outliers : bool
-            Whether or not to remove the samples specified as outliers in the
-            phenotype data
-        force : bool
-            Whether or not to overwrite an existing 'expression' object (if
-            it exists)
-
-        Raises
-        ------
-        AttributeError if "expression" attribute already exists
+    def _set_plot_markers(self):
+        """If there is a column 'marker' in the sample metadata, specify this
+        as the plotting marker (aka the plotting shape). Only valid matplotlib
+        symbols are allowed. See http://matplotlib.org/api/markers_api.html
+        for a more complete description.
         """
-        # [self.minimal_study_parameters.add(i) for i in ['expression_df', 'expression_metadata']]
-        # self.validate_params()
+        try:
+            self._default_reducer_kwargs.update(
+                {'markers_dict': self.experiment_design_data.marker})
+            self._default_plot_kwargs.update(
+                {'marker': self.experiment_design_data.marker.tolist()})
+        except AttributeError:
+            sys.stderr.write("There is no column named 'marker' in the sample "
+                             "metadata, defaulting to a circle for all "
+                             "samples\n")
+            self._default_reducer_kwargs.update({'markers_dict':
+                                                     defaultdict(lambda: 'o')})
 
-        #TODO.md:don't over-write self.expression
-        if hasattr(self, 'expression') and not force:
-            raise AttributeError('Already have attribute "expression", '
-                                 'not overwriting. Set "force=True" to force '
-                                 'overwriting')
-        else:
-            self.expression = ExpressionData(data=expression_data,
-                                             feature_data=expression_feature_data,
-                                             load_cargo=load_cargo,
-                                             drop_outliers=drop_outliers,
-                                             species=self.species)
-            self.expression.networks = NetworkerViz(self.expression)
-            self.default_feature_set_ids.extend(self.expression.feature_sets
-                                            .keys())
+    # def _initialize_expression(self, expression_data,
+    #                            expression_feature_data,
+    #                            load_cargo=True, drop_outliers=True,
+    #                            force=False):
+    #     """Initialize ExpressionData object
+    #
+    #     Parameters
+    #     ----------
+    #     expression_data : pandas.DataFrame
+    #         Samples x feature dataframe of gene expression measurements,
+    #         e.g. from an RNA-Seq or a microarray experiment. Assumed to be
+    #         log-normal (i.e. not log-transformed)
+    #     expression_feature_data : pandas.DatFrame
+    #         features x other_features dataframe describing other parameters
+    #         of the gene expression features, e.g. mapping Ensembl IDs to gene
+    #         symbols or gene biotypes.
+    #     load_cargo : bool
+    #         Whether or not to load the "cargo" (aka feature metadata)
+    #         associated with gene expression in this species
+    #     drop_outliers : bool
+    #         Whether or not to remove the samples specified as outliers in the
+    #         experiment_design_data data
+    #     force : bool
+    #         Whether or not to overwrite an existing 'expression' object (if
+    #         it exists)
+    #
+    #     Raises
+    #     ------
+    #     AttributeError if "expression" attribute already exists
+    #     """
+    #     # [self.minimal_study_parameters.add(i) for i in ['expression_df', 'expression_metadata']]
+    #     # self.validate_params()
+    #
+    #     #TODO.md:don't over-write self.expression
+    #     if hasattr(self, 'expression') and not force:
+    #         raise AttributeError('Already have attribute "expression", '
+    #                              'not overwriting. Set "force=True" to force '
+    #                              'overwriting')
+    #     else:
+    #         self.expression = ExpressionData(data=expression_data,
+    #                                          feature_data=expression_feature_data,
+    #                                          load_cargo=load_cargo,
+    #                                          drop_outliers=drop_outliers,
+    #                                          species=self.species)
+    #         self.expression.networks = NetworkerViz(self.expression)
+    #         self.default_feature_set_ids.extend(self.expression.feature_sets
+    #                                             .keys())
 
-    def _initialize_splicing(self, splicing_data, splicing_feature_data,
-                             load_cargo=False, drop_outliers=True,
-                             force=False):
-        """Initialize SplicingData object
-
-        Parameters
-        ----------
-        load_cargo : bool
-            Whether or not to load the "cargo" (aka feature metadata)
-            associated with alternative splicing in this species
-        drop_outliers : bool
-            Whether or not to remove the samples specified as outliers in the
-            phenotype data
-        force : bool
-            Whether or not to overwrite an existing 'expression' object (if
-            it exists)
-
-        Raises
-        ------
-        AttributeError if "splicing" attribute already exists
-        """
-
-        # [self.minimal_study_parameters.add(i) for i in ['splicing_df', 'event_metadata']]
-        # self.validate_params()
-        #TODO.md:don't over-write self.splicing
-        if hasattr(self, 'splicing') and not force:
-            raise AttributeError('Already have attribute "splicing" set, '
-                                 'not overwriting. Set "force=True" to force '
-                                 'overwriting.')
-        else:
-            self.splicing = SplicingData(data=splicing_data,
-                                         feature_data=splicing_feature_data,
-                                         load_cargo=load_cargo,
-                                         drop_outliers=drop_outliers,
-                                         species=self.species)
-            self.splicing.networks = NetworkerViz(self.splicing)
+    # def _initialize_splicing(self, splicing_data, splicing_feature_data,
+    #                          load_cargo=False, drop_outliers=True,
+    #                          force=False):
+    #     """Initialize SplicingData object
+    #
+    #     Parameters
+    #     ----------
+    #     splicing_data : pandas.DataFrame
+    #         Samples x features dataframe of "percent spliced-in" PSI scores
+    #     splicing_feature_data : pandas.DataFrame
+    #         Samples x features dataframe describing features of the splicing
+    #         events
+    #     load_cargo : bool
+    #         Whether or not to load the "cargo" (aka feature metadata)
+    #         associated with alternative splicing in this species
+    #     drop_outliers : bool
+    #         Whether or not to remove the samples specified as outliers in the
+    #         experiment_design_data data
+    #     force : bool
+    #         Whether or not to overwrite an existing 'expression' object (if
+    #         it exists)
+    #
+    #     Raises
+    #     ------
+    #     AttributeError if "splicing" attribute already exists
+    #     """
+    #
+    #     # [self.minimal_study_parameters.add(i) for i in ['splicing_df', 'event_metadata']]
+    #     # self.validate_params()
+    #     #TODO.md:don't over-write self.splicing
+    #     if hasattr(self, 'splicing') and not force:
+    #         raise AttributeError('Already have attribute "splicing" set, '
+    #                              'not overwriting. Set "force=True" to force '
+    #                              'overwriting.')
+    #     else:
+    #         self.splicing = SplicingData(data=splicing_data,
+    #                                      feature_data=splicing_feature_data,
+    #                                      load_cargo=load_cargo,
+    #                                      drop_outliers=drop_outliers,
+    #                                      species=self.species)
+    #         self.splicing.networks = NetworkerViz(self.splicing)
 
 
     # def get_expression_data(self, expression_data_filename):
@@ -454,7 +719,7 @@ class Study(StudyFactory):
     #         sys.stderr.write("error loading descriptors: %s, \n\n .... entering pdb ... \n\n" % E)
     #         raise E
     #
-    #     return {'phenotype_data': metadata['sample'],
+    #     return {'experiment_design_data': metadata['sample'],
     #             'feature_data': metadata['gene'],
     #             'event_metadata': metadata['event'],
     #             'expression_metadata': None}

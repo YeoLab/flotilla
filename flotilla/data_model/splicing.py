@@ -1,31 +1,30 @@
 import collections
+
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 
 from .base import BaseData
-from ..visualize.decomposition import NMFViz, PCAViz
+from ..visualize.decomposition import NMFViz
 from ..visualize.color import purples
 from ..visualize.predict import PredictorViz
 from ..compute.generic import binify, dropna_mean
 from ..external import link_to_list
 from ..util import memoize
 
+
 class SplicingData(BaseData):
     binned_reducer = None
     raw_reducer = None
 
     n_components = 2
-    _binsize=0.1
+    _binsize = 0.1
     _var_cut = 0.2
 
     def __init__(self, data,
                  feature_data=None, binsize=_binsize,
-                 var_cut = _var_cut,
-                 drop_outliers=True,
-                 load_cargo=False,
-                 **kwargs
-                 ):
+                 var_cut=_var_cut,
+                 drop_outliers=True, feature_rename_col=None):
         """Instantiate a object for study_data scores with binned and reduced study_data
 
         Parameters
@@ -42,31 +41,32 @@ class SplicingData(BaseData):
             functions fit, transform, and have the attribute components_
 
         """
-        super(SplicingData, self).__init__(data,
-                                           **kwargs)
+        super(SplicingData, self).__init__(data, feature_data,
+                                           feature_rename_col=feature_rename_col)
         if drop_outliers:
             self.data = self.drop_outliers(data)
-        # self.phenotype_data, data = self.phenotype_data.align(data, join='inner', axis=0)
+        # self.experiment_design_data, data = self.experiment_design_data.align(data, join='inner', axis=0)
 
         # self.data = data
         self.binsize = binsize
-        psi_variant = pd.Index([i for i,j in (data.var().dropna() > var_cut).iteritems() if j])
-        self._set_naming_fun(self.feature_rename)
+        psi_variant = pd.Index(
+            [i for i, j in (data.var().dropna() > var_cut).iteritems() if j])
+        # self._set_naming_fun(self.feature_rename)
         self.feature_sets['variant'] = pd.Series(psi_variant, index=psi_variant)
-        self.feature_sets['all_genes'] =  pd.Series(data.index, index=data.index)
+        self.feature_sets['all_genes'] = pd.Series(data.index, index=data.index)
         self.feature_data = feature_data
-        self._set_plot_colors()
-        self._set_plot_markers()
+        # self._set_plot_colors()
+        # self._set_plot_markers()
 
-    def feature_rename(self, x):
-        "this is for miso psi IDs..."
-        short = ":".join(x.split("@")[1].split(":")[:2])
-        try:
-            dd = self.event_metadata.set_index('event_name')
-            return dd['gene_symbol'].ix[x] + " " + short
-        except Exception as e:
-            #print e
-            return short
+    # def feature_rename(self, x):
+    #     "this is for miso psi IDs..."
+    #     short = ":".join(x.split("@")[1].split(":")[:2])
+    #     try:
+    #         dd = self.event_metadata.set_index('event_name')
+    #         return dd['gene_symbol'].ix[x] + " " + short
+    #     except Exception as e:
+    #         #print e
+    #         return short
 
     @memoize
     def binify(self, bins):
@@ -96,7 +96,7 @@ class SplicingData(BaseData):
 
     @memoize
     def reduce(self, list_name, group_id, reducer=NMFViz,
-                    featurewise=False, reducer_args=None, standardize=True):
+               featurewise=False, reducer_args=None, standardize=True):
         """make and cache a reduced dimensionality representation of data """
 
         if reducer_args is None:
@@ -111,18 +111,20 @@ class SplicingData(BaseData):
 
         if group_id.startswith("~"):
             #print 'not', group_id.lstrip("~")
-            sample_ind = ~pd.Series(self.phenotype_data[group_id.lstrip("~")], dtype='bool')
+            sample_ind = ~pd.Series(self.phenotype_data[group_id.lstrip("~")],
+                                    dtype='bool')
         else:
             sample_ind = pd.Series(self.phenotype_data[group_id], dtype='bool')
 
         subset = self.data.ix[sample_ind, event_list]
-        frequent = pd.Index([i for i,j in (subset.count() > min_samples).iteritems() if j])
+        frequent = pd.Index(
+            [i for i, j in (subset.count() > min_samples).iteritems() if j])
         subset = subset[frequent]
         #fill na with mean for each event
         means = subset.apply(dropna_mean, axis=0)
-        mf_subset = subset.fillna(means,).fillna(0)
+        mf_subset = subset.fillna(means, ).fillna(0)
         #whiten, mean-center
-        naming_fun=self.get_feature_renamer()
+        # naming_fun = self.feature_renamer()
         #whiten, mean-center
 
         if standardize:
@@ -130,27 +132,30 @@ class SplicingData(BaseData):
         else:
             data = mf_subset
 
-        ss = pd.DataFrame(data, index = mf_subset.index,
-                          columns = mf_subset.columns).rename_axis(naming_fun, 1)
+        ss = pd.DataFrame(data, index=mf_subset.index,
+                          columns=mf_subset.columns).rename_axis(self
+                                                                 .feature_renamer,
+                                                                 1)
 
         if featurewise:
             ss = ss.T
 
         rdc_obj = reducer(ss, **reducer_args)
 
-        rdc_obj.means = means.rename_axis(naming_fun) #always the mean of input features... i.e. featurewise doesn't change this.
+        #always the mean of input features... i.e. featurewise doesn't change this.
+        rdc_obj.means = means.rename_axis(self.feature_renamer)
 
         return rdc_obj
 
     @memoize
     def classify(self, list_name, group_id, categorical_trait,
-                       standardize=True, classifier=PredictorViz,
-                       ):
+                 standardize=True, classifier=PredictorViz,
+    ):
         """
         make and cache a classifier on a categorical trait (associated with samples) subset of genes
          """
 
-        min_samples=self.get_min_samples()
+        min_samples = self.get_min_samples()
         if list_name not in self.feature_sets:
             self.feature_sets[list_name] = link_to_list(list_name)
 
@@ -158,12 +163,14 @@ class SplicingData(BaseData):
 
         if group_id.startswith("~"):
             #print 'not', group_id.lstrip("~")
-            sample_ind = ~pd.Series(self.phenotype_data[group_id.lstrip("~")], dtype='bool')
+            sample_ind = ~pd.Series(self.phenotype_data[group_id.lstrip("~")],
+                                    dtype='bool')
         else:
             sample_ind = pd.Series(self.phenotype_data[group_id], dtype='bool')
         sample_ind = sample_ind[sample_ind].index
         subset = self.data.ix[sample_ind, event_list]
-        frequent = pd.Index([i for i, j in (subset.count() > min_samples).iteritems() if j])
+        frequent = pd.Index(
+            [i for i, j in (subset.count() > min_samples).iteritems() if j])
         subset = subset[frequent]
         #fill na with mean for each event
         means = subset.apply(dropna_mean, axis=0)
@@ -174,11 +181,13 @@ class SplicingData(BaseData):
             data = StandardScaler().fit_transform(mf_subset)
         else:
             data = mf_subset
-        naming_fun = self.get_feature_renamer()
-        ss = pd.DataFrame(data, index = mf_subset.index,
-                          columns = mf_subset.columns).rename_axis(naming_fun, 1)
+        # naming_fun = self.feature_renamer()
+        ss = pd.DataFrame(data, index=mf_subset.index,
+                          columns=mf_subset.columns).rename_axis(self
+                                                                 .feature_renamer,
+                                                                 1)
         clf = classifier(ss, self.phenotype_data,
-                        categorical_traits=[categorical_trait],)
+                         categorical_traits=[categorical_trait], )
         clf.set_reducer_plotting_args(self._default_reducer_args)
         return clf
 
@@ -187,7 +196,6 @@ class SplicingData(BaseData):
 
     def _get(self, splicing_data_filename):
         return {'splicing_df': self.load(*splicing_data_filename)}
-
 
 
 class SpliceJunctionData(SplicingData):
@@ -207,7 +215,7 @@ class SpliceJunctionData(SplicingData):
 
         Parameters
         ----------
-        data, phenotype_data
+        data, experiment_design_data
 
         Returns
         -------
@@ -226,7 +234,7 @@ class DownsampledSplicingData(BaseData):
     raw_reducer = None
 
     n_components = 2
-    _binsize=0.1
+    _binsize = 0.1
     _var_cut = 0.2
 
 
@@ -242,7 +250,7 @@ class DownsampledSplicingData(BaseData):
             randomly sampling probability from the bam file used to generate
             these reads, and "iteration" indicates the integer iteration
             performed, e.g. if multiple resamplings were performed.
-        phenotype_data: pandas.DataFrame
+        experiment_design_data: pandas.DataFrame
 
         Notes
         -----
@@ -264,7 +272,6 @@ class DownsampledSplicingData(BaseData):
         Parameters
         ----------
 
-
         Returns
         -------
         event_count_df : pandas.DataFrame
@@ -273,8 +280,8 @@ class DownsampledSplicingData(BaseData):
             share this splicing event at that probability and splice type.
         """
 
-        if not hasattr(self, '_shared_events_df'):
-            shared_events_dict = {}
+        if not hasattr(self, '_shared_events'):
+            shared_events = {}
 
             for (splice_type, probability), df in self.df.groupby(
                     ['splice_type', 'probability']):
@@ -283,14 +290,14 @@ class DownsampledSplicingData(BaseData):
                 # n_iter = data.iteration.unique().shape[0]
                 event_count = collections.Counter(df.event_name)
                 # print sum(1 for k, v in event_count.iteritems() if v == n_iter)
-                shared_events_dict[(splice_type, probability)] = pd.Series(
+                shared_events[(splice_type, probability)] = pd.Series(
                     event_count)
 
-            self._shared_events_df = pd.DataFrame(shared_events_dict)
-            self._shared_events_df.columns = pd.MultiIndex.from_tuples(
+            self._shared_events = pd.DataFrame(shared_events)
+            self._shared_events.columns = pd.MultiIndex.from_tuples(
                 self._shared_events_df.columns.tolist())
         else:
-            return self._shared_events_df
+            return self._shared_events
 
     def shared_events_barplot(self, figure_dir='./'):
         """PLot a "histogram" via colored bars of the number of events shared by
@@ -357,13 +364,13 @@ class DownsampledSplicingData(BaseData):
 
             fig, ax = plt.subplots(figsize=(16, 4))
 
-
             left = np.arange(df.shape[1])
             num_greater_than = df[df >= min_iter_shared].count()
             percent_greater_than = num_greater_than / df.shape[0]
 
             ax.plot(left, percent_greater_than,
-                    label='Shared with at least {} iter'.format(min_iter_shared))
+                    label='Shared with at least {} iter'.format(
+                        min_iter_shared))
 
             ax.set_xticks(np.arange(0, 101, 10))
 

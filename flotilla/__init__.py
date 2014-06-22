@@ -1,12 +1,6 @@
 __author__ = 'lovci'
 
-import argparse
-
-# import computation as frigate
-# import database as carrier
-# import util as barge
-# import data_model as schooner
-# import visualize as submarine
+from .data_model.study import StudyFactory, Study
 
 
 def call_main():
@@ -18,3 +12,13 @@ def call_main():
 
 def main():
     pass
+
+
+
+
+def embark(data_package_url):
+    """
+    Begin your journey of data exploration.
+    """
+    # TODO: This
+    return Study.from_data_package_url(data_package_url)

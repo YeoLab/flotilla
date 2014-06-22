@@ -1,11 +1,15 @@
-from collections import defaultdict
-import pandas as pd
-from scipy.spatial.distance import pdist, squareform
-import six
+"""
+Base data class for all data types. All data types in flotilla inherit from
+this, or a child object (like ExpressionData).
+"""
 import sys
 
-from ..visualize.color import red, blue, green
+import pandas as pd
+from scipy.spatial.distance import pdist, squareform
+
+from ..visualize.color import blue
 from ..util import memoize
+
 
 MINIMUM_SAMPLES = 12
 
@@ -31,15 +35,16 @@ class BaseData(object):
                                'show_vectors': False}
     _default_plot_kwargs = {'marker': 'o', 'color': blue}
 
-    feature_sets = {}
+
 
     def __init__(self, data=None, feature_data=None,
-                 species=None):
+                 species=None, feature_rename_col=None, drop_outliers=False,
+                 min_samples=MINIMUM_SAMPLES):
         """Base class for biological data measurements
 
         Parameters
         ----------
-        phenotype_data : pandas.DataFrame
+        experiment_design_data : pandas.DataFrame
             Metadata on the samples, with sample names as rows and columns as
             attributes. Any boolean column will be added as an option to
             interactive_pca
@@ -53,48 +58,38 @@ class BaseData(object):
 
         """
         self.data = data
-        # self.phenotype_data = phenotype_data
+        # self.experiment_design_data = experiment_design_data
         self.feature_data = feature_data
+        # import pdb
+        # pdb.set_trace()
+        self.feature_rename_col = feature_rename_col
+        self.min_samples = min_samples
+
         self.species = species
-        self._set_plot_colors()
-        self._set_plot_markers()
+        self.feature_sets = {}
+        # This code is very fragile!
+        if self.feature_data is not None and self.feature_rename_col is not \
+                None:
+            def feature_renamer(x):
+                if x in self.feature_data[feature_rename_col]:
+                    rename = self.feature_data[feature_rename_col][x]
+                    if isinstance(rename, pd.Series):
+                        return rename.values[0]
+                    else:
+                        return rename
+                else:
+                    return x
 
-    def _set_plot_colors(self):
-        """If there is a column 'color' in the sample metadata, specify this
-        as the plotting color
-        """
-        try:
-            self._default_reducer_kwargs.update(
-                {'colors_dict': self.phenotype_data.color})
-            self._default_plot_kwargs.update(
-                {'color': self.phenotype_data.color.tolist()})
-        except AttributeError:
-            sys.stderr.write("There is no column named 'color' in the "
-                             "metadata, defaulting to blue for all samples\n")
-            self._default_reducer_kwargs.update(
-                {'colors_dict': defaultdict(lambda : blue)})
+            self.feature_renamer = feature_renamer
+        else:
+            self.feature_renamer = lambda x: x
 
-    def _set_plot_markers(self):
-        """If there is a column 'marker' in the sample metadata, specify this
-        as the plotting marker (aka the plotting shape). Only valid matplotlib
-        symbols are allowed. See http://matplotlib.org/api/markers_api.html
-        for a more complete description.
-        """
-        try:
-            self._default_reducer_kwargs.update(
-                {'markers_dict': self.phenotype_data.marker})
-            self._default_plot_kwargs.update(
-                {'marker': self.phenotype_data.marker.tolist()})
-        except AttributeError:
-            sys.stderr.write("There is no column named 'marker' in the sample "
-                             "metadata, defaulting to a circle for all "
-                             "samples\n")
-            self._default_reducer_kwargs.update({'markers_dict':
-                                                   defaultdict(lambda : 'o')})
+        if drop_outliers:
+            self.data = self.drop_outliers(data)
 
     @property
     def outliers(self):
-        """If there is a column called 'outliers' in the phenotype_data,
+        """If there is a column called 'outliers' in the experiment_design_data,
         then return the samples where this is True for them
         """
         try:
@@ -105,9 +100,9 @@ class BaseData(object):
             return set([])
 
     def drop_outliers(self, df):
-        # assert 'outlier' in self.phenotype_data.columns
+        # assert 'outlier' in self.experiment_design_data.columns
         outliers = self.outliers.intersection(df.index)
-        print "dropping ", outliers
+        sys.stdout.write("dropping {}".format(outliers))
         return df.drop(outliers)
 
 
@@ -150,24 +145,26 @@ class BaseData(object):
         """
         raise NotImplementedError
 
-    def _feature_renamer(self, x):
-        return x
-
-
-    def get_feature_renamer(self):
+    # def _feature_renamer(self, x):
+    #     return x
+    #
+    @property
+    def feature_renamer(self):
         return self._feature_renamer
 
-    def _set_naming_fun(self, fun, test_name='foo'):
-        self._feature_rename = fun
-        try:
-            fun(test_name)
-        except:
-            pass
-            #print "might not be a good naming function, failed on %s" % test_name
+    @feature_renamer.setter
+    def feature_renamer(self, renamer, test_name='foo'):
+        self._feature_renamer = renamer
+        # try:
+        #     fun(test_name)
+        # except:
+        #     pass
+        #print "might not be a good naming function, failed on %s" % test_name
 
 
     # TODO.md: Specify dtypes in docstring
-    def plot_classifier(self, gene_list_name=None, sample_list_name=None, clf_var=None,
+    def plot_classifier(self, gene_list_name=None, sample_list_name=None,
+                        clf_var=None,
                         predictor_args=None, plotting_args=None):
         """Principal component-like analysis of measurements
 
@@ -345,12 +342,19 @@ class BaseData(object):
     #
     #     return self.clf_dict[obj_id]
 
-    def get_min_samples(self):
-        try:
-            return self.min_samples
-        except AttributeError:
-            return MINIMUM_SAMPLES
+    # def get_min_samples(self):
+    #     try:
+    #         return self.min_samples
+    #     except AttributeError:
+    #         return MINIMUM_SAMPLES
+    #
+    # def set_min_samples(self, min_samples):
+    #     self.min_samples = min_samples
 
-    def set_min_samples(self, min_samples):
-        self.min_samples = min_samples
+    @property
+    def min_samples(self):
+        return self._min_samples
 
+    @min_samples.setter
+    def min_samples(self, values):
+        self._min_samples = values

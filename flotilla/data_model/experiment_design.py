@@ -4,9 +4,10 @@ Data model for anything informational, like metadata about samples or mapping
 stats data
 """
 
-
 import sys
+
 from .base import BaseData
+
 
 # Any informational data goes here
 
@@ -29,7 +30,7 @@ class ExperimentDesignData(BaseData):
             sys.stderr.write("error loading descriptors: %s, \n\n .... entering pdb ... \n\n" % E)
             raise E
 
-        return {'phenotype_data': metadata['sample'],
+        return {'experiment_design_data': metadata['sample'],
                 'feature_data': metadata['gene'],
                 'event_metadata': metadata['event'],
                 'expression_metadata': None}
