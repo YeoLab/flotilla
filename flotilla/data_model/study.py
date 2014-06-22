@@ -293,7 +293,10 @@ class Study(StudyFactory):
 
     def __init__(self, experiment_design_data, expression_data=None,
                  splicing_data=None,
-                 expression_feature_data=None, splicing_feature_data=None,
+                 expression_feature_data=None,
+                 expression_feature_rename_col=None,
+                 splicing_feature_data=None,
+                 splicing_feature_rename_col=None,
                  mapping_stats_data=None, spikein_data=None,
                  load_cargo=False, drop_outliers=False,
                  default_group_id=None, default_group_ids=None,
@@ -340,13 +343,15 @@ class Study(StudyFactory):
         if expression_data is not None:
             self.expression = ExpressionData(expression_data,
                                              expression_feature_data,
-                                             feature_rename_col='gene_symbol')
+                                             feature_rename_col='gene_name',
+                                             drop_outliers=drop_outliers)
             self.expression.networks = NetworkerViz(self.expression)
             self.default_feature_set_ids.extend(self.expression.feature_sets
                                                 .keys())
         if splicing_data is not None:
             self.splicing = SplicingData(splicing_data, splicing_feature_data,
-                                         feature_rename_col='gene_name')
+                                         feature_rename_col='gene_symbol',
+                                         drop_outliers=drop_outliers)
             self.splicing.networks = NetworkerViz(self.splicing)
         if mapping_stats_data is not None:
             self.mapping_stats = MappingStatsData(mapping_stats_data)
@@ -482,14 +487,18 @@ class Study(StudyFactory):
             species_dfs = {}
 
         try:
-            study = Study(experiment_design_data=dfs['experiment_design'],
-                          expression_data=dfs['expression'],
-                          splicing_data=dfs['splicing'], **species_dfs)
+            experiment_design_data = dfs['experiment_design']
+            expression_data = dfs['expression']
+            splicing_data = dfs['splicing']
         except KeyError:
             raise AttributeError('The datapackage.json file is required to '
-                                 'have these three resources: '
+                                 'have these three resources with the '
+                                 'specified names: '
                                  '"experiment_design", "expression", '
                                  '"splicing"')
+        study = Study(experiment_design_data=experiment_design_data,
+                      expression_data=expression_data,
+                      splicing_data=splicing_data, **species_dfs)
         return study
 
     def __add__(self, other):
