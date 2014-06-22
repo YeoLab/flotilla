@@ -11,9 +11,8 @@ from sklearn.preprocessing import StandardScaler
 from .base import BaseData
 from ..visualize.decomposition import PCAViz
 from ..visualize.predict import PredictorViz
-from ..compute.generic import dropna_mean
-from ..external import link_to_list
 from ..util import memoize
+
 
 
 
@@ -76,8 +75,14 @@ class ExpressionData(BaseData):
         if load_cargo:
             self.load_cargo()
 
-    def _subset_and_standardize_data(self, data, sample_ids, feature_ids,
+    def _subset_and_standardize_data(self, data, sample_ids=None,
+                                     feature_ids=None,
                                      standardize=True):
+        if feature_ids is None:
+            feature_ids = self.data.columns
+        if sample_ids is None:
+            sample_ids = self.data.index
+
         subset = data.ix[sample_ids]
         subset = subset.T.ix[feature_ids].T
         subset = subset.ix[:, subset.count() > self.min_samples]
@@ -94,7 +99,7 @@ class ExpressionData(BaseData):
         subset = pd.DataFrame(data, index=subset.index,
                               columns=subset.columns).rename_axis(
             self.feature_renamer, 1)
-        return subset
+        return subset, means
 
     @memoize
     def reduce(self, sample_ids=None, feature_ids=None,
@@ -104,10 +109,6 @@ class ExpressionData(BaseData):
                title='',
                reducer_kwargs=None):
         """make and cache a reduced dimensionality representation of data """
-        if feature_ids is None:
-            feature_ids = self.data.columns
-        if sample_ids is None:
-            sample_ids = self.data.index
 
         # min_samples = self.min_samples
         # input_reducer_args = reducer_args.copy()
@@ -117,8 +118,8 @@ class ExpressionData(BaseData):
         reducer_kwargs['title'] = title
         # feature_renamer = self.feature_renamer()
 
-        subset = self._subset_and_standardize_data(self.sparse_data,
-                                                   sample_ids, feature_ids,
+        subset, means = self._subset_and_standardize_data(self.sparse_data,
+                                                          sample_ids, feature_ids,
                                                    standardize)
 
         # compute reduction
@@ -133,48 +134,16 @@ class ExpressionData(BaseData):
         return reducer_object
 
     @memoize
-    def classify(self, gene_list_name, phenotype_group_id, categorical_trait,
+    def classify(self, sample_ids, feature_ids, categorical_trait,
                  standardize=True, predictor=PredictorViz):
         """
         make and cache a classifier on a categorical trait (associated with samples) subset of genes
          """
+        subset, means = self._subset_and_standardize_data(self.sparse_data,
+                                                          sample_ids,
+                                                          feature_ids,
+                                                          standardize)
 
-        min_samples = self.get_min_samples()
-        # feature_renamer = self.feature_renamer()
-
-        if gene_list_name not in self.feature_sets:
-            this_list = link_to_list(gene_list_name)
-            self.feature_sets[gene_list_name] = pd.Series(
-                map(self.feature_renamer, this_list), index=this_list)
-
-        gene_list = self.feature_sets[gene_list_name]
-
-        if phenotype_group_id.startswith("~"):
-            #print 'not', phenotype_group_id.lstrip("~")
-            sample_ind = ~pd.Series(
-                self.phenotype_data[phenotype_group_id.lstrip("~")],
-                dtype='bool')
-        else:
-            sample_ind = pd.Series(self.phenotype_data[phenotype_group_id],
-                                   dtype='bool')
-        sample_ind = sample_ind[sample_ind].index
-        subset = self.sparse_data.ix[sample_ind, gene_list.index]
-        frequent = pd.Index(
-            [i for i, j in (subset.count() > min_samples).iteritems() if j])
-        subset = subset[frequent]
-        #fill na with mean for each event
-        means = subset.apply(dropna_mean, axis=0)
-        mf_subset = subset.fillna(means, ).fillna(0)
-
-        #whiten, mean-center
-        if standardize:
-            data = StandardScaler().fit_transform(mf_subset)
-        else:
-            data = mf_subset
-
-        ss = pd.DataFrame(data, index=mf_subset.index,
-                          columns=mf_subset.columns).rename_axis(
-            self.feature_renamer, 1)
         clf = predictor(ss, self.phenotype_data,
                         categorical_traits=[categorical_trait], )
         clf.set_reducer_plotting_args(self._default_reducer_kwargs)
