@@ -7,8 +7,6 @@ import sys
 import pandas as pd
 from scipy.spatial.distance import pdist, squareform
 
-from ..util import memoize
-
 
 MINIMUM_SAMPLES = 12
 
@@ -237,19 +235,19 @@ class BaseData(object):
             )
         return self
 
-    @memoize
-    def reduce(self, *args, **kwargs):
-        """Reduce the dimensionality of the data. Must be implemented for
-        each specific data sub-type
-        """
-        raise NotImplementedError
-
-    @memoize
-    def classify(self, *args, **kwargs):
-        """Run a classifier on the data. Must be implemented for each
-        specific data sub-type
-        """
-        raise NotImplementedError
+    # @memoize
+    # def reduce(self, *args, **kwargs):
+    #     """Reduce the dimensionality of the data. Must be implemented for
+    #     each specific data sub-type
+    #     """
+    #     raise NotImplementedError
+    #
+    # @memoize
+    # def classify(self, *args, **kwargs):
+    #     """Run a classifier on the data. Must be implemented for each
+    #     specific data sub-type
+    #     """
+    #     raise NotImplementedError
 
     # @memoize
     # def get_reduced(self, obj_id=None, list_name=None, group_id=None, featurewise=None, **reducer_args):

@@ -16,6 +16,7 @@ from ..external import link_to_list
 from ..util import memoize
 
 
+
 #
 # seaborn.set_context('paper')
 
@@ -35,6 +36,7 @@ class ExpressionData(BaseData):
 
         Returns
         -------
+
 
 
         Raises
@@ -73,25 +75,31 @@ class ExpressionData(BaseData):
             self.load_cargo()
 
     @memoize
-    def reduce(self, sample_ids, feature_ids,
+    def reduce(self, sample_ids=None, feature_ids=None,
                featurewise=False,
                reducer=PCAViz,
                standardize=True,
                title='',
-               **reducer_args):
+               reducer_kwargs=None):
         """make and cache a reduced dimensionality representation of data """
+        if feature_ids is None:
+            feature_ids = self.data.columns
+        if sample_ids is None:
+            sample_ids = self.data.index
 
-        min_samples = self.min_samples
-        input_reducer_args = reducer_args.copy()
-        reducer_args = self._default_reducer_kwargs.copy()
-        reducer_args.update(input_reducer_args)
-        reducer_args['title'] = title
+        # min_samples = self.min_samples
+        # input_reducer_args = reducer_args.copy()
+        # reducer_kwargs = self._default_reducer_kwargs.copy()
+        # reducer_kwargs.update(input_reducer_args)
+        reducer_kwargs = {} if reducer_kwargs is None else reducer_kwargs
+        reducer_kwargs['title'] = title
         # feature_renamer = self.feature_renamer()
 
         subset = self.sparse_data.ix[sample_ids]
         subset = subset.T.ix[feature_ids].T
         frequent = pd.Index(
-            [i for i, j in (subset.count() > min_samples).iteritems() if j])
+            [i for i, j in (subset.count() > self.min_samples).iteritems()
+             if j])
         subset = subset[frequent]
         #fill na with mean for each event
         means = subset.apply(dropna_mean, axis=0)
@@ -110,7 +118,7 @@ class ExpressionData(BaseData):
         #compute pca
         if featurewise:
             subset = subset.T
-        reducer_object = reducer(subset, **reducer_args)
+        reducer_object = reducer(subset, **reducer_kwargs)
         reducer_object.means = means.rename_axis(
             self.feature_renamer)  #always the mean of input features... i.e.
         # featurewise doesn't change this.
