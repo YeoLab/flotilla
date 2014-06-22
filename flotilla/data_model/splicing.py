@@ -44,8 +44,7 @@ class SplicingData(BaseData):
             functions fit, transform, and have the attribute components_
 
         """
-        super(SplicingData, self).__init__(data,
-                                           **kwargs)
+        super(SplicingData, self).__init__()
         if drop_outliers:
             self.data = self.drop_outliers(data)
         # self.experiment_design_data, data = self.experiment_design_data.align(data, join='inner', axis=0)
@@ -54,7 +53,7 @@ class SplicingData(BaseData):
         self.binsize = binsize
         psi_variant = pd.Index(
             [i for i, j in (data.var().dropna() > var_cut).iteritems() if j])
-        self._set_naming_fun(self.feature_rename)
+        # self._set_naming_fun(self.feature_rename)
         self.feature_sets['variant'] = pd.Series(psi_variant, index=psi_variant)
         self.feature_sets['all_genes'] = pd.Series(data.index, index=data.index)
         self.feature_data = feature_data

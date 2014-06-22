@@ -20,6 +20,8 @@ from ..visualize.ipython_interact import Interactive
 from ..external import data_package_url_to_dict, check_if_already_downloaded
 
 
+SPECIES_DATA_PACKAGE_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects'
+
 
 
 # import flotilla
@@ -277,15 +279,22 @@ class Study(StudyFactory):
     """
     default_feature_set_ids = []
 
-    initializers = {'experiment_design': ExperimentDesignData,
-                    'expression': ExpressionData,
-                    'splicing': SplicingData,
-                    'mapping_stats': MappingStatsData,
-                    'spikein': SpikeInData}
+    initializers = {'experiment_design_data': ExperimentDesignData,
+                    'expression_data': ExpressionData,
+                    'splicing_data': SplicingData,
+                    'mapping_stats_data': MappingStatsData,
+                    'spikein_data': SpikeInData}
+
+    readers = {'tsv': StudyFactory._load_tsv,
+               'csv': StudyFactory._load_csv,
+               'json': StudyFactory._load_json,
+               'pickle_df': StudyFactory._load_pickle_df,
+               'gzip_pickle_df': StudyFactory._load_gzip_pickle_df}
 
     def __init__(self, experiment_design_data, expression_data=None,
                  splicing_data=None,
                  expression_feature_data=None, splicing_feature_data=None,
+                 mapping_stats_data=None, spikein_data=None,
                  load_cargo=False, drop_outliers=False,
                  default_group_id=None, default_group_ids=None,
                  default_list_id='variant', default_list=('variant'),
@@ -327,19 +336,87 @@ class Study(StudyFactory):
         self.species = species
         self.gene_ontology_data = gene_ontology_data
 
-        self._initialize_all_data(experiment_design_data,
-                                  expression_data,
-                                  splicing_data, expression_feature_data,
-                                  splicing_feature_data,
-                                  load_cargo=load_cargo,
-                                  drop_outliers=drop_outliers)
+        self.experiment_design = ExperimentDesignData(experiment_design_data)
+        if expression_data is not None:
+            self.expression = ExpressionData(expression_data,
+                                             expression_feature_data,
+                                             feature_rename_col='gene_symbol')
+            self.expression.networks = NetworkerViz(self.expression)
+            self.default_feature_set_ids.extend(self.expression.feature_sets
+                                                .keys())
+        if splicing_data is not None:
+            self.splicing = SplicingData(splicing_data, splicing_feature_data,
+                                         feature_rename_col='gene_name')
+            self.splicing.networks = NetworkerViz(self.splicing)
+        if mapping_stats_data is not None:
+            self.mapping_stats = MappingStatsData(mapping_stats_data)
+        if spikein_data is not None:
+            self.spikein = SpikeInData(spikein_data)
+
+
+
+        # self._initialize_all_data(experiment_design_data,
+        #                           expression_data,
+        #                           splicing_data, expression_feature_data,
+        #                           splicing_feature_data,
+        #                           load_cargo=load_cargo,
+        #                           drop_outliers=drop_outliers)
         sys.stderr.write("subclasses initialized\n")
         self.validate_params()
         sys.stderr.write("package validated\n")
         # self._set_plot_colors()
         # self._set_plot_markers()
 
-    SPECIES_DATA_PACKAGE_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects'
+    @property
+    def expression(self):
+        if hasattr(self, '_expression'):
+            return self._expression
+        else:
+            sys.stderr.write('This study does not have expression data')
+            return None
+
+    @expression.setter
+    def expression(self, value):
+        self._expression = value
+
+    @property
+    def splicing(self):
+        if hasattr(self, '_splicing'):
+            return self._splicing
+        else:
+            sys.stderr.write('This study does not have splicing data')
+            return None
+
+    @splicing.setter
+    def splicing(self, value):
+        self._splicing = value
+
+
+    @property
+    def mapping_stats(self):
+        if hasattr(self, '_mapping_stats'):
+            return self._mapping_stats
+        else:
+            sys.stderr.write('This study does not have mapping_stats data')
+            return None
+
+    @mapping_stats.setter
+    def mapping_stats(self, value):
+        self._mapping_stats = value
+
+
+    @property
+    def spikein(self):
+        if hasattr(self, '_spikein'):
+            return self._spikein
+        else:
+            sys.stderr.write('This study does not have spikein data')
+            return None
+
+    @spikein.setter
+    def spikein(self, value):
+        self._spikein = value
+
 
     @classmethod
     def from_data_package_url(cls, data_package_url,
@@ -380,9 +457,9 @@ class Study(StudyFactory):
 
             name = resource['name']
 
-            if name != 'species':
-                filename = check_if_already_downloaded(resource_url)
-                dfs[name] = cls._load_tsv(filename)
+            filename = check_if_already_downloaded(resource_url)
+            reader = cls.readers[resource['format']]
+            dfs[name] = reader(filename)
 
         if 'species' in data_package:
             species_data_url = '{}/{}/datapackage.json'.format(
@@ -393,7 +470,8 @@ class Study(StudyFactory):
             for resource in species_data_package['resources']:
                 resource_url = resource['url']
 
-                reader = getattr(cls, '_load_' + resource['format'])
+                # reader = getattr(cls, '_load_' + resource['format'])
+                reader = cls.readers[resource['format']]
 
                 filename = check_if_already_downloaded(resource_url)
                 compression = None if 'compression' not in resource else \
@@ -446,38 +524,38 @@ class Study(StudyFactory):
     #     else:
     #         raise RuntimeError("at least set splicing_data_filename")
 
-    def _initialize_all_data(self, experiment_design_data,
-                             expression_data, splicing_data,
-                             expression_feature_data,
-                             splicing_feature_data, load_cargo=False,
-                             drop_outliers=False):
-        """Initialize all the datasets
-        """
-        #TODO.md: would be great if this worked, untested:
-        #for subclass in self.subclasses:
-        #    initializer = getattr(self, 'intialize_', subclass, '_subclass')
-        #    initializer(self)
-
-
-        self._initialize_experiment_design_data(experiment_design_data)
-        sys.stderr.write("initializing expression\n")
-        self._initialize_expression(expression_data,
-                                    expression_feature_data,
-                                    load_cargo=load_cargo,
-                                    drop_outliers=drop_outliers)
-        try:
-            sys.stderr.write("initializing splicing\n")
-            self._initialize_splicing(splicing_data, splicing_feature_data,
-                                      load_cargo=False,
-                                      drop_outliers=drop_outliers)
-        except:
-            warnings.warn("Failed to load splicing")
-
-    def _initialize_experiment_design_data(self, experiment_design_data):
-        #TODO.md: this should be an actual data_model.*Data type, but now it's just set by a loader
-        sys.stderr.write("initializing experiment_design_data data\n")
-        self.experiment_design_data = ExperimentDesignData(
-            experiment_design_data)
+    # def _initialize_all_data(self, experiment_design_data,
+    #                          expression_data, splicing_data,
+    #                          expression_feature_data,
+    #                          splicing_feature_data, load_cargo=False,
+    #                          drop_outliers=False):
+    #     """Initialize all the datasets
+    #     """
+    #     #TODO.md: would be great if this worked, untested:
+    #     #for subclass in self.subclasses:
+    #     #    initializer = getattr(self, 'intialize_', subclass, '_subclass')
+    #     #    initializer(self)
+    #
+    #
+    #     self._initialize_experiment_design_data(experiment_design_data)
+    #     sys.stderr.write("initializing expression\n")
+    #     self._initialize_expression(expression_data,
+    #                                 expression_feature_data,
+    #                                 load_cargo=load_cargo,
+    #                                 drop_outliers=drop_outliers)
+    #     try:
+    #         sys.stderr.write("initializing splicing\n")
+    #         self._initialize_splicing(splicing_data, splicing_feature_data,
+    #                                   load_cargo=False,
+    #                                   drop_outliers=drop_outliers)
+    #     except:
+    #         warnings.warn("Failed to load splicing")
+    #
+    # def _initialize_experiment_design_data(self, experiment_design_data):
+    #     #TODO.md: this should be an actual data_model.*Data type, but now it's just set by a loader
+    #     sys.stderr.write("initializing experiment_design_data data\n")
+    #     self.experiment_design_data = ExperimentDesignData(
+    #         experiment_design_data)
 
 
     def _set_plot_colors(self):
@@ -513,95 +591,95 @@ class Study(StudyFactory):
             self._default_reducer_kwargs.update({'markers_dict':
                                                      defaultdict(lambda: 'o')})
 
-    def _initialize_expression(self, expression_data,
-                               expression_feature_data,
-                               load_cargo=True, drop_outliers=True,
-                               force=False):
-        """Initialize ExpressionData object
+    # def _initialize_expression(self, expression_data,
+    #                            expression_feature_data,
+    #                            load_cargo=True, drop_outliers=True,
+    #                            force=False):
+    #     """Initialize ExpressionData object
+    #
+    #     Parameters
+    #     ----------
+    #     expression_data : pandas.DataFrame
+    #         Samples x feature dataframe of gene expression measurements,
+    #         e.g. from an RNA-Seq or a microarray experiment. Assumed to be
+    #         log-normal (i.e. not log-transformed)
+    #     expression_feature_data : pandas.DatFrame
+    #         features x other_features dataframe describing other parameters
+    #         of the gene expression features, e.g. mapping Ensembl IDs to gene
+    #         symbols or gene biotypes.
+    #     load_cargo : bool
+    #         Whether or not to load the "cargo" (aka feature metadata)
+    #         associated with gene expression in this species
+    #     drop_outliers : bool
+    #         Whether or not to remove the samples specified as outliers in the
+    #         experiment_design_data data
+    #     force : bool
+    #         Whether or not to overwrite an existing 'expression' object (if
+    #         it exists)
+    #
+    #     Raises
+    #     ------
+    #     AttributeError if "expression" attribute already exists
+    #     """
+    #     # [self.minimal_study_parameters.add(i) for i in ['expression_df', 'expression_metadata']]
+    #     # self.validate_params()
+    #
+    #     #TODO.md:don't over-write self.expression
+    #     if hasattr(self, 'expression') and not force:
+    #         raise AttributeError('Already have attribute "expression", '
+    #                              'not overwriting. Set "force=True" to force '
+    #                              'overwriting')
+    #     else:
+    #         self.expression = ExpressionData(data=expression_data,
+    #                                          feature_data=expression_feature_data,
+    #                                          load_cargo=load_cargo,
+    #                                          drop_outliers=drop_outliers,
+    #                                          species=self.species)
+    #         self.expression.networks = NetworkerViz(self.expression)
+    #         self.default_feature_set_ids.extend(self.expression.feature_sets
+    #                                             .keys())
 
-        Parameters
-        ----------
-        expression_data : pandas.DataFrame
-            Samples x feature dataframe of gene expression measurements,
-            e.g. from an RNA-Seq or a microarray experiment. Assumed to be
-            log-normal (i.e. not log-transformed)
-        expression_feature_data : pandas.DatFrame
-            features x other_features dataframe describing other parameters
-            of the gene expression features, e.g. mapping Ensembl IDs to gene
-            symbols or gene biotypes.
-        load_cargo : bool
-            Whether or not to load the "cargo" (aka feature metadata)
-            associated with gene expression in this species
-        drop_outliers : bool
-            Whether or not to remove the samples specified as outliers in the
-            experiment_design_data data
-        force : bool
-            Whether or not to overwrite an existing 'expression' object (if
-            it exists)
-
-        Raises
-        ------
-        AttributeError if "expression" attribute already exists
-        """
-        # [self.minimal_study_parameters.add(i) for i in ['expression_df', 'expression_metadata']]
-        # self.validate_params()
-
-        #TODO.md:don't over-write self.expression
-        if hasattr(self, 'expression') and not force:
-            raise AttributeError('Already have attribute "expression", '
-                                 'not overwriting. Set "force=True" to force '
-                                 'overwriting')
-        else:
-            self.expression = ExpressionData(data=expression_data,
-                                             feature_data=expression_feature_data,
-                                             load_cargo=load_cargo,
-                                             drop_outliers=drop_outliers,
-                                             species=self.species)
-            self.expression.networks = NetworkerViz(self.expression)
-            self.default_feature_set_ids.extend(self.expression.feature_sets
-                                                .keys())
-
-    def _initialize_splicing(self, splicing_data, splicing_feature_data,
-                             load_cargo=False, drop_outliers=True,
-                             force=False):
-        """Initialize SplicingData object
-
-        Parameters
-        ----------
-        splicing_data : pandas.DataFrame
-            Samples x features dataframe of "percent spliced-in" PSI scores
-        splicing_feature_data : pandas.DataFrame
-            Samples x features dataframe describing features of the splicing
-            events
-        load_cargo : bool
-            Whether or not to load the "cargo" (aka feature metadata)
-            associated with alternative splicing in this species
-        drop_outliers : bool
-            Whether or not to remove the samples specified as outliers in the
-            experiment_design_data data
-        force : bool
-            Whether or not to overwrite an existing 'expression' object (if
-            it exists)
-
-        Raises
-        ------
-        AttributeError if "splicing" attribute already exists
-        """
-
-        # [self.minimal_study_parameters.add(i) for i in ['splicing_df', 'event_metadata']]
-        # self.validate_params()
-        #TODO.md:don't over-write self.splicing
-        if hasattr(self, 'splicing') and not force:
-            raise AttributeError('Already have attribute "splicing" set, '
-                                 'not overwriting. Set "force=True" to force '
-                                 'overwriting.')
-        else:
-            self.splicing = SplicingData(data=splicing_data,
-                                         feature_data=splicing_feature_data,
-                                         load_cargo=load_cargo,
-                                         drop_outliers=drop_outliers,
-                                         species=self.species)
-            self.splicing.networks = NetworkerViz(self.splicing)
+    # def _initialize_splicing(self, splicing_data, splicing_feature_data,
+    #                          load_cargo=False, drop_outliers=True,
+    #                          force=False):
+    #     """Initialize SplicingData object
+    #
+    #     Parameters
+    #     ----------
+    #     splicing_data : pandas.DataFrame
+    #         Samples x features dataframe of "percent spliced-in" PSI scores
+    #     splicing_feature_data : pandas.DataFrame
+    #         Samples x features dataframe describing features of the splicing
+    #         events
+    #     load_cargo : bool
+    #         Whether or not to load the "cargo" (aka feature metadata)
+    #         associated with alternative splicing in this species
+    #     drop_outliers : bool
+    #         Whether or not to remove the samples specified as outliers in the
+    #         experiment_design_data data
+    #     force : bool
+    #         Whether or not to overwrite an existing 'expression' object (if
+    #         it exists)
+    #
+    #     Raises
+    #     ------
+    #     AttributeError if "splicing" attribute already exists
+    #     """
+    #
+    #     # [self.minimal_study_parameters.add(i) for i in ['splicing_df', 'event_metadata']]
+    #     # self.validate_params()
+    #     #TODO.md:don't over-write self.splicing
+    #     if hasattr(self, 'splicing') and not force:
+    #         raise AttributeError('Already have attribute "splicing" set, '
+    #                              'not overwriting. Set "force=True" to force '
+    #                              'overwriting.')
+    #     else:
+    #         self.splicing = SplicingData(data=splicing_data,
+    #                                      feature_data=splicing_feature_data,
+    #                                      load_cargo=load_cargo,
+    #                                      drop_outliers=drop_outliers,
+    #                                      species=self.species)
+    #         self.splicing.networks = NetworkerViz(self.splicing)
 
 
     # def get_expression_data(self, expression_data_filename):
