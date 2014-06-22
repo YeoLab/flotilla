@@ -28,8 +28,20 @@ class ExpressionData(BaseData):
                  feature_data=None, expr_cut=_expr_cut,
                  drop_outliers=True, load_cargo=False,
                  feature_rename_col=None, **kwargs):
+        """
+        Parameters
+        ----------
 
-        super(ExpressionData, self).__init__(data)
+
+        Returns
+        -------
+
+
+        Raises
+        ------
+        """
+
+        super(ExpressionData, self).__init__()
         if drop_outliers:
             self.data = self.drop_outliers(data)
 

@@ -34,7 +34,7 @@ class BaseData(object):
 
 
     def __init__(self, data=None, feature_data=None,
-                 species=None, feature_rename_col=None):
+                 species=None, feature_rename_col=None, drop_outliers=False):
         """Base class for biological data measurements
 
         Parameters
@@ -61,6 +61,11 @@ class BaseData(object):
         if feature_data is not None and feature_rename_col is not None:
             self.feature_renamer = \
                 lambda x: feature_data[feature_rename_col][x]
+        else:
+            self.feature_renamer = lambda x: x
+
+        if drop_outliers:
+            self.data = self.drop_outliers(data)
 
     @property
     def outliers(self):
