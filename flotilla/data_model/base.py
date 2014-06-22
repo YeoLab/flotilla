@@ -38,7 +38,8 @@ class BaseData(object):
 
 
     def __init__(self, data=None, feature_data=None,
-                 species=None, feature_rename_col=None, drop_outliers=False):
+                 species=None, feature_rename_col=None, drop_outliers=False,
+                 min_samples=MINIMUM_SAMPLES):
         """Base class for biological data measurements
 
         Parameters
@@ -62,6 +63,7 @@ class BaseData(object):
         # import pdb
         # pdb.set_trace()
         self.feature_rename_col = feature_rename_col
+        self.min_samples = min_samples
 
         self.species = species
         self.feature_sets = {}
@@ -340,12 +342,19 @@ class BaseData(object):
     #
     #     return self.clf_dict[obj_id]
 
-    def get_min_samples(self):
-        try:
-            return self.min_samples
-        except AttributeError:
-            return MINIMUM_SAMPLES
+    # def get_min_samples(self):
+    #     try:
+    #         return self.min_samples
+    #     except AttributeError:
+    #         return MINIMUM_SAMPLES
+    #
+    # def set_min_samples(self, min_samples):
+    #     self.min_samples = min_samples
 
-    def set_min_samples(self, min_samples):
-        self.min_samples = min_samples
+    @property
+    def min_samples(self):
+        return self._min_samples
 
+    @min_samples.setter
+    def min_samples(self, values):
+        self._min_samples = values

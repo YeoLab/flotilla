@@ -36,7 +36,7 @@ class Interactive(object):
 
         #not sure why nested fxns are required for this, but they are... i think...
         def do_interact(data_type='expression',
-                        group_id=self.default_group_id,
+                        phenotype_group_id=self.default_group_id,
                         list_name=self.default_list_id,
                         featurewise=False,
                         list_link='',
@@ -59,8 +59,8 @@ class Interactive(object):
             if list_name == 'custom':
                 list_name = list_link
 
-            self.plot_pca(group_id=group_id, data_type=data_type,
-                     featurewise=featurewise,
+            self.plot_pca(group_id=phenotype_group_id, data_type=data_type,
+                          featurewise=featurewise,
                      x_pc=x_pc, y_pc=y_pc, show_point_labels=show_point_labels,
                      list_name=list_name)
             if savefile != '':

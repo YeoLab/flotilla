@@ -339,6 +339,8 @@ class Study(StudyFactory):
         self.species = species
         self.gene_ontology_data = gene_ontology_data
 
+        # THis code is fragile!
+        #TODO: make feature_rename_col an attribute in the datapackage
         self.experiment_design = ExperimentDesignData(experiment_design_data)
         if expression_data is not None:
             self.expression = ExpressionData(expression_data,
@@ -350,7 +352,7 @@ class Study(StudyFactory):
                                                 .keys())
         if splicing_data is not None:
             self.splicing = SplicingData(splicing_data, splicing_feature_data,
-                                         feature_rename_col='gene_symbol',
+                                         feature_rename_col='gene_name',
                                          drop_outliers=drop_outliers)
             self.splicing.networks = NetworkerViz(self.splicing)
         if mapping_stats_data is not None:
