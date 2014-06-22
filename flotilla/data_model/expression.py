@@ -41,7 +41,8 @@ class ExpressionData(BaseData):
         ------
         """
 
-        super(ExpressionData, self).__init__()
+        super(ExpressionData, self).__init__(data, feature_data,
+                                             feature_rename_col=feature_rename_col)
         if drop_outliers:
             self.data = self.drop_outliers(data)
 
@@ -61,7 +62,7 @@ class ExpressionData(BaseData):
         self.feature_data = feature_data
         # self.data = data
 
-        self.sparse_data = data[data > expr_cut]
+        self.sparse_data = self.data[self.data > expr_cut]
 
         self.feature_sets.update({'all_genes': pd.Series(
             self.data.columns.map(self.feature_renamer), index=self.data

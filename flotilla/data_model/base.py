@@ -1,9 +1,13 @@
+"""
+Base data class for all data types. All data types in flotilla inherit from
+this, or a child object (like ExpressionData).
+"""
 import sys
 
+import pandas as pd
 from scipy.spatial.distance import pdist, squareform
 
 from ..visualize.color import blue
-
 from ..util import memoize
 
 
@@ -55,12 +59,26 @@ class BaseData(object):
         self.data = data
         # self.experiment_design_data = experiment_design_data
         self.feature_data = feature_data
+        # import pdb
+        # pdb.set_trace()
+        self.feature_rename_col = feature_rename_col
+
         self.species = species
         self.feature_sets = {}
         # This code is very fragile!
-        if feature_data is not None and feature_rename_col is not None:
-            self.feature_renamer = \
-                lambda x: feature_data[feature_rename_col][x]
+        if self.feature_data is not None and self.feature_rename_col is not \
+                None:
+            def feature_renamer(x):
+                if x in self.feature_data[feature_rename_col]:
+                    rename = self.feature_data[feature_rename_col][x]
+                    if isinstance(rename, pd.Series):
+                        return rename.values[0]
+                    else:
+                        return rename
+                else:
+                    return x
+
+            self.feature_renamer = feature_renamer
         else:
             self.feature_renamer = lambda x: x
 
@@ -143,7 +161,8 @@ class BaseData(object):
 
 
     # TODO.md: Specify dtypes in docstring
-    def plot_classifier(self, gene_list_name=None, sample_list_name=None, clf_var=None,
+    def plot_classifier(self, gene_list_name=None, sample_list_name=None,
+                        clf_var=None,
                         predictor_args=None, plotting_args=None):
         """Principal component-like analysis of measurements
 
