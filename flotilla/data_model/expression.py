@@ -42,6 +42,7 @@ class ExpressionData(BaseData):
         self.feature_sets['variant'] = pd.Series(rpkm_variant,
                                                  index=rpkm_variant)
 
+
         # self.experiment_design_data, data = \
         #     self.experiment_design_data.align(data, join='inner', axis=0)
 
@@ -105,7 +106,7 @@ class ExpressionData(BaseData):
 
         ss = pd.DataFrame(data, index=mf_subset.index,
                           columns=mf_subset.columns).rename_axis(
-            feature_renamer, 1)
+            self.feature_renamer, 1)
 
         #compute pca
         if featurewise:
