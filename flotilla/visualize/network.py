@@ -27,7 +27,7 @@ class NetworkerViz(Networker, DecompositionViz):
                    feature_of_interest='RBFOX2', draw_labels=True,
                    reduction_name=None,
                    feature_ids=None,
-                   group_id=None,
+                   sample_ids=None,
                    graph_file='',
                    compare=""):
 
@@ -37,7 +37,7 @@ class NetworkerViz(Networker, DecompositionViz):
         ----------
         feature_ids : list of str, or None
             Feature ids to subset the data. If None, all features will be used.
-        group_id : list of str, or None
+        sample_ids : list of str, or None
             Sample ids to subset the data. If None, all features will be used.
         x_pc : str
             x component for PCA, default "pc_1"
@@ -71,12 +71,13 @@ class NetworkerViz(Networker, DecompositionViz):
         node_color_mapper = self._default_node_color_mapper
         node_size_mapper = self._default_node_color_mapper
         settings = locals().copy()
-        #not pertinent to the graph, these are what we want to be able to re-apply to the same graph if it exists
+        # not pertinent to the graph, these are what we want to be able to
+        # re-apply to the same graph if it exists
         pca_settings = dict()
-        pca_settings['group_id'] = group_id
+        pca_settings['sample_ids'] = sample_ids
         pca_settings['featurewise'] = featurewise
         pca_settings['feature_ids'] = feature_ids
-        pca_settings['obj_id'] = reduction_name
+        # pca_settings['obj_id'] = reduction_name
 
         adjacency_settings = dict((k, settings[k]) for k in ['use_pc_1', 'use_pc_2', 'use_pc_3', 'use_pc_4', 'n_pcs', ])
 
@@ -139,8 +140,8 @@ class NetworkerViz(Networker, DecompositionViz):
                                        graph.nodes()), ax=main_ax, alpha=1)
         except:
             pass
-        nmr = lambda x:x
-        labels = dict([(nm, nmr(nm)) for nm in graph.nodes()])
+        namer = lambda x: x
+        labels = dict([(name, namer(name)) for name in graph.nodes()])
         if draw_labels:
             nx.draw_networkx_labels(graph, pos, labels=labels, ax=main_ax)
         #mst = nx.minimum_spanning_tree(g, weight='inv_weight')

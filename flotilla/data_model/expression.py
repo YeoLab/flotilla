@@ -15,12 +15,11 @@ from ..util import memoize
 
 
 class ExpressionData(BaseData):
-    _expr_cut = 0.1
+    _expression_thresh = 0.1
 
 
     def __init__(self, data,
-                 feature_data=None, expr_cut=_expr_cut,
-                 drop_outliers=True, load_cargo=False,
+                 feature_data=None, expression_thresh=_expression_thresh,
                  feature_rename_col=None, outliers=None):
         """
         Parameters
@@ -38,8 +37,6 @@ class ExpressionData(BaseData):
 
         super(ExpressionData, self).__init__(data, feature_data,
                                              feature_rename_col=feature_rename_col)
-        if drop_outliers:
-            self.data = self.drop_outliers(data)
 
         self._var_cut = data.var().dropna().mean() + 2 * data.var() \
             .dropna().std()
@@ -57,7 +54,7 @@ class ExpressionData(BaseData):
         self.feature_data = feature_data
         # self.data = data
 
-        self.sparse_data = self.data[self.data > expr_cut]
+        self.sparse_data = self.data[self.data > expression_thresh]
 
         self.feature_sets.update({'all_genes': pd.Series(
             self.data.columns.map(self.feature_renamer), index=self.data
