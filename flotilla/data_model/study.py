@@ -233,6 +233,7 @@ class Study(StudyFactory):
         self.default_sample_subsets = \
             [col for col in self.experiment_design.data.columns
              if self.experiment_design.data[col].dtype == bool]
+        self.default_sample_subsets.insert(0, None)
 
         if expression_data is not None:
             self.expression = ExpressionData(expression_data,
