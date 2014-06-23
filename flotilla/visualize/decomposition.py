@@ -301,6 +301,6 @@ class NMFViz(DecompositionViz, NMF):
 
 def plot_pca(df, **kwargs):
     """ for backwards-compatibility """
-    pcaObj = PCAViz(df, **kwargs)
-    return_me, ax = pcaObj.plot_samples()
+    pca = PCAViz(df, **kwargs)
+    return_me, ax = pca.plot_samples()
     return return_me
