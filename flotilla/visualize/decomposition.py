@@ -101,6 +101,7 @@ class DecompositionViz(object):
         self.explained_variance_ratio_ = dict(
             zip(component_names.tolist(), self.explained_variance_ratio_))
 
+
     def __call__(self, ax=None, **kwargs):
         #self._validate_params(self._default_plotting_args, **kwargs)
         gs_x = 14
@@ -125,6 +126,7 @@ class DecompositionViz(object):
         self.plot_samples(**local_kwargs)
         self.plot_loadings(pc=local_kwargs['x_pc'], ax=ax_loading1)
         self.plot_loadings(pc=local_kwargs['y_pc'], ax=ax_loading2)
+
         sns.despine()
         fig.tight_layout()
         return self
@@ -177,7 +179,8 @@ class DecompositionViz(object):
 
         figsize = tuple(plt.gcf().get_size_inches())
         size_scale = math.sqrt(figsize[0] * figsize[1]) / 1.5
-        default_marker_size = size_scale * 5 if not default_marker_size else default_marker_size
+        default_marker_size = size_scale * 20 if not default_marker_size else \
+            default_marker_size
         vector_width = .5 if not vector_width else vector_width
         axis_label_size = size_scale * 1.5 if not axis_label_size else axis_label_size
         title_size = size_scale * 2 if not title_size else title_size
