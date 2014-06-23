@@ -111,8 +111,7 @@ class Predictor(object):
                         traits=None,
                         classifier_name=default_classifier_name,
                         classifier=default_classifier,
-                        classifier_params=default_classifier_params,
-    ):
+                        classifier_params=default_classifier_params):
         """ fit classifiers_ to the data
         traits - list of trait(s) to fit a classifier upon,
         if None, fit all traits that were initialized.
