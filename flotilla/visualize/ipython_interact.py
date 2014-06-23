@@ -2,6 +2,9 @@
 Named `ipython_interact.py` rather than just `interact.py` to differentiate
 between IPython interactive visualizations vs D3 interactive visualizations.
 """
+import itertools
+import os
+import warnings
 
 import matplotlib.pyplot as plt
 
@@ -34,15 +37,15 @@ class Interactive(object):
 
         from IPython.html.widgets import interact
 
+
         #not sure why nested fxns are required for this, but they are... i think...
         def do_interact(data_type='expression',
-                        phenotype_group_id=self.default_group_id,
-                        list_name=self.default_list_id,
+                        sample_subset=self.default_sample_subsets,
+                        feature_subset=self.default_feature_subset,
                         featurewise=False,
                         list_link='',
                         x_pc=1, y_pc=2,
                         show_point_labels=False,
-
                         savefile='data/last.pca.pdf'):
 
             for k, v in locals().iteritems():
@@ -50,27 +53,44 @@ class Interactive(object):
                     continue
                 print k, ":", v
 
-            if list_name != "custom" and list_link != "":
-                raise ValueError("set list_name to \"custom\" to use list_link")
+            if feature_subset != "custom" and list_link != "":
+                raise ValueError(
+                    "set feature_subset to \"custom\" to use list_link")
 
-            if list_name == "custom" and list_link == "":
+            if feature_subset == "custom" and list_link == "":
                 raise ValueError("use a custom list name please")
 
-            if list_name == 'custom':
-                list_name = list_link
+            if feature_subset == 'custom':
+                feature_subset = list_link
+            elif feature_subset not in self.default_feature_subsets[data_type]:
+                warnings.warn("This feature_subset ('{}') is not available in "
+                              "this data type ('{}'). Falling back on all "
+                              "features.".format(feature_subset, data_type))
 
-            self.plot_pca(group_id=phenotype_group_id, data_type=data_type,
+            self.plot_pca(sample_subset=sample_subset, data_type=data_type,
                           featurewise=featurewise,
                      x_pc=x_pc, y_pc=y_pc, show_point_labels=show_point_labels,
-                     list_name=list_name)
+                     feature_subset=feature_subset)
             if savefile != '':
+                # Make the directory if it's not already there
+                try:
+                    directory = os.path.abspath(os.path.dirname(savefile))
+                    os.mkdir(os.makedirs(os.path.abspath(directory)))
+                except OSError:
+                    pass
                 f = plt.gcf()
                 f.savefig(savefile)
 
+        feature_sets = list(set(itertools.chain(*self.default_feature_subsets
+                                                .values())))
+        # for k, v in feature_sets.items():
+        #     v.update({'custom': None})
+        #TODO: use nested interact or something to switch between
+        # feature_sets for a particular data type
         interact(do_interact,
                  data_type=('expression', 'splicing'),
-                 group_id=self.default_group_ids,
-                 list_name=self.default_list_ids + ["custom"],
+                 sample_subset=self.default_sample_subsets,
+                 feature_subset=feature_sets,
                  featurewise=False,
                  x_pc=(1, 10), y_pc=(1, 10),
                  show_point_labels=False, )

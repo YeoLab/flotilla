@@ -6,18 +6,12 @@ symbols of ensembl IDs and GO terms.
 """
 
 import pandas as pd
-import seaborn
 from sklearn.preprocessing import StandardScaler
 
 from .base import BaseData
 from ..visualize.decomposition import PCAViz
 from ..visualize.predict import PredictorViz
-from ..compute.generic import dropna_mean
-from ..external import link_to_list
 from ..util import memoize
-
-
-seaborn.set_context('paper')
 
 
 class ExpressionData(BaseData):
@@ -27,7 +21,7 @@ class ExpressionData(BaseData):
     def __init__(self, data,
                  feature_data=None, expr_cut=_expr_cut,
                  drop_outliers=True, load_cargo=False,
-                 feature_rename_col=None, **kwargs):
+                 feature_rename_col=None, outliers=None):
         """
         Parameters
         ----------
@@ -35,6 +29,7 @@ class ExpressionData(BaseData):
 
         Returns
         -------
+
 
 
         Raises
@@ -48,10 +43,10 @@ class ExpressionData(BaseData):
 
         self._var_cut = data.var().dropna().mean() + 2 * data.var() \
             .dropna().std()
-        rpkm_variant = pd.Index([i for i, j in
-                                 (
-                                 data.var().dropna() > self._var_cut).iteritems()
-                                 if j])
+        rpkm_variant = pd.Index(
+            [i for i, j in (self.data.var().dropna() > self._var_cut)
+            .iteritems()
+             if j])
         self.feature_sets['variant'] = pd.Series(rpkm_variant,
                                                  index=rpkm_variant)
 
@@ -67,123 +62,161 @@ class ExpressionData(BaseData):
         self.feature_sets.update({'all_genes': pd.Series(
             self.data.columns.map(self.feature_renamer), index=self.data
             .columns)})
+        self.default_feature_sets.extend(self.feature_sets.keys())
+
         # self._set_plot_colors()
         # self._set_plot_markers()
-        if load_cargo:
-            self.load_cargo()
+        # if load_cargo:
+        #     self.load_cargo()
+
+    def _subset_and_standardize(self, data, sample_ids=None,
+                                feature_ids=None,
+                                standardize=True):
+        """Take only the sample ids and feature ids from this data, require
+        at least some minimum samples, and standardize data using
+        scikit-learn. Will also fill na values with the mean of the feature
+        (column)
+
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            The data you want to standardize
+        sample_ids : None or list of strings
+            If None, all sample ids will be used, else only the sample ids
+            specified
+        feature_ids : None or list of strings
+            If None, all features will be used, else only the features
+            specified
+        standardize : bool
+            Whether or not to "whiten" (make all variables uncorrelated) and
+            mean-center via sklearn.preprocessing.StandardScaler
+
+        Returns
+        -------
+        subset : pandas.DataFrame
+            Subset of the dataframe with the requested samples and features,
+            and standardized as described
+        means : pandas.DataFrame
+            Mean values of the features (columns). Ignores NAs.
+
+        """
+        if feature_ids is None:
+            feature_ids = self.data.columns
+        if sample_ids is None:
+            sample_ids = self.data.index
+
+        subset = data.ix[sample_ids]
+        subset = subset.T.ix[feature_ids].T
+        subset = subset.ix[:, subset.count() > self.min_samples]
+        #fill na with mean for each event
+        means = subset.mean().rename_axis(self.feature_renamer)
+        subset = subset.fillna(means).fillna(0)
+        subset = subset.rename_axis(self.feature_renamer, 1)
+
+        # whiten, mean-center
+        if standardize:
+            data = StandardScaler().fit_transform(subset)
+        else:
+            data = subset
+
+        # "data" is a matrix so need to transform it back into a convenient
+        # dataframe
+        subset = pd.DataFrame(data, index=subset.index,
+                              columns=subset.columns)
+        return subset, means
 
     @memoize
-    def reduce(self, feature_set=None, phenotype_group_id=None,
+    def reduce(self, sample_ids=None, feature_ids=None,
                featurewise=False,
                reducer=PCAViz,
                standardize=True,
-               **reducer_args):
-        """make and cache a reduced dimensionality representation of data """
+               title='',
+               reducer_kwargs=None):
+        """Make and memoize a reduced dimensionality representation of data
 
-        min_samples = self.min_samples
-        input_reducer_args = reducer_args.copy()
-        reducer_args = self._default_reducer_kwargs.copy()
-        reducer_args.update(input_reducer_args)
-        reducer_args['title'] = feature_set + " : " + phenotype_group_id
+        Parameters
+        ----------
+        sample_ids : None or list of strings
+            If None, all sample ids will be used, else only the sample ids
+            specified
+        feature_ids : None or list of strings
+            If None, all features will be used, else only the features
+            specified
+        featurewise : bool
+            Whether or not to use the features as the "samples", e.g. if you
+            want to reduce the features in to "sample-space" instead of
+            reducing the samples into "feature-space"
+        standardize : bool
+            Whether or not to "whiten" (make all variables uncorrelated) and
+            mean-center via sklearn.preprocessing.StandardScaler
+        title : str
+            Title of the plot
+        reducer_kwargs : dict
+            Any additional arguments to send to the reducer
+
+        Returns
+        -------
+        reducer_object : flotilla.compute.reduce.ReducerViz
+            A ready-to-plot object containing the reduced space
+        """
+
+        # min_samples = self.min_samples
+        # input_reducer_args = reducer_args.copy()
+        # reducer_kwargs = self._default_reducer_kwargs.copy()
+        # reducer_kwargs.update(input_reducer_args)
+        reducer_kwargs = {} if reducer_kwargs is None else reducer_kwargs
+        reducer_kwargs['title'] = title
         # feature_renamer = self.feature_renamer()
 
-        if feature_set not in self.feature_sets:
-            this_list = link_to_list(feature_set)
-            self.feature_sets[feature_set] = pd.Series(
-                map(self.feature_renamer, this_list),
-                index=this_list)
+        subset, means = self._subset_and_standardize(self.sparse_data,
+                                                     sample_ids, feature_ids,
+                                                     standardize)
 
-        gene_list = self.feature_sets[feature_set]
-
-        if phenotype_group_id is None:
-        # sample_ind = self.phe
-        if phenotype_group_id.startswith("~"):
-            #print 'not', phenotype_group_id.lstrip("~")
-            sample_ind = ~pd.Series(
-                self.phenotype_data[phenotype_group_id.lstrip("~")],
-                dtype='bool')
-        else:
-            sample_ind = pd.Series(self.phenotype_data[phenotype_group_id],
-                                   dtype='bool')
-
-        sample_ind = sample_ind[sample_ind].index
-        subset = self.sparse_data.ix[sample_ind]
-        subset = subset.T.ix[gene_list.index].T
-        frequent = pd.Index(
-            [i for i, j in (subset.count() > min_samples).iteritems() if j])
-        subset = subset[frequent]
-        #fill na with mean for each event
-        means = subset.apply(dropna_mean, axis=0)
-        mf_subset = subset.fillna(means, ).fillna(0)
-
-        #whiten, mean-center
-        if standardize:
-            data = StandardScaler().fit_transform(mf_subset)
-        else:
-            data = mf_subset
-
-        ss = pd.DataFrame(data, index=mf_subset.index,
-                          columns=mf_subset.columns).rename_axis(
-            self.feature_renamer, 1)
-
-        #compute pca
+        # compute reduction
         if featurewise:
-            ss = ss.T
-        rdc_obj = reducer(ss, **reducer_args)
-        rdc_obj.means = means.rename_axis(
-            self.feature_renamer)  #always the mean of input features... i.e.
+            subset = subset.T
+        reducer_object = reducer(subset, **reducer_kwargs)
+        reducer_object.means = means  #always the mean of input features... i
+        # .e.
         # featurewise doesn't change this.
 
         #add mean gene_expression
-        return rdc_obj
+        return reducer_object
 
     @memoize
-    def classify(self, gene_list_name, phenotype_group_id, categorical_trait,
+    def classify(self, sample_ids, feature_ids, categorical_trait,
                  standardize=True, predictor=PredictorViz):
+        """Make and memoize a classifier on a categorical trait (associated
+        with samples) subset of genes
+
+        Parameters
+        ----------
+        sample_ids : None or list of strings
+            If None, all sample ids will be used, else only the sample ids
+            specified
+        feature_ids : None or list of strings
+            If None, all features will be used, else only the features
+            specified
+        categorical_trait : ???
+            ???
+        standardize : bool
+            Whether or not to "whiten" (make all variables uncorrelated) and
+            mean-center via sklearn.preprocessing.StandardScaler
+
+        Returns
+        -------
+        classifier : flotilla.compute.predict.PredictorViz
+            A ready-to-plot object containing the predictions
         """
-        make and cache a classifier on a categorical trait (associated with samples) subset of genes
-         """
+        subset, means = self._subset_and_standardize(self.sparse_data,
+                                                     sample_ids,
+                                                     feature_ids,
+                                                     standardize)
 
-        min_samples = self.get_min_samples()
-        # feature_renamer = self.feature_renamer()
-
-        if gene_list_name not in self.feature_sets:
-            this_list = link_to_list(gene_list_name)
-            self.feature_sets[gene_list_name] = pd.Series(
-                map(self.feature_renamer, this_list), index=this_list)
-
-        gene_list = self.feature_sets[gene_list_name]
-
-        if phenotype_group_id.startswith("~"):
-            #print 'not', phenotype_group_id.lstrip("~")
-            sample_ind = ~pd.Series(
-                self.phenotype_data[phenotype_group_id.lstrip("~")],
-                dtype='bool')
-        else:
-            sample_ind = pd.Series(self.phenotype_data[phenotype_group_id],
-                                   dtype='bool')
-        sample_ind = sample_ind[sample_ind].index
-        subset = self.sparse_data.ix[sample_ind, gene_list.index]
-        frequent = pd.Index(
-            [i for i, j in (subset.count() > min_samples).iteritems() if j])
-        subset = subset[frequent]
-        #fill na with mean for each event
-        means = subset.apply(dropna_mean, axis=0)
-        mf_subset = subset.fillna(means, ).fillna(0)
-
-        #whiten, mean-center
-        if standardize:
-            data = StandardScaler().fit_transform(mf_subset)
-        else:
-            data = mf_subset
-
-        ss = pd.DataFrame(data, index=mf_subset.index,
-                          columns=mf_subset.columns).rename_axis(
-            self.feature_renamer, 1)
-        clf = predictor(ss, self.phenotype_data,
-                        categorical_traits=[categorical_trait], )
-        clf.set_reducer_plotting_args(self._default_reducer_kwargs)
-        return clf
+        classifier = predictor(subset,
+                               categorical_traits=[categorical_trait], )
+        classifier.set_reducer_plotting_args(self._default_reducer_kwargs)
+        return classifier
 
     # def load_cargo(self, rename=True, **kwargs):
     #     try:

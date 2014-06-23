@@ -5,3 +5,5 @@
 `conftest.py` to persist for all testing modules and not get rewritten or
 imported, use the decorator `@pytest.fixture(scope="module")`. Otherwise,
 if it's just used once use the decorator `@pytest.fixture`.
+* Please read these [testing guidelines](http://docs.pylonsproject
+.org/en/latest/community/testing.html) before submitting any tests
