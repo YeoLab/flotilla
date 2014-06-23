@@ -1,7 +1,7 @@
 __author__ = 'olga'
 import math
 
-from matplotlib.gridspec import GridSpec
+from matplotlib.gridspec import GridSpec, GridSpecFromSubplotSpec
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -63,7 +63,7 @@ class DecompositionViz(object):
                               'vector_width': None, 'vector_colors_dict': None,
                               'show_vector_labels': True,
                               'vector_label_size': None,
-                              'show_point_labels': True,
+                              'show_point_labels': False,
                               'point_label_size': None,
                               'scale_by_variance': True}
     _default_reduction_args = {'n_components': None, 'whiten': False}
@@ -107,8 +107,7 @@ class DecompositionViz(object):
         gs_y = 12
 
         if ax is None:
-
-            fig, ax = plt.subplots(1, 1, figsize=(12, 6))
+            fig, ax = plt.subplots(1, 1, figsize=(25, 12))
             gs = GridSpec(gs_x, gs_y)
 
         else:
@@ -126,7 +125,8 @@ class DecompositionViz(object):
         self.plot_samples(**local_kwargs)
         self.plot_loadings(pc=local_kwargs['x_pc'], ax=ax_loading1)
         self.plot_loadings(pc=local_kwargs['y_pc'], ax=ax_loading2)
-        plt.tight_layout()
+        sns.despine()
+        fig.tight_layout()
         return self
 
 
@@ -141,7 +141,7 @@ class DecompositionViz(object):
                                  "%s. acceptable values are:\n%s" % (
                                      key, "\n".join(valid.keys())))
 
-    def plot_samples(self, **kwargs):
+    def plot_samples(self, show_point_labels=False, **kwargs):
         self._validate_params(self._default_plotting_args, **kwargs)
         default_params = self.plotting_kwargs.copy()  #fill missing parameters
         default_params.update(kwargs)

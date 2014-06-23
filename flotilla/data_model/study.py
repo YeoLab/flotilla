@@ -584,10 +584,21 @@ class Study(StudyFactory):
         Parameters
         ----------
         data_type : str
-            One of the names of the data types
-
-        Returns
-        -------
+            One of the names of the data types, e.g. "expression" or "splicing"
+        x_pc : int
+            Which principal component to plot on the x-axis
+        y_pc : int
+            Which principal component to plot on the y-axis
+        phenotype_subset : str or None
+            Which subset of the samples to use, based on some phenotype
+            column in the experiment design data. If None, all samples are
+            used.
+        feature_subset : str or None
+            Which subset of the features to used, based on some feature type
+            in the expression data (e.g. "variant"). If None, all features
+            are used.
+        title : str
+            The title of the plot
 
 
         Raises
@@ -597,7 +608,7 @@ class Study(StudyFactory):
         sample_ids = self.phenotype_subset_to_sample_ids(phenotype_subset)
         feature_ids = self.feature_subset_to_feature_ids(data_type,
                                                          feature_subset,
-                                                         rename=True)
+                                                         rename=False)
         #TODO: move this kwarg stuff into visualize
         kwargs = {}
         kwargs['x_pc'] = x_pc
