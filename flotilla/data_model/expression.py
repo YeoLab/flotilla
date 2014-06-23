@@ -18,6 +18,7 @@ from ..util import memoize
 
 
 
+
 #
 # seaborn.set_context('paper')
 
@@ -78,6 +79,34 @@ class ExpressionData(BaseData):
     def _subset_and_standardize_data(self, data, sample_ids=None,
                                      feature_ids=None,
                                      standardize=True):
+        """Take only the sample ids and feature ids from this data, require
+        at least some minimum samples, and standardize data using
+        scikit-learn. Will also fill na values with the mean of the feature
+        (column)
+
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            The data you want to standardize
+        sample_ids : None or list of strings
+            If None, all sample ids will be used, else only the sample ids
+            specified
+        feature_ids : None or list of strings
+            If None, all features will be used, else only the features
+            specified
+        standardize : bool
+            Whether or not to "whiten" (make all variables uncorrelated) and
+            mean-center via sklearn.preprocessing.StandardScaler
+
+        Returns
+        -------
+        subset : pandas.DataFrame
+            Subset of the dataframe with the requested samples and features,
+            and standardized as described
+        means : pandas.DataFrame
+            Mean values of the features (columns). Ignores NAs.
+
+        """
         if feature_ids is None:
             feature_ids = self.data.columns
         if sample_ids is None:
@@ -108,7 +137,33 @@ class ExpressionData(BaseData):
                standardize=True,
                title='',
                reducer_kwargs=None):
-        """make and cache a reduced dimensionality representation of data """
+        """Make and memoize a reduced dimensionality representation of data
+
+        Parameters
+        ----------
+        sample_ids : None or list of strings
+            If None, all sample ids will be used, else only the sample ids
+            specified
+        feature_ids : None or list of strings
+            If None, all features will be used, else only the features
+            specified
+        featurewise : bool
+            Whether or not to use the features as the "samples", e.g. if you
+            want to reduce the features in to "sample-space" instead of
+            reducing the samples into "feature-space"
+        standardize : bool
+            Whether or not to "whiten" (make all variables uncorrelated) and
+            mean-center via sklearn.preprocessing.StandardScaler
+        title : str
+            Title of the plot
+        reducer_kwargs : dict
+            Any additional arguments to send to the reducer
+
+        Returns
+        -------
+        reducer_object : flotilla.compute.reduce.ReducerViz
+            A ready-to-plot object containing the reduced space
+        """
 
         # min_samples = self.min_samples
         # input_reducer_args = reducer_args.copy()
@@ -136,18 +191,37 @@ class ExpressionData(BaseData):
     @memoize
     def classify(self, sample_ids, feature_ids, categorical_trait,
                  standardize=True, predictor=PredictorViz):
+        """Make and memoize a classifier on a categorical trait (associated
+        with samples) subset of genes
+
+        Parameters
+        ----------
+        sample_ids : None or list of strings
+            If None, all sample ids will be used, else only the sample ids
+            specified
+        feature_ids : None or list of strings
+            If None, all features will be used, else only the features
+            specified
+        categorical_trait : ???
+            ???
+        standardize : bool
+            Whether or not to "whiten" (make all variables uncorrelated) and
+            mean-center via sklearn.preprocessing.StandardScaler
+
+        Returns
+        -------
+        classifier : flotilla.compute.predict.PredictorViz
+            A ready-to-plot object containing the predictions
         """
-        make and cache a classifier on a categorical trait (associated with samples) subset of genes
-         """
         subset, means = self._subset_and_standardize_data(self.sparse_data,
                                                           sample_ids,
                                                           feature_ids,
                                                           standardize)
 
-        clf = predictor(ss, self.phenotype_data,
-                        categorical_traits=[categorical_trait], )
-        clf.set_reducer_plotting_args(self._default_reducer_kwargs)
-        return clf
+        classifier = predictor(subset, self.phenotype_data,
+                               categorical_traits=[categorical_trait], )
+        classifier.set_reducer_plotting_args(self._default_reducer_kwargs)
+        return classifier
 
     # def load_cargo(self, rename=True, **kwargs):
     #     try:
