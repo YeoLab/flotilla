@@ -31,7 +31,7 @@ class BaseData(object):
 
 
     def __init__(self, data=None, feature_data=None,
-                 species=None, feature_rename_col=None, drop_outliers=False,
+                 species=None, feature_rename_col=None, outliers=None,
                  min_samples=MINIMUM_SAMPLES):
         """Base class for biological data measurements
 
@@ -51,6 +51,9 @@ class BaseData(object):
 
         """
         self.data = data
+        if outliers is not None:
+            self.data = self.drop_outliers(self.data, outliers)
+
         # self.experiment_design_data = experiment_design_data
         self.feature_data = feature_data
         # import pdb
