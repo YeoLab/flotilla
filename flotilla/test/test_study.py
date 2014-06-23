@@ -14,7 +14,7 @@ def test_study_init(example_data):
     expression = ExpressionData(data=example_data.expression)
     splicing = SplicingData(data=example_data.splicing)
 
-    pdt.assert_frame_equal(study.experiment_design_data,
+    pdt.assert_frame_equal(study.experiment_design.data,
                            example_data.experiment_design_data)
     pdt.assert_frame_equal(study.expression.data, expression.data)
     pdt.assert_frame_equal(study.splicing.data, splicing.data)
