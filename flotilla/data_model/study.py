@@ -44,6 +44,8 @@ class StudyFactory(object):
         self.minimal_study_parameters = set()
         self.new_study_params = set()
         self.getters = []
+        self.default_sample_subset = None
+        self.default_feature_subset = None
 
     def __setattr__(self, key, value):
         """Check if the attribute already exists and warns on overwrite.
@@ -153,6 +155,12 @@ class Study(StudyFactory):
     """
     default_feature_set_ids = []
 
+    # Data types with enough data that we'd probably reduce them, and even
+    # then we might want to take subsets. E.g. most variant genes for
+    # expresion. But we don't expect to do this for spikein or mapping_stats
+    # data
+    _subsetable_data_types = ['expression', 'splicing']
+
     initializers = {'experiment_design_data': ExperimentDesignData,
                     'expression_data': ExpressionData,
                     'splicing_data': SplicingData,
@@ -222,6 +230,10 @@ class Study(StudyFactory):
         # THis code is fragile!
         #TODO: make feature_rename_col an attribute in the datapackage
         self.experiment_design = ExperimentDesignData(experiment_design_data)
+        self.default_sample_subsets = \
+            [col for col in self.experiment_design.data.columns
+             if self.experiment_design.data[col].dtype == bool]
+
         if expression_data is not None:
             self.expression = ExpressionData(expression_data,
                                              expression_feature_data,
@@ -242,6 +254,7 @@ class Study(StudyFactory):
 
 
 
+
         # self._initialize_all_data(experiment_design_data,
         #                           expression_data,
         #                           splicing_data, expression_feature_data,
@@ -254,56 +267,67 @@ class Study(StudyFactory):
         # self._set_plot_colors()
         # self._set_plot_markers()
 
+    # @property
+    # def expression(self):
+    #     if hasattr(self, '_expression'):
+    #         return self._expression
+    #     else:
+    #         sys.stderr.write('This study does not have expression data')
+    #         return None
+    #
+    # @expression.setter
+    # def expression(self, value):
+    #     self._expression = value
+    #
+    # @property
+    # def splicing(self):
+    #     if hasattr(self, '_splicing'):
+    #         return self._splicing
+    #     else:
+    #         sys.stderr.write('This study does not have splicing data')
+    #         return None
+    #
+    # @splicing.setter
+    # def splicing(self, value):
+    #     self._splicing = value
+    #
+    #
+    # @property
+    # def mapping_stats(self):
+    #     if hasattr(self, '_mapping_stats'):
+    #         return self._mapping_stats
+    #     else:
+    #         sys.stderr.write('This study does not have mapping_stats data')
+    #         return None
+    #
+    # @mapping_stats.setter
+    # def mapping_stats(self, value):
+    #     self._mapping_stats = value
+    #
+    #
+    # @property
+    # def spikein(self):
+    #     if hasattr(self, '_spikein'):
+    #         return self._spikein
+    #     else:
+    #         sys.stderr.write('This study does not have spikein data')
+    #         return None
+    #
+    # @spikein.setter
+    # def spikein(self, value):
+    #     self._spikein = value
+
+
     @property
-    def expression(self):
-        if hasattr(self, '_expression'):
-            return self._expression
-        else:
-            sys.stderr.write('This study does not have expression data')
-            return None
-
-    @expression.setter
-    def expression(self, value):
-        self._expression = value
-
-    @property
-    def splicing(self):
-        if hasattr(self, '_splicing'):
-            return self._splicing
-        else:
-            sys.stderr.write('This study does not have splicing data')
-            return None
-
-    @splicing.setter
-    def splicing(self, value):
-        self._splicing = value
-
-
-    @property
-    def mapping_stats(self):
-        if hasattr(self, '_mapping_stats'):
-            return self._mapping_stats
-        else:
-            sys.stderr.write('This study does not have mapping_stats data')
-            return None
-
-    @mapping_stats.setter
-    def mapping_stats(self, value):
-        self._mapping_stats = value
-
-
-    @property
-    def spikein(self):
-        if hasattr(self, '_spikein'):
-            return self._spikein
-        else:
-            sys.stderr.write('This study does not have spikein data')
-            return None
-
-    @spikein.setter
-    def spikein(self, value):
-        self._spikein = value
-
+    def default_feature_subsets(self):
+        feature_sets = {}
+        for name in self._subsetable_data_types:
+            try:
+                data_type = getattr(self, name)
+            except AttributeError:
+                continue
+            feature_sets[name] = data_type.feature_sets
+        return feature_sets
 
     @classmethod
     def from_data_package_url(cls, data_package_url,
@@ -543,7 +567,7 @@ class Study(StudyFactory):
                 feature_ids = feature_ids.map(self.expression.feature_renamer)
         return feature_ids
 
-    def phenotype_subset_to_sample_ids(self, phenotype_subset=None):
+    def sample_subset_to_sample_ids(self, phenotype_subset=None):
         """Convert a string naming a subset of phenotypes in the data in to 
         sample ids
         
@@ -576,7 +600,7 @@ class Study(StudyFactory):
         return sample_ids
 
     def plot_pca(self, data_type='expression', x_pc=1, y_pc=2,
-                 phenotype_subset=None, feature_subset=None,
+                 sample_subset=None, feature_subset=None,
                  title='',
                  **kwargs):
         """Performs PCA on both expression and splicing study_data
@@ -589,7 +613,7 @@ class Study(StudyFactory):
             Which principal component to plot on the x-axis
         y_pc : int
             Which principal component to plot on the y-axis
-        phenotype_subset : str or None
+        sample_subset : str or None
             Which subset of the samples to use, based on some phenotype
             column in the experiment design data. If None, all samples are
             used.
@@ -605,7 +629,7 @@ class Study(StudyFactory):
         ------
 
         """
-        sample_ids = self.phenotype_subset_to_sample_ids(phenotype_subset)
+        sample_ids = self.sample_subset_to_sample_ids(sample_subset)
         feature_ids = self.feature_subset_to_feature_ids(data_type,
                                                          feature_subset,
                                                          rename=False)
