@@ -227,3 +227,34 @@ def check_if_already_downloaded(url, download_dir=FLOTILLA_DOWNLOAD_DIR):
         with open(filename, 'w') as f:
             f.write(opened_url.read())
     return filename
+
+
+def make_datapackage():
+    """Example code for making a datapackage
+    """
+    hg19 = {'name': 'hg19',
+            'title': 'Metadata about genes and splicing events',
+            'licences': None,
+            'sources': 'Gencode and ENSEMBL genes',
+            'datapackage_version': '0.1.0',
+            'resources': [
+                {
+                    'format': 'json',
+                    'name': 'expression_feature_data',
+                    'url': 'http://sauron.ucsd.edu/flotilla_projects/hg19/gencode.v19.annotation.gene.attributes.plus.json'
+                },
+                {
+                    'format': 'csv',
+                    'name': 'splicing_feature_data',
+                    'url': 'http://sauron.ucsd.edu/flotilla_projects/hg19/miso_to_ids.csv'
+                },
+                {
+                    'format': 'json',
+                    'name': 'gene_ontology_data',
+                    'url': 'http://sauron.ucsd.edu/flotilla_projects/hg19/ens_to_go.json'
+                }
+            ]}
+    with open(
+            '/Users/olga/workspace-git/flotilla_common_data/hg19/datapackage.json',
+            'w') as f:
+        json.dump(hg19, f)
