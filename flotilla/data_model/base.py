@@ -81,21 +81,21 @@ class BaseData(object):
         if drop_outliers:
             self.data = self.drop_outliers(data)
 
-    @property
-    def outliers(self):
-        """If there is a column called 'outliers' in the experiment_design_data,
-        then return the samples where this is True for them
-        """
-        try:
-            return set(self.phenotype_data.ix[
-                           self.phenotype_data.outlier.map(bool),
-                           'outlier'].index)
-        except AttributeError:
-            return set([])
+    # @property
+    # def outliers(self):
+    #     """If there is a column called 'outliers' in the experiment_design_data,
+    #     then return the samples where this is True for them
+    #     """
+    #     try:
+    #         return set(self.phenotype_data.ix[
+    #                        self.phenotype_data.outlier.map(bool),
+    #                        'outlier'].index)
+    #     except AttributeError:
+    #         return set([])
 
-    def drop_outliers(self, df):
+    def drop_outliers(self, df, outliers):
         # assert 'outlier' in self.experiment_design_data.columns
-        outliers = self.outliers.intersection(df.index)
+        outliers = set(outliers).intersection(df.index)
         sys.stdout.write("dropping {}".format(outliers))
         return df.drop(outliers)
 
