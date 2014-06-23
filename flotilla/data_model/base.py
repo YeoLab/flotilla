@@ -56,6 +56,7 @@ class BaseData(object):
         # pdb.set_trace()
         self.feature_rename_col = feature_rename_col
         self.min_samples = min_samples
+        self.default_feature_sets = []
 
         self.species = species
         self.feature_sets = {}
