@@ -2,6 +2,7 @@
 Base data class for all data types. All data types in flotilla inherit from
 this, or a child object (like ExpressionData).
 """
+from collections import defaultdict
 import sys
 
 import pandas as pd
@@ -226,7 +227,7 @@ class BaseData(object):
         # local_plotting_kwargs.update(plotting_kwargs)
         pca = self.reduce(sample_ids, feature_ids,
                           featurewise=featurewise)
-        pca(markers_size_dict=lambda x: 400,
+        pca(markers_size_dict=defaultdict(lambda x: 400),
             show_vectors=False,
             title_size=10,
             axis_label_size=10,
