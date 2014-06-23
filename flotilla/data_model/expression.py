@@ -184,7 +184,8 @@ class ExpressionData(BaseData):
         return reducer_object
 
     @memoize
-    def classify(self, sample_ids, feature_ids, categorical_trait,
+    def classify(self, sample_ids=None, feature_ids=None,
+                 categorical_trait=None,
                  standardize=True, predictor=PredictorViz):
         """Make and memoize a classifier on a categorical trait (associated
         with samples) subset of genes
