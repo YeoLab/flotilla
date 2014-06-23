@@ -31,6 +31,9 @@ class TestExpressionData:
     def test__subset_and_standardize(self, expression):
         # TODO: parameterize and test with feature/sample subsets and
         # with/without standardization
+        from sklearn.preprocessing import StandardScaler
+        import pandas as pd
+
         expression.subset, expression.means = \
             expression._subset_and_standardize(expression.sparse_data)
 
@@ -40,7 +43,12 @@ class TestExpressionData:
         subset = subset.fillna(means).fillna(0)
         subset = subset.rename_axis(expression.feature_renamer, 1)
 
-        pdt.assert_frame_equal(subset, expression.subset)
+        data = StandardScaler().fit_transform(subset)
+
+        subset_standardized = pd.DataFrame(data, index=subset.index,
+                                           columns=subset.columns)
+
+        pdt.assert_frame_equal(subset_standardized, expression.subset)
         pdt.assert_series_equal(means, expression.means)
 
 
