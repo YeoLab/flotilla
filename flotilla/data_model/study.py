@@ -4,12 +4,15 @@ heavier in terms of data load
 """
 
 from collections import defaultdict
+import json
 import os
 import sys
 import warnings
 
+import matplotlib.colors as mplcolors
 import numpy as np
 import pandas as pd
+import seaborn as sns
 
 from .experiment_design import ExperimentDesignData
 from .expression import ExpressionData, SpikeInData
@@ -334,7 +337,21 @@ class Study(StudyFactory):
         # opener = urllib2.build_opener()
         # f = opener.open(req)
         data_package = data_package_url_to_dict(data_package_url)
+        return cls.from_data_package(data_package,
+                                     species_data_package_base_url=species_data_package_base_url)
 
+    @classmethod
+    def from_data_package_file(cls, data_package_filename,
+                               species_data_package_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
+        with open(data_package_filename) as f:
+            data_package = json.load(f)
+        return cls.from_data_package(data_package,
+                                     species_data_package_base_url)
+
+
+    @classmethod
+    def from_data_package(cls, data_package,
+                          species_data_package_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
         dfs = {}
         for resource in data_package['resources']:
             resource_url = resource['url']
@@ -384,10 +401,11 @@ class Study(StudyFactory):
         """Sanely concatenate one or more Study objects
         """
         raise NotImplementedError
-        self.experiment_design_data = pd.concat([self.experiment_design_data,
-                                                 other.phenotype_data])
-        self.expression.data = pd.concat([self.expression.data,
-                                          other.phenotype_data])
+        self.experiment_design = ExperimentDesignData(pd.concat([self
+                                                                     .experiment_design.data,
+                                                                 other.experiment_design.data]))
+        self.expression.data = ExpressionData(pd.concat([self.expression.data,
+                                                         other.expression.data]))
 
     def _set_plot_colors(self):
         """If there is a column 'color' in the sample metadata, specify this
@@ -554,7 +572,7 @@ class Study(StudyFactory):
         else:
             sample_ind = pd.Series(self.experiment_design.data[
                                        phenotype_subset], dtype='bool')
-        sample_ids = sample_ind[sample_ind].index
+        sample_ids = self.experiment_design.data.index[sample_ind]
         return sample_ids
 
     def plot_pca(self, data_type='expression', x_pc=1, y_pc=2,
@@ -580,13 +598,29 @@ class Study(StudyFactory):
         feature_ids = self.feature_subset_to_feature_ids(data_type,
                                                          feature_subset,
                                                          rename=True)
-
+        #TODO: move this kwarg stuff into visualize
         kwargs = {}
         kwargs['x_pc'] = x_pc
         kwargs['y_pc'] = y_pc
         kwargs['sample_ids'] = sample_ids
         kwargs['feature_ids'] = feature_ids
         kwargs['title'] = title
+        if 'color' in self.experiment_design.data:
+            subset = self.experiment_design.data.ix[sample_ids]
+            kwargs['colors_dict'] = subset.color.to_dict()
+        elif 'celltype' in self.experiment_design.data:
+            grouped = self.experiment_design.data.groupby('celltype')
+            palette = iter(sns.color_palette(n_colors=grouped.ngroups + 1))
+            color = grouped.apply(lambda x: mplcolors.rgb2hex(palette.next()))
+            color.name = 'color'
+            self.experiment_design.data = self.experiment_design.data.join(
+                color, on='celltype')
+
+            kwargs['colors_dict'] = self.experiment_design.data.color.to_dict()
+
+        if 'marker' in self.experiment_design.data:
+            kwargs['markers_dict'] = \
+                self.experiment_design.data.marker.to_dict()
 
         if "expression".startswith(data_type):
             self.expression.plot_dimensionality_reduction(**kwargs)
@@ -596,7 +630,6 @@ class Study(StudyFactory):
     def plot_graph(self, data_type='expression', **kwargs):
         if data_type == "expression":
             self.expression.networks.draw_graph(**kwargs)
-
         elif data_type == "splicing":
             self.splicing.networks.draw_graph(**kwargs)
 
