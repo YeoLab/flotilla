@@ -19,6 +19,7 @@ from ..util import memoize
 
 
 
+
 #
 # seaborn.set_context('paper')
 
@@ -54,7 +55,7 @@ class ExpressionData(BaseData):
             .dropna().std()
         rpkm_variant = pd.Index([i for i, j in
                                  (
-                                 data.var().dropna() > self._var_cut).iteritems()
+                                     data.var().dropna() > self._var_cut).iteritems()
                                  if j])
         self.feature_sets['variant'] = pd.Series(rpkm_variant,
                                                  index=rpkm_variant)
@@ -76,9 +77,9 @@ class ExpressionData(BaseData):
         if load_cargo:
             self.load_cargo()
 
-    def _subset_and_standardize_data(self, data, sample_ids=None,
-                                     feature_ids=None,
-                                     standardize=True):
+    def _subset_and_standardize(self, data, sample_ids=None,
+                                feature_ids=None,
+                                standardize=True):
         """Take only the sample ids and feature ids from this data, require
         at least some minimum samples, and standardize data using
         scikit-learn. Will also fill na values with the mean of the feature
@@ -173,9 +174,9 @@ class ExpressionData(BaseData):
         reducer_kwargs['title'] = title
         # feature_renamer = self.feature_renamer()
 
-        subset, means = self._subset_and_standardize_data(self.sparse_data,
-                                                          sample_ids, feature_ids,
-                                                   standardize)
+        subset, means = self._subset_and_standardize(self.sparse_data,
+                                                     sample_ids, feature_ids,
+                                                     standardize)
 
         # compute reduction
         if featurewise:
@@ -213,10 +214,10 @@ class ExpressionData(BaseData):
         classifier : flotilla.compute.predict.PredictorViz
             A ready-to-plot object containing the predictions
         """
-        subset, means = self._subset_and_standardize_data(self.sparse_data,
-                                                          sample_ids,
-                                                          feature_ids,
-                                                          standardize)
+        subset, means = self._subset_and_standardize(self.sparse_data,
+                                                     sample_ids,
+                                                     feature_ids,
+                                                     standardize)
 
         classifier = predictor(subset, self.phenotype_data,
                                categorical_traits=[categorical_trait], )
