@@ -35,18 +35,24 @@ class Predictor(object):
     def __init__(self, data_df, metadata_df,
                  name="Classifier",
                  categorical_traits=None,
-                 continuous_traits=None,
-    ):
-        """
-        train regressors_ or classifiers_ on data.
+                 continuous_traits=None):
+        """train regressors_ or classifiers_ on data.
 
-        name: titles for plots and things...
-        sample_list: a list of sample ids for this comparer
-        critical_variable: a response variable to test or a list of them
-        data_df: pd.DataFrame containing arrays in question
-        metadata_df: pd.DataFrame with metadata about data_df
-        categorical_traits: which traits are catgorical? - if None, assumed to be all traits
-        continuous_traits: which traits are continuous - i.e. build a regressor, not a classifier
+        name : str
+            titles for plots and things...
+        sample_list : list of str
+            a list of sample ids for this comparer
+        critical_variable : str
+            a response variable to test or a list of them
+        data_df : pandas.DataFrame
+            containing arrays in question
+        metadata_df : pandas.DataFrame
+            pd.DataFrame with metadata about data_df
+        categorical_traits : list of str
+            which traits are catgorical? - if None, assumed to be all traits
+        continuous_traits : list of str
+            which traits are continuous - i.e. build a regressor, not a
+            classifier
         """
 
         self.has_been_fit_yet = False
