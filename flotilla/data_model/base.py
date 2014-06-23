@@ -223,7 +223,7 @@ class BaseData(object):
         """
         # local_plotting_kwargs = self.pca_plotting_kwargs.copy()
         # local_plotting_kwargs.update(plotting_kwargs)
-        pca = self.reduce(tuple(sample_ids), feature_ids,
+        pca = self.reduce(sample_ids, feature_ids,
                           featurewise=featurewise)
         pca(markers_size_dict=lambda x: 400,
             show_vectors=False,
@@ -231,8 +231,7 @@ class BaseData(object):
             axis_label_size=10,
             x_pc = "pc_" + str(x_pc), #this only affects the plot, not the study_data.
             y_pc = "pc_" + str(y_pc), #this only affects the plot, not the study_data.
-            **local_plotting_kwargs
-            )
+            **plotting_kwargs)
         return self
 
     # @memoize
