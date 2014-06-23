@@ -5,7 +5,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn
 
-
 from ..compute.network import Networker
 from ..util import dict_to_str
 from ..visualize.decomposition import DecompositionViz
@@ -27,22 +26,46 @@ class NetworkerViz(Networker, DecompositionViz):
                    rpkms_not_events=False, #else event features
                    feature_of_interest='RBFOX2', draw_labels=True,
                    reduction_name=None,
-                   list_name=None,
+                   feature_ids=None,
                    group_id=None,
                    graph_file='',
                    compare=""):
 
-        """
-        list_name - name of genelist used in making pcas
-        group_id - celltype code
-        x_pc - x component for PCA
-        y_pc - y component for PCA
-        n_pcs - n components to use for cells' covariance calculation
-        cov_std_cut - covariance cutoff for edges
-        pc{1-4} use these pcs in cov calculation (default True)
-        degree_cut - miniumum degree for a node to be included in graph display
-        wt_fun - weight function (arctan (arctan cov), sq (sq cov), abs (abs cov), arctan_sq (sqared arctan of cov))
-        gene_of_interest - map a gradient representing this gene's data onto nodes
+        """Draw the graph (network) of these events
+
+        Parameters
+        ----------
+        feature_ids : list of str, or None
+            Feature ids to subset the data. If None, all features will be used.
+        group_id : list of str, or None
+            Sample ids to subset the data. If None, all features will be used.
+        x_pc : str
+            x component for PCA, default "pc_1"
+        y_pc :
+            y component for PCA, default "pc_2"
+        n_pcs : int???
+            n components to use for cells' covariance calculation
+        cov_std_cut : float??
+            covariance cutoff for edges
+        use_pc{1-4} use these pcs in cov calculation (default True)
+        degree_cut : int??
+            miniumum degree for a node to be included in graph display
+        wt_fun :
+            weight function (arctan (arctan cov), sq (sq cov), abs (abs cov),
+            arctan_sq (sqared arctan of cov))
+        gene_of_interest : str
+            map a gradient representing this gene's data onto nodes (ENSEMBL
+            id or gene name???)
+
+
+        Returns
+        -------
+        TODO: Mike please fill these in
+        graph : ???
+            ???
+        pos : ???
+            ???
+
         """
 
         node_color_mapper = self._default_node_color_mapper
@@ -52,7 +75,7 @@ class NetworkerViz(Networker, DecompositionViz):
         pca_settings = dict()
         pca_settings['group_id'] = group_id
         pca_settings['featurewise'] = featurewise
-        pca_settings['list_name'] = list_name
+        pca_settings['feature_ids'] = feature_ids
         pca_settings['obj_id'] = reduction_name
 
         adjacency_settings = dict((k, settings[k]) for k in ['use_pc_1', 'use_pc_2', 'use_pc_3', 'use_pc_4', 'n_pcs', ])
@@ -65,8 +88,7 @@ class NetworkerViz(Networker, DecompositionViz):
         ax_cov = plt.axes([0.1, 0.1, .2, .15])
         ax_degree = plt.axes([0.9,.8,.2,.15])
 
-        pca = self.data_obj.get_reduced(**pca_settings)
-
+        pca = self.data_obj.reduce(**pca_settings)
 
         if featurewise:
             node_color_mapper = lambda x: 'r' if x == feature_of_interest else 'k'
@@ -100,27 +122,32 @@ class NetworkerViz(Networker, DecompositionViz):
         ax_cov.set_ylabel("density")
         ax_cov.legend()
         seaborn.despine(ax=ax_cov)
-        g, pos = self.get_graph(adjacency, **graph_settings)
 
-        nx.draw_networkx_nodes(g, pos, node_color=map(node_color_mapper, g.nodes()),
-                               node_size=map(node_size_mapper, g.nodes()),
+        graph, pos = self.get_graph(adjacency, **graph_settings)
+
+        nx.draw_networkx_nodes(graph, pos,
+                               node_color=map(node_color_mapper, graph.nodes()),
+                               node_size=map(node_size_mapper, graph.nodes()),
                                ax=main_ax, alpha=0.5)
 
         try:
-            nx.draw_networkx_nodes(g, pos, node_color=map(lambda x: pca.X[feature_of_interest].ix[x], g.nodes()),
+            nx.draw_networkx_nodes(graph, pos, node_color=map(
+                lambda x: pca.X[feature_of_interest].ix[x], graph.nodes()),
                                    cmap=plt.cm.Greys,
-                                   node_size=map(lambda x: node_size_mapper(x) * .5, g.nodes()), ax=main_ax, alpha=1)
+                                   node_size=map(
+                                       lambda x: node_size_mapper(x) * .5,
+                                       graph.nodes()), ax=main_ax, alpha=1)
         except:
             pass
         nmr = lambda x:x
-        labels = dict([(nm, nmr(nm)) for nm in g.nodes()])
+        labels = dict([(nm, nmr(nm)) for nm in graph.nodes()])
         if draw_labels:
-            nx.draw_networkx_labels(g, pos, labels = labels, ax=main_ax)
+            nx.draw_networkx_labels(graph, pos, labels=labels, ax=main_ax)
         #mst = nx.minimum_spanning_tree(g, weight='inv_weight')
-        nx.draw_networkx_edges(g, pos,ax = main_ax,alpha=0.1)
+        nx.draw_networkx_edges(graph, pos, ax=main_ax, alpha=0.1)
         #nx.draw_networkx_edges(g, pos, edgelist=mst.edges(), edge_color="m", edge_width=200, ax=main_ax)
         main_ax.set_axis_off()
-        degree = nx.degree(g)
+        degree = nx.degree(graph)
         seaborn.kdeplot(np.array(degree.values()), ax=ax_degree)
         ax_degree.set_xlabel("degree")
         ax_degree.set_ylabel("density")
@@ -136,12 +163,12 @@ class NetworkerViz(Networker, DecompositionViz):
         #f.tight_layout(pad=5)
         if graph_file != '':
             try:
-                nx.write_gml(g, graph_file)
+                nx.write_gml(graph, graph_file)
             except Exception as e:
                 print "error writing graph file:"
                 print e
 
-        return g, pos
+        return graph, pos
 
     def draw_nonreduced_graph(self,
                    degree_cut=2, cov_std_cut = 1.8,
@@ -149,13 +176,13 @@ class NetworkerViz(Networker, DecompositionViz):
                    featurewise=False, #else feature_components
                    rpkms_not_events=False, #else event features
                    feature_of_interest='RBFOX2', draw_labels=True,
-                   list_name=None,
+                   feature_ids=None,
                    group_id=None,
                    graph_file='',
                    compare=""):
 
         """
-        list_name - name of genelist used in making pcas
+        feature_ids - name of genelist used in making pcas
         group_id - celltype code
         x_pc - x component for PCA
         y_pc - y component for PCA
