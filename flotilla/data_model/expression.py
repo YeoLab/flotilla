@@ -20,6 +20,7 @@ from ..util import memoize
 
 
 
+
 #
 # seaborn.set_context('paper')
 
@@ -53,10 +54,10 @@ class ExpressionData(BaseData):
 
         self._var_cut = data.var().dropna().mean() + 2 * data.var() \
             .dropna().std()
-        rpkm_variant = pd.Index([i for i, j in
-                                 (
-                                     data.var().dropna() > self._var_cut).iteritems()
-                                 if j])
+        rpkm_variant = pd.Index(
+            [i for i, j in (self.data.var().dropna() > self._var_cut)
+            .iteritems()
+             if j])
         self.feature_sets['variant'] = pd.Series(rpkm_variant,
                                                  index=rpkm_variant)
 
@@ -74,8 +75,8 @@ class ExpressionData(BaseData):
             .columns)})
         # self._set_plot_colors()
         # self._set_plot_markers()
-        if load_cargo:
-            self.load_cargo()
+        # if load_cargo:
+        #     self.load_cargo()
 
     def _subset_and_standardize(self, data, sample_ids=None,
                                 feature_ids=None,
@@ -117,8 +118,9 @@ class ExpressionData(BaseData):
         subset = subset.T.ix[feature_ids].T
         subset = subset.ix[:, subset.count() > self.min_samples]
         #fill na with mean for each event
-        means = subset.mean()
+        means = subset.mean().rename_axis(self.feature_renamer)
         subset = subset.fillna(means).fillna(0)
+        subset = subset.rename_axis(self.feature_renamer, 1)
 
         # whiten, mean-center
         if standardize:
@@ -126,9 +128,10 @@ class ExpressionData(BaseData):
         else:
             data = subset
 
+        # "data" is a matrix so need to transform it back into a convenient
+        # dataframe
         subset = pd.DataFrame(data, index=subset.index,
-                              columns=subset.columns).rename_axis(
-            self.feature_renamer, 1)
+                              columns=subset.columns)
         return subset, means
 
     @memoize
@@ -182,8 +185,8 @@ class ExpressionData(BaseData):
         if featurewise:
             subset = subset.T
         reducer_object = reducer(subset, **reducer_kwargs)
-        reducer_object.means = means.rename_axis(
-            self.feature_renamer)  #always the mean of input features... i.e.
+        reducer_object.means = means  #always the mean of input features... i
+        # .e.
         # featurewise doesn't change this.
 
         #add mean gene_expression
@@ -219,7 +222,7 @@ class ExpressionData(BaseData):
                                                      feature_ids,
                                                      standardize)
 
-        classifier = predictor(subset, self.phenotype_data,
+        classifier = predictor(subset,
                                categorical_traits=[categorical_trait], )
         classifier.set_reducer_plotting_args(self._default_reducer_kwargs)
         return classifier
