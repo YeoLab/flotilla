@@ -14,18 +14,6 @@ from ..visualize.predict import PredictorViz
 from ..util import memoize
 
 
-
-
-
-
-
-
-
-
-#
-# seaborn.set_context('paper')
-
-
 class ExpressionData(BaseData):
     _expr_cut = 0.1
 
