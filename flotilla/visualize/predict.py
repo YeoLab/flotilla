@@ -40,7 +40,7 @@ class PredictorViz(Predictor, DecompositionViz):
             gs = GridSpecFromSubplotSpec(gs_x,gs_y,ax.get_subplotspec())
         ax_pca = plt.subplot(gs[:, 2:])
 
-        ax_scores= plt.subplot(gs[5:10, :2])
+        ax_scores = plt.subplot(gs[5:10, :2])
         ax_scores.set_xlabel("Feature Importance")
         ax_scores.set_ylabel("Density Estimate")
         self.plot_classifier_scores([trait], ax=ax_scores)
