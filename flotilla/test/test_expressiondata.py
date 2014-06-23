@@ -1,9 +1,12 @@
 __author__ = 'olga'
 
+import numpy.testing as npt
+
 import pandas.util.testing as pdt
 import pytest
 
 from flotilla.data_model import ExpressionData
+from flotilla.visualize.decomposition import PCAViz
 
 
 @pytest.fixture
@@ -42,9 +45,18 @@ class TestExpressionData:
 
 
     def test_reduce(self, example_data):
+        #TODO: parameterize and test with featurewise and subsets
         expression = ExpressionData(example_data.expression)
-        expression_reduced = expression.reduce()
+        expression.reduced = expression.reduce()
 
-        data = example_data.expression.dropna(axis=0)
-        means = data.fillna(data.mean())
-        data = data.fillna()
+        subset, means = expression._subset_and_standardize(
+            expression.sparse_data)
+        reducer_kwargs = {'title': ""}
+        reduced = PCAViz(subset, **reducer_kwargs)
+        reduced.means = means
+
+        npt.assert_array_equal(expression.reduced.reduced_space,
+                               reduced.reduced_space)
+        pdt.assert_series_equal(expression.reduced.means,
+                                reduced.means)
+        pdt.assert_frame_equal(expression.reduced.df, reduced.df)
