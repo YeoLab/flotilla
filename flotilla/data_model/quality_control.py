@@ -14,7 +14,7 @@ class MappingStatsData(BaseData):
 
     """
 
-    def __init__(self, data):
+    def __init__(self, data, number_mapped_col):
         """Constructor for MappingStatsData
 
         Parameters
@@ -30,4 +30,10 @@ class MappingStatsData(BaseData):
 
         """
         super(MappingStatsData).__init__()
+        self.number_mapped_col = number_mapped_col
+
         pass
+
+    @property
+    def mapped_reads(self):
+        return self.data[self.number_mapped_col]
