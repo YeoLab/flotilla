@@ -54,7 +54,7 @@ class PredictorViz(Predictor, DecompositionViz):
         ax_scores.set_ylabel("Density Estimate")
         self.plot_classifier_scores([trait], ax=ax_scores)
         pca = self.do_pca(trait, ax=ax_pca, show_vectors=True)
-        plt.tight_layout()
+        fig.tight_layout()
         return pca
 
 
