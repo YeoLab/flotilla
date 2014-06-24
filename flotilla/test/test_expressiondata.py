@@ -2,15 +2,9 @@ __author__ = 'olga'
 
 import numpy.testing as npt
 import pandas.util.testing as pdt
-import pytest
 
 from flotilla.data_model import ExpressionData
 from flotilla.visualize.decomposition import PCAViz
-
-
-@pytest.fixture
-def expression(example_data):
-    return ExpressionData(example_data.expression)
 
 
 class TestExpressionData:

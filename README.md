@@ -1,3 +1,5 @@
+[![Build Status](https://magnum.travis-ci.com/YeoLab/flotilla.svg?token=p4jLex5HVrN4EZx5r6A3&branch=dev)](https://magnum.travis-ci.com/YeoLab/flotilla)
+
 flotilla
 ========
 download with:
