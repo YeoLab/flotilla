@@ -345,7 +345,7 @@ class Study(StudyFactory):
         color (blue)
         """
         if 'color' in self.experiment_design.data:
-            return self.experiment_design.data.to_dict()
+            return self.experiment_design.data.color.to_dict()
         elif 'celltype' in self.experiment_design.data:
             grouped = self.experiment_design.data.groupby('celltype')
             palette = iter(sns.color_palette(n_colors=grouped.ngroups + 1))
