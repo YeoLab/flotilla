@@ -7,7 +7,7 @@ from sklearn.preprocessing import LabelEncoder
 
 
 class Predictor(object):
-    extratrees_default_params = {'n_estimators': 100,
+    extratrees_default_kwargs = {'n_estimators': 100,
                                  'bootstrap': True,
                                  'max_features': 'auto',
                                  'random_state': 0,
@@ -21,7 +21,7 @@ class Predictor(object):
                                                     + 2 * np.std(scores)
     # 2 std's above mean
 
-    boosting_classifier_params = {'n_estimators': 80, 'max_features': 1000,
+    boosting_classifier_kwargs = {'n_estimators': 80, 'max_features': 1000,
                                   'learning_rate': 0.2, 'subsample': 0.6, }
 
     boosting_scoring_fun = lambda clf: clf.feature_importances_
@@ -33,7 +33,7 @@ class Predictor(object):
 
     default_classifier_scoring_fun = default_regressor_scoring_fun = extratreees_scoring_fun
     default_classifier_scoring_cutoff_fun = default_regressor_scoring_cutoff_fun = extratreees_scoring_cutoff_fun
-    default_classifier_params = default_regressor_params = extratrees_default_params
+    default_classifier_kwargs = default_regressor_kwargs = extratrees_default_kwargs
 
     def __init__(self, data, trait_data,
                  name="Classifier",
@@ -83,7 +83,6 @@ class Predictor(object):
 
         self.X, self.trait_data = self.X.align(self.trait_data, axis=0,
                                                join='inner')
-
         self.predictors_ = {}
 
         # for trait in self.traits:
@@ -143,14 +142,14 @@ class Regressor(Predictor):
             traits=None,
             regressor_name=default_regressor_name,
             regressor=default_regressor,
-            regressor_params=default_regressor_params):
+            regressor_kwargs=default_regressor_kwargs):
         raise NotImplementedError("Untested, should be close to working.")
 
         if traits is None:
             traits = self.continuous_traits
 
         for trait in traits:
-            clf = regressor(**regressor_params)
+            clf = regressor(**regressor_kwargs)
             print "Fitting a classifier for trait %s... please wait." % trait
             clf.fit(self.X, self.y[trait])
             self.regressors_[trait][regressor_name] = clf
@@ -189,17 +188,15 @@ class Classifier(Predictor):
     def fit(self,
             classifier_name=default_classifier_name,
             classifier=default_classifier,
-            classifier_params=default_classifier_params):
-        """ fit classifiers_ to the data
-        traits - list of trait(s) to fit a classifier upon,
-        if None, fit all traits that were initialized.
-        Classifiers on each trait will be stored in: self.classifiers_[trait]
+            classifier_kwargs=default_classifier_kwargs):
+        """ fit classifiers to the data
 
-        classifier_name - a name for this classifier to be stored in self.classifiers_[trait][classifier_name]
-        classifier - sklearn classifier object such as ExtraTreesClassifier
-        classifier_params - dictionary for paramters to classifier
+        classifier : sklearn classifier
+            sklearn classifier object such as ExtraTreesClassifier
+        classifier_kwargs :
+            dictionary for paramters to classifier
         """
-        self.classifier = classifier(**classifier_params)
+        self.classifier = classifier(**classifier_kwargs)
         sys.stdout.write("Fitting a classifier for trait {}... please wait."
                          .format(self.trait))
         self.classifier.fit(self.X, self.y)
