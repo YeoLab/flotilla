@@ -151,17 +151,18 @@ class Regressor(PredictorBase):
              'n_jobs': 2,
              'verbose': True}
         predictor_scoring_fun : function
-            Function to get the feature scores for a scikit-learn classifier.
+            Function to get the feature scores for a scikit-learn regressor.
             This can be different for different classifiers, e.g. for a
-            classifier named "clf" it could be clf.scores_, for other it's
-            clf.feature_importances_. Default: lambda clf: clf.feature_importances_
+            regressor named "x" it could be x.scores_, for other it's
+            x.feature_importances_. Default: lambda x: x.feature_importances_
         score_cutoff_fun : function
-            Function to cut off insignificant scores (scores as returned by
-            predictor_scoring_fun)
-            Default: lambda scores: np.mean(scores) + 2 * np.std(scores)
+            Function to cut off insignificant scores
+            Default: lambda x: np.mean(x) + 2 * np.std(x)
         """
         super(Regressor, self).__init__()
         self.y = self.trait_data
+        self.predictor_class = ExtraTreesRegressor \
+            if self.predictor_class is None else self.predictor_class
 
 
 class Classifier(PredictorBase):
@@ -190,9 +191,9 @@ class Classifier(PredictorBase):
             Samples x trait (single) data that you want to tell the
             difference between
         predictor : scikit-learn classifier
-            Which regression to use. Default ExtraTreesClassifier
+            Which classifier to use. Default ExtraTreesClassifier
         name : str
-            Titles for plots and things... Default "ExtraTreesRegressor"
+            Titles for plots and things... Default "ExtraTreesClassifier"
         predictor_kwargs : dict
             Extra arguments to the predictor. Default:
             {'n_estimators': 100,
@@ -205,14 +206,15 @@ class Classifier(PredictorBase):
         predictor_scoring_fun : function
             Function to get the feature scores for a scikit-learn classifier.
             This can be different for different classifiers, e.g. for a
-            classifier named "clf" it could be clf.scores_, for other it's
-            clf.feature_importances_. Default: lambda clf: clf.feature_importances_
+            classifier named "x" it could be x.scores_, for other it's
+            x.feature_importances_. Default: lambda x: x.feature_importances_
         score_cutoff_fun : function
-            Function to cut off insignificant scores (scores as returned by
-            predictor_scoring_fun)
-            Default: lambda scores: np.mean(scores) + 2 * np.std(scores)
+            Function to cut off insignificant scores
+            Default: lambda scores: np.mean(x) + 2 * np.std(x)
         """
         super(Classifier, self).__init__()
+        self.predictor_class = ExtraTreesClassifier \
+            if self.predictor_class is None else self.predictor_class
 
         # traits encoded to do some work -- "target" variable
         self.traitset = \
