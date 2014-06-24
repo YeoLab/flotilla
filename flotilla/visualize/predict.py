@@ -6,10 +6,10 @@ import numpy as np
 import seaborn as sns
 
 from .decomposition import DecompositionViz, PCAViz
-from ..compute.predict import Predictor
+from ..compute.predict import PredictorBase
 
 
-class PredictorViz(Predictor, DecompositionViz):
+class PredictorBaseViz(PredictorBase, DecompositionViz):
     _reducer_plotting_args = {}
 
     def set_reducer_plotting_args(self, rpa):
