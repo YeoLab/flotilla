@@ -81,8 +81,6 @@ class BaseData(object):
         else:
             self.feature_renamer = lambda x: x
 
-        if drop_outliers:
-            self.data = self.drop_outliers(data)
 
     # @property
     # def outliers(self):
