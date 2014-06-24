@@ -16,8 +16,10 @@ class Predictor(object):
                                  'verbose': True}
 
     extratreees_scoring_fun = lambda clf: clf.feature_importances_
-    extratreees_scoring_cutoff_fun = lambda scores: np.mean(
-        scores) + 2 * np.std(scores)  # 2 std's above mean
+
+    # 2 std's above mean
+    extratreees_scoring_cutoff_fun = lambda scores: np.mean(scores) \
+                                                    + 2 * np.std(scores)
 
     boosting_classifier_params = {'n_estimators': 80, 'max_features': 1000,
                                   'learning_rate': 0.2, 'subsample': 0.6, }
