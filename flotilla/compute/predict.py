@@ -1,3 +1,6 @@
+"""
+Compute predictors on data, e.g. regressors or classifiers
+"""
 import sys
 import warnings
 
@@ -94,7 +97,7 @@ class PredictorBase(object):
         """
         self.predictor = self.predictor_class(**self.predictor_kwargs)
         sys.stdout.write("Fitting a predictor for trait {}... please wait.\n"
-                         .format(self.trait))
+                         .format(self.trait_name))
         self.predictor.fit(self.X, self.y)
         sys.stdout.write("\tFinished.\n")
 
@@ -102,10 +105,9 @@ class PredictorBase(object):
         """Collect scores from predictor
         """
         sys.stdout.write("Scoring predictor: {} for trait: {}... please "
-                         "wait\n".format(self.name, self.trait))
-        self.predictor.scores_ = pd.Series(index=self.X.columns,
-                                           data=self.predictor_scoring_fun(
-                                               self.predictor))
+                         "wait\n".format(self.name, self.trait_name))
+        scores = self.predictor_scoring_fun(self.predictor)
+        self.predictor.scores_ = pd.Series(index=self.X.columns, data=scores)
         self.predictor.score_cutoff_ = \
             self.score_cutoff_fun(self.predictor.scores_)
         self.predictor.good_features_ = self.predictor.scores_ > self.predictor.score_cutoff_
@@ -125,7 +127,7 @@ class Regressor(PredictorBase):
 
     default_regressor = ExtraTreesRegressor
 
-    def __init__(self, data, trait_data, predictor=None,
+    def __init__(self, data, trait_data, predictor=ExtraTreesRegressor,
                  name="ExtraTreesRegressor",
                  predictor_kwargs=None, predictor_scoring_fun=None,
                  score_cutoff_fun=None):
@@ -160,11 +162,11 @@ class Regressor(PredictorBase):
             Function to cut off insignificant scores
             Default: lambda x: np.mean(x) + 2 * np.std(x)
         """
-        super(Regressor, self).__init__(data, trait_data, predictor,
-                                        "ExtraTreesRegressor",
-                                        predictor_kwargs,
-                                        predictor_scoring_fun,
-                                        score_cutoff_fun)
+        super(Regressor, self).__init__(data=data, trait_data=trait_data,
+                                        predictor=predictor, name=name,
+                                        predictor_kwargs=predictor_kwargs,
+                                        predictor_scoring_fun=predictor_scoring_fun,
+                                        score_cutoff_fun=score_cutoff_fun)
         self.y = self.trait_data
         self.predictor_class = ExtraTreesRegressor \
             if self.predictor_class is None else self.predictor_class
@@ -183,7 +185,8 @@ class Classifier(PredictorBase):
 
     default_classifier, default_classifier_name = ExtraTreesClassifier, "ExtraTreesClassifier"
 
-    def __init__(self, data, trait_data, name="ExtraTreesClassifier",
+    def __init__(self, data, trait_data, predictor=ExtraTreesClassifier,
+                 name="ExtraTreesClassifier",
                  predictor_kwargs=None, predictor_scoring_fun=None,
                  score_cutoff_fun=None):
         """Train a classifier on data.
@@ -217,11 +220,11 @@ class Classifier(PredictorBase):
             Function to cut off insignificant scores
             Default: lambda scores: np.mean(x) + 2 * np.std(x)
         """
-        super(Classifier, self).__init__(data, trait_data,
-                                         "ExtraTreesClassifier",
-                                         predictor_kwargs,
-                                         predictor_scoring_fun,
-                                         score_cutoff_fun)
+        super(Classifier, self).__init__(data=data, trait_data=trait_data,
+                                         predictor=predictor, name=name,
+                                         predictor_kwargs=predictor_kwargs,
+                                         predictor_scoring_fun=predictor_scoring_fun,
+                                         score_cutoff_fun=score_cutoff_fun)
         self.predictor_class = ExtraTreesClassifier \
             if self.predictor_class is None else self.predictor_class
 
@@ -235,7 +238,7 @@ class Classifier(PredictorBase):
                     0]) == 2
         except AssertionError:
             warnings.warn("WARNING: trait {} has >2 categories".format(
-                trait_name))
+                self.trait_name))
 
         # categorical encoder
         le = LabelEncoder().fit(self.traitset)
