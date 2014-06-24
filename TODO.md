@@ -12,9 +12,9 @@ CLIPdata data model
 
 add title to NetworkerViz graph
 
-make Predictor.classifiers_ less nested (this is relic from old code)
+make PredictorBase.classifiers_ less nested (this is relic from old code)
 
-Predictor.has_been_*_yet should be dictionaries that manage each trait separately
+PredictorBase.has_been_*_yet should be dictionaries that manage each trait separately
 
 ## Study
 
@@ -28,10 +28,10 @@ ExpressionData
    make_classifier
 
 Submarine
-   PredictorViz
+   PredictorBaseViz
 
 Frigate
-   Predictor
+   PredictorBase
 
 
 

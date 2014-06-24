@@ -6,7 +6,7 @@ from sklearn.ensemble import ExtraTreesClassifier, ExtraTreesRegressor
 from sklearn.preprocessing import LabelEncoder
 
 
-class Predictor(object):
+class PredictorBase(object):
     default_predictor_kwargs = {'n_estimators': 100,
                                 'bootstrap': True,
                                 'max_features': 'auto',
@@ -16,27 +16,75 @@ class Predictor(object):
                                 'verbose': True}
     default_predictor_scoring_fun = lambda clf: clf.feature_importances_
 
-    default_scoring_cutoff_fun = lambda scores: np.mean(scores) \
-                                                + 2 * np.std(scores)
     # 2 std's above mean
+    default_score_cutoff_fun = lambda x: np.mean(x) + 2 * np.std(x)
 
-
-
-    default_classifier, default_classifier_name = ExtraTreesClassifier, "ExtraTreesClassifier"
-    default_regressor, default_regressor_name = ExtraTreesRegressor, "ExtraTreesRegressor"
-
-    def __init__(self, data, trait_data, name="Predictor",
+    def __init__(self, data, trait_data, predictor=None, name="Predictor",
                  predictor_kwargs=None, predictor_scoring_fun=None,
-                 scoring_cutoff_fun=None):
-        """train regressors_ or classifiers_ on data.
+                 score_cutoff_fun=None):
+        self.predictor_class = predictor
 
-{       data : pandas.DataFrame
+        self.has_been_fit_yet = False
+        self.has_been_scored_yet = False
+        self.name = name
+        self.X = data
+        self.important_features = {}
+
+        # Set the keyword argument to the default if it's not already specified
+        self.predictor_kwargs = {} if predictor_kwargs is None else predictor_kwargs
+        for k, v in self.default_predictor_kwargs:
+            self.predictor_kwargs.setdefault(k, v)
+
+        self.predictor_scoring_fun = self.default_predictor_scoring_fun \
+            if predictor_scoring_fun is None else predictor_scoring_fun
+        self.score_cutoff_fun = self.default_score_cutoff_fun \
+            if score_cutoff_fun is None else score_cutoff_fun
+
+
+        # traits from source, in case they're needed later
+        self.trait_data = trait_data
+        self.trait_name = self.trait_data.name
+        sys.stdout.write("Initializing predictor for "
+                         "{}\n".format(self.trait_name))
+
+        self.X, self.trait_data = self.X.align(self.trait_data, axis=0,
+                                               join='inner')
+
+        # This will be set after calling fit()
+        self.predictor = None
+
+    def fit(self):
+        """ fit classifiers to the data
+        """
+        self.predictor = self.predictor_class(**self.predictor_kwargs)
+        sys.stdout.write("Fitting a predictor for trait {}... please wait.\n"
+                         .format(self.trait))
+        self.predictor.fit(self.X, self.y)
+        sys.stdout.write("\tFinished.\n")
+
+
+class Regressor(PredictorBase):
+    """
+    PredictorBase for continuous data
+    """
+
+    default_regressor = ExtraTreesRegressor
+
+    def __init__(self, data, trait_data, predictor=None,
+                 name="ExtraTreesRegressor",
+                 predictor_kwargs=None, predictor_scoring_fun=None,
+                 score_cutoff_fun=None):
+        """Train a regressor on data.
+
+        data : pandas.DataFrame
             Samples x features data to train the predictor on
         trait_data : pandas.Series
             Samples x trait (single) data that you want to tell the
             difference between
+        predictor : scikit-learn regressor
+            Which regression to use. Default ExtraTreesRegressor
         name : str
-            Titles for plots and things... Default "Predictor"
+            Titles for plots and things... Default "ExtraTreesRegressor"
         predictor_kwargs : dict
             Extra arguments to the predictor. Default:
             {'n_estimators': 100,
@@ -56,42 +104,9 @@ class Predictor(object):
             predictor_scoring_fun)
             Default: lambda scores: np.mean(scores) + 2 * np.std(scores)
         """
-        self.has_been_fit_yet = False
-        self.has_been_scored_yet = False
-        self.name = name
-        self.X = data
-        self.important_features = {}
-
-        # Set the keyword argument to the default if it's not already specified
-        self.predictor_kwargs = {} if predictor_kwargs is None else predictor_kwargs
-        for k, v in self.default_predictor_kwargs:
-            self.predictor_kwargs.setdefault(k, v)
-
-        self.predictor_scoring_fun = self.default_predictor_scoring_fun \
-            if predictor_scoring_fun is None else predictor_scoring_fun
-
-
-        # traits from source, in case they're needed later
-        self.trait_data = trait_data
-        self.trait_name = self.trait_data.name
-        sys.stdout.write("Initializing predictor for "
-                         "{}\n".format(self.trait_name))
-
-        self.X, self.trait_data = self.X.align(self.trait_data, axis=0,
-                                               join='inner')
-
-        # This will be set after calling fit()
-        self.predictor = None
-
-
-class Regressor(Predictor):
-    """
-    Predictor for continuous data
-    """
-
-    def __init__(self, data, trait_data, name="Classifier"):
         super(Regressor, self).__init__()
         self.y = self.trait_data
+
 
     def score(self,
               traits=None,
@@ -133,27 +148,22 @@ class Regressor(Predictor):
             clf.subset_ = self.X.T[clf.good_features_].T
             print "Finished..."
 
-    def fit(self,
-            traits=None,
-            regressor_name=default_regressor_name,
-            regressor=default_regressor,
-            regressor_kwargs=default_regressor_kwargs):
-        raise NotImplementedError("Untested, should be close to working.")
-
-        if traits is None:
-            traits = self.continuous_traits
-
-        for trait in traits:
-            clf = regressor(**regressor_kwargs)
-            print "Fitting a predictor for trait %s... please wait." % trait
-            clf.fit(self.X, self.y[trait])
-            self.regressors_[trait][regressor_name] = clf
-            print "Finished..."
+            # def fit(self,
+            #         traits=None,
+            #         regressor_name=default_regressor_name,
+            #         regressor=default_regressor,
+            #         regressor_kwargs=default_regressor_kwargs):
+            #     raise NotImplementedError("Untested, should be close to working.")
+            #     clf = self.predictor_class(**regressor_kwargs)
+            #     print "Fitting a predictor for trait %s... please wait." % trait
+            #     clf.fit(self.X, self.y[trait])
+            #     self.regressors_[trait][regressor_name] = clf
+            #     print "Finished..."
 
 
-class Classifier(Predictor):
+class Classifier(PredictorBase):
     """
-    Predictor for categorical data
+    PredictorBase for categorical data
     """
     boosting_classifier_kwargs = {'n_estimators': 80, 'max_features': 1000,
                                   'learning_rate': 0.2, 'subsample': 0.6, }
@@ -162,7 +172,41 @@ class Classifier(Predictor):
     boosting_scoring_cutoff_fun = lambda scores: np.mean(scores) + 2 * np.std(
         scores)
 
-    def __init__(self, data, trait_data, name="Classifier"):
+    default_classifier, default_classifier_name = ExtraTreesClassifier, "ExtraTreesClassifier"
+
+    def __init__(self, data, trait_data, name="ExtraTreesClassifier",
+                 predictor_kwargs=None, predictor_scoring_fun=None,
+                 score_cutoff_fun=None):
+        """Train a classifier on data.
+
+        data : pandas.DataFrame
+            Samples x features data to train the predictor on
+        trait_data : pandas.Series
+            Samples x trait (single) data that you want to tell the
+            difference between
+        predictor : scikit-learn classifier
+            Which regression to use. Default ExtraTreesClassifier
+        name : str
+            Titles for plots and things... Default "ExtraTreesRegressor"
+        predictor_kwargs : dict
+            Extra arguments to the predictor. Default:
+            {'n_estimators': 100,
+             'bootstrap': True,
+             'max_features': 'auto',
+             'random_state': 0,
+             'oob_score': True,
+             'n_jobs': 2,
+             'verbose': True}
+        predictor_scoring_fun : function
+            Function to get the feature scores for a scikit-learn classifier.
+            This can be different for different classifiers, e.g. for a
+            classifier named "clf" it could be clf.scores_, for other it's
+            clf.feature_importances_. Default: lambda clf: clf.feature_importances_
+        score_cutoff_fun : function
+            Function to cut off insignificant scores (scores as returned by
+            predictor_scoring_fun)
+            Default: lambda scores: np.mean(scores) + 2 * np.std(scores)
+        """
         super(Classifier, self).__init__()
 
         # traits encoded to do some work -- "target" variable
@@ -186,44 +230,20 @@ class Classifier(Predictor):
                                     index=self.X.index,
                                     name=self.trait_data.name)
 
-    def fit(self,
-            classifier_name=default_classifier_name,
-            classifier=default_classifier,
-            classifier_kwargs=default_classifier_kwargs):
-        """ fit classifiers to the data
 
-        predictor : sklearn predictor
-            sklearn predictor object such as ExtraTreesClassifier
-        classifier_kwargs :
-            dictionary for paramters to predictor
-        """
-        self.predictor = classifier(**classifier_kwargs)
-        sys.stdout.write("Fitting a predictor for trait {}... please wait.\n"
-                         .format(self.trait))
-        self.predictor.fit(self.X, self.y)
-        sys.stdout.write("\tFinished.\n")
-
-    def score(self, classifier_name=default_classifier_name,
-              feature_scoring_fun=default_classifier_scoring_fun,
-              score_cutoff_fun=default_classifier_scoring_cutoff_fun):
-        """
-        collect scores from classifiers_
-        traits - list of trait(s) to score. Retrieved from self.classifiers_[trait]
-        classifier_name - a name for this predictor to be retrieved from self.classifiers_[trait][classifier_name]
-        feature_scoring_fun - fxn that yields higher values for better features
-        score_cutoff_fun - fxn that that takes output of feature_scoring_fun and returns a cutoff
+    def score(self):
+        """collect scores from classifiers_
         """
         sys.stdout.write("Scoring predictor: {} for trait: {}... please "
-                         "wait\n".format(classifier_name, self.trait))
+                         "wait\n".format(self.name, self.trait))
 
-        # clf = self.classifiers_[self.trait][classifier_name]
-        self.predictor.scores_ = pd.Series(
-            feature_scoring_fun(self.predictor),
-            index=self.X.columns)
-        self.predictor.score_cutoff_ = score_cutoff_fun(
-            self.predictor.scores_)
+        self.predictor.scores_ = pd.Series(index=self.X.columns,
+                                           data=self.predictor_scoring_fun(
+                                               self.predictor))
+        self.predictor.score_cutoff_ = \
+            self.score_cutoff_fun(self.predictor.scores_)
         self.predictor.good_features_ = self.predictor.scores_ > self.predictor.score_cutoff_
-        self.important_features[self.trait][classifier_name] = self.predictor \
+        self.important_features[self.trait][self.name] = self.predictor \
             .good_features_
         self.predictor.n_good_features_ = np.sum(
             self.predictor.good_features_)
