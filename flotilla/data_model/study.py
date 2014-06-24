@@ -248,6 +248,16 @@ class Study(StudyFactory):
             Name of the species and genome version, e.g. 'hg19' or 'mm10'.
         gene_ontology_data : pandas.DataFrame
             Gene ids x ontology categories dataframe used for GO analysis.
+
+        Note
+        ----
+        This function explicitly specifies ALL the instance variables (except
+        those that are marked by the @property decorator), because,
+        as described [1], "If you write initialization functions separate from
+        __init__ then experienced developers will certainly see your code as a
+        kid's playground."
+
+        [1] http://stackoverflow.com/questions/12513185/removing-the-work-from-init-to-aid-unit-testing
         """
         super(Study, self).__init__()
         # if params_dict is None:
