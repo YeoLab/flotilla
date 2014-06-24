@@ -108,7 +108,7 @@ class SplicingData(BaseData):
         #some samples, somefeatures
 
         if group_id.startswith("~"):
-            #print 'not', group_id.lstrip("~")
+            #print 'not', sample_subset.lstrip("~")
             sample_ind = ~pd.Series(self.phenotype_data[group_id.lstrip("~")],
                                     dtype='bool')
         else:
@@ -160,7 +160,7 @@ class SplicingData(BaseData):
         event_list = self.feature_sets[list_name]
 
         if group_id.startswith("~"):
-            #print 'not', group_id.lstrip("~")
+            #print 'not', sample_subset.lstrip("~")
             sample_ind = ~pd.Series(self.phenotype_data[group_id.lstrip("~")],
                                     dtype='bool')
         else:

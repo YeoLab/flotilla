@@ -189,7 +189,7 @@ class NetworkerViz(Networker, DecompositionViz):
 
         """
         feature_ids - name of genelist used in making pcas
-        group_id - celltype code
+        sample_subset - celltype code
         x_pc - x component for PCA
         y_pc - y component for PCA
         n_pcs - n components to use for cells' covariance calculation
