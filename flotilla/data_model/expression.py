@@ -1,8 +1,6 @@
 """
-ExpressionData
---------------
-A container for gene expression data and related feature data, e.g. gene
-symbols of ensembl IDs and GO terms.
+Data types related to gene expression, e.g. from RNA-Seq or microarrays.
+Included SpikeIn data.
 """
 
 import pandas as pd
