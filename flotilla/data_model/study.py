@@ -32,13 +32,7 @@ SPECIES_DATA_PACKAGE_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects'
 # FLOTILLA_DIR = os.path.dirname(flotilla.__file__)
 
 class StudyFactory(object):
-    #'min_samples','species',
-    #'sample_metadata_filename', 'event_metadata_filename', 'expression_data_filename',
-    #'splicing_data_filename', 'expression_data_filename', 'gene_metadata_filename',
-    #'event_metadata_filename',
-    # 'default_group_id', 'default_group_ids', 'default_list_id', 'default_list_ids']
     _accepted_filetypes = 'tsv'
-    # _accepted_filetypes = ['pickle_df', 'gzip_pickle_df', 'tsv', 'csv']
 
     def __init__(self):
         self.minimal_study_parameters = set()
@@ -297,72 +291,9 @@ class Study(StudyFactory):
                                                   mapping_stats_number_mapped_col)
         if spikein_data is not None:
             self.spikein = SpikeInData(spikein_data, spikein_feature_data)
-
-
-
-
-        # self._initialize_all_data(experiment_design_data,
-        #                           expression_data,
-        #                           splicing_data, expression_feature_data,
-        #                           splicing_feature_data,
-        #                           load_cargo=load_cargo,
-        #                           drop_outliers=drop_outliers)
         sys.stderr.write("subclasses initialized\n")
         self.validate_params()
         sys.stderr.write("package validated\n")
-        # self._set_plot_colors()
-        # self._set_plot_markers()
-
-    # @property
-    # def expression(self):
-    #     if hasattr(self, '_expression'):
-    #         return self._expression
-    #     else:
-    #         sys.stderr.write('This study does not have expression data')
-    #         return None
-    #
-    # @expression.setter
-    # def expression(self, value):
-    #     self._expression = value
-    #
-    # @property
-    # def splicing(self):
-    #     if hasattr(self, '_splicing'):
-    #         return self._splicing
-    #     else:
-    #         sys.stderr.write('This study does not have splicing data')
-    #         return None
-    #
-    # @splicing.setter
-    # def splicing(self, value):
-    #     self._splicing = value
-    #
-    #
-    # @property
-    # def mapping_stats(self):
-    #     if hasattr(self, '_mapping_stats'):
-    #         return self._mapping_stats
-    #     else:
-    #         sys.stderr.write('This study does not have mapping_stats data')
-    #         return None
-    #
-    # @mapping_stats.setter
-    # def mapping_stats(self, value):
-    #     self._mapping_stats = value
-    #
-    #
-    # @property
-    # def spikein(self):
-    #     if hasattr(self, '_spikein'):
-    #         return self._spikein
-    #     else:
-    #         sys.stderr.write('This study does not have spikein data')
-    #         return None
-    #
-    # @spikein.setter
-    # def spikein(self, value):
-    #     self._spikein = value
-
 
     @property
     def default_feature_subsets(self):
@@ -424,12 +355,6 @@ class Study(StudyFactory):
             If the datapackage.json file does not contain the required
             resources of experiment_design, expression, and splicing.
         """
-        # TODO: This should actually download the data to a know directory like
-        # ~/flotilla_projects so it can be searched, and double check if it's
-        # already downloaded (elegantly fail) and instantiate from those files.
-        # req = urllib2.Request(data_package_url)
-        # opener = urllib2.build_opener()
-        # f = opener.open(req)
         data_package = data_package_url_to_dict(data_package_url)
         return cls.from_data_package(data_package,
                                      species_data_package_base_url=species_data_package_base_url)
