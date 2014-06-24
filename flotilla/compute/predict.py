@@ -1,4 +1,5 @@
 import sys
+import warnings
 
 import numpy as np
 import pandas as pd
@@ -67,7 +68,7 @@ class PredictorBase(object):
 
         # Set the keyword argument to the default if it's not already specified
         self.predictor_kwargs = {} if predictor_kwargs is None else predictor_kwargs
-        for k, v in self.default_predictor_kwargs:
+        for k, v in self.default_predictor_kwargs.items():
             self.predictor_kwargs.setdefault(k, v)
 
         self.predictor_scoring_fun = self.default_predictor_scoring_fun \
@@ -159,7 +160,11 @@ class Regressor(PredictorBase):
             Function to cut off insignificant scores
             Default: lambda x: np.mean(x) + 2 * np.std(x)
         """
-        super(Regressor, self).__init__()
+        super(Regressor, self).__init__(data, trait_data, predictor,
+                                        "ExtraTreesRegressor",
+                                        predictor_kwargs,
+                                        predictor_scoring_fun,
+                                        score_cutoff_fun)
         self.y = self.trait_data
         self.predictor_class = ExtraTreesRegressor \
             if self.predictor_class is None else self.predictor_class
@@ -212,7 +217,11 @@ class Classifier(PredictorBase):
             Function to cut off insignificant scores
             Default: lambda scores: np.mean(x) + 2 * np.std(x)
         """
-        super(Classifier, self).__init__()
+        super(Classifier, self).__init__(data, trait_data,
+                                         "ExtraTreesClassifier",
+                                         predictor_kwargs,
+                                         predictor_scoring_fun,
+                                         score_cutoff_fun)
         self.predictor_class = ExtraTreesClassifier \
             if self.predictor_class is None else self.predictor_class
 
@@ -225,7 +234,8 @@ class Classifier(PredictorBase):
                     self.trait_data).describe().index.levels[
                     0]) == 2
         except AssertionError:
-            print "WARNING: trait \"%s\" has >2 categories"
+            warnings.warn("WARNING: trait {} has >2 categories".format(
+                trait_name))
 
         # categorical encoder
         le = LabelEncoder().fit(self.traitset)
