@@ -35,7 +35,7 @@ class Predictor(object):
     default_classifier_scoring_cutoff_fun = default_regressor_scoring_cutoff_fun = extratreees_scoring_cutoff_fun
     default_classifier_params = default_regressor_params = extratrees_default_params
 
-    def __init__(self, data_df, metadata_df,
+    def __init__(self, data, trait_data,
                  name="Classifier",
                  categorical_traits=None,
                  continuous_traits=None):
@@ -47,10 +47,10 @@ class Predictor(object):
             a list of sample ids for this comparer
         critical_variable : str
             a response variable to test or a list of them
-        data_df : pandas.DataFrame
+        data : pandas.DataFrame
             containing arrays in question
         metadata_df : pandas.DataFrame
-            pd.DataFrame with metadata about data_df
+            pd.DataFrame with metadata about data
         categorical_traits : list of str
             which traits are catgorical? - if None, assumed to be all traits
         continuous_traits : list of str
@@ -61,43 +61,46 @@ class Predictor(object):
         self.has_been_fit_yet = False
         self.has_been_scored_yet = False
         self.name = name
-        self.X = data_df
+        self.X = data
         self.important_features = {}
-        self.traits = []
-        self.categorical_traits = categorical_traits
-        if categorical_traits is not None:
-            self.traits.extend(categorical_traits)
-
-        self.continuous_traits = continuous_traits
-        if continuous_traits is not None:
-            self.traits.extend(continuous_traits)
+        # self.traits = []
+        # self.categorical_traits = categorical_traits
+        # if categorical_traits is not None:
+        #     self.traits.extend(categorical_traits)
+        #
+        # self.continuous_traits = continuous_traits
+        # if continuous_traits is not None:
+        #     self.traits.extend(continuous_traits)
 
         print "Initializing predictors for %s" % " and ".join(self.traits)
 
 
         #print "Using traits: ", self.traits
 
-        #traits from source, in case they're needed later
-        self.trait_data = metadata_df[self.traits]
+        # traits from source, in case they're needed later
+        self.trait_data = trait_data
+
         self.X, self.trait_data = self.X.align(self.trait_data, axis=0,
                                                join='inner')
 
-        #traits encoded to do some work -- "target" variable
+        # traits encoded to do some work -- "target" variable
         self.y = pd.DataFrame(index=self.X.index, columns=self.traits)
 
         self.classifiers_ = {}
 
-        for trait in self.traits:
-            self.important_features[trait] = {}
+        # for trait in self.traits:
+        #     self.important_features[trait] = {}
 
         for trait in self.categorical_traits:
+            traitset = self.trait_data.groupby(self.trait_data).describe().index.levels[0]
             try:
                 assert len(
-                    metadata_df.groupby(trait).describe().index.levels[0]) == 2
+                    self.trait_data.groupby(self.trait_data).describe().index.levels[
+                        0]) == 2
             except AssertionError:
                 print "WARNING: trait \"%s\" has >2 categories"
             self.classifiers_[trait] = {}
-            traitset = metadata_df.groupby(trait).describe().index.levels[0]
+
             le = LabelEncoder().fit(traitset)  #categorical encoder
             self.y[trait] = le.transform(
                 self.trait_data[trait])  #categorical encoding
