@@ -182,25 +182,29 @@ class Study(StudyFactory):
     def __init__(self, experiment_design_data, expression_data=None,
                  splicing_data=None,
                  expression_feature_data=None,
-                 expression_feature_rename_col=None,
+                 expression_feature_rename_col='gene_name',
                  splicing_feature_data=None,
-                 splicing_feature_rename_col=None,
-                 mapping_stats_data=None, spikein_data=None,
-                 load_cargo=False, drop_outliers=False,
-                 default_group_id=None, default_group_ids=None,
-                 default_list_id='variant', default_list=('variant'),
-                 default_genes=('variant'),
-                 default_events=('variant'), species=None,
+                 splicing_feature_rename_col='gene_name',
+                 mapping_stats_data=None,
+                 mapping_stats_number_mapped_col=None,
+                 spikein_data=None,
+                 spikein_feature_data=None,
+                 drop_outliers=False, species=None,
                  gene_ontology_data=None):
         """Construct a biological study
 
         This class only accepts data, no filenames. All data must already
-        have been loaded in.
+        have been read in and exist as Python objects.
 
         Parameters
         ----------
+        #TODO: Maybe make these all kwargs?
         experiment_design_data : pandas.DataFrame
-            Only required parameter. Samples as the index, with
+            Only required parameter. Samples as the index, with features as
+            columns. If there is a column named "color", this will be used as
+            the color for that sample in PCA and other plots. If there is no
+            color but there is a column named "celltype", then colors for
+            each of the different celltypes will be auto-created.
         expression_data : pandas.DataFrame
             Samples x feature dataframe of gene expression measurements,
             e.g. from an RNA-Seq or a microarray experiment. Assumed to be
@@ -209,14 +213,47 @@ class Study(StudyFactory):
             features x other_features dataframe describing other parameters
             of the gene expression features, e.g. mapping Ensembl IDs to gene
             symbols or gene biotypes.
-
-        Returns
-        -------
-
-
-        Raises
-        ------
-
+        expression_feature_rename_col : str
+            A column name in the expression_feature_data dataframe that you'd
+            like to rename the expression features to, in the plots. For
+            example, if your gene IDs are Ensembl IDs, but you want to plot
+            UCSC IDs, make sure the column you want, e.g. "ucsc_id" is in your
+            dataframe and specify that. Default "gene_name"
+        splicing_data : pandas.DataFrame
+            Samples x feature dataframe of percent spliced in scores, e.g. as
+            measured by the program MISO. Assumed that these values only fall
+            between 0 and 1.
+        splicing_feature_data : pandas.DataFrame
+            features x other_features dataframe describing other parameters
+            of the splicing features, e.g. mapping MISO IDs to Ensembl IDs or
+            gene symbols or transcript types
+        splicing_feature_rename_col : str
+            A column name in the splicing_feature_data dataframe that you'd
+            like to rename the splicing features to, in the plots. For
+            example, if your splicing IDs are MISO IDs, but you want to plot
+            Ensembl IDs, make sure the column you want, e.g. "ensembl_id" is
+            in your dataframe and specify that. Default "gene_name".
+        mapping_stats_data : pandas.DataFrame
+            Samples x feature dataframe of mapping stats measurements.
+            Currently, this
+        mapping_stats_number_mapped_col : str
+            A column name in the mapping_stats_data which specifies the
+            number of (uniquely or not) mapped reads. Default "Uniquely
+            mapped reads number"
+        spikein_data : pandas.DataFrame
+            samples x features DataFrame of spike-in expression values
+        spikein_feature_data : pandas.DataFrame
+            Features x other_features dataframe, e.g. of the molecular
+            concentration of particular spikein transcripts
+        drop_outliers : bool
+            Whether or not to drop samples indicated as outliers in the
+            experiment_design_data from the other data, i.e. with a column
+            named 'outlier' in experiment_design_data, then remove those
+            samples from expression_data for further analysis
+        species : str
+            Name of the species and genome version, e.g. 'hg19' or 'mm10'.
+        gene_ontology_data : pandas.DataFrame
+            Gene ids x ontology categories dataframe used for GO analysis.
         """
         super(Study, self).__init__()
         # if params_dict is None:
@@ -235,7 +272,7 @@ class Study(StudyFactory):
              if self.experiment_design.data[col].dtype == bool]
         self.default_sample_subsets.insert(0, 'all_samples')
 
-        if 'outlier' in self.experiment_design.data:
+        if 'outlier' in self.experiment_design.data and drop_outliers:
             outliers = self.experiment_design.data.index[
                 self.experiment_design.data.outlier]
         else:
@@ -245,20 +282,21 @@ class Study(StudyFactory):
         if expression_data is not None:
             self.expression = ExpressionData(expression_data,
                                              expression_feature_data,
-                                             feature_rename_col='gene_name',
-                                             outliers=outliers)
+                                             feature_rename_col=expression_feature_rename_col,
+                                             outliers=outliers, )
             self.expression.networks = NetworkerViz(self.expression)
             self.default_feature_set_ids.extend(self.expression.feature_sets
                                                 .keys())
         if splicing_data is not None:
             self.splicing = SplicingData(splicing_data, splicing_feature_data,
-                                         feature_rename_col='gene_name',
+                                         feature_rename_col=splicing_feature_rename_col,
                                          outliers=outliers)
             self.splicing.networks = NetworkerViz(self.splicing)
         if mapping_stats_data is not None:
-            self.mapping_stats = MappingStatsData(mapping_stats_data)
+            self.mapping_stats = MappingStatsData(mapping_stats_data,
+                                                  mapping_stats_number_mapped_col)
         if spikein_data is not None:
-            self.spikein = SpikeInData(spikein_data)
+            self.spikein = SpikeInData(spikein_data, spikein_feature_data)
 
 
 
@@ -370,6 +408,9 @@ class Study(StudyFactory):
             described here: http://dataprotocols.org/data-packages/ and
             requiring the following data resources: experiment_design,
             expression, splicing
+        species_data_pacakge_base_url : str
+            Base URL to fetch species-specific gene and splicing event
+            metadata from. Default 'http://sauron.ucsd.edu/flotilla_projects'
 
         Returns
         -------
@@ -447,7 +488,9 @@ class Study(StudyFactory):
                                  '"splicing"')
         study = Study(experiment_design_data=experiment_design_data,
                       expression_data=expression_data,
-                      splicing_data=splicing_data, **species_dfs)
+                      splicing_data=splicing_data,
+                      expression_feature_rename_col='gene_name',
+                      splicing_feature_rename_col='gene_name', **species_dfs)
         return study
 
     def __add__(self, other):
