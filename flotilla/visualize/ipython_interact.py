@@ -23,12 +23,14 @@ class Interactive(object):
     -------
 
     """
+
     def __init__(self, *args, **kwargs):
         # super(InteractiveStudy, self).__init__(*args, **kwargs)
         self._default_x_pc = 1
         self._default_y_pc = 2
-        [self.minimal_study_parameters.add(param) for param in  ['default_group_id', 'default_group_ids',
-                                                                    'default_list_id', 'default_list_ids',]]
+        [self.minimal_study_parameters.add(param) for param in
+         ['default_group_id', 'default_group_ids',
+          'default_list_id', 'default_list_ids', ]]
         [self.minimal_study_parameters.add(i) for i in
          ['experiment_design_data', ]]
         self.validate_params()
@@ -70,8 +72,9 @@ class Interactive(object):
 
             self.plot_pca(sample_subset=sample_subset, data_type=data_type,
                           featurewise=featurewise,
-                     x_pc=x_pc, y_pc=y_pc, show_point_labels=show_point_labels,
-                     feature_subset=feature_subset)
+                          x_pc=x_pc, y_pc=y_pc,
+                          show_point_labels=show_point_labels,
+                          feature_subset=feature_subset)
             if savefile != '':
                 # Make the directory if it's not already there
                 try:
@@ -106,12 +109,12 @@ class Interactive(object):
                         weight_fun=NetworkerViz.weight_funs,
                         featurewise=False,
                         use_pc_1=True, use_pc_2=True, use_pc_3=True,
-                        use_pc_4=True,degree_cut=1,
+                        use_pc_4=True, degree_cut=1,
                         cov_std_cut=1.8, n_pcs=5,
                         feature_of_interest="RBFOX2",
                         draw_labels=False,
                         savefile='data/last.graph.pdf',
-                        ):
+        ):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -127,13 +130,14 @@ class Interactive(object):
                             group_id=group_id,
                             list_name=list_name,
 
-                       featurewise=featurewise, draw_labels=draw_labels,
-                       degree_cut=degree_cut, cov_std_cut=cov_std_cut,
-                       n_pcs=n_pcs,
-                       feature_of_interest=feature_of_interest,
-                       use_pc_1=use_pc_1, use_pc_2=use_pc_2, use_pc_3=use_pc_3,
-                       use_pc_4=use_pc_4,
-                       wt_fun=weight_fun)
+                            featurewise=featurewise, draw_labels=draw_labels,
+                            degree_cut=degree_cut, cov_std_cut=cov_std_cut,
+                            n_pcs=n_pcs,
+                            feature_of_interest=feature_of_interest,
+                            use_pc_1=use_pc_1, use_pc_2=use_pc_2,
+                            use_pc_3=use_pc_3,
+                            use_pc_4=use_pc_4,
+                            wt_fun=weight_fun)
             if savefile is not '':
                 plt.gcf().savefig(savefile)
 
@@ -185,9 +189,9 @@ class Interactive(object):
                              "with:\nclassifier=study.%s.get_predictor('%s', "
                              "'%s', '%s') pca=classifier('%s', "
                              "feature_score_std_cutoff=%f)" \
-                             % (
-            data_type, feature_subset, group_id, categorical_variable,
-            categorical_variable, feature_score_std_cutoff))
+                             % (data_type, feature_subset, group_id,
+                                categorical_variable, categorical_variable,
+                                feature_score_std_cutoff))
             if savefile is not '':
                 plt.gcf().savefig(savefile)
 
@@ -200,8 +204,7 @@ class Interactive(object):
                  categorical_variable=[i for i in self.default_group_ids if
                                        not i.startswith("~")],
                  feature_score_std_cutoff=(0.1, 20),
-                 draw_labels=False,
-        )
+                 draw_labels=False)
 
     @staticmethod
     def interactive_localZ(self):
@@ -226,16 +229,16 @@ class Interactive(object):
                 assert sample1 in data_obj.df.index
             except:
                 print "sample: %s, is not in %s DataFrame, try a different sample ID" % (
-                sample1, data_type)
+                    sample1, data_type)
                 return
             try:
                 assert sample2 in data_obj.df.index
             except:
                 print "sample: %s, is not in %s DataFrame, try a different sample ID" % (
-                sample2, data_type)
+                    sample2, data_type)
                 return
             self.localZ_result = data_obj.plot_twoway(sample1, sample2,
-                                                 pCut=pCut).result_
+                                                      pCut=pCut).result_
             print "local_z finished, find the result in <this_obj>.localZ_result_"
 
         interact(do_interact,
