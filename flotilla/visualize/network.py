@@ -7,6 +7,7 @@ import seaborn
 
 from ..compute.network import Networker
 from ..util import dict_to_str
+from ..visualize.color import blue
 from ..visualize.decomposition import DecompositionViz
 
 
@@ -29,7 +30,8 @@ class NetworkerViz(Networker, DecompositionViz):
                    feature_ids=None,
                    sample_ids=None,
                    graph_file='',
-                   compare=""):
+                   compare="",
+                   sample_id_to_color=None):
 
         """Draw the graph (network) of these events
 
@@ -95,7 +97,10 @@ class NetworkerViz(Networker, DecompositionViz):
             node_color_mapper = lambda x: 'r' if x == feature_of_interest else 'k'
             node_size_mapper = lambda x: (pca.means.ix[x]**2) + 10
         else:
-            node_color_mapper = lambda x: self.data_obj.sample_metadata.color[x]
+            if sample_id_to_color is not None:
+                node_color_mapper = lambda x: sample_id_to_color[x]
+            else:
+                node_color_mapper = lambda x: blue
             node_size_mapper = lambda x: 75
 
         ax_pev.plot(pca.explained_variance_ratio_ * 100.)
