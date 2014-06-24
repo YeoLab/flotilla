@@ -264,7 +264,7 @@ class SpikeInData(ExpressionData):
 
     """
 
-    def __init__(self, df, phenotype_data):
+    def __init__(self, data, feature_data):
         """Constructor for
 
         Parameters
@@ -279,7 +279,9 @@ class SpikeInData(ExpressionData):
         ------
 
         """
-        pass
+        super(ExpressionData, self).__init__(data, feature_data,
+                                             feature_rename_col=feature_rename_col)
+
 
     def spikeins_violinplot(self):
         import matplotlib.pyplot as plt
