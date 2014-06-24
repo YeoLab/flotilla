@@ -3,7 +3,6 @@ Named `ipython_interact.py` rather than just `interact.py` to differentiate
 between IPython interactive visualizations vs D3 interactive visualizations.
 """
 import itertools
-import os
 import sys
 import warnings
 
@@ -28,12 +27,13 @@ class Interactive(object):
         # super(InteractiveStudy, self).__init__(*args, **kwargs)
         self._default_x_pc = 1
         self._default_y_pc = 2
-        [self.minimal_study_parameters.add(param) for param in
-         ['default_group_id', 'default_group_ids',
-          'default_list_id', 'default_list_ids', ]]
-        [self.minimal_study_parameters.add(i) for i in
-         ['experiment_design_data', ]]
-        self.validate_params()
+        # [self.minimal_study_parameters.add(param) for param in
+        #  ['default_group_id', 'default_group_ids',
+        #   'default_list_id', 'default_list_ids', ]]
+        # [self.minimal_study_parameters.add(i) for i in
+        #  ['experiment_design_data', ]]
+        # self.validate_params()
+
 
     @staticmethod
     def interactive_pca(self):
@@ -77,11 +77,7 @@ class Interactive(object):
                           feature_subset=feature_subset)
             if savefile != '':
                 # Make the directory if it's not already there
-                try:
-                    directory = os.path.abspath(os.path.dirname(savefile))
-                    os.mkdir(os.makedirs(os.path.abspath(directory)))
-                except OSError:
-                    pass
+                self.maybe_make_directory(savefile)
                 f = plt.gcf()
                 f.savefig(savefile)
 
@@ -113,8 +109,7 @@ class Interactive(object):
                         cov_std_cut=1.8, n_pcs=5,
                         feature_of_interest="RBFOX2",
                         draw_labels=False,
-                        savefile='data/last.graph.pdf',
-        ):
+                        savefile='data/last.graph.pdf'):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -139,6 +134,7 @@ class Interactive(object):
                             use_pc_4=use_pc_4,
                             wt_fun=weight_fun)
             if savefile is not '':
+                self.maybe_make_directory(savefile)
                 plt.gcf().savefig(savefile)
 
         feature_sets = list(set(itertools.chain(*self.default_feature_subsets
@@ -153,8 +149,7 @@ class Interactive(object):
                  n_pcs=(2, 100),
                  draw_labels=False,
                  feature_of_interest="RBFOX2",
-                 use_pc_1=True, use_pc_2=True, use_pc_3=True, use_pc_4=True,
-        )
+                 use_pc_1=True, use_pc_2=True, use_pc_3=True, use_pc_4=True)
 
     @staticmethod
     def interactive_classifier(self):
@@ -193,6 +188,7 @@ class Interactive(object):
                                 categorical_variable, categorical_variable,
                                 feature_score_std_cutoff))
             if savefile is not '':
+                self.maybe_make_directory(savefile)
                 plt.gcf().savefig(savefile)
 
         all_lists = list(
