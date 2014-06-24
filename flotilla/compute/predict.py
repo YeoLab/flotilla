@@ -15,15 +15,15 @@ class Predictor(object):
                                  'oob_score': True,
                                  'n_jobs': 2,
                                  'verbose': True}
-
     extratreees_scoring_fun = lambda clf: clf.feature_importances_
 
-    # 2 std's above mean
     extratreees_scoring_cutoff_fun = lambda scores: np.mean(scores) \
                                                     + 2 * np.std(scores)
+    # 2 std's above mean
 
     boosting_classifier_params = {'n_estimators': 80, 'max_features': 1000,
                                   'learning_rate': 0.2, 'subsample': 0.6, }
+
     boosting_scoring_fun = lambda clf: clf.feature_importances_
     boosting_scoring_cutoff_fun = lambda scores: np.mean(scores) + 2 * np.std(
         scores)
@@ -92,10 +92,13 @@ class Predictor(object):
         #     self.important_features[trait] = {}
 
         for trait in self.categorical_traits:
-            traitset = self.trait_data.groupby(self.trait_data).describe().index.levels[0]
+            traitset = \
+                self.trait_data.groupby(
+                    self.trait_data).describe().index.levels[0]
             try:
                 assert len(
-                    self.trait_data.groupby(self.trait_data).describe().index.levels[
+                    self.trait_data.groupby(
+                        self.trait_data).describe().index.levels[
                         0]) == 2
             except AssertionError:
                 print "WARNING: trait \"%s\" has >2 categories"
@@ -112,11 +115,81 @@ class Predictor(object):
                 self.regressors_[trait] = {}
                 self.y[trait] = self.trait_data[trait]
 
-    def fit_classifiers(self,
-                        traits=None,
-                        classifier_name=default_classifier_name,
-                        classifier=default_classifier,
-                        classifier_params=default_classifier_params):
+
+class Regressor(Predictor):
+    """
+    Predictor for continuous data
+    """
+
+    def score(self,
+              traits=None,
+              regressor_name=default_regressor_name,
+              feature_scoring_fun=default_regressor_scoring_fun,
+              score_cutoff_fun=default_regressor_scoring_cutoff_fun):
+        """
+        collect scores from classifiers_
+        feature_scoring_fun: fxn that yields higher values for better features
+        score_cutoff_fun fxn that that takes output of feature_scoring_fun and returns a cutoff
+        """
+        raise NotImplementedError("Untested, should be close to working.")
+        if traits is None:
+            traits = self.continuous_traits
+
+        for trait in traits:
+
+            try:
+                assert trait in self.regressors_
+            except:
+                print "trait: %s" % trait, "is missing, continuing"
+                continue
+            try:
+                assert regressor_name in self.regressors_[trait]
+            except:
+                print "classifier: %s" % regressor_name, "is missing, continuing"
+                continue
+
+            print "Scoring classifier: %s for trait: %s... please wait." % (
+                regressor_name, trait)
+
+            clf = self.regressors_[trait][regressor_name]
+            clf.scores_ = pd.Series(feature_scoring_fun(clf),
+                                    index=self.X.columns)
+            clf.score_cutoff_ = score_cutoff_fun(clf.scores_)
+            self.important_features[trait][regressor_name] = clf.good_features_
+            clf.good_features_ = clf.scores_ > clf.score_cutoff_
+            clf.n_good_features_ = np.sum(clf.good_features_)
+            clf.subset_ = self.X.T[clf.good_features_].T
+            print "Finished..."
+
+    def fit(self,
+            traits=None,
+            regressor_name=default_regressor_name,
+            regressor=default_regressor,
+            regressor_params=default_regressor_params):
+        raise NotImplementedError("Untested, should be close to working.")
+
+        if traits is None:
+            traits = self.continuous_traits
+
+        for trait in traits:
+            clf = regressor(**regressor_params)
+            print "Fitting a classifier for trait %s... please wait." % trait
+            clf.fit(self.X, self.y[trait])
+            self.regressors_[trait][regressor_name] = clf
+            print "Finished..."
+
+
+class Classifier(Predictor):
+    """
+    Predictor for categorical data
+    """
+    pass
+
+    def fit(self,
+            traits=None,
+            classifier_name=default_classifier_name,
+            classifier=default_classifier,
+            classifier_params=default_classifier_params):
         """ fit classifiers_ to the data
         traits - list of trait(s) to fit a classifier upon,
         if None, fit all traits that were initialized.
@@ -141,12 +214,11 @@ class Predictor(object):
             print "Finished..."
         self.has_been_fit_yet = True
 
-
-    def score_classifiers(self,
-                          traits=None,
-                          classifier_name=default_classifier_name,
-                          feature_scoring_fun=default_classifier_scoring_fun,
-                          score_cutoff_fun=default_classifier_scoring_cutoff_fun):
+    def score(self,
+              traits=None,
+              classifier_name=default_classifier_name,
+              feature_scoring_fun=default_classifier_scoring_fun,
+              score_cutoff_fun=default_classifier_scoring_cutoff_fun):
         """
         collect scores from classifiers_
         traits - list of trait(s) to score. Retrieved from self.classifiers_[trait]
@@ -186,73 +258,7 @@ class Predictor(object):
             print "Finished..."
         self.has_been_scored_yet = True
 
-    def fit_regressors(self,
-                       traits=None,
-                       regressor_name=default_regressor_name,
-                       regressor=default_regressor,
-                       regressor_params=default_regressor_params,
-    ):
-        raise NotImplementedError("Untested, should be close to working.")
-
-        if traits is None:
-            traits = self.continuous_traits
-
-        for trait in traits:
-            clf = regressor(**regressor_params)
-            print "Fitting a classifier for trait %s... please wait." % trait
-            clf.fit(self.X, self.y[trait])
-            self.regressors_[trait][regressor_name] = clf
-            print "Finished..."
-
-    def score_regressors(self,
-                         traits=None,
-                         regressor_name=default_regressor_name,
-                         feature_scoring_fun=default_regressor_scoring_fun,
-                         score_cutoff_fun=default_regressor_scoring_cutoff_fun):
-        """
-        collect scores from classifiers_
-        feature_scoring_fun: fxn that yields higher values for better features
-        score_cutoff_fun fxn that that takes output of feature_scoring_fun and returns a cutoff
-        """
-        raise NotImplementedError("Untested, should be close to working.")
-        if traits is None:
-            traits = self.continuous_traits
-
-        for trait in traits:
-
-            try:
-                assert trait in self.regressors_
-            except:
-                print "trait: %s" % trait, "is missing, continuing"
-                continue
-            try:
-                assert regressor_name in self.regressors_[trait]
-            except:
-                print "classifier: %s" % regressor_name, "is missing, continuing"
-                continue
-
-            print "Scoring classifier: %s for trait: %s... please wait." % (
-                regressor_name, trait)
-
-            clf = self.regressors_[trait][regressor_name]
-            clf.scores_ = pd.Series(feature_scoring_fun(clf),
-                                    index=self.X.columns)
-            clf.score_cutoff_ = score_cutoff_fun(clf.scores_)
-            self.important_features[trait][regressor_name] = clf.good_features_
-            clf.good_features_ = clf.scores_ > clf.score_cutoff_
-            clf.n_good_features_ = np.sum(clf.good_features_)
-            clf.subset_ = self.X.T[clf.good_features_].T
-            print "Finished..."
 
 
-class Regressor(Predictor):
-    """
-    Predictor for continuous data
-    """
-    pass
 
-class Classifier(Predictor):
-    """
-    Predictor for categorical data
-    """
-    pass
+
