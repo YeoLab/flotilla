@@ -32,10 +32,21 @@ def example_data():
 
 
 @pytest.fixture(scope='module')
-def example_study():
-    return None
+def example_study(example_data):
+    from flotilla.data_model import Study
+
+    return Study(experiment_design_data=example_data.experiment_design_data,
+                 expression_data=example_data.expression,
+                 splicing_data=example_data.splicing)
 
 
 @pytest.fixture(scope='module')
 def example_url():
     return 'http://sauron.ucsd.edu/flotilla_projects/test_data/datapackage.json'
+
+
+@pytest.fixture(scope='module')
+def expression(example_data):
+    from flotilla.data_model import ExpressionData
+
+    return ExpressionData(example_data.expression)

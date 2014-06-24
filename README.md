@@ -1,3 +1,5 @@
+[![Build Status](https://magnum.travis-ci.com/YeoLab/flotilla.svg?token=p4jLex5HVrN4EZx5r6A3&branch=dev)](https://magnum.travis-ci.com/YeoLab/flotilla)
+
 flotilla
 ========
 download with:
@@ -25,9 +27,15 @@ cd ..
 Example data
 ------------
 
+All of the following should work, with expression data. No guarantees on
+splicing.
+
 ```
 import flotilla
 test_study = flotilla.embark('http://sauron.ucsd.edu/flotilla_projects/test_data/datapackage.json')
+test_study.plot_pca()
+test_study.interactive_pca()
+test_study.plot_graph()
 test_study.interactive_pca()
 ```
 

@@ -3,7 +3,7 @@ Named `ipython_interact.py` rather than just `interact.py` to differentiate
 between IPython interactive visualizations vs D3 interactive visualizations.
 """
 import itertools
-import os
+import sys
 import warnings
 
 import matplotlib.pyplot as plt
@@ -22,15 +22,18 @@ class Interactive(object):
     -------
 
     """
+
     def __init__(self, *args, **kwargs):
         # super(InteractiveStudy, self).__init__(*args, **kwargs)
         self._default_x_pc = 1
         self._default_y_pc = 2
-        [self.minimal_study_parameters.add(param) for param in  ['default_group_id', 'default_group_ids',
-                                                                    'default_list_id', 'default_list_ids',]]
-        [self.minimal_study_parameters.add(i) for i in
-         ['experiment_design_data', ]]
-        self.validate_params()
+        # [self.minimal_study_parameters.add(param) for param in
+        #  ['default_group_id', 'default_group_ids',
+        #   'default_list_id', 'default_list_ids', ]]
+        # [self.minimal_study_parameters.add(i) for i in
+        #  ['experiment_design_data', ]]
+        # self.validate_params()
+
 
     @staticmethod
     def interactive_pca(self):
@@ -69,15 +72,12 @@ class Interactive(object):
 
             self.plot_pca(sample_subset=sample_subset, data_type=data_type,
                           featurewise=featurewise,
-                     x_pc=x_pc, y_pc=y_pc, show_point_labels=show_point_labels,
-                     feature_subset=feature_subset)
+                          x_pc=x_pc, y_pc=y_pc,
+                          show_point_labels=show_point_labels,
+                          feature_subset=feature_subset)
             if savefile != '':
                 # Make the directory if it's not already there
-                try:
-                    directory = os.path.abspath(os.path.dirname(savefile))
-                    os.mkdir(os.makedirs(os.path.abspath(directory)))
-                except OSError:
-                    pass
+                self.maybe_make_directory(savefile)
                 f = plt.gcf()
                 f.savefig(savefile)
 
@@ -100,17 +100,17 @@ class Interactive(object):
         from IPython.html.widgets import interact
 
         #not sure why nested fxns are required for this, but they are... i think...
-        def do_interact(data_type='expression', group_id=self.default_group_id,
-                        list_name=self.default_list_id,
+        def do_interact(data_type='expression',
+                        sample_subset=self.default_sample_subsets,
+                        feature_subset=self.default_feature_subsets,
                         weight_fun=NetworkerViz.weight_funs,
                         featurewise=False,
                         use_pc_1=True, use_pc_2=True, use_pc_3=True,
-                        use_pc_4=True,degree_cut=1,
+                        use_pc_4=True, degree_cut=1,
                         cov_std_cut=1.8, n_pcs=5,
                         feature_of_interest="RBFOX2",
                         draw_labels=False,
-                        savefile='data/last.graph.pdf',
-                        ):
+                        savefile='data/last.graph.pdf'):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -118,38 +118,38 @@ class Interactive(object):
                 print k, ":", v
 
             if data_type == 'expression':
-                assert (list_name in self.expression.lists.keys())
+                assert (feature_subset in self.expression.feature_sets.keys())
             if data_type == 'splicing':
-                assert (list_name in self.expression.lists.keys())
+                assert (feature_subset in self.expression.feature_sets.keys())
 
             self.plot_graph(data_type=data_type,
-                            group_id=group_id,
-                            list_name=list_name,
-
-                       featurewise=featurewise, draw_labels=draw_labels,
-                       degree_cut=degree_cut, cov_std_cut=cov_std_cut,
-                       n_pcs=n_pcs,
-                       feature_of_interest=feature_of_interest,
-                       use_pc_1=use_pc_1, use_pc_2=use_pc_2, use_pc_3=use_pc_3,
-                       use_pc_4=use_pc_4,
-                       wt_fun=weight_fun)
+                            sample_subset=sample_subset,
+                            feature_subset=feature_subset,
+                            featurewise=featurewise, draw_labels=draw_labels,
+                            degree_cut=degree_cut, cov_std_cut=cov_std_cut,
+                            n_pcs=n_pcs,
+                            feature_of_interest=feature_of_interest,
+                            use_pc_1=use_pc_1, use_pc_2=use_pc_2,
+                            use_pc_3=use_pc_3,
+                            use_pc_4=use_pc_4,
+                            weight_function=weight_fun)
             if savefile is not '':
+                self.maybe_make_directory(savefile)
                 plt.gcf().savefig(savefile)
 
-        all_lists = list(
-            set(self.expression.lists.keys() + self.splicing.lists.keys()))
+        feature_sets = list(set(itertools.chain(*self.default_feature_subsets
+                                                .values())))
         interact(do_interact,
                  data_type=('expression', 'splicing'),
-                 group_id=self.default_group_ids,
-                 list_name=all_lists,
+                 sample_subset=self.default_sample_subsets,
+                 feature_subset=feature_sets,
                  featurewise=False,
                  cov_std_cut=(0.1, 3),
                  degree_cut=(0, 10),
                  n_pcs=(2, 100),
                  draw_labels=False,
                  feature_of_interest="RBFOX2",
-                 use_pc_1=True, use_pc_2=True, use_pc_3=True, use_pc_4=True,
-        )
+                 use_pc_1=True, use_pc_2=True, use_pc_3=True, use_pc_4=True)
 
     @staticmethod
     def interactive_classifier(self):
@@ -159,7 +159,7 @@ class Interactive(object):
         #not sure why nested fxns are required for this, but they are... i think...
         def do_interact(data_type='expression',
                         group_id=self.default_group_id,
-                        list_name=self.default_list_id,
+                        feature_subset=self.default_list_id,
                         categorical_variable='outlier',
                         feature_score_std_cutoff=2,
                         savefile='data/last.clf.pdf'):
@@ -170,21 +170,25 @@ class Interactive(object):
                 print k, ":", v
 
             if data_type == 'expression':
-                data_obj = self.expression
+                data_object = self.expression
             if data_type == 'splicing':
-                data_obj = self.splicing
+                data_object = self.splicing
 
-            assert (list_name in data_obj.lists.keys())
+            assert (feature_subset in data_object.feature_subsets.keys())
 
-            prd = data_obj.get_classifier(list_name, group_id,
-                                         categorical_variable)
-            prd(categorical_variable,
-                feature_score_std_cutoff=feature_score_std_cutoff)
-            print "retrieve this classifier with:\nprd=study.%s.get_predictor('%s', '%s', '%s')\n\
-pca=prd('%s', feature_score_std_cutoff=%f)" \
-                  % (data_type, list_name, group_id, categorical_variable,
-                     categorical_variable, feature_score_std_cutoff)
+            classifier = data_object.classify(feature_subset, group_id,
+                                              categorical_variable)
+            classifier(categorical_variable,
+                       feature_score_std_cutoff=feature_score_std_cutoff)
+            sys.stdout.write("retrieve this classifier " \
+                             "with:\nclassifier=study.%s.get_predictor('%s', "
+                             "'%s', '%s') pca=classifier('%s', "
+                             "feature_score_std_cutoff=%f)" \
+                             % (data_type, feature_subset, group_id,
+                                categorical_variable, categorical_variable,
+                                feature_score_std_cutoff))
             if savefile is not '':
+                self.maybe_make_directory(savefile)
                 plt.gcf().savefig(savefile)
 
         all_lists = list(
@@ -196,8 +200,7 @@ pca=prd('%s', feature_score_std_cutoff=%f)" \
                  categorical_variable=[i for i in self.default_group_ids if
                                        not i.startswith("~")],
                  feature_score_std_cutoff=(0.1, 20),
-                 draw_labels=False,
-        )
+                 draw_labels=False)
 
     @staticmethod
     def interactive_localZ(self):
@@ -222,16 +225,16 @@ pca=prd('%s', feature_score_std_cutoff=%f)" \
                 assert sample1 in data_obj.df.index
             except:
                 print "sample: %s, is not in %s DataFrame, try a different sample ID" % (
-                sample1, data_type)
+                    sample1, data_type)
                 return
             try:
                 assert sample2 in data_obj.df.index
             except:
                 print "sample: %s, is not in %s DataFrame, try a different sample ID" % (
-                sample2, data_type)
+                    sample2, data_type)
                 return
             self.localZ_result = data_obj.plot_twoway(sample1, sample2,
-                                                 pCut=pCut).result_
+                                                      pCut=pCut).result_
             print "local_z finished, find the result in <this_obj>.localZ_result_"
 
         interact(do_interact,
