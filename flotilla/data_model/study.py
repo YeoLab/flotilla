@@ -233,7 +233,7 @@ class Study(StudyFactory):
         self.default_sample_subsets = \
             [col for col in self.experiment_design.data.columns
              if self.experiment_design.data[col].dtype == bool]
-        self.default_sample_subsets.insert(0, None)
+        self.default_sample_subsets.insert(0, 'all_samples')
 
         if 'outlier' in self.experiment_design.data:
             outliers = self.experiment_design.data.index[
@@ -615,7 +615,8 @@ class Study(StudyFactory):
         ------
         
         """
-        if phenotype_subset is None:
+        if phenotype_subset is None or 'all_samples'.starstwith(
+                phenotype_subset):
             sample_ind = np.ones(self.experiment_design.data.shape[0],
                                  dtype=bool)
         elif phenotype_subset.startswith("~"):
@@ -705,6 +706,15 @@ class Study(StudyFactory):
         ------
 
         """
+        sample_ids = self.sample_subset_to_sample_ids(sample_subset)
+        feature_ids = self.feature_subset_to_feature_ids(data_type,
+                                                         feature_subset,
+                                                         rename=False)
+
+        kwargs['sample_id_to_color'] = self.sample_id_to_color
+        kwargs['sample_ids'] = sample_ids
+        kwargs['feature_ids'] = feature_ids
+
         if data_type == "expression":
             self.expression.networks.draw_graph(**kwargs)
         elif data_type == "splicing":
