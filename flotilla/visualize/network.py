@@ -60,7 +60,7 @@ class NetworkerViz(Networker, DecompositionViz):
 
         Returns
         -------
-        TODO: Mike please fill these in
+        #TODO: Mike please fill these in
         graph : ???
             ???
         pos : ???
@@ -106,9 +106,9 @@ class NetworkerViz(Networker, DecompositionViz):
         ax_pev.set_title("Explained variance from dim reduction")
         seaborn.despine(ax=ax_pev)
 
-        adjacency_name = "_".join([dict_to_str(adjacency_settings), pca.obj_id])
+        # adjacency_name = "_".join([dict_to_str(adjacency_settings), pca.obj_id])
 
-        adjacency = self.get_adjacency(pca.reduced_space, name=adjacency_name, **adjacency_settings)
+        adjacency = self.adjacency(pca.reduced_space, **adjacency_settings)
         cov_dist = np.array([i for i in adjacency.values.ravel() if np.abs(i) > 0])
         cov_cut = np.mean(cov_dist) + cov_std_cut * np.std(cov_dist)
 
@@ -124,7 +124,7 @@ class NetworkerViz(Networker, DecompositionViz):
         ax_cov.legend()
         seaborn.despine(ax=ax_cov)
 
-        graph, pos = self.get_graph(adjacency, **graph_settings)
+        graph, pos = self.graph(adjacency, **graph_settings)
 
         nx.draw_networkx_nodes(graph, pos,
                                node_color=map(node_color_mapper, graph.nodes()),
@@ -227,7 +227,8 @@ class NetworkerViz(Networker, DecompositionViz):
 
         #import pdb
         #pdb.set_trace()
-        adjacency = self.get_adjacency(data, name=adjacency_name, **adjacency_settings)
+        adjacency = self.adjacency(data, name=adjacency_name,
+                                   **adjacency_settings)
         cov_dist = np.array([i for i in adjacency.values.ravel() if np.abs(i) > 0])
         cov_cut = np.mean(cov_dist) + cov_std_cut * np.std(cov_dist)
 
@@ -242,7 +243,7 @@ class NetworkerViz(Networker, DecompositionViz):
         ax_cov.set_ylabel("density")
         ax_cov.legend()
         seaborn.despine(ax=ax_cov)
-        g, pos = self.get_graph(adjacency, **graph_settings)
+        g, pos = self.graph(adjacency, **graph_settings)
 
         nx.draw_networkx_nodes(g, pos, node_color=map(node_color_mapper, g.nodes()),
                                node_size=map(node_size_mapper, g.nodes()),

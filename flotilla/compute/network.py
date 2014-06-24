@@ -1,6 +1,10 @@
 from collections import defaultdict
+
 import networkx as nx
 import numpy as np
+import pandas as pd
+
+from ..util import memoize
 
 
 class Networker(object):
@@ -31,43 +35,42 @@ class Networker(object):
         self._last_adjacency_accessed = None
         self._last_graph_accessed = None
 
-    def get_adjacency(self, data=None, name=None, use_pc_1=True, use_pc_2=True,
-                      use_pc_3=True, use_pc_4=True, n_pcs=5):
+    @memoize
+    def adjacency(self, data=None, name=None, use_pc_1=True, use_pc_2=True,
+                  use_pc_3=True, use_pc_4=True, n_pcs=5):
 
         if data is None and self._last_adjacency_accessed is None:
             raise AttributeError("this hasn't been called yet")
 
-        if name is None:
-            if self._last_adjacency_accessed is None:
-                name = 'default'
-            else:
-                name = self._last_adjacency_accessed
-        self._last_adjacency_accessed = name
-        try:
-            if name in self.adjacencies_:
-                #print "returning a pre-built adjacency"
-                return self.adjacencies_[name]
-            else:
-                raise ValueError("adjacency hasn't been built yet")
-        except ValueError:
+            # if name is None:
+            #     if self._last_adjacency_accessed is None:
+            #         name = 'default'
+            #     else:
+            #         name = self._last_adjacency_accessed
+            # self._last_adjacency_accessed = name
+            # try:
+            #     if name in self.adjacencies_:
+            #         #print "returning a pre-built adjacency"
+            #         return self.adjacencies_[name]
+            #     else:
+            #         raise ValueError("adjacency hasn't been built yet")
+            # except ValueError:
             #print 'reduced space', data.shape
-            total_pcs = data.shape[1]
-            use_cols = np.ones(total_pcs, dtype='bool')
-            use_cols[n_pcs:] = False
-            use_cols = use_cols * np.array([use_pc_1, use_pc_2, use_pc_3, use_pc_4] + [True,]*(total_pcs-4))
-            selected_cols = data.loc[:,use_cols]
-            cov = np.cov(selected_cols)
-            nRow, nCol = selected_cols.shape
-            adjacency = pd.DataFrame(np.tril(cov * - (np.identity(nRow) - 1)),
-                                     index=selected_cols.index, columns=data.index)
-            #convert to triangular matrix with 0's on diag
+        total_pcs = data.shape[1]
+        use_cols = np.ones(total_pcs, dtype='bool')
+        use_cols[n_pcs:] = False
+        use_cols = use_cols * np.array(
+            [use_pc_1, use_pc_2, use_pc_3, use_pc_4] + [True, ] * (
+            total_pcs - 4))
+        selected_cols = data.loc[:, use_cols]
+        cov = np.cov(selected_cols)
+        nrow, ncol = selected_cols.shape
+        return pd.DataFrame(np.tril(cov * - (np.identity(nrow) - 1)),
+                            index=selected_cols.index, columns=data.index)
 
-            self.adjacencies_[name] = adjacency
-
-        return self.adjacencies_[name]
-
-    def get_graph(self, adjacency=None, cov_cut=None, name=None,
-                  node_color_mapper=None,
+    @memoize
+    def graph(self, adjacency=None, cov_cut=None, name=None,
+              node_color_mapper=None,
                   node_size_mapper=None,
                   degree_cut = 2,
                   wt_fun='abs'):

@@ -98,8 +98,9 @@ class DecompositionViz(object):
         self.components_ = pd.DataFrame(self.components_,
                                         columns=self.df.columns,
                                         index=component_names)
-        self.explained_variance_ratio_ = dict(
-            zip(component_names.tolist(), self.explained_variance_ratio_))
+        self.explained_variance_ratio_ = \
+            pd.Series(self.explained_variance_ratio_,
+                      index=component_names)
 
 
     def __call__(self, ax=None, **kwargs):
