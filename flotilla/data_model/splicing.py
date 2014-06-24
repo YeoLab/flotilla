@@ -7,7 +7,7 @@ from sklearn.preprocessing import StandardScaler
 from .base import BaseData
 from ..visualize.decomposition import NMFViz
 from ..visualize.color import purples
-from ..visualize.predict import PredictorViz
+from ..visualize.predict import PredictorBaseViz
 from ..compute.generic import binify, dropna_mean
 from ..external import link_to_list
 from ..util import memoize
@@ -147,7 +147,7 @@ class SplicingData(BaseData):
 
     @memoize
     def classify(self, list_name, group_id, categorical_trait,
-                 standardize=True, classifier=PredictorViz,
+                 standardize=True, classifier=PredictorBaseViz,
     ):
         """
         make and cache a predictor on a categorical trait (associated with samples) subset of genes

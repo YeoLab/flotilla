@@ -8,7 +8,7 @@ from sklearn.preprocessing import StandardScaler
 
 from .base import BaseData
 from ..visualize.decomposition import PCAViz
-from ..visualize.predict import PredictorViz
+from ..visualize.predict import PredictorBaseViz
 from ..util import memoize
 
 
@@ -181,7 +181,7 @@ class ExpressionData(BaseData):
     @memoize
     def classify(self, sample_ids=None, feature_ids=None,
                  categorical_trait=None,
-                 standardize=True, predictor=PredictorViz):
+                 standardize=True, predictor=PredictorBaseViz):
         """Make and memoize a predictor on a categorical trait (associated
         with samples) subset of genes
 
@@ -201,7 +201,7 @@ class ExpressionData(BaseData):
 
         Returns
         -------
-        predictor : flotilla.compute.predict.PredictorViz
+        predictor : flotilla.compute.predict.PredictorBaseViz
             A ready-to-plot object containing the predictions
         """
         subset, means = self._subset_and_standardize(self.sparse_data,
