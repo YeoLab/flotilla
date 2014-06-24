@@ -3,6 +3,8 @@ __author__ = 'olga'
 import sklearn
 import pandas as pd
 
+from sklearn import decomposition
+
 
 class Pretty_Reducer(object):
     """
@@ -54,11 +56,11 @@ class Pretty_Reducer(object):
         return self.transform(X)
 
 
-class PCA(Pretty_Reducer, sklearn.decomposition.PCA):
+class PCA(Pretty_Reducer, decomposition.PCA):
     pass
 
 
-class NMF(Pretty_Reducer, sklearn.decomposition.NMF):
+class NMF(Pretty_Reducer, decomposition.NMF):
     here = True
 
     def fit(self, X):
