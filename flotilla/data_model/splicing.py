@@ -150,7 +150,7 @@ class SplicingData(BaseData):
                  standardize=True, classifier=PredictorViz,
     ):
         """
-        make and cache a classifier on a categorical trait (associated with samples) subset of genes
+        make and cache a predictor on a categorical trait (associated with samples) subset of genes
          """
 
         min_samples = self.get_min_samples()

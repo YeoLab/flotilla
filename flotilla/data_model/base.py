@@ -142,7 +142,7 @@ class BaseData(object):
         sample_subset : str
             ???
         categorical_trait : str
-            classifier feature
+            predictor feature
         feature_subset : str
             subset of genes to use for building class
 

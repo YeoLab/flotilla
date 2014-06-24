@@ -182,7 +182,7 @@ class ExpressionData(BaseData):
     def classify(self, sample_ids=None, feature_ids=None,
                  categorical_trait=None,
                  standardize=True, predictor=PredictorViz):
-        """Make and memoize a classifier on a categorical trait (associated
+        """Make and memoize a predictor on a categorical trait (associated
         with samples) subset of genes
 
         Parameters
@@ -201,7 +201,7 @@ class ExpressionData(BaseData):
 
         Returns
         -------
-        classifier : flotilla.compute.predict.PredictorViz
+        predictor : flotilla.compute.predict.PredictorViz
             A ready-to-plot object containing the predictions
         """
         subset, means = self._subset_and_standardize(self.sparse_data,

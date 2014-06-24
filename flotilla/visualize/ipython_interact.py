@@ -180,9 +180,9 @@ class Interactive(object):
                                               categorical_variable)
             classifier(categorical_variable,
                        feature_score_std_cutoff=feature_score_std_cutoff)
-            sys.stdout.write("retrieve this classifier " \
-                             "with:\nclassifier=study.%s.get_predictor('%s', "
-                             "'%s', '%s') pca=classifier('%s', "
+            sys.stdout.write("retrieve this predictor " \
+                             "with:\npredictor=study.%s.get_predictor('%s', "
+                             "'%s', '%s') pca=predictor('%s', "
                              "feature_score_std_cutoff=%f)" \
                              % (data_type, feature_subset, group_id,
                                 categorical_variable, categorical_variable,
