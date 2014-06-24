@@ -1,8 +1,9 @@
 __author__ = 'olga'
 
 import numpy as np
-from sklearn.ensemble import ExtraTreesClassifier, ExtraTreesRegressor
 import pandas as pd
+from sklearn.ensemble import ExtraTreesClassifier, ExtraTreesRegressor
+from sklearn.preprocessing import LabelEncoder
 
 
 class Predictor(object):
@@ -76,15 +77,15 @@ class Predictor(object):
 
         #print "Using traits: ", self.traits
 
-        self.trait_data = metadata_df[
-            self.traits]  #traits from source, in case they're needed later
+        #traits from source, in case they're needed later
+        self.trait_data = metadata_df[self.traits]
         self.X, self.trait_data = self.X.align(self.trait_data, axis=0,
                                                join='inner')
-        self.y = pd.DataFrame(index=self.X.index,
-                              columns=self.traits)  #traits encoded to do some work -- "target" variable
+
+        #traits encoded to do some work -- "target" variable
+        self.y = pd.DataFrame(index=self.X.index, columns=self.traits)
 
         self.classifiers_ = {}
-        from sklearn.preprocessing import LabelEncoder
 
         for trait in self.traits:
             self.important_features[trait] = {}
@@ -104,7 +105,6 @@ class Predictor(object):
         self.continuous_traits = continuous_traits
         self.regressors_ = {}
         if self.continuous_traits is not None:
-
             for trait in self.continuous_traits:
                 self.regressors_[trait] = {}
                 self.y[trait] = self.trait_data[trait]
