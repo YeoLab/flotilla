@@ -268,7 +268,6 @@ class Study(StudyFactory):
         self.species = species
         self.gene_ontology_data = gene_ontology_data
 
-        # THis code is fragile!
         #TODO: make feature_rename_col an attribute in the datapackage
         self.experiment_design = ExperimentDesignData(experiment_design_data)
         self.default_sample_subsets = \
