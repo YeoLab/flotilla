@@ -337,6 +337,27 @@ class Study(StudyFactory):
             feature_sets[name] = data_type.feature_sets
         return feature_sets
 
+    @property
+    def sample_id_to_color(self):
+        """If "color" is a column in the experiment_design data, return a
+        dict of that {sample_id: color} mapping, else try to create it using
+        the "celltype" columns, else just return a dict mapping to a default
+        color (blue)
+        """
+        if 'color' in self.experiment_design.data:
+            return self.experiment_design.data.to_dict()
+        elif 'celltype' in self.experiment_design.data:
+            grouped = self.experiment_design.data.groupby('celltype')
+            palette = iter(sns.color_palette(n_colors=grouped.ngroups + 1))
+            color = grouped.apply(lambda x: mplcolors.rgb2hex(palette.next()))
+            color.name = 'color'
+            self.experiment_design.data = self.experiment_design.data.join(
+                color, on='celltype')
+
+            return self.experiment_design.data.color.to_dict()
+        else:
+            return defaultdict(lambda x: blue)
+
     @classmethod
     def from_data_package_url(cls, data_package_url,
                               species_data_package_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
@@ -649,18 +670,7 @@ class Study(StudyFactory):
         kwargs['title'] = title
         kwargs['featurewise'] = featurewise
 
-        if 'color' in self.experiment_design.data:
-            subset = self.experiment_design.data.ix[sample_ids]
-            kwargs['colors_dict'] = subset.color.to_dict()
-        elif 'celltype' in self.experiment_design.data:
-            grouped = self.experiment_design.data.groupby('celltype')
-            palette = iter(sns.color_palette(n_colors=grouped.ngroups + 1))
-            color = grouped.apply(lambda x: mplcolors.rgb2hex(palette.next()))
-            color.name = 'color'
-            self.experiment_design.data = self.experiment_design.data.join(
-                color, on='celltype')
-
-            kwargs['colors_dict'] = self.experiment_design.data.color.to_dict()
+        kwargs['colors_dict'] = self.sample_id_to_color
 
         if 'marker' in self.experiment_design.data:
             kwargs['markers_dict'] = \
