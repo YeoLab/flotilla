@@ -243,3 +243,16 @@ class Predictor(object):
             clf.n_good_features_ = np.sum(clf.good_features_)
             clf.subset_ = self.X.T[clf.good_features_].T
             print "Finished..."
+
+
+class Regressor(Predictor):
+    """
+    Predictor for continuous data
+    """
+    pass
+
+class Classifier(Predictor):
+    """
+    Predictor for categorical data
+    """
+    pass
