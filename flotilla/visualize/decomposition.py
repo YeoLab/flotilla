@@ -7,7 +7,8 @@ import numpy as np
 import pandas as pd
 from scipy.linalg import norm
 import seaborn as sns
-from sklearn.decomposition import NMF, PCA
+
+from ..compute.decomposition import NMF, PCA
 
 
 def L1_distance(x, y):
@@ -88,19 +89,19 @@ class DecompositionViz(object):
         self.df = df
 
         self.reduced_space = self.fit_transform(df)
-        ncol = self.reduced_space.shape[1]
-        component_names = pd.Index(('pc_{}'.format(i)
-                                    for i in xrange(1, ncol + 1)))
-
-        self.reduced_space = pd.DataFrame(self.reduced_space,
-                                          index=self.df.index,
-                                          columns=component_names)
-        self.components_ = pd.DataFrame(self.components_,
-                                        columns=self.df.columns,
-                                        index=component_names)
-        self.explained_variance_ratio_ = \
-            pd.Series(self.explained_variance_ratio_,
-                      index=component_names)
+        # ncol = self.reduced_space.shape[1]
+        # component_names = pd.Index(('pc_{}'.format(i)
+        #                             for i in xrange(1, ncol + 1)))
+        #
+        # self.reduced_space = pd.DataFrame(self.reduced_space,
+        #                                   index=self.df.index,
+        #                                   columns=component_names)
+        # self.components_ = pd.DataFrame(self.components_,
+        #                                 columns=self.df.columns,
+        #                                 index=component_names)
+        # self.explained_variance_ratio_ = \
+        #     pd.Series(self.explained_variance_ratio_,
+        #               index=component_names)
 
 
     def __call__(self, ax=None, **kwargs):
@@ -127,7 +128,6 @@ class DecompositionViz(object):
         self.plot_samples(**local_kwargs)
         self.plot_loadings(pc=local_kwargs['x_pc'], ax=ax_loading1)
         self.plot_loadings(pc=local_kwargs['y_pc'], ax=ax_loading2)
-
         sns.despine()
         fig.tight_layout()
         return self
