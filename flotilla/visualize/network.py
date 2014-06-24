@@ -5,6 +5,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn
 
+from .color import green
+
 from ..compute.network import Networker
 from ..util import dict_to_str
 from ..visualize.color import blue
@@ -107,7 +109,7 @@ class NetworkerViz(Networker, DecompositionViz):
             node_size_mapper = lambda x: 75
 
         ax_pev.plot(pca.explained_variance_ratio_ * 100.)
-        ax_pev.axvline(n_pcs, label='cutoff')
+        ax_pev.axvline(n_pcs, label='cutoff', color=green)
         ax_pev.legend()
         ax_pev.set_ylabel("% explained variance")
         ax_pev.set_xlabel("component")
@@ -130,7 +132,7 @@ class NetworkerViz(Networker, DecompositionViz):
         graph_settings['name'] = this_graph_name
 
         seaborn.kdeplot(cov_dist, ax=ax_cov)
-        ax_cov.axvline(cov_cut, label='cutoff')
+        ax_cov.axvline(cov_cut, label='cutoff', color=green)
         ax_cov.set_title("covariance in dim reduction space")
         ax_cov.set_ylabel("density")
         ax_cov.legend()
