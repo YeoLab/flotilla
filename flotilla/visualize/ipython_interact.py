@@ -4,6 +4,7 @@ between IPython interactive visualizations vs D3 interactive visualizations.
 """
 import itertools
 import os
+import sys
 import warnings
 
 import matplotlib.pyplot as plt
@@ -136,12 +137,12 @@ class Interactive(object):
             if savefile is not '':
                 plt.gcf().savefig(savefile)
 
-        all_lists = list(
-            set(self.expression.lists.keys() + self.splicing.lists.keys()))
+        feature_sets = list(set(itertools.chain(*self.default_feature_subsets
+                                                .values())))
         interact(do_interact,
                  data_type=('expression', 'splicing'),
-                 group_id=self.default_group_ids,
-                 list_name=all_lists,
+                 sample_subset=self.default_sample_subsets,
+                 feature_subset=feature_sets,
                  featurewise=False,
                  cov_std_cut=(0.1, 3),
                  degree_cut=(0, 10),
@@ -159,7 +160,7 @@ class Interactive(object):
         #not sure why nested fxns are required for this, but they are... i think...
         def do_interact(data_type='expression',
                         group_id=self.default_group_id,
-                        list_name=self.default_list_id,
+                        feature_subset=self.default_list_id,
                         categorical_variable='outlier',
                         feature_score_std_cutoff=2,
                         savefile='data/last.clf.pdf'):
@@ -170,20 +171,23 @@ class Interactive(object):
                 print k, ":", v
 
             if data_type == 'expression':
-                data_obj = self.expression
+                data_object = self.expression
             if data_type == 'splicing':
-                data_obj = self.splicing
+                data_object = self.splicing
 
-            assert (list_name in data_obj.lists.keys())
+            assert (feature_subset in data_object.feature_subsets.keys())
 
-            prd = data_obj.get_classifier(list_name, group_id,
-                                         categorical_variable)
-            prd(categorical_variable,
-                feature_score_std_cutoff=feature_score_std_cutoff)
-            print "retrieve this classifier with:\nprd=study.%s.get_predictor('%s', '%s', '%s')\n\
-pca=prd('%s', feature_score_std_cutoff=%f)" \
-                  % (data_type, list_name, group_id, categorical_variable,
-                     categorical_variable, feature_score_std_cutoff)
+            classifier = data_object.classify(feature_subset, group_id,
+                                              categorical_variable)
+            classifier(categorical_variable,
+                       feature_score_std_cutoff=feature_score_std_cutoff)
+            sys.stdout.write("retrieve this classifier " \
+                             "with:\nclassifier=study.%s.get_predictor('%s', "
+                             "'%s', '%s') pca=classifier('%s', "
+                             "feature_score_std_cutoff=%f)" \
+                             % (
+            data_type, feature_subset, group_id, categorical_variable,
+            categorical_variable, feature_score_std_cutoff))
             if savefile is not '':
                 plt.gcf().savefig(savefile)
 
