@@ -100,8 +100,9 @@ class Interactive(object):
         from IPython.html.widgets import interact
 
         #not sure why nested fxns are required for this, but they are... i think...
-        def do_interact(data_type='expression', group_id=self.default_group_id,
-                        list_name=self.default_list_id,
+        def do_interact(data_type='expression',
+                        sample_subset=self.default_sample_subsets,
+                        feature_subset=self.default_feature_subsets,
                         weight_fun=NetworkerViz.weight_funs,
                         featurewise=False,
                         use_pc_1=True, use_pc_2=True, use_pc_3=True,
@@ -117,14 +118,13 @@ class Interactive(object):
                 print k, ":", v
 
             if data_type == 'expression':
-                assert (list_name in self.expression.lists.keys())
+                assert (feature_subset in self.expression.feature_sets.keys())
             if data_type == 'splicing':
-                assert (list_name in self.expression.lists.keys())
+                assert (feature_subset in self.expression.feature_sets.keys())
 
             self.plot_graph(data_type=data_type,
-                            group_id=group_id,
-                            list_name=list_name,
-
+                            sample_subset=sample_subset,
+                            feature_subset=feature_subset,
                             featurewise=featurewise, draw_labels=draw_labels,
                             degree_cut=degree_cut, cov_std_cut=cov_std_cut,
                             n_pcs=n_pcs,
@@ -132,7 +132,7 @@ class Interactive(object):
                             use_pc_1=use_pc_1, use_pc_2=use_pc_2,
                             use_pc_3=use_pc_3,
                             use_pc_4=use_pc_4,
-                            wt_fun=weight_fun)
+                            weight_function=weight_fun)
             if savefile is not '':
                 self.maybe_make_directory(savefile)
                 plt.gcf().savefig(savefile)

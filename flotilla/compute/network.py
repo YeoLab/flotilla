@@ -73,7 +73,7 @@ class Networker(object):
               node_color_mapper=None,
                   node_size_mapper=None,
                   degree_cut = 2,
-                  wt_fun='abs'):
+                  weight_function='abs'):
 
         if node_color_mapper is None:
             node_color_mapper = self._default_node_color_mapper
@@ -89,7 +89,7 @@ class Networker(object):
         try:
             g,pos = self.graphs_[name]
         except:
-            wt = self.get_weight_fun(wt_fun)
+            wt = self.get_weight_fun(weight_function)
             g = nx.Graph()
             for node_label in adjacency.index:
 
