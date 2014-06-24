@@ -619,6 +619,7 @@ class Study(StudyFactory):
     def plot_pca(self, data_type='expression', x_pc=1, y_pc=2,
                  sample_subset=None, feature_subset=None,
                  title='', featurewise=False,
+                 show_point_labels=False,
                  **kwargs):
         """Performs PCA on both expression and splicing study_data
 
@@ -640,7 +641,10 @@ class Study(StudyFactory):
             are used.
         title : str
             The title of the plot
-
+        show_point_labels : bool
+            Whether or not to show the labels of the points. If this is
+            samplewise (default), then this labels the samples. If this is
+            featurewise, then this labels the features.
 
         Raises
         ------
@@ -657,6 +661,7 @@ class Study(StudyFactory):
         kwargs['feature_ids'] = feature_ids
         kwargs['title'] = title
         kwargs['featurewise'] = featurewise
+        kwargs['show_point_labels'] = show_point_labels
 
         kwargs['colors_dict'] = self.sample_id_to_color
 
@@ -676,6 +681,8 @@ class Study(StudyFactory):
 
         Parameters
         ----------
+        data_type : str
+            One of the names of the data types, e.g. "expression" or "splicing"
         sample_subset : str or None
             Which subset of the samples to use, based on some phenotype
             column in the experiment design data. If None, all samples are
@@ -684,14 +691,6 @@ class Study(StudyFactory):
             Which subset of the features to used, based on some feature type
             in the expression data (e.g. "variant"). If None, all features
             are used.
-
-        Returns
-        -------
-
-
-        Raises
-        ------
-
         """
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
         feature_ids = self.feature_subset_to_feature_ids(data_type,
@@ -707,9 +706,26 @@ class Study(StudyFactory):
         elif data_type == "splicing":
             self.splicing.networks.draw_graph(**kwargs)
 
-    def plot_classifier(self, data_type='expression', **kwargs):
+    def plot_classifier(self, trait, data_type='expression', **kwargs):
+        """Plot a classifier for the specified data type and trait(s)
+
+        Parameters
+        ----------
+        data_type : str
+            One of the names of the data types, e.g. "expression" or "splicing"
+        trait : str
+            Column name in the experiment_design data that you would like
+            to classify on
+
+        Returns
+        -------
+
+
         """
-        """
+        trait_data = self.experiment_design.data[trait]
+
+        kwargs['trait_data'] = trait_data
+
         if data_type == "expression":
             self.expression.plot_classifier(**kwargs)
         elif data_type == "splicing":
