@@ -563,6 +563,15 @@ class Study(StudyFactory):
     def jsd(self):
         raise NotImplementedError
 
+    @staticmethod
+    def maybe_make_directory(filename):
+        # Make the directory if it's not already there
+        try:
+            directory = os.path.abspath(os.path.dirname(filename))
+            os.makedirs(os.path.abspath(directory))
+        except OSError:
+            pass
+
     def feature_subset_to_feature_ids(self, data_type, feature_subset=None,
                                       rename=False):
         """Given a name of a feature subset, get the associated feature ids
@@ -615,7 +624,7 @@ class Study(StudyFactory):
         ------
         
         """
-        if phenotype_subset is None or 'all_samples'.starstwith(
+        if phenotype_subset is None or 'all_samples'.startswith(
                 phenotype_subset):
             sample_ind = np.ones(self.experiment_design.data.shape[0],
                                  dtype=bool)
