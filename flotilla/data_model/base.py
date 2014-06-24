@@ -180,20 +180,17 @@ class BaseData(object):
         -------
         self
         """
-        if predictor_args is None:
-            predictor_args = {}
+        predictor_args = {} if predictor_args is None else predictor_args
+        plotting_args = {} if plotting_args is None else plotting_args
 
-        if plotting_args is None:
-            plotting_args = {}
-
-        local_plotting_args = self.pca_plotting_args.copy()
-        local_plotting_args.update(plotting_args)
+        # local_plotting_args = self.pca_plotting_args.copy()
+        # local_plotting_args.update(plotting_args)
 
         clf = self.classify(gene_list_name=gene_list_name,
                                  sample_list_name=sample_list_name,
                                  clf_var=clf_var,
                                  **predictor_args)
-        clf(plotting_args=local_plotting_args)
+        clf(plotting_args=plotting_args)
 
         return self
 
