@@ -60,7 +60,7 @@ class PredictorViz(Predictor, DecompositionViz):
 
     def plot_classifier_scores(self, traits, ax=None, classifier_name=None):
         """
-        plot kernel density of classifier scores and draw a vertical line where
+        plot kernel density of predictor scores and draw a vertical line where
         the cutoff was selected
         ax - ax to plot on. if None: plt.gca()
         """
@@ -167,7 +167,7 @@ class PredictorViz(Predictor, DecompositionViz):
 
     def do_pca(self, trait, ax=None, classifier_name=None, **plotting_args):
 
-        """plot kernel density of classifier scores and draw a vertical line
+        """plot kernel density of predictor scores and draw a vertical line
         where the cutoff was selected
         ax : matplotlib.axes.Axes
             ax to plot on. if None: plt.gca()

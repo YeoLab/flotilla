@@ -706,7 +706,7 @@ class Study(StudyFactory):
             self.splicing.networks.draw_graph(**kwargs)
 
     def plot_classifier(self, trait, data_type='expression', **kwargs):
-        """Plot a classifier for the specified data type and trait(s)
+        """Plot a predictor for the specified data type and trait(s)
 
         Parameters
         ----------
