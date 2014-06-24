@@ -233,20 +233,27 @@ class Study(StudyFactory):
         self.default_sample_subsets = \
             [col for col in self.experiment_design.data.columns
              if self.experiment_design.data[col].dtype == bool]
-        self.default_sample_subsets.insert(0, None)
+        self.default_sample_subsets.insert(0, 'all_samples')
+
+        if 'outlier' in self.experiment_design.data:
+            outliers = self.experiment_design.data.index[
+                self.experiment_design.data.outlier]
+        else:
+            outliers = None
+            self.experiment_design.data['outlier'] = False
 
         if expression_data is not None:
             self.expression = ExpressionData(expression_data,
                                              expression_feature_data,
                                              feature_rename_col='gene_name',
-                                             drop_outliers=drop_outliers)
+                                             outliers=outliers)
             self.expression.networks = NetworkerViz(self.expression)
             self.default_feature_set_ids.extend(self.expression.feature_sets
                                                 .keys())
         if splicing_data is not None:
             self.splicing = SplicingData(splicing_data, splicing_feature_data,
                                          feature_rename_col='gene_name',
-                                         drop_outliers=drop_outliers)
+                                         outliers=outliers)
             self.splicing.networks = NetworkerViz(self.splicing)
         if mapping_stats_data is not None:
             self.mapping_stats = MappingStatsData(mapping_stats_data)
@@ -329,6 +336,27 @@ class Study(StudyFactory):
                 continue
             feature_sets[name] = data_type.feature_sets
         return feature_sets
+
+    @property
+    def sample_id_to_color(self):
+        """If "color" is a column in the experiment_design data, return a
+        dict of that {sample_id: color} mapping, else try to create it using
+        the "celltype" columns, else just return a dict mapping to a default
+        color (blue)
+        """
+        if 'color' in self.experiment_design.data:
+            return self.experiment_design.data.color.to_dict()
+        elif 'celltype' in self.experiment_design.data:
+            grouped = self.experiment_design.data.groupby('celltype')
+            palette = iter(sns.color_palette(n_colors=grouped.ngroups + 1))
+            color = grouped.apply(lambda x: mplcolors.rgb2hex(palette.next()))
+            color.name = 'color'
+            self.experiment_design.data = self.experiment_design.data.join(
+                color, on='celltype')
+
+            return self.experiment_design.data.color.to_dict()
+        else:
+            return defaultdict(lambda x: blue)
 
     @classmethod
     def from_data_package_url(cls, data_package_url,
@@ -535,6 +563,15 @@ class Study(StudyFactory):
     def jsd(self):
         raise NotImplementedError
 
+    @staticmethod
+    def maybe_make_directory(filename):
+        # Make the directory if it's not already there
+        try:
+            directory = os.path.abspath(os.path.dirname(filename))
+            os.makedirs(os.path.abspath(directory))
+        except OSError:
+            pass
+
     def feature_subset_to_feature_ids(self, data_type, feature_subset=None,
                                       rename=False):
         """Given a name of a feature subset, get the associated feature ids
@@ -587,7 +624,8 @@ class Study(StudyFactory):
         ------
         
         """
-        if phenotype_subset is None:
+        if phenotype_subset is None or 'all_samples'.startswith(
+                phenotype_subset):
             sample_ind = np.ones(self.experiment_design.data.shape[0],
                                  dtype=bool)
         elif phenotype_subset.startswith("~"):
@@ -602,7 +640,7 @@ class Study(StudyFactory):
 
     def plot_pca(self, data_type='expression', x_pc=1, y_pc=2,
                  sample_subset=None, feature_subset=None,
-                 title='',
+                 title='', featurewise=False,
                  **kwargs):
         """Performs PCA on both expression and splicing study_data
 
@@ -635,24 +673,14 @@ class Study(StudyFactory):
                                                          feature_subset,
                                                          rename=False)
         #TODO: move this kwarg stuff into visualize
-        kwargs = {}
         kwargs['x_pc'] = x_pc
         kwargs['y_pc'] = y_pc
         kwargs['sample_ids'] = sample_ids
         kwargs['feature_ids'] = feature_ids
         kwargs['title'] = title
-        if 'color' in self.experiment_design.data:
-            subset = self.experiment_design.data.ix[sample_ids]
-            kwargs['colors_dict'] = subset.color.to_dict()
-        elif 'celltype' in self.experiment_design.data:
-            grouped = self.experiment_design.data.groupby('celltype')
-            palette = iter(sns.color_palette(n_colors=grouped.ngroups + 1))
-            color = grouped.apply(lambda x: mplcolors.rgb2hex(palette.next()))
-            color.name = 'color'
-            self.experiment_design.data = self.experiment_design.data.join(
-                color, on='celltype')
+        kwargs['featurewise'] = featurewise
 
-            kwargs['colors_dict'] = self.experiment_design.data.color.to_dict()
+        kwargs['colors_dict'] = self.sample_id_to_color
 
         if 'marker' in self.experiment_design.data:
             kwargs['markers_dict'] = \
@@ -663,7 +691,39 @@ class Study(StudyFactory):
         elif "splicing".startswith(data_type):
             self.splicing.plot_dimensionality_reduction(**kwargs)
 
-    def plot_graph(self, data_type='expression', **kwargs):
+    def plot_graph(self, data_type='expression', sample_subset=None,
+                   feature_subset=None,
+                   **kwargs):
+        """Plot the graph (network) of these data
+
+        Parameters
+        ----------
+        sample_subset : str or None
+            Which subset of the samples to use, based on some phenotype
+            column in the experiment design data. If None, all samples are
+            used.
+        feature_subset : str or None
+            Which subset of the features to used, based on some feature type
+            in the expression data (e.g. "variant"). If None, all features
+            are used.
+
+        Returns
+        -------
+
+
+        Raises
+        ------
+
+        """
+        sample_ids = self.sample_subset_to_sample_ids(sample_subset)
+        feature_ids = self.feature_subset_to_feature_ids(data_type,
+                                                         feature_subset,
+                                                         rename=False)
+
+        kwargs['sample_id_to_color'] = self.sample_id_to_color
+        kwargs['sample_ids'] = sample_ids
+        kwargs['feature_ids'] = feature_ids
+
         if data_type == "expression":
             self.expression.networks.draw_graph(**kwargs)
         elif data_type == "splicing":

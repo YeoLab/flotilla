@@ -23,8 +23,8 @@ class SplicingData(BaseData):
 
     def __init__(self, data,
                  feature_data=None, binsize=_binsize,
-                 var_cut=_var_cut,
-                 drop_outliers=True, feature_rename_col=None):
+                 var_cut=_var_cut, outliers=None,
+                 feature_rename_col=None):
         """Instantiate a object for study_data scores with binned and reduced study_data
 
         Parameters
@@ -43,8 +43,6 @@ class SplicingData(BaseData):
         """
         super(SplicingData, self).__init__(data, feature_data,
                                            feature_rename_col=feature_rename_col)
-        if drop_outliers:
-            self.data = self.drop_outliers(data)
         # self.experiment_design_data, data = self.experiment_design_data.align(data, join='inner', axis=0)
 
         # self.data = data
@@ -110,7 +108,7 @@ class SplicingData(BaseData):
         #some samples, somefeatures
 
         if group_id.startswith("~"):
-            #print 'not', group_id.lstrip("~")
+            #print 'not', sample_subset.lstrip("~")
             sample_ind = ~pd.Series(self.phenotype_data[group_id.lstrip("~")],
                                     dtype='bool')
         else:
@@ -162,7 +160,7 @@ class SplicingData(BaseData):
         event_list = self.feature_sets[list_name]
 
         if group_id.startswith("~"):
-            #print 'not', group_id.lstrip("~")
+            #print 'not', sample_subset.lstrip("~")
             sample_ind = ~pd.Series(self.phenotype_data[group_id.lstrip("~")],
                                     dtype='bool')
         else:

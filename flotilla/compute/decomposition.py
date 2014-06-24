@@ -3,6 +3,8 @@ __author__ = 'olga'
 import sklearn
 import pandas as pd
 
+from sklearn import decomposition
+
 
 class Pretty_Reducer(object):
     """
@@ -24,10 +26,14 @@ class Pretty_Reducer(object):
 
         self.X = X
         super(Pretty_Reducer, self).fit(X)
-        self.components_ = pd.DataFrame(self.components_, columns=self.X.columns).rename_axis(self.relabel_pcs, 0)
+        self.components_ = pd.DataFrame(self.components_,
+                                        columns=self.X.columns).rename_axis(
+            self.relabel_pcs, 0)
         try:
-            self.explained_variance_ = pd.Series(self.explained_variance_).rename_axis(self.relabel_pcs, 0)
-            self.explained_variance_ratio_ = pd.Series(self.explained_variance_ratio_).rename_axis(self.relabel_pcs, 0)
+            self.explained_variance_ = pd.Series(
+                self.explained_variance_).rename_axis(self.relabel_pcs, 0)
+            self.explained_variance_ratio_ = pd.Series(
+                self.explained_variance_ratio_).rename_axis(self.relabel_pcs, 0)
         except AttributeError:
             pass
         return self
@@ -35,7 +41,9 @@ class Pretty_Reducer(object):
     def transform(self, X):
         component_space = super(Pretty_Reducer, self).transform(X)
         if type(self.X) == pd.DataFrame:
-                component_space = pd.DataFrame(component_space, index=self.X.index).rename_axis(self.relabel_pcs, 1)
+            component_space = pd.DataFrame(component_space,
+                                           index=self.X.index).rename_axis(
+                self.relabel_pcs, 1)
         return component_space
 
     def fit_transform(self, X):
@@ -47,11 +55,14 @@ class Pretty_Reducer(object):
         self.fit(X)
         return self.transform(X)
 
-class PCA(Pretty_Reducer, sklearn.decomposition.PCA):
+
+class PCA(Pretty_Reducer, decomposition.PCA):
     pass
 
-class NMF(Pretty_Reducer, sklearn.decomposition.NMF):
+
+class NMF(Pretty_Reducer, decomposition.NMF):
     here = True
+
     def fit(self, X):
         """
         duplicated fit code for NMF because sklearn's NMF cheats for efficiency
@@ -70,5 +81,8 @@ class NMF(Pretty_Reducer, sklearn.decomposition.NMF):
             raise
 
         self.X = X
-        super(sklearn.decomposition.NMF, self).fit_transform(X)  #notice this is fit_transform, not fit
-        self.components_ = pd.DataFrame(self.components_, columns=self.X.columns).rename_axis(self.relabel_pcs, 0)
+        super(sklearn.decomposition.NMF, self).fit_transform(
+            X)  #notice this is fit_transform, not fit
+        self.components_ = pd.DataFrame(self.components_,
+                                        columns=self.X.columns).rename_axis(
+            self.relabel_pcs, 0)

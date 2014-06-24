@@ -31,7 +31,7 @@ class BaseData(object):
 
 
     def __init__(self, data=None, feature_data=None,
-                 species=None, feature_rename_col=None, drop_outliers=False,
+                 species=None, feature_rename_col=None, outliers=None,
                  min_samples=MINIMUM_SAMPLES):
         """Base class for biological data measurements
 
@@ -51,6 +51,9 @@ class BaseData(object):
 
         """
         self.data = data
+        if outliers is not None:
+            self.data = self.drop_outliers(self.data, outliers)
+
         # self.experiment_design_data = experiment_design_data
         self.feature_data = feature_data
         # import pdb
@@ -78,24 +81,22 @@ class BaseData(object):
         else:
             self.feature_renamer = lambda x: x
 
-        if drop_outliers:
-            self.data = self.drop_outliers(data)
 
-    @property
-    def outliers(self):
-        """If there is a column called 'outliers' in the experiment_design_data,
-        then return the samples where this is True for them
-        """
-        try:
-            return set(self.phenotype_data.ix[
-                           self.phenotype_data.outlier.map(bool),
-                           'outlier'].index)
-        except AttributeError:
-            return set([])
+    # @property
+    # def outliers(self):
+    #     """If there is a column called 'outliers' in the experiment_design_data,
+    #     then return the samples where this is True for them
+    #     """
+    #     try:
+    #         return set(self.phenotype_data.ix[
+    #                        self.phenotype_data.outlier.map(bool),
+    #                        'outlier'].index)
+    #     except AttributeError:
+    #         return set([])
 
-    def drop_outliers(self, df):
+    def drop_outliers(self, df, outliers):
         # assert 'outlier' in self.experiment_design_data.columns
-        outliers = self.outliers.intersection(df.index)
+        outliers = set(outliers).intersection(df.index)
         sys.stdout.write("dropping {}".format(outliers))
         return df.drop(outliers)
 
@@ -166,11 +167,11 @@ class BaseData(object):
         -------
         obj_id : str
             key of the object getting plotted
-        group_id : str
+        sample_subset : str
             ???
         categorical_trait : str
             classifier feature
-        list_name : str
+        feature_subset : str
             subset of genes to use for building class
 
 
@@ -251,15 +252,15 @@ class BaseData(object):
     #     raise NotImplementedError
 
     # @memoize
-    # def get_reduced(self, obj_id=None, list_name=None, group_id=None, featurewise=None, **reducer_args):
+    # def get_reduced(self, obj_id=None, feature_subset=None, sample_subset=None, featurewise=None, **reducer_args):
     #     _used_default_group = False
-    #     if group_id is None:
-    #         group_id = self._default_group_id
+    #     if sample_subset is None:
+    #         sample_subset = self._default_group_id
     #         _used_default_group = True
     #
     #     _used_default_list = False
-    #     if list_name is None:
-    #         list_name = self._default_list_id
+    #     if feature_subset is None:
+    #         feature_subset = self._default_list_id
     #         _used_default_list = True
     #
     #     _used_default_featurewise = False
@@ -273,7 +274,7 @@ class BaseData(object):
     #             #if last_reducer_accessed hasn't been set or if the user asks for specific params,
     #             #else return the last reducer gotten by this method
     #
-    #             obj_id = list_name + ":" + group_id + ":" + str(featurewise)
+    #             obj_id = feature_subset + ":" + sample_subset + ":" + str(featurewise)
     #
     #         else:
     #             obj_id = self._last_reducer_accessed
@@ -286,7 +287,7 @@ class BaseData(object):
     #     try:
     #         return rdc_dict[obj_id]
     #     except:
-    #         rdc_obj = self.reduced(list_name, group_id, featurewise=featurewise, **reducer_args)
+    #         rdc_obj = self.reduced(feature_subset, sample_subset, featurewise=featurewise, **reducer_args)
     #         rdc_obj.obj_id = obj_id
     #         rdc_dict[obj_id] = rdc_obj
     #
@@ -296,7 +297,7 @@ class BaseData(object):
     #                   obj_id=None,
     #                   **classifier_args):
     #     """
-    #     list_name = list of features to use for this clf
+    #     feature_subset = list of features to use for this clf
     #     obj_id = name of this classifier
     #     clf_var = boolean or categorical pd.Series
     #     """
