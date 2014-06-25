@@ -19,7 +19,7 @@ class PredictorBase(object):
                                 'n_jobs': 2,
                                 'verbose': True}
 
-    def __init__(self, data, trait_data, predictor=None, name="Predictor",
+    def __init__(self, data, trait, predictor=None, name="Predictor",
                  predictor_kwargs=None, predictor_scoring_fun=None,
                  score_cutoff_fun=None):
         """Initializer for scikit-learn predictors (classifiers and regressors)
@@ -31,7 +31,7 @@ class PredictorBase(object):
         ----------
         data : pandas.DataFrame
             Samples x features data to train the predictor on
-        trait_data : pandas.Series
+        trait : pandas.Series
             Samples x trait (single) data that you want to tell the
             difference between
         predictor : scikit-learn classifier
@@ -77,13 +77,13 @@ class PredictorBase(object):
 
 
         # traits from source, in case they're needed later
-        self.trait_data = trait_data
-        self.trait_name = self.trait_data.name
+        self.trait = trait
+        self.trait_name = self.trait.name
         sys.stdout.write("Initializing predictor for "
                          "{}\n".format(self.trait_name))
 
-        self.X, self.trait_data = self.X.align(self.trait_data, axis=0,
-                                               join='inner')
+        self.X, self.trait = self.X.align(self.trait, axis=0,
+                                          join='inner')
 
         # This will be set after calling fit()
         self.predictor = None
@@ -108,6 +108,7 @@ class PredictorBase(object):
                          .format(self.trait_name))
         self.predictor.fit(self.X, self.y)
         sys.stdout.write("\tFinished.\n")
+        self.has_been_fit_yet = True
 
     def score(self):
         """Collect scores from predictor
@@ -122,11 +123,11 @@ class PredictorBase(object):
         self.predictor.scores_ = pd.Series(index=self.X.columns, data=scores)
         self.predictor.score_cutoff_ = \
             self.score_cutoff_fun(self.predictor.scores_)
-        self.predictor.good_features_ = self.predictor.scores_ > self.predictor.score_cutoff_
-        self.important_features = self.predictor.good_features_
-        self.predictor.n_good_features_ = np.sum(
-            self.predictor.good_features_)
-        self.predictor.subset_ = self.X.T[self.predictor.good_features_].T
+        # self.predictor.good_features_ =
+        self.important_features = self.predictor.scores_ > self.predictor.score_cutoff_
+        self.predictor.n_good_features_ = \
+            np.sum(self.important_features)
+        self.predictor.subset_ = self.X.T[self.important_features].T
 
         sys.stdout.write("\tFinished.\n")
         self.has_been_scored_yet = True
@@ -139,7 +140,7 @@ class Regressor(PredictorBase):
 
     default_regressor = ExtraTreesRegressor
 
-    def __init__(self, data, trait_data, predictor=ExtraTreesRegressor,
+    def __init__(self, data, trait, predictor=ExtraTreesRegressor,
                  name="ExtraTreesRegressor",
                  predictor_kwargs=None, predictor_scoring_fun=None,
                  score_cutoff_fun=None):
@@ -149,7 +150,7 @@ class Regressor(PredictorBase):
         ----------
         data : pandas.DataFrame
             Samples x features data to train the predictor on
-        trait_data : pandas.Series
+        trait : pandas.Series
             Samples x trait (single) data that you want to tell the
             difference between
         predictor : scikit-learn regressor
@@ -174,12 +175,12 @@ class Regressor(PredictorBase):
             Function to cut off insignificant scores
             Default: lambda x: np.mean(x) + 2 * np.std(x)
         """
-        super(Regressor, self).__init__(data=data, trait_data=trait_data,
+        super(Regressor, self).__init__(data=data, trait=trait,
                                         predictor=predictor, name=name,
                                         predictor_kwargs=predictor_kwargs,
                                         predictor_scoring_fun=predictor_scoring_fun,
                                         score_cutoff_fun=score_cutoff_fun)
-        self.y = self.trait_data
+        self.y = self.trait
         self.predictor_class = ExtraTreesRegressor \
             if self.predictor_class is None else self.predictor_class
 
@@ -197,7 +198,7 @@ class Classifier(PredictorBase):
 
     default_classifier, default_classifier_name = ExtraTreesClassifier, "ExtraTreesClassifier"
 
-    def __init__(self, data, trait_data, predictor=ExtraTreesClassifier,
+    def __init__(self, data, trait, predictor=ExtraTreesClassifier,
                  name="ExtraTreesClassifier",
                  predictor_kwargs=None, predictor_scoring_fun=None,
                  score_cutoff_fun=None):
@@ -207,7 +208,7 @@ class Classifier(PredictorBase):
         ----------
         data : pandas.DataFrame
             Samples x features data to train the predictor on
-        trait_data : pandas.Series
+        trait : pandas.Series
             Samples x trait (single) data that you want to tell the
             difference between
         predictor : scikit-learn classifier
@@ -232,7 +233,7 @@ class Classifier(PredictorBase):
             Function to cut off insignificant scores
             Default: lambda scores: np.mean(x) + 2 * np.std(x)
         """
-        super(Classifier, self).__init__(data=data, trait_data=trait_data,
+        super(Classifier, self).__init__(data=data, trait=trait,
                                          predictor=predictor, name=name,
                                          predictor_kwargs=predictor_kwargs,
                                          predictor_scoring_fun=predictor_scoring_fun,
@@ -242,11 +243,11 @@ class Classifier(PredictorBase):
 
         # traits encoded to do some work -- "target" variable
         self.traitset = \
-            self.trait_data.groupby(self.trait_data).describe().index.levels[0]
+            self.trait.groupby(self.trait).describe().index.levels[0]
         try:
             assert len(
-                self.trait_data.groupby(
-                    self.trait_data).describe().index.levels[
+                self.trait.groupby(
+                    self.trait).describe().index.levels[
                     0]) == 2
         except AssertionError:
             warnings.warn("WARNING: trait {} has >2 categories".format(
@@ -254,9 +255,10 @@ class Classifier(PredictorBase):
 
         # categorical encoder
         le = LabelEncoder().fit(self.traitset)
+
         # categorical encoding
-        self.y = self.y = pd.Series(data=le.transform(self.trait_data),
-                                    index=self.X.index,
-                                    name=self.trait_data.name)
+        self.y = pd.Series(data=le.transform(self.trait),
+                           index=self.X.index,
+                           name=self.trait.name)
 
 

@@ -735,7 +735,7 @@ class Study(StudyFactory):
         """
         trait_data = self.experiment_design.data[trait]
 
-        kwargs['trait_data'] = trait_data
+        kwargs['trait'] = trait_data
 
         if data_type == "expression":
             self.expression.plot_classifier(**kwargs)
