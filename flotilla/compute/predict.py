@@ -18,10 +18,6 @@ class PredictorBase(object):
                                 'oob_score': True,
                                 'n_jobs': 2,
                                 'verbose': True}
-    default_predictor_scoring_fun = lambda clf: clf.feature_importances_
-
-    # 2 std's above mean
-    default_score_cutoff_fun = lambda x: np.mean(x) + 2 * np.std(x)
 
     def __init__(self, data, trait_data, predictor=None, name="Predictor",
                  predictor_kwargs=None, predictor_scoring_fun=None,
@@ -92,10 +88,22 @@ class PredictorBase(object):
         # This will be set after calling fit()
         self.predictor = None
 
+    @staticmethod
+    def default_predictor_scoring_fun(x):
+        return x.feature_importances_
+
+    @staticmethod
+    def default_score_cutoff_fun(x):
+        return np.mean(x) + 2 * np.std(x)
+
     def fit(self):
         """Fit predictor to the data
         """
-        self.predictor = self.predictor_class(**self.predictor_kwargs)
+        try:
+            self.predictor = self.predictor_class(**self.predictor_kwargs)
+        except TypeError:
+            raise ValueError('There is no predictor assigned to this '
+                             'PredictorBase class yet')
         sys.stdout.write("Fitting a predictor for trait {}... please wait.\n"
                          .format(self.trait_name))
         self.predictor.fit(self.X, self.y)
@@ -106,7 +114,11 @@ class PredictorBase(object):
         """
         sys.stdout.write("Scoring predictor: {} for trait: {}... please "
                          "wait\n".format(self.name, self.trait_name))
-        scores = self.predictor_scoring_fun(self.predictor)
+        try:
+            scores = self.predictor_scoring_fun(self.predictor)
+        except AttributeError:
+            raise ValueError('There is no predictor assigned to this '
+                             'PredictorBase class yet')
         self.predictor.scores_ = pd.Series(index=self.X.columns, data=scores)
         self.predictor.score_cutoff_ = \
             self.score_cutoff_fun(self.predictor.scores_)
