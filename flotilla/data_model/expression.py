@@ -32,7 +32,6 @@ class ExpressionData(BaseData):
         Raises
         ------
         """
-
         super(ExpressionData, self).__init__(data, feature_data,
                                              feature_rename_col=feature_rename_col)
 
@@ -262,7 +261,7 @@ class SpikeInData(ExpressionData):
 
     """
 
-    def __init__(self, data, feature_data):
+    def __init__(self, data, feature_data=None):
         """Constructor for
 
         Parameters
@@ -277,8 +276,7 @@ class SpikeInData(ExpressionData):
         ------
 
         """
-        super(ExpressionData, self).__init__(data, feature_data,
-                                             feature_rename_col=feature_rename_col)
+        super(SpikeInData, self).__init__(data, feature_data)
 
 
     def spikeins_violinplot(self):
