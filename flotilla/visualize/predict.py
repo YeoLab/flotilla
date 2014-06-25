@@ -1,11 +1,17 @@
-__author__ = 'olga'
+"""
+Visualize the result of a classifcation or regression algorithm on the data.
+"""
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
 
-from ..compute.predict import Predictor
-from decomposition import DecompositionViz
+from .decomposition import DecompositionViz, PCAViz
+from ..compute.predict import PredictorBase
 
-class PredictorViz(Predictor, DecompositionViz):
 
+class PredictorBaseViz(PredictorBase, DecompositionViz):
     _reducer_plotting_args = {}
+
     def set_reducer_plotting_args(self, rpa):
         self._reducer_plotting_args.update(rpa)
 
@@ -19,25 +25,28 @@ class PredictorViz(Predictor, DecompositionViz):
         if feature_score_std_cutoff is None:
             feature_scoring_cut_fun = self.default_classifier_scoring_cutoff_fun
         else:
-            feature_scoring_cut_fun = lambda scores: np.mean(scores) + feature_score_std_cutoff*np.std(scores)
+            feature_scoring_cut_fun = lambda scores: np.mean(
+                scores) + feature_score_std_cutoff * np.std(scores)
 
         if not self.has_been_fit_yet:
             self.fit_classifiers([trait])
 
-        self.score_classifiers([trait], score_cutoff_fun=feature_scoring_cut_fun)
+        self.score_classifiers([trait],
+                               score_cutoff_fun=feature_scoring_cut_fun)
 
         from matplotlib.gridspec import GridSpec, GridSpecFromSubplotSpec
 
         import matplotlib.pyplot as plt
+
         gs_x = 18
         gs_y = 12
 
         if ax is None:
-            fig, ax = plt.subplots(1,1,figsize=(18, 8))
-            gs = GridSpec(gs_x,gs_y)
+            fig, ax = plt.subplots(1, 1, figsize=(18, 8))
+            gs = GridSpec(gs_x, gs_y)
 
         else:
-            gs = GridSpecFromSubplotSpec(gs_x,gs_y,ax.get_subplotspec())
+            gs = GridSpecFromSubplotSpec(gs_x, gs_y, ax.get_subplotspec())
         ax_pca = plt.subplot(gs[:, 2:])
 
         ax_scores = plt.subplot(gs[5:10, :2])
@@ -45,69 +54,72 @@ class PredictorViz(Predictor, DecompositionViz):
         ax_scores.set_ylabel("Density Estimate")
         self.plot_classifier_scores([trait], ax=ax_scores)
         pca = self.do_pca(trait, ax=ax_pca, show_vectors=True)
-        plt.tight_layout()
+        fig.tight_layout()
         return pca
 
 
     def plot_classifier_scores(self, traits, ax=None, classifier_name=None):
         """
-        plot kernel density of classifier scores and draw a vertical line where the cutoff was selected
+        plot kernel density of predictor scores and draw a vertical line where
+        the cutoff was selected
         ax - ax to plot on. if None: plt.gca()
         """
-
         if classifier_name is None:
             classifier_name = self.default_classifier_name
 
-        if ax==None:
+        if ax == None:
             ax = plt.gca()
 
         for trait in traits:
             clf = self.classifiers_[trait][classifier_name]
-            seaborn.kdeplot(clf.scores_, shade=True, ax=ax, label="%s\n%d features\noob:%.2f" % (trait,
-                                                                                       np.sum(clf.good_features_),
-            clf.oob_score_))
+            sns.kdeplot(clf.scores_, shade=True, ax=ax,
+                        label="%s\n%d features\noob:%.2f" \
+                              % (trait, np.sum(clf.good_features_),
+                                 clf.oob_score_))
             ax.axvline(x=clf.score_cutoff_)
 
         [lab.set_rotation(90) for lab in ax.get_xticklabels()]
-        seaborn.despine(ax=ax)
+        sns.despine(ax=ax)
 
 
     def generate_scatter_table(self,
-                              excel_out=None, external_xref=[]):
+                               excel_out=None, external_xref=[]):
         """
         make a table to make scatterplots... maybe for plot.ly
         excelOut: full path to an excel output location for scatter data
-        external_xref: list of tuples containing (attribute name, function to map row index -> an attribute)
+        external_xref: list of tuples containing (attribute name, function to
+        map row index -> an attribute)
         """
         raise NotImplementedError
         trait, classifier_name = self.attributes
         X = self.X
         sorter = np.array([np.median(i[1]) - np.median(j[1]) for (i, j) in \
-                           itertools.izip(X[self.y[trait]==0].iteritems(),
-                                          X[self.y[trait]==1].iteritems())])
+                           itertools.izip(X[self.y[trait] == 0].iteritems(),
+                                          X[self.y[trait] == 1].iteritems())])
 
         sort_by_sorter = X.columns[np.argsort(sorter)]
-        c0_values = X[sort_by_sorter][self.y[trait]==0]
-        c1_values = X[sort_by_sorter][self.y[trait]==1]
+        c0_values = X[sort_by_sorter][self.y[trait] == 0]
+        c1_values = X[sort_by_sorter][self.y[trait] == 1]
 
         x = []
         s = []
         y1 = []
         y2 = []
-        field_names = ['x-position', 'probe intensity', "condition0", "condition1"]
+        field_names = ['x-position', 'probe intensity', "condition0",
+                       "condition1"]
         n_default_fields = len(field_names)
         external_attrs = {}
         for external_attr_name, external_attr_fun in external_xref:
             external_attrs[external_attr_name] = []
             field_names.append(external_attr_name)
 
-
-        for i, (a, b) in enumerate(itertools.izip(c0_values.iteritems(), c1_values.iteritems())):
+        for i, (a, b) in enumerate(
+                itertools.izip(c0_values.iteritems(), c1_values.iteritems())):
 
             mn = np.mean(np.r_[a[1], b[1]])
             _ = [x.append(i) for _ in a[1]]
             _ = [s.append(mn) for val in a[1]]
-            _ = [y1.append(val- mn) for val in a[1]]
+            _ = [y1.append(val - mn) for val in a[1]]
             _ = [y2.append(np.nan) for val in a[1]]
 
             _ = [x.append(i) for _ in b[1]]
@@ -115,12 +127,14 @@ class PredictorViz(Predictor, DecompositionViz):
             _ = [y1.append(np.nan) for val in b[1]]
             _ = [y2.append(val - mn) for val in b[1]]
 
-
             for external_attr_name, external_attr_fun in external_xref:
-                external_attrs[external_attr_name].extend([external_attr_fun(i) for i in a[1].index])
-                external_attrs[external_attr_name].extend([external_attr_fun(i) for i in b[1].index])
+                external_attrs[external_attr_name].extend(
+                    [external_attr_fun(i) for i in a[1].index])
+                external_attrs[external_attr_name].extend(
+                    [external_attr_fun(i) for i in b[1].index])
 
-        zz = pd.DataFrame([x, s, y1, y2] + [external_attrs[attr] for attr in field_names[n_default_fields:]],
+        zz = pd.DataFrame([x, s, y1, y2] + [external_attrs[attr] for attr in
+                                            field_names[n_default_fields:]],
                           index=field_names)
 
         if excel_out is not None:
@@ -133,7 +147,7 @@ class PredictorViz(Predictor, DecompositionViz):
 
         return zz
 
-    def check_a_feature(self, feature_name, traits=None,  **vp_params):
+    def check_a_feature(self, feature_name, traits=None, **vp_params):
         """Make Violin Plots for a gene/probe's value in the sets defined in sets
         feature_name - gene/probe id. must be in the index of self._parent.X
         sets - list of sample ids
@@ -145,16 +159,18 @@ class PredictorViz(Predictor, DecompositionViz):
             traits = self.categorical_traits
 
         for trait in traits:
-            seaborn.violinplot(self.X[feature_name], linewidth=0, groupby=trait,
-                   alpha=0.5, bw='silverman', inner='points', names=None, **vp_params)
-        seaborn.despine()
+            sns.violinplot(self.X[feature_name], linewidth=0, groupby=trait,
+                           alpha=0.5, bw='silverman', inner='points',
+                           names=None, **vp_params)
+        sns.despine()
 
 
     def do_pca(self, trait, ax=None, classifier_name=None, **plotting_args):
 
-        """
-        plot kernel density of classifier scores and draw a vertical line where the cutoff was selected
-        ax - ax to plot on. if None: plt.gca()
+        """plot kernel density of predictor scores and draw a vertical line
+        where the cutoff was selected
+        ax : matplotlib.axes.Axes
+            ax to plot on. if None: plt.gca()
         """
 
         assert trait in self.traits
@@ -168,6 +184,8 @@ class PredictorViz(Predictor, DecompositionViz):
 
         local_plotting_args = self._reducer_plotting_args
         local_plotting_args.update(plotting_args)
-        pca = PCAViz(self.X.ix[:, self.classifiers_[trait][classifier_name].good_features_], **local_plotting_args)
+        pca = PCAViz(self.X.ix[:,
+                     self.classifiers_[trait][classifier_name].good_features_],
+                     **local_plotting_args)
         pca(ax=ax)
         return pca

@@ -29,7 +29,7 @@ class MappingStatsData(BaseData):
         ------
 
         """
-        super(MappingStatsData).__init__()
+        super(MappingStatsData, self).__init__(data)
         self.number_mapped_col = number_mapped_col
 
         pass

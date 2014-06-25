@@ -18,9 +18,9 @@ from .experiment_design import ExperimentDesignData
 from .expression import ExpressionData, SpikeInData
 from .quality_control import MappingStatsData
 from .splicing import SplicingData
-from ..visualize import NetworkerViz
 from ..visualize.color import blue
 from ..visualize.ipython_interact import Interactive
+from ..visualize.network import NetworkerViz
 from ..external import data_package_url_to_dict, check_if_already_downloaded
 
 
@@ -180,7 +180,8 @@ class Study(StudyFactory):
                  splicing_feature_data=None,
                  splicing_feature_rename_col='gene_name',
                  mapping_stats_data=None,
-                 mapping_stats_number_mapped_col=None,
+                 mapping_stats_number_mapped_col="Uniquely mapped reads "
+                                                 "number",
                  spikein_data=None,
                  spikein_feature_data=None,
                  drop_outliers=False, species=None,
@@ -248,6 +249,16 @@ class Study(StudyFactory):
             Name of the species and genome version, e.g. 'hg19' or 'mm10'.
         gene_ontology_data : pandas.DataFrame
             Gene ids x ontology categories dataframe used for GO analysis.
+
+        Note
+        ----
+        This function explicitly specifies ALL the instance variables (except
+        those that are marked by the @property decorator), because,
+        as described [1], "If you write initialization functions separate from
+        __init__ then experienced developers will certainly see your code as a
+        kid's playground."
+
+        [1] http://stackoverflow.com/questions/12513185/removing-the-work-from-init-to-aid-unit-testing
         """
         super(Study, self).__init__()
         # if params_dict is None:
@@ -258,7 +269,6 @@ class Study(StudyFactory):
         self.species = species
         self.gene_ontology_data = gene_ontology_data
 
-        # THis code is fragile!
         #TODO: make feature_rename_col an attribute in the datapackage
         self.experiment_design = ExperimentDesignData(experiment_design_data)
         self.default_sample_subsets = \
@@ -411,9 +421,20 @@ class Study(StudyFactory):
                                  'specified names: '
                                  '"experiment_design", "expression", '
                                  '"splicing"')
+        try:
+            mapping_stats_data = dfs['mapping_stats']
+        except KeyError:
+            mapping_stats_data = None
+        try:
+            spikein_data = dfs['spikein']
+        except KeyError:
+            spikein_data = None
+
         study = Study(experiment_design_data=experiment_design_data,
                       expression_data=expression_data,
                       splicing_data=splicing_data,
+                      mapping_stats_data=mapping_stats_data,
+                      spikein_data=spikein_data,
                       expression_feature_rename_col='gene_name',
                       splicing_feature_rename_col='gene_name', **species_dfs)
         return study
@@ -609,6 +630,7 @@ class Study(StudyFactory):
     def plot_pca(self, data_type='expression', x_pc=1, y_pc=2,
                  sample_subset=None, feature_subset=None,
                  title='', featurewise=False,
+                 show_point_labels=False,
                  **kwargs):
         """Performs PCA on both expression and splicing study_data
 
@@ -630,7 +652,10 @@ class Study(StudyFactory):
             are used.
         title : str
             The title of the plot
-
+        show_point_labels : bool
+            Whether or not to show the labels of the points. If this is
+            samplewise (default), then this labels the samples. If this is
+            featurewise, then this labels the features.
 
         Raises
         ------
@@ -647,6 +672,7 @@ class Study(StudyFactory):
         kwargs['feature_ids'] = feature_ids
         kwargs['title'] = title
         kwargs['featurewise'] = featurewise
+        kwargs['show_point_labels'] = show_point_labels
 
         kwargs['colors_dict'] = self.sample_id_to_color
 
@@ -666,6 +692,8 @@ class Study(StudyFactory):
 
         Parameters
         ----------
+        data_type : str
+            One of the names of the data types, e.g. "expression" or "splicing"
         sample_subset : str or None
             Which subset of the samples to use, based on some phenotype
             column in the experiment design data. If None, all samples are
@@ -674,14 +702,6 @@ class Study(StudyFactory):
             Which subset of the features to used, based on some feature type
             in the expression data (e.g. "variant"). If None, all features
             are used.
-
-        Returns
-        -------
-
-
-        Raises
-        ------
-
         """
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
         feature_ids = self.feature_subset_to_feature_ids(data_type,
@@ -697,9 +717,26 @@ class Study(StudyFactory):
         elif data_type == "splicing":
             self.splicing.networks.draw_graph(**kwargs)
 
-    def plot_classifier(self, data_type='expression', **kwargs):
+    def plot_classifier(self, trait, data_type='expression', **kwargs):
+        """Plot a predictor for the specified data type and trait(s)
+
+        Parameters
+        ----------
+        data_type : str
+            One of the names of the data types, e.g. "expression" or "splicing"
+        trait : str
+            Column name in the experiment_design data that you would like
+            to classify on
+
+        Returns
+        -------
+
+
         """
-        """
+        trait_data = self.experiment_design.data[trait]
+
+        kwargs['trait'] = trait_data
+
         if data_type == "expression":
             self.expression.plot_classifier(**kwargs)
         elif data_type == "splicing":
