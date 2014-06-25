@@ -1,8 +1,6 @@
 """
-ExpressionData
---------------
-A container for gene expression data and related feature data, e.g. gene
-symbols of ensembl IDs and GO terms.
+Data types related to gene expression, e.g. from RNA-Seq or microarrays.
+Included SpikeIn data.
 """
 
 import pandas as pd
@@ -10,7 +8,7 @@ from sklearn.preprocessing import StandardScaler
 
 from .base import BaseData
 from ..visualize.decomposition import PCAViz
-from ..visualize.predict import PredictorViz
+from ..visualize.predict import PredictorBaseViz
 from ..util import memoize
 
 
@@ -34,7 +32,6 @@ class ExpressionData(BaseData):
         Raises
         ------
         """
-
         super(ExpressionData, self).__init__(data, feature_data,
                                              feature_rename_col=feature_rename_col)
 
@@ -183,8 +180,8 @@ class ExpressionData(BaseData):
     @memoize
     def classify(self, sample_ids=None, feature_ids=None,
                  categorical_trait=None,
-                 standardize=True, predictor=PredictorViz):
-        """Make and memoize a classifier on a categorical trait (associated
+                 standardize=True, predictor=PredictorBaseViz):
+        """Make and memoize a predictor on a categorical trait (associated
         with samples) subset of genes
 
         Parameters
@@ -203,7 +200,7 @@ class ExpressionData(BaseData):
 
         Returns
         -------
-        classifier : flotilla.compute.predict.PredictorViz
+        predictor : flotilla.compute.predict.PredictorBaseViz
             A ready-to-plot object containing the predictions
         """
         subset, means = self._subset_and_standardize(self.sparse_data,
@@ -264,7 +261,7 @@ class SpikeInData(ExpressionData):
 
     """
 
-    def __init__(self, data, feature_data):
+    def __init__(self, data, feature_data=None):
         """Constructor for
 
         Parameters
@@ -279,8 +276,7 @@ class SpikeInData(ExpressionData):
         ------
 
         """
-        super(ExpressionData, self).__init__(data, feature_data,
-                                             feature_rename_col=feature_rename_col)
+        super(SpikeInData, self).__init__(data, feature_data)
 
 
     def spikeins_violinplot(self):

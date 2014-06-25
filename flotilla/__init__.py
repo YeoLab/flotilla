@@ -1,6 +1,9 @@
 __author__ = 'lovci'
 
 from .data_model.study import StudyFactory, Study
+import compute
+import data_model
+import visualize
 
 
 def call_main():

@@ -2,17 +2,8 @@ __author__ = 'lovci, ppliu, obot, ....?'
 
 """"plotting tools"""
 
-
 __author__ = 'olga'
 
-import math
-from math import sqrt
-import matplotlib.pyplot as plt
-
-
-import numpy as np
-from numpy.linalg import norm
-import pandas as pd
 import seaborn
 # from ..neural_diff_project.project_params import _default_group_id
 
@@ -40,8 +31,5 @@ seaborn.set_style({'axes.axisbelow': True,
                    'ytick.major.size': 0,
                    'ytick.minor.size': 0})
 
-
-
-from network import Networker, NetworkerViz
-from predict import PredictorViz
+from predict import PredictorBaseViz
 from ipython_interact import Interactive

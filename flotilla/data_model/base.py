@@ -24,12 +24,6 @@ class BaseData(object):
 
     """
 
-    #_feature_renamer converts input feature names to something else. by
-    # default, just echo.
-    # _feature_renamer = lambda x: x
-
-
-
     def __init__(self, data=None, feature_data=None,
                  species=None, feature_rename_col=None, outliers=None,
                  min_samples=MINIMUM_SAMPLES):
@@ -56,15 +50,12 @@ class BaseData(object):
 
         # self.experiment_design_data = experiment_design_data
         self.feature_data = feature_data
-        # import pdb
-        # pdb.set_trace()
         self.feature_rename_col = feature_rename_col
         self.min_samples = min_samples
         self.default_feature_sets = []
 
         self.species = species
         self.feature_sets = {}
-        # This code is very fragile!
         if self.feature_data is not None and self.feature_rename_col is not \
                 None:
             def feature_renamer(x):
@@ -80,19 +71,6 @@ class BaseData(object):
             self.feature_renamer = feature_renamer
         else:
             self.feature_renamer = lambda x: x
-
-
-    # @property
-    # def outliers(self):
-    #     """If there is a column called 'outliers' in the experiment_design_data,
-    #     then return the samples where this is True for them
-    #     """
-    #     try:
-    #         return set(self.phenotype_data.ix[
-    #                        self.phenotype_data.outlier.map(bool),
-    #                        'outlier'].index)
-    #     except AttributeError:
-    #         return set([])
 
     def drop_outliers(self, df, outliers):
         # assert 'outlier' in self.experiment_design_data.columns
@@ -148,14 +126,8 @@ class BaseData(object):
         return self._feature_renamer
 
     @feature_renamer.setter
-    def feature_renamer(self, renamer, test_name='foo'):
+    def feature_renamer(self, renamer):
         self._feature_renamer = renamer
-        # try:
-        #     fun(test_name)
-        # except:
-        #     pass
-        #print "might not be a good naming function, failed on %s" % test_name
-
 
     # TODO.md: Specify dtypes in docstring
     def plot_classifier(self, gene_list_name=None, sample_list_name=None,
@@ -170,30 +142,25 @@ class BaseData(object):
         sample_subset : str
             ???
         categorical_trait : str
-            classifier feature
+            predictor feature
         feature_subset : str
             subset of genes to use for building class
-
-
 
         Returns
         -------
         self
         """
-        if predictor_args is None:
-            predictor_args = {}
+        predictor_args = {} if predictor_args is None else predictor_args
+        plotting_args = {} if plotting_args is None else plotting_args
 
-        if plotting_args is None:
-            plotting_args = {}
-
-        local_plotting_args = self.pca_plotting_args.copy()
-        local_plotting_args.update(plotting_args)
+        # local_plotting_args = self.pca_plotting_args.copy()
+        # local_plotting_args.update(plotting_args)
 
         clf = self.classify(gene_list_name=gene_list_name,
                                  sample_list_name=sample_list_name,
                                  clf_var=clf_var,
                                  **predictor_args)
-        clf(plotting_args=local_plotting_args)
+        clf(plotting_args=plotting_args)
 
         return self
 
@@ -224,8 +191,6 @@ class BaseData(object):
         ------
 
         """
-        # local_plotting_kwargs = self.pca_plotting_kwargs.copy()
-        # local_plotting_kwargs.update(plotting_kwargs)
         pca = self.reduce(sample_ids, feature_ids,
                           featurewise=featurewise)
         pca(markers_size_dict=defaultdict(lambda x: 400),
@@ -236,112 +201,6 @@ class BaseData(object):
             y_pc = "pc_" + str(y_pc), #this only affects the plot, not the study_data.
             **plotting_kwargs)
         return self
-
-    # @memoize
-    # def reduce(self, *args, **kwargs):
-    #     """Reduce the dimensionality of the data. Must be implemented for
-    #     each specific data sub-type
-    #     """
-    #     raise NotImplementedError
-    #
-    # @memoize
-    # def classify(self, *args, **kwargs):
-    #     """Run a classifier on the data. Must be implemented for each
-    #     specific data sub-type
-    #     """
-    #     raise NotImplementedError
-
-    # @memoize
-    # def get_reduced(self, obj_id=None, feature_subset=None, sample_subset=None, featurewise=None, **reducer_args):
-    #     _used_default_group = False
-    #     if sample_subset is None:
-    #         sample_subset = self._default_group_id
-    #         _used_default_group = True
-    #
-    #     _used_default_list = False
-    #     if feature_subset is None:
-    #         feature_subset = self._default_list_id
-    #         _used_default_list = True
-    #
-    #     _used_default_featurewise = False
-    #     if featurewise is None:
-    #         featurewise = self._default_featurewise
-    #         _used_default_featurewise = True
-    #
-    #     if obj_id is None:
-    #         if self._last_reducer_accessed is None or \
-    #                 (not _used_default_list or not _used_default_group or not _used_default_featurewise):
-    #             #if last_reducer_accessed hasn't been set or if the user asks for specific params,
-    #             #else return the last reducer gotten by this method
-    #
-    #             obj_id = feature_subset + ":" + sample_subset + ":" + str(featurewise)
-    #
-    #         else:
-    #             obj_id = self._last_reducer_accessed
-    #
-    #     self._last_reducer_accessed = obj_id
-    #     if featurewise:
-    #         rdc_dict = self.featurewise_reduction
-    #     else:
-    #         rdc_dict = self.samplewise_reduction
-    #     try:
-    #         return rdc_dict[obj_id]
-    #     except:
-    #         rdc_obj = self.reduced(feature_subset, sample_subset, featurewise=featurewise, **reducer_args)
-    #         rdc_obj.obj_id = obj_id
-    #         rdc_dict[obj_id] = rdc_obj
-    #
-    #     return rdc_dict[obj_id]
-
-    # def get_classifier(self, gene_list_name=None, sample_list_name=None, clf_var=None,
-    #                   obj_id=None,
-    #                   **classifier_args):
-    #     """
-    #     feature_subset = list of features to use for this clf
-    #     obj_id = name of this classifier
-    #     clf_var = boolean or categorical pd.Series
-    #     """
-    #
-    #     _used_default_group = False
-    #     if sample_list_name is None:
-    #         sample_list_name = self._default_group_id
-    #         _used_default_group = True
-    #
-    #     _used_default_list = False
-    #     if gene_list_name is None:
-    #         gene_list_name = self._default_list_id
-    #         _used_default_list = True
-    #
-    #     if obj_id is None:
-    #         if self._last_predictor_accessed is None or \
-    #                 (not _used_default_list or not _used_default_group):
-    #             #if last_reducer_accessed hasn't been set or if the user asks for specific params,
-    #             #else return the last reducer gotten by this method
-    #
-    #             obj_id = gene_list_name + ":" + sample_list_name + ":" + clf_var
-    #         else:
-    #             obj_id = self._last_predictor_accessed
-    #
-    #     self._last_predictor_accessed = obj_id
-    #     #print "I am a %s" % type(self)
-    #     #print "here are my clf_dict keys: %s" % " ".join(self.clf_dict.keys())
-    #     try:
-    #         return self.clf_dict[obj_id]
-    #     except:
-    #         clf = self.classify(gene_list_name, sample_list_name, clf_var, **classifier_args)
-    #         clf.obj_id = obj_id
-    #         self.clf_dict[obj_id] = clf
-    #
-    #     return self.clf_dict[obj_id]
-
-    # def get_min_samples(self):
-    #     try:
-    #         return self.min_samples
-    #     except AttributeError:
-    #         return MINIMUM_SAMPLES
-    #
-    # def set_min_samples(self, min_samples):
-    #     self.min_samples = min_samples
 
     @property
     def min_samples(self):
