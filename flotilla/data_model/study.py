@@ -180,7 +180,8 @@ class Study(StudyFactory):
                  splicing_feature_data=None,
                  splicing_feature_rename_col='gene_name',
                  mapping_stats_data=None,
-                 mapping_stats_number_mapped_col=None,
+                 mapping_stats_number_mapped_col="Uniquely mapped reads "
+                                                 "number",
                  spikein_data=None,
                  spikein_feature_data=None,
                  drop_outliers=False, species=None,
