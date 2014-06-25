@@ -420,9 +420,20 @@ class Study(StudyFactory):
                                  'specified names: '
                                  '"experiment_design", "expression", '
                                  '"splicing"')
+        try:
+            mapping_stats_data = dfs['mapping_stats']
+        except KeyError:
+            mapping_stats_data = None
+        try:
+            spikein_data = dfs['spikein']
+        except KeyError:
+            spikein_data = None
+
         study = Study(experiment_design_data=experiment_design_data,
                       expression_data=expression_data,
                       splicing_data=splicing_data,
+                      mapping_stats_data=mapping_stats_data,
+                      spikein_data=spikein_data,
                       expression_feature_rename_col='gene_name',
                       splicing_feature_rename_col='gene_name', **species_dfs)
         return study
