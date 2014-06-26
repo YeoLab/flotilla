@@ -1,86 +1,20 @@
 """
 Visualize the result of a classifcation or regression algorithm on the data.
 """
+from matplotlib.gridspec import GridSpec, GridSpecFromSubplotSpec
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 
 from .decomposition import DecompositionViz, PCAViz
-from ..compute.predict import PredictorBase
+from ..compute.predict import Classifier, Regressor
 
 
-class PredictorBaseViz(PredictorBase, DecompositionViz):
+class PredictorBaseViz(DecompositionViz):
     _reducer_plotting_args = {}
 
     def set_reducer_plotting_args(self, rpa):
         self._reducer_plotting_args.update(rpa)
-
-    def __call__(self, trait=None, ax=None, feature_score_std_cutoff=None):
-
-        if trait is None:
-            trait = self.traits[0]
-        else:
-            assert type(trait) == str or type(trait) == unicode
-
-        if feature_score_std_cutoff is None:
-            feature_scoring_cut_fun = self.default_classifier_scoring_cutoff_fun
-        else:
-            feature_scoring_cut_fun = lambda scores: np.mean(
-                scores) + feature_score_std_cutoff * np.std(scores)
-
-        if not self.has_been_fit_yet:
-            self.fit_classifiers([trait])
-
-        self.score_classifiers([trait],
-                               score_cutoff_fun=feature_scoring_cut_fun)
-
-        from matplotlib.gridspec import GridSpec, GridSpecFromSubplotSpec
-
-        import matplotlib.pyplot as plt
-
-        gs_x = 18
-        gs_y = 12
-
-        if ax is None:
-            fig, ax = plt.subplots(1, 1, figsize=(18, 8))
-            gs = GridSpec(gs_x, gs_y)
-
-        else:
-            gs = GridSpecFromSubplotSpec(gs_x, gs_y, ax.get_subplotspec())
-        ax_pca = plt.subplot(gs[:, 2:])
-
-        ax_scores = plt.subplot(gs[5:10, :2])
-        ax_scores.set_xlabel("Feature Importance")
-        ax_scores.set_ylabel("Density Estimate")
-        self.plot_classifier_scores([trait], ax=ax_scores)
-        pca = self.do_pca(trait, ax=ax_pca, show_vectors=True)
-        fig.tight_layout()
-        return pca
-
-
-    def plot_classifier_scores(self, traits, ax=None, classifier_name=None):
-        """
-        plot kernel density of predictor scores and draw a vertical line where
-        the cutoff was selected
-        ax - ax to plot on. if None: plt.gca()
-        """
-        if classifier_name is None:
-            classifier_name = self.default_classifier_name
-
-        if ax == None:
-            ax = plt.gca()
-
-        for trait in traits:
-            clf = self.classifiers_[trait][classifier_name]
-            sns.kdeplot(clf.scores_, shade=True, ax=ax,
-                        label="%s\n%d features\noob:%.2f" \
-                              % (trait, np.sum(clf.good_features_),
-                                 clf.oob_score_))
-            ax.axvline(x=clf.score_cutoff_)
-
-        [lab.set_rotation(90) for lab in ax.get_xticklabels()]
-        sns.despine(ax=ax)
-
 
     def generate_scatter_table(self,
                                excel_out=None, external_xref=[]):
@@ -147,24 +81,6 @@ class PredictorBaseViz(PredictorBase, DecompositionViz):
 
         return zz
 
-    def check_a_feature(self, feature_name, traits=None, **vp_params):
-        """Make Violin Plots for a gene/probe's value in the sets defined in sets
-        feature_name - gene/probe id. must be in the index of self._parent.X
-        sets - list of sample ids
-        vp_params - extra parameters for violinplot
-
-        returns a list of lists with values for feature_name in each set of sets
-        """
-        if traits is None:
-            traits = self.categorical_traits
-
-        for trait in traits:
-            sns.violinplot(self.X[feature_name], linewidth=0, groupby=trait,
-                           alpha=0.5, bw='silverman', inner='points',
-                           names=None, **vp_params)
-        sns.despine()
-
-
     def do_pca(self, trait, ax=None, classifier_name=None, **plotting_args):
 
         """plot kernel density of predictor scores and draw a vertical line
@@ -189,3 +105,80 @@ class PredictorBaseViz(PredictorBase, DecompositionViz):
                      **local_plotting_args)
         pca(ax=ax)
         return pca
+
+
+class RegressorViz(Regressor, PredictorBaseViz):
+    def check_a_feature(self, feature_name, traits=None, **vp_params):
+        """Make Violin Plots for a gene/probe's value in the sets defined in sets
+        feature_name - gene/probe id. must be in the index of self._parent.X
+        sets - list of sample ids
+        vp_params - extra parameters for violinplot
+
+        returns a list of lists with values for feature_name in each set of sets
+        """
+        if traits is None:
+            traits = self.categorical_traits
+
+        for trait in traits:
+            sns.violinplot(self.X[feature_name], linewidth=0, groupby=trait,
+                           alpha=0.5, bw='silverman', inner='points',
+                           names=None, **vp_params)
+        sns.despine()
+
+
+class ClassifierViz(Classifier, PredictorBaseViz):
+    """
+    Visualize results from classification
+    """
+
+    def __call__(self, trait=None, ax=None, feature_score_std_cutoff=None):
+
+        if not self.has_been_fit_yet:
+            self.fit()
+
+        gs_x = 18
+        gs_y = 12
+
+        if ax is None:
+            fig, ax = plt.subplots(1, 1, figsize=(18, 8))
+            gs = GridSpec(gs_x, gs_y)
+
+        else:
+            gs = GridSpecFromSubplotSpec(gs_x, gs_y, ax.get_subplotspec())
+            fig = plt.gcf()
+
+        ax_pca = plt.subplot(gs[:, 2:])
+        ax_scores = plt.subplot(gs[5:10, :2])
+
+        ax_scores.set_xlabel("Feature Importance")
+        ax_scores.set_ylabel("Density Estimate")
+        self.plot_classifier_scores([trait], ax=ax_scores)
+        pca = self.do_pca(trait, ax=ax_pca, show_vectors=True)
+        fig.tight_layout()
+        return pca
+
+
+    def plot_classifier_scores(self, traits, ax=None, classifier_name=None):
+        """
+        plot kernel density of predictor scores and draw a vertical line where
+        the cutoff was selected
+        ax - ax to plot on. if None: plt.gca()
+        """
+        if classifier_name is None:
+            classifier_name = self.default_classifier_name
+
+        if ax == None:
+            ax = plt.gca()
+
+        for trait in traits:
+            clf = self.predictor
+            sns.kdeplot(clf.scores_, shade=True, ax=ax,
+                        label="%s\n%d features\noob:%.2f" \
+                              % (trait, clf.n_good_features_, clf.oob_score_))
+            ax.axvline(x=clf.score_cutoff_)
+
+        for lab in ax.get_xticklabels():
+            lab.set_rotation(90)
+        sns.despine(ax=ax)
+
+
