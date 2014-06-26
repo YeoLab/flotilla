@@ -53,7 +53,7 @@ class ExpressionData(BaseData):
 
         self.sparse_data = self.data[self.data > expression_thresh]
 
-        self.feature_sets.update({'all_genes': pd.Series(
+        self.feature_sets.update({self.all_features: pd.Series(
             self.data.columns.map(self.feature_renamer), index=self.data
             .columns)})
         self.default_feature_sets.extend(self.feature_sets.keys())

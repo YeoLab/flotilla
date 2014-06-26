@@ -578,20 +578,24 @@ class Study(StudyFactory):
             List of features ids from the specified datatype
         """
         if 'expression'.startswith(data_type):
-            if feature_subset is not None:
-                feature_ids = self.expression.feature_sets[feature_subset]
-            else:
-                feature_ids = self.expression.data.columns
-            if rename:
-                feature_ids = feature_ids.map(self.expression.feature_renamer)
+            return self.expression.feature_subset_to_feature_ids(
+                feature_subset, rename)
+            # if feature_subset is not None:
+            #     feature_ids = self.expression.feature_sets[feature_subset]
+            # else:
+            #     feature_ids = self.expression.data.columns
+            # if rename:
+            #     feature_ids = feature_ids.map(self.expression.feature_renamer)
         elif 'splicing'.startswith(data_type):
-            if feature_subset is not None:
-                feature_ids = self.splicing.feature_sets[feature_subset]
-            else:
-                feature_ids = self.splicing.data.columns
-            if rename:
-                feature_ids = feature_ids.map(self.expression.feature_renamer)
-        return feature_ids
+            return self.splicing.feature_subset_to_feature_ids(
+                feature_subset, rename)
+            # if feature_subset is not None:
+            #     feature_ids = self.splicing.feature_sets[feature_subset]
+            # else:
+            #     feature_ids = self.splicing.data.columns
+            # if rename:
+            #     feature_ids = feature_ids.map(self.expression.feature_renamer)
+            # return feature_ids
 
     def sample_subset_to_sample_ids(self, phenotype_subset=None):
         """Convert a string naming a subset of phenotypes in the data in to 

@@ -50,9 +50,13 @@ class SplicingData(BaseData):
         psi_variant = pd.Index(
             [i for i, j in (data.var().dropna() > var_cut).iteritems() if j])
         # self._set_naming_fun(self.feature_rename)
+
+        # self.all_features = 'all_events'
         self.feature_sets['variant'] = pd.Series(psi_variant, index=psi_variant)
-        self.feature_sets['all_genes'] = pd.Series(data.index, index=data.index)
+        self.feature_sets[self.all_features] = pd.Series(data.index, index=data
+                                                         .index)
         self.feature_data = feature_data
+
         # self._set_plot_colors()
         # self._set_plot_markers()
 

@@ -74,11 +74,33 @@ class BaseData(object):
         else:
             self.feature_renamer = lambda x: x
 
+        if self.feature_data is not None:
+            for col in self.feature_data:
+                if self.feature_data[col].dtype != bool:
+                    continue
+                self.feature_sets[col] = self.feature_data.index[self
+                    .feature_data[col]]
+
+        self.all_features = 'all_genes'
+
     def drop_outliers(self, df, outliers):
         # assert 'outlier' in self.experiment_design_data.columns
         outliers = set(outliers).intersection(df.index)
         sys.stdout.write("dropping {}".format(outliers))
         return df.drop(outliers)
+
+    def feature_subset_to_feature_ids(self, feature_subset, rename=True):
+        if feature_subset is not None:
+            if feature_subset in self.feature_sets:
+                feature_ids = self.feature_sets[feature_subset]
+            elif feature_subset == self.all_features:
+                feature_ids = self.data.index
+        else:
+            feature_ids = self.data.index
+
+        if rename:
+            feature_ids = feature_ids.map(self.feature_renamer)
+        return feature_ids
 
 
     def calculate_distances(self, metric='euclidean'):
