@@ -32,7 +32,8 @@ class ExpressionData(BaseData):
         ------
         """
         super(ExpressionData, self).__init__(data, feature_data,
-                                             feature_rename_col=feature_rename_col)
+                                             feature_rename_col=feature_rename_col,
+                                             outliers=outliers)
 
         self._var_cut = data.var().dropna().mean() + 2 * data.var() \
             .dropna().std()

@@ -21,6 +21,8 @@ class SplicingData(BaseData):
     _binsize = 0.1
     _var_cut = 0.2
 
+    _last_reducer_accessed = None
+
     def __init__(self, data,
                  feature_data=None, binsize=_binsize,
                  var_cut=_var_cut, outliers=None,
@@ -42,7 +44,8 @@ class SplicingData(BaseData):
 
         """
         super(SplicingData, self).__init__(data, feature_data,
-                                           feature_rename_col=feature_rename_col)
+                                           feature_rename_col=feature_rename_col,
+                                           outliers=outliers)
         # self.experiment_design_data, data = self.experiment_design_data.align(data, join='inner', axis=0)
 
         # self.data = data
@@ -94,14 +97,12 @@ class SplicingData(BaseData):
         self.binned_reduced = redc.reduced_space
         return self.binned_reduced
 
-    _last_reducer_accessed = None
-
-    def _subset
 
     @memoize
     def reduce(self, sample_ids=None, feature_ids=None,
-               reducer=NMFViz,
-               featurewise=False, reducer_args=None, standardize=True):
+               featurewise=False, reducer=NMFViz,
+               standardize=True, title='',
+               reducer_kwargs=None):
         """make and cache a reduced dimensionality representation of data """
 
         # if reducer_args is None:
@@ -145,12 +146,24 @@ class SplicingData(BaseData):
         # if featurewise:
         #     ss = ss.T
 
-        rdc_obj = reducer(ss, **reducer_args)
+        reducer_kwargs = {} if reducer_kwargs is None else reducer_kwargs
+        reducer_kwargs['title'] = title
+        # feature_renamer = self.feature_renamer()
 
-        #always the mean of input features... i.e. featurewise doesn't change this.
-        rdc_obj.means = means.rename_axis(self.feature_renamer)
+        subset, means = self._subset_and_standardize(self.data,
+                                                     sample_ids, feature_ids,
+                                                     standardize)
 
-        return rdc_obj
+        # compute reduction
+        if featurewise:
+            subset = subset.T
+        reducer_object = reducer(subset, **reducer_kwargs)
+        reducer_object.means = means  #always the mean of input features... i
+        # .e.
+        # featurewise doesn't change this.
+
+        #add mean gene_expression
+        return reducer_object
 
     @memoize
     def classify(self, list_name, group_id, categorical_trait,
