@@ -72,6 +72,9 @@ class DecompositionViz(object):
         _default_plotting_args.items() + _default_reduction_args.items())
 
     def __init__(self, df, **kwargs):
+        # print kwargs
+        # import pdb
+        # pdb.set_trace()
         # plotting_kwargs = {} if 'plotting_kwargs' not in kwargs \
         #     else kwargs['plotting_kwargs']
         # plotting_kwargs = dict((k, v) for (k, v) in kwargs.items() if
@@ -81,11 +84,11 @@ class DecompositionViz(object):
         self._validate_params(self._default_args, **kwargs)
 
         self.plotting_kwargs = self._default_plotting_args.copy()
-        self.plotting_kwargs.update()
+        self.plotting_kwargs.update(kwargs)
 
         self.reduction_kwargs = self._default_reduction_args.copy()
         self.reduction_kwargs.update([(k, v) for (k, v) in kwargs.items() if
-                                      k in self._default_reduction_args.keys()])
+                                      k in self._default_reduction_args])
 
         super(DecompositionViz, self).__init__(**self.reduction_kwargs)
         #initialize PCA-like object

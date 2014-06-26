@@ -6,16 +6,17 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 
-from .decomposition import DecompositionViz, PCAViz
+from .decomposition import PCAViz
 from ..compute.predict import Classifier, Regressor
 from .color import green
 
 
-class PredictorBaseViz(DecompositionViz):
+class PredictorBaseViz(object):
+    # class PredictorBaseViz(DecompositionViz):
     _reducer_plotting_args = {}
 
-    def __init__(self, *args, **kwargs):
-        super(PredictorBaseViz, self).__init__(*args, **kwargs)
+    # def __init__(self, *args, **kwargs):
+    #     super(PredictorBaseViz, self).__init__(*args, **kwargs)
 
     def set_reducer_plotting_args(self, rpa):
         self._reducer_plotting_args.update(rpa)
