@@ -157,9 +157,9 @@ class Interactive(object):
         from IPython.html.widgets import interact
 
         #not sure why nested fxns are required for this, but they are... i think...
-        def do_interact(data_type='expression',
-                        group_id=self.default_group_id,
-                        feature_subset=self.default_list_id,
+        def do_interact(data_type,
+                        sample_subset,
+                        feature_subset,
                         categorical_variable='outlier',
                         feature_score_std_cutoff=2,
                         savefile='data/last.clf.pdf'):
@@ -174,31 +174,37 @@ class Interactive(object):
             if data_type == 'splicing':
                 data_object = self.splicing
 
-            assert (feature_subset in data_object.feature_subsets.keys())
+            # assert (feature_subset in data_object.feature_subsets.keys())
 
-            classifier = data_object.classify(feature_subset, group_id,
-                                              categorical_variable)
-            classifier(categorical_variable,
-                       feature_score_std_cutoff=feature_score_std_cutoff)
+            # classifier = data_object.classify(feature_subset, sample_subset,
+            #                                   categorical_variable)
+            # classifier(categorical_variable,
+            #            feature_score_std_cutoff=feature_score_std_cutoff)
+
+            self.plot_classifier(trait=categorical_variable,
+                                 feature_subset=feature_subset,
+                                 sample_subset=sample_subset,
+                                 feature_score_std_cutoff=feature_score_std_cutoff)
             sys.stdout.write("retrieve this predictor " \
                              "with:\npredictor=study.%s.get_predictor('%s', "
                              "'%s', '%s') pca=predictor('%s', "
                              "feature_score_std_cutoff=%f)" \
-                             % (data_type, feature_subset, group_id,
+                             % (data_type, feature_subset, sample_subset,
                                 categorical_variable, categorical_variable,
                                 feature_score_std_cutoff))
             if savefile is not '':
                 self.maybe_make_directory(savefile)
                 plt.gcf().savefig(savefile)
 
-        all_lists = list(
-            set(self.expression.lists.keys() + self.splicing.lists.keys()))
+        feature_sets = list(set(itertools.chain(*self.default_feature_subsets
+                                                .values())))
+        categorical_variable = [i for i in self.default_sample_subsets if
+                                not i.startswith("~") and i != 'all_samples']
         interact(do_interact,
                  data_type=('expression', 'splicing'),
-                 group_id=self.default_group_ids,
-                 list_name=all_lists,
-                 categorical_variable=[i for i in self.default_group_ids if
-                                       not i.startswith("~")],
+                 sample_subset=self.default_sample_subsets,
+                 feature_subset=feature_sets,
+                 categorical_variable=categorical_variable,
                  feature_score_std_cutoff=(0.1, 20),
                  draw_labels=False)
 
