@@ -4,7 +4,6 @@ Included SpikeIn data.
 """
 
 import pandas as pd
-from sklearn.preprocessing import StandardScaler
 
 from .base import BaseData
 from ..visualize.decomposition import PCAViz
@@ -63,61 +62,6 @@ class ExpressionData(BaseData):
         # if load_cargo:
         #     self.load_cargo()
 
-    def _subset_and_standardize(self, data, sample_ids=None,
-                                feature_ids=None,
-                                standardize=True):
-        """Take only the sample ids and feature ids from this data, require
-        at least some minimum samples, and standardize data using
-        scikit-learn. Will also fill na values with the mean of the feature
-        (column)
-
-        Parameters
-        ----------
-        data : pandas.DataFrame
-            The data you want to standardize
-        sample_ids : None or list of strings
-            If None, all sample ids will be used, else only the sample ids
-            specified
-        feature_ids : None or list of strings
-            If None, all features will be used, else only the features
-            specified
-        standardize : bool
-            Whether or not to "whiten" (make all variables uncorrelated) and
-            mean-center via sklearn.preprocessing.StandardScaler
-
-        Returns
-        -------
-        subset : pandas.DataFrame
-            Subset of the dataframe with the requested samples and features,
-            and standardized as described
-        means : pandas.DataFrame
-            Mean values of the features (columns). Ignores NAs.
-
-        """
-        if feature_ids is None:
-            feature_ids = self.data.columns
-        if sample_ids is None:
-            sample_ids = self.data.index
-
-        subset = data.ix[sample_ids]
-        subset = subset.T.ix[feature_ids].T
-        subset = subset.ix[:, subset.count() > self.min_samples]
-        #fill na with mean for each event
-        means = subset.mean().rename_axis(self.feature_renamer)
-        subset = subset.fillna(means).fillna(0)
-        subset = subset.rename_axis(self.feature_renamer, 1)
-
-        # whiten, mean-center
-        if standardize:
-            data = StandardScaler().fit_transform(subset)
-        else:
-            data = subset
-
-        # "data" is a matrix so need to transform it back into a convenient
-        # dataframe
-        subset = pd.DataFrame(data, index=subset.index,
-                              columns=subset.columns)
-        return subset, means
 
     @memoize
     def reduce(self, sample_ids=None, feature_ids=None,

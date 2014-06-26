@@ -96,51 +96,54 @@ class SplicingData(BaseData):
 
     _last_reducer_accessed = None
 
+    def _subset
+
     @memoize
-    def reduce(self, list_name, group_id, reducer=NMFViz,
+    def reduce(self, sample_ids=None, feature_ids=None,
+               reducer=NMFViz,
                featurewise=False, reducer_args=None, standardize=True):
         """make and cache a reduced dimensionality representation of data """
 
-        if reducer_args is None:
-            reducer_args = self._default_reducer_args
-
-        min_samples = self.get_min_samples()
-        if list_name not in self.feature_sets:
-            self.feature_sets[list_name] = link_to_list(list_name)
-
-        event_list = self.feature_sets[list_name]
-        #some samples, somefeatures
-
-        if group_id.startswith("~"):
-            #print 'not', sample_subset.lstrip("~")
-            sample_ind = ~pd.Series(self.phenotype_data[group_id.lstrip("~")],
-                                    dtype='bool')
-        else:
-            sample_ind = pd.Series(self.phenotype_data[group_id], dtype='bool')
-
-        subset = self.data.ix[sample_ind, event_list]
-        frequent = pd.Index(
-            [i for i, j in (subset.count() > min_samples).iteritems() if j])
-        subset = subset[frequent]
-        #fill na with mean for each event
-        means = subset.apply(dropna_mean, axis=0)
-        mf_subset = subset.fillna(means, ).fillna(0)
-        #whiten, mean-center
-        # naming_fun = self.feature_renamer()
-        #whiten, mean-center
-
-        if standardize:
-            data = StandardScaler().fit_transform(mf_subset)
-        else:
-            data = mf_subset
-
-        ss = pd.DataFrame(data, index=mf_subset.index,
-                          columns=mf_subset.columns).rename_axis(self
-                                                                 .feature_renamer,
-                                                                 1)
-
-        if featurewise:
-            ss = ss.T
+        # if reducer_args is None:
+        #     reducer_args = self._default_reducer_args
+        #
+        # min_samples = self.get_min_samples()
+        # if list_name not in self.feature_sets:
+        #     self.feature_sets[list_name] = link_to_list(list_name)
+        #
+        # event_list = self.feature_sets[list_name]
+        # #some samples, somefeatures
+        #
+        # if group_id.startswith("~"):
+        #     #print 'not', sample_subset.lstrip("~")
+        #     sample_ind = ~pd.Series(self.phenotype_data[group_id.lstrip("~")],
+        #                             dtype='bool')
+        # else:
+        #     sample_ind = pd.Series(self.phenotype_data[group_id], dtype='bool')
+        #
+        # subset = self.data.ix[sample_ind, event_list]
+        # frequent = pd.Index(
+        #     [i for i, j in (subset.count() > min_samples).iteritems() if j])
+        # subset = subset[frequent]
+        # #fill na with mean for each event
+        # means = subset.apply(dropna_mean, axis=0)
+        # mf_subset = subset.fillna(means, ).fillna(0)
+        # #whiten, mean-center
+        # # naming_fun = self.feature_renamer()
+        # #whiten, mean-center
+        #
+        # if standardize:
+        #     data = StandardScaler().fit_transform(mf_subset)
+        # else:
+        #     data = mf_subset
+        #
+        # ss = pd.DataFrame(data, index=mf_subset.index,
+        #                   columns=mf_subset.columns).rename_axis(self
+        #                                                          .feature_renamer,
+        #                                                          1)
+        #
+        # if featurewise:
+        #     ss = ss.T
 
         rdc_obj = reducer(ss, **reducer_args)
 
