@@ -7,6 +7,7 @@ import sys
 
 import pandas as pd
 from scipy.spatial.distance import pdist, squareform
+from sklearn.preprocessing import StandardScaler
 
 from ..visualize.predict import ClassifierViz
 
