@@ -181,7 +181,7 @@ class ExpressionData(BaseData):
     def classify(self, trait, sample_ids=None, feature_ids=None,
                  standardize=True, predictor=ClassifierViz,
                  predictor_kwargs=None, predictor_scoring_fun=None,
-                 score_cutoff_fun=None):
+                 score_cutoff_fun=None, plotting_kwargs=None):
         """Make and memoize a predictor on a categorical trait (associated
         with samples) subset of genes
 
