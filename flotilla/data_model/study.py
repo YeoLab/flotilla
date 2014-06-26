@@ -269,7 +269,6 @@ class Study(StudyFactory):
         self.species = species
         self.gene_ontology_data = gene_ontology_data
 
-        #TODO: make feature_rename_col an attribute in the datapackage
         self.experiment_design = ExperimentDesignData(experiment_design_data)
         self.default_sample_subsets = \
             [col for col in self.experiment_design.data.columns
@@ -716,7 +715,9 @@ class Study(StudyFactory):
         elif data_type == "splicing":
             self.splicing.networks.draw_graph(**kwargs)
 
-    def plot_classifier(self, trait, data_type='expression', **kwargs):
+    def plot_classifier(self, trait, data_type='expression', title='',
+                        show_point_labels=False,
+                        **kwargs):
         """Plot a predictor for the specified data type and trait(s)
 
         Parameters
@@ -735,8 +736,11 @@ class Study(StudyFactory):
         trait_data = self.experiment_design.data[trait]
 
         kwargs['trait'] = trait_data
+        kwargs['title'] = title
+        kwargs['show_point_labels'] = show_point_labels
+        kwargs['colors_dict'] = self.sample_id_to_color
 
-        print(kwargs.keys())
+        # print(kwargs.keys())
 
         if data_type == "expression":
             self.expression.plot_classifier(**kwargs)

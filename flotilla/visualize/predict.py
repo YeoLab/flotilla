@@ -85,7 +85,7 @@ class PredictorBaseViz(DecompositionViz):
 
         return zz
 
-    def do_pca(self, trait, ax=None, classifier_name=None, **plotting_args):
+    def do_pca(self, trait, ax=None, classifier_name=None, **plotting_kwargs):
 
         """plot kernel density of predictor scores and draw a vertical line
         where the cutoff was selected
@@ -102,10 +102,10 @@ class PredictorBaseViz(DecompositionViz):
         if classifier_name is None:
             classifier_name = self.name
 
-        local_plotting_args = self._reducer_plotting_args
-        local_plotting_args.update(plotting_args)
+        local_plotting_kwargs = self._reducer_plotting_args
+        local_plotting_kwargs.update(plotting_kwargs)
         pca = PCAViz(self.X.ix[:, self.important_features],
-                     **local_plotting_args)
+                     **local_plotting_kwargs)
         pca(ax=ax)
         return pca
 
@@ -130,7 +130,8 @@ class ClassifierViz(Classifier, PredictorBaseViz):
     Visualize results from classification
     """
 
-    def __call__(self, trait=None, ax=None, feature_score_std_cutoff=None):
+    def __call__(self, trait=None, ax=None, feature_score_std_cutoff=None,
+                 **plotting_kwargs):
 
         if not self.has_been_fit:
             self.fit()
@@ -152,7 +153,8 @@ class ClassifierViz(Classifier, PredictorBaseViz):
         ax_scores.set_xlabel("Feature Importance")
         ax_scores.set_ylabel("Density Estimate")
         self.plot_classifier_scores(trait, ax=ax_scores)
-        pca = self.do_pca(trait, ax=ax_pca, show_vectors=True)
+        pca = self.do_pca(trait, ax=ax_pca, show_vectors=True,
+                          **plotting_kwargs)
         plt.tight_layout()
         return pca
 
