@@ -59,8 +59,8 @@ class PredictorBase(object):
         """
         self.predictor_class = predictor
 
-        self.has_been_fit_yet = False
-        self.has_been_scored_yet = False
+        self.has_been_fit = False
+        self.has_been_scored = False
         self.name = name
         self.X = data
         self.important_features = {}
@@ -108,7 +108,7 @@ class PredictorBase(object):
                          .format(self.trait_name))
         self.predictor.fit(self.X, self.y)
         sys.stdout.write("\tFinished.\n")
-        self.has_been_fit_yet = True
+        self.has_been_fit = True
 
     def score(self):
         """Collect scores from predictor
@@ -130,7 +130,7 @@ class PredictorBase(object):
         self.predictor.subset_ = self.X.T[self.important_features].T
 
         sys.stdout.write("\tFinished.\n")
-        self.has_been_scored_yet = True
+        self.has_been_scored = True
 
 
 class Regressor(PredictorBase):

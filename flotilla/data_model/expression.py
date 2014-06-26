@@ -8,7 +8,7 @@ from sklearn.preprocessing import StandardScaler
 
 from .base import BaseData
 from ..visualize.decomposition import PCAViz
-from ..visualize.predict import PredictorBaseViz
+from ..visualize.predict import ClassifierViz
 from ..util import memoize
 
 
@@ -178,25 +178,40 @@ class ExpressionData(BaseData):
         return reducer_object
 
     @memoize
-    def classify(self, sample_ids=None, feature_ids=None,
-                 categorical_trait=None,
-                 standardize=True, predictor=PredictorBaseViz):
+    def classify(self, trait, sample_ids=None, feature_ids=None,
+                 standardize=True, predictor=ClassifierViz,
+                 predictor_kwargs=None, predictor_scoring_fun=None,
+                 score_cutoff_fun=None):
         """Make and memoize a predictor on a categorical trait (associated
         with samples) subset of genes
 
         Parameters
         ----------
+        trait : pandas.Series
+            samples x categorical feature
         sample_ids : None or list of strings
             If None, all sample ids will be used, else only the sample ids
             specified
         feature_ids : None or list of strings
             If None, all features will be used, else only the features
             specified
-        categorical_trait : ???
-            ???
         standardize : bool
             Whether or not to "whiten" (make all variables uncorrelated) and
-            mean-center via sklearn.preprocessing.StandardScaler
+            mean-center and make unit-variance all the data via sklearn
+            .preprocessing.StandardScaler
+        predictor : flotilla.visualize.predict classifier
+            Must inherit from flotilla.visualize.PredictorBaseViz. Default is
+            flotilla.visualize.predict.ClassifierViz
+        predictor_kwargs : dict or None
+            Additional 'keyword arguments' to supply to the predictor class
+        predictor_scoring_fun : function
+            Function to get the feature scores for a scikit-learn classifier.
+            This can be different for different classifiers, e.g. for a
+            classifier named "x" it could be x.scores_, for other it's
+            x.feature_importances_. Default: lambda x: x.feature_importances_
+        score_cutoff_fun : function
+            Function to cut off insignificant scores
+            Default: lambda scores: np.mean(x) + 2 * np.std(x)
 
         Returns
         -------
@@ -208,9 +223,11 @@ class ExpressionData(BaseData):
                                                      feature_ids,
                                                      standardize)
 
-        classifier = predictor(subset,
-                               categorical_traits=[categorical_trait], )
-        classifier.set_reducer_plotting_args(self._default_reducer_kwargs)
+        classifier = predictor(subset, trait=trait,
+                               predictor_kwargs=predictor_kwargs,
+                               predictor_scoring_fun=predictor_scoring_fun,
+                               score_cutoff_fun=score_cutoff_fun)
+        # classifier.set_reducer_plotting_args(classifier.reduction_kwargs)
         return classifier
 
     # def load_cargo(self, rename=True, **kwargs):
