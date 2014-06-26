@@ -716,7 +716,8 @@ class Study(StudyFactory):
             self.splicing.networks.draw_graph(**kwargs)
 
     def plot_classifier(self, trait, data_type='expression', title='',
-                        show_point_labels=False,
+                        show_point_labels=False, sample_subset=None,
+                        feature_subset=None,
                         **kwargs):
         """Plot a predictor for the specified data type and trait(s)
 
@@ -734,12 +735,17 @@ class Study(StudyFactory):
 
         """
         trait_data = self.experiment_design.data[trait]
+        sample_ids = self.sample_subset_to_sample_ids(sample_subset)
+        feature_ids = self.feature_subset_to_feature_ids(data_type,
+                                                         feature_subset,
+                                                         rename=False)
 
         kwargs['trait'] = trait_data
         kwargs['title'] = title
         kwargs['show_point_labels'] = show_point_labels
         kwargs['colors_dict'] = self.sample_id_to_color
-
+        kwargs['sample_ids'] = sample_ids
+        kwargs['feature_ids'] = feature_ids
         # print(kwargs.keys())
 
         if data_type == "expression":
