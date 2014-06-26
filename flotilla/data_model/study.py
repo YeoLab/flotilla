@@ -673,7 +673,6 @@ class Study(StudyFactory):
         kwargs['title'] = title
         kwargs['featurewise'] = featurewise
         kwargs['show_point_labels'] = show_point_labels
-
         kwargs['colors_dict'] = self.sample_id_to_color
 
         if 'marker' in self.experiment_design.data:
@@ -736,6 +735,8 @@ class Study(StudyFactory):
         trait_data = self.experiment_design.data[trait]
 
         kwargs['trait'] = trait_data
+
+        print(kwargs.keys())
 
         if data_type == "expression":
             self.expression.plot_classifier(**kwargs)

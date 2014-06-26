@@ -115,6 +115,7 @@ class DecompositionViz(object):
 
         else:
             gs = GridSpecFromSubplotSpec(gs_x, gs_y, ax.get_subplotspec())
+            fig = plt.gcf()
 
         ax_components = plt.subplot(gs[:, :5])
         #ax_components.set_aspect('equal')

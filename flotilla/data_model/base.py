@@ -8,6 +8,7 @@ import sys
 import pandas as pd
 from scipy.spatial.distance import pdist, squareform
 
+from ..visualize.predict import ClassifierViz
 
 MINIMUM_SAMPLES = 12
 
@@ -130,9 +131,10 @@ class BaseData(object):
         self._feature_renamer = renamer
 
     # TODO.md: Specify dtypes in docstring
-    def plot_classifier(self, gene_list_name=None, sample_list_name=None,
-                        clf_var=None,
-                        predictor_args=None, plotting_args=None):
+    def plot_classifier(self, trait, sample_ids=None, feature_ids=None,
+                        standardize=True, predictor=ClassifierViz,
+                        predictor_kwargs=None, predictor_scoring_fun=None,
+                        score_cutoff_fun=None, plotting_kwargs=None):
         """Principal component-like analysis of measurements
 
         Params
@@ -150,18 +152,22 @@ class BaseData(object):
         -------
         self
         """
-        predictor_args = {} if predictor_args is None else predictor_args
-        plotting_args = {} if plotting_args is None else plotting_args
+        print trait
+        predictor_kwargs = {} if predictor_kwargs is None else predictor_kwargs
+        plotting_kwargs = {} if plotting_kwargs is None else plotting_kwargs
 
         # local_plotting_args = self.pca_plotting_args.copy()
-        # local_plotting_args.update(plotting_args)
+        # local_plotting_args.update(plotting_kwargs)
 
-        clf = self.classify(gene_list_name=gene_list_name,
-                                 sample_list_name=sample_list_name,
-                                 clf_var=clf_var,
-                                 **predictor_args)
-        clf(plotting_args=plotting_args)
-
+        clf = self.classify(trait, sample_ids=sample_ids,
+                            feature_ids=feature_ids,
+                            standardize=standardize, predictor=predictor,
+                            predictor_kwargs=predictor_kwargs,
+                            predictor_scoring_fun=predictor_scoring_fun,
+                            score_cutoff_fun=score_cutoff_fun,
+                            **predictor_kwargs)
+        # clf(plotting_kwargs=plotting_kwargs)
+        clf()
         return self
 
     def plot_dimensionality_reduction(self, x_pc=1, y_pc=2,  #obj_id=None,
@@ -197,8 +203,10 @@ class BaseData(object):
             show_vectors=False,
             title_size=10,
             axis_label_size=10,
-            x_pc = "pc_" + str(x_pc), #this only affects the plot, not the study_data.
-            y_pc = "pc_" + str(y_pc), #this only affects the plot, not the study_data.
+            x_pc="pc_" + str(x_pc),
+            #this only affects the plot, not the study_data.
+            y_pc="pc_" + str(y_pc),
+            #this only affects the plot, not the study_data.
             **plotting_kwargs)
         return self
 
