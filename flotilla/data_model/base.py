@@ -81,8 +81,10 @@ class BaseData(object):
             for col in self.feature_data:
                 if self.feature_data[col].dtype != bool:
                     continue
-                self.feature_sets[col] = self.feature_data.index[self
-                    .feature_data[col]]
+                feature_set = self.feature_data.index[self.feature_data[col]]
+                print feature_set
+                if len(feature_set) > 1:
+                    self.feature_sets[col] = feature_set
 
         self.all_features = 'all_genes'
 
@@ -98,11 +100,10 @@ class BaseData(object):
                 feature_ids = self.feature_sets[feature_subset]
             elif feature_subset == self.all_features:
                 feature_ids = self.data.columns
+            if rename:
+                feature_ids = feature_ids.map(self.feature_renamer)
         else:
             feature_ids = self.data.columns
-
-        if rename:
-            feature_ids = feature_ids.map(self.feature_renamer)
         return feature_ids
 
 
