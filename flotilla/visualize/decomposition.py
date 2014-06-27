@@ -94,21 +94,7 @@ class DecompositionViz(object):
         #initialize PCA-like object
         assert isinstance(df, pd.DataFrame)
         self.df = df
-
-        self.reduced_space = self.fit_transform(df)
-        # ncol = self.reduced_space.shape[1]
-        # component_names = pd.Index(('pc_{}'.format(i)
-        #                             for i in xrange(1, ncol + 1)))
-        #
-        # self.reduced_space = pd.DataFrame(self.reduced_space,
-        #                                   index=self.df.index,
-        #                                   columns=component_names)
-        # self.components_ = pd.DataFrame(self.components_,
-        #                                 columns=self.df.columns,
-        #                                 index=component_names)
-        # self.explained_variance_ratio_ = \
-        #     pd.Series(self.explained_variance_ratio_,
-        #               index=component_names)
+        self.reduced_space = self.fit_transform(self.df)
 
 
     def __call__(self, ax=None, **kwargs):
@@ -341,9 +327,22 @@ class DecompositionViz(object):
 class PCAViz(DecompositionViz, PCA):
     _default_reduction_args = {'n_components': None, 'whiten': False}
 
+    # def __init__(self, *args, **kwargs):
+    #     DecompositionViz.__init__(self, *args, **kwargs)
+    #     PCA.__init__(self, **self.reduction_kwargs)
+    #     self.reduced_space = self.fit_transform(self.df)
+
 
 class NMFViz(DecompositionViz, NMF):
+    _default_reduction_args = {'n_components': 2,  #'init': 'nndsvda',
+                               'max_iter': 20000, 'nls_max_iter': 40000}
     pass
+    # def __init__(self, *args, **kwargs):
+    #     DecompositionViz.__init__(self, *args, **kwargs)
+    #     import pdb
+    #     pdb.set_trace()
+    #     NMF.__init__(self, **self.reduction_kwargs)
+    #     self.reduced_space = self.fit_transform(self.df)
 
 
 def plot_pca(df, **kwargs):

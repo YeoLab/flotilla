@@ -5,7 +5,7 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 
 from .base import BaseData
-from ..visualize.decomposition import NMFViz
+from ..visualize.decomposition import NMFViz, PCAViz
 from ..visualize.color import purples
 from ..visualize.predict import PredictorBaseViz
 from ..compute.generic import binify, dropna_mean
@@ -100,9 +100,9 @@ class SplicingData(BaseData):
 
     @memoize
     def reduce(self, sample_ids=None, feature_ids=None,
-               featurewise=False, reducer=NMFViz,
+               featurewise=False, reducer=PCAViz,
                standardize=True, title='',
-               reducer_kwargs=None):
+               reducer_kwargs=None, bins=None):
         """make and cache a reduced dimensionality representation of data """
 
         # if reducer_args is None:
@@ -145,6 +145,9 @@ class SplicingData(BaseData):
         #
         # if featurewise:
         #     ss = ss.T
+
+        # if bins is not None:
+        #     data = self.binify(bins)
 
         reducer_kwargs = {} if reducer_kwargs is None else reducer_kwargs
         reducer_kwargs['title'] = title

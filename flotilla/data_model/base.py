@@ -62,10 +62,12 @@ class BaseData(object):
         if self.feature_data is not None and self.feature_rename_col is not \
                 None:
             def feature_renamer(x):
-                if x in self.feature_data[feature_rename_col]:
+                if x in self.feature_data[feature_rename_col].index:
                     rename = self.feature_data[feature_rename_col][x]
                     if isinstance(rename, pd.Series):
                         return rename.values[0]
+                    elif isinstance(rename, float):
+                        return ":".join(x.split("@")[1].split(":")[:2])
                     else:
                         return rename
                 else:
@@ -95,9 +97,9 @@ class BaseData(object):
             if feature_subset in self.feature_sets:
                 feature_ids = self.feature_sets[feature_subset]
             elif feature_subset == self.all_features:
-                feature_ids = self.data.index
+                feature_ids = self.data.columns
         else:
-            feature_ids = self.data.index
+            feature_ids = self.data.columns
 
         if rename:
             feature_ids = feature_ids.map(self.feature_renamer)
