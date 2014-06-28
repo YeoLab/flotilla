@@ -42,7 +42,8 @@ def example_study(example_data):
 
 @pytest.fixture(scope='module')
 def example_url():
-    return 'http://sauron.ucsd.edu/flotilla_projects/test_data/datapackage.json'
+    return 'http://sauron.ucsd' \
+           '.edu/flotilla_projects/neural_diff_chr22/datapackage.json'
 
 
 @pytest.fixture(scope='module')
