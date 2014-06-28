@@ -100,6 +100,9 @@ class BaseData(object):
                 feature_ids = self.feature_sets[feature_subset]
             elif feature_subset == self.all_features:
                 feature_ids = self.data.columns
+            else:
+                raise ValueError("There are no {} features in this data: {}"
+                                 .format(feature_subset, self))
             if rename:
                 feature_ids = feature_ids.map(self.feature_renamer)
         else:
