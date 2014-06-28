@@ -103,7 +103,10 @@ class SplicingData(BaseData):
                featurewise=False, reducer=PCAViz,
                standardize=True, title='',
                reducer_kwargs=None, bins=None):
-        """make and cache a reduced dimensionality representation of data """
+        """make and cache a reduced dimensionality representation of data
+
+        Default is PCAViz because
+        """
 
         # if reducer_args is None:
         #     reducer_args = self._default_reducer_args
