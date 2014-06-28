@@ -7,6 +7,7 @@ import sys
 
 import pandas as pd
 from scipy.spatial.distance import pdist, squareform
+from sklearn.preprocessing import StandardScaler
 
 from ..visualize.predict import ClassifierViz
 
@@ -61,10 +62,12 @@ class BaseData(object):
         if self.feature_data is not None and self.feature_rename_col is not \
                 None:
             def feature_renamer(x):
-                if x in self.feature_data[feature_rename_col]:
+                if x in self.feature_data[feature_rename_col].index:
                     rename = self.feature_data[feature_rename_col][x]
                     if isinstance(rename, pd.Series):
                         return rename.values[0]
+                    elif isinstance(rename, float):
+                        return ":".join(x.split("@")[1].split(":")[:2])
                     else:
                         return rename
                 else:
@@ -78,8 +81,10 @@ class BaseData(object):
             for col in self.feature_data:
                 if self.feature_data[col].dtype != bool:
                     continue
-                self.feature_sets[col] = self.feature_data.index[self
-                    .feature_data[col]]
+                feature_set = self.feature_data.index[self.feature_data[col]]
+                print feature_set
+                if len(feature_set) > 1:
+                    self.feature_sets[col] = feature_set
 
         self.all_features = 'all_genes'
 
@@ -94,12 +99,14 @@ class BaseData(object):
             if feature_subset in self.feature_sets:
                 feature_ids = self.feature_sets[feature_subset]
             elif feature_subset == self.all_features:
-                feature_ids = self.data.index
+                feature_ids = self.data.columns
+            else:
+                raise ValueError("There are no {} features in this data: {}"
+                                 .format(feature_subset, self))
+            if rename:
+                feature_ids = feature_ids.map(self.feature_renamer)
         else:
-            feature_ids = self.data.index
-
-        if rename:
-            feature_ids = feature_ids.map(self.feature_renamer)
+            feature_ids = self.data.columns
         return feature_ids
 
 
@@ -239,3 +246,60 @@ class BaseData(object):
     @min_samples.setter
     def min_samples(self, values):
         self._min_samples = values
+
+    def _subset_and_standardize(self, data, sample_ids=None,
+                                feature_ids=None,
+                                standardize=True):
+
+        """Take only the sample ids and feature ids from this data, require
+    at least some minimum samples, and standardize data using
+    scikit-learn. Will also fill na values with the mean of the feature
+    (column)
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        The data you want to standardize
+    sample_ids : None or list of strings
+        If None, all sample ids will be used, else only the sample ids
+        specified
+    feature_ids : None or list of strings
+        If None, all features will be used, else only the features
+        specified
+    standardize : bool
+        Whether or not to "whiten" (make all variables uncorrelated) and
+        mean-center via sklearn.preprocessing.StandardScaler
+
+    Returns
+    -------
+    subset : pandas.DataFrame
+        Subset of the dataframe with the requested samples and features,
+        and standardized as described
+    means : pandas.DataFrame
+        Mean values of the features (columns). Ignores NAs.
+
+    """
+        if feature_ids is None:
+            feature_ids = self.data.columns
+        if sample_ids is None:
+            sample_ids = self.data.index
+
+        subset = data.ix[sample_ids]
+        subset = subset.T.ix[feature_ids].T
+        subset = subset.ix[:, subset.count() > self.min_samples]
+        #fill na with mean for each event
+        means = subset.mean().rename_axis(self.feature_renamer)
+        subset = subset.fillna(means).fillna(0)
+        subset = subset.rename_axis(self.feature_renamer, 1)
+
+        # whiten, mean-center
+        if standardize:
+            data = StandardScaler().fit_transform(subset)
+        else:
+            data = subset
+
+        # "data" is a matrix so need to transform it back into a convenient
+        # dataframe
+        subset = pd.DataFrame(data, index=subset.index,
+                              columns=subset.columns)
+        return subset, means

@@ -5,7 +5,7 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 
 from .base import BaseData
-from ..visualize.decomposition import NMFViz
+from ..visualize.decomposition import NMFViz, PCAViz
 from ..visualize.color import purples
 from ..visualize.predict import PredictorBaseViz
 from ..compute.generic import binify, dropna_mean
@@ -20,6 +20,8 @@ class SplicingData(BaseData):
     n_components = 2
     _binsize = 0.1
     _var_cut = 0.2
+
+    _last_reducer_accessed = None
 
     def __init__(self, data,
                  feature_data=None, binsize=_binsize,
@@ -42,7 +44,8 @@ class SplicingData(BaseData):
 
         """
         super(SplicingData, self).__init__(data, feature_data,
-                                           feature_rename_col=feature_rename_col)
+                                           feature_rename_col=feature_rename_col,
+                                           outliers=outliers)
         # self.experiment_design_data, data = self.experiment_design_data.align(data, join='inner', axis=0)
 
         # self.data = data
@@ -94,60 +97,79 @@ class SplicingData(BaseData):
         self.binned_reduced = redc.reduced_space
         return self.binned_reduced
 
-    _last_reducer_accessed = None
 
     @memoize
-    def reduce(self, list_name, group_id, reducer=NMFViz,
-               featurewise=False, reducer_args=None, standardize=True):
-        """make and cache a reduced dimensionality representation of data """
+    def reduce(self, sample_ids=None, feature_ids=None,
+               featurewise=False, reducer=PCAViz,
+               standardize=True, title='',
+               reducer_kwargs=None, bins=None):
+        """make and cache a reduced dimensionality representation of data
 
-        if reducer_args is None:
-            reducer_args = self._default_reducer_args
+        Default is PCAViz because
+        """
 
-        min_samples = self.get_min_samples()
-        if list_name not in self.feature_sets:
-            self.feature_sets[list_name] = link_to_list(list_name)
+        # if reducer_args is None:
+        #     reducer_args = self._default_reducer_args
+        #
+        # min_samples = self.get_min_samples()
+        # if list_name not in self.feature_sets:
+        #     self.feature_sets[list_name] = link_to_list(list_name)
+        #
+        # event_list = self.feature_sets[list_name]
+        # #some samples, somefeatures
+        #
+        # if group_id.startswith("~"):
+        #     #print 'not', sample_subset.lstrip("~")
+        #     sample_ind = ~pd.Series(self.phenotype_data[group_id.lstrip("~")],
+        #                             dtype='bool')
+        # else:
+        #     sample_ind = pd.Series(self.phenotype_data[group_id], dtype='bool')
+        #
+        # subset = self.data.ix[sample_ind, event_list]
+        # frequent = pd.Index(
+        #     [i for i, j in (subset.count() > min_samples).iteritems() if j])
+        # subset = subset[frequent]
+        # #fill na with mean for each event
+        # means = subset.apply(dropna_mean, axis=0)
+        # mf_subset = subset.fillna(means, ).fillna(0)
+        # #whiten, mean-center
+        # # naming_fun = self.feature_renamer()
+        # #whiten, mean-center
+        #
+        # if standardize:
+        #     data = StandardScaler().fit_transform(mf_subset)
+        # else:
+        #     data = mf_subset
+        #
+        # ss = pd.DataFrame(data, index=mf_subset.index,
+        #                   columns=mf_subset.columns).rename_axis(self
+        #                                                          .feature_renamer,
+        #                                                          1)
+        #
+        # if featurewise:
+        #     ss = ss.T
 
-        event_list = self.feature_sets[list_name]
-        #some samples, somefeatures
+        # if bins is not None:
+        #     data = self.binify(bins)
 
-        if group_id.startswith("~"):
-            #print 'not', sample_subset.lstrip("~")
-            sample_ind = ~pd.Series(self.phenotype_data[group_id.lstrip("~")],
-                                    dtype='bool')
-        else:
-            sample_ind = pd.Series(self.phenotype_data[group_id], dtype='bool')
+        reducer_kwargs = {} if reducer_kwargs is None else reducer_kwargs
+        reducer_kwargs['title'] = title
+        # feature_renamer = self.feature_renamer()
 
-        subset = self.data.ix[sample_ind, event_list]
-        frequent = pd.Index(
-            [i for i, j in (subset.count() > min_samples).iteritems() if j])
-        subset = subset[frequent]
-        #fill na with mean for each event
-        means = subset.apply(dropna_mean, axis=0)
-        mf_subset = subset.fillna(means, ).fillna(0)
-        #whiten, mean-center
-        # naming_fun = self.feature_renamer()
-        #whiten, mean-center
+        subset, means = self._subset_and_standardize(self.data,
+                                                     sample_ids, feature_ids,
+                                                     standardize)
 
-        if standardize:
-            data = StandardScaler().fit_transform(mf_subset)
-        else:
-            data = mf_subset
-
-        ss = pd.DataFrame(data, index=mf_subset.index,
-                          columns=mf_subset.columns).rename_axis(self
-                                                                 .feature_renamer,
-                                                                 1)
-
+        # compute reduction
         if featurewise:
-            ss = ss.T
+            subset = subset.T
+        reducer_object = reducer(subset, **reducer_kwargs)
+        reducer_object.means = means  #always the mean of input features... i
+        # .e.
+        # featurewise doesn't change this.
 
-        rdc_obj = reducer(ss, **reducer_args)
-
-        #always the mean of input features... i.e. featurewise doesn't change this.
-        rdc_obj.means = means.rename_axis(self.feature_renamer)
-
-        return rdc_obj
+        #add mean gene_expression
+        return reducer_object
 
     @memoize
     def classify(self, list_name, group_id, categorical_trait,
