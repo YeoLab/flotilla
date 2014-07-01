@@ -7,13 +7,13 @@ from collections import defaultdict
 import gzip
 import json
 import os
-import subprocess
-import sys
-import urllib2
-
 import numpy as np
 import pandas as pd
 from scipy.stats import hypergeom
+import string
+import subprocess
+import sys
+import urllib2
 
 
 FLOTILLA_DOWNLOAD_DIR = os.path.expanduser('~/flotilla_projects')
@@ -229,9 +229,98 @@ def check_if_already_downloaded(url, download_dir=FLOTILLA_DOWNLOAD_DIR):
     return filename
 
 
-def make_datapackage():
-    """Example code for making a datapackage
+"""
+{
+	"name" : "neural_diff",
+	"title" : "Single-cell analysis of celltypes representative of motor neuron differentiation",
+	"licenses" : null,
+	"sources" : "Craig Venter and Yan Song's magic hands",
+	"datapackage_version" : "0.1.0",
+	"resources" : [
+		{
+			"format" : "tsv",
+			"name" : "experiment_design",
+			"url" : "http://sauron.ucsd.edu/flotilla_projects/neural_diff/experiment_design.tsv"
+		},
+		{
+			"format" : "tsv",
+			"name" : "expression",
+			"url" : "http://sauron.ucsd.edu/flotilla_projects/neural_diff/tpm.tsv"
+		},
+		{
+			"format" : "tsv",
+			"name" : "splicing",
+			"url" : "http://sauron.ucsd.edu/flotilla_projects/neural_diff/psi.tsv"
+		},
+		{
+			"format" : "tsv",
+			"name" : "spikein",
+			"url" : "http://sauron.ucsd.edu/flotilla_projects/neural_diff/spikein.tsv"
+		},
+		{
+			"format" : "tsv",
+			"name" : "mapping_stats",
+			"url" : "http://sauron.ucsd.edu/flotilla_projects/neural_diff/mapping_stats.tsv"
+		}
+	],
+	"species" : "hg19"
+}
+"""
+
+
+def make_study_datapackage(name, experiment_design_data,
+                           expression_data=None, splicing_data=None,
+                           spikein_data=None,
+                           mapping_stats_data=None,
+                           title='',
+                           sources='', license=None, species=None,
+                           flotilla_dir=FLOTILLA_DOWNLOAD_DIR):
+    """Example code for making a datapackage for a Study
     """
+    if ' ' in name:
+        raise ValueError("Datapackage name cannot have any spaces")
+    if set(string.uppercase) & set(name):
+        raise ValueError("Datapackage can only contain lowercase letters")
+
+    datapackage_dir = '{}/{}'.format(flotilla_dir, name)
+    datapackage = {}
+    datapackage['name'] = name
+    datapackage['title'] = title
+    datapackage['sources'] = sources
+    datapackage['license'] = license
+
+    if species is not None:
+        datapackage['species'] = species
+
+    resources = {'experiment_design': experiment_design_data,
+                 'expression': expression_data,
+                 'splicing': splicing_data,
+                 'spikein': spikein_data,
+                 'mapping_stats': mapping_stats_data}
+
+    datapackage['resources'] = []
+    for resource_name, resource_data in resources.items():
+        if resource_data is None:
+            continue
+
+        datapackage['resources'].append({'name': resource_name})
+        resource = datapackage['resources'][-1]
+
+        data_filename = '{}/{}.csv.gz'.format(datapackage_dir, resource_name)
+        with gzip.open(data_filename, 'wb') as f:
+            resource_data.to_csv(f)
+
+        resource['path'] = data_filename
+        resource['compression'] = 'gzip'
+        resource['format'] = 'csv'
+
+    filename = '{}/datapackage.json'.format(datapackage_dir)
+    with open(filename, 'w') as f:
+        json.dump(datapackage, f, indent='  ')
+    sys.stdout.write('Wrote datapackage to {}'.format(filename))
+
+
+def make_feature_datapackage():
     hg19 = {'name': 'hg19',
             'title': 'Metadata about genes and splicing events',
             'licences': None,
@@ -254,7 +343,3 @@ def make_datapackage():
                     'url': 'http://sauron.ucsd.edu/flotilla_projects/hg19/ens_to_go.json'
                 }
             ]}
-    with open(
-            '/Users/olga/workspace-git/flotilla_common_data/hg19/datapackage.json',
-            'w') as f:
-        json.dump(hg19, f)
