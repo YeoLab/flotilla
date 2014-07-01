@@ -55,10 +55,8 @@ class SplicingData(BaseData):
         # self._set_naming_fun(self.feature_rename)
 
         # self.all_features = 'all_events'
-        self.feature_sets['variant'] = pd.Series(psi_variant, index=psi_variant)
-        self.feature_sets[self.all_features] = pd.Series(data.index, index=data
-                                                         .index)
-        self.feature_data = feature_data
+        self.feature_sets['variant'] = psi_variant
+
 
         # self._set_plot_colors()
         # self._set_plot_markers()
@@ -149,14 +147,16 @@ class SplicingData(BaseData):
         # if featurewise:
         #     ss = ss.T
 
-        # if bins is not None:
-        #     data = self.binify(bins)
+        if bins is not None:
+            data = self.binify(bins)
+        else:
+            data = self.data
 
         reducer_kwargs = {} if reducer_kwargs is None else reducer_kwargs
         reducer_kwargs['title'] = title
         # feature_renamer = self.feature_renamer()
 
-        subset, means = self._subset_and_standardize(self.data,
+        subset, means = self._subset_and_standardize(data,
                                                      sample_ids, feature_ids,
                                                      standardize)
 
