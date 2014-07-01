@@ -154,12 +154,6 @@ class SplicingData(BaseData):
         return classifier
 
 
-    def load_cargo(self):
-        raise NotImplementedError
-
-    def _get(self, splicing_data_filename):
-        return {'splicing_df': self.load(*splicing_data_filename)}
-
 
 class SpliceJunctionData(SplicingData):
     """Class to hold splice junction information from SJ.out.tab files from STAR
