@@ -2,14 +2,12 @@ import collections
 
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import StandardScaler
 
 from .base import BaseData
 from ..visualize.decomposition import NMFViz, PCAViz
 from ..visualize.color import purples
-from ..visualize.predict import PredictorBaseViz
-from ..compute.generic import binify, dropna_mean
-from ..external import link_to_list
+from ..visualize.predict import ClassifierViz
+from ..compute.generic import binify
 from ..util import memoize
 
 
@@ -57,37 +55,9 @@ class SplicingData(BaseData):
         # self.all_features = 'all_events'
         self.feature_sets['variant'] = psi_variant
 
-
-        # self._set_plot_colors()
-        # self._set_plot_markers()
-
-    # def feature_rename(self, x):
-    #     "this is for miso psi IDs..."
-    #     short = ":".join(x.split("@")[1].split(":")[:2])
-    #     try:
-    #         dd = self.event_metadata.set_index('event_name')
-    #         return dd['gene_symbol'].ix[x] + " " + short
-    #     except Exception as e:
-    #         #print e
-    #         return short
-
     @memoize
     def binify(self, bins):
         return binify(self.data, bins)
-
-    # def set_binsize(self, binsize):
-    #     self.binsize = binsize
-    #
-    # def get_binned_data(self):
-    #     try:
-    #         assert hasattr(self, 'binned') #binned has been set
-    #         assert self._binsize == self.binsize #binsize hasn't changed
-    #     except:
-    #         #only bin once, until binsize is updated
-    #         bins = np.arange(0, 1+self.binsize, self.binsize)
-    #         self.binned = binify(self.data, bins)
-    #         self._binsize = self.binsize
-    #     return self.binned
 
     def get_binned_reduced(self, reducer=NMFViz):
         binned = self.get_binned_data()
@@ -105,48 +75,6 @@ class SplicingData(BaseData):
 
         Default is PCAViz because
         """
-
-        # if reducer_args is None:
-        #     reducer_args = self._default_reducer_args
-        #
-        # min_samples = self.get_min_samples()
-        # if list_name not in self.feature_sets:
-        #     self.feature_sets[list_name] = link_to_list(list_name)
-        #
-        # event_list = self.feature_sets[list_name]
-        # #some samples, somefeatures
-        #
-        # if group_id.startswith("~"):
-        #     #print 'not', sample_subset.lstrip("~")
-        #     sample_ind = ~pd.Series(self.phenotype_data[group_id.lstrip("~")],
-        #                             dtype='bool')
-        # else:
-        #     sample_ind = pd.Series(self.phenotype_data[group_id], dtype='bool')
-        #
-        # subset = self.data.ix[sample_ind, event_list]
-        # frequent = pd.Index(
-        #     [i for i, j in (subset.count() > min_samples).iteritems() if j])
-        # subset = subset[frequent]
-        # #fill na with mean for each event
-        # means = subset.apply(dropna_mean, axis=0)
-        # mf_subset = subset.fillna(means, ).fillna(0)
-        # #whiten, mean-center
-        # # naming_fun = self.feature_renamer()
-        # #whiten, mean-center
-        #
-        # if standardize:
-        #     data = StandardScaler().fit_transform(mf_subset)
-        # else:
-        #     data = mf_subset
-        #
-        # ss = pd.DataFrame(data, index=mf_subset.index,
-        #                   columns=mf_subset.columns).rename_axis(self
-        #                                                          .feature_renamer,
-        #                                                          1)
-        #
-        # if featurewise:
-        #     ss = ss.T
-
         if bins is not None:
             data = self.binify(bins)
         else:
@@ -172,48 +100,59 @@ class SplicingData(BaseData):
         return reducer_object
 
     @memoize
-    def classify(self, list_name, group_id, categorical_trait,
-                 standardize=True, classifier=PredictorBaseViz,
-    ):
+    def classify(self, trait, sample_ids=None, feature_ids=None,
+                 standardize=True, predictor=ClassifierViz,
+                 predictor_kwargs=None, predictor_scoring_fun=None,
+                 score_cutoff_fun=None, plotting_kwargs=None):
+        """Make and memoize a predictor on a categorical trait (associated
+        with samples) subset of genes
+
+        Parameters
+        ----------
+        trait : pandas.Series
+            samples x categorical feature
+        sample_ids : None or list of strings
+            If None, all sample ids will be used, else only the sample ids
+            specified
+        feature_ids : None or list of strings
+            If None, all features will be used, else only the features
+            specified
+        standardize : bool
+            Whether or not to "whiten" (make all variables uncorrelated) and
+            mean-center and make unit-variance all the data via sklearn
+            .preprocessing.StandardScaler
+        predictor : flotilla.visualize.predict classifier
+            Must inherit from flotilla.visualize.PredictorBaseViz. Default is
+            flotilla.visualize.predict.ClassifierViz
+        predictor_kwargs : dict or None
+            Additional 'keyword arguments' to supply to the predictor class
+        predictor_scoring_fun : function
+            Function to get the feature scores for a scikit-learn classifier.
+            This can be different for different classifiers, e.g. for a
+            classifier named "x" it could be x.scores_, for other it's
+            x.feature_importances_. Default: lambda x: x.feature_importances_
+        score_cutoff_fun : function
+            Function to cut off insignificant scores
+            Default: lambda scores: np.mean(x) + 2 * np.std(x)
+
+        Returns
+        -------
+        predictor : flotilla.compute.predict.PredictorBaseViz
+            A ready-to-plot object containing the predictions
         """
-        make and cache a predictor on a categorical trait (associated with samples) subset of genes
-         """
+        subset, means = self._subset_and_standardize(self.data,
+                                                     sample_ids,
+                                                     feature_ids,
+                                                     standardize)
 
-        min_samples = self.get_min_samples()
-        if list_name not in self.feature_sets:
-            self.feature_sets[list_name] = link_to_list(list_name)
+        classifier = predictor(subset, trait=trait,
+                               predictor_kwargs=predictor_kwargs,
+                               predictor_scoring_fun=predictor_scoring_fun,
+                               score_cutoff_fun=score_cutoff_fun,
+                               **plotting_kwargs)
+        # classifier.set_reducer_plotting_args(classifier.reduction_kwargs)
+        return classifier
 
-        event_list = self.feature_sets[list_name]
-
-        if group_id.startswith("~"):
-            #print 'not', sample_subset.lstrip("~")
-            sample_ind = ~pd.Series(self.phenotype_data[group_id.lstrip("~")],
-                                    dtype='bool')
-        else:
-            sample_ind = pd.Series(self.phenotype_data[group_id], dtype='bool')
-        sample_ind = sample_ind[sample_ind].index
-        subset = self.data.ix[sample_ind, event_list]
-        frequent = pd.Index(
-            [i for i, j in (subset.count() > min_samples).iteritems() if j])
-        subset = subset[frequent]
-        #fill na with mean for each event
-        means = subset.apply(dropna_mean, axis=0)
-        mf_subset = subset.fillna(means, ).fillna(0)
-
-        #whiten, mean-center
-        if standardize:
-            data = StandardScaler().fit_transform(mf_subset)
-        else:
-            data = mf_subset
-        # naming_fun = self.feature_renamer()
-        ss = pd.DataFrame(data, index=mf_subset.index,
-                          columns=mf_subset.columns).rename_axis(self
-                                                                 .feature_renamer,
-                                                                 1)
-        clf = classifier(ss, self.phenotype_data,
-                         categorical_traits=[categorical_trait], )
-        clf.set_reducer_plotting_args(self._default_reducer_args)
-        return clf
 
     def load_cargo(self):
         raise NotImplementedError

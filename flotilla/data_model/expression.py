@@ -168,7 +168,8 @@ class ExpressionData(BaseData):
         classifier = predictor(subset, trait=trait,
                                predictor_kwargs=predictor_kwargs,
                                predictor_scoring_fun=predictor_scoring_fun,
-                               score_cutoff_fun=score_cutoff_fun)
+                               score_cutoff_fun=score_cutoff_fun,
+                               **plotting_kwargs)
         # classifier.set_reducer_plotting_args(classifier.reduction_kwargs)
         return classifier
 
