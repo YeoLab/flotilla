@@ -82,11 +82,10 @@ class BaseData(object):
                 if self.feature_data[col].dtype != bool:
                     continue
                 feature_set = self.feature_data.index[self.feature_data[col]]
-                print feature_set
                 if len(feature_set) > 1:
                     self.feature_sets[col] = feature_set
-
         self.all_features = 'all_genes'
+        self.feature_sets[self.all_features] = data.columns
 
     def drop_outliers(self, df, outliers):
         # assert 'outlier' in self.experiment_design_data.columns
