@@ -53,8 +53,6 @@ When in doubt, please defer to [Python Enhancement Proposal 8 (aka PEP8))
 * Classes are `CamelCase`, e.g.:  `BaseData` and `PCAViz`
 * Functions are `lower_case_with_underscores`, e.g. `go_enrichment` and
 `binify`
-* If there is a choice between singular and plural, go with the singular form
- of the word
 * Explicit is better than implicit
 
 
