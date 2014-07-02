@@ -4,10 +4,10 @@ import pandas as pd
 import numpy as np
 
 from .base import BaseData
+from flotilla.compute.infotheory import binify
 from ..visualize.decomposition import NMFViz, PCAViz
 from ..visualize.color import purples
 from ..visualize.predict import ClassifierViz
-from ..compute.generic import binify
 from ..util import memoize
 
 
