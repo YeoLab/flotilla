@@ -1,6 +1,7 @@
 import sys
 
 import numpy as np
+
 import pandas as pd
 from sklearn.ensemble import ExtraTreesRegressor, GradientBoostingRegressor
 from scipy import stats
@@ -57,7 +58,7 @@ def binify(df, bins):
     ----------
     data : pandas.DataFrame
         The dataframe whose rows you'd like to binify.
-    bins : numpy.array
+    bins : iterable
         Bins you would like to use for this data. Must include the final bin
         value, e.g. (0, 0.5, 1) for the two bins (0, 0.5) and (0.5, 1)
 
