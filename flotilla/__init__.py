@@ -1,6 +1,6 @@
 __author__ = 'lovci'
 
-from .data_model.study import StudyFactory, Study
+from .data_model.study import Study
 import compute
 import data_model
 from .external import make_study_datapackage
