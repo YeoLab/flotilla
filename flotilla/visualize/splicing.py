@@ -1,6 +1,3 @@
-__author__ = 'olga'
-
-
 def lavalamp(psi, color=None, jitter=None, title='', ax=None):
     """Make a 'lavalamp' scatter plot of many splicing events
 
