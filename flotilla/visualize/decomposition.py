@@ -72,15 +72,6 @@ class DecompositionViz(object):
         _default_plotting_args.items() + _default_reduction_args.items())
 
     def __init__(self, df, **kwargs):
-        # print kwargs
-        # import pdb
-        # pdb.set_trace()
-        # plotting_kwargs = {} if 'plotting_kwargs' not in kwargs \
-        #     else kwargs['plotting_kwargs']
-        # plotting_kwargs = dict((k, v) for (k, v) in kwargs.items() if
-        #                    k in self._default_plotting_args.keys())
-
-
         self._validate_params(self._default_args, **kwargs)
 
         self.plotting_kwargs = self._default_plotting_args.copy()
@@ -90,12 +81,12 @@ class DecompositionViz(object):
         self.reduction_kwargs.update([(k, v) for (k, v) in kwargs.items() if
                                       k in self._default_reduction_args])
 
+        # This magically initializes the reducer like PCA or NMF
         super(DecompositionViz, self).__init__(**self.reduction_kwargs)
-        #initialize PCA-like object
+
         assert isinstance(df, pd.DataFrame)
         self.df = df
         self.reduced_space = self.fit_transform(self.df)
-
 
     def __call__(self, ax=None, **kwargs):
         #self._validate_params(self._default_plotting_args, **kwargs)
@@ -336,13 +327,35 @@ class PCAViz(DecompositionViz, PCA):
 class NMFViz(DecompositionViz, NMF):
     _default_reduction_args = {'n_components': 2,  #'init': 'nndsvda',
                                'max_iter': 20000, 'nls_max_iter': 40000}
-    pass
-    # def __init__(self, *args, **kwargs):
-    #     DecompositionViz.__init__(self, *args, **kwargs)
-    #     import pdb
-    #     pdb.set_trace()
-    #     NMF.__init__(self, **self.reduction_kwargs)
-    #     self.reduced_space = self.fit_transform(self.df)
+
+    def __call__(self, ax=None, **kwargs):
+        #self._validate_params(self._default_plotting_args, **kwargs)
+        gs_x = 14
+        gs_y = 12
+
+        if ax is None:
+            fig, ax = plt.subplots(1, 1, figsize=(25, 12))
+            gs = GridSpec(gs_x, gs_y)
+
+        else:
+            gs = GridSpecFromSubplotSpec(gs_x, gs_y, ax.get_subplotspec())
+            fig = plt.gcf()
+
+        ax_components = plt.subplot(gs[:, :5])
+        #ax_components.set_aspect('equal')
+        ax_loading1 = plt.subplot(gs[:, 6:8])
+        ax_loading2 = plt.subplot(gs[:, 10:14])
+
+        passed_kwargs = kwargs
+        local_kwargs = self.plotting_kwargs.copy()
+        local_kwargs.update(passed_kwargs)
+        local_kwargs.update({'ax': ax_components})
+        self.plot_samples(**local_kwargs)
+        self.plot_loadings(pc=local_kwargs['x_pc'], ax=ax_loading1)
+        self.plot_loadings(pc=local_kwargs['y_pc'], ax=ax_loading2)
+        sns.despine()
+        fig.tight_layout()
+        return self
 
 
 def plot_pca(df, **kwargs):
