@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Welcome to flotilla’s documentation! &mdash; flotilla 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-3.1.0/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-3.1.0/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="flotilla 0.1.0 documentation" href="#" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">
+          flotilla</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="simple">
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Welcome to flotilla&#8217;s documentation!</a></li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="_sources/index.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <div class="section" id="welcome-to-flotilla-s-documentation">
+<h1>Welcome to flotilla&#8217;s documentation!<a class="headerlink" href="#welcome-to-flotilla-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>Flotilla is a Python analysis library targeted at analyzing single-cell RNA-seq projects.</p>
+<p>Contents:</p>
+<div class="toctree-wrapper compound">
+<ul class="simple">
+</ul>
+</div>
+<span class="target" id="module-flotilla"></span><dl class="class">
+<dt id="flotilla.Study">
+<em class="property">class </em><tt class="descclassname">flotilla.</tt><tt class="descname">Study</tt><big>(</big><em>experiment_design_data</em>, <em>expression_data=None</em>, <em>splicing_data=None</em>, <em>expression_feature_data=None</em>, <em>expression_feature_rename_col='gene_name'</em>, <em>splicing_feature_data=None</em>, <em>splicing_feature_rename_col='gene_name'</em>, <em>mapping_stats_data=None</em>, <em>mapping_stats_number_mapped_col='Uniquely mapped reads number'</em>, <em>spikein_data=None</em>, <em>spikein_feature_data=None</em>, <em>drop_outliers=False</em>, <em>species=None</em>, <em>gene_ontology_data=None</em><big>)</big><a class="headerlink" href="#flotilla.Study" title="Permalink to this definition">¶</a></dt>
+<dd><p>store essential data associated with a study. Users specify how to build the
+necessary components from project-specific getters (see barebones_project
+for example getters)</p>
+<p class="rubric">Attributes</p>
+<p class="rubric">Methods</p>
+<dl class="method">
+<dt id="flotilla.Study.detect_outliers">
+<tt class="descname">detect_outliers</tt><big>(</big><big>)</big><a class="headerlink" href="#flotilla.Study.detect_outliers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Detects outlier cells from expression, mapping, and splicing
+study_data and labels the outliers as such for future analysis.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>self</strong></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.Study.feature_subset_to_feature_ids">
+<tt class="descname">feature_subset_to_feature_ids</tt><big>(</big><em>data_type</em>, <em>feature_subset=None</em>, <em>rename=False</em><big>)</big><a class="headerlink" href="#flotilla.Study.feature_subset_to_feature_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a name of a feature subset, get the associated feature ids</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data_type</strong> : str</p>
+<blockquote>
+<div><p>A string describing the data type, e.g. &#8220;expression&#8221;</p>
+</div></blockquote>
+<p><strong>feature_subset</strong> : str</p>
+<blockquote>
+<div><p>A string describing the subset of data type (must be already
+calculated)</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>feature_ids</strong> : list of strings</p>
+<blockquote class="last">
+<div><p>List of features ids from the specified datatype</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="flotilla.Study.from_data_package_url">
+<em class="property">classmethod </em><tt class="descname">from_data_package_url</tt><big>(</big><em>data_package_url</em>, <em>species_data_package_base_url='http://sauron.ucsd.edu/flotilla_projects'</em><big>)</big><a class="headerlink" href="#flotilla.Study.from_data_package_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a study from a url of a datapackage.json file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data_package_url</strong> : str</p>
+<blockquote>
+<div><p>HTTP url of a datapackage.json file, following the specification
+described here: <a class="reference external" href="http://dataprotocols.org/data-packages/">http://dataprotocols.org/data-packages/</a> and
+requiring the following data resources: experiment_design,
+expression, splicing</p>
+</div></blockquote>
+<p><strong>species_data_pacakge_base_url</strong> : str</p>
+<blockquote>
+<div><p>Base URL to fetch species-specific gene and splicing event
+metadata from. Default &#8216;<a class="reference external" href="http://sauron.ucsd.edu/flotilla_projects">http://sauron.ucsd.edu/flotilla_projects</a>&#8216;</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>study</strong> : Study</p>
+<blockquote>
+<div><p>A &#8220;study&#8221; object containing the data described in the
+data_package_url file</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><strong>AttributeError</strong></p>
+<blockquote class="last">
+<div><p>If the datapackage.json file does not contain the required
+resources of experiment_design, expression, and splicing.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.Study.plot_classifier">
+<tt class="descname">plot_classifier</tt><big>(</big><em>trait</em>, <em>data_type='expression'</em>, <em>title=''</em>, <em>show_point_labels=False</em>, <em>sample_subset=None</em>, <em>feature_subset=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#flotilla.Study.plot_classifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot a predictor for the specified data type and trait(s)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data_type</strong> : str</p>
+<blockquote>
+<div><p>One of the names of the data types, e.g. &#8220;expression&#8221; or &#8220;splicing&#8221;</p>
+</div></blockquote>
+<p><strong>trait</strong> : str</p>
+<blockquote class="last">
+<div><p>Column name in the experiment_design data that you would like
+to classify on</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.Study.plot_graph">
+<tt class="descname">plot_graph</tt><big>(</big><em>data_type='expression'</em>, <em>sample_subset=None</em>, <em>feature_subset=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#flotilla.Study.plot_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the graph (network) of these data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data_type</strong> : str</p>
+<blockquote>
+<div><p>One of the names of the data types, e.g. &#8220;expression&#8221; or &#8220;splicing&#8221;</p>
+</div></blockquote>
+<p><strong>sample_subset</strong> : str or None</p>
+<blockquote>
+<div><p>Which subset of the samples to use, based on some phenotype
+column in the experiment design data. If None, all samples are
+used.</p>
+</div></blockquote>
+<p><strong>feature_subset</strong> : str or None</p>
+<blockquote class="last">
+<div><p>Which subset of the features to used, based on some feature type
+in the expression data (e.g. &#8220;variant&#8221;). If None, all features
+are used.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.Study.plot_pca">
+<tt class="descname">plot_pca</tt><big>(</big><em>data_type='expression'</em>, <em>x_pc=1</em>, <em>y_pc=2</em>, <em>sample_subset=None</em>, <em>feature_subset=None</em>, <em>title=''</em>, <em>featurewise=False</em>, <em>show_point_labels=False</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#flotilla.Study.plot_pca" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs PCA on both expression and splicing study_data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data_type</strong> : str</p>
+<blockquote>
+<div><p>One of the names of the data types, e.g. &#8220;expression&#8221; or &#8220;splicing&#8221;</p>
+</div></blockquote>
+<p><strong>x_pc</strong> : int</p>
+<blockquote>
+<div><p>Which principal component to plot on the x-axis</p>
+</div></blockquote>
+<p><strong>y_pc</strong> : int</p>
+<blockquote>
+<div><p>Which principal component to plot on the y-axis</p>
+</div></blockquote>
+<p><strong>sample_subset</strong> : str or None</p>
+<blockquote>
+<div><p>Which subset of the samples to use, based on some phenotype
+column in the experiment design data. If None, all samples are
+used.</p>
+</div></blockquote>
+<p><strong>feature_subset</strong> : str or None</p>
+<blockquote>
+<div><p>Which subset of the features to used, based on some feature type
+in the expression data (e.g. &#8220;variant&#8221;). If None, all features
+are used.</p>
+</div></blockquote>
+<p><strong>title</strong> : str</p>
+<blockquote>
+<div><p>The title of the plot</p>
+</div></blockquote>
+<p><strong>show_point_labels</strong> : bool</p>
+<blockquote class="last">
+<div><p>Whether or not to show the labels of the points. If this is
+samplewise (default), then this labels the samples. If this is
+featurewise, then this labels the features.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.Study.plot_regressor">
+<tt class="descname">plot_regressor</tt><big>(</big><em>data_type='expression'</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#flotilla.Study.plot_regressor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.Study.sample_id_to_color">
+<tt class="descname">sample_id_to_color</tt><a class="headerlink" href="#flotilla.Study.sample_id_to_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>If &#8220;color&#8221; is a column in the experiment_design data, return a
+dict of that {sample_id: color} mapping, else try to create it using
+the &#8220;celltype&#8221; columns, else just return a dict mapping to a default
+color (blue)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.Study.sample_subset_to_sample_ids">
+<tt class="descname">sample_subset_to_sample_ids</tt><big>(</big><em>phenotype_subset=None</em><big>)</big><a class="headerlink" href="#flotilla.Study.sample_subset_to_sample_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a string naming a subset of phenotypes in the data in to 
+sample ids</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>phenotype_subset</strong> : str</p>
+<blockquote>
+<div><p>A valid string describing a boolean phenotype described in the
+experiment_design data</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>sample_ids</strong> : list of strings</p>
+<blockquote class="last">
+<div><p>List of sample ids in the data</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
+<li><a class="reference internal" href="py-modindex.html"><em>Module Index</em></a></li>
+<li><a class="reference internal" href="search.html"><em>Search Page</em></a></li>
+</ul>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2014, Olga Botvinnik, Michael Lovci, Patrick Liu, Yan Song.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
