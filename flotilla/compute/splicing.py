@@ -15,3 +15,9 @@ class Modalities(object):
 
     def __init__(self):
         pass
+
+    def jsd_modalities(self, row):
+        return true_modalities.apply(lambda x: gmath.jsd(x, psi_binned_row),
+                                     axis=1)
+
+    modality_jsd = psi_binned.head().apply(jsd_modalities, axis=1)
