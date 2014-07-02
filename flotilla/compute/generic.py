@@ -1,9 +1,10 @@
-
 import sys
+
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import ExtraTreesRegressor, GradientBoostingRegressor
 from scipy import stats
+
 from ..util import timeout, TimeoutError
 
 
@@ -69,7 +70,7 @@ def binify(df, bins):
 
 
     """
-    ncol = bins.shape[0] - 1
+    ncol = len(bins) - 1
     nrow = df.shape[0]
     binned = np.zeros((nrow, ncol))
 
