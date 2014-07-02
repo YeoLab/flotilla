@@ -1,5 +1,3 @@
-__author__ = 'olga'
-
 import numpy as np
 import itertools
 from scipy import stats
