@@ -1,5 +1,5 @@
 """
-Compute predictors on data, e.g. regressors or classifiers
+Compute predictors on data, i.e. regressors or classifiers
 """
 import sys
 import warnings
@@ -135,7 +135,7 @@ class PredictorBase(object):
 
 class Regressor(PredictorBase):
     """
-    PredictorBase for continuous data
+    Regressor - for continuous data
     """
 
     default_regressor = ExtraTreesRegressor
@@ -187,7 +187,7 @@ class Regressor(PredictorBase):
 
 class Classifier(PredictorBase):
     """
-    PredictorBase for categorical data
+    Classifier - for categorical data
     """
     boosting_classifier_kwargs = {'n_estimators': 80, 'max_features': 1000,
                                   'learning_rate': 0.2, 'subsample': 0.6, }
