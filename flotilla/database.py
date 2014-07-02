@@ -1,5 +1,3 @@
-__author__ = 'lovci'
-
 """
 
 handles database connection, performs operations as a slave if run as a script.

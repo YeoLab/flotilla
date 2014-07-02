@@ -1,5 +1,3 @@
-__author__ = 'olga'
-
 from flotilla.data_model.base import BaseData
 import pandas.util.testing as pdt
 

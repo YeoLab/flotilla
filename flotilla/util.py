@@ -1,5 +1,3 @@
-__author__ = 'lovci'
-
 """
 
 general utilities
