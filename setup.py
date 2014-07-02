@@ -6,7 +6,7 @@ setup(
     packages=find_packages(),
     url='http://github.com/YeoLab/flotilla',
     license='',
-    author='lovci',
+    author='mlovci,olgabot',
     author_email='mlovci@ucsd.edu',
     description='',
     include_package_data=True,

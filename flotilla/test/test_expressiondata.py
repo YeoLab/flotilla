@@ -1,5 +1,3 @@
-__author__ = 'olga'
-
 import numpy.testing as npt
 import pandas.util.testing as pdt
 
