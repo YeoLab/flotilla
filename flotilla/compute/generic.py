@@ -25,7 +25,6 @@ def switchy_score(array):
         The "switchy score" of the study_data which can then be compared to other
         splicing event study_data
 
-    @author Michael T. Lovci
     """
     array = np.array(array)
     variance = 1 - np.std(np.sin(array[~np.isnan(array)] * np.pi))
@@ -196,6 +195,7 @@ def get_dcor(x, y):
     dc, dr, dvx, dvy
 
     """
+    #cython version of dcor
     import dcor_cpy as dcor
     dc, dr, dvx, dvy = dcor.dcov_all(x,y)
     return dc, dr, dvx, dvy
