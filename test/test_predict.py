@@ -112,8 +112,7 @@ class TestRegressor:
         true_regressor = ExtraTreesRegressor(**regressor.predictor_kwargs)
         true_regressor.fit(reduced, y)
         scores = regressor.predictor_scoring_fun(true_regressor)
-        true_regressor.scores_ = pd.Series(scores,
-                                           index=reduced)
+        true_regressor.scores_ = pd.Series(scores, index=reduced.columns)
         true_regressor.score_cutoff_ = regressor.score_cutoff_fun(
             true_regressor.scores_)
         true_regressor.important_features = true_regressor.scores_ > \
