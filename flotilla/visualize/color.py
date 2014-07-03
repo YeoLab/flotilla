@@ -1,4 +1,3 @@
-__author__ = 'olga'
 import seaborn
 
 

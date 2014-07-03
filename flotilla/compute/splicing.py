@@ -27,4 +27,3 @@ class Modalities(object):
 
         """
         return binned.apply(self._col_jsd_modalities, axis=0)
-

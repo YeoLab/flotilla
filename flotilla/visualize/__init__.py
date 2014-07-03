@@ -1,11 +1,7 @@
-__author__ = 'lovci, ppliu, obot, ....?'
+"""plotting tools"""
 
-""""plotting tools"""
-
-__author__ = 'olga'
 
 import seaborn
-# from ..neural_diff_project.project_params import _default_group_id
 
 seaborn.set_style({'axes.axisbelow': True,
                    'axes.edgecolor': '.15',

@@ -1,4 +1,3 @@
-__author__ = 'olga'
 import math
 
 from matplotlib.gridspec import GridSpec, GridSpecFromSubplotSpec
@@ -12,12 +11,12 @@ from ..compute.decomposition import NMF, PCA
 
 
 def L1_distance(x, y):
-    """Really should just be using scipy.linalg.norm with order=1"""
+    """Really should just be using TODO:scipy.linalg.norm with order=1"""
     return abs(y) + abs(x)
 
 
 def L2_distance(x, y):
-    """Really should just be using scipy.linalg.norm with order=2"""
+    """Really should just be using TODO:scipy.linalg.norm with order=2"""
     return math.sqrt((y ** 2) + (x ** 2))
 
 
