@@ -48,20 +48,24 @@ class ModalitiesViz(NMFViz):
 
     def __call__(self, ax=None, **kwargs):
         if ax is None:
-            ax = plt.gca()
+            fig, ax = plt.subplots(figsize=(8, 8))
 
         # For easy aliasing
         X = self.reduced_space
 
-        for modality, df in X.groupby(self.modalities_assignments, axis=1):
+        # import pdb
+        # pdb.set_trace()
+
+        for modality, df in X.groupby(self.modalities_assignments, axis=0):
             color = self.modalities_colors[modality]
-            ax.plot(df.ix[:, 0], df.ix[:, 1], 'o', color=color, alpha=0.1,
+            ax.plot(df.ix[:, 0], df.ix[:, 1], 'o', color=color, alpha=0.25,
                     label=modality)
 
         sns.despine()
         xmax, ymax = X.max()
         ax.set_xlim(0, 1.05 * xmax)
         ax.set_ylim(0, 1.05 * ymax)
+        ax.legend()
 
 
 def lavalamp(psi, color=None, jitter=None, title='', ax=None):
