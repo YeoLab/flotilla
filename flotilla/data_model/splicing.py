@@ -4,10 +4,12 @@ import pandas as pd
 import numpy as np
 
 from .base import BaseData
-from flotilla.compute.infotheory import binify
+from ..compute.infotheory import binify
+from ..compute.splicing import Modalities
 from ..visualize.decomposition import NMFViz, PCAViz
 from ..visualize.color import purples
 from ..visualize.predict import ClassifierViz
+from ..visualize.splicing import ModalitiesViz
 from ..util import memoize
 
 
@@ -18,14 +20,13 @@ class SplicingData(BaseData):
     n_components = 2
     _binsize = 0.1
     _var_cut = 0.2
-    _modalities_bins = (0, 0.2, 0.8, 1)
 
     _last_reducer_accessed = None
 
     def __init__(self, data,
                  feature_data=None, binsize=_binsize,
                  var_cut=_var_cut, outliers=None,
-                 feature_rename_col=None):
+                 feature_rename_col=None, excluded_max=0.2, included_min=0.8):
         """Instantiate a object for study_data scores with binned and reduced study_data
 
         Parameters
@@ -40,7 +41,10 @@ class SplicingData(BaseData):
             An scikit-learn class that reduces the dimensionality of study_data
             somehow. Must accept the parameter n_components, have the
             functions fit, transform, and have the attribute components_
-
+        excluded_max : float
+            Maximum value for the "excluded" bin of psi scores. Default 0.2.
+        included_max : float
+            Minimum value for the "included" bin of psi scores. Default 0.8.
         """
         super(SplicingData, self).__init__(data, feature_data,
                                            feature_rename_col=feature_rename_col,
@@ -50,6 +54,9 @@ class SplicingData(BaseData):
         psi_variant = pd.Index(
             [i for i, j in (data.var().dropna() > var_cut).iteritems() if j])
         self.feature_sets['variant'] = psi_variant
+
+        self.modalities = Modalities(self.data, excluded_max=excluded_max,
+                                     included_min=included_min)
 
     @memoize
     def binify(self, bins):
@@ -150,6 +157,12 @@ class SplicingData(BaseData):
                                **plotting_kwargs)
         # classifier.set_reducer_plotting_args(classifier.reduction_kwargs)
         return classifier
+
+    def plot_modalities(self):
+        """Plot modality assignments in NMF space (option for lavalamp?)
+        """
+        visualizer = ModalitiesViz(self.modalities.assignments, self.binned)
+        visualizer()
 
 
 class SpliceJunctionData(SplicingData):
