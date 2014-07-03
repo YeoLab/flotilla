@@ -23,10 +23,7 @@ from ..visualize.ipython_interact import Interactive
 from ..visualize.network import NetworkerViz
 from ..external import data_package_url_to_dict, check_if_already_downloaded
 
-
 SPECIES_DATA_PACKAGE_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects'
-
-
 
 # import flotilla
 # FLOTILLA_DIR = os.path.dirname(flotilla.__file__)

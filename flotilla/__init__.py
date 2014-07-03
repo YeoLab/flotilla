@@ -1,5 +1,3 @@
-__author__ = 'lovci'
-
 from .data_model.study import Study
 import compute
 import data_model

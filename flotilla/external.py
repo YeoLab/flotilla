@@ -1,8 +1,6 @@
 """ interface with external data sources i.e. GO files, web"""
 from __future__ import division
 
-__author__ = 'lovci, yan_song, '
-
 from collections import defaultdict
 import gzip
 import json

@@ -1,5 +1,3 @@
-__author__ = 'olga'
-
 import scipy
 from scipy import cluster
 import matplotlib.pyplot as plt

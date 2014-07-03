@@ -9,6 +9,9 @@ from ..visualize.color import red
 
 
 class Networker(object):
+    
+    """ Networks (the kind with nodes and edges) """
+    
     weight_funs = ['abs', 'sq', 'arctan', 'arctan_sq']
 
     def __init__(self):
@@ -19,13 +22,14 @@ class Networker(object):
         # self._last_adjacency_accessed = None
         # self._last_graph_accessed = None
 
-    def get_weight_fun(self, fun_name):
-        _abs = lambda x: x
+    def get_weight_fun(self, fun_name='no_weight'):
+        """ return a function that performs a common transform on distance """
+        _noweight = lambda x: x
         _sq = lambda x: x ** 2
         _arctan = lambda x: np.arctan(x)
         _arctan_sq = lambda x: np.arctan(x) ** 2
-        if fun_name == 'abs':
-            wt = _abs
+        if fun_name == 'no_weight':
+            wt = _noweight
         elif fun_name == 'sq':
             wt = _sq
         elif fun_name == 'arctan':
@@ -56,7 +60,7 @@ class Networker(object):
               node_color_mapper=None,
               node_size_mapper=None,
               degree_cut=2,
-              weight_function='abs'):
+              weight_function='no_weight'):
 
         if node_color_mapper is None:
             node_color_mapper = self._default_node_color_mapper
