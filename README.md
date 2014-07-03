@@ -2,8 +2,11 @@
 
 flotilla
 ========
+![flotilla Logo](flotilla.png)
+
 Download
 ========
+
 ```
 git clone https://github.com/YeoLab/flotilla.git
 ```
