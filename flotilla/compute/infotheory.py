@@ -3,19 +3,44 @@ import pandas as pd
 
 
 def kld(P, Q):
-    """
-    Kullback-Leiber divergence of two probability distributions pandas
+    """Kullback-Leiber divergence of two probability distributions pandas
     dataframes, P and Q
+
+    Parameters
+    ----------
+
+
+    Returns
+    -------
+
+
+    Raises
+    ------
     """
-    return (np.log2(P / Q) * P).sum(axis=1)
+    # If one of them is zero, then the other should be considered to be 0
+    P = P.replace(0, np.nan)
+    Q = Q.replace(0, np.nan)
+
+    return (np.log2(P / Q) * P).sum(axis=0)
 
 
 def jsd(P, Q):
-    """Finds the per-row JSD betwen dataframes P and Q
+    """Finds the per-column JSD betwen dataframes P and Q
 
     Jensen-Shannon divergence of two probability distrubutions pandas
     dataframes, P and Q. These distributions are usually created by running
     binify() on the dataframe.
+
+    Parameters
+    ----------
+
+
+    Returns
+    -------
+
+
+    Raises
+    ------
     """
     weight = 0.5
     M = weight * (P + Q)
@@ -29,7 +54,7 @@ def entropy(binned, base=2):
     Given a binned dataframe created by 'binify', find the entropy of each
     row (index)
     """
-    return -((np.log2(binned) / np.log2(base)) * binned).sum(axis=1)
+    return -((np.log2(binned) / np.log2(base)) * binned).sum(axis=0)
 
 
 def binify(df, bins):
@@ -38,7 +63,8 @@ def binify(df, bins):
     Parameters
     ----------
     data : pandas.DataFrame
-        The dataframe whose rows you'd like to binify.
+        A samples x features dataframe. Each feature will be binned into the
+        provided bins
     bins : iterable
         Bins you would like to use for this data. Must include the final bin
         value, e.g. (0, 0.5, 1) for the two bins (0, 0.5) and (0.5, 1)
@@ -46,20 +72,10 @@ def binify(df, bins):
     Returns
     -------
     binned : pandas.DataFrame
-
-    Raises
-    ------
-
-
+        A len(bins)-1 x features DataFrame of each feature binned across
+        samples
     """
-    ncol = len(bins) - 1
-    nrow = df.shape[0]
-    binned = np.zeros((nrow, ncol))
-
-    # TODO.md: make sure this works for numpy matrices
-    for i, (name, row) in enumerate(df.iterrows()):
-        binned[i, :] = np.histogram(row, bins=bins, normed=True)[0]
-
-    columns = ['{}-{}'.format(i, j) for i, j in zip(bins, bins[1:])]
-    binned = pd.DataFrame(binned, index=df.index, columns=columns)
+    binned = df.apply(lambda x: pd.Series(np.histogram(x, bins=bins,
+                                                       normed=True)[0]))
+    binned.index = ['{}-{}'.format(i, j) for i, j in zip(bins, bins[1:])]
     return binned
