@@ -22,7 +22,7 @@ class Modalities(object):
         self.true_modalities.index = self.binned.index
 
     def __call__(self, *args, **kwargs):
-        return self.modality_assignments
+        return self.assignments
 
     def _col_jsd_modalities(self, col):
         return self.true_modalities.apply(lambda x: jsd(x, col), axis=0)
@@ -36,9 +36,10 @@ class Modalities(object):
         return np.sqrt(self.binned.apply(self._col_jsd_modalities, axis=0))
 
     @property
-    def modality_assignments(self):
-        return self.true_modalities.columns[
+    def assignments(self):
+        modalities = self.true_modalities.columns[
             np.argmin(self.sqrt_jsd_modalities.values, axis=0)]
+        return pd.Series(modalities, self.binned.columns)
 
 
 def switchy_score(array):
