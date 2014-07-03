@@ -33,10 +33,20 @@ edge cases we haven't thought of.
 
 ### Summer 2014
 
+Currently, this project is private. Before we open this publicly, we need to
+fix the following bugs:
+
+* "Not" sample subset groups (e.g. "not neuron"): https://github.com/YeoLab/flotilla/issues/54
+* Weird PC loadings: https://github.com/YeoLab/flotilla/issues/56
+
 We plan to release a working version before August 15th,
 2014. In addition to current functionality, this version ("0.2?") will have
 the following spec:
 
+* (E, 0) Naming issues. `experiment_design` data is apparently uninterpretable. 
+Could go with `sample_metadata` or `phenotype_data` (as in 
+[BioconductoR](http://www.bioconductor.org/)) instead.
+    * https://github.com/YeoLab/flotilla/issues/47
 * (M, 0) Outlier detection by expression or splicing (Boyko, Patrick, Olga)
     * Make this an interactive module that updates the metadata as you go
     along?
