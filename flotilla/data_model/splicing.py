@@ -56,10 +56,6 @@ class SplicingData(BaseData):
         return binify(self.data, bins)
 
     @property
-    def binned_modalities(self):
-        return self.binify(self._modalities_bins)
-
-    @property
     def binned(self):
         return self.binify(self.reducer_bins)
 
@@ -154,7 +150,6 @@ class SplicingData(BaseData):
                                **plotting_kwargs)
         # classifier.set_reducer_plotting_args(classifier.reduction_kwargs)
         return classifier
-
 
 
 class SpliceJunctionData(SplicingData):
