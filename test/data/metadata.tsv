@@ -1,61 +1,296 @@
-	celltype	armadillo	banana	cat
-A_01	armadillo	True	False	False
-A_02	armadillo	True	False	False
-A_03	armadillo	True	False	False
-A_04	armadillo	True	False	False
-A_05	armadillo	True	False	False
-A_06	armadillo	True	False	False
-A_07	armadillo	True	False	False
-A_08	armadillo	True	False	False
-A_09	armadillo	True	False	False
-A_10	armadillo	True	False	False
-A_11	armadillo	True	False	False
-A_12	armadillo	True	False	False
-A_13	armadillo	True	False	False
-A_14	armadillo	True	False	False
-A_15	armadillo	True	False	False
-A_16	armadillo	True	False	False
-A_17	armadillo	True	False	False
-A_18	armadillo	True	False	False
-A_19	armadillo	True	False	False
-A_20	armadillo	True	False	False
-B_01	banana	False	True	False
-B_02	banana	False	True	False
-B_03	banana	False	True	False
-B_04	banana	False	True	False
-B_05	banana	False	True	False
-B_06	banana	False	True	False
-B_07	banana	False	True	False
-B_08	banana	False	True	False
-B_09	banana	False	True	False
-B_10	banana	False	True	False
-B_11	banana	False	True	False
-B_12	banana	False	True	False
-B_13	banana	False	True	False
-B_14	banana	False	True	False
-B_15	banana	False	True	False
-B_16	banana	False	True	False
-B_17	banana	False	True	False
-B_18	banana	False	True	False
-B_19	banana	False	True	False
-B_20	banana	False	True	False
-C_01	cat	False	False	True
-C_02	cat	False	False	True
-C_03	cat	False	False	True
-C_04	cat	False	False	True
-C_05	cat	False	False	True
-C_06	cat	False	False	True
-C_07	cat	False	False	True
-C_08	cat	False	False	True
-C_09	cat	False	False	True
-C_10	cat	False	False	True
-C_11	cat	False	False	True
-C_12	cat	False	False	True
-C_13	cat	False	False	True
-C_14	cat	False	False	True
-C_15	cat	False	False	True
-C_16	cat	False	False	True
-C_17	cat	False	False	True
-C_18	cat	False	False	True
-C_19	cat	False	False	True
-C_20	cat	False	False	True
+id	R1_fastq.gz_md5sum	R2_fastq.gz_md5sum	bam_location	batch	cell_type	is_craig?	is_pooled	is_split_of	outlier	M_cell	neuron_cell	N_cell	P_cell	S_cell	cell_color	cell_marker	original_name	any_cell	color	marker
+M_M1_01			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/M1_01_TAAGGCGA-TATCCTCT_L007.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	M	True	0		False	True	True	False	False	False	#e41a1c	D	M1_01	True	#e41a1c	D
+M_M1_02			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/M1_02_CGTACTAG-TATCCTCT_L007.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	M	True	0		False	True	True	False	False	False	#e41a1c	D	M1_02	True	#e41a1c	D
+M_M1_03			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/M1_03_AGGCAGAA-CTCTCTAT_L007.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	M	True	0		False	True	True	False	False	False	#e41a1c	D	M1_03	True	#e41a1c	D
+M_M1_04			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/M1_04_TCCTGAGC-ACTGCATA_L007.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	M	True	0		False	True	True	False	False	False	#e41a1c	D	M1_04	True	#e41a1c	D
+M_M1_05			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/M1_05_GGACTCCT-AGAGTAGA_L007.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	M	True	0		False	True	True	False	False	False	#e41a1c	D	M1_05	True	#e41a1c	D
+M_M1_06			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/M1_06_CTCTCTAC-ACTGCATA_L007.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	M	True	0		False	True	True	False	False	False	#e41a1c	D	M1_06	True	#e41a1c	D
+M_M1_07			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/M1_07_CAGAGAGG-TAGATCGC_L007.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	M	True	0		False	True	True	False	False	False	#e41a1c	D	M1_07	True	#e41a1c	D
+M_M1_08			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/M1_08_GCTACGCT-GTAAGGAG_L007.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	M	True	0		False	True	True	False	False	False	#e41a1c	D	M1_08	True	#e41a1c	D
+M_M1_09			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/M1_09_GCTACGCT-AAGGAGTA_L007.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	M	True	0		False	True	True	False	False	False	#e41a1c	D	M1_09	True	#e41a1c	D
+M_M1_10			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/M1_10_CGAGGCTG-GTAAGGAG_L007.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	M	True	0		False	True	True	False	False	False	#e41a1c	D	M1_10	True	#e41a1c	D
+M_M1_11			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/M1_11_AAGAGGCA-CTAAGCCT_L007.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	M	True	0		False	True	True	False	False	False	#e41a1c	D	M1_11	True	#e41a1c	D
+M_M1_12			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/M1_12_GTAGAGGA-CTAAGCCT_L007.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	M	True	0		False	True	True	False	False	False	#e41a1c	D	M1_12	True	#e41a1c	D
+M_M2_01			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/M2_01_TAAGGCGA-GTAAGGAG_L008.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2_01	True	#e41a1c	D
+M_M2_02			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/M2_02_CGTACTAG-ACTGCATA_L008.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2_02	True	#e41a1c	D
+M_M2_03			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/M2_03_AGGCAGAA-CTAAGCCT_L008.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2_03	True	#e41a1c	D
+M_M2_04			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/M2_04_GGACTCCT-CTCTCTAT_L008.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2_04	True	#e41a1c	D
+M_M2_05			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/M2_05_TAGGCATG-AGAGTAGA_L008.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	M	True	1		False	True	True	False	False	False	#e41a1c	D	M2_05	True	#e41a1c	D
+M_M2_06			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/M2_06_CTCTCTAC-AAGGAGTA_L008.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2_06	True	#e41a1c	D
+M_M2_07			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/M2_07_CAGAGAGG-ACTGCATA_L008.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2_07	True	#e41a1c	D
+M_M2_08			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/M2_08_GCTACGCT-TAGATCGC_L008.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2_08	True	#e41a1c	D
+M_M2_09			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/M2_09_CGAGGCTG-TATCCTCT_L008.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2_09	True	#e41a1c	D
+M_M2_10			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/M2_10_AAGAGGCA-TATCCTCT_L008.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2_10	True	#e41a1c	D
+M_M2_11			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/M2_11_AAGAGGCA-AGAGTAGA_L008.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2_11	True	#e41a1c	D
+M_M2_12			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/M2_12_GTAGAGGA-CTCTCTAT_L008.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2_12	True	#e41a1c	D
+M_M2nd_01			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/M2nd_01.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2nd_01	True	#e41a1c	D
+M_M2nd_02			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/M2nd_02.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2nd_02	True	#e41a1c	D
+M_M2nd_03			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/M2nd_03.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2nd_03	True	#e41a1c	D
+M_M2nd_04			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/M2nd_04.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2nd_04	True	#e41a1c	D
+M_M2nd_05			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/M2nd_05.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2nd_05	True	#e41a1c	D
+M_M2nd_06			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/M2nd_06.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2nd_06	True	#e41a1c	D
+M_M2nd_07			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/M2nd_07.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2nd_07	True	#e41a1c	D
+M_M2nd_08			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/M2nd_08.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2nd_08	True	#e41a1c	D
+M_M2nd_09			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/M2nd_09.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2nd_09	True	#e41a1c	D
+M_M2nd_10			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/M2nd_10.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2nd_10	True	#e41a1c	D
+M_M2nd_11			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/M2nd_11.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2nd_11	True	#e41a1c	D
+M_M2nd_12			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/M2nd_12.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2nd_12	True	#e41a1c	D
+M_M2nd_13			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/M2nd_13.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	M	True	1		False	True	True	False	False	False	#e41a1c	D	M2nd_13	True	#e41a1c	D
+M_M2nd_14			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/M2nd_14.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2nd_14	True	#e41a1c	D
+M_M2nd_15			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/M2nd_15.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2nd_15	True	#e41a1c	D
+M_M2nd_16			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/M2nd_16.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2nd_16	True	#e41a1c	D
+M_M2nd_17			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/M2nd_17.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2nd_17	True	#e41a1c	D
+M_M2nd_18			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/M2nd_18.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2nd_18	True	#e41a1c	D
+M_M2nd_19			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/M2nd_19.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2nd_19	True	#e41a1c	D
+M_M2nd_20			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/M2nd_20.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2nd_20	True	#e41a1c	D
+M_M2nd_21			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/M2nd_21.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	M	True	1		False	True	True	False	False	False	#e41a1c	D	M2nd_21	True	#e41a1c	D
+M_M2nd_22			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/M2nd_22.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2nd_22	True	#e41a1c	D
+M_M2nd_23			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/M2nd_23.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2nd_23	True	#e41a1c	D
+M_M2nd_24			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/M2nd_24.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2nd_24	True	#e41a1c	D
+M_M2nd_25			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/M2nd_25.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2nd_25	True	#e41a1c	D
+M_M2nd_26			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/M2nd_26.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2nd_26	True	#e41a1c	D
+M_M2nd_27			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/M2nd_27.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2nd_27	True	#e41a1c	D
+M_M2nd_28			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/M2nd_28.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2nd_28	True	#e41a1c	D
+M_M2nd_29			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/M2nd_29.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2nd_29	True	#e41a1c	D
+M_M2nd_30			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/M2nd_30.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2nd_30	True	#e41a1c	D
+M_M2nd_31			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/M2nd_31.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2nd_31	True	#e41a1c	D
+M_M2nd_32			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/M2nd_32.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	M	True	0		False	True	True	False	False	False	#e41a1c	D	M2nd_32	True	#e41a1c	D
+P_M2nd_33			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/M2nd_33.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	P	True	1		False	False	False	False	True	False	#377eb8	o	M2nd_33	True	#377eb8	o
+P_M2nd_34			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/M2nd_34.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	P	True	1		False	False	False	False	True	False	#377eb8	o	M2nd_34	True	#377eb8	o
+M_M3_1			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/M3_1.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	M	True	0		False	True	True	False	False	False	#e41a1c	D	M3_1	True	#e41a1c	D
+M_M3_10			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/M3_10.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	M	True	0		False	True	True	False	False	False	#e41a1c	D	M3_10	True	#e41a1c	D
+M_M3_11			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/M3_11.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	M	True	0		False	True	True	False	False	False	#e41a1c	D	M3_11	True	#e41a1c	D
+M_M3_12			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/M3_12.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	M	True	0		False	True	True	False	False	False	#e41a1c	D	M3_12	True	#e41a1c	D
+M_M3_13			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/M3_13.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	M	True	0		False	True	True	False	False	False	#e41a1c	D	M3_13	True	#e41a1c	D
+M_M3_14			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/M3_14.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	M	True	0		False	True	True	False	False	False	#e41a1c	D	M3_14	True	#e41a1c	D
+M_M3_2			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/M3_2.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	M	True	0		False	True	True	False	False	False	#e41a1c	D	M3_2	True	#e41a1c	D
+M_M3_3			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/M3_3.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	M	True	0		False	True	True	False	False	False	#e41a1c	D	M3_3	True	#e41a1c	D
+M_M3_4			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/M3_4.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	M	True	0		False	True	True	False	False	False	#e41a1c	D	M3_4	True	#e41a1c	D
+M_M3_5			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/M3_5.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	M	True	0		False	True	True	False	False	False	#e41a1c	D	M3_5	True	#e41a1c	D
+M_M3_6			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/M3_6.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	M	True	0		False	True	True	False	False	False	#e41a1c	D	M3_6	True	#e41a1c	D
+M_M3_7			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/M3_7.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	M	True	0		False	True	True	False	False	False	#e41a1c	D	M3_7	True	#e41a1c	D
+M_M3_8			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/M3_8.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	M	True	0		False	True	True	False	False	False	#e41a1c	D	M3_8	True	#e41a1c	D
+M_M3_9			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/M3_9.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	M	True	0		False	True	True	False	False	False	#e41a1c	D	M3_9	True	#e41a1c	D
+M_M4_1			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/M4_1.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	M	True	0		False	True	True	False	False	False	#e41a1c	D	M4_1	True	#e41a1c	D
+M_M4_10			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/M4_10.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	M	True	0		False	True	True	False	False	False	#e41a1c	D	M4_10	True	#e41a1c	D
+M_M4_11			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/M4_11.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	M	True	0		False	True	True	False	False	False	#e41a1c	D	M4_11	True	#e41a1c	D
+M_M4_12			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/M4_12.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	M	True	0		False	True	True	False	False	False	#e41a1c	D	M4_12	True	#e41a1c	D
+M_M4_13			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/M4_13.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	M	True	0		False	True	True	False	False	False	#e41a1c	D	M4_13	True	#e41a1c	D
+M_M4_14			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/M4_14.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	M	True	0		False	True	True	False	False	False	#e41a1c	D	M4_14	True	#e41a1c	D
+M_M4_2			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/M4_2.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	M	True	0		False	True	True	False	False	False	#e41a1c	D	M4_2	True	#e41a1c	D
+M_M4_3			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/M4_3.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	M	True	0		False	True	True	False	False	False	#e41a1c	D	M4_3	True	#e41a1c	D
+M_M4_4			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/M4_4.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	M	True	0		False	True	True	False	False	False	#e41a1c	D	M4_4	True	#e41a1c	D
+M_M4_5			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/M4_5.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	M	True	0		False	True	True	False	False	False	#e41a1c	D	M4_5	True	#e41a1c	D
+M_M4_6			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/M4_6.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	M	True	0		False	True	True	False	False	False	#e41a1c	D	M4_6	True	#e41a1c	D
+M_M4_7			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/M4_7.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	M	True	0		False	True	True	False	False	False	#e41a1c	D	M4_7	True	#e41a1c	D
+M_M4_8			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/M4_8.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	M	True	0		False	True	True	False	False	False	#e41a1c	D	M4_8	True	#e41a1c	D
+M_M4_9			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/M4_9.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	M	True	0		False	True	True	False	False	False	#e41a1c	D	M4_9	True	#e41a1c	D
+M_M6_1			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round3_iter1/bam_files/M6_1.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_3	M	True	0		False	True	True	False	False	False	#e41a1c	D	M6_1	True	#e41a1c	D
+M_M6_2			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round3_iter1/bam_files/M6_2.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_3	M	True	0		False	True	True	False	False	False	#e41a1c	D	M6_2	True	#e41a1c	D
+M_M6_3			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round3_iter1/bam_files/M6_3.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_3	M	True	0		False	True	True	False	False	False	#e41a1c	D	M6_3	True	#e41a1c	D
+M_M6_4			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round3_iter1/bam_files/M6_4.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_3	M	True	0		False	True	True	False	False	False	#e41a1c	D	M6_4	True	#e41a1c	D
+M_M6_5			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round3_iter1/bam_files/M6_5.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_3	M	True	0		False	True	True	False	False	False	#e41a1c	D	M6_5	True	#e41a1c	D
+M_M6_6			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round3_iter1/bam_files/M6_6.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_3	M	True	0		False	True	True	False	False	False	#e41a1c	D	M6_6	True	#e41a1c	D
+M_M6_7			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round3_iter1/bam_files/M6_7.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_3	M	True	0		False	True	True	False	False	False	#e41a1c	D	M6_7	True	#e41a1c	D
+N_CVN_01			/oasis/tscc/scratch/ppliu/single_cell_cvn/analysis_like_sc/bam_files/CVN_01.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_5	N	True	0		False	False	False	True	False	False	#4daf4a	s	CVN_01	True	#4daf4a	s
+N_CVN_02			/oasis/tscc/scratch/ppliu/single_cell_cvn/analysis_like_sc/bam_files/CVN_02.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_5	N	True	0		False	False	False	True	False	False	#4daf4a	s	CVN_02	True	#4daf4a	s
+N_CVN_03			/oasis/tscc/scratch/ppliu/single_cell_cvn/analysis_like_sc/bam_files/CVN_03.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_5	N	True	0		False	False	False	True	False	False	#4daf4a	s	CVN_03	True	#4daf4a	s
+N_CVN_04			/oasis/tscc/scratch/ppliu/single_cell_cvn/analysis_like_sc/bam_files/CVN_04.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_5	N	True	0		False	False	False	True	False	False	#4daf4a	s	CVN_04	True	#4daf4a	s
+N_CVN_05			/oasis/tscc/scratch/ppliu/single_cell_cvn/analysis_like_sc/bam_files/CVN_05.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_5	N	True	0		False	False	False	True	False	False	#4daf4a	s	CVN_05	True	#4daf4a	s
+N_CVN_06			/oasis/tscc/scratch/ppliu/single_cell_cvn/analysis_like_sc/bam_files/CVN_06.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_5	N	True	0		False	False	False	True	False	False	#4daf4a	s	CVN_06	True	#4daf4a	s
+N_CVN_07			/oasis/tscc/scratch/ppliu/single_cell_cvn/analysis_like_sc/bam_files/CVN_07.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_5	N	True	0		False	False	False	True	False	False	#4daf4a	s	CVN_07	True	#4daf4a	s
+N_CVN_08			/oasis/tscc/scratch/ppliu/single_cell_cvn/analysis_like_sc/bam_files/CVN_08.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_5	N	True	0		False	False	False	True	False	False	#4daf4a	s	CVN_08	True	#4daf4a	s
+N_CVN_09			/oasis/tscc/scratch/ppliu/single_cell_cvn/analysis_like_sc/bam_files/CVN_09.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_5	N	True	0		False	False	False	True	False	False	#4daf4a	s	CVN_09	True	#4daf4a	s
+N_CVN_10			/oasis/tscc/scratch/ppliu/single_cell_cvn/analysis_like_sc/bam_files/CVN_10.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_5	N	True	0		False	False	False	True	False	False	#4daf4a	s	CVN_10	True	#4daf4a	s
+N_CVN_11			/oasis/tscc/scratch/ppliu/single_cell_cvn/analysis_like_sc/bam_files/CVN_11.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_5	N	True	0		False	False	False	True	False	False	#4daf4a	s	CVN_11	True	#4daf4a	s
+N_CVN_12			/oasis/tscc/scratch/ppliu/single_cell_cvn/analysis_like_sc/bam_files/CVN_12.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_5	N	True	0		False	False	False	True	False	False	#4daf4a	s	CVN_12	True	#4daf4a	s
+N_CVN_13			/oasis/tscc/scratch/ppliu/single_cell_cvn/analysis_like_sc/bam_files/CVN_13.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_5	N	True	0		False	False	False	True	False	False	#4daf4a	s	CVN_13	True	#4daf4a	s
+N_CVN_14			/oasis/tscc/scratch/ppliu/single_cell_cvn/analysis_like_sc/bam_files/CVN_14.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_5	N	True	0		False	False	False	True	False	False	#4daf4a	s	CVN_14	True	#4daf4a	s
+N_CVN_15			/oasis/tscc/scratch/ppliu/single_cell_cvn/analysis_like_sc/bam_files/CVN_15.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_5	N	True	0		False	False	False	True	False	False	#4daf4a	s	CVN_15	True	#4daf4a	s
+N_CVN_16			/oasis/tscc/scratch/ppliu/single_cell_cvn/analysis_like_sc/bam_files/CVN_16.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_5	N	True	0		False	False	False	True	False	False	#4daf4a	s	CVN_16	True	#4daf4a	s
+N_CVN_17			/oasis/tscc/scratch/ppliu/single_cell_cvn/analysis_like_sc/bam_files/CVN_17.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_5	N	True	1		False	False	False	True	False	False	#4daf4a	s	CVN_17	True	#4daf4a	s
+N_CVN_18			/oasis/tscc/scratch/ppliu/single_cell_cvn/analysis_like_sc/bam_files/CVN_18.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_5	N	True	0		False	False	False	True	False	False	#4daf4a	s	CVN_18	True	#4daf4a	s
+N_CVN_19			/oasis/tscc/scratch/ppliu/single_cell_cvn/analysis_like_sc/bam_files/CVN_19.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_5	N	True	0		False	False	False	True	False	False	#4daf4a	s	CVN_19	True	#4daf4a	s
+N_CVN_20			/oasis/tscc/scratch/ppliu/single_cell_cvn/analysis_like_sc/bam_files/CVN_20.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_5	N	True	0		False	False	False	True	False	False	#4daf4a	s	CVN_20	True	#4daf4a	s
+N_CVN_21			/oasis/tscc/scratch/ppliu/single_cell_cvn/analysis_like_sc/bam_files/CVN_21.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_5	N	True	0		False	False	False	True	False	False	#4daf4a	s	CVN_21	True	#4daf4a	s
+N_CVN_22			/oasis/tscc/scratch/ppliu/single_cell_cvn/analysis_like_sc/bam_files/CVN_22.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_5	N	True	0		False	False	False	True	False	False	#4daf4a	s	CVN_22	True	#4daf4a	s
+N_CVN_23			/oasis/tscc/scratch/ppliu/single_cell_cvn/analysis_like_sc/bam_files/CVN_23.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_5	N	True	0		False	False	False	True	False	False	#4daf4a	s	CVN_23	True	#4daf4a	s
+N_CVN_24			/oasis/tscc/scratch/ppliu/single_cell_cvn/analysis_like_sc/bam_files/CVN_24.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_5	N	True	0		False	False	False	True	False	False	#4daf4a	s	CVN_24	True	#4daf4a	s
+N_CVN_25			/oasis/tscc/scratch/ppliu/single_cell_cvn/analysis_like_sc/bam_files/CVN_25.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_5	N	True	0		False	False	False	True	False	False	#4daf4a	s	CVN_25	True	#4daf4a	s
+N_CVN_26			/oasis/tscc/scratch/ppliu/single_cell_cvn/analysis_like_sc/bam_files/CVN_26.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_5	N	True	0		False	False	False	True	False	False	#4daf4a	s	CVN_26	True	#4daf4a	s
+N_CVN_27			/oasis/tscc/scratch/ppliu/single_cell_cvn/analysis_like_sc/bam_files/CVN_27.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_5	N	True	0		False	False	False	True	False	False	#4daf4a	s	CVN_27	True	#4daf4a	s
+N_CVN_28			/oasis/tscc/scratch/ppliu/single_cell_cvn/analysis_like_sc/bam_files/CVN_28.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_5	N	True	0		False	False	False	True	False	False	#4daf4a	s	CVN_28	True	#4daf4a	s
+N_CVN_29			/oasis/tscc/scratch/ppliu/single_cell_cvn/analysis_like_sc/bam_files/CVN_29.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_5	N	True	0		False	False	False	True	False	False	#4daf4a	s	CVN_29	True	#4daf4a	s
+N_CVN_30			/oasis/tscc/scratch/ppliu/single_cell_cvn/analysis_like_sc/bam_files/CVN_30.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_5	N	True	0		False	False	False	True	False	False	#4daf4a	s	CVN_30	True	#4daf4a	s
+N_CVN_31			/oasis/tscc/scratch/ppliu/single_cell_cvn/analysis_like_sc/bam_files/CVN_31.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_5	N	True	0		False	False	False	True	False	False	#4daf4a	s	CVN_31	True	#4daf4a	s
+N_CVN_32			/oasis/tscc/scratch/ppliu/single_cell_cvn/analysis_like_sc/bam_files/CVN_32.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_5	N	True	0		False	False	False	True	False	False	#4daf4a	s	CVN_32	True	#4daf4a	s
+N_CVN_33			/oasis/tscc/scratch/ppliu/single_cell_cvn/analysis_like_sc/bam_files/CVN_33.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_5	N	True	0		False	False	False	True	False	False	#4daf4a	s	CVN_33	True	#4daf4a	s
+N_CVN_34			/oasis/tscc/scratch/ppliu/single_cell_cvn/analysis_like_sc/bam_files/CVN_34.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_5	N	True	0		False	False	False	True	False	False	#4daf4a	s	CVN_34	True	#4daf4a	s
+N_CVN_35			/oasis/tscc/scratch/ppliu/single_cell_cvn/analysis_like_sc/bam_files/CVN_35.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_5	N	True	1		False	False	False	True	False	False	#4daf4a	s	CVN_35	True	#4daf4a	s
+N_N1_01			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/N1_01_TAAGGCGA-CTCTCTAT_L001.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	N	False	0		False	False	False	True	False	False	#4daf4a	s	N1_01	True	#4daf4a	s
+N_N1_02			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/N1_02_TAAGGCGA-TATCCTCT_L001.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	N	False	0		False	False	False	True	False	False	#4daf4a	s	N1_02	True	#4daf4a	s
+N_N1_03			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/N1_03_TAAGGCGA-AGAGTAGA_L001.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	N	False	0		False	False	False	True	False	False	#4daf4a	s	N1_03	True	#4daf4a	s
+N_N1_04			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/N1_04_TAAGGCGA-GTAAGGAG_L001.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	N	False	0		False	False	False	True	False	False	#4daf4a	s	N1_04	True	#4daf4a	s
+N_N1_05			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/N1_05_TAAGGCGA-ACTGCATA_L001.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	N	False	0		False	False	False	True	False	False	#4daf4a	s	N1_05	True	#4daf4a	s
+N_N1_06			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/N1_06_CGTACTAG-CTCTCTAT_L001.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	N	False	0		False	False	False	True	False	False	#4daf4a	s	N1_06	True	#4daf4a	s
+N_N1_07			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/N1_07_CGTACTAG-TATCCTCT_L001.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	N	False	0		False	False	False	True	False	False	#4daf4a	s	N1_07	True	#4daf4a	s
+N_N1_08			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/N1_08_CGTACTAG-AGAGTAGA_L001.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	N	False	0		False	False	False	True	False	False	#4daf4a	s	N1_08	True	#4daf4a	s
+N_N1_09			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/N1_09_CGTACTAG-GTAAGGAG_L001.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	N	False	0		False	False	False	True	False	False	#4daf4a	s	N1_09	True	#4daf4a	s
+N_N1_10			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/N1_10_CGTACTAG-ACTGCATA_L001.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	N	False	0		False	False	False	True	False	False	#4daf4a	s	N1_10	True	#4daf4a	s
+N_N1_11			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/N1_11_CGTACTAG-AAGGAGTA_L001.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	N	False	0		False	False	False	True	False	False	#4daf4a	s	N1_11	True	#4daf4a	s
+N_N1_12			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/N1_12_CGTACTAG-CTAAGCCT_L001.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	N	False	0		False	False	False	True	False	False	#4daf4a	s	N1_12	True	#4daf4a	s
+N_N2_01			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/N2_01_TAAGGCGA-AAGGAGTA_L002.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	N	False	0		False	False	False	True	False	False	#4daf4a	s	N2_01	True	#4daf4a	s
+N_N2_02			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/N2_02_CGTACTAG-TAGATCGC_L002.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	N	False	0		False	False	False	True	False	False	#4daf4a	s	N2_02	True	#4daf4a	s
+N_N2_04			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/N2_04_TCCTGAGC-CTAAGCCT_L002.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	N	False	0		False	False	False	True	False	False	#4daf4a	s	N2_04	True	#4daf4a	s
+N_N2_05			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/N2_05_GGACTCCT-CTCTCTAT_L002.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	N	False	0		False	False	False	True	False	False	#4daf4a	s	N2_05	True	#4daf4a	s
+N_N2_07			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/N2_07_CTCTCTAC-GTAAGGAG_L002.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	N	False	0		False	False	False	True	False	False	#4daf4a	s	N2_07	True	#4daf4a	s
+N_N2_08			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/N2_08_CAGAGAGG-TAGATCGC_L002.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	N	False	0		False	False	False	True	False	False	#4daf4a	s	N2_08	True	#4daf4a	s
+N_N2_09			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/N2_09_CAGAGAGG-ACTGCATA_L002.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	N	False	0		False	False	False	True	False	False	#4daf4a	s	N2_09	True	#4daf4a	s
+N_N2_10			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/N2_10_CGAGGCTG-AGAGTAGA_L002.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	N	False	0		False	False	False	True	False	False	#4daf4a	s	N2_10	True	#4daf4a	s
+N_N2_11			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/N2_11_CGAGGCTG-GTAAGGAG_L002.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	N	False	0		False	False	False	True	False	False	#4daf4a	s	N2_11	True	#4daf4a	s
+N_N2_12			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/N2_12_AAGAGGCA-ACTGCATA_L002.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	N	False	0		False	False	False	True	False	False	#4daf4a	s	N2_12	True	#4daf4a	s
+N_N3_01			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/N3_01_AGGCAGAA-AAGGAGTA_L003.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	N	False	0		False	False	False	True	False	False	#4daf4a	s	N3_01	True	#4daf4a	s
+N_N3_02			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/N3_02_GGACTCCT-CTAAGCCT_L003.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	N	False	0		False	False	False	True	False	False	#4daf4a	s	N3_02	True	#4daf4a	s
+N_N3_03			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/N3_03_CTCTCTAC-CTCTCTAT_L003.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	N	False	0		False	False	False	True	False	False	#4daf4a	s	N3_03	True	#4daf4a	s
+N_N3_04			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/N3_04_CTCTCTAC-TATCCTCT_L003.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	N	False	0		False	False	False	True	False	False	#4daf4a	s	N3_04	True	#4daf4a	s
+N_N3_05			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/N3_05_CAGAGAGG-TATCCTCT_L003.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	N	False	0		False	False	False	True	False	False	#4daf4a	s	N3_05	True	#4daf4a	s
+N_N3_06			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/N3_06_GCTACGCT-CTCTCTAT_L003.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	N	False	0		False	False	False	True	False	False	#4daf4a	s	N3_06	True	#4daf4a	s
+N_N3_07			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/N3_07_GCTACGCT-TATCCTCT_L003.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	N	False	0		False	False	False	True	False	False	#4daf4a	s	N3_07	True	#4daf4a	s
+N_N3_09			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/N3_09_CGAGGCTG-CTCTCTAT_L003.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	N	False	0		False	False	False	True	False	False	#4daf4a	s	N3_09	True	#4daf4a	s
+N_N3_10			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/N3_10_CGAGGCTG-TATCCTCT_L003.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	N	False	0		False	False	False	True	False	False	#4daf4a	s	N3_10	True	#4daf4a	s
+N_N3_11			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/N3_11_GTAGAGGA-CTCTCTAT_L003.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	N	False	0		False	False	False	True	False	False	#4daf4a	s	N3_11	True	#4daf4a	s
+N_N3_12			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/N3_12_GTAGAGGA-GTAAGGAG_L003.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	N	False	0		False	False	False	True	False	False	#4daf4a	s	N3_12	True	#4daf4a	s
+N_N4_1			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/N4_1.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	N	False	0		False	False	False	True	False	False	#4daf4a	s	N4_1	True	#4daf4a	s
+N_N4_10			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/N4_10.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	N	False	0		False	False	False	True	False	False	#4daf4a	s	N4_10	True	#4daf4a	s
+N_N4_11			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/N4_11.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	N	False	0		False	False	False	True	False	False	#4daf4a	s	N4_11	True	#4daf4a	s
+N_N4_12			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/N4_12.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	N	False	0		False	False	False	True	False	False	#4daf4a	s	N4_12	True	#4daf4a	s
+N_N4_13			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/N4_13.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	N	False	0		False	False	False	True	False	False	#4daf4a	s	N4_13	True	#4daf4a	s
+N_N4_14			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/N4_14.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	N	False	0		False	False	False	True	False	False	#4daf4a	s	N4_14	True	#4daf4a	s
+N_N4_2			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/N4_2.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	N	False	0		False	False	False	True	False	False	#4daf4a	s	N4_2	True	#4daf4a	s
+N_N4_3			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/N4_3.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	N	False	0		False	False	False	True	False	False	#4daf4a	s	N4_3	True	#4daf4a	s
+N_N4_4			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/N4_4.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	N	False	0		False	False	False	True	False	False	#4daf4a	s	N4_4	True	#4daf4a	s
+N_N4_5			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/N4_5.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	N	False	0		False	False	False	True	False	False	#4daf4a	s	N4_5	True	#4daf4a	s
+N_N4_6			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/N4_6.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	N	False	0		False	False	False	True	False	False	#4daf4a	s	N4_6	True	#4daf4a	s
+N_N4_7			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/N4_7.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	N	False	0		False	False	False	True	False	False	#4daf4a	s	N4_7	True	#4daf4a	s
+N_N4_8			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/N4_8.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	N	False	0		False	False	False	True	False	False	#4daf4a	s	N4_8	True	#4daf4a	s
+N_N4_9			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/N4_9.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	N	False	0		False	False	False	True	False	False	#4daf4a	s	N4_9	True	#4daf4a	s
+N_N5_1			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/N5_1.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	N	False	0		False	False	False	True	False	False	#4daf4a	s	N5_1	True	#4daf4a	s
+N_N5_10			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/N5_10.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	N	False	0		False	False	False	True	False	False	#4daf4a	s	N5_10	True	#4daf4a	s
+N_N5_11			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/N5_11.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	N	False	0		False	False	False	True	False	False	#4daf4a	s	N5_11	True	#4daf4a	s
+N_N5_12			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/N5_12.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	N	False	0		False	False	False	True	False	False	#4daf4a	s	N5_12	True	#4daf4a	s
+N_N5_13			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/N5_13.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	N	False	0		False	False	False	True	False	False	#4daf4a	s	N5_13	True	#4daf4a	s
+N_N5_14			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/N5_14.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	N	False	0		False	False	False	True	False	False	#4daf4a	s	N5_14	True	#4daf4a	s
+N_N5_2			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/N5_2.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	N	False	0		False	False	False	True	False	False	#4daf4a	s	N5_2	True	#4daf4a	s
+N_N5_3			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/N5_3.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	N	False	0		False	False	False	True	False	False	#4daf4a	s	N5_3	True	#4daf4a	s
+N_N5_4			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/N5_4.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	N	False	0		False	False	False	True	False	False	#4daf4a	s	N5_4	True	#4daf4a	s
+N_N5_5			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/N5_5.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	N	False	0		False	False	False	True	False	False	#4daf4a	s	N5_5	True	#4daf4a	s
+N_N5_6			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/N5_6.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	N	False	0		False	False	False	True	False	False	#4daf4a	s	N5_6	True	#4daf4a	s
+N_N5_7			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/N5_7.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	N	False	0		False	False	False	True	False	False	#4daf4a	s	N5_7	True	#4daf4a	s
+N_N5_8			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/N5_8.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	N	False	0		False	False	False	True	False	False	#4daf4a	s	N5_8	True	#4daf4a	s
+N_N5_9			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/N5_9.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	N	False	0		False	False	False	True	False	False	#4daf4a	s	N5_9	True	#4daf4a	s
+P_P1_01			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/P1_01_CGTACTAG-CTAAGCCT_L004.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	P	True	0		False	False	False	False	True	False	#377eb8	o	P1_01	True	#377eb8	o
+P_P1_02			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/P1_02_AGGCAGAA-TAGATCGC_L004.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	P	True	0		False	False	False	False	True	False	#377eb8	o	P1_02	True	#377eb8	o
+P_P1_03			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/P1_03_GGACTCCT-ACTGCATA_L004.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	P	True	0		False	False	False	False	True	False	#377eb8	o	P1_03	True	#377eb8	o
+P_P1_04			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/P1_04_TAGGCATG-CTCTCTAT_L004.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	P	True	0	P7_7	False	False	False	False	True	False	#377eb8	o	P1_04	True	#377eb8	o
+P_P1_05			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/P1_05_TAGGCATG-TATCCTCT_L004.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	P	True	0	P8_6	False	False	False	False	True	False	#377eb8	o	P1_05	True	#377eb8	o
+P_P1_06			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/P1_06_CTCTCTAC-AAGGAGTA_L004.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	P	True	0		False	False	False	False	True	False	#377eb8	o	P1_06	True	#377eb8	o
+P_P1_07			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/P1_07_CTCTCTAC-CTAAGCCT_L004.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	P	True	0		False	False	False	False	True	False	#377eb8	o	P1_07	True	#377eb8	o
+P_P1_08					P		0		False	False	False	False	True	False	#377eb8	o	P1_08	True	#377eb8	o
+P_P1_09			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/P1_09_GCTACGCT-GTAAGGAG_L004.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	P	True	0		False	False	False	False	True	False	#377eb8	o	P1_09	True	#377eb8	o
+P_P1_10			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/P1_10_CGAGGCTG-AGAGTAGA_L004.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	P	True	0	P8_11	False	False	False	False	True	False	#377eb8	o	P1_10	True	#377eb8	o
+P_P1_11			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/P1_11_AAGAGGCA-ACTGCATA_L004.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	P	True	0		False	False	False	False	True	False	#377eb8	o	P1_11	True	#377eb8	o
+P_P1_12			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/P1_12_GTAGAGGA-GTAAGGAG_L004.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	P	True	0		False	False	False	False	True	False	#377eb8	o	P1_12	True	#377eb8	o
+P_P2_01			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/P2_01_AGGCAGAA-AGAGTAGA_L005.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	P	True	0		False	False	False	False	True	False	#377eb8	o	P2_01	True	#377eb8	o
+P_P2_02			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/P2_02_GGACTCCT-AGAGTAGA_L005.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	P	True	0		False	False	False	False	True	False	#377eb8	o	P2_02	True	#377eb8	o
+P_P2_03			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/P2_03_GGACTCCT-GTAAGGAG_L005.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	P	True	0		False	False	False	False	True	False	#377eb8	o	P2_03	True	#377eb8	o
+P_P2_04			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/P2_04_CAGAGAGG-TAGATCGC_L005.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	P	True	0		False	False	False	False	True	False	#377eb8	o	P2_04	True	#377eb8	o
+P_P2_05			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/P2_05_CAGAGAGG-ACTGCATA_L005.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	P	True	0		False	False	False	False	True	False	#377eb8	o	P2_05	True	#377eb8	o
+P_P2_06			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/P2_06_CAGAGAGG-AAGGAGTA_L005.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	P	True	0		False	False	False	False	True	False	#377eb8	o	P2_06	True	#377eb8	o
+P_P2_07			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/P2_07_CAGAGAGG-CTAAGCCT_L005.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	P	True	0		False	False	False	False	True	False	#377eb8	o	P2_07	True	#377eb8	o
+P_P2_08			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/P2_08_GCTACGCT-AAGGAGTA_L005.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	P	True	0		False	False	False	False	True	False	#377eb8	o	P2_08	True	#377eb8	o
+P_P2_09			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/P2_09_GCTACGCT-CTAAGCCT_L005.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	P	True	0		False	False	False	False	True	False	#377eb8	o	P2_09	True	#377eb8	o
+P_P2_10			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/P2_10_CGAGGCTG-TAGATCGC_L005.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	P	True	0	P7_9	False	False	False	False	True	False	#377eb8	o	P2_10	True	#377eb8	o
+P_P2_11			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/P2_11_AAGAGGCA-CTCTCTAT_L005.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	P	True	0		False	False	False	False	True	False	#377eb8	o	P2_11	True	#377eb8	o
+P_P2_12			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/P2_12_AAGAGGCA-TATCCTCT_L005.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	P	True	0		False	False	False	False	True	False	#377eb8	o	P2_12	True	#377eb8	o
+P_P2_13			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/P2_13_GTAGAGGA-CTCTCTAT_L005.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	P	True	0		False	False	False	False	True	False	#377eb8	o	P2_13	True	#377eb8	o
+P_P2_14			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/P2_14_GTAGAGGA-TATCCTCT_L005.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	P	True	0		False	False	False	False	True	False	#377eb8	o	P2_14	True	#377eb8	o
+P_P3_01					P		0		False	False	False	False	True	False	#377eb8	o	P3_01	True	#377eb8	o
+P_P3_02			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/P3_02_GGACTCCT-AAGGAGTA_L006.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	P	True	0		False	False	False	False	True	False	#377eb8	o	P3_02	True	#377eb8	o
+P_P3_03			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/P3_03_TAGGCATG-CTAAGCCT_L006.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	P	True	0		False	False	False	False	True	False	#377eb8	o	P3_03	True	#377eb8	o
+P_P4_1			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/P4_1.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	P	True	0		False	False	False	False	True	False	#377eb8	o	P4_1	True	#377eb8	o
+P_P4_10			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/P4_10.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	P	True	0		False	False	False	False	True	False	#377eb8	o	P4_10	True	#377eb8	o
+P_P4_11			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/P4_11.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	P	True	0	P8_10	False	False	False	False	True	False	#377eb8	o	P4_11	True	#377eb8	o
+P_P4_12			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/P4_12.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	P	True	0		False	False	False	False	True	False	#377eb8	o	P4_12	True	#377eb8	o
+P_P4_13			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/P4_13.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	P	True	0		False	False	False	False	True	False	#377eb8	o	P4_13	True	#377eb8	o
+P_P4_14			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/P4_14.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	P	True	0		False	False	False	False	True	False	#377eb8	o	P4_14	True	#377eb8	o
+P_P4_2			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/P4_2.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	P	True	0		False	False	False	False	True	False	#377eb8	o	P4_2	True	#377eb8	o
+P_P4_3			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/P4_3.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	P	True	0		False	False	False	False	True	False	#377eb8	o	P4_3	True	#377eb8	o
+P_P4_4			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/P4_4.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	P	True	0		False	False	False	False	True	False	#377eb8	o	P4_4	True	#377eb8	o
+P_P4_5			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/P4_5.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	P	True	0		False	False	False	False	True	False	#377eb8	o	P4_5	True	#377eb8	o
+P_P4_6			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/P4_6.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	P	True	0		False	False	False	False	True	False	#377eb8	o	P4_6	True	#377eb8	o
+P_P4_7			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/P4_7.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	P	True	0		False	False	False	False	True	False	#377eb8	o	P4_7	True	#377eb8	o
+P_P4_8			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/P4_8.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	P	True	0		False	False	False	False	True	False	#377eb8	o	P4_8	True	#377eb8	o
+P_P4_9			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round2_iter1/bam_files/P4_9.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_2	P	True	0		False	False	False	False	True	False	#377eb8	o	P4_9	True	#377eb8	o
+P_P7_1			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round3_iter1/bam_files/P7_1.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_3	P	True	0		False	False	False	False	True	False	#377eb8	o	P7_1	True	#377eb8	o
+P_P7_10			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round3_iter1/bam_files/P7_10.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_3	P	True	0		False	False	False	False	True	False	#377eb8	o	P7_10	True	#377eb8	o
+P_P7_11			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round3_iter1/bam_files/P7_11.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_3	P	True	0		False	False	False	False	True	False	#377eb8	o	P7_11	True	#377eb8	o
+P_P7_12			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round3_iter1/bam_files/P7_12.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_3	P	True	0		False	False	False	False	True	False	#377eb8	o	P7_12	True	#377eb8	o
+P_P7_3			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round3_iter1/bam_files/P7_3.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_3	P	True	0		False	False	False	False	True	False	#377eb8	o	P7_3	True	#377eb8	o
+P_P7_4			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round3_iter1/bam_files/P7_4.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_3	P	True	0		False	False	False	False	True	False	#377eb8	o	P7_4	True	#377eb8	o
+P_P7_5			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round3_iter1/bam_files/P7_5.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_3	P	True	0		False	False	False	False	True	False	#377eb8	o	P7_5	True	#377eb8	o
+P_P7_6			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round3_iter1/bam_files/P7_6.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_3	P	True	0		False	False	False	False	True	False	#377eb8	o	P7_6	True	#377eb8	o
+P_P7_7			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round3_iter1/bam_files/P7_7.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_3	P	True	0	P1_04	False	False	False	False	True	False	#377eb8	o	P7_7	True	#377eb8	o
+P_P7_9			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round3_iter1/bam_files/P7_9.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_3	P	True	0	P2_10	False	False	False	False	True	False	#377eb8	o	P7_9	True	#377eb8	o
+P_P8_1			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round3_iter1/bam_files/P8_1.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_3	P	True	0		False	False	False	False	True	False	#377eb8	o	P8_1	True	#377eb8	o
+P_P8_10			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round3_iter1/bam_files/P8_10.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_3	P	True	0	P4_11	False	False	False	False	True	False	#377eb8	o	P8_10	True	#377eb8	o
+P_P8_11			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round3_iter1/bam_files/P8_11.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_3	P	True	0	P1_10	False	False	False	False	True	False	#377eb8	o	P8_11	True	#377eb8	o
+P_P8_12			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round3_iter1/bam_files/P8_12.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_3	P	True	0		False	False	False	False	True	False	#377eb8	o	P8_12	True	#377eb8	o
+P_P8_2			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round3_iter1/bam_files/P8_2.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_3	P	True	0		False	False	False	False	True	False	#377eb8	o	P8_2	True	#377eb8	o
+P_P8_3			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round3_iter1/bam_files/P8_3.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_3	P	True	0		False	False	False	False	True	False	#377eb8	o	P8_3	True	#377eb8	o
+P_P8_4			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round3_iter1/bam_files/P8_4.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_3	P	True	0		False	False	False	False	True	False	#377eb8	o	P8_4	True	#377eb8	o
+P_P8_5			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round3_iter1/bam_files/P8_5.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_3	P	True	0		False	False	False	False	True	False	#377eb8	o	P8_5	True	#377eb8	o
+P_P8_6			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round3_iter1/bam_files/P8_6.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_3	P	True	0	P1_05	False	False	False	False	True	False	#377eb8	o	P8_6	True	#377eb8	o
+P_P8_7			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round3_iter1/bam_files/P8_7.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_3	P	True	0		False	False	False	False	True	False	#377eb8	o	P8_7	True	#377eb8	o
+P_P8_8			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round3_iter1/bam_files/P8_8.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_3	P	True	0		False	False	False	False	True	False	#377eb8	o	P8_8	True	#377eb8	o
+P_P8_9			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round3_iter1/bam_files/P8_9.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_3	P	True	0		False	False	False	False	True	False	#377eb8	o	P8_9	True	#377eb8	o
+P_P9_1			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round3_iter1/bam_files/P9_1.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_3	P	True	0		False	False	False	False	True	False	#377eb8	o	P9_1	True	#377eb8	o
+P_P9_2			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round3_iter1/bam_files/P9_2.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_3	P	True	0		False	False	False	False	True	False	#377eb8	o	P9_2	True	#377eb8	o
+P_P9_3			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round3_iter1/bam_files/P9_3.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_3	P	True	0		False	False	False	False	True	False	#377eb8	o	P9_3	True	#377eb8	o
+P_P9_4			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round3_iter1/bam_files/P9_4.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_3	P	True	0		False	False	False	False	True	False	#377eb8	o	P9_4	True	#377eb8	o
+S_MSA_01			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_01.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	0		False	False	True	False	False	True	#FFA500	p	MSA_01	True	#FFA500	p
+S_MSA_02			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_02.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	0		False	False	True	False	False	True	#FFA500	p	MSA_02	True	#FFA500	p
+S_MSA_03			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_03.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	0		False	False	True	False	False	True	#FFA500	p	MSA_03	True	#FFA500	p
+S_MSA_04			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_04.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	0		False	False	True	False	False	True	#FFA500	p	MSA_04	True	#FFA500	p
+S_MSA_05			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_05.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	0		False	False	True	False	False	True	#FFA500	p	MSA_05	True	#FFA500	p
+S_MSA_06			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_06.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	0		False	False	True	False	False	True	#FFA500	p	MSA_06	True	#FFA500	p
+S_MSA_07			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_07.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	0		False	False	True	False	False	True	#FFA500	p	MSA_07	True	#FFA500	p
+S_MSA_08			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_08.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	0		False	False	True	False	False	True	#FFA500	p	MSA_08	True	#FFA500	p
+S_MSA_09			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_09.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	0		False	False	True	False	False	True	#FFA500	p	MSA_09	True	#FFA500	p
+S_MSA_10			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_10.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	0		False	False	True	False	False	True	#FFA500	p	MSA_10	True	#FFA500	p
+S_MSA_11			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_11.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	0		False	False	True	False	False	True	#FFA500	p	MSA_11	True	#FFA500	p
+S_MSA_12			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_12.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	0		False	False	True	False	False	True	#FFA500	p	MSA_12	True	#FFA500	p
+S_MSA_13			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_13.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	0		False	False	True	False	False	True	#FFA500	p	MSA_13	True	#FFA500	p
+S_MSA_14			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_14.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	0		False	False	True	False	False	True	#FFA500	p	MSA_14	True	#FFA500	p
+S_MSA_15			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_15.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	0		False	False	True	False	False	True	#FFA500	p	MSA_15	True	#FFA500	p
+S_MSA_16			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_16.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	0		False	False	True	False	False	True	#FFA500	p	MSA_16	True	#FFA500	p
+S_MSA_17			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_17.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	0		False	False	True	False	False	True	#FFA500	p	MSA_17	True	#FFA500	p
+S_MSA_18			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_18.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	0		False	False	True	False	False	True	#FFA500	p	MSA_18	True	#FFA500	p
+S_MSA_19			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_19.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	1		False	False	True	False	False	True	#FFA500	p	MSA_19	True	#FFA500	p
+S_MSA_20			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_20.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	0		False	False	True	False	False	True	#FFA500	p	MSA_20	True	#FFA500	p
+S_MSA_21			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_21.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	0		False	False	True	False	False	True	#FFA500	p	MSA_21	True	#FFA500	p
+S_MSA_22			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_22.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	0		False	False	True	False	False	True	#FFA500	p	MSA_22	True	#FFA500	p
+S_MSA_23			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_23.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	0		False	False	True	False	False	True	#FFA500	p	MSA_23	True	#FFA500	p
+S_MSA_24			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_24.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	0		False	False	True	False	False	True	#FFA500	p	MSA_24	True	#FFA500	p
+S_MSA_25			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_25.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	0		False	False	True	False	False	True	#FFA500	p	MSA_25	True	#FFA500	p
+S_MSA_26			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_26.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	0		False	False	True	False	False	True	#FFA500	p	MSA_26	True	#FFA500	p
+S_MSA_27			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_27.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	0		False	False	True	False	False	True	#FFA500	p	MSA_27	True	#FFA500	p
+S_MSA_28			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_28.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	0		False	False	True	False	False	True	#FFA500	p	MSA_28	True	#FFA500	p
+S_MSA_29			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_29.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	1		False	False	True	False	False	True	#FFA500	p	MSA_29	True	#FFA500	p
+S_MSA_30			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_30.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	0		False	False	True	False	False	True	#FFA500	p	MSA_30	True	#FFA500	p
+S_MSA_31			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_31.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	0		False	False	True	False	False	True	#FFA500	p	MSA_31	True	#FFA500	p
+S_MSA_32			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_32.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	0		False	False	True	False	False	True	#FFA500	p	MSA_32	True	#FFA500	p
+S_MSA_33			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_33.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	0		False	False	True	False	False	True	#FFA500	p	MSA_33	True	#FFA500	p
+S_MSA_34			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_34.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	0		False	False	True	False	False	True	#FFA500	p	MSA_34	True	#FFA500	p
+S_MSA_35			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_35.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	0		False	False	True	False	False	True	#FFA500	p	MSA_35	True	#FFA500	p
+S_MSA_36			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_36.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	0		False	False	True	False	False	True	#FFA500	p	MSA_36	True	#FFA500	p
+S_MSA_37			/oasis/tscc/scratch/ppliu/single_cell_stressed_mn/analysis_like_sc/bam_files/MSA_37.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_4	S	True	0		False	False	True	False	False	True	#FFA500	p	MSA_37	True	#FFA500	p
