@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>flotilla.compute.generic &mdash; flotilla 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-3.1.0/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-3.1.0/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="flotilla 0.1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="flotilla" href="../../flotilla.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html">
+          flotilla</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="simple">
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <h1>Source code for flotilla.compute.generic</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">ExtraTreesRegressor</span><span class="p">,</span> <span class="n">GradientBoostingRegressor</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">stats</span>
+<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">TimeoutError</span>
+
+
+<span class="k">def</span> <span class="nf">switchy_score</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
+<div class="viewcode-block" id="switchy_score"><a class="viewcode-back" href="../../../flotilla.compute.html#flotilla.compute.generic.switchy_score">[docs]</a>    <span class="sd">&quot;&quot;&quot;Transform a 1D array of data scores to a vector of &quot;switchy scores&quot;</span>
+
+<span class="sd">    Calculates std deviation and mean of sine- and cosine-transformed</span>
+<span class="sd">    versions of the array. Better than sorting by just the mean which doesn&#39;t</span>
+<span class="sd">    push the really lowly variant events to the ends.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    array : numpy.array</span>
+<span class="sd">        A 1-D numpy array or something that could be cast as such (like a list)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        The &quot;switchy score&quot; of the study_data which can then be compared to other</span>
+<span class="sd">        splicing event study_data</span>
+
+<span class="sd">    @author Michael T. Lovci</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+    <span class="n">variance</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">array</span><span class="p">)]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span>
+    <span class="n">mean_value</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">array</span><span class="p">)]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">variance</span> <span class="o">*</span> <span class="n">mean_value</span>
+
+<span class="k">def</span> <span class="nf">get_switchy_score_order</span><span class="p">(</span><span class="n">x</span><span class="p">):</span></div>
+<div class="viewcode-block" id="get_switchy_score_order"><a class="viewcode-back" href="../../../flotilla.compute.html#flotilla.compute.generic.get_switchy_score_order">[docs]</a>    <span class="sd">&quot;&quot;&quot;Apply switchy scores to a 2D array of data scores</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : numpy.array</span>
+<span class="sd">        A 2-D numpy array in the shape [n_events, n_samples]</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.array</span>
+<span class="sd">        A 1-D array of the ordered indices, in switchy score order</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">switchy_scores</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">apply_along_axis</span><span class="p">(</span><span class="n">switchy_score</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">arr</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">switchy_scores</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">binify</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">bins</span><span class="p">):</span></div>
+<div class="viewcode-block" id="binify"><a class="viewcode-back" href="../../../flotilla.compute.html#flotilla.compute.generic.binify">[docs]</a>    <span class="sd">&quot;&quot;&quot;Makes a histogram of each row the provided binsize</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : pandas.DataFrame</span>
+<span class="sd">        The dataframe whose rows you&#39;d like to binify.</span>
+<span class="sd">    bins : numpy.array</span>
+<span class="sd">        Bins you would like to use for this data. Must include the final bin</span>
+<span class="sd">        value, e.g. (0, 0.5, 1) for the two bins (0, 0.5) and (0.5, 1)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    binned : pandas.DataFrame</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ncol</span> <span class="o">=</span> <span class="n">bins</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="n">nrow</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">binned</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nrow</span><span class="p">,</span> <span class="n">ncol</span><span class="p">))</span>
+
+    <span class="c"># TODO.md: make sure this works for numpy matrices</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()):</span>
+        <span class="n">binned</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="bp">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;{}-{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:])]</span>
+    <span class="n">binned</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">binned</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">binned</span>
+
+
+<span class="k">def</span> <span class="nf">get_regressor</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">n_estimators</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span> <span class="n">pCut</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">n_tries</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span></div>
+<div class="viewcode-block" id="get_regressor"><a class="viewcode-back" href="../../../flotilla.compute.html#flotilla.compute.generic.get_regressor">[docs]</a>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;getting regressor</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+    <span class="n">clfs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">oob_scores</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_tries</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%d</span><span class="s">.&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
+
+        <span class="n">clf</span> <span class="o">=</span> <span class="n">ExtraTreesRegressor</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="n">n_estimators</span><span class="p">,</span> <span class="n">oob_score</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                                  <span class="n">bootstrap</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">max_features</span><span class="o">=</span><span class="s">&#39;sqrt&#39;</span><span class="p">,</span>
+                                  <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">clfs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">clf</span><span class="p">)</span>
+        <span class="n">oob_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">clf</span><span class="o">.</span><span class="n">oob_score_</span><span class="p">)</span>
+    <span class="n">clf</span> <span class="o">=</span> <span class="n">clfs</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">oob_scores</span><span class="p">)]</span>
+    <span class="n">clf</span><span class="o">.</span><span class="n">feature_importances</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">clf</span><span class="o">.</span><span class="n">feature_importances_</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">clf</span><span class="p">,</span> <span class="n">oob_scores</span>
+
+
+<span class="k">def</span> <span class="nf">get_boosting_regressor</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span></div>
+<div class="viewcode-block" id="get_boosting_regressor"><a class="viewcode-back" href="../../../flotilla.compute.html#flotilla.compute.generic.get_boosting_regressor">[docs]</a>    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;getting boosting regressor</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+
+    <span class="n">clf</span> <span class="o">=</span> <span class="n">GradientBoostingRegressor</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">subsample</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">max_features</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                                    <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+
+    <span class="n">clf</span><span class="o">.</span><span class="n">feature_importances</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">clf</span><span class="o">.</span><span class="n">feature_importances_</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;finished boosting regressor</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">clf</span>
+
+
+<span class="k">def</span> <span class="nf">get_unstarted_events</span><span class="p">(</span><span class="n">mongodb</span><span class="p">):</span></div>
+<div class="viewcode-block" id="get_unstarted_events"><a class="viewcode-back" href="../../../flotilla.compute.html#flotilla.compute.generic.get_unstarted_events">[docs]</a>    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    get events that have not been started yet.</span>
+<span class="sd">    generator sets started to True before returning an event</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">go_on</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="k">while</span> <span class="n">go_on</span> <span class="o">==</span><span class="bp">True</span><span class="p">:</span>
+
+        <span class="n">event</span> <span class="o">=</span> <span class="n">mongodb</span><span class="p">[</span><span class="s">&#39;list&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s">&quot;started&quot;</span><span class="p">:</span><span class="bp">False</span><span class="p">})</span>
+
+        <span class="k">if</span> <span class="n">event</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">go_on</span><span class="o">=</span><span class="bp">False</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">event</span><span class="p">[</span><span class="s">&#39;started&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="n">mongodb</span><span class="p">[</span><span class="s">&#39;list&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="n">event</span>
+
+<span class="nd">@timeout</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="c">#because these sometimes hang</span></div>
+<span class="k">def</span> <span class="nf">get_slope</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+<div class="viewcode-block" id="get_slope"><a class="viewcode-back" href="../../../flotilla.compute.html#flotilla.compute.generic.get_slope">[docs]</a>    <span class="k">return</span> <span class="n">stats</span><span class="o">.</span><span class="n">linregress</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="nd">@timeout</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="c">#because these sometimes hang</span></div>
+<span class="k">def</span> <span class="nf">do_r</span><span class="p">(</span><span class="n">s_1</span><span class="p">,</span> <span class="n">s_2</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">stats</span><span class="o">.</span><span class="n">pearsonr</span><span class="p">,</span> <span class="n">min_items</span><span class="o">=</span><span class="mi">12</span><span class="p">):</span>
+<div class="viewcode-block" id="do_r"><a class="viewcode-back" href="../../../flotilla.compute.html#flotilla.compute.generic.do_r">[docs]</a>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    do an R calculation, remove items with values missing in either</span>
+
+<span class="sd">    input:</span>
+<span class="sd">    x - predictor vector</span>
+<span class="sd">    y - target vector</span>
+
+<span class="sd">    optional:</span>
+<span class="sd">    method - method to use (scipy.stats.pearsonr or scipy.stats.spearmanr)</span>
+
+<span class="sd">    output:</span>
+<span class="sd">    r, p (order as determined by the chosen method)</span>
+
+<span class="sd">    return (nan, nan) if too few items overlap</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">s_1</span><span class="p">,</span> <span class="n">s_2</span> <span class="o">=</span> <span class="n">s_1</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="n">s_2</span><span class="o">.</span><span class="n">dropna</span><span class="p">(),</span> <span class="n">join</span><span class="o">=</span><span class="s">&#39;inner&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s_1</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">min_items</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">method</span><span class="p">(</span><span class="n">s_1</span><span class="p">,</span> <span class="n">s_2</span><span class="p">)</span>
+
+<span class="nd">@timeout</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="c">#because these sometimes hang</span></div>
+<span class="k">def</span> <span class="nf">get_robust_values</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+<div class="viewcode-block" id="get_robust_values"><a class="viewcode-back" href="../../../flotilla.compute.html#flotilla.compute.generic.get_robust_values">[docs]</a>    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    get robust linear regression</span>
+
+<span class="sd">    input:</span>
+<span class="sd">    x - predictor vector</span>
+<span class="sd">    y - target vector</span>
+
+<span class="sd">    output:</span>
+<span class="sd">    intercept, slope, t-statistic, p-value</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="kn">as</span> <span class="nn">sm</span>
+    <span class="n">rlm_result</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">RLM</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">sm</span><span class="o">.</span><span class="n">add_constant</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">missing</span><span class="o">=</span><span class="s">&#39;drop&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">rlm_result</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">rlm_result</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">rlm_result</span><span class="o">.</span><span class="n">tvalues</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">rlm_result</span><span class="o">.</span><span class="n">pvalues</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+
+<span class="nd">@timeout</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span></div>
+<span class="k">def</span> <span class="nf">get_dcor</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<div class="viewcode-block" id="get_dcor"><a class="viewcode-back" href="../../../flotilla.compute.html#flotilla.compute.generic.get_dcor">[docs]</a>    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    get dcor</span>
+
+<span class="sd">    see: https://github.com/andrewdyates/dcor</span>
+
+<span class="sd">    input:</span>
+<span class="sd">    x - predictor vector</span>
+<span class="sd">    y - target vector</span>
+
+<span class="sd">    output:</span>
+<span class="sd">    dc, dr, dvx, dvy</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">dcor_cpy</span> <span class="kn">as</span> <span class="nn">dcor</span>
+    <span class="n">dc</span><span class="p">,</span> <span class="n">dr</span><span class="p">,</span> <span class="n">dvx</span><span class="p">,</span> <span class="n">dvy</span> <span class="o">=</span> <span class="n">dcor</span><span class="o">.</span><span class="n">dcov_all</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dc</span><span class="p">,</span> <span class="n">dr</span><span class="p">,</span> <span class="n">dvx</span><span class="p">,</span> <span class="n">dvy</span>
+
+<span class="nd">@timeout</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span></div>
+<span class="k">def</span> <span class="nf">apply_calc_rs</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">pearsonr</span><span class="p">):</span>
+<div class="viewcode-block" id="apply_calc_rs"><a class="viewcode-back" href="../../../flotilla.compute.html#flotilla.compute.generic.apply_calc_rs">[docs]</a>    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    apply R calculation method on each gene separately (for nan values)</span>
+
+<span class="sd">    input:</span>
+<span class="sd">    X - (cells X rpkms) pd.DataFrame</span>
+<span class="sd">    y - (cells X psi) pd.Series</span>
+
+<span class="sd">    output:</span>
+<span class="sd">    two pd.Series of:</span>
+<span class="sd">    R coef, p-value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">out_R</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">y</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">out_P</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">y</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">this_id</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">X</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">this_id</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">r</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">do_r</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="n">TimeoutError</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> r timeout event:</span><span class="si">%s</span><span class="s">, gene:</span><span class="si">%s</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">y</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+            <span class="n">r</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="n">out_R</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">this_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
+        <span class="n">out_P</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">this_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span>
+    <span class="k">return</span> <span class="n">out_R</span><span class="p">,</span> <span class="n">out_P</span>
+
+<span class="nd">@timeout</span><span class="p">(</span><span class="mi">220</span><span class="p">)</span></div>
+<span class="k">def</span> <span class="nf">apply_calc_robust</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="apply_calc_robust"><a class="viewcode-back" href="../../../flotilla.compute.html#flotilla.compute.generic.apply_calc_robust">[docs]</a>
+    <span class="sd">&quot;&quot;&quot;X and y are dataframes, returns slope, t-value and p-value of robust regression&quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;getting robust regression</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+    <span class="n">out_I</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">y</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="c">#intercept</span>
+    <span class="n">out_S</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">y</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="c">#slope</span>
+    <span class="n">out_T</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">y</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="c">#t-value</span>
+    <span class="n">out_P</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">y</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="c">#p-value</span>
+
+    <span class="k">for</span> <span class="n">this_id</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">X</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">this_id</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">i</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">get_robust_values</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">TimeoutError</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;robust timeout event:</span><span class="si">%s</span><span class="s">, gene:</span><span class="si">%s</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+            <span class="n">i</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="n">out_I</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">this_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="n">out_S</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">this_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span>
+        <span class="n">out_T</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">this_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span>
+        <span class="n">out_P</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">this_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span>
+    <span class="k">return</span> <span class="n">out_I</span><span class="p">,</span> <span class="n">out_S</span><span class="p">,</span> <span class="n">out_T</span><span class="p">,</span> <span class="n">out_P</span>
+
+<span class="nd">@timeout</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span></div>
+<span class="k">def</span> <span class="nf">apply_calc_slope</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="apply_calc_slope"><a class="viewcode-back" href="../../../flotilla.compute.html#flotilla.compute.generic.apply_calc_slope">[docs]</a>    <span class="sd">&quot;&quot;&quot;X and y are dataframes, returns slope, t-value and p-value of robust regression&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;getting slope</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+
+    <span class="n">out_S</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">y</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">this_id</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">X</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">this_id</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">get_slope</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">TimeoutError</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;linregress timeout event:</span><span class="si">%s</span><span class="s">, gene:</span><span class="si">%s</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="n">out_S</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">this_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span>
+
+    <span class="k">return</span> <span class="n">out_S</span>
+
+<span class="nd">@timeout</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span></div>
+<span class="k">def</span> <span class="nf">apply_dcor</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="apply_dcor"><a class="viewcode-back" href="../../../flotilla.compute.html#flotilla.compute.generic.apply_dcor">[docs]</a>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;getting dcor</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+
+    <span class="n">out_DC</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">y</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">out_DR</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">y</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">out_DVX</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">y</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">out_DVY</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">y</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">this_id</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">X</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">this_id</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">dc</span><span class="p">,</span> <span class="n">dr</span><span class="p">,</span> <span class="n">dvx</span><span class="p">,</span> <span class="n">dvy</span> <span class="o">=</span> <span class="n">get_dcor</span><span class="p">(</span><span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">]))</span>
+
+        <span class="k">except</span> <span class="n">TimeoutError</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;dcor timeout event:</span><span class="si">%s</span><span class="s">, gene:</span><span class="si">%s</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+            <span class="n">dc</span><span class="p">,</span> <span class="n">dr</span><span class="p">,</span> <span class="n">dvx</span><span class="p">,</span> <span class="n">dvy</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span>
+        <span class="n">out_DC</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">this_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">dc</span>
+        <span class="n">out_DR</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">this_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">dr</span>
+        <span class="n">out_DVX</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">this_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">dvx</span>
+        <span class="n">out_DVY</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">this_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">dvy</span>
+    <span class="k">return</span> <span class="n">out_DC</span><span class="p">,</span> <span class="n">out_DR</span><span class="p">,</span> <span class="n">out_DVX</span><span class="p">,</span> <span class="n">out_DVY</span>
+
+<span class="c"># &lt;codecell&gt;</span>
+
+<span class="k">def</span> <span class="nf">dropna_mean</span><span class="p">(</span><span class="n">x</span><span class="p">):</span></div>
+<div class="viewcode-block" id="dropna_mean"><a class="viewcode-back" href="../../../flotilla.compute.html#flotilla.compute.generic.dropna_mean">[docs]</a>    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2014, Olga Botvinnik, Michael Lovci, Patrick Liu, Yan Song.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

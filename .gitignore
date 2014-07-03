@@ -5,3 +5,8 @@ dist
 .idea*
 .idea/*
 *DS_store
+
+virtualenv
+
+# emacs
+*~

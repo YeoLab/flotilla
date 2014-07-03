@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>flotilla.external &mdash; flotilla 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-3.1.0/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-3.1.0/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="flotilla 0.1.0 documentation" href="../../index.html" />
+    <link rel="up" title="flotilla" href="../flotilla.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          flotilla</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="simple">
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <h1>Source code for flotilla.external</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot; interface with external data sources i.e. GO files, web&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s">&#39;lovci, yan_song, &#39;</span>
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">import</span> <span class="nn">gzip</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">hypergeom</span>
+<span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">urllib2</span>
+
+
+<span class="n">FLOTILLA_DOWNLOAD_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s">&#39;~/flotilla_projects&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="generateOntology"><a class="viewcode-back" href="../../flotilla.html#flotilla.external.generateOntology">[docs]</a><span class="k">def</span> <span class="nf">generateOntology</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+    <span class="kn">import</span> <span class="nn">itertools</span>
+
+    <span class="n">ontology</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span>
+        <span class="k">lambda</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;genes&#39;</span><span class="p">:</span> <span class="nb">set</span><span class="p">(),</span> <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="nb">set</span><span class="p">(),</span> <span class="s">&#39;domain&#39;</span><span class="p">:</span> <span class="nb">set</span><span class="p">()})</span>
+    <span class="n">allGenesInOntologies</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;Ensembl Gene ID&#39;</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">GO</span><span class="p">,</span> <span class="n">gene</span><span class="p">,</span> <span class="n">domain</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">izip</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;GO Term Accession&#39;</span><span class="p">),</span>
+                                                 <span class="n">df</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;Ensembl Gene ID&#39;</span><span class="p">),</span>
+                                                 <span class="n">df</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;GO domain&#39;</span><span class="p">),</span>
+                                                 <span class="n">df</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;GO Term Name&#39;</span><span class="p">)):</span>
+        <span class="n">ontology</span><span class="p">[</span><span class="n">GO</span><span class="p">][</span><span class="s">&#39;genes&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">gene</span><span class="p">)</span>
+        <span class="n">ontology</span><span class="p">[</span><span class="n">GO</span><span class="p">][</span><span class="s">&#39;name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">ontology</span><span class="p">[</span><span class="n">GO</span><span class="p">][</span><span class="s">&#39;domain&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">domain</span><span class="p">)</span>
+        <span class="n">ontology</span><span class="p">[</span><span class="n">GO</span><span class="p">][</span><span class="s">&#39;n_genes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ontology</span><span class="p">[</span><span class="n">GO</span><span class="p">][</span><span class="s">&#39;genes&#39;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">ontology</span><span class="p">,</span> <span class="n">allGenesInOntologies</span>
+
+</div>
+<div class="viewcode-block" id="GO_enrichment"><a class="viewcode-back" href="../../flotilla.html#flotilla.external.GO_enrichment">[docs]</a><span class="k">def</span> <span class="nf">GO_enrichment</span><span class="p">(</span><span class="n">geneList</span><span class="p">,</span> <span class="n">ontology</span><span class="p">,</span> <span class="n">expressedGenes</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">printIt</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                  <span class="n">pCut</span><span class="o">=</span><span class="mi">1000000</span><span class="p">,</span> <span class="n">xRef</span><span class="o">=</span><span class="p">{}):</span>
+    <span class="n">lenAllGenes</span><span class="p">,</span> <span class="n">lenTheseGenes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">expressedGenes</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">geneList</span><span class="p">)</span>
+    <span class="n">pValues</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">()</span>
+    <span class="n">nCmps</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">GOTerm</span><span class="p">,</span> <span class="n">GOGenes</span> <span class="ow">in</span> <span class="n">ontology</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">inBoth</span> <span class="o">=</span> <span class="n">GOGenes</span><span class="p">[</span><span class="s">&#39;genes&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">geneList</span><span class="p">)</span>
+        <span class="n">expressedGOGenes</span> <span class="o">=</span> <span class="n">GOGenes</span><span class="p">[</span><span class="s">&#39;genes&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">expressedGenes</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">inBoth</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">3</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">expressedGOGenes</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>
+            <span class="n">pValues</span><span class="p">[</span><span class="n">GOTerm</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;notest&#39;</span>
+            <span class="k">continue</span>
+        <span class="c">#survival function is more accurate on small p-values...</span>
+        <span class="n">pVal</span> <span class="o">=</span> <span class="n">hypergeom</span><span class="o">.</span><span class="n">sf</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">inBoth</span><span class="p">),</span> <span class="n">lenAllGenes</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">expressedGOGenes</span><span class="p">),</span>
+                            <span class="n">lenTheseGenes</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pVal</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">pVal</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">symbols</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">ensg</span> <span class="ow">in</span> <span class="n">inBoth</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ensg</span> <span class="ow">in</span> <span class="n">xRef</span><span class="p">:</span>
+                <span class="n">symbols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xRef</span><span class="p">[</span><span class="n">ensg</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">symbols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ensg</span><span class="p">)</span>
+        <span class="n">pValues</span><span class="p">[</span><span class="n">GOTerm</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">pVal</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">inBoth</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">expressedGOGenes</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">GOGenes</span><span class="p">[</span><span class="s">&#39;genes&#39;</span><span class="p">]),</span>
+            <span class="n">inBoth</span><span class="p">,</span>
+            <span class="n">symbols</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pValues</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">pValues</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">nCmps</span><span class="p">)</span>  <span class="c">#bonferroni correction</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+    <span class="kn">import</span> <span class="nn">operator</span>
+
+    <span class="n">y</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">sorted_x</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">pValues</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">sorted_x</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="s">&quot;notest&quot;</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">pCut</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">printIt</span><span class="p">:</span>
+                <span class="c">#[k, &quot;|&quot;.join(ontology[k][&#39;name&#39;]), v[0], v[1], v[2], v[3], &quot;,&quot;.join(v[4]),  &quot;,&quot;.join(v[5])]</span>
+                <span class="k">print</span> <span class="n">k</span><span class="p">,</span> <span class="s">&quot;|&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ontology</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s">&#39;name&#39;</span><span class="p">]),</span> <span class="s">&quot;</span><span class="si">%.3e</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span>
+                    <span class="mi">2</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="s">&quot;|&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+                <span class="k">pass</span>
+            <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">k</span><span class="p">,</span> <span class="s">&quot;|&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ontology</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s">&#39;name&#39;</span><span class="p">]),</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+                      <span class="s">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">4</span><span class="p">]),</span> <span class="s">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">5</span><span class="p">])])</span>
+
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;GO Term ID&#39;</span><span class="p">,</span> <span class="s">&#39;GO Term Description&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;Bonferroni-corrected Hypergeometric p-Value&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;N Genes in List and GO Category&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;N Expressed Genes in GO Category&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;N Genes in GO category&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;Ensembl Gene IDs in List&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;Gene symbols in List&#39;</span><span class="p">])</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s">&#39;GO Term ID&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;GO Term ID&#39;</span><span class="p">,</span> <span class="s">&#39;GO Term Description&#39;</span><span class="p">,</span>
+                                         <span class="s">&#39;Bonferroni-corrected Hypergeometric p-Value&#39;</span><span class="p">,</span>
+                                         <span class="s">&#39;N Genes in List and GO Category&#39;</span><span class="p">,</span>
+                                         <span class="s">&#39;N Expressed Genes in GO Category&#39;</span><span class="p">,</span>
+                                         <span class="s">&#39;N Genes in GO category&#39;</span><span class="p">,</span>
+                                         <span class="s">&#39;Ensembl Gene IDs in List&#39;</span><span class="p">,</span>
+                                         <span class="s">&#39;Gene symbols in List&#39;</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">df</span>
+
+</div>
+<div class="viewcode-block" id="GO"><a class="viewcode-back" href="../../flotilla.html#flotilla.external.GO">[docs]</a><span class="k">class</span> <span class="nc">GO</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    gene ontology tool</span>
+
+<span class="sd">    &gt;&gt;&gt; go = hg19GO()</span>
+<span class="sd">    &gt;&gt;&gt; go.geneXref[&#39;ENSG00000100320&#39;]</span>
+<span class="sd">    &#39;RBFOX2&#39;</span>
+<span class="sd">    &gt;&gt;&gt; data = go.enrichment(list, background)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">GOFile</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">GOFile</span><span class="p">)</span> <span class="k">as</span> <span class="n">file_handle</span><span class="p">:</span>
+            <span class="n">GO_to_ENSG</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="n">file_handle</span><span class="p">)</span>
+        <span class="n">geneXref</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="n">GO_to_ENSG</span><span class="o">.</span><span class="n">get</span><span class="p">([</span><span class="s">&quot;Ensembl Gene ID&quot;</span><span class="p">,</span> <span class="s">&quot;Associated Gene Name&quot;</span><span class="p">])):</span>
+            <span class="n">ensg</span> <span class="o">=</span> <span class="n">k</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">gene</span> <span class="o">=</span> <span class="n">k</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">geneXref</span><span class="p">[</span><span class="n">ensg</span><span class="p">]</span> <span class="o">=</span> <span class="n">gene</span>
+
+        <span class="n">GO</span><span class="p">,</span> <span class="n">allGenes</span> <span class="o">=</span> <span class="n">generateOntology</span><span class="p">(</span><span class="n">GO_to_ENSG</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">GO</span> <span class="o">=</span> <span class="n">GO</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allGenes</span> <span class="o">=</span> <span class="n">allGenes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geneXref</span> <span class="o">=</span> <span class="n">geneXref</span>
+
+<div class="viewcode-block" id="GO.enrichment"><a class="viewcode-back" href="../../flotilla.html#flotilla.external.GO.enrichment">[docs]</a>    <span class="k">def</span> <span class="nf">enrichment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geneList</span><span class="p">,</span> <span class="n">background</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">background</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">background</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">allGenes</span>
+        <span class="k">return</span> <span class="n">GO_enrichment</span><span class="p">(</span><span class="n">geneList</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">GO</span><span class="p">,</span> <span class="n">expressedGenes</span><span class="o">=</span><span class="n">background</span><span class="p">,</span>
+                             <span class="n">xRef</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">geneXref</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="GO.geneNames"><a class="viewcode-back" href="../../flotilla.html#flotilla.external.GO.geneNames">[docs]</a>    <span class="k">def</span> <span class="nf">geneNames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">geneXref</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">x</span>
+</div>
+<div class="viewcode-block" id="GO.link_to_geneNames"><a class="viewcode-back" href="../../flotilla.html#flotilla.external.GO.link_to_geneNames">[docs]</a>    <span class="k">def</span> <span class="nf">link_to_geneNames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">list_link</span><span class="p">):</span>
+        <span class="nb">list</span> <span class="o">=</span> <span class="n">link_to_list</span><span class="p">(</span><span class="n">list_link</span><span class="p">)</span>
+        <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geneNames</span><span class="p">,</span> <span class="nb">list</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+
+</div></div>
+<div class="viewcode-block" id="link_to_list"><a class="viewcode-back" href="../../flotilla.html#flotilla.external.link_to_list">[docs]</a><span class="k">def</span> <span class="nf">link_to_list</span><span class="p">(</span><span class="n">link</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">link</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;http&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">link</span><span class="p">))</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;use a link that starts with http or a file path&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">link</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;http&quot;</span><span class="p">):</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+            <span class="s">&quot;WARNING, downloading things from the internet, potential danger from untrusted sources&quot;</span><span class="p">)</span>
+        <span class="n">xx</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span>
+            <span class="p">[</span><span class="s">&quot;curl&quot;</span><span class="p">,</span> <span class="s">&quot;-k&quot;</span><span class="p">,</span> <span class="s">&#39;--location-trusted&#39;</span><span class="p">,</span> <span class="n">link</span><span class="p">])</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">link</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">link</span><span class="p">))</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">link</span><span class="p">),</span> <span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">xx</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">strip</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">xx</span>
+
+</div>
+<div class="viewcode-block" id="data_package_url_to_dict"><a class="viewcode-back" href="../../flotilla.html#flotilla.external.data_package_url_to_dict">[docs]</a><span class="k">def</span> <span class="nf">data_package_url_to_dict</span><span class="p">(</span><span class="n">data_package_url</span><span class="p">):</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">check_if_already_downloaded</span><span class="p">(</span><span class="n">data_package_url</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">data_package</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data_package</span>
+
+</div>
+<div class="viewcode-block" id="check_if_already_downloaded"><a class="viewcode-back" href="../../flotilla.html#flotilla.external.check_if_already_downloaded">[docs]</a><span class="k">def</span> <span class="nf">check_if_already_downloaded</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">download_dir</span><span class="o">=</span><span class="n">FLOTILLA_DOWNLOAD_DIR</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;If a url filename has already been downloaded, don&#39;t download it again.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    url : str</span>
+<span class="sd">        HTTP url of a file you want to downlaod</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    filename : str</span>
+<span class="sd">        Location of the file on your system</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">download_dir</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;Creating a directory for saving your flotilla &#39;</span>
+                         <span class="s">&#39;projects: {}</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">download_dir</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="n">suffix</span> <span class="o">=</span> <span class="s">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">package_dir</span> <span class="o">=</span> <span class="s">&#39;{}/{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">download_dir</span><span class="p">,</span> <span class="n">suffix</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">package_dir</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;Creating a directory for saving the data for this &#39;</span>
+                         <span class="s">&#39;project: {}</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">package_dir</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">package_dir</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;{} has not been downloaded before.</span><span class="se">\n\t</span><span class="s">Downloading &#39;</span>
+                         <span class="s">&#39;now &#39;</span>
+                         <span class="s">&#39;to {}</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span>
+        <span class="n">req</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="n">opener</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">build_opener</span><span class="p">()</span>
+        <span class="n">opened_url</span> <span class="o">=</span> <span class="n">opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">opened_url</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">filename</span>
+
+</div>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">{</span>
+<span class="sd">	&quot;name&quot; : &quot;neural_diff&quot;,</span>
+<span class="sd">	&quot;title&quot; : &quot;Single-cell analysis of celltypes representative of motor neuron differentiation&quot;,</span>
+<span class="sd">	&quot;licenses&quot; : null,</span>
+<span class="sd">	&quot;sources&quot; : &quot;Craig Venter and Yan Song&#39;s magic hands&quot;,</span>
+<span class="sd">	&quot;datapackage_version&quot; : &quot;0.1.0&quot;,</span>
+<span class="sd">	&quot;resources&quot; : [</span>
+<span class="sd">		{</span>
+<span class="sd">			&quot;format&quot; : &quot;tsv&quot;,</span>
+<span class="sd">			&quot;name&quot; : &quot;experiment_design&quot;,</span>
+<span class="sd">			&quot;url&quot; : &quot;http://sauron.ucsd.edu/flotilla_projects/neural_diff/experiment_design.tsv&quot;</span>
+<span class="sd">		},</span>
+<span class="sd">		{</span>
+<span class="sd">			&quot;format&quot; : &quot;tsv&quot;,</span>
+<span class="sd">			&quot;name&quot; : &quot;expression&quot;,</span>
+<span class="sd">			&quot;url&quot; : &quot;http://sauron.ucsd.edu/flotilla_projects/neural_diff/tpm.tsv&quot;</span>
+<span class="sd">		},</span>
+<span class="sd">		{</span>
+<span class="sd">			&quot;format&quot; : &quot;tsv&quot;,</span>
+<span class="sd">			&quot;name&quot; : &quot;splicing&quot;,</span>
+<span class="sd">			&quot;url&quot; : &quot;http://sauron.ucsd.edu/flotilla_projects/neural_diff/psi.tsv&quot;</span>
+<span class="sd">		},</span>
+<span class="sd">		{</span>
+<span class="sd">			&quot;format&quot; : &quot;tsv&quot;,</span>
+<span class="sd">			&quot;name&quot; : &quot;spikein&quot;,</span>
+<span class="sd">			&quot;url&quot; : &quot;http://sauron.ucsd.edu/flotilla_projects/neural_diff/spikein.tsv&quot;</span>
+<span class="sd">		},</span>
+<span class="sd">		{</span>
+<span class="sd">			&quot;format&quot; : &quot;tsv&quot;,</span>
+<span class="sd">			&quot;name&quot; : &quot;mapping_stats&quot;,</span>
+<span class="sd">			&quot;url&quot; : &quot;http://sauron.ucsd.edu/flotilla_projects/neural_diff/mapping_stats.tsv&quot;</span>
+<span class="sd">		}</span>
+<span class="sd">	],</span>
+<span class="sd">	&quot;species&quot; : &quot;hg19&quot;</span>
+<span class="sd">}</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="make_study_datapackage"><a class="viewcode-back" href="../../flotilla.html#flotilla.external.make_study_datapackage">[docs]</a><span class="k">def</span> <span class="nf">make_study_datapackage</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">experiment_design_data</span><span class="p">,</span>
+                           <span class="n">expression_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">splicing_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                           <span class="n">spikein_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                           <span class="n">mapping_stats_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                           <span class="n">title</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span>
+                           <span class="n">sources</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">license</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">species</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                           <span class="n">flotilla_dir</span><span class="o">=</span><span class="n">FLOTILLA_DOWNLOAD_DIR</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Example code for making a datapackage for a Study</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s">&#39; &#39;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Datapackage name cannot have any spaces&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">uppercase</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Datapackage can only contain lowercase letters&quot;</span><span class="p">)</span>
+
+    <span class="n">datapackage_dir</span> <span class="o">=</span> <span class="s">&#39;{}/{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">flotilla_dir</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+    <span class="n">datapackage</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">datapackage</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
+    <span class="n">datapackage</span><span class="p">[</span><span class="s">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">title</span>
+    <span class="n">datapackage</span><span class="p">[</span><span class="s">&#39;sources&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sources</span>
+    <span class="n">datapackage</span><span class="p">[</span><span class="s">&#39;license&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">license</span>
+
+    <span class="k">if</span> <span class="n">species</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">datapackage</span><span class="p">[</span><span class="s">&#39;species&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">species</span>
+
+    <span class="n">resources</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;experiment_design&#39;</span><span class="p">:</span> <span class="n">experiment_design_data</span><span class="p">,</span>
+                 <span class="s">&#39;expression&#39;</span><span class="p">:</span> <span class="n">expression_data</span><span class="p">,</span>
+                 <span class="s">&#39;splicing&#39;</span><span class="p">:</span> <span class="n">splicing_data</span><span class="p">,</span>
+                 <span class="s">&#39;spikein&#39;</span><span class="p">:</span> <span class="n">spikein_data</span><span class="p">,</span>
+                 <span class="s">&#39;mapping_stats&#39;</span><span class="p">:</span> <span class="n">mapping_stats_data</span><span class="p">}</span>
+
+    <span class="n">datapackage</span><span class="p">[</span><span class="s">&#39;resources&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">resource_name</span><span class="p">,</span> <span class="n">resource_data</span> <span class="ow">in</span> <span class="n">resources</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">resource_data</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="n">datapackage</span><span class="p">[</span><span class="s">&#39;resources&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">resource_name</span><span class="p">})</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="n">datapackage</span><span class="p">[</span><span class="s">&#39;resources&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">data_filename</span> <span class="o">=</span> <span class="s">&#39;{}/{}.csv.gz&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datapackage_dir</span><span class="p">,</span> <span class="n">resource_name</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">data_filename</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">resource_data</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+        <span class="n">resource</span><span class="p">[</span><span class="s">&#39;path&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_filename</span>
+        <span class="n">resource</span><span class="p">[</span><span class="s">&#39;compression&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;gzip&#39;</span>
+        <span class="n">resource</span><span class="p">[</span><span class="s">&#39;format&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;csv&#39;</span>
+
+    <span class="n">filename</span> <span class="o">=</span> <span class="s">&#39;{}/datapackage.json&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datapackage_dir</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">datapackage</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="s">&#39;  &#39;</span><span class="p">)</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;Wrote datapackage to {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+
+</div>
+<div class="viewcode-block" id="make_feature_datapackage"><a class="viewcode-back" href="../../flotilla.html#flotilla.external.make_feature_datapackage">[docs]</a><span class="k">def</span> <span class="nf">make_feature_datapackage</span><span class="p">():</span>
+    <span class="n">hg19</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;hg19&#39;</span><span class="p">,</span>
+            <span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="s">&#39;Metadata about genes and splicing events&#39;</span><span class="p">,</span>
+            <span class="s">&#39;licences&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
+            <span class="s">&#39;sources&#39;</span><span class="p">:</span> <span class="s">&#39;Gencode and ENSEMBL genes&#39;</span><span class="p">,</span>
+            <span class="s">&#39;datapackage_version&#39;</span><span class="p">:</span> <span class="s">&#39;0.1.0&#39;</span><span class="p">,</span>
+            <span class="s">&#39;resources&#39;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s">&#39;format&#39;</span><span class="p">:</span> <span class="s">&#39;json&#39;</span><span class="p">,</span>
+                    <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;expression_feature_data&#39;</span><span class="p">,</span>
+                    <span class="s">&#39;url&#39;</span><span class="p">:</span> <span class="s">&#39;http://sauron.ucsd.edu/flotilla_projects/hg19/gencode.v19.annotation.gene.attributes.plus.json&#39;</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s">&#39;format&#39;</span><span class="p">:</span> <span class="s">&#39;csv&#39;</span><span class="p">,</span>
+                    <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;splicing_feature_data&#39;</span><span class="p">,</span>
+                    <span class="s">&#39;url&#39;</span><span class="p">:</span> <span class="s">&#39;http://sauron.ucsd.edu/flotilla_projects/hg19/miso_to_ids.csv&#39;</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s">&#39;format&#39;</span><span class="p">:</span> <span class="s">&#39;json&#39;</span><span class="p">,</span>
+                    <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;gene_ontology_data&#39;</span><span class="p">,</span>
+                    <span class="s">&#39;url&#39;</span><span class="p">:</span> <span class="s">&#39;http://sauron.ucsd.edu/flotilla_projects/hg19/ens_to_go.json&#39;</span>
+                <span class="p">}</span>
+            <span class="p">]}</span></div>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2014, Olga Botvinnik, Michael Lovci, Patrick Liu, Yan Song.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

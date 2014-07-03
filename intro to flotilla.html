@@ -1722,7 +1722,7 @@ In&nbsp;[1]:
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="data-interaction-is-achieved-with-ipython.interact-sliders-and-widgets-simple-interfaces-for-data-exploration.">Data interaction is achieved with iPython.interact sliders and widgets; simple interfaces for data exploration.</h4>
+<h4 id="data-interaction-is-achieved-with-ipython.interact-sliders-and-widgets-simple-interfaces-for-data-exploration.">BaseData interaction is achieved with iPython.interact sliders and widgets; simple interfaces for data exploration.</h4>
 <h3 id="underpinnings-of-flotilla">underpinnings of flotilla</h3>
 <p><b><code>schooner</code></b> is an object-oriented user and developer interface.<br> <b><code>schooner.Study</code></b> takes care of organizing data from multiple sources. It inherits subclasses that have tools to interact with data via IPython widgets, which is really nice.<br> <b><code>schooner.ExpressionData</code></b> and <b><code>schooner.SplicingData</code></b> do classifcation/regression and dimensionality reduction.<br> All data types should be available for user interaction (and are expected to be used) via the <b><code>schooner.Study</code></b> object.<br> in this example, s <code>import neural_diff_project neural_diff_project.embark()</code></p>
 <p>returns a schooner.Study object with pre-loaded attributes<br></p>
@@ -17952,7 +17952,7 @@ In&nbsp;[14]:
     <div class="input_area">
 <div class=" highlight hl-ipython"><pre><span class="kn">from</span> <span class="nn">flotilla</span> <span class="kn">import</span> <span class="n">barge</span>
 
-<span class="n">new_study</span> <span class="o">=</span> <span class="n">barge</span><span class="o">.</span><span class="n">FlotillaFactory</span><span class="p">()</span>
+<span class="n">new_study</span> <span class="o">=</span> <span class="n">barge</span><span class="o">.</span><span class="n">StudyFactory</span><span class="p">()</span>
 <span class="n">new_study</span><span class="o">.</span><span class="n">sample_metadata</span> <span class="o">=</span> <span class="bp">None</span>
 <span class="n">new_study</span><span class="o">.</span><span class="n">event_metadata</span> <span class="o">=</span> <span class="bp">None</span>
 <span class="n">new_study</span><span class="o">.</span><span class="n">expression_metadata</span> <span class="o">=</span> <span class="bp">None</span>
