@@ -1,3 +1,69 @@
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
+
+from ..compute.splicing import get_switchy_score_order
+from .decomposition import NMFViz
+from .color import red, blue, purple, grey, green
+
+
+class ModalitiesViz(NMFViz):
+    """Visualize results of modality assignments
+    
+    Attributes
+    ----------
+    
+    
+    Methods
+    -------
+    
+    """
+
+    modalities_colors = {'included': red,
+                         'excluded': blue,
+                         'bimodal': purple,
+                         'uniform': grey,
+                         'middle': green}
+
+    def __init__(self, modalities_assignments, reduced_space):
+        """Constructor for ModalitiesViz
+        
+        Parameters
+        ----------
+        assignments, binned
+        
+        Returns
+        -------
+        
+        
+        Raises
+        ------
+        
+        """
+        # super(ModalitiesViz, self).__init__(binned.T, n_components=2)
+        self.modalities_assignments = modalities_assignments
+        self.reduced_space = reduced_space
+
+
+    def __call__(self, ax=None, **kwargs):
+        if ax is None:
+            ax = plt.gca()
+
+        # For easy aliasing
+        X = self.reduced_space
+
+        for modality, df in X.groupby(self.modalities_assignments, axis=1):
+            color = self.modalities_colors[modality]
+            ax.plot(df.ix[:, 0], df.ix[:, 1], 'o', color=color, alpha=0.1,
+                    label=modality)
+
+        sns.despine()
+        xmax, ymax = X.max()
+        ax.set_xlim(0, 1.05 * xmax)
+        ax.set_ylim(0, 1.05 * ymax)
+
+
 def lavalamp(psi, color=None, jitter=None, title='', ax=None):
     """Make a 'lavalamp' scatter plot of many splicing events
 
@@ -25,9 +91,6 @@ def lavalamp(psi, color=None, jitter=None, title='', ax=None):
     fig : matplotlib.Figure
         A figure object for saving.
     """
-    from .computation import get_switchy_score_order
-    import matplotlib.pyplot as plt
-
 
     if ax is None:
         fig, ax = plt.subplots(figsize=(16,4))
@@ -61,7 +124,7 @@ def lavalamp(psi, color=None, jitter=None, title='', ax=None):
 
     for co, ji, xx, yy in zip(color, jitter, x_jitter, y.T):
         ax.scatter(xx, yy, color=co, alpha=0.5, edgecolor='#262626', linewidth=0.1)
-    seaborn.despine()
+    sns.despine()
     ax.set_ylabel('$\Psi$')
     ax.set_xlabel('{} splicing events'.format(nrow))
     ax.set_xticks([])
@@ -69,11 +132,3 @@ def lavalamp(psi, color=None, jitter=None, title='', ax=None):
     ax.set_xlim(0, xmax)
     ax.set_ylim(0, 1)
     ax.set_title(title)
-
-    # Return the figure for saving
-    # return fig
-
-
-
-from .computation import Predictor
-import itertools
