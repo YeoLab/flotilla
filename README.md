@@ -2,13 +2,16 @@
 
 flotilla
 ========
-download with:
+Download
+========
 ```
 git clone https://github.com/YeoLab/flotilla.git
 ```
 
-build/install with:
-note: for some reason patsy isn't installing automatically with pip, use easy_install first instead
+Install
+=======
+
+for some reason patsy doesn't always automatically with pip, use easy_install first instead
 
 ```
 easy_install -U patsy
