@@ -24,7 +24,7 @@ class SplicingData(BaseData):
     _last_reducer_accessed = None
 
     def __init__(self, data,
-                 feature_data=None, binsize=_binsize,
+                 feature_data=None, binsize=0.1,
                  var_cut=_var_cut, outliers=None,
                  feature_rename_col=None, excluded_max=0.2, included_min=0.8):
         """Instantiate a object for study_data scores with binned and reduced study_data
@@ -50,7 +50,7 @@ class SplicingData(BaseData):
                                            feature_rename_col=feature_rename_col,
                                            outliers=outliers)
         self.binsize = binsize
-        self.reducer_bins = np.arange(0, self.binsize, 1 + self.binsize)
+        self.reducer_bins = np.arange(0, 1 + self.binsize, self.binsize)
         psi_variant = pd.Index(
             [i for i, j in (data.var().dropna() > var_cut).iteritems() if j])
         self.feature_sets['variant'] = psi_variant
@@ -58,17 +58,13 @@ class SplicingData(BaseData):
         self.modalities = Modalities(self.data, excluded_max=excluded_max,
                                      included_min=included_min)
 
-    @memoize
-    def binify(self, bins):
-        return binify(self.data, bins)
-
     @property
     def binned(self):
-        return self.binify(self.reducer_bins)
+        return binify(self.data, self.reducer_bins)
 
     @property
     def binned_reduced(self, reducer=NMFViz):
-        redc = reducer(self.binned)
+        redc = reducer(self.binned.T, n_components=2)
         return redc.reduced_space
 
     @memoize
@@ -161,7 +157,8 @@ class SplicingData(BaseData):
     def plot_modalities(self):
         """Plot modality assignments in NMF space (option for lavalamp?)
         """
-        visualizer = ModalitiesViz(self.modalities.assignments, self.binned)
+        visualizer = ModalitiesViz(self.modalities.assignments,
+                                   self.binned_reduced)
         visualizer()
 
 
