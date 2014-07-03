@@ -1,9 +1,11 @@
-
 import sys
+
 import numpy as np
+
 import pandas as pd
 from sklearn.ensemble import ExtraTreesRegressor, GradientBoostingRegressor
 from scipy import stats
+
 from ..util import timeout, TimeoutError
 
 
@@ -49,37 +51,7 @@ def get_switchy_score_order(x):
     return np.argsort(switchy_scores)
 
 
-def binify(df, bins):
-    """Makes a histogram of each row the provided binsize
 
-    Parameters
-    ----------
-    data : pandas.DataFrame
-        The dataframe whose rows you'd like to binify.
-    bins : numpy.array
-        Bins you would like to use for this data. Must include the final bin
-        value, e.g. (0, 0.5, 1) for the two bins (0, 0.5) and (0.5, 1)
-
-    Returns
-    -------
-    binned : pandas.DataFrame
-
-    Raises
-    ------
-
-
-    """
-    ncol = bins.shape[0] - 1
-    nrow = df.shape[0]
-    binned = np.zeros((nrow, ncol))
-
-    # TODO.md: make sure this works for numpy matrices
-    for i, (name, row) in enumerate(df.iterrows()):
-        binned[i, :] = np.histogram(row, bins=bins, normed=True)[0]
-
-    columns = ['{}-{}'.format(i, j) for i, j in zip(bins, bins[1:])]
-    binned = pd.DataFrame(binned, index=df.index, columns=columns)
-    return binned
 
 
 def get_regressor(x,y, n_estimators=1500, pCut=0.05, n_tries=5, verbose=False):
