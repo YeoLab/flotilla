@@ -21,3 +21,4 @@ tornado >= 3.2.1
 six
 pytest-cov
 python-coveralls
+sphinx_bootstrap_theme
