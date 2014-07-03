@@ -88,3 +88,9 @@ integrate all those data parts together.
 
 Testing
 =======
+
+In the source directory (wherever you cloned `flotilla` to that has this README.md file), do:
+
+    py.test
+
+This will run the unit test suite.
