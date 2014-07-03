@@ -54,8 +54,8 @@ If this doesn't make sense to you, just put the import at the top of the file.
 Naming conventions
 ------------------
 
-When in doubt, please defer to [Python Enhancement Proposal 8 (aka PEP8))
-[http://legacy.python.org/dev/peps/pep-0008/] and the [Zen of Python]
+When in doubt, please defer to [Python Enhancement Proposal 8 (aka PEP8)
+[http://legacy.python.org/dev/peps/pep-0008/]) and the [Zen of Python]
 (http://legacy.python.org/dev/peps/pep-0020/)
 
 * Classes are `CamelCase`, e.g.:  `BaseData` and `PCAViz`
