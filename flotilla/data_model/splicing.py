@@ -18,6 +18,7 @@ class SplicingData(BaseData):
     n_components = 2
     _binsize = 0.1
     _var_cut = 0.2
+    _modalities_bins = (0, 0.2, 0.8, 1)
 
     _last_reducer_accessed = None
 
@@ -44,27 +45,28 @@ class SplicingData(BaseData):
         super(SplicingData, self).__init__(data, feature_data,
                                            feature_rename_col=feature_rename_col,
                                            outliers=outliers)
-        # self.experiment_design_data, data = self.experiment_design_data.align(data, join='inner', axis=0)
-
-        # self.data = data
         self.binsize = binsize
+        self.reducer_bins = np.arange(0, self.binsize, 1 + self.binsize)
         psi_variant = pd.Index(
             [i for i, j in (data.var().dropna() > var_cut).iteritems() if j])
-        # self._set_naming_fun(self.feature_rename)
-
-        # self.all_features = 'all_events'
         self.feature_sets['variant'] = psi_variant
 
     @memoize
     def binify(self, bins):
         return binify(self.data, bins)
 
-    def get_binned_reduced(self, reducer=NMFViz):
-        binned = self.get_binned_data()
-        redc = reducer(binned)
-        self.binned_reduced = redc.reduced_space
-        return self.binned_reduced
+    @property
+    def binned_modalities(self):
+        return self.binify(self._modalities_bins)
 
+    @property
+    def binned(self):
+        return self.binify(self.reducer_bins)
+
+    @property
+    def binned_reduced(self, reducer=NMFViz):
+        redc = reducer(self.binned)
+        return redc.reduced_space
 
     @memoize
     def reduce(self, sample_ids=None, feature_ids=None,
