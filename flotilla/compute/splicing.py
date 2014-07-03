@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
 
+from .infotheory import jsd
+
 
 class Modalities(object):
     modalities_bins = np.array([[1, 0, 0],  # excluded
@@ -16,8 +18,13 @@ class Modalities(object):
     def __init__(self):
         pass
 
-    def jsd_modalities(self, row):
-        return true_modalities.apply(lambda x: gmath.jsd(x, psi_binned_row),
-                                     axis=1)
+    def _col_jsd_modalities(self, col):
+        return self.true_modalities.apply(lambda x: jsd(x, col), axis=0)
 
-    modality_jsd = psi_binned.head().apply(jsd_modalities, axis=1)
+    def sqrt_jsd_modalities(self, binned):
+        """Return the square root of the JSD of each splicing event versus
+        all the modalities. Use square root of JSD because it's a metric.
+
+        """
+        return binned.apply(self._col_jsd_modalities, axis=0)
+
