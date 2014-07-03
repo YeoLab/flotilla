@@ -2,13 +2,19 @@
 
 flotilla
 ========
-download with:
+![flotilla Logo](flotilla.png)
+
+Download
+========
+
 ```
 git clone https://github.com/YeoLab/flotilla.git
 ```
 
-build/install with:
-note: for some reason patsy isn't installing automatically with pip, use easy_install first instead
+Install
+=======
+
+for some reason patsy doesn't always automatically with pip, use easy_install first instead
 
 ```
 easy_install -U patsy
@@ -24,17 +30,16 @@ All of the following should work, with expression data. No guarantees on
 splicing.
 
 
-```import flotilla
+```
+import flotilla
 test_study = flotilla.embark('http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22/datapackage.json')
-
 test_study.plot_pca()
 test_study.interactive_pca()
-
 test_study.plot_graph()
 test_study.interactive_graph()
-
 test_study.plot_classifier()
-test_study.interactive_classifier()```
+test_study.interactive_classifier()
+```
 
 
 For developers
