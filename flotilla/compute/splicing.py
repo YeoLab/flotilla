@@ -21,6 +21,9 @@ class Modalities(object):
         self.binned = binify(psi, self.bins)
         self.true_modalities.index = self.binned.index
 
+    def __call__(self, *args, **kwargs):
+        return self.modality_assignments
+
     def _col_jsd_modalities(self, col):
         return self.true_modalities.apply(lambda x: jsd(x, col), axis=0)
 
@@ -37,3 +40,44 @@ class Modalities(object):
         return self.true_modalities.columns[
             np.argmin(self.sqrt_jsd_modalities.values, axis=0)]
 
+
+def switchy_score(array):
+    """Transform a 1D array of data scores to a vector of "switchy scores"
+
+    Calculates std deviation and mean of sine- and cosine-transformed
+    versions of the array. Better than sorting by just the mean which doesn't
+    push the really lowly variant events to the ends.
+
+    Parameters
+    ----------
+    array : numpy.array
+        A 1-D numpy array or something that could be cast as such (like a list)
+
+    Returns
+    -------
+    float
+        The "switchy score" of the study_data which can then be compared to other
+        splicing event study_data
+
+    """
+    array = np.array(array)
+    variance = 1 - np.std(np.sin(array[~np.isnan(array)] * np.pi))
+    mean_value = -np.mean(np.cos(array[~np.isnan(array)] * np.pi))
+    return variance * mean_value
+
+
+def get_switchy_score_order(x):
+    """Apply switchy scores to a 2D array of data scores
+
+    Parameters
+    ----------
+    x : numpy.array
+        A 2-D numpy array in the shape [n_events, n_samples]
+
+    Returns
+    -------
+    numpy.array
+        A 1-D array of the ordered indices, in switchy score order
+    """
+    switchy_scores = np.apply_along_axis(switchy_score, axis=0, arr=x)
+    return np.argsort(switchy_scores)
