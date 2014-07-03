@@ -1,4 +1,4 @@
-id	R1_fastq.gz_md5sum	R2_fastq.gz_md5sum	bam_location	batch	cell_type	is_craig?	is_pooled	is_split_of	outlier	M_cell	neuron_cell	N_cell	P_cell	S_cell	cell_color	cell_marker	original_name	any_cell	color	marker
+id	R1_fastq.gz_md5sum	R2_fastq.gz_md5sum	bam_location	batch	celltype	is_craig	is_pooled	is_split_of	outlier	M_cell	neuron_cell	N_cell	P_cell	S_cell	cell_color	cell_marker	original_name	any_cell	color	marker
 M_M1_01			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/M1_01_TAAGGCGA-TATCCTCT_L007.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	M	True	0		False	True	True	False	False	False	#e41a1c	D	M1_01	True	#e41a1c	D
 M_M1_02			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/M1_02_CGTACTAG-TATCCTCT_L007.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	M	True	0		False	True	True	False	False	False	#e41a1c	D	M1_02	True	#e41a1c	D
 M_M1_03			/oasis/tscc/scratch/ppliu/single_cell/single_cell_round1_iter7/bam_files/M1_03_AGGCAGAA-CTCTCTAT_L007.fastq.gz.Aligned.out.sam.bam.sorted.bam	round_1	M	True	0		False	True	True	False	False	False	#e41a1c	D	M1_03	True	#e41a1c	D
