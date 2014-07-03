@@ -144,7 +144,7 @@ class TestClassifier:
         return study.experiment_design.data.celltype
 
     @pytest.fixture
-    def y(self, trait, reduced):
+    def y(self, trait):
         traitset = \
             trait.groupby(trait).describe().index.levels[0]
         le = LabelEncoder().fit(traitset)
