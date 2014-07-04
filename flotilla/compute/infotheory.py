@@ -77,5 +77,9 @@ def binify(df, bins):
     """
     binned = df.apply(lambda x: pd.Series(np.histogram(x, bins=bins,
                                                        normed=True)[0]))
-    binned.index = ['{}-{}'.format(i, j) for i, j in zip(bins, bins[1:])]
+    binned.index = make_bin_range_strings(bins)
     return binned
+
+
+def make_bin_range_strings(bins):
+    return ['{}-{}'.format(i, j) for i, j in zip(bins, bins[1:])]
