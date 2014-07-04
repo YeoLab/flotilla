@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from .infotheory import jsd
+from .infotheory import jsd, binify
 
 
 class Modalities(object):
@@ -13,17 +13,72 @@ class Modalities(object):
 
     modalities_names = ['included', 'middle', 'excluded', 'bimodal', 'uniform']
 
-    true_modalities = pd.DataFrame(modalities_bins, index=modalities_names)
+    true_modalities = pd.DataFrame(modalities_bins.T, columns=modalities_names)
 
-    def __init__(self):
-        pass
+    def __init__(self, psi, excluded_max=0.2, included_min=0.8):
+        self.bins = (0, excluded_max, included_min, 1)
+
+        self.binned = binify(psi, self.bins)
+        self.true_modalities.index = self.binned.index
+
+    def __call__(self, *args, **kwargs):
+        return self.assignments
 
     def _col_jsd_modalities(self, col):
         return self.true_modalities.apply(lambda x: jsd(x, col), axis=0)
 
-    def sqrt_jsd_modalities(self, binned):
+    @property
+    def sqrt_jsd_modalities(self):
         """Return the square root of the JSD of each splicing event versus
         all the modalities. Use square root of JSD because it's a metric.
 
         """
-        return binned.apply(self._col_jsd_modalities, axis=0)
+        return np.sqrt(self.binned.apply(self._col_jsd_modalities, axis=0))
+
+    @property
+    def assignments(self):
+        modalities = self.true_modalities.columns[
+            np.argmin(self.sqrt_jsd_modalities.values, axis=0)]
+        return pd.Series(modalities, self.binned.columns)
+
+
+def switchy_score(array):
+    """Transform a 1D array of data scores to a vector of "switchy scores"
+
+    Calculates std deviation and mean of sine- and cosine-transformed
+    versions of the array. Better than sorting by just the mean which doesn't
+    push the really lowly variant events to the ends.
+
+    Parameters
+    ----------
+    array : numpy.array
+        A 1-D numpy array or something that could be cast as such (like a list)
+
+    Returns
+    -------
+    float
+        The "switchy score" of the study_data which can then be compared to other
+        splicing event study_data
+
+    """
+    array = np.array(array)
+    variance = 1 - np.std(np.sin(array[~np.isnan(array)] * np.pi))
+    mean_value = -np.mean(np.cos(array[~np.isnan(array)] * np.pi))
+    return variance * mean_value
+
+
+def get_switchy_score_order(x):
+    """Apply switchy scores to a 2D array of data scores
+
+    Parameters
+    ----------
+    x : numpy.array
+        A 2-D numpy array in the shape [n_events, n_samples]
+
+    Returns
+    -------
+    numpy.array
+        A 1-D array of the ordered indices, in switchy score order
+    """
+    switchy_scores = np.apply_along_axis(switchy_score, axis=0, arr=x)
+    return np.argsort(switchy_scores)

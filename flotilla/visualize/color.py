@@ -1,10 +1,20 @@
-import seaborn
+import seaborn as sns
+import brewer2mpl
 
+sns.set_palette('deep')
+deep = sns.color_palette('deep')
 
-seaborn.set_palette('deep')
-deep = seaborn.color_palette('deep')
-blue = deep[0]
-green = deep[1]
-red = deep[2]
+set1 = brewer2mpl.get_map('Set1', 'qualitative', 9).mpl_colors
+red = set1[0]
+blue = set1[1]
+green = set1[2]
+purple = set1[3]
+orange = set1[4]
+yellow = set1[5]
+brown = set1[6]
+pink = set1[7]
+grey = set1[8]
 
-purples = seaborn.color_palette('Purples', 9)
+almost_black = '#262626'
+
+purples = sns.color_palette('Purples', 9)
