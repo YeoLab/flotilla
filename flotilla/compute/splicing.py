@@ -32,8 +32,7 @@ class Modalities(object):
     def sqrt_jsd_modalities(self, binned):
         """Return the square root of the JSD of each splicing event versus
             all the modalities. Use square root of JSD because it's a metric.
-
-            """
+        """
         return np.sqrt(binned.apply(self._col_jsd_modalities, axis=0))
 
     # @property
@@ -43,8 +42,8 @@ class Modalities(object):
         return pd.Series(modalities, sqrt_jsd_modalities.columns)
 
     @memoize
-    def fit_transform(self, psi):
-        binned = binify(psi, self.bins)
+    def fit_transform(self, data):
+        binned = binify(data, self.bins)
         self.true_modalities.index = binned.index
         return self.assignments(self.sqrt_jsd_modalities(binned))
 
