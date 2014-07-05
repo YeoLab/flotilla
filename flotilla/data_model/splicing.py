@@ -232,6 +232,8 @@ class SplicingData(BaseData):
     def plot_event(self, feature_id, sample_groupby, sample_colors):
         pass
 
+        # def plot_shared_events(self):
+
 
 class SpliceJunctionData(SplicingData):
     """Class to hold splice junction information from SJ.out.tab files from STAR
