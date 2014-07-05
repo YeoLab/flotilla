@@ -1,4 +1,5 @@
 import collections
+import sys
 
 import pandas as pd
 import numpy as np
@@ -220,6 +221,9 @@ class SplicingData(BaseData):
         modalities_counts = self.modalities_counts(sample_ids, feature_ids)
         self.modalities_visualizer.bar(modalities_counts, ax, i, normed,
                                        legend)
+        modalities_fractions = modalities_counts / modalities_counts.sum().astype(
+            float)
+        sys.stdout.write(str(modalities_fractions) + '\n')
 
     def plot_event(self, feature_id, sample_groupby, sample_colors):
         pass
