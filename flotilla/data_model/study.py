@@ -845,6 +845,12 @@ class Study(StudyFactory):
         return self.unique_celltype_event_counts(n).sum(axis=1) \
                / self.celltype_event_counts.sum(axis=1).astype(float) * 100
 
+    @property
+    def celltype_modalities(self):
+        return self.splicing.data.groupby(
+            self.sample_id_to_celltype, axis=0).apply(
+            lambda x: self.splicing.modalities(x.index))
+
 # Add interactive visualizations
 Study.interactive_classifier = Interactive.interactive_classifier
 Study.interactive_graph = Interactive.interactive_graph
