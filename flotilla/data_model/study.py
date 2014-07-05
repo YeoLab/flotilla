@@ -771,37 +771,39 @@ class Study(StudyFactory):
 
     def plot_modalities(self, sample_subset=None, feature_subset=None,
                         normed=True):
-        try:
-            sample_ids = self.sample_subset_to_sample_ids(sample_subset)
-            feature_ids = self.feature_subset_to_feature_ids('splicing',
-                                                             feature_subset,
-                                                             rename=False)
-            grouped = self.sample_id_to_celltype.groupby(
-                self.sample_id_to_celltype)
+        # try:
+        sample_ids = self.sample_subset_to_sample_ids(sample_subset)
+        feature_ids = self.feature_subset_to_feature_ids('splicing',
+                                                         feature_subset,
+                                                         rename=False)
+        grouped = self.sample_id_to_celltype.groupby(
+            self.sample_id_to_celltype)
 
-            # Account for bar plot and plot of the reduced space of ALL samples
-            n = grouped.ngroups + 2
-            groups = list(grouped.groups)
-            fig, axes = plt.subplots(ncols=n, figsize=(n * 4, 4))
-            bar_ax = axes[0]
-            all_ax = axes[1]
-            self.splicing.plot_modalities_reduced(sample_ids, feature_ids,
-                                                  all_ax, title='all samples')
+        # Account for bar plot and plot of the reduced space of ALL samples
+        n = grouped.ngroups + 2
+        groups = []
+        fig, axes = plt.subplots(ncols=n, figsize=(n * 4, 4))
+        bar_ax = axes[0]
+        all_ax = axes[1]
+        self.splicing.plot_modalities_reduced(sample_ids, feature_ids,
+                                              all_ax, title='all samples')
 
-            axes = axes[2:]
-            for i, ((celltype, series), ax) in enumerate(zip(grouped, axes)):
-                samples = series.index.intersection(sample_ids)
-                legend = i == 0
-                self.splicing.plot_modalities_bar(samples, feature_ids,
-                                                  bar_ax, i, normed=normed,
-                                                  legend=legend)
+        axes = axes[2:]
+        for i, ((celltype, series), ax) in enumerate(zip(grouped, axes)):
+            groups.append(celltype)
+            sys.stdout.write('\n---- {} ----\n'.format(celltype))
+            samples = series.index.intersection(sample_ids)
+            # legend = i == 0
+            self.splicing.plot_modalities_bar(samples, feature_ids,
+                                              bar_ax, i, normed=normed,
+                                              legend=False)
 
-                self.splicing.plot_modalities_reduced(samples, feature_ids,
-                                                      ax, title=celltype)
-            bar_ax.set_xticks(np.arange(len(groups)) + 0.4)
-            bar_ax.set_xticklabels(groups)
-        except AttributeError:
-            pass
+            self.splicing.plot_modalities_reduced(samples, feature_ids,
+                                                  ax, title=celltype)
+        bar_ax.set_xticks(np.arange(len(groups)) + 0.4)
+        bar_ax.set_xticklabels(groups)
+        # except AttributeError:
+        #     pass
 
 # Add interactive visualizations
 Study.interactive_classifier = Interactive.interactive_classifier
