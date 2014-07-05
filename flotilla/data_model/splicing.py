@@ -27,7 +27,7 @@ class SplicingData(BaseData):
                  feature_data=None, binsize=0.1,
                  var_cut=_var_cut, outliers=None,
                  feature_rename_col=None, excluded_max=0.2, included_min=0.8):
-        """Instantiate a object for study_data scores with binned and reduced study_data
+        """Instantiate a object for percent spliced in (PSI) scores
 
         Parameters
         ----------
@@ -50,22 +50,74 @@ class SplicingData(BaseData):
                                            feature_rename_col=feature_rename_col,
                                            outliers=outliers)
         self.binsize = binsize
-        self.reducer_bins = np.arange(0, 1 + self.binsize, self.binsize)
+        self.bins = np.arange(0, 1 + self.binsize, self.binsize)
         psi_variant = pd.Index(
             [i for i, j in (data.var().dropna() > var_cut).iteritems() if j])
         self.feature_sets['variant'] = psi_variant
 
-        self.modalities = Modalities(self.data, excluded_max=excluded_max,
-                                     included_min=included_min)
+        self.modalities_calculator = Modalities(excluded_max=excluded_max,
+                                                included_min=included_min)
+        self.modalities_visualizer = ModalitiesViz()
 
-    @property
-    def binned(self):
-        return binify(self.data, self.reducer_bins)
+    @memoize
+    def modalities(self, sample_ids=None, feature_ids=None):
+        """Assigned modalities for these samples and features.
 
-    @property
-    def binned_reduced(self, reducer=NMFViz):
-        redc = reducer(self.binned.T, n_components=2)
-        return redc.reduced_space
+        Parameters
+        ----------
+        sample_ids : list of str
+            Which samples to use. If None, use all. Default None.
+        feature_ids : list of str
+            Which features to use. If None, use all. Default None.
+
+        Returns
+        -------
+        modality_assignments : pandas.Series
+            The modality assignments of each feature given these samples
+        """
+        data = self._subset(self.data, sample_ids, feature_ids)
+        return self.modalities_calculator.fit_transform(data)
+
+    @memoize
+    def modalities_counts(self, sample_ids=None, feature_ids=None):
+        """Count the number of each modalities of these samples and features
+
+        Parameters
+        ----------
+        sample_ids : list of str
+            Which samples to use. If None, use all. Default None.
+        feature_ids : list of str
+            Which features to use. If None, use all. Default None.
+
+        Returns
+        -------
+        modalities_counts : pandas.Series
+            The number of events detected in each modality
+        """
+        data = self._subset(self.data, sample_ids, feature_ids)
+        return self.modalities_calculator.counts(data)
+
+    def binify(self, data):
+        return binify(data, self.bins)
+
+    @memoize
+    def binned_reduced(self, sample_ids=None, feature_ids=None):
+        """
+
+        """
+        data = self._subset(self.data, sample_ids, feature_ids)
+        binned = self.binify(data)
+        redc = NMFViz(binned.T, n_components=2)
+
+        reduced = redc.reduced_space
+
+        # Make sure x-axis (component 0) is excluded, which is the first
+        # element of a column in the binned dataframe
+        x0 = reduced.ix[reduced.pc_1 == 0]
+        if binned.ix[:, x0.index[0]][0] < 1:
+            reduced = pd.concat([reduced.pc_2, reduced.pc_1],
+                                keys=reduced.columns, axis=1)
+        return reduced
 
     @memoize
     def reduce(self, sample_ids=None, feature_ids=None,
@@ -154,12 +206,23 @@ class SplicingData(BaseData):
         # classifier.set_reducer_plotting_args(classifier.reduction_kwargs)
         return classifier
 
-    def plot_modalities(self):
+    def plot_modalities_reduced(self, sample_ids=None, feature_ids=None,
+                                ax=None, title=None):
         """Plot modality assignments in NMF space (option for lavalamp?)
         """
-        visualizer = ModalitiesViz(self.modalities.assignments,
-                                   self.binned_reduced)
-        visualizer()
+        modalities_assignments = self.modalities(sample_ids, feature_ids)
+        self.modalities_visualizer.plot_reduced_space(
+            self.binned_reduced(sample_ids, feature_ids),
+            modalities_assignments, ax=ax, title=title)
+
+    def plot_modalities_bar(self, sample_ids=None, feature_ids=None, ax=None,
+                            i=0, normed=True, legend=True):
+        modalities_counts = self.modalities_counts(sample_ids, feature_ids)
+        self.modalities_visualizer.bar(modalities_counts, ax, i, normed,
+                                       legend)
+
+    def plot_event(self, feature_id, sample_groupby, sample_colors):
+        pass
 
 
 class SpliceJunctionData(SplicingData):
@@ -275,7 +338,6 @@ class DownsampledSplicingData(BaseData):
         figure_dir = figure_dir.rstrip('/')
         colors = purples + ['#262626']
 
-        # figure_dir = '/home/obotvinnik/Dropbox/figures2/singlecell/splicing/what_is_noise'
 
         for splice_type, df in self.shared_events.groupby(level=0, axis=1):
             print splice_type, df.dropna(how='all').shape
@@ -321,7 +383,6 @@ class DownsampledSplicingData(BaseData):
         figure_dir = figure_dir.rstrip('/')
         sns.set(style='whitegrid', context='talk')
 
-        # figure_dir = '/home/obotvinnik/Dropbox/figures2/singlecell/splicing/what_is_noise'
 
         for splice_type, df in self.shared_events.groupby(level=0, axis=1):
             df = df.dropna()

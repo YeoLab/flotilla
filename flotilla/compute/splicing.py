@@ -1,10 +1,14 @@
 import numpy as np
 import pandas as pd
 
+from ..util import memoize
 from .infotheory import jsd, binify
 
 
 class Modalities(object):
+    """
+
+    """
     modalities_bins = np.array([[1, 0, 0],  # excluded
                                 [0, 1, 0],  # middle
                                 [0, 0, 1],  # included
@@ -15,31 +19,38 @@ class Modalities(object):
 
     true_modalities = pd.DataFrame(modalities_bins.T, columns=modalities_names)
 
-    def __init__(self, psi, excluded_max=0.2, included_min=0.8):
+    def __init__(self, excluded_max=0.2, included_min=0.8):
         self.bins = (0, excluded_max, included_min, 1)
 
-        self.binned = binify(psi, self.bins)
-        self.true_modalities.index = self.binned.index
-
-    def __call__(self, *args, **kwargs):
-        return self.assignments
+    # def __call__(self, *args, **kwargs):
+    #     return self.assignments
 
     def _col_jsd_modalities(self, col):
         return self.true_modalities.apply(lambda x: jsd(x, col), axis=0)
 
-    @property
-    def sqrt_jsd_modalities(self):
+    # @property
+    def sqrt_jsd_modalities(self, binned):
         """Return the square root of the JSD of each splicing event versus
-        all the modalities. Use square root of JSD because it's a metric.
+            all the modalities. Use square root of JSD because it's a metric.
 
-        """
-        return np.sqrt(self.binned.apply(self._col_jsd_modalities, axis=0))
+            """
+        return np.sqrt(binned.apply(self._col_jsd_modalities, axis=0))
 
-    @property
-    def assignments(self):
+    # @property
+    def assignments(self, sqrt_jsd_modalities):
         modalities = self.true_modalities.columns[
-            np.argmin(self.sqrt_jsd_modalities.values, axis=0)]
-        return pd.Series(modalities, self.binned.columns)
+            np.argmin(sqrt_jsd_modalities.values, axis=0)]
+        return pd.Series(modalities, sqrt_jsd_modalities.columns)
+
+    @memoize
+    def fit_transform(self, psi):
+        binned = binify(psi, self.bins)
+        self.true_modalities.index = binned.index
+        return self.assignments(self.sqrt_jsd_modalities(binned))
+
+    def counts(self, psi):
+        assignments = self.fit_transform(psi)
+        return assignments.groupby(assignments).size()
 
 
 def switchy_score(array):
