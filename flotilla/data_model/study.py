@@ -820,21 +820,29 @@ class Study(StudyFactory):
         # except AttributeError:
         #     pass
 
+    def celltype_sizes(self, data_type='splicing'):
+        if data_type == 'expression':
+            self.expression.data.groupby(self.sample_id_to_celltype,
+                                         axis=0).size()
+        if data_type == 'splicing':
+            self.splicing.data.groupby(self.sample_id_to_celltype,
+                                       axis=0).size()
+
     @property
     def celltype_event_counts(self):
+        """Number of cells that detected this event in that celltype
+        """
         return self.splicing.data.groupby(
             self.sample_id_to_celltype, axis=0).apply(
             lambda x: x.groupby(level=0, axis=0).transform(
-                lambda x: x.count()).sum())
+                lambda x: x.count()).sum()).replace(0, np.nan)
 
-    @property
-    def unique_celltype_event_counts(self):
+    def unique_celltype_event_counts(self, n=1):
         celltype_event_counts = self.celltype_event_counts
-        return celltype_event_counts[celltype_event_counts == 1]
+        return celltype_event_counts[celltype_event_counts <= n]
 
-    @property
-    def percent_unique_celltype_events(self):
-        return self.unique_celltype_events.sum(axis=1) \
+    def percent_unique_celltype_events(self, n=1):
+        return self.unique_celltype_event_counts(n).sum(axis=1) \
                / self.celltype_event_counts.sum(axis=1).astype(float) * 100
 
 # Add interactive visualizations
