@@ -2,6 +2,7 @@
 Data types related to gene expression, e.g. from RNA-Seq or microarrays.
 Included SpikeIn data.
 """
+import numpy as np
 
 import pandas as pd
 
@@ -17,7 +18,7 @@ class ExpressionData(BaseData):
 
     def __init__(self, data,
                  feature_data=None, expression_thresh=_expression_thresh,
-                 feature_rename_col=None, outliers=None):
+                 feature_rename_col=None, outliers=None, log_base=None):
         """
         Parameters
         ----------
@@ -43,6 +44,11 @@ class ExpressionData(BaseData):
              if j])
         self.feature_sets['variant'] = pd.Series(rpkm_variant,
                                                  index=rpkm_variant)
+
+        if log_base is not None:
+            self.log_data = np.log(self.data + .1) / np.log(log_base)
+        else:
+            self.log_data = self.data
 
 
         # self.experiment_design_data, data = \
@@ -104,7 +110,7 @@ class ExpressionData(BaseData):
         reducer_kwargs['title'] = title
         # feature_renamer = self.feature_renamer()
 
-        subset, means = self._subset_and_standardize(self.sparse_data,
+        subset, means = self._subset_and_standardize(self.log_data,
                                                      sample_ids, feature_ids,
                                                      standardize)
 
@@ -160,7 +166,7 @@ class ExpressionData(BaseData):
         predictor : flotilla.compute.predict.PredictorBaseViz
             A ready-to-plot object containing the predictions
         """
-        subset, means = self._subset_and_standardize(self.sparse_data,
+        subset, means = self._subset_and_standardize(self.log_data,
                                                      sample_ids,
                                                      feature_ids,
                                                      standardize)

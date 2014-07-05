@@ -10,6 +10,7 @@ import sys
 import warnings
 
 import matplotlib.colors as mplcolors
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -22,6 +23,7 @@ from ..visualize.color import blue
 from ..visualize.ipython_interact import Interactive
 from ..visualize.network import NetworkerViz
 from ..external import data_package_url_to_dict, check_if_already_downloaded
+
 
 SPECIES_DATA_PACKAGE_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects'
 
@@ -182,7 +184,8 @@ class Study(StudyFactory):
                  spikein_data=None,
                  spikein_feature_data=None,
                  drop_outliers=False, species=None,
-                 gene_ontology_data=None):
+                 gene_ontology_data=None,
+                 log_base=None):
         """Construct a biological study
 
         This class only accepts data, no filenames. All data must already
@@ -283,7 +286,8 @@ class Study(StudyFactory):
             self.expression = ExpressionData(expression_data,
                                              expression_feature_data,
                                              feature_rename_col=expression_feature_rename_col,
-                                             outliers=outliers, )
+                                             outliers=outliers,
+                                             log_base=log_base)
             self.expression.networks = NetworkerViz(self.expression)
             self.default_feature_set_ids.extend(self.expression.feature_sets
                                                 .keys())
@@ -333,6 +337,17 @@ class Study(StudyFactory):
         else:
             return defaultdict(lambda x: blue)
 
+    @property
+    def sample_id_to_celltype(self):
+        """If "celltype" is a column in the experiment_design data, return a
+        dict of that {sample_id: celltype} mapping.
+        """
+        if 'celltype' in self.experiment_design.data:
+            return self.experiment_design.data.celltype
+        else:
+            return pd.Series(['celltype'],
+                             index=self.experiment_design.data.index)
+
     @classmethod
     def from_data_package_url(cls, data_package_url,
                               species_data_package_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
@@ -378,6 +393,8 @@ class Study(StudyFactory):
     def from_data_package(cls, data_package,
                           species_data_package_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
         dfs = {}
+        log_base = None
+
         for resource in data_package['resources']:
             resource_url = resource['url']
 
@@ -386,6 +403,10 @@ class Study(StudyFactory):
             filename = check_if_already_downloaded(resource_url)
             reader = cls.readers[resource['format']]
             dfs[name] = reader(filename)
+
+            if name == 'expression':
+                if 'log_transformed' in resource:
+                    log_base = 2
 
         if 'species' in data_package:
             species_data_url = '{}/{}/datapackage.json'.format(
@@ -432,7 +453,8 @@ class Study(StudyFactory):
                       mapping_stats_data=mapping_stats_data,
                       spikein_data=spikein_data,
                       expression_feature_rename_col='gene_name',
-                      splicing_feature_rename_col='gene_name', **species_dfs)
+                      splicing_feature_rename_col='gene_name',
+                      log_base=log_base, **species_dfs)
         return study
 
     def __add__(self, other):
@@ -543,9 +565,6 @@ class Study(StudyFactory):
         raise NotImplementedError
 
     def compute_expression_splicing_covariance(self):
-        raise NotImplementedError
-
-    def jsd(self):
         raise NotImplementedError
 
     @staticmethod
@@ -749,6 +768,40 @@ class Study(StudyFactory):
             self.expression.plot_regressor(**kwargs)
         elif data_type == "splicing":
             self.splicing.plot_regressor(**kwargs)
+
+    def plot_modalities(self, sample_subset=None, feature_subset=None,
+                        normed=True):
+        try:
+            sample_ids = self.sample_subset_to_sample_ids(sample_subset)
+            feature_ids = self.feature_subset_to_feature_ids('splicing',
+                                                             feature_subset,
+                                                             rename=False)
+            grouped = self.sample_id_to_celltype.groupby(
+                self.sample_id_to_celltype)
+
+            # Account for bar plot and plot of the reduced space of ALL samples
+            n = grouped.ngroups + 2
+            groups = list(grouped.groups)
+            fig, axes = plt.subplots(ncols=n, figsize=(n * 4, 4))
+            bar_ax = axes[0]
+            all_ax = axes[1]
+            self.splicing.plot_modalities_reduced(sample_ids, feature_ids,
+                                                  all_ax, title='all samples')
+
+            axes = axes[2:]
+            for i, ((celltype, series), ax) in enumerate(zip(grouped, axes)):
+                samples = series.index.intersection(sample_ids)
+                legend = i == 0
+                self.splicing.plot_modalities_bar(samples, feature_ids,
+                                                  bar_ax, i, normed=normed,
+                                                  legend=legend)
+
+                self.splicing.plot_modalities_reduced(samples, feature_ids,
+                                                      ax, title=celltype)
+            bar_ax.set_xticks(np.arange(len(groups)) + 0.4)
+            bar_ax.set_xticklabels(groups)
+        except AttributeError:
+            pass
 
 # Add interactive visualizations
 Study.interactive_classifier = Interactive.interactive_classifier

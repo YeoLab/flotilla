@@ -12,7 +12,7 @@ from sklearn.preprocessing import StandardScaler
 from ..visualize.predict import ClassifierViz
 
 
-MINIMUM_SAMPLES = 12
+MINIMUM_SAMPLES = 10
 
 
 class BaseData(object):
@@ -246,38 +246,23 @@ class BaseData(object):
     def min_samples(self, values):
         self._min_samples = values
 
-    def _subset_and_standardize(self, data, sample_ids=None,
-                                feature_ids=None,
-                                standardize=True):
+    def _subset(self, data, sample_ids=None, feature_ids=None):
+        """Take only a subset of the data, and require at least the minimum
+        samples observed to be not NA for each feature.
 
-        """Take only the sample ids and feature ids from this data, require
-    at least some minimum samples, and standardize data using
-    scikit-learn. Will also fill na values with the mean of the feature
-    (column)
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            Data to subset
+        sample_ids : list of str
+            Which samples to use. If None, use all.
+        feature_ids : list of str
+            Which features to use. If None, use all.
 
-    Parameters
-    ----------
-    data : pandas.DataFrame
-        The data you want to standardize
-    sample_ids : None or list of strings
-        If None, all sample ids will be used, else only the sample ids
-        specified
-    feature_ids : None or list of strings
-        If None, all features will be used, else only the features
-        specified
-    standardize : bool
-        Whether or not to "whiten" (make all variables uncorrelated) and
-        mean-center via sklearn.preprocessing.StandardScaler
-
-    Returns
-    -------
-    subset : pandas.DataFrame
-        Subset of the dataframe with the requested samples and features,
-        and standardized as described
-    means : pandas.DataFrame
-        Mean values of the features (columns). Ignores NAs.
-
-    """
+        Returns
+        -------
+        subset : pandas.DataFrame
+        """
         if feature_ids is None:
             feature_ids = self.data.columns
         if sample_ids is None:
@@ -286,7 +271,43 @@ class BaseData(object):
         subset = data.ix[sample_ids]
         subset = subset.T.ix[feature_ids].T
         subset = subset.ix[:, subset.count() > self.min_samples]
+        return subset
+
+    def _subset_and_standardize(self, data, sample_ids=None,
+                                feature_ids=None,
+                                standardize=True):
+
+        """Take only the sample ids and feature ids from this data, require
+        at least some minimum samples, and standardize data using
+        scikit-learn. Will also fill na values with the mean of the feature
+        (column)
+
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            The data you want to standardize
+        sample_ids : None or list of strings
+            If None, all sample ids will be used, else only the sample ids
+            specified
+        feature_ids : None or list of strings
+            If None, all features will be used, else only the features
+            specified
+        standardize : bool
+            Whether or not to "whiten" (make all variables uncorrelated) and
+            mean-center via sklearn.preprocessing.StandardScaler
+
+        Returns
+        -------
+        subset : pandas.DataFrame
+            Subset of the dataframe with the requested samples and features,
+            and standardized as described
+        means : pandas.DataFrame
+            Mean values of the features (columns). Ignores NAs.
+
+        """
+
         #fill na with mean for each event
+        subset = self._subset(data, sample_ids, feature_ids)
         means = subset.mean().rename_axis(self.feature_renamer)
         subset = subset.fillna(means).fillna(0)
         subset = subset.rename_axis(self.feature_renamer, 1)
