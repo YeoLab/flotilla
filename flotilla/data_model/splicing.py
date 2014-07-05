@@ -11,7 +11,7 @@ from ..visualize.decomposition import NMFViz, PCAViz
 from ..visualize.color import purples
 from ..visualize.predict import ClassifierViz
 from ..visualize.splicing import ModalitiesViz
-from ..util import memoize
+from ..util import CachedAttribute, memoize
 
 
 class SplicingData(BaseData):
@@ -101,6 +101,10 @@ class SplicingData(BaseData):
     def binify(self, data):
         return binify(data, self.bins)
 
+    @CachedAttribute
+    def nmf(self):
+        return NMFViz(self.binify(self.data).T, n_components=2)
+
     @memoize
     def binned_reduced(self, sample_ids=None, feature_ids=None):
         """
@@ -108,16 +112,16 @@ class SplicingData(BaseData):
         """
         data = self._subset(self.data, sample_ids, feature_ids)
         binned = self.binify(data)
-        redc = NMFViz(binned.T, n_components=2)
+        # redc = NMFViz(binned.T, n_components=2)
 
-        reduced = redc.reduced_space
+        reduced = self.nmf.transform(binned.T)
 
-        # Make sure x-axis (component 0) is excluded, which is the first
-        # element of a column in the binned dataframe
-        x0 = reduced.ix[reduced.pc_1 == 0]
-        if binned.ix[:, x0.index[0]][0] < 1:
-            reduced = pd.concat([reduced.pc_2, reduced.pc_1],
-                                keys=reduced.columns, axis=1)
+        # # Make sure x-axis (component 0) is excluded, which is the first
+        # # element of a column in the binned dataframe
+        # x0 = reduced.ix[reduced.pc_1 == 0]
+        # if binned.ix[:, x0.index[0]][0] < 1:
+        #     reduced = pd.concat([reduced.pc_2, reduced.pc_1],
+        #                         keys=reduced.columns, axis=1)
         return reduced
 
     @memoize
