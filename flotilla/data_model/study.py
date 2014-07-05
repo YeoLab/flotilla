@@ -781,12 +781,15 @@ class Study(StudyFactory):
 
         # Account for bar plot and plot of the reduced space of ALL samples
         n = grouped.ngroups + 2
-        groups = []
+        groups = ['all']
         fig, axes = plt.subplots(ncols=n, figsize=(n * 4, 4))
         bar_ax = axes[0]
         all_ax = axes[1]
         self.splicing.plot_modalities_reduced(sample_ids, feature_ids,
                                               all_ax, title='all samples')
+        self.splicing.plot_modalities_bar(sample_ids, feature_ids,
+                                          bar_ax, i=0, normed=normed,
+                                          legend=False)
 
         axes = axes[2:]
         for i, ((celltype, series), ax) in enumerate(zip(grouped, axes)):
@@ -795,11 +798,12 @@ class Study(StudyFactory):
             samples = series.index.intersection(sample_ids)
             # legend = i == 0
             self.splicing.plot_modalities_bar(samples, feature_ids,
-                                              bar_ax, i, normed=normed,
+                                              bar_ax, i + 1, normed=normed,
                                               legend=False)
 
             self.splicing.plot_modalities_reduced(samples, feature_ids,
                                                   ax, title=celltype)
+
         bar_ax.set_xticks(np.arange(len(groups)) + 0.4)
         bar_ax.set_xticklabels(groups)
         # except AttributeError:
