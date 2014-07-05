@@ -103,7 +103,8 @@ class SplicingData(BaseData):
 
     @CachedAttribute
     def nmf(self):
-        return NMFViz(self.binify(self.data).T, n_components=2)
+        data = self._subset(self.data)
+        return NMFViz(self.binify(data).T, n_components=2)
 
     @memoize
     def binned_reduced(self, sample_ids=None, feature_ids=None):
