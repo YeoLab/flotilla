@@ -183,7 +183,7 @@ class Study(StudyFactory):
                                                  "number",
                  spikein_data=None,
                  spikein_feature_data=None,
-                 drop_outliers=False, species=None,
+                 drop_outliers=True, species=None,
                  gene_ontology_data=None,
                  log_base=None):
         """Construct a biological study
@@ -277,7 +277,7 @@ class Study(StudyFactory):
 
         if 'outlier' in self.experiment_design.data and drop_outliers:
             outliers = self.experiment_design.data.index[
-                self.experiment_design.data.outlier]
+                self.experiment_design.data.outlier.astype(bool)]
         else:
             outliers = None
             self.experiment_design.data['outlier'] = False
@@ -769,6 +769,16 @@ class Study(StudyFactory):
         elif data_type == "splicing":
             self.splicing.plot_regressor(**kwargs)
 
+    def modalities(self, sample_subset=None, feature_subset=None):
+        """Get modality assignments of
+
+        """
+        sample_ids = self.sample_subset_to_sample_ids(sample_subset)
+        feature_ids = self.feature_subset_to_feature_ids('splicing',
+                                                         feature_subset,
+                                                         rename=False)
+        return self.splicing.modalities(sample_ids, feature_ids)
+
     def plot_modalities(self, sample_subset=None, feature_subset=None,
                         normed=True):
         # try:
@@ -776,6 +786,7 @@ class Study(StudyFactory):
         feature_ids = self.feature_subset_to_feature_ids('splicing',
                                                          feature_subset,
                                                          rename=False)
+
         grouped = self.sample_id_to_celltype.groupby(
             self.sample_id_to_celltype)
 
@@ -808,6 +819,23 @@ class Study(StudyFactory):
         bar_ax.set_xticklabels(groups)
         # except AttributeError:
         #     pass
+
+    @property
+    def celltype_event_counts(self):
+        return self.splicing.data.groupby(
+            self.sample_id_to_celltype, axis=0).apply(
+            lambda x: x.groupby(level=0, axis=0).transform(
+                lambda x: x.count()).sum())
+
+    @property
+    def unique_celltype_event_counts(self):
+        celltype_event_counts = self.celltype_event_counts
+        return celltype_event_counts[celltype_event_counts == 1]
+
+    @property
+    def percent_unique_celltype_events(self):
+        return self.unique_celltype_events.sum(axis=1) \
+               / self.celltype_event_counts.sum(axis=1).astype(float) * 100
 
 # Add interactive visualizations
 Study.interactive_classifier = Interactive.interactive_classifier
