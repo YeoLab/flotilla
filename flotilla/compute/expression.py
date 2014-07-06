@@ -1,10 +1,12 @@
-import numpy as np
+from __future__ import division
 import itertools
+import math
+import sys
+
+import numpy as np
 from scipy import stats
 import pandas as pd
-import math
-from __future__ import division
-import sys
+
 
 def benjamini_hochberg(p_values, fdr=0.1):
     """ benjamini-hochberg correction for MHT
