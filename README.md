@@ -1,4 +1,4 @@
-[![Build Status](https://magnum.travis-ci.com/YeoLab/flotilla.svg?token=p4jLex5HVrN4EZx5r6A3&branch=master)](https://magnum.travis-ci.com/YeoLab/flotilla)[![Coverage Status](https://coveralls.io/repos/YeoLab/flotilla/badge.png)](https://coveralls.io/r/YeoLab/flotilla)
+[![Build Status](https://travis-ci.org/YeoLab/flotilla.svg?branch=modalities)](https://travis-ci.org/YeoLab/flotilla)[![Coverage Status](https://coveralls.io/repos/YeoLab/flotilla/badge.png)](https://coveralls.io/r/YeoLab/flotilla)
 
 flotilla
 ========

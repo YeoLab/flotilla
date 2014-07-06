@@ -4,7 +4,7 @@ import pandas as pd
 from sklearn import decomposition
 
 
-class Pretty_Reducer(object):
+class PrettyReducer(object):
     """
 
     Just like scikit-learn's reducers, but with prettied up DataFrames.
@@ -23,7 +23,7 @@ class Pretty_Reducer(object):
             raise
 
         self.X = X
-        super(Pretty_Reducer, self).fit(X)
+        super(PrettyReducer, self).fit(X)
         self.components_ = pd.DataFrame(self.components_,
                                         columns=self.X.columns).rename_axis(
             self.relabel_pcs, 0)
@@ -37,10 +37,10 @@ class Pretty_Reducer(object):
         return self
 
     def transform(self, X):
-        component_space = super(Pretty_Reducer, self).transform(X)
+        component_space = super(PrettyReducer, self).transform(X)
         if type(self.X) == pd.DataFrame:
             component_space = pd.DataFrame(component_space,
-                                           index=self.X.index).rename_axis(
+                                           index=X.index).rename_axis(
                 self.relabel_pcs, 1)
         return component_space
 
@@ -54,11 +54,11 @@ class Pretty_Reducer(object):
         return self.transform(X)
 
 
-class PCA(Pretty_Reducer, decomposition.PCA):
+class PCA(PrettyReducer, decomposition.PCA):
     pass
 
 
-class NMF(Pretty_Reducer, decomposition.NMF):
+class NMF(PrettyReducer, decomposition.NMF):
     here = True
 
     def fit(self, X):

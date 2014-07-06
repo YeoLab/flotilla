@@ -75,9 +75,11 @@ def binify(df, bins):
         A len(bins)-1 x features DataFrame of each feature binned across
         samples
     """
-    binned = df.apply(lambda x: pd.Series(np.histogram(x, bins=bins,
-                                                       normed=True)[0]))
+    binned = df.apply(lambda x: pd.Series(np.histogram(x, bins=bins)[0]))
     binned.index = make_bin_range_strings(bins)
+
+    # Normalize so each column sums to 1
+    binned = binned / binned.sum().astype(float)
     return binned
 
 

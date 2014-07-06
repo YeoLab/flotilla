@@ -4,11 +4,10 @@ import pandas as pd
 import seaborn as sns
 
 from ..compute.splicing import get_switchy_score_order
-from .decomposition import NMFViz
 from .color import red, blue, purple, grey, green
 
 
-class ModalitiesViz(NMFViz):
+class ModalitiesViz(object):
     """Visualize results of modality assignments
     
     Attributes
@@ -26,7 +25,13 @@ class ModalitiesViz(NMFViz):
                          'uniform': grey,
                          'middle': green}
 
-    def __init__(self, modalities_assignments, reduced_space):
+    modalities_order = ['excluded', 'uniform', 'bimodal', 'middle',
+                        'included']
+
+    colors = [modalities_colors[modality] for modality in
+              modalities_order]
+
+    def __init__(self):
         """Constructor for ModalitiesViz
         
         Parameters
@@ -42,21 +47,21 @@ class ModalitiesViz(NMFViz):
         
         """
         # super(ModalitiesViz, self).__init__(binned.T, n_components=2)
-        self.modalities_assignments = modalities_assignments
-        self.reduced_space = reduced_space
+        # self.modalities_assignments = modalities_assignments
+        # self.binned_reduced = binned_reduced
 
-
-    def __call__(self, ax=None, **kwargs):
+    def plot_reduced_space(self, binned_reduced, modalities_assignments,
+                           ax=None, title=None):
         if ax is None:
             fig, ax = plt.subplots(figsize=(8, 8))
 
         # For easy aliasing
-        X = self.reduced_space
+        X = binned_reduced
 
         # import pdb
         # pdb.set_trace()
 
-        for modality, df in X.groupby(self.modalities_assignments, axis=0):
+        for modality, df in X.groupby(modalities_assignments, axis=0):
             color = self.modalities_colors[modality]
             ax.plot(df.ix[:, 0], df.ix[:, 1], 'o', color=color, alpha=0.25,
                     label=modality)
@@ -66,6 +71,56 @@ class ModalitiesViz(NMFViz):
         ax.set_xlim(0, 1.05 * xmax)
         ax.set_ylim(0, 1.05 * ymax)
         ax.legend()
+        if title is not None:
+            ax.set_title(title)
+
+    def bar(self, modalities_counts, ax=None, i=0, normed=True, legend=True):
+        """Draw the barplot of a single modalities_count
+
+        Parameters
+        ----------
+
+
+        Returns
+        -------
+
+
+        Raises
+        ------
+
+        """
+        if ax is None:
+            fig, ax = plt.subplots(figsize=(8, 8))
+
+        modalities_counts = modalities_counts[self.modalities_order]
+
+        if normed:
+            modalities_counts = \
+                modalities_counts / modalities_counts.sum().astype(float)
+
+        lefts = np.ones(modalities_counts.shape) * i
+
+        heights = modalities_counts
+        bottoms = np.zeros(modalities_counts.shape)
+        bottoms[1:] = modalities_counts.cumsum()[:-1]
+        labels = self.modalities_order
+
+        for left, height, bottom, color, label in zip(lefts, heights, bottoms,
+                                                      self.colors, labels):
+            ax.bar(left, height, bottom=bottom, color=color, label=label,
+                   alpha=0.75)
+
+        if legend:
+            ax.legend()
+        sns.despine()
+
+    def event(self, feature_id, sample_groupby, group_colors, group_order,
+              ax=None):
+        """Plot a single splicing event's changes in NMF space, and its
+        violin plots
+
+        """
+        pass
 
 
 def lavalamp(psi, color=None, jitter=None, title='', ax=None):
