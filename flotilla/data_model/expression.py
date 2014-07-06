@@ -57,7 +57,7 @@ class ExpressionData(BaseData):
         self.feature_data = feature_data
         # self.data = data
 
-        self.sparse_data = self.data[self.data > expression_thresh]
+        self.sparse_data = self.log_data[self.log_data > expression_thresh]
 
         self.default_feature_sets.extend(self.feature_sets.keys())
 
@@ -110,7 +110,7 @@ class ExpressionData(BaseData):
         reducer_kwargs['title'] = title
         # feature_renamer = self.feature_renamer()
 
-        subset, means = self._subset_and_standardize(self.log_data,
+        subset, means = self._subset_and_standardize(self.sparse_data,
                                                      sample_ids, feature_ids,
                                                      standardize)
 
