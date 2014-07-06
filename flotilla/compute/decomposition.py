@@ -40,7 +40,7 @@ class PrettyReducer(object):
         component_space = super(PrettyReducer, self).transform(X)
         if type(self.X) == pd.DataFrame:
             component_space = pd.DataFrame(component_space,
-                                           index=self.X.index).rename_axis(
+                                           index=X.index).rename_axis(
                 self.relabel_pcs, 1)
         return component_space
 
