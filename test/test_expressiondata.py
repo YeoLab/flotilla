@@ -16,7 +16,7 @@ class TestExpressionData:
         pdt.assert_frame_equal(expression.sparse_data, sparse_data)
 
 
-    def test_go_enrichment(self):
+    def test_subset(self):
         pass
 
     def test__subset_and_standardize(self, expression):
