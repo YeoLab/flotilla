@@ -54,8 +54,8 @@ class TestExpressionData:
         reduced = PCAViz(subset, **reducer_kwargs)
         reduced.means = means
 
+        pdt.assert_frame_equal(expression.reduced.df, subset)
         npt.assert_array_equal(expression.reduced.reduced_space,
                                reduced.reduced_space)
         pdt.assert_series_equal(expression.reduced.means,
                                 reduced.means)
-        pdt.assert_frame_equal(expression.reduced.df, reduced.df)
