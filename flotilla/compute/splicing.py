@@ -28,14 +28,12 @@ class Modalities(object):
     def _col_jsd_modalities(self, col):
         return self.true_modalities.apply(lambda x: jsd(x, col), axis=0)
 
-    # @property
     def sqrt_jsd_modalities(self, binned):
         """Return the square root of the JSD of each splicing event versus
             all the modalities. Use square root of JSD because it's a metric.
         """
         return np.sqrt(binned.apply(self._col_jsd_modalities, axis=0))
 
-    # @property
     def assignments(self, sqrt_jsd_modalities):
         modalities = self.true_modalities.columns[
             np.argmin(sqrt_jsd_modalities.values, axis=0)]
