@@ -12,6 +12,8 @@ before_install:
   - ./miniconda.sh -b
   - if [ ${TRAVIS_PYTHON_VERSION:0:1} == "2" ]; then export PATH=~/miniconda/bin:$PATH; else export PATH=~/miniconda3/bin/:$PATH; fi
   - conda update --yes conda
+  - export COVERALLS_SERVICE_NAME=travis-ci
+  - export COVERALLS_REPO_TOKEN=Pk8rldcpUmf4b8ITeoa7XBYHiAc3LNXlc
 
 # command to install dependencies
 install:
