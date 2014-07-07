@@ -11,7 +11,7 @@ from ..visualize.decomposition import NMFViz, PCAViz
 from ..visualize.color import purples
 from ..visualize.predict import ClassifierViz
 from ..visualize.splicing import ModalitiesViz
-from ..util import CachedAttribute, memoize
+from ..util import cached_property, memoize
 
 
 class SplicingData(BaseData):
@@ -101,7 +101,7 @@ class SplicingData(BaseData):
     def binify(self, data):
         return binify(data, self.bins)
 
-    @CachedAttribute
+    @cached_property()
     def nmf(self):
         data = self._subset(self.data)
         return NMFViz(self.binify(data).T, n_components=2)

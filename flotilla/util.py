@@ -87,32 +87,63 @@ def memoize(obj):
     return memoizer
 
 
-class CachedAttribute(object):
-    '''Computes attribute value and caches it in the instance.
-    From the Python Cookbook (Denis Otkidach)
-    This decorator allows you to create a property which can be computed once and
-    accessed many times. Sort of like memoization.
+import time
 
-    From:
-    http://stackoverflow.com/questions/7388258/replace-property-for-perfomance-gain
+class cached_property(object):
+    '''Decorator for read-only properties evaluated only once within TTL period.
+
+    It can be used to created a cached property like this::
+
+        import random
+
+        # the class containing the property must be a new-style class
+        class MyClass(object):
+            # create property whose value is cached for ten minutes
+            @cached_property(ttl=600)
+            def randint(self):
+                # will only be evaluated every 10 min. at maximum.
+                return random.randint(0, 100)
+
+    The value is cached  in the '_cache' attribute of the object instance that
+    has the property getter method wrapped by this decorator. The '_cache'
+    attribute value is a dictionary which has a key for every property of the
+    object which is wrapped by this decorator. Each entry in the cache is
+    created only when the property is accessed for the first time and is a
+    two-element tuple with the last computed property value and the last time
+    it was updated in seconds since the epoch.
+
+    The default time-to-live (TTL) is 300 seconds (5 minutes). Set the TTL to
+    zero for the cached value to never expire.
+
+    To expire a cached property value manually just do::
+
+        del instance._cache[<property name>]
+
+    Stolen from:
+    https://wiki.python.org/moin/PythonDecoratorLibrary#Cached_Properties
+
     '''
+    def __init__(self, ttl=0):
+        self.ttl = ttl
 
-    def __init__(self, method, name=None):
-        # record the unbound-method and the name
-        self.method = method
-        self.name = name or method.__name__
-        self.__doc__ = method.__doc__
+    def __call__(self, fget, doc=None):
+        self.fget = fget
+        self.__doc__ = doc or fget.__doc__
+        self.__name__ = fget.__name__
+        self.__module__ = fget.__module__
+        return self
 
-    def __get__(self, inst, cls):
-        # self: <__main__.cache object at 0xb781340c>
-        # inst: <__main__.Foo object at 0xb781348c>
-        # cls: <class '__main__.Foo'>
-        if inst is None:
-            # instance attribute accessed on class, return self
-            # You get here if you write `Foo.bar`
-            return self
-        # compute, cache and return the instance's attribute value
-        result = self.method(inst)
-        # setattr redefines the instance's attribute so this doesn't get called again
-        setattr(inst, self.name, result)
-        return result
+    def __get__(self, inst, owner):
+        now = time.time()
+        try:
+            value, last_update = inst._cache[self.__name__]
+            if self.ttl > 0 and now - last_update > self.ttl:
+                raise AttributeError
+        except (KeyError, AttributeError):
+            value = self.fget(inst)
+            try:
+                cache = inst._cache
+            except AttributeError:
+                cache = inst._cache = {}
+            cache[self.__name__] = (value, now)
+        return value
