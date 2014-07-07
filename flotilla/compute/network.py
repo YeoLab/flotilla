@@ -12,7 +12,7 @@ class Networker(object):
     
     """ Networks (the kind with nodes and edges) """
     
-    weight_funs = ['abs', 'sq', 'arctan', 'arctan_sq']
+    weight_funs = ['no_weight', 'sq', 'arctan', 'arctan_sq']
 
     def __init__(self):
         # self.adjacencies_ = defaultdict()
