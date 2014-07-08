@@ -185,7 +185,7 @@ class Study(StudyFactory):
                  spikein_feature_data=None,
                  drop_outliers=True, species=None,
                  gene_ontology_data=None,
-                 log_base=None):
+                 expression_log_base=None, experiment_design_pooled_col=None):
         """Construct a biological study
 
         This class only accepts data, no filenames. All data must already
@@ -249,6 +249,9 @@ class Study(StudyFactory):
             Name of the species and genome version, e.g. 'hg19' or 'mm10'.
         gene_ontology_data : pandas.DataFrame
             Gene ids x ontology categories dataframe used for GO analysis.
+        experiment_design_pooled_col : str
+            Column in experiment_design_data which specifies as a boolean
+            whether or not this sample was pooled.
 
         Note
         ----
@@ -282,19 +285,29 @@ class Study(StudyFactory):
             outliers = None
             self.experiment_design.data['outlier'] = False
 
+        # Get pooled samples
+        if experiment_design_pooled_col is not None \
+                and experiment_design_pooled_col in self.experiment_design.data:
+            pooled = self.experiment_design.data.index[
+                self.experiment_design.data[
+                    experiment_design_pooled_col].astype(bool)]
+        else:
+            pooled = None
+
         if expression_data is not None:
             self.expression = ExpressionData(expression_data,
                                              expression_feature_data,
                                              feature_rename_col=expression_feature_rename_col,
                                              outliers=outliers,
-                                             log_base=log_base)
+                                             log_base=expression_log_base,
+                                             pooled=pooled)
             self.expression.networks = NetworkerViz(self.expression)
             self.default_feature_set_ids.extend(self.expression.feature_sets
                                                 .keys())
         if splicing_data is not None:
             self.splicing = SplicingData(splicing_data, splicing_feature_data,
                                          feature_rename_col=splicing_feature_rename_col,
-                                         outliers=outliers)
+                                         outliers=outliers, pooled=pooled)
             self.splicing.networks = NetworkerViz(self.splicing)
         if mapping_stats_data is not None:
             self.mapping_stats = MappingStatsData(mapping_stats_data,
@@ -394,6 +407,7 @@ class Study(StudyFactory):
                           species_data_package_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
         dfs = {}
         log_base = None
+        experiment_design_pooled_col = None
 
         for resource in data_package['resources']:
             resource_url = resource['url']
@@ -407,6 +421,9 @@ class Study(StudyFactory):
             if name == 'expression':
                 if 'log_transformed' in resource:
                     log_base = 2
+            if name == 'experiment_design':
+                if 'pooled_col' in resource:
+                    experiment_design_pooled_col = resource['pooled_col']
 
         if 'species' in data_package:
             species_data_url = '{}/{}/datapackage.json'.format(
@@ -454,7 +471,9 @@ class Study(StudyFactory):
                       spikein_data=spikein_data,
                       expression_feature_rename_col='gene_name',
                       splicing_feature_rename_col='gene_name',
-                      log_base=log_base, **species_dfs)
+                      expression_log_base=log_base,
+                      experiment_design_pooled_col=experiment_design_pooled_col,
+                      **species_dfs)
         return study
 
     def __add__(self, other):
