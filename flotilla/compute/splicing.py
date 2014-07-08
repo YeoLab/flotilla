@@ -15,7 +15,7 @@ class Modalities(object):
                                 [1, 0, 1],  # bimodal
                                 [1, 1, 1]])  # uniform
 
-    modalities_names = ['included', 'middle', 'excluded', 'bimodal', 'uniform']
+    modalities_names = ['excluded', 'middle', 'included', 'bimodal', 'uniform']
 
     true_modalities = pd.DataFrame(modalities_bins.T, columns=modalities_names)
 
