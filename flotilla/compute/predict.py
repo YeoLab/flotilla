@@ -20,8 +20,8 @@ class PredictorBase(object):
                                 'verbose': True}
 
     def __init__(self, data, trait, predictor=None, name="Predictor",
-                 predictor_kwargs=None, predictor_scoring_fun=None,
-                 score_cutoff_fun=None):
+                predictor_kwargs=None, predictor_scoring_fun=None,
+                score_cutoff_fun=None):
         """Initializer for scikit-learn predictors (classifiers and regressors)
 
         Initalizes everything except the "y" (response variable). This must
