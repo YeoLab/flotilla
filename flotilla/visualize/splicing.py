@@ -5,6 +5,7 @@ import seaborn as sns
 
 from ..compute.splicing import get_switchy_score_order
 from .color import red, blue, purple, grey, green
+import itertools
 
 
 class ModalitiesViz(object):
@@ -122,7 +123,6 @@ class ModalitiesViz(object):
         """
         pass
 
-
 def lavalamp(psi, color=None, jitter=None, title='', ax=None):
     """Make a 'lavalamp' scatter plot of many splicing events
 
@@ -156,9 +156,9 @@ def lavalamp(psi, color=None, jitter=None, title='', ax=None):
     else:
         fig = plt.gcf()
     nrow, ncol = psi.shape
-    x = np.vstack(np.arange(nrow) for _ in range(ncol))
+    x = np.vstack(np.arange(ncol,) for i in range(nrow)).T
 
-    color = '#FFFFFF' if color is None else color
+    color = pd.Series('#FFFF00', index=psi.index) if color is None else color
 
     try:
         # This is a pandas Dataframe
@@ -168,24 +168,29 @@ def lavalamp(psi, color=None, jitter=None, title='', ax=None):
         y = psi
 
     if jitter is None:
-        jitter = np.zeros(len(color))
+        jitter = np.ones(y.shape[0])
     else:
         assert np.all(np.abs(jitter) < 1)
         assert np.min(jitter) > -.0000000001
 
-    order = get_switchy_score_order(y.T)
-    print order.shape
+    order = get_switchy_score_order(y)
     y = y[:, order]
     assert type(color) == pd.Series
     # Add one so the last value is actually included instead of cut off
     xmax = x.max() + 1
-    x_jitter = np.apply_along_axis(lambda r: r+jitter, 0, x)
 
-    for co, ji, xx, yy in zip(color, jitter, x_jitter, y.T):
-        ax.scatter(xx, yy, color=co, alpha=0.5, edgecolor='#262626', linewidth=0.1)
+    x_jitter = np.array([i+jitter for i in x]).T
+
+    for co, xx, yy in zip(color, x_jitter, y):
+
+        ax.scatter(xx, yy, marker='d', color=co, alpha=0.2, edgecolor='none', linewidth=0.5, )
+        #print map(int, xx), map(lambda x: "%.2f" % x, yy)
+        #import pdb
+        #pdb.set_trace()#
+
     sns.despine()
     ax.set_ylabel('$\Psi$')
-    ax.set_xlabel('{} splicing events'.format(nrow))
+    ax.set_xlabel('{} splicing events'.format(ncol))
     ax.set_xticks([])
 
     ax.set_xlim(0, xmax)

@@ -22,7 +22,7 @@ class NetworkerViz(Networker, DecompositionViz):
                    n_pcs=5,
                    use_pc_1=True, use_pc_2=True, use_pc_3=True, use_pc_4=True,
                    degree_cut=2, cov_std_cut=1.8,
-                   weight_function='abs',
+                   weight_function='no_weight',
                    featurewise=False,  #else feature_components
                    rpkms_not_events=False,  #else event features
                    feature_of_interest='RBFOX2', draw_labels=True,
