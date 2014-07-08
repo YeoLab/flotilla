@@ -40,7 +40,23 @@ class Modalities(object):
         return pd.Series(modalities, sqrt_jsd_modalities.columns)
 
     @memoize
-    def fit_transform(self, data):
+    def fit_transform(self, data, do_not_memoize=False):
+        """Given psi scores, estimate the modality of each
+
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            A samples x features dataframe, where you want to find the
+            splicing modality of each column (feature)
+        do_not_memoize : bool
+            Whether or not to memoize the results of the fit_transform on this
+            data
+
+        Returns
+        -------
+        assignments : pandas.Series
+            Modality assignments of each column (feature)
+        """
         binned = binify(data, self.bins)
         self.true_modalities.index = binned.index
         return self.assignments(self.sqrt_jsd_modalities(binned))
