@@ -268,7 +268,7 @@ class DecompositionViz(object):
         x = self.components_.ix[pc].copy()
         x.sort(ascending=True)
         half_features = int(n_features / 2)
-        if len(x) > half_features:
+        if len(x) > n_features:
 
             a = x[:half_features]
             b = x[-half_features:]
