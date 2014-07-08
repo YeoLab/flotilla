@@ -36,5 +36,4 @@ after_success:
 notifications:
   slack:
     rooms:
-      - yeolab:HxLwrd5FGhZQ8SyBD9Fvh3dn#drylab
       - yeolab:HxLwrd5FGhZQ8SyBD9Fvh3dn#flotilla
