@@ -18,9 +18,9 @@ class PrettyReducer(object):
 
         try:
             assert type(X) == pd.DataFrame
-        except:
-            print "Try again as a pandas study_data frame"
-            raise
+        except AssertionError:
+            sys.stdout.write("Try again as a pandas DataFrame")
+            raise ValueError('Input X was not a panads DataFrame, was of type {} instead'.format(str(type(X))))
 
         self.X = X
         super(PrettyReducer, self).fit(X)
@@ -48,8 +48,8 @@ class PrettyReducer(object):
         try:
             assert type(X) == pd.DataFrame
         except:
-            print "Try again as a pandas study_data frame"
-            raise
+            sys.stdout.write("Try again as a pandas DataFrame")
+            raise ValueError('Input X was not a panads DataFrame, was of type {} instead'.format(str(type(X))))
         self.fit(X)
         return self.transform(X)
 
@@ -75,8 +75,8 @@ class NMF(PrettyReducer, decomposition.NMF):
         try:
             assert type(X) == pd.DataFrame
         except:
-            print "Try again as a pandas study_data frame"
-            raise
+            sys.stdout.write("Try again as a pandas DataFrame")
+            raise ValueError('Input X was not a panads DataFrame, was of type {} instead'.format(str(type(X))))
 
         self.X = X
         super(sklearn.decomposition.NMF, self).fit_transform(
