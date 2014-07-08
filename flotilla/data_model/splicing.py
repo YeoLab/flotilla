@@ -12,6 +12,13 @@ from ..visualize.color import purples
 from ..visualize.predict import ClassifierViz
 from ..visualize.splicing import ModalitiesViz
 from ..util import cached_property, memoize
+import itertools
+import matplotlib.pyplot as plt
+from matplotlib.colors import rgb2hex
+
+import seaborn as sns
+from ..visualize.color import red, grey
+from ..visualize.splicing import lavalamp
 
 
 class SplicingData(BaseData):
@@ -229,6 +236,29 @@ class SplicingData(BaseData):
         modalities_fractions = modalities_counts / modalities_counts.sum().astype(
             float)
         sys.stdout.write(str(modalities_fractions) + '\n')
+
+    def plot_modalities_lavalamps(self, sample_ids=None, feature_ids=None,
+                                 color=None, **kwargs):
+        """Plot modality assignments in NMF space (option for lavalamp?)
+        """
+        modalities_assignments = self.modalities(sample_ids, feature_ids)
+        modalities_names = self.modalities_calculator.modalities_names
+
+        f, axes = plt.subplots(len(modalities_names), 1, figsize=(18, 3*len(modalities_names)))
+        axes = itertools.chain(axes)
+
+        if color is None:
+            color = pd.Series(red, index=modalities_assignments.index)
+        else:
+            color = color.ix[self.data.index]
+            color = color.fillna(rgb2hex(grey))
+
+        for modality in modalities_names:
+            ax = axes.next()
+            modal_psis = self.data[modalities_assignments[modalities_assignments == modality].index]
+            lavalamp(modal_psis, color=color, ax=ax, **kwargs)
+            ax.set_title(modality)
+
 
     def plot_event(self, feature_id, sample_groupby, sample_colors):
         pass
