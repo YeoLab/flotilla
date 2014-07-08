@@ -170,7 +170,7 @@ class NetworkerViz(Networker, DecompositionViz):
             ax_degree.legend()
 
         except Exception as e:
-            print e
+            sys.stdout.write(str(e))
             pass
 
         seaborn.despine(ax=ax_degree)
@@ -179,10 +179,9 @@ class NetworkerViz(Networker, DecompositionViz):
             try:
                 nx.write_gml(graph, graph_file)
             except Exception as e:
-                print "error writing graph file:"
-                print e
+                sys.stdout.write("error writing graph file:\n{}".format(str(e)))
 
-        return graph, pos
+        return(graph, pos)
 
     def draw_nonreduced_graph(self,
                               degree_cut=2, cov_std_cut=1.8,
@@ -295,7 +294,7 @@ class NetworkerViz(Networker, DecompositionViz):
             ax_degree.legend()
 
         except Exception as e:
-            print e
+            sys.stdout.write(str(e))
             pass
 
         seaborn.despine(ax=ax_degree)
@@ -304,7 +303,6 @@ class NetworkerViz(Networker, DecompositionViz):
             try:
                 nx.write_gml(g, graph_file)
             except Exception as e:
-                print "error writing graph file:"
-                print e
+                sys.stdout.write("error writing graph file:\n{}".format(str(e))
 
-        return g, pos
+        return(g, pos)
