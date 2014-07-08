@@ -1,11 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 import seaborn as sns
 
 from ..compute.splicing import get_switchy_score_order
 from .color import red, blue, purple, grey, green
-import itertools
 
 
 class ModalitiesViz(object):
@@ -123,7 +121,8 @@ class ModalitiesViz(object):
         """
         pass
 
-def lavalamp(psi, color=None, jitter=None, title='', ax=None):
+
+def lavalamp(psi, color=None, x_offset=0, title='', ax=None):
     """Make a 'lavalamp' scatter plot of many splicing events
 
     Useful for visualizing many splicing events at once.
@@ -134,10 +133,11 @@ def lavalamp(psi, color=None, jitter=None, title='', ax=None):
     data : array
         A (n_events, n_samples) matrix either as a numpy array or as a pandas
         DataFrame
-
     color : matplotlib color
         Color of the scatterplot. Defaults to a dark teal
-
+    x_offset : numeric or None
+        How much to offset the x-values off of 1. Useful for plotting several
+        celltypes at once.
     title : str
         Title of the plot. Default ''
 
@@ -152,13 +152,9 @@ def lavalamp(psi, color=None, jitter=None, title='', ax=None):
     """
 
     if ax is None:
-        fig, ax = plt.subplots(figsize=(16,4))
+        fig, ax = plt.subplots(figsize=(16, 4))
     else:
         fig = plt.gcf()
-    nrow, ncol = psi.shape
-    x = np.vstack(np.arange(ncol,) for i in range(nrow)).T
-
-    color = pd.Series('#FFFF00', index=psi.index) if color is None else color
 
     try:
         # This is a pandas Dataframe
@@ -167,32 +163,27 @@ def lavalamp(psi, color=None, jitter=None, title='', ax=None):
         # This is a numpy array
         y = psi
 
-    if jitter is None:
-        jitter = np.ones(y.shape[0])
-    else:
-        assert np.all(np.abs(jitter) < 1)
-        assert np.min(jitter) > -.0000000001
-
     order = get_switchy_score_order(y)
     y = y[:, order]
-    assert type(color) == pd.Series
+
+    n_samples, n_events = psi.shape
+    # .astype(float) is to get rid of a deprecation warning
+    # x = np.repeat(np.arange(n_samples), n_events).reshape(n_samples,
+    #                                                        n_events).astype(float)
+    x = np.vstack((np.arange(n_events) for _ in xrange(n_samples))).astype(
+        float)
+    x += x_offset
+
     # Add one so the last value is actually included instead of cut off
     xmax = x.max() + 1
 
-    x_jitter = np.array([i+jitter for i in x]).T
-
-    for co, xx, yy in zip(color, x_jitter, y):
-
-        ax.scatter(xx, yy, marker='d', color=co, alpha=0.2, edgecolor='none', linewidth=0.5, )
-        #print map(int, xx), map(lambda x: "%.2f" % x, yy)
-        #import pdb
-        #pdb.set_trace()#
-
+    color = green if color is None else color
+    ax.plot(x, y, 'd', color=color, alpha=0.2, markersize=10)
     sns.despine()
     ax.set_ylabel('$\Psi$')
-    ax.set_xlabel('{} splicing events'.format(ncol))
+    ax.set_xlabel('{} splicing events'.format(n_events))
     ax.set_xticks([])
 
-    ax.set_xlim(0, xmax)
+    ax.set_xlim(-0.5, xmax + .5)
     ax.set_ylim(0, 1)
     ax.set_title(title)
