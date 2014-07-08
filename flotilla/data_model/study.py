@@ -19,7 +19,7 @@ from .experiment_design import ExperimentDesignData
 from .expression import ExpressionData, SpikeInData
 from .quality_control import MappingStatsData
 from .splicing import SplicingData
-from ..visualize.color import blue
+from ..visualize.color import blue, red
 from ..visualize.ipython_interact import Interactive
 from ..visualize.network import NetworkerViz
 from ..external import data_package_url_to_dict, check_if_already_downloaded
@@ -850,6 +850,23 @@ class Study(StudyFactory):
         return self.splicing.data.groupby(
             self.sample_id_to_celltype, axis=0).apply(
             lambda x: self.splicing.modalities(x.index))
+
+    def plot_modalities_lavalamps(self, **kwargs):
+        if 'color' in self.experiment_design.data.columns:
+
+            colors = self.experiment_design.data['color']
+        else:
+            colors = pd.Series(red, index=self.splicing.data.index)
+        from sklearn.preprocessing import LabelEncoder
+        le = LabelEncoder()
+        category = self.experiment_design.data.color.ix[self.splicing.data.index]
+        jitter=np.array(map(lambda x: x * .2, le.fit_transform(category)))
+
+
+        self.splicing.plot_modalities_lavalamps(color=colors, jitter=jitter,
+                                                **kwargs)
+        for modality in set(self.splicing.modalities()):
+            self.splicing.feature_data['modality_' + modality] = self.splicing.modalities() == modality
 
 # Add interactive visualizations
 Study.interactive_classifier = Interactive.interactive_classifier
