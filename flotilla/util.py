@@ -11,6 +11,7 @@ import signal
 import sys
 import subprocess
 import functools
+import time
 
 ###http://stackoverflow.com/questions/2281850/timeout-function-if-it-takes-too-long-to-finish###
 class TimeoutError(Exception):
@@ -86,8 +87,6 @@ def memoize(obj):
         return cache[key]
     return memoizer
 
-
-import time
 
 class cached_property(object):
     '''Decorator for read-only properties evaluated only once within TTL period.
