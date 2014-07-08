@@ -181,7 +181,7 @@ class NetworkerViz(Networker, DecompositionViz):
             except Exception as e:
                 sys.stdout.write("error writing graph file:\n{}".format(str(e)))
 
-        return(graph, pos)
+        return graph, pos
 
     def draw_nonreduced_graph(self,
                               degree_cut=2, cov_std_cut=1.8,
@@ -303,6 +303,6 @@ class NetworkerViz(Networker, DecompositionViz):
             try:
                 nx.write_gml(g, graph_file)
             except Exception as e:
-                sys.stdout.write("error writing graph file:\n{}".format(str(e))
+                sys.stdout.write("error writing graph file:\n{}".format(str(e)))
 
         return(g, pos)
