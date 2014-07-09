@@ -30,18 +30,8 @@ install:
   - pip install https://github.com/dcramer/pyflakes/tarball/master
   - pip install .
 
-before_script:
-  - if [ ${TRAVIS_PYTHON_VERSION:0:1} == "2" ]; then
-    make lint;
-    fi
-  - if [ ${TRAVIS_PYTHON_VERSION:0:1} == "2" ]; then
-    cd doc;
-    make notebooks html;
-    cd ..;
-    fi
-
 # command to run tests
-script: make coverage
+script: py.test --cov flotilla test/
 
 # Check test coverage
 after_success:
