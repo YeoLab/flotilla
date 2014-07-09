@@ -252,8 +252,7 @@ class Classifier(PredictorBase):
         try:
             assert len(
                 self.trait.groupby(
-                    self.trait).describe().index.levels[
-                    0]) == 2
+                    self.trait).describe().index.levels[0]) == 2
         except AssertionError:
             warnings.warn("WARNING: trait {} has >2 categories".format(
                 self.trait_name))
