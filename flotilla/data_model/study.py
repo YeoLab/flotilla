@@ -818,6 +818,8 @@ class Study(StudyFactory):
 
     @property
     def celltype_modalities(self):
+        """Return modality assignments of each celltype
+        """
         return self.splicing.data.groupby(
             self.sample_id_to_celltype, axis=0).apply(
             lambda x: self.splicing.modalities(x.index))
@@ -830,11 +832,14 @@ class Study(StudyFactory):
             colors = pd.Series(red, index=self.splicing.data.index)
         from sklearn.preprocessing import LabelEncoder
 
+<<<<<<< HEAD
         le = LabelEncoder()
         category = self.experiment_design.data.color.ix[
             self.splicing.data.index]
         jitter = np.array(map(lambda x: x * .2, le.fit_transform(category)))
 
+=======
+>>>>>>> dev
         self.splicing.plot_modalities_lavalamps(color=colors, jitter=jitter,
                                                 **kwargs)
         for modality in set(self.splicing.modalities()):

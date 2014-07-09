@@ -123,8 +123,13 @@ class DecompositionViz(object):
             try:
                 assert key in valid.keys()
             except:
+<<<<<<< HEAD
                 print self.__doc__
                 raise ValueError("unrecognized parameter for pc plot: "
+=======
+                sys.stdout.write(self.__doc__)
+                raise ValueError("unrecognized parameter for pc plot: " \
+>>>>>>> dev
                                  "%s. acceptable values are:\n%s" % (
                                      key, "\n".join(valid.keys())))
 
@@ -231,9 +236,14 @@ class DecompositionViz(object):
 
             if show_point_labels:
                 ax.text(x, y, an_id, color=color, size=point_label_size)
+<<<<<<< HEAD
             thresh = 0.00001
             if abs(x) < thresh and abs(y) < thresh:
                 print "error with %s " % an_id
+=======
+            if x >= -0.00001 and x <= 0.00001 and y >= -0.00001 and y <= 0.00001:
+                sys.stdout.write("error with {} ".format(an_id))
+>>>>>>> dev
                 tiny += 1
             ax.scatter(x, y, marker=marker, color=color, s=marker_size,
                        edgecolor='none')
