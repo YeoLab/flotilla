@@ -186,7 +186,8 @@ class Study(StudyFactory):
                  spikein_feature_data=None,
                  drop_outliers=True, species=None,
                  gene_ontology_data=None,
-                 expression_log_base=None, experiment_design_pooled_col=None):
+                 expression_log_base=None,
+                 experiment_design_pooled_col=None):
         """Construct a biological study
 
         This class only accepts data, no filenames. All data must already
@@ -291,35 +292,20 @@ class Study(StudyFactory):
             pooled = None
 
         if expression_data is not None:
-<<<<<<< HEAD
             self.expression = ExpressionData(
                 expression_data,
                 expression_feature_data,
                 feature_rename_col=expression_feature_rename_col,
                 outliers=outliers,
-                log_base=log_base)
-=======
-            self.expression = ExpressionData(expression_data,
-                                             expression_feature_data,
-                                             feature_rename_col=expression_feature_rename_col,
-                                             outliers=outliers,
-                                             log_base=expression_log_base,
-                                             pooled=pooled)
->>>>>>> fb5e6e9e2a8d728fcba7e6b38b9cf1e32a481719
+                log_base=expression_log_base)
             self.expression.networks = NetworkerViz(self.expression)
             self.default_feature_set_ids.extend(self.expression.feature_sets
                                                 .keys())
         if splicing_data is not None:
-<<<<<<< HEAD
             self.splicing = SplicingData(
                 splicing_data, splicing_feature_data,
                 feature_rename_col=splicing_feature_rename_col,
                 outliers=outliers)
-=======
-            self.splicing = SplicingData(splicing_data, splicing_feature_data,
-                                         feature_rename_col=splicing_feature_rename_col,
-                                         outliers=outliers, pooled=pooled)
->>>>>>> fb5e6e9e2a8d728fcba7e6b38b9cf1e32a481719
             self.splicing.networks = NetworkerViz(self.splicing)
         if mapping_stats_data is not None:
             self.mapping_stats = MappingStatsData(
