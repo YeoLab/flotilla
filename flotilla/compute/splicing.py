@@ -100,6 +100,18 @@ class Modalities(object):
             return np.argmax(x)
 
     def counts(self, psi):
+        """Return the number of events in each modality category
+
+        Parameters
+        ----------
+        psi : pandas.DataFrame
+            A samples x features dataframe of psi scores of a splicing event
+
+        Returns
+        -------
+        counts : pandas.Series
+            Counts of each modality
+        """
         assignments = self.fit_transform(psi)
         return assignments.groupby(assignments).size()
 
