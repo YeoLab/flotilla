@@ -49,24 +49,6 @@ def get_boosting_regressor(x,y,verbose=False):
     return clf
 
 
-def get_unstarted_events(mongodb):
-    """
-    get events that have not been started yet.
-    generator sets started to True before returning an event
-    """
-    go_on = True
-    while go_on ==True:
-
-        event = mongodb['list'].find_one({"started":False})
-
-        if event is None:
-            go_on=False
-
-        else:
-            event['started'] = True
-            mongodb['list'].save(event)
-            yield event
-
 @timeout(5) #because these sometimes hang
 def get_slope(x,y):
     return stats.linregress(x,y)[0]
