@@ -812,8 +812,9 @@ class Study(StudyFactory):
         return celltype_event_counts[celltype_event_counts <= n]
 
     def percent_unique_celltype_events(self, n=1):
-        return self.unique_celltype_event_counts(n).sum(axis=1) \
-               / self.celltype_event_counts.sum(axis=1).astype(float) * 100
+        n_unique = self.unique_celltype_event_counts(n).sum(axis=1)
+        n_all = self.celltype_event_counts.sum(axis=1).astype(float)
+        return n_unique / n_all * 100
 
     @property
     def celltype_modalities(self):

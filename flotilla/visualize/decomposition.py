@@ -160,8 +160,8 @@ class DecompositionViz(object):
         if not c_scale:
             c_scale = .75 * max(
                 [norm(point) for point in zip(x_list, y_list)]) / \
-                      max([norm(vector) for vector in
-                           zip(x_loading, y_loading)])
+                max([norm(vector) for vector in
+                    zip(x_loading, y_loading)])
 
         figsize = tuple(plt.gcf().get_size_inches())
         size_scale = math.sqrt(figsize[0] * figsize[1]) / 1.5
