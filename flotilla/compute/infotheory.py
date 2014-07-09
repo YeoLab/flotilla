@@ -116,17 +116,4 @@ def entropy(binned, base=2):
     entropy : pandas.Seires
         Entropy values for each column of the dataframe.
     """
-<<<<<<< HEAD
-    binned = df.apply(lambda x: pd.Series(np.histogram(x, bins=bins)[0]))
-    binned.index = make_bin_range_strings(bins)
-
-    # Normalize so each column sums to 1
-    binned = binned / binned.sum().astype(float)
-    return binned
-
-
-def make_bin_range_strings(bins):
-    return ['{}-{}'.format(i, j) for i, j in zip(bins, bins[1:])]
-=======
     return -((np.log(binned) / np.log(base)) * binned).sum(axis=0)
->>>>>>> dev
