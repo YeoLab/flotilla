@@ -108,8 +108,9 @@ def get_robust_values(x, y):
     import statsmodels.api as sm
 
     rlm_result = sm.RLM(y, sm.add_constant(x), missing='drop').fit()
-    return rlm_result.params[0], rlm_result.params[1], rlm_result.tvalues[0], \
-           rlm_result.pvalues[0],
+    results = rlm_result.params[0], rlm_result.params[1], \
+        rlm_result.tvalues[0], rlm_result.pvalues[0]
+    return results
 
 
 @timeout(5)
@@ -136,8 +137,7 @@ def get_dcor(x, y):
 
 @timeout(100)
 def apply_calc_rs(X, y, method=stats.pearsonr):
-    """
-    apply R calculation method on each gene separately (for nan values)
+    """apply R calculation method on each gene separately (for nan values)
 
     input:
     X - (cells X rpkms) pd.DataFrame

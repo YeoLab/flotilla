@@ -253,7 +253,7 @@ class SpikeInData(ExpressionData):
         #             xticklabels.extend(df.columns.tolist())
         #             color = 'husl' if spikein_type == 'ERCC' else 'Greys_d'
         #             sns.violinplot(df, ax=ax,
-        #                            positions=np.arange(df.shape[1]) + x_so_far,
+        #                            positions=np.arange(df.shape[1])+x_so_far,
         #                            linewidth=0, inner='none', color=color)
         #
         #             x_so_far += df.shape[1]
