@@ -1,5 +1,8 @@
+import collections
+
 import numpy as np
 import pandas as pd
+from sklearn import cross_validation
 
 from ..util import memoize
 from .infotheory import jsd, binify
@@ -60,6 +63,41 @@ class Modalities(object):
         binned = binify(data, self.bins)
         self.true_modalities.index = binned.index
         return self.assignments(self.sqrt_jsd_modalities(binned))
+
+    def bootstrapped_fit_transform(self, data, n_iter=100, thresh=0.6,
+                                   min_samples=10):
+        """Resample each splicing event n_iter times to robustly estimate
+        modalities.
+        """
+        bs = cross_validation.Bootstrap(data.shape[0], n_iter=n_iter)
+
+        assignments = pd.DataFrame(columns=data.columns,
+                                   index=range(n_iter))
+
+        for i, (train_index, test_index) in enumerate(bs):
+            # intex = train_index + test_index
+            psi = data.ix[data.index[train_index], :]
+            psi = psi.dropna(axis=1, thresh=min_samples)
+            assignments.ix[i] = self.fit_transform(psi, do_not_memoize=True)
+
+        counts = assignments.apply(lambda x: pd.Series(
+            collections.Counter(x.dropna())) if x.isnull().sum() < x.shape[
+            0] else np.nan)
+        fractions = counts / counts.sum().astype(float)
+        thresh_assignments = fractions[fractions >= thresh].apply(
+            self._max_assignment, axis=0)
+        thresh_assignments = thresh_assignments.fillna('unassigned')
+        return thresh_assignments
+
+    @staticmethod
+    def _max_assignment(x):
+        """Given a pandas.Series of modalities counts, return the maximum
+        value. Necessary because just np.argmax will use np.nan as the max :(
+        """
+        if np.isfinite(x).sum() == 0:
+            return np.nan
+        else:
+            return np.argmax(x)
 
     def counts(self, psi):
         assignments = self.fit_transform(psi)

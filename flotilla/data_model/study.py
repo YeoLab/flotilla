@@ -874,6 +874,15 @@ class Study(StudyFactory):
 
     def plot_modalities_lavalamps(self, celltype=None):
         grouped = self.splicing.data.groupby(self.sample_id_to_color, axis=0)
+        celltype_groups = self.splicing.data.groupby(
+            self.sample_id_to_celltype, axis=0)
+
+        if celltype is not None:
+            celltype_samples = celltype_groups.groups[celltype]
+            use_these_modalities = True
+        else:
+            celltype_samples = self.splicing.data.index
+            use_these_modalities = False
 
         nrows = len(self.splicing.modalities_calculator.modalities_names)
 
@@ -881,10 +890,21 @@ class Study(StudyFactory):
 
         for i, (color, sample_ids) in enumerate(grouped.groups.iteritems()):
             x_offset = 1. / (i + 1)
+            sample_ids = celltype_samples.intersection(sample_ids)
             self.splicing.plot_modalities_lavalamps(sample_ids=sample_ids,
                                                     color=color,
                                                     x_offset=x_offset,
-                                                    axes=axes)
+                                                    axes=axes,
+                                                    use_these_modalities=use_these_modalities)
+
+    def plot_event(self, feature_id, sample_subset=None, ax=None):
+        """Plot the violinplot of an event
+
+        """
+        sample_ids = self.sample_subset_to_sample_ids(sample_subset)
+        self.splicing.plot_event(feature_id, sample_ids,
+                                 sample_groupby=self.sample_id_to_celltype,
+                                 ax=ax)
 
 
 # Add interactive visualizations
