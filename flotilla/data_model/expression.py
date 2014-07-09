@@ -3,7 +3,6 @@ Data types related to gene expression, e.g. from RNA-Seq or microarrays.
 Included SpikeIn data.
 """
 import numpy as np
-
 import pandas as pd
 
 from .base import BaseData
@@ -18,7 +17,8 @@ class ExpressionData(BaseData):
 
     def __init__(self, data,
                  feature_data=None, expression_thresh=_expression_thresh,
-                 feature_rename_col=None, outliers=None, log_base=None):
+                 feature_rename_col=None, outliers=None, log_base=None,
+                 pooled=None):
         """
         Parameters
         ----------
@@ -34,7 +34,7 @@ class ExpressionData(BaseData):
         """
         super(ExpressionData, self).__init__(data, feature_data,
                                              feature_rename_col=feature_rename_col,
-                                             outliers=outliers)
+                                             outliers=outliers, pooled=pooled)
 
         self._var_cut = data.var().dropna().mean() + 2 * data.var() \
             .dropna().std()

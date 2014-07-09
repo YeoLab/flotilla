@@ -19,7 +19,7 @@ from .experiment_design import ExperimentDesignData
 from .expression import ExpressionData, SpikeInData
 from .quality_control import MappingStatsData
 from .splicing import SplicingData
-from ..visualize.color import blue, red
+from ..visualize.color import blue
 from ..visualize.ipython_interact import Interactive
 from ..visualize.network import NetworkerViz
 from ..external import data_package_url_to_dict, check_if_already_downloaded
@@ -185,7 +185,7 @@ class Study(StudyFactory):
                  spikein_feature_data=None,
                  drop_outliers=True, species=None,
                  gene_ontology_data=None,
-                 log_base=None):
+                 expression_log_base=None, experiment_design_pooled_col=None):
         """Construct a biological study
 
         This class only accepts data, no filenames. All data must already
@@ -249,6 +249,9 @@ class Study(StudyFactory):
             Name of the species and genome version, e.g. 'hg19' or 'mm10'.
         gene_ontology_data : pandas.DataFrame
             Gene ids x ontology categories dataframe used for GO analysis.
+        experiment_design_pooled_col : str
+            Column in experiment_design_data which specifies as a boolean
+            whether or not this sample was pooled.
 
         Note
         ----
@@ -282,19 +285,29 @@ class Study(StudyFactory):
             outliers = None
             self.experiment_design.data['outlier'] = False
 
+        # Get pooled samples
+        if experiment_design_pooled_col is not None \
+                and experiment_design_pooled_col in self.experiment_design.data:
+            pooled = self.experiment_design.data.index[
+                self.experiment_design.data[
+                    experiment_design_pooled_col].astype(bool)]
+        else:
+            pooled = None
+
         if expression_data is not None:
             self.expression = ExpressionData(expression_data,
                                              expression_feature_data,
                                              feature_rename_col=expression_feature_rename_col,
                                              outliers=outliers,
-                                             log_base=log_base)
+                                             log_base=expression_log_base,
+                                             pooled=pooled)
             self.expression.networks = NetworkerViz(self.expression)
             self.default_feature_set_ids.extend(self.expression.feature_sets
                                                 .keys())
         if splicing_data is not None:
             self.splicing = SplicingData(splicing_data, splicing_feature_data,
                                          feature_rename_col=splicing_feature_rename_col,
-                                         outliers=outliers)
+                                         outliers=outliers, pooled=pooled)
             self.splicing.networks = NetworkerViz(self.splicing)
         if mapping_stats_data is not None:
             self.mapping_stats = MappingStatsData(mapping_stats_data,
@@ -394,6 +407,7 @@ class Study(StudyFactory):
                           species_data_package_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
         dfs = {}
         log_base = None
+        experiment_design_pooled_col = None
 
         for resource in data_package['resources']:
             resource_url = resource['url']
@@ -407,6 +421,9 @@ class Study(StudyFactory):
             if name == 'expression':
                 if 'log_transformed' in resource:
                     log_base = 2
+            if name == 'experiment_design':
+                if 'pooled_col' in resource:
+                    experiment_design_pooled_col = resource['pooled_col']
 
         if 'species' in data_package:
             species_data_url = '{}/{}/datapackage.json'.format(
@@ -454,7 +471,9 @@ class Study(StudyFactory):
                       spikein_data=spikein_data,
                       expression_feature_rename_col='gene_name',
                       splicing_feature_rename_col='gene_name',
-                      log_base=log_base, **species_dfs)
+                      expression_log_base=log_base,
+                      experiment_design_pooled_col=experiment_design_pooled_col,
+                      **species_dfs)
         return study
 
     def __add__(self, other):
@@ -847,26 +866,46 @@ class Study(StudyFactory):
 
     @property
     def celltype_modalities(self):
+        """Return modality assignments of each celltype
+        """
         return self.splicing.data.groupby(
             self.sample_id_to_celltype, axis=0).apply(
             lambda x: self.splicing.modalities(x.index))
 
-    def plot_modalities_lavalamps(self, **kwargs):
-        if 'color' in self.experiment_design.data.columns:
+    def plot_modalities_lavalamps(self, celltype=None):
+        grouped = self.splicing.data.groupby(self.sample_id_to_color, axis=0)
+        celltype_groups = self.splicing.data.groupby(
+            self.sample_id_to_celltype, axis=0)
 
-            colors = self.experiment_design.data['color']
+        if celltype is not None:
+            celltype_samples = celltype_groups.groups[celltype]
+            use_these_modalities = True
         else:
-            colors = pd.Series(red, index=self.splicing.data.index)
-        from sklearn.preprocessing import LabelEncoder
-        le = LabelEncoder()
-        category = self.experiment_design.data.color.ix[self.splicing.data.index]
-        jitter=np.array(map(lambda x: x * .2, le.fit_transform(category)))
+            celltype_samples = self.splicing.data.index
+            use_these_modalities = False
 
+        nrows = len(self.splicing.modalities_calculator.modalities_names)
 
-        self.splicing.plot_modalities_lavalamps(color=colors, jitter=jitter,
-                                                **kwargs)
-        for modality in set(self.splicing.modalities()):
-            self.splicing.feature_data['modality_' + modality] = self.splicing.modalities() == modality
+        fig, axes = plt.subplots(nrows=nrows, figsize=(18, 3 * nrows))
+
+        for i, (color, sample_ids) in enumerate(grouped.groups.iteritems()):
+            x_offset = 1. / (i + 1)
+            sample_ids = celltype_samples.intersection(sample_ids)
+            self.splicing.plot_modalities_lavalamps(sample_ids=sample_ids,
+                                                    color=color,
+                                                    x_offset=x_offset,
+                                                    axes=axes,
+                                                    use_these_modalities=use_these_modalities)
+
+    def plot_event(self, feature_id, sample_subset=None, ax=None):
+        """Plot the violinplot of an event
+
+        """
+        sample_ids = self.sample_subset_to_sample_ids(sample_subset)
+        self.splicing.plot_event(feature_id, sample_ids,
+                                 sample_groupby=self.sample_id_to_celltype,
+                                 ax=ax)
+
 
 # Add interactive visualizations
 Study.interactive_classifier = Interactive.interactive_classifier
