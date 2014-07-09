@@ -15,7 +15,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
-from .experiment_design import ExperimentDesignData
+from .metadata import MetaData
 from .expression import ExpressionData, SpikeInData
 from .quality_control import MappingStatsData
 from .splicing import SplicingData
@@ -154,7 +154,7 @@ class Study(StudyFactory):
     # data
     _subsetable_data_types = ['expression', 'splicing']
 
-    initializers = {'experiment_design_data': ExperimentDesignData,
+    initializers = {'experiment_design_data': MetaData,
                     'expression_data': ExpressionData,
                     'splicing_data': SplicingData,
                     'mapping_stats_data': MappingStatsData,
@@ -172,7 +172,7 @@ class Study(StudyFactory):
 
     _default_plot_kwargs = {'marker': 'o', 'color': blue}
 
-    def __init__(self, experiment_design_data, expression_data=None,
+    def __init__(self, sample_metadata, expression_data=None,
                  splicing_data=None,
                  expression_feature_data=None,
                  expression_feature_rename_col='gene_name',
@@ -194,7 +194,7 @@ class Study(StudyFactory):
         Parameters
         ----------
         #TODO: Maybe make these all kwargs?
-        experiment_design_data : pandas.DataFrame
+        sample_metadata : pandas.DataFrame
             Only required parameter. Samples as the index, with features as
             columns. If there is a column named "color", this will be used as
             the color for that sample in PCA and other plots. If there is no
@@ -242,8 +242,8 @@ class Study(StudyFactory):
             concentration of particular spikein transcripts
         drop_outliers : bool
             Whether or not to drop samples indicated as outliers in the
-            experiment_design_data from the other data, i.e. with a column
-            named 'outlier' in experiment_design_data, then remove those
+            sample_metadata from the other data, i.e. with a column
+            named 'outlier' in sample_metadata, then remove those
             samples from expression_data for further analysis
         species : str
             Name of the species and genome version, e.g. 'hg19' or 'mm10'.
@@ -269,7 +269,7 @@ class Study(StudyFactory):
         self.species = species
         self.gene_ontology_data = gene_ontology_data
 
-        self.experiment_design = ExperimentDesignData(experiment_design_data)
+        self.experiment_design = MetaData(sample_metadata)
         self.default_sample_subsets = \
             [col for col in self.experiment_design.data.columns
              if self.experiment_design.data[col].dtype == bool]
@@ -447,7 +447,7 @@ class Study(StudyFactory):
         except KeyError:
             spikein_data = None
 
-        study = Study(experiment_design_data=experiment_design_data,
+        study = Study(sample_metadata=experiment_design_data,
                       expression_data=expression_data,
                       splicing_data=splicing_data,
                       mapping_stats_data=mapping_stats_data,
@@ -461,8 +461,8 @@ class Study(StudyFactory):
         """Sanely concatenate one or more Study objects
         """
         raise NotImplementedError
-        self.experiment_design = ExperimentDesignData(pd.concat([self
-                                                                     .experiment_design.data,
+        self.experiment_design = MetaData(pd.concat([self
+                                                         .experiment_design.data,
                                                                  other.experiment_design.data]))
         self.expression.data = ExpressionData(pd.concat([self.expression.data,
                                                          other.expression.data]))
