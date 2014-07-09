@@ -20,8 +20,8 @@ class PredictorBase(object):
                                 'verbose': True}
 
     def __init__(self, data, trait, predictor=None, name="Predictor",
-                predictor_kwargs=None, predictor_scoring_fun=None,
-                score_cutoff_fun=None):
+                 predictor_kwargs=None, predictor_scoring_fun=None,
+                 score_cutoff_fun=None):
         """Initializer for scikit-learn predictors (classifiers and regressors)
 
         Initalizes everything except the "y" (response variable). This must
@@ -51,7 +51,8 @@ class PredictorBase(object):
             Function to get the feature scores for a scikit-learn classifier.
             This can be different for different classifiers, e.g. for a
             classifier named "clf" it could be clf.scores_, for other it's
-            clf.feature_importances_. Default: lambda clf: clf.feature_importances_
+            clf.feature_importances_.
+            Default: lambda clf: clf.feature_importances_
         score_cutoff_fun : function
             Function to cut off insignificant scores (scores as returned by
             predictor_scoring_fun)
@@ -66,7 +67,8 @@ class PredictorBase(object):
         self.important_features = {}
 
         # Set the keyword argument to the default if it's not already specified
-        self.predictor_kwargs = {} if predictor_kwargs is None else predictor_kwargs
+        self.predictor_kwargs = {} if predictor_kwargs is None \
+            else predictor_kwargs
         for k, v in self.default_predictor_kwargs.items():
             self.predictor_kwargs.setdefault(k, v)
 
@@ -74,7 +76,6 @@ class PredictorBase(object):
             if predictor_scoring_fun is None else predictor_scoring_fun
         self.score_cutoff_fun = self.default_score_cutoff_fun \
             if score_cutoff_fun is None else score_cutoff_fun
-
 
         # traits from source, in case they're needed later
         self.trait = trait
@@ -123,8 +124,8 @@ class PredictorBase(object):
         self.predictor.scores_ = pd.Series(index=self.X.columns, data=scores)
         self.predictor.score_cutoff_ = \
             self.score_cutoff_fun(self.predictor.scores_)
-        # self.predictor.good_features_ =
-        self.important_features = self.predictor.scores_ > self.predictor.score_cutoff_
+        self.important_features = \
+            self.predictor.scores_ > self.predictor.score_cutoff_
         self.predictor.n_good_features_ = \
             np.sum(self.important_features)
         self.predictor.subset_ = self.X.T[self.important_features].T
@@ -170,16 +171,18 @@ class Regressor(PredictorBase):
             Function to get the feature scores for a scikit-learn regressor.
             This can be different for different classifiers, e.g. for a
             regressor named "x" it could be x.scores_, for other it's
-            x.feature_importances_. Default: lambda x: x.feature_importances_
+            x.feature_importances_.
+            Default: lambda x: x.feature_importances_
         score_cutoff_fun : function
             Function to cut off insignificant scores
             Default: lambda x: np.mean(x) + 2 * np.std(x)
         """
-        super(Regressor, self).__init__(data=data, trait=trait,
-                                        predictor=predictor, name=name,
-                                        predictor_kwargs=predictor_kwargs,
-                                        predictor_scoring_fun=predictor_scoring_fun,
-                                        score_cutoff_fun=score_cutoff_fun)
+        super(Regressor, self).__init__(
+            data=data, trait=trait,
+            predictor=predictor, name=name,
+            predictor_kwargs=predictor_kwargs,
+            predictor_scoring_fun=predictor_scoring_fun,
+            score_cutoff_fun=score_cutoff_fun)
         self.y = self.trait
         self.predictor_class = ExtraTreesRegressor \
             if self.predictor_class is None else self.predictor_class
@@ -196,7 +199,8 @@ class Classifier(PredictorBase):
     boosting_scoring_cutoff_fun = lambda scores: np.mean(scores) + 2 * np.std(
         scores)
 
-    default_classifier, default_classifier_name = ExtraTreesClassifier, "ExtraTreesClassifier"
+    default_classifier, default_classifier_name = \
+        ExtraTreesClassifier, "ExtraTreesClassifier"
 
     def __init__(self, data, trait, predictor=ExtraTreesClassifier,
                  name="ExtraTreesClassifier",
@@ -233,11 +237,12 @@ class Classifier(PredictorBase):
             Function to cut off insignificant scores
             Default: lambda scores: np.mean(x) + 2 * np.std(x)
         """
-        super(Classifier, self).__init__(data=data, trait=trait,
-                                         predictor=predictor, name=name,
-                                         predictor_kwargs=predictor_kwargs,
-                                         predictor_scoring_fun=predictor_scoring_fun,
-                                         score_cutoff_fun=score_cutoff_fun)
+        super(Classifier, self).__init__(
+            data=data, trait=trait,
+            predictor=predictor, name=name,
+            predictor_kwargs=predictor_kwargs,
+            predictor_scoring_fun=predictor_scoring_fun,
+            score_cutoff_fun=score_cutoff_fun)
         self.predictor_class = ExtraTreesClassifier \
             if self.predictor_class is None else self.predictor_class
 
@@ -260,5 +265,3 @@ class Classifier(PredictorBase):
         self.y = pd.Series(data=le.transform(self.trait),
                            index=self.X.index,
                            name=self.trait.name)
-
-
