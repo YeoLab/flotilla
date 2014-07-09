@@ -42,7 +42,7 @@ class Interactive(object):
             for k, v in locals().iteritems():
                 if k == 'self':
                     continue
-                print k, ":", v
+                sys.stdout.write('{} : {}'.format(k, v))
 
             if feature_subset != "custom" and list_link != "":
                 raise ValueError(
@@ -100,7 +100,7 @@ class Interactive(object):
             for k, v in locals().iteritems():
                 if k == 'self':
                     continue
-                print k, ":", v
+                sys.stdout.write('{} : {}'.format(k, v))
 
             if data_type == 'expression':
                 assert (feature_subset in self.expression.feature_sets.keys())
@@ -151,7 +151,7 @@ class Interactive(object):
             for k, v in locals().iteritems():
                 if k == 'self':
                     continue
-                print k, ":", v
+                prik, ":", v
 
             if data_type == 'expression':
                 data_object = self.expression
@@ -197,7 +197,8 @@ class Interactive(object):
             for k, v in locals().iteritems():
                 if k == 'self':
                     continue
-                print k, ":", v
+                sys.stdout.write('{} : {}'.format(k, v))
+
             pCut = float(pCut)
             assert pCut > 0
             if data_type == 'expression':
@@ -208,12 +209,18 @@ class Interactive(object):
             try:
                 assert sample1 in data_obj.df.index
             except:
+<<<<<<< HEAD
                 print "sample: %s, is not in %s DataFrame, " \
                       "try a different sample ID" % (sample1, data_type)
+=======
+                sys.stdout.write("sample: {}, is not in {} DataFrame, try a different sample ID".format(
+                    sample1, data_type))
+>>>>>>> dev
                 return
             try:
                 assert sample2 in data_obj.df.index
             except:
+<<<<<<< HEAD
                 print "sample: %s, is not in %s DataFrame, " \
                       "try a different sample ID" % (sample2, data_type)
                 return
@@ -221,6 +228,14 @@ class Interactive(object):
                                                       pCut=pCut).result_
             print "local_z finished, find the result " \
                   "in <this_obj>.localZ_result_"
+=======
+                sys.stdout.write("sample: {}, is not in {} DataFrame, try a different sample ID".format(
+                    sample2, data_type))
+                return
+            self.localZ_result = data_obj.plot_twoway(sample1, sample2,
+                                                      pCut=pCut).result_
+            sys.stdout.write("local_z finished, find the result in <this_object>.localZ_result_")
+>>>>>>> dev
 
         interact(do_interact,
                  data_type=('expression', 'splicing'),
