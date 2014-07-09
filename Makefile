@@ -1,6 +1,6 @@
 export SHELL := /bin/bash
 
-test:
+tests:
 	py.test
 
 coverage:
