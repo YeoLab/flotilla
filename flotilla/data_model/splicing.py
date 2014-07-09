@@ -65,10 +65,13 @@ class SplicingData(BaseData):
                                                 included_min=included_min)
         self.modalities_visualizer = ModalitiesViz()
 
-        for modality in set(self.modalities()):
-            self.feature_data[
-                'modality_' + modality] = self.modalities() == modality
-
+        try:
+            for modality in set(self.modalities()):
+                self.feature_data[
+                    'modality_' + modality] = self.modalities() == modality
+        except TypeError:
+            # Unless there is no feature_data
+            pass
 
     @memoize
     def modalities(self, sample_ids=None, feature_ids=None):
