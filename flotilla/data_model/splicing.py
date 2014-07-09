@@ -35,7 +35,8 @@ class SplicingData(BaseData):
     def __init__(self, data,
                  metadata=None, binsize=0.1,
                  var_cut=_var_cut, outliers=None,
-                 feature_rename_col=None, excluded_max=0.2, included_min=0.8):
+                 feature_rename_col=None, excluded_max=0.2, included_min=0.8,
+                 pooled=None):
         """Instantiate a object for percent spliced in (PSI) scores
 
         Parameters
@@ -60,6 +61,7 @@ class SplicingData(BaseData):
             data, metadata,
             feature_rename_col=feature_rename_col,
             outliers=outliers)
+
         self.binsize = binsize
         self.bins = np.arange(0, 1 + self.binsize, self.binsize)
         psi_variant = pd.Index(

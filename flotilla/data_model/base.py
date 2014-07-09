@@ -29,7 +29,7 @@ class BaseData(object):
 
     def __init__(self, data=None, metadata=None,
                  species=None, feature_rename_col=None, outliers=None,
-                 min_samples=MINIMUM_SAMPLES):
+                 min_samples=MINIMUM_SAMPLES, pooled=None):
         """Base class for biological data measurements
 
         Parameters
@@ -41,6 +41,9 @@ class BaseData(object):
             splicing "Percent-spliced-in" (PSI) values, or RNA editing scores.
         """
         self.data = data
+        if pooled is not None:
+            self.pooled = self.data.ix[pooled]
+
         if outliers is not None:
             self.data = self.drop_outliers(self.data, outliers)
 
@@ -83,7 +86,7 @@ class BaseData(object):
     def drop_outliers(self, df, outliers):
         # assert 'outlier' in self.experiment_design_data.columns
         outliers = set(outliers).intersection(df.index)
-        sys.stdout.write("dropping {}".format(outliers))
+        sys.stdout.write("dropping {}\n".format(outliers))
         return df.drop(outliers)
 
     def feature_subset_to_feature_ids(self, feature_subset, rename=True):
