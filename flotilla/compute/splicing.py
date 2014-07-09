@@ -38,6 +38,19 @@ class Modalities(object):
         return np.sqrt(binned.apply(self._col_jsd_modalities, axis=0))
 
     def assignments(self, sqrt_jsd_modalities):
+        """Return the modality which has the smallest square root JSD to each event
+
+        Parameters
+        ----------
+        sqrt_jsd_modalities : pandas.DataFrame
+            A modalities x features dataframe of the square root
+            Jensen-Shannon divergence between this event and each modality
+
+        Returns
+        -------
+        assignments : pandas.Series
+            The closest modality to each splicing event
+        """
         modalities = self.true_modalities.columns[
             np.argmin(sqrt_jsd_modalities.values, axis=0)]
         return pd.Series(modalities, sqrt_jsd_modalities.columns)
@@ -81,8 +94,7 @@ class Modalities(object):
             assignments.ix[i] = self.fit_transform(psi, do_not_memoize=True)
 
         counts = assignments.apply(lambda x: pd.Series(
-            collections.Counter(x.dropna())) if x.isnull().sum() < x.shape[
-            0] else np.nan)
+            collections.Counter(x.dropna())))
         fractions = counts / counts.sum().astype(float)
         thresh_assignments = fractions[fractions >= thresh].apply(
             self._max_assignment, axis=0)
