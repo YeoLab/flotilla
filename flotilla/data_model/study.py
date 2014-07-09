@@ -30,6 +30,7 @@ SPECIES_DATA_PACKAGE_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects'
 # import flotilla
 # FLOTILLA_DIR = os.path.dirname(flotilla.__file__)
 
+
 class StudyFactory(object):
     _accepted_filetypes = 'tsv'
 
@@ -47,7 +48,8 @@ class StudyFactory(object):
             warnings.warn('Over-writing attribute {}'.format(key))
         super(StudyFactory, self).__setattr__(key, value)
 
-    def _to_base_file_tuple(self, tup):
+    @staticmethod
+    def _to_base_file_tuple(tup):
         """for making new packages, auto-loadable data!"""
         assert len(tup) == 2
         return "os.path.join(study_data_dir, %s)" % os.path.basename(tup[0]), \
@@ -81,7 +83,8 @@ class StudyFactory(object):
 
     @staticmethod
     def _load_gzip_pickle_df(file_name):
-        import gzip, cPickle
+        import cPickle
+        import gzip
 
         with gzip.open(file_name, 'r') as f:
             return cPickle.load(f)
@@ -141,10 +144,8 @@ class StudyFactory(object):
 
 
 class Study(StudyFactory):
-    """
-    store essential data associated with a study. Users specify how to build the
-    necessary components from project-specific getters (see barebones_project
-    for example getters)
+    """A biological study, with associated metadata, expression, and splicing
+    data.
     """
     default_feature_set_ids = []
 
@@ -258,14 +259,9 @@ class Study(StudyFactory):
         __init__ then experienced developers will certainly see your code as a
         kid's playground."
 
-        [1] http://stackoverflow.com/questions/12513185/removing-the-work-from-init-to-aid-unit-testing
+        [1] http://stackoverflow.com/q/12513185/1628971
         """
         super(Study, self).__init__()
-        # if params_dict is None:
-        #     params_dict = {}
-        # self.update(params_dict)
-        # self.initialize_required_getters()
-        # self.apply_getters()
         self.species = species
         self.gene_ontology_data = gene_ontology_data
 
@@ -283,22 +279,25 @@ class Study(StudyFactory):
             self.experiment_design.data['outlier'] = False
 
         if expression_data is not None:
-            self.expression = ExpressionData(expression_data,
-                                             expression_feature_data,
-                                             feature_rename_col=expression_feature_rename_col,
-                                             outliers=outliers,
-                                             log_base=log_base)
+            self.expression = ExpressionData(
+                expression_data,
+                expression_feature_data,
+                feature_rename_col=expression_feature_rename_col,
+                outliers=outliers,
+                log_base=log_base)
             self.expression.networks = NetworkerViz(self.expression)
             self.default_feature_set_ids.extend(self.expression.feature_sets
                                                 .keys())
         if splicing_data is not None:
-            self.splicing = SplicingData(splicing_data, splicing_feature_data,
-                                         feature_rename_col=splicing_feature_rename_col,
-                                         outliers=outliers)
+            self.splicing = SplicingData(
+                splicing_data, splicing_feature_data,
+                feature_rename_col=splicing_feature_rename_col,
+                outliers=outliers)
             self.splicing.networks = NetworkerViz(self.splicing)
         if mapping_stats_data is not None:
-            self.mapping_stats = MappingStatsData(mapping_stats_data,
-                                                  mapping_stats_number_mapped_col)
+            self.mapping_stats = MappingStatsData(
+                mapping_stats_data,
+                mapping_stats_number_mapped_col)
         if spikein_data is not None:
             self.spikein = SpikeInData(spikein_data, spikein_feature_data)
         sys.stderr.write("subclasses initialized\n")
@@ -349,8 +348,9 @@ class Study(StudyFactory):
                              index=self.experiment_design.data.index)
 
     @classmethod
-    def from_data_package_url(cls, data_package_url,
-                              species_data_package_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
+    def from_data_package_url(
+            cls, data_package_url,
+            species_data_package_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
         """Create a study from a url of a datapackage.json file
 
         Parameters
@@ -377,21 +377,23 @@ class Study(StudyFactory):
             resources of experiment_design, expression, and splicing.
         """
         data_package = data_package_url_to_dict(data_package_url)
-        return cls.from_data_package(data_package,
-                                     species_data_package_base_url=species_data_package_base_url)
+        return cls.from_data_package(
+            data_package,
+            species_data_package_base_url=species_data_package_base_url)
 
     @classmethod
-    def from_data_package_file(cls, data_package_filename,
-                               species_data_package_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
+    def from_data_package_file(
+            cls, data_package_filename,
+            species_data_package_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
         with open(data_package_filename) as f:
             data_package = json.load(f)
         return cls.from_data_package(data_package,
                                      species_data_package_base_url)
 
-
     @classmethod
-    def from_data_package(cls, data_package,
-                          species_data_package_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
+    def from_data_package(
+            cls, data_package,
+            species_data_package_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
         dfs = {}
         log_base = None
 
@@ -461,11 +463,12 @@ class Study(StudyFactory):
         """Sanely concatenate one or more Study objects
         """
         raise NotImplementedError
-        self.experiment_design = MetaData(pd.concat([self
-                                                         .experiment_design.data,
-                                                                 other.experiment_design.data]))
-        self.expression.data = ExpressionData(pd.concat([self.expression.data,
-                                                         other.expression.data]))
+        self.experiment_design = MetaData(
+            pd.concat([self.experiment_design.data,
+                       other.experiment_design.data]))
+        self.expression.data = ExpressionData(
+            pd.concat([self.expression.data,
+                       other.expression.data]))
 
     def _set_plot_colors(self):
         """If there is a column 'color' in the sample metadata, specify this
@@ -497,35 +500,8 @@ class Study(StudyFactory):
             sys.stderr.write("There is no column named 'marker' in the sample "
                              "metadata, defaulting to a circle for all "
                              "samples\n")
-            self._default_reducer_kwargs.update({'markers_dict':
-                                                     defaultdict(lambda: 'o')})
-
-
-    def main(self):
-        raise NotImplementedError
-        #TODO.md: make this an entry-point, parse flotilla package to load from cmd line, do something
-        #this is for the user... who will know little to nothing about queues and the way jobs are done on the backend
-
-        usage = "run_flotilla_cmd cmd_name runner_name"
-        # def runner_concept(self, flotilla_package_target = "barebones_package", tool_name):
-        #
-        #     #a constructor for a new study, takes a long time and maybe runs in parallel. Probably on a cluster...
-        #     #same as `import flotilla_package_target as imported_package`
-        #
-        #     imported_package = __import__(flotilla_package_target)
-        #     study = Study.__new__()
-        #
-        #     #should use importlib though...
-        #
-        #
-        #     if this_is_not a parallel process
-        #         try:
-        #             make a new runner_name.lock file
-        #         except: #exists(runner_name.lock)
-        #             raise RuntimeError
-        #
-        #     study.do_something()
-
+            self._default_reducer_kwargs.update(
+                {'markers_dict': defaultdict(lambda: 'o')})
 
     def detect_outliers(self):
         """Detects outlier cells from expression, mapping, and splicing
@@ -543,23 +519,21 @@ class Study(StudyFactory):
         ------
 
         """
-        #TODO.md: Boyko/Patrick please implement
+        # TODO: Boyko/Patrick please implement
         raise NotImplementedError
 
-
     def jsd(self):
-        """Performs Jensen-Shannon Divergence on both splicing and expression study_data
+        """Performs Jensen-Shannon Divergence on both splicing and expression
+        study_data
 
         Jensen-Shannon divergence is a method of quantifying the amount of
         change in distribution of one measurement (e.g. a splicing event or a
         gene expression) from one celltype to another.
         """
         raise NotImplementedError
-        #TODO.md: Check if JSD has not already been calculated (cacheing or memoizing)
-
+        # TODO: Check if JSD has not already been calculated (memoize)
         self.expression.jsd()
         self.splicing.jsd()
-
 
     def normalize_to_spikein(self):
         raise NotImplementedError
@@ -601,23 +575,19 @@ class Study(StudyFactory):
                 feature_subset, rename)
 
     def sample_subset_to_sample_ids(self, phenotype_subset=None):
-        """Convert a string naming a subset of phenotypes in the data in to 
+        """Convert a string naming a subset of phenotypes in the data into
         sample ids
-        
+
         Parameters
         ----------
         phenotype_subset : str
             A valid string describing a boolean phenotype described in the
             experiment_design data
-        
+
         Returns
         -------
         sample_ids : list of strings
             List of sample ids in the data
-            
-        Raises
-        ------
-        
         """
         if phenotype_subset is None or 'all_samples'.startswith(
                 phenotype_subset):
@@ -628,8 +598,8 @@ class Study(StudyFactory):
                 self.experiment_design.data[phenotype_subset.lstrip("~")],
                 dtype='bool')
         else:
-            sample_ind = pd.Series(self.experiment_design.data[
-                                       phenotype_subset], dtype='bool')
+            sample_ind = pd.Series(
+                self.experiment_design.data[phenotype_subset], dtype='bool')
         sample_ids = self.experiment_design.data.index[sample_ind]
         return sample_ids
 
@@ -671,7 +641,7 @@ class Study(StudyFactory):
         feature_ids = self.feature_subset_to_feature_ids(data_type,
                                                          feature_subset,
                                                          rename=False)
-        #TODO: move this kwarg stuff into visualize
+        # TODO: move this kwarg stuff into visualize
         kwargs['x_pc'] = x_pc
         kwargs['y_pc'] = y_pc
         kwargs['sample_ids'] = sample_ids
@@ -858,15 +828,18 @@ class Study(StudyFactory):
         else:
             colors = pd.Series(red, index=self.splicing.data.index)
         from sklearn.preprocessing import LabelEncoder
-        le = LabelEncoder()
-        category = self.experiment_design.data.color.ix[self.splicing.data.index]
-        jitter=np.array(map(lambda x: x * .2, le.fit_transform(category)))
 
+        le = LabelEncoder()
+        category = self.experiment_design.data.color.ix[
+            self.splicing.data.index]
+        jitter = np.array(map(lambda x: x * .2, le.fit_transform(category)))
 
         self.splicing.plot_modalities_lavalamps(color=colors, jitter=jitter,
                                                 **kwargs)
         for modality in set(self.splicing.modalities()):
-            self.splicing.feature_data['modality_' + modality] = self.splicing.modalities() == modality
+            self.splicing.feature_data[
+                'modality_' + modality] = \
+                self.splicing.modalities() == modality
 
 # Add interactive visualizations
 Study.interactive_classifier = Interactive.interactive_classifier
