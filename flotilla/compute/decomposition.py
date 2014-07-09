@@ -31,7 +31,8 @@ class PrettyReducer(object):
             self.explained_variance_ = pd.Series(
                 self.explained_variance_).rename_axis(self.relabel_pcs, 0)
             self.explained_variance_ratio_ = pd.Series(
-                self.explained_variance_ratio_).rename_axis(self.relabel_pcs, 0)
+                self.explained_variance_ratio_).rename_axis(self.relabel_pcs,
+                                                            0)
         except AttributeError:
             pass
         return self
@@ -79,8 +80,8 @@ class NMF(PrettyReducer, decomposition.NMF):
             raise
 
         self.X = X
-        super(sklearn.decomposition.NMF, self).fit_transform(
-            X)  #notice this is fit_transform, not fit
+        # notice this is fit_transform, not fit
+        super(sklearn.decomposition.NMF, self).fit_transform(X)
         self.components_ = pd.DataFrame(self.components_,
                                         columns=self.X.columns).rename_axis(
             self.relabel_pcs, 0)
