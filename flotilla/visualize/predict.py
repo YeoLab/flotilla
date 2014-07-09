@@ -1,9 +1,12 @@
 """
 Visualize the result of a classifcation or regression algorithm on the data.
 """
+import itertools
+
 from matplotlib.gridspec import GridSpec, GridSpecFromSubplotSpec
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import seaborn as sns
 
 from .decomposition import PCAViz
