@@ -27,32 +27,25 @@ class BaseData(object):
 
     """
 
-    def __init__(self, data=None, feature_data=None,
+    def __init__(self, data=None, metadata=None,
                  species=None, feature_rename_col=None, outliers=None,
                  min_samples=MINIMUM_SAMPLES):
         """Base class for biological data measurements
 
         Parameters
         ----------
-        experiment_design_data : pandas.DataFrame
-            Metadata on the samples, with sample names as rows and columns as
-            attributes. Any boolean column will be added as an option to
-            interactive_pca
         data : pandas.DataFrame
             A dataframe of samples x features (samples on rows, features on
             columns) with some kind of measurements of cells,
             e.g. gene expression values such as TPM, RPKM or FPKM, alternative
             splicing "Percent-spliced-in" (PSI) values, or RNA editing scores.
-        species : str, optional
-            The species in which this was measured
-
         """
         self.data = data
         if outliers is not None:
             self.data = self.drop_outliers(self.data, outliers)
 
         # self.experiment_design_data = experiment_design_data
-        self.feature_data = feature_data
+        self.feature_data = metadata
         self.feature_rename_col = feature_rename_col
         self.min_samples = min_samples
         self.default_feature_sets = []

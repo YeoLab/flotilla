@@ -1,22 +1,23 @@
 import collections
 import sys
+import itertools
 
 import pandas as pd
+
 import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.colors import rgb2hex
+import seaborn as sns
 
 from .base import BaseData
 from ..compute.infotheory import binify
 from ..compute.splicing import Modalities
+
 from ..visualize.decomposition import NMFViz, PCAViz
 from ..visualize.color import purples
 from ..visualize.predict import ClassifierViz
 from ..visualize.splicing import ModalitiesViz
 from ..util import cached_property, memoize
-import itertools
-import matplotlib.pyplot as plt
-from matplotlib.colors import rgb2hex
-
-import seaborn as sns
 from ..visualize.color import red, grey
 from ..visualize.splicing import lavalamp
 
@@ -32,7 +33,7 @@ class SplicingData(BaseData):
     _last_reducer_accessed = None
 
     def __init__(self, data,
-                 feature_data=None, binsize=0.1,
+                 metadata=None, binsize=0.1,
                  var_cut=_var_cut, outliers=None,
                  feature_rename_col=None, excluded_max=0.2, included_min=0.8):
         """Instantiate a object for percent spliced in (PSI) scores
@@ -54,7 +55,7 @@ class SplicingData(BaseData):
         included_max : float
             Minimum value for the "included" bin of psi scores. Default 0.8.
         """
-        super(SplicingData, self).__init__(data, feature_data,
+        super(SplicingData, self).__init__(data, metadata,
                                            feature_rename_col=feature_rename_col,
                                            outliers=outliers)
         self.binsize = binsize

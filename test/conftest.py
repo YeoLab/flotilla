@@ -35,7 +35,7 @@ def example_data():
 def example_study(example_data):
     from flotilla.data_model import Study
 
-    return Study(experiment_design_data=example_data.experiment_design_data,
+    return Study(sample_metadata=example_data.experiment_design_data,
                  expression_data=example_data.expression,
                  splicing_data=example_data.splicing)
 
