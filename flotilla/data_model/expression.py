@@ -277,7 +277,6 @@ class ExpressionData(BaseData):
 #                                               tpm.groupby(spikein_to_type,
 #                                                           axis=0)):
 #                 print spikein_type, df.shape
-#
 #                 if df.shape[0] > 1:
 #                     sns.violinplot(np.log2(df + 1), ax=ax, linewidth=0.1)
 #                     ax.set_xticks([])
