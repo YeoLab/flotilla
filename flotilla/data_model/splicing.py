@@ -90,6 +90,16 @@ class SplicingData(BaseData):
         return self.modalities_calculator.fit_transform(data)
 
     @memoize
+    def bootstrapped_modalities(self, sample_ids=None, feature_ids=None,
+                                thresh=0.6, n_iter=100):
+        """
+        """
+        data = self._subset(self.data, sample_ids, feature_ids)
+        return self.modalities_calculator.bootstrapped_fit_transform(
+            data, n_iter=n_iter, thresh=thresh)
+
+
+    @memoize
     def modalities_counts(self, sample_ids=None, feature_ids=None):
         """Count the number of each modalities of these samples and features
 
@@ -243,7 +253,8 @@ class SplicingData(BaseData):
         sys.stdout.write(str(modalities_fractions) + '\n')
 
     def plot_modalities_lavalamps(self, sample_ids=None, feature_ids=None,
-                                  color=None, x_offset=0, axes=None):
+                                  color=None, x_offset=0, axes=None,
+                                  use_these_modalities=True):
         """Plot "lavalamp" scatterplot of each event
 
         Parameters
@@ -261,8 +272,15 @@ class SplicingData(BaseData):
             celltypes or colors
         axes : None or list of matplotlib.axes.Axes objects
             Which axes to plot these on
+        use_these_modalities : bool
+            If True, then use these sample ids to calculate modalities.
+            Otherwise, use the modalities assigned using ALL samples and
+            features
         """
-        modalities_assignments = self.modalities(sample_ids, feature_ids)
+        if use_these_modalities:
+            modalities_assignments = self.modalities(sample_ids, feature_ids)
+        else:
+            modalities_assignments = self.modalities()
         modalities_names = self.modalities_calculator.modalities_names
 
         if axes is None:
@@ -276,26 +294,46 @@ class SplicingData(BaseData):
             modalities_assignments)
         for ax, (modality, s) in zip(axes, modalities_grouped):
             psi = self.data[s.index]
-            print psi.shape
             lavalamp(psi, color=color, ax=ax, x_offset=x_offset)
             ax.set_title(modality)
 
 
     def plot_event(self, feature_id, sample_ids=None, sample_groupby=None,
-                   sample_colors=None, sample_order=None, ax=None):
+                   sample_order=None, ax=None):
+        """
+        Plot the violinplot of a splicing event (should also show NMF movement)
+        """
         if ax is None:
             ax = plt.gca()
 
-        psi = self.data.ix[sample_ids, feature_id].dropna()
+        psi = self._subset(self.data, sample_ids, [feature_id]).dropna()
+        # psi = self.data.ix[sample_ids, feature_id].dropna()
+
+        import pdb
+
+        pdb.set_trace()
 
         # Add a tiny amount of uniform random noise in case all the values
         # are equal
         psi += np.random.uniform(0, 0.01, psi.shape)
-        sns.violinplot(psi,
-                       groupby=sample_groupby, ax=ax, bw=0.2, inner='points',
-                       color=sample_colors, order=sample_order)
+        sns.violinplot(psi, groupby=sample_groupby, ax=ax, bw=0.2,
+                       inner='points')
+        sns.despine()
+        ax.set_ylim(0, 1)
+        ax.set_yticks((0, 0.5, 1))
+        ax.set_ylabel('PSI ($\Psi$) scores')
 
-        # def plot_shared_events(self):
+        pooled_grouped = self.pooled.groupby(sample_groupby, axis=0)
+
+        for i, (celltype, df) in enumerate(pooled_grouped):
+            ys = df.ix[:, feature_id]
+            xs = np.ones(ys.shape) * i
+            for x, y in zip(xs, ys):
+                ax.scatter(x, y, marker='o', color='k', s=100)
+                ax.annotate('pooled', (x, y), textcoords='offset points',
+                            xytext=(10, 5), fontsize=14)
+
+                # def plot_shared_events(self):
 
 
 class SpliceJunctionData(SplicingData):
