@@ -209,18 +209,21 @@ class Interactive(object):
             try:
                 assert sample1 in data_obj.df.index
             except:
-                sys.stdout.write("sample: {}, is not in {} DataFrame, try a different sample ID".format(
-                    sample1, data_type))
+                sys.stdout.write("sample: {}, is not in {} DataFrame, "
+                                 "try a different sample ID".format(sample1,
+                                                                    data_type))
                 return
             try:
                 assert sample2 in data_obj.df.index
             except:
-                sys.stdout.write("sample: {}, is not in {} DataFrame, try a different sample ID".format(
-                    sample2, data_type))
+                sys.stdout.write("sample: {}, is not in {} DataFrame, "
+                                 "try a different sample ID".format(sample2,
+                                                                    data_type))
                 return
             self.localZ_result = data_obj.plot_twoway(sample1, sample2,
                                                       pCut=pCut).result_
-            sys.stdout.write("local_z finished, find the result in <this_object>.localZ_result_")
+            sys.stdout.write("local_z finished, find the result in "
+                             "<this_object>.localZ_result_")
 
         interact(do_interact,
                  data_type=('expression', 'splicing'),

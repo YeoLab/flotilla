@@ -125,7 +125,7 @@ class DecompositionViz(object):
                 assert key in valid.keys()
             except:
                 sys.stdout.write(self.__doc__)
-                raise ValueError("unrecognized parameter for pc plot: " \
+                raise ValueError("unrecognized parameter for pc plot: "
                                  "%s. acceptable values are:\n%s" % (
                                      key, "\n".join(valid.keys())))
 

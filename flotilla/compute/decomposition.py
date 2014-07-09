@@ -1,7 +1,7 @@
 import sklearn
-import pandas as pd
-
 from sklearn import decomposition
+import pandas as pd
+import sys
 
 
 class PrettyReducer(object):
@@ -20,7 +20,8 @@ class PrettyReducer(object):
             assert type(X) == pd.DataFrame
         except AssertionError:
             sys.stdout.write("Try again as a pandas DataFrame")
-            raise ValueError('Input X was not a panads DataFrame, was of type {} instead'.format(str(type(X))))
+            raise ValueError('Input X was not a panads DataFrame, '
+                             'was of type {} instead'.format(str(type(X))))
 
         self.X = X
         super(PrettyReducer, self).fit(X)
@@ -50,7 +51,8 @@ class PrettyReducer(object):
             assert type(X) == pd.DataFrame
         except:
             sys.stdout.write("Try again as a pandas DataFrame")
-            raise ValueError('Input X was not a panads DataFrame, was of type {} instead'.format(str(type(X))))
+            raise ValueError('Input X was not a panads DataFrame, '
+                             'was of type {} instead'.format(str(type(X))))
         self.fit(X)
         return self.transform(X)
 
@@ -64,8 +66,9 @@ class NMF(PrettyReducer, decomposition.NMF):
 
     def fit(self, X):
         """
-        duplicated fit code for NMF because sklearn's NMF cheats for efficiency
-        and calls fit_transform. MRO resolves the closest (in this package)
+        duplicated fit code for NMF because sklearn's NMF cheats for
+        efficiency and calls fit_transform. MRO resolves the closest
+        (in this package)
         fit_transform first and so there's a recursion error:
 
             def fit(self, X, y=None, **params):
@@ -77,7 +80,8 @@ class NMF(PrettyReducer, decomposition.NMF):
             assert type(X) == pd.DataFrame
         except:
             sys.stdout.write("Try again as a pandas DataFrame")
-            raise ValueError('Input X was not a panads DataFrame, was of type {} instead'.format(str(type(X))))
+            raise ValueError('Input X was not a panads DataFrame, '
+                             'was of type {} instead'.format(str(type(X))))
 
         self.X = X
         # notice this is fit_transform, not fit
