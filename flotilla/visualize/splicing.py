@@ -5,21 +5,11 @@ import seaborn as sns
 
 from ..compute.splicing import get_switchy_score_order
 from .color import red, blue, purple, grey, green
-import itertools
 
 
 class ModalitiesViz(object):
     """Visualize results of modality assignments
-    
-    Attributes
-    ----------
-    
-    
-    Methods
-    -------
-    
     """
-
     modalities_colors = {'included': red,
                          'excluded': blue,
                          'bimodal': purple,
@@ -31,25 +21,6 @@ class ModalitiesViz(object):
 
     colors = [modalities_colors[modality] for modality in
               modalities_order]
-
-    def __init__(self):
-        """Constructor for ModalitiesViz
-        
-        Parameters
-        ----------
-        assignments, binned
-        
-        Returns
-        -------
-        
-        
-        Raises
-        ------
-        
-        """
-        # super(ModalitiesViz, self).__init__(binned.T, n_components=2)
-        # self.modalities_assignments = modalities_assignments
-        # self.binned_reduced = binned_reduced
 
     def plot_reduced_space(self, binned_reduced, modalities_assignments,
                            ax=None, title=None):
@@ -123,6 +94,7 @@ class ModalitiesViz(object):
         """
         pass
 
+
 def lavalamp(psi, color=None, jitter=None, title='', ax=None):
     """Make a 'lavalamp' scatter plot of many splicing events
 
@@ -152,11 +124,11 @@ def lavalamp(psi, color=None, jitter=None, title='', ax=None):
     """
 
     if ax is None:
-        fig, ax = plt.subplots(figsize=(16,4))
+        fig, ax = plt.subplots(figsize=(16, 4))
     else:
         fig = plt.gcf()
     nrow, ncol = psi.shape
-    x = np.vstack(np.arange(ncol,) for i in range(nrow)).T
+    x = np.vstack(np.arange(ncol, ) for i in range(nrow)).T
 
     color = pd.Series('#FFFF00', index=psi.index) if color is None else color
 
@@ -179,14 +151,11 @@ def lavalamp(psi, color=None, jitter=None, title='', ax=None):
     # Add one so the last value is actually included instead of cut off
     xmax = x.max() + 1
 
-    x_jitter = np.array([i+jitter for i in x]).T
+    x_jitter = np.array([i + jitter for i in x]).T
 
     for co, xx, yy in zip(color, x_jitter, y):
-
-        ax.scatter(xx, yy, marker='d', color=co, alpha=0.2, edgecolor='none', linewidth=0.5, )
-        #print map(int, xx), map(lambda x: "%.2f" % x, yy)
-        #import pdb
-        #pdb.set_trace()#
+        ax.scatter(xx, yy, marker='d', color=co, alpha=0.2, edgecolor='none',
+                   linewidth=0.5, )
 
     sns.despine()
     ax.set_ylabel('$\Psi$')

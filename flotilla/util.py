@@ -11,9 +11,14 @@ import signal
 import sys
 import subprocess
 import functools
+import time
 
-###http://stackoverflow.com/questions/2281850/timeout-function-if-it-takes-too-long-to-finish###
+
 class TimeoutError(Exception):
+    """
+    From:
+    http://stackoverflow.com/questions/2281850/timeout-function-if-it-takes-too-long-to-finish
+    """
     pass
 
 
@@ -34,7 +39,6 @@ def timeout(seconds=10, error_message=os.strerror(errno.ETIME)):
         return wraps(func)(wrapper)
 
     return decorator
-###http://stackoverflow.com/questions/2281850/timeout-function-if-it-takes-too-long-to-finish###
 
 
 def serve_ipython():
@@ -45,9 +49,11 @@ def serve_ipython():
         assert os.path.exists(sys.argv[1])
 
     except:
-        raise ValueError("specify a notebook directory as the first and only argument")
+        raise ValueError("specify a notebook directory as the first and only "
+                         "argument")
 
-    c = subprocess.Popen(['ipython', 'notebook', '--script', '--notebook-dir', path])
+    c = subprocess.Popen(['ipython', 'notebook', '--script', '--notebook-dir',
+                          path])
     try:
         c.wait()
     except KeyboardInterrupt:
@@ -58,15 +64,13 @@ def dict_to_str(dic):
         """join dictionary study_data into a string with that study_data"""
         return "_".join([k + ":" + str(v) for (k, v) in dic.items()])
 
+
 def install_development_package(package_location):
     original_location = os.getcwd()
     os.chdir(package_location)
     subprocess.call(['pip install -e %s' % package_location], shell=True)
     os.chdir(original_location)
 
-#def path_to_this_file():
-#
-#    return os.path.join(os.path.dirname(__file__))
 
 def memoize(obj):
     """
@@ -86,8 +90,6 @@ def memoize(obj):
         return cache[key]
     return memoizer
 
-
-import time
 
 class cached_property(object):
     '''Decorator for read-only properties evaluated only once within TTL period.

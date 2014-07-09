@@ -27,32 +27,25 @@ class BaseData(object):
 
     """
 
-    def __init__(self, data=None, feature_data=None,
+    def __init__(self, data=None, metadata=None,
                  species=None, feature_rename_col=None, outliers=None,
                  min_samples=MINIMUM_SAMPLES):
         """Base class for biological data measurements
 
         Parameters
         ----------
-        experiment_design_data : pandas.DataFrame
-            Metadata on the samples, with sample names as rows and columns as
-            attributes. Any boolean column will be added as an option to
-            interactive_pca
         data : pandas.DataFrame
             A dataframe of samples x features (samples on rows, features on
             columns) with some kind of measurements of cells,
             e.g. gene expression values such as TPM, RPKM or FPKM, alternative
             splicing "Percent-spliced-in" (PSI) values, or RNA editing scores.
-        species : str, optional
-            The species in which this was measured
-
         """
         self.data = data
         if outliers is not None:
             self.data = self.drop_outliers(self.data, outliers)
 
         # self.experiment_design_data = experiment_design_data
-        self.feature_data = feature_data
+        self.feature_data = metadata
         self.feature_rename_col = feature_rename_col
         self.min_samples = min_samples
         self.default_feature_sets = []
@@ -107,7 +100,6 @@ class BaseData(object):
         else:
             feature_ids = self.data.columns
         return feature_ids
-
 
     def calculate_distances(self, metric='euclidean'):
         """Creates a squareform distance matrix for clustering fun
@@ -198,7 +190,7 @@ class BaseData(object):
         # clf()
         return self
 
-    def plot_dimensionality_reduction(self, x_pc=1, y_pc=2,  #obj_id=None,
+    def plot_dimensionality_reduction(self, x_pc=1, y_pc=2,
                                       sample_ids=None, feature_ids=None,
                                       featurewise=False,
                                       **plotting_kwargs):
@@ -232,9 +224,9 @@ class BaseData(object):
             title_size=10,
             axis_label_size=10,
             x_pc="pc_" + str(x_pc),
-            #this only affects the plot, not the study_data.
+            # this only affects the plot, not the study_data.
             y_pc="pc_" + str(y_pc),
-            #this only affects the plot, not the study_data.
+            # this only affects the plot, not the study_data.
             **plotting_kwargs)
         return self
 
@@ -306,7 +298,7 @@ class BaseData(object):
 
         """
 
-        #fill na with mean for each event
+        # fill na with mean for each event
         subset = self._subset(data, sample_ids, feature_ids)
         means = subset.mean().rename_axis(self.feature_renamer)
         subset = subset.fillna(means).fillna(0)

@@ -2,308 +2,563 @@
 
 
 <html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>flotilla.data_model.study &mdash; flotilla 0.1.0 documentation</title>
-    
-    <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
-    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../../_static/bootstrap-3.1.0/css/bootstrap.min.css" type="text/css" />
-    <link rel="stylesheet" href="../../../_static/bootstrap-3.1.0/css/bootstrap-theme.min.css" type="text/css" />
-    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
-    
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    <title>flotilla.data_model.study &mdash; flotilla 0.1.0
+        documentation</title>
+
+    <link rel="stylesheet" href="../../../_static/basic.css" type="text/css"/>
+    <link rel="stylesheet" href="../../../_static/pygments.css"
+          type="text/css"/>
+    <link rel="stylesheet"
+          href="../../../_static/bootstrap-3.1.0/css/bootstrap.min.css"
+          type="text/css"/>
+    <link rel="stylesheet"
+          href="../../../_static/bootstrap-3.1.0/css/bootstrap-theme.min.css"
+          type="text/css"/>
+    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css"
+          type="text/css"/>
+
     <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../../',
-        VERSION:     '0.1.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT: '../../../',
+            VERSION: '0.1.0',
+            COLLAPSE_INDEX: false,
+            FILE_SUFFIX: '.html',
+            HAS_SOURCE: true
+        };
     </script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript"
+            src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../../../_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
-    <link rel="top" title="flotilla 0.1.0 documentation" href="../../../index.html" />
-    <link rel="up" title="flotilla" href="../../flotilla.html" />
-<meta charset='utf-8'>
-<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
-<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
-<meta name="apple-mobile-web-app-capable" content="yes">
+    <script type="text/javascript"
+            src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"
+            src="../../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript"
+            src="../../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript"
+            src="../../../_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript"
+            src="../../../_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="flotilla 0.1.0 documentation"
+          href="../../../index.html"/>
+    <link rel="up" title="flotilla" href="../../flotilla.html"/>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+    <meta name='viewport'
+          content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+    <meta name="apple-mobile-web-app-capable" content="yes">
 
-  </head>
-  <body>
+</head>
+<body>
 
-  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+<div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
-      <div class="navbar-header">
-        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="../../../index.html">
-          flotilla</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.1.0</b></span>
-      </div>
+        <div class="navbar-header">
+            <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="../../../index.html">
+                flotilla</a>
+            <span class="navbar-text navbar-version pull-left"><b>0.1.0</b></span>
+        </div>
 
         <div class="collapse navbar-collapse nav-collapse">
-          <ul class="nav navbar-nav">
-            <li class="divider-vertical"></li>
-            
-            
-              <li class="dropdown globaltoc-container">
-  <a role="button"
-     id="dLabelGlobalToc"
-     data-toggle="dropdown"
-     data-target="#"
-     href="../../../index.html">Site <b class="caret"></b></a>
-  <ul class="dropdown-menu globaltoc"
-      role="menu"
-      aria-labelledby="dLabelGlobalToc"><ul class="simple">
-</ul>
-</ul>
-</li>
-              
-                <li class="dropdown">
-  <a role="button"
-     id="dLabelLocalToc"
-     data-toggle="dropdown"
-     data-target="#"
-     href="#">Page <b class="caret"></b></a>
-  <ul class="dropdown-menu localtoc"
-      role="menu"
-      aria-labelledby="dLabelLocalToc"></ul>
-</li>
-              
-            
-            
-              
-                
-              
-            
-            
-            
-            
-              <li class="hidden-sm"></li>
-            
-          </ul>
+            <ul class="nav navbar-nav">
+                <li class="divider-vertical"></li>
 
-          
-            
-<form class="navbar-form navbar-right" action="../../../search.html" method="get">
- <div class="form-group">
-  <input type="text" name="q" class="form-control" placeholder="Search" />
- </div>
-  <input type="hidden" name="check_keywords" value="yes" />
-  <input type="hidden" name="area" value="default" />
-</form>
-          
+
+                <li class="dropdown globaltoc-container">
+                    <a role="button"
+                       id="dLabelGlobalToc"
+                       data-toggle="dropdown"
+                       data-target="#"
+                       href="../../../index.html">Site <b class="caret"></b></a>
+                    <ul class="dropdown-menu globaltoc"
+                        role="menu"
+                        aria-labelledby="dLabelGlobalToc">
+                        <ul class="simple">
+                        </ul>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a role="button"
+                       id="dLabelLocalToc"
+                       data-toggle="dropdown"
+                       data-target="#"
+                       href="#">Page <b class="caret"></b></a>
+                    <ul class="dropdown-menu localtoc"
+                        role="menu"
+                        aria-labelledby="dLabelLocalToc"></ul>
+                </li>
+
+
+                <li class="hidden-sm"></li>
+
+            </ul>
+
+
+            <form class="navbar-form navbar-right" action="../../../search.html"
+                  method="get">
+                <div class="form-group">
+                    <input type="text" name="q" class="form-control"
+                           placeholder="Search"/>
+                </div>
+                <input type="hidden" name="check_keywords" value="yes"/>
+                <input type="hidden" name="area" value="default"/>
+            </form>
+
         </div>
     </div>
-  </div>
+</div>
 
 <div class="container">
-  <div class="row">
-    <div class="col-md-12">
-      
-  <h1>Source code for flotilla.data_model.study</h1><div class="highlight"><pre>
+<div class="row">
+<div class="col-md-12">
+
+<h1>Source code for flotilla.data_model.study</h1>
+
+<div class="highlight">
+<pre>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Data models for &quot;studies&quot; studies include attributes about the data and are</span>
 <span class="sd">heavier in terms of data load</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span
+        class="kn">import</span> <span class="n">defaultdict</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
-<span class="kn">import</span> <span class="nn">matplotlib.colors</span> <span class="kn">as</span> <span class="nn">mplcolors</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">seaborn</span> <span class="kn">as</span> <span class="nn">sns</span>
+<span class="kn">import</span> <span class="nn">matplotlib.colors</span> <span
+        class="kn">as</span> <span class="nn">mplcolors</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span
+        class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span
+        class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="kn">as</span> <span
+        class="nn">sns</span>
 
-<span class="kn">from</span> <span class="nn">.experiment_design</span> <span class="kn">import</span> <span class="n">ExperimentDesignData</span>
-<span class="kn">from</span> <span class="nn">.expression</span> <span class="kn">import</span> <span class="n">ExpressionData</span><span class="p">,</span> <span class="n">SpikeInData</span>
-<span class="kn">from</span> <span class="nn">.quality_control</span> <span class="kn">import</span> <span class="n">MappingStatsData</span>
-<span class="kn">from</span> <span class="nn">.splicing</span> <span class="kn">import</span> <span class="n">SplicingData</span>
-<span class="kn">from</span> <span class="nn">..visualize.color</span> <span class="kn">import</span> <span class="n">blue</span>
-<span class="kn">from</span> <span class="nn">..visualize.ipython_interact</span> <span class="kn">import</span> <span class="n">Interactive</span>
-<span class="kn">from</span> <span class="nn">..visualize.network</span> <span class="kn">import</span> <span class="n">NetworkerViz</span>
-<span class="kn">from</span> <span class="nn">..external</span> <span class="kn">import</span> <span class="n">data_package_url_to_dict</span><span class="p">,</span> <span class="n">check_if_already_downloaded</span>
+<span class="kn">from</span> <span class="nn">.experiment_design</span> <span
+        class="kn">import</span> <span class="n">MetaData</span>
+<span class="kn">from</span> <span class="nn">.expression</span> <span
+        class="kn">import</span> <span class="n">ExpressionData</span><span
+        class="p">,</span> <span class="n">SpikeInData</span>
+<span class="kn">from</span> <span class="nn">.quality_control</span> <span
+        class="kn">import</span> <span class="n">MappingStatsData</span>
+<span class="kn">from</span> <span class="nn">.splicing</span> <span class="kn">import</span> <span
+        class="n">SplicingData</span>
+<span class="kn">from</span> <span class="nn">..visualize.color</span> <span
+        class="kn">import</span> <span class="n">blue</span>
+<span class="kn">from</span> <span
+        class="nn">..visualize.ipython_interact</span> <span
+        class="kn">import</span> <span class="n">Interactive</span>
+<span class="kn">from</span> <span class="nn">..visualize.network</span> <span
+        class="kn">import</span> <span class="n">NetworkerViz</span>
+<span class="kn">from</span> <span class="nn">..external</span> <span
+        class="kn">import</span> <span class="n">data_package_url_to_dict</span><span
+        class="p">,</span> <span class="n">check_if_already_downloaded</span>
 
 
-<span class="n">SPECIES_DATA_PACKAGE_BASE_URL</span> <span class="o">=</span> <span class="s">&#39;http://sauron.ucsd.edu/flotilla_projects&#39;</span>
+<span class="n">SPECIES_DATA_PACKAGE_BASE_URL</span> <span
+        class="o">=</span> <span class="s">&#39;http://sauron.ucsd.edu/flotilla_projects&#39;</span>
 
 
 
 <span class="c"># import flotilla</span>
 <span class="c"># FLOTILLA_DIR = os.path.dirname(flotilla.__file__)</span>
 
-<div class="viewcode-block" id="StudyFactory"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.study.StudyFactory">[docs]</a><span class="k">class</span> <span class="nc">StudyFactory</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="n">_accepted_filetypes</span> <span class="o">=</span> <span class="s">&#39;tsv&#39;</span>
+<div class="viewcode-block" id="StudyFactory"><a class="viewcode-back"
+                                                 href="../../../flotilla.data_model.html#flotilla.data_model.study.StudyFactory">[docs]</a><span
+        class="k">class</span> <span class="nc">StudyFactory</span><span
+        class="p">(</span><span class="nb">object</span><span
+        class="p">):</span>
+    <span class="n">_accepted_filetypes</span> <span class="o">=</span> <span
+            class="s">&#39;tsv&#39;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">minimal_study_parameters</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">new_study_params</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">getters</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">default_sample_subset</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">default_feature_subset</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span
+            class="p">(</span><span class="bp">self</span><span
+            class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">minimal_study_parameters</span>
+    <span class="o">=</span> <span class="nb">set</span><span
+            class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">new_study_params</span>
+    <span class="o">=</span> <span class="nb">set</span><span
+            class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span
+            class="n">getters</span> <span class="o">=</span> <span
+            class="p">[]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">default_sample_subset</span>
+    <span class="o">=</span> <span class="bp">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">default_feature_subset</span>
+    <span class="o">=</span> <span class="bp">None</span>
 
-    <span class="k">def</span> <span class="nf">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Check if the attribute already exists and warns on overwrite.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;Over-writing attribute {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">StudyFactory</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__setattr__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__setattr__</span><span
+            class="p">(</span><span class="bp">self</span><span
+            class="p">,</span> <span class="n">key</span><span
+            class="p">,</span> <span class="n">value</span><span
+            class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check if the attribute already exists and warns on overwrite.</span>
+    <span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span
+            class="p">(</span><span class="bp">self</span><span
+            class="p">,</span> <span class="n">key</span><span
+            class="p">):</span>
+    <span class="n">warnings</span><span class="o">.</span><span
+            class="n">warn</span><span class="p">(</span><span class="s">&#39;Over-writing attribute {}&#39;</span><span
+            class="o">.</span><span class="n">format</span><span
+            class="p">(</span><span class="n">key</span><span
+            class="p">))</span>
+    <span class="nb">super</span><span class="p">(</span><span class="n">StudyFactory</span><span
+            class="p">,</span> <span class="bp">self</span><span
+            class="p">)</span><span class="o">.</span><span class="n">__setattr__</span><span
+            class="p">(</span><span class="n">key</span><span class="p">,</span>
+    <span class="n">value</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_to_base_file_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tup</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;for making new packages, auto-loadable data!&quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">tup</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
-        <span class="k">return</span> <span class="s">&quot;os.path.join(study_data_dir, </span><span class="si">%s</span><span class="s">)&quot;</span> <span class="o">%</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">tup</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> \
-               <span class="n">tup</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">def</span> <span class="nf">_to_base_file_tuple</span><span
+            class="p">(</span><span class="bp">self</span><span
+            class="p">,</span> <span class="n">tup</span><span
+            class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;for making new packages, auto-loadable data!&quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="nb">len</span><span
+            class="p">(</span><span class="n">tup</span><span class="p">)</span>
+    <span class="o">==</span> <span class="mi">2</span>
+    <span class="k">return</span> <span class="s">&quot;os.path.join(study_data_dir, </span><span
+            class="si">%s</span><span class="s">)&quot;</span> <span
+            class="o">%</span> <span class="n">os</span><span class="o">.</span><span
+            class="n">path</span><span class="o">.</span><span class="n">basename</span><span
+            class="p">(</span><span class="n">tup</span><span class="p">[</span><span
+            class="mi">0</span><span class="p">]),</span> \
+    <span class="n">tup</span><span class="p">[</span><span
+            class="mi">1</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_add_package_data_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">data_df</span><span class="p">,</span>
-                                   <span class="n">toplevel_package_dir</span><span class="p">,</span>
-                                   <span class="n">file_write_mode</span><span class="o">=</span><span class="s">&quot;tsv&quot;</span><span class="p">):</span>
-        <span class="n">writer</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&quot;_write_&quot;</span> <span class="o">+</span> <span class="n">file_write_mode</span><span class="p">)</span>
-        <span class="n">file_base</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
-        <span class="n">rsc_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">toplevel_package_dir</span><span class="p">,</span> <span class="s">&quot;study_data&quot;</span><span class="p">,</span>
-                                <span class="n">file_base</span> <span class="o">+</span> <span class="s">&quot;.&quot;</span> <span class="o">+</span> <span class="n">file_write_mode</span><span class="p">)</span>
-        <span class="n">writer</span><span class="p">(</span><span class="n">data_df</span><span class="p">,</span> <span class="n">rsc_file</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">rsc_file</span><span class="p">,</span> <span class="n">file_write_mode</span><span class="p">)</span>
+    <span class="k">def</span> <span
+            class="nf">_add_package_data_resource</span><span class="p">(</span><span
+            class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span
+            class="p">,</span> <span class="n">data_df</span><span
+            class="p">,</span>
+    <span class="n">toplevel_package_dir</span><span class="p">,</span>
+    <span class="n">file_write_mode</span><span class="o">=</span><span
+            class="s">&quot;tsv&quot;</span><span class="p">):</span>
+    <span class="n">writer</span> <span class="o">=</span> <span class="nb">getattr</span><span
+            class="p">(</span><span class="bp">self</span><span
+            class="p">,</span> <span class="s">&quot;_write_&quot;</span> <span
+            class="o">+</span> <span class="n">file_write_mode</span><span
+            class="p">)</span>
+    <span class="n">file_base</span> <span class="o">=</span> <span
+            class="n">os</span><span class="o">.</span><span
+            class="n">path</span><span class="o">.</span><span class="n">basename</span><span
+            class="p">(</span><span class="n">file_name</span><span
+            class="p">)</span>
+    <span class="n">rsc_file</span> <span class="o">=</span> <span
+            class="n">os</span><span class="o">.</span><span
+            class="n">path</span><span class="o">.</span><span
+            class="n">join</span><span class="p">(</span><span class="n">toplevel_package_dir</span><span
+            class="p">,</span> <span
+            class="s">&quot;study_data&quot;</span><span class="p">,</span>
+    <span class="n">file_base</span> <span class="o">+</span> <span class="s">&quot;.&quot;</span>
+    <span class="o">+</span> <span class="n">file_write_mode</span><span
+            class="p">)</span>
+    <span class="n">writer</span><span class="p">(</span><span
+            class="n">data_df</span><span class="p">,</span> <span class="n">rsc_file</span><span
+            class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">rsc_file</span><span
+            class="p">,</span> <span class="n">file_write_mode</span><span
+            class="p">)</span>
 
-<div class="viewcode-block" id="StudyFactory.validate_params"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.study.StudyFactory.validate_params">[docs]</a>    <span class="k">def</span> <span class="nf">validate_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <div class="viewcode-block" id="StudyFactory.validate_params"><a
+            class="viewcode-back"
+            href="../../../flotilla.data_model.html#flotilla.data_model.study.StudyFactory.validate_params">[docs]</a>
+        <span class="k">def</span> <span class="nf">validate_params</span><span
+                class="p">(</span><span class="bp">self</span><span
+                class="p">):</span>
         <span class="sd">&quot;&quot;&quot;make sure that all necessary attributes are present&quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">minimal_study_parameters</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">x</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s">&quot;Missing minimal parameter </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">param</span><span class="p">)</span>
-</div>
+        <span class="k">for</span> <span class="n">param</span> <span
+                class="ow">in</span> <span class="bp">self</span><span
+                class="o">.</span><span
+                class="n">minimal_study_parameters</span><span
+                class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="nb">getattr</span><span
+                class="p">(</span><span class="bp">self</span><span
+                class="p">,</span> <span class="n">param</span><span
+                class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span
+                class="p">:</span>
+        <span class="k">raise</span> <span class="ne">AssertionError</span><span
+                class="p">(</span><span class="s">&quot;Missing minimal parameter </span><span
+                class="si">%s</span><span class="s">&quot;</span> <span
+                class="o">%</span> <span class="n">param</span><span
+                class="p">)</span>
+    </div>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_load_pickle_df</span><span class="p">(</span><span class="n">file_name</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_pickle</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_write_pickle_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
-        <span class="n">df</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_load_gzip_pickle_df</span><span class="p">(</span><span class="n">file_name</span><span class="p">):</span>
-        <span class="kn">import</span> <span class="nn">gzip</span><span class="o">,</span> <span class="nn">cPickle</span>
-
-        <span class="k">with</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">cPickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_write_gzip_pickle_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
-        <span class="kn">import</span> <span class="nn">tempfile</span>
-
-        <span class="n">tmpfile_h</span><span class="p">,</span> <span class="n">tmpfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkstemp</span><span class="p">()</span>
-        <span class="n">df</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span><span class="n">tmpfile</span><span class="p">)</span>
-        <span class="kn">import</span> <span class="nn">subprocess</span>
-
-        <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="s">&#39;gzip -f </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">tempfile</span><span class="p">])</span>
-        <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="s">&#39;mv </span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tempfile</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)])</span>
+    <span class="k">def</span> <span class="nf">_load_pickle_df</span><span
+            class="p">(</span><span class="n">file_name</span><span
+            class="p">):</span>
+    <span class="k">return</span> <span class="n">pd</span><span
+            class="o">.</span><span class="n">read_pickle</span><span class="p">(</span><span
+            class="n">file_name</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_load_tsv</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="n">compression</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_write_pickle_df</span><span
+            class="p">(</span><span class="n">df</span><span class="p">,</span>
+    <span class="n">file_name</span><span class="p">):</span>
+    <span class="n">df</span><span class="o">.</span><span
+            class="n">to_pickle</span><span class="p">(</span><span class="n">file_name</span><span
+            class="p">)</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_load_json</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        filename : str</span>
-<span class="sd">            Name of the json file toread</span>
-<span class="sd">        compression : str</span>
-<span class="sd">            Not used, only for  compatibility with other load functions</span>
+    <span class="k">def</span> <span class="nf">_load_gzip_pickle_df</span><span
+            class="p">(</span><span class="n">file_name</span><span
+            class="p">):</span>
+    <span class="kn">import</span> <span class="nn">gzip</span><span
+            class="o">,</span> <span class="nn">cPickle</span>
 
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-
-
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_json</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">gzip</span><span
+            class="o">.</span><span class="n">open</span><span
+            class="p">(</span><span class="n">file_name</span><span
+            class="p">,</span> <span class="s">&#39;r&#39;</span><span
+            class="p">)</span> <span class="k">as</span> <span
+            class="n">f</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">cPickle</span><span class="o">.</span><span
+            class="n">load</span><span class="p">(</span><span
+            class="n">f</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_write_tsv</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
-        <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span
+            class="nf">_write_gzip_pickle_df</span><span class="p">(</span><span
+            class="n">df</span><span class="p">,</span> <span class="n">file_name</span><span
+            class="p">):</span>
+    <span class="kn">import</span> <span class="nn">tempfile</span>
+
+    <span class="n">tmpfile_h</span><span class="p">,</span> <span class="n">tmpfile</span>
+    <span class="o">=</span> <span class="n">tempfile</span><span
+            class="o">.</span><span class="n">mkstemp</span><span
+            class="p">()</span>
+    <span class="n">df</span><span class="o">.</span><span
+            class="n">to_pickle</span><span class="p">(</span><span class="n">tmpfile</span><span
+            class="p">)</span>
+    <span class="kn">import</span> <span class="nn">subprocess</span>
+
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span
+            class="p">([</span><span class="s">&#39;gzip -f </span><span
+            class="si">%s</span><span class="s">&#39;</span> <span
+            class="o">%</span> <span class="n">tempfile</span><span
+            class="p">])</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span
+            class="p">([</span><span class="s">&#39;mv </span><span class="si">%s</span><span
+            class="s"> </span><span class="si">%s</span><span
+            class="s">&#39;</span> <span class="o">%</span> <span
+            class="p">(</span><span class="n">tempfile</span><span
+            class="p">,</span> <span class="n">file_name</span><span class="p">)])</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_load_csv</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="n">compression</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_load_tsv</span><span class="p">(</span><span
+            class="n">file_name</span><span class="p">,</span> <span class="n">compression</span><span
+            class="o">=</span><span class="bp">None</span><span
+            class="p">):</span>
+    <span class="k">return</span> <span class="n">pd</span><span
+            class="o">.</span><span class="n">read_table</span><span
+            class="p">(</span><span class="n">file_name</span><span
+            class="p">,</span> <span class="n">index_col</span><span
+            class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">compression</span><span class="o">=</span><span class="n">compression</span><span
+            class="p">)</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_write_csv</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
-        <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_get_loading_method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;loading_methods for loading from file&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&quot;_load_&quot;</span> <span class="o">+</span> <span class="n">file_name</span><span class="p">)</span>
-
-<div class="viewcode-block" id="StudyFactory.load"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.study.StudyFactory.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">file_type</span><span class="o">=</span><span class="s">&#39;pickle_df&#39;</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_loading_method</span><span class="p">(</span><span class="n">file_type</span><span class="p">)(</span><span class="n">file_name</span><span class="p">)</span>
-
-</div></div>
-<div class="viewcode-block" id="Study"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.study.Study">[docs]</a><span class="k">class</span> <span class="nc">Study</span><span class="p">(</span><span class="n">StudyFactory</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_load_json</span><span
+            class="p">(</span><span class="n">filename</span><span
+            class="p">,</span> <span class="n">compression</span><span
+            class="o">=</span><span class="bp">None</span><span
+            class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">        Parameters</span>
+    <span class="sd">        ----------</span>
+    <span class="sd">        filename : str</span>
+    <span class="sd">            Name of the json file toread</span>
+    <span class="sd">        compression : str</span>
+    <span class="sd">            Not used, only for  compatibility with other load functions</span>
+
+    <span class="sd">        Returns</span>
+    <span class="sd">        -------</span>
+
+
+    <span class="sd">        Raises</span>
+    <span class="sd">        ------</span>
+    <span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">pd</span><span
+            class="o">.</span><span class="n">read_json</span><span
+            class="p">(</span><span class="n">filename</span><span
+            class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_write_tsv</span><span
+            class="p">(</span><span class="n">df</span><span class="p">,</span>
+    <span class="n">file_name</span><span class="p">):</span>
+    <span class="n">df</span><span class="o">.</span><span
+            class="n">to_csv</span><span class="p">(</span><span class="n">file_name</span><span
+            class="p">,</span> <span class="n">sep</span><span
+            class="o">=</span><span class="s">&#39;</span><span
+            class="se">\t</span><span class="s">&#39;</span><span
+            class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_load_csv</span><span class="p">(</span><span
+            class="n">file_name</span><span class="p">,</span> <span class="n">compression</span><span
+            class="o">=</span><span class="bp">None</span><span
+            class="p">):</span>
+    <span class="k">return</span> <span class="n">pd</span><span
+            class="o">.</span><span class="n">read_csv</span><span
+            class="p">(</span><span class="n">file_name</span><span
+            class="p">,</span> <span class="n">index_col</span><span
+            class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">compression</span><span class="o">=</span><span class="n">compression</span><span
+            class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_write_csv</span><span
+            class="p">(</span><span class="n">df</span><span class="p">,</span>
+    <span class="n">file_name</span><span class="p">):</span>
+    <span class="n">df</span><span class="o">.</span><span
+            class="n">to_csv</span><span class="p">(</span><span class="n">file_name</span><span
+            class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_loading_method</span><span
+            class="p">(</span><span class="bp">self</span><span
+            class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;loading_methods for loading from file&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">getattr</span><span
+            class="p">(</span><span class="bp">self</span><span
+            class="p">,</span> <span class="s">&quot;_load_&quot;</span> <span
+            class="o">+</span> <span class="n">file_name</span><span
+            class="p">)</span>
+
+    <div class="viewcode-block" id="StudyFactory.load"><a class="viewcode-back"
+                                                          href="../../../flotilla.data_model.html#flotilla.data_model.study.StudyFactory.load">[docs]</a>
+        <span class="k">def</span> <span class="nf">load</span><span
+                class="p">(</span><span class="bp">self</span><span
+                class="p">,</span> <span class="n">file_name</span><span
+                class="p">,</span> <span class="n">file_type</span><span
+                class="o">=</span><span
+                class="s">&#39;pickle_df&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span
+                class="o">.</span><span
+                class="n">_get_loading_method</span><span
+                class="p">(</span><span class="n">file_type</span><span
+                class="p">)(</span><span class="n">file_name</span><span
+                class="p">)</span>
+
+    </div>
+</div>
+<div class="viewcode-block" id="Study"><a class="viewcode-back"
+                                          href="../../../flotilla.data_model.html#flotilla.data_model.study.Study">[docs]</a><span
+        class="k">class</span> <span class="nc">Study</span><span
+        class="p">(</span><span class="n">StudyFactory</span><span
+        class="p">):</span>
+<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    store essential data associated with a study. Users specify how to build the</span>
 <span class="sd">    necessary components from project-specific getters (see barebones_project</span>
 <span class="sd">    for example getters)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">default_feature_set_ids</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">default_feature_set_ids</span> <span class="o">=</span> <span
+        class="p">[]</span>
 
-    <span class="c"># Data types with enough data that we&#39;d probably reduce them, and even</span>
-    <span class="c"># then we might want to take subsets. E.g. most variant genes for</span>
-    <span class="c"># expresion. But we don&#39;t expect to do this for spikein or mapping_stats</span>
-    <span class="c"># data</span>
-    <span class="n">_subsetable_data_types</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;expression&#39;</span><span class="p">,</span> <span class="s">&#39;splicing&#39;</span><span class="p">]</span>
+<span class="c"># Data types with enough data that we&#39;d probably reduce them, and even</span>
+<span class="c"># then we might want to take subsets. E.g. most variant genes for</span>
+<span class="c"># expresion. But we don&#39;t expect to do this for spikein or mapping_stats</span>
+<span class="c"># data</span>
+<span class="n">_subsetable_data_types</span> <span class="o">=</span> <span
+        class="p">[</span><span class="s">&#39;expression&#39;</span><span
+        class="p">,</span> <span class="s">&#39;splicing&#39;</span><span
+        class="p">]</span>
 
-    <span class="n">initializers</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;experiment_design_data&#39;</span><span class="p">:</span> <span class="n">ExperimentDesignData</span><span class="p">,</span>
-                    <span class="s">&#39;expression_data&#39;</span><span class="p">:</span> <span class="n">ExpressionData</span><span class="p">,</span>
-                    <span class="s">&#39;splicing_data&#39;</span><span class="p">:</span> <span class="n">SplicingData</span><span class="p">,</span>
-                    <span class="s">&#39;mapping_stats_data&#39;</span><span class="p">:</span> <span class="n">MappingStatsData</span><span class="p">,</span>
-                    <span class="s">&#39;spikein_data&#39;</span><span class="p">:</span> <span class="n">SpikeInData</span><span class="p">}</span>
+<span class="n">initializers</span> <span class="o">=</span> <span
+        class="p">{</span><span
+        class="s">&#39;experiment_design_data&#39;</span><span
+        class="p">:</span> <span class="n">MetaData</span><span
+        class="p">,</span>
+<span class="s">&#39;expression_data&#39;</span><span class="p">:</span> <span
+        class="n">ExpressionData</span><span class="p">,</span>
+<span class="s">&#39;splicing_data&#39;</span><span class="p">:</span> <span
+        class="n">SplicingData</span><span class="p">,</span>
+<span class="s">&#39;mapping_stats_data&#39;</span><span class="p">:</span>
+<span class="n">MappingStatsData</span><span class="p">,</span>
+<span class="s">&#39;spikein_data&#39;</span><span class="p">:</span> <span
+        class="n">SpikeInData</span><span class="p">}</span>
 
-    <span class="n">readers</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;tsv&#39;</span><span class="p">:</span> <span class="n">StudyFactory</span><span class="o">.</span><span class="n">_load_tsv</span><span class="p">,</span>
-               <span class="s">&#39;csv&#39;</span><span class="p">:</span> <span class="n">StudyFactory</span><span class="o">.</span><span class="n">_load_csv</span><span class="p">,</span>
-               <span class="s">&#39;json&#39;</span><span class="p">:</span> <span class="n">StudyFactory</span><span class="o">.</span><span class="n">_load_json</span><span class="p">,</span>
-               <span class="s">&#39;pickle_df&#39;</span><span class="p">:</span> <span class="n">StudyFactory</span><span class="o">.</span><span class="n">_load_pickle_df</span><span class="p">,</span>
-               <span class="s">&#39;gzip_pickle_df&#39;</span><span class="p">:</span> <span class="n">StudyFactory</span><span class="o">.</span><span class="n">_load_gzip_pickle_df</span><span class="p">}</span>
+<span class="n">readers</span> <span class="o">=</span> <span class="p">{</span><span
+        class="s">&#39;tsv&#39;</span><span class="p">:</span> <span class="n">StudyFactory</span><span
+        class="o">.</span><span class="n">_load_tsv</span><span
+        class="p">,</span>
+<span class="s">&#39;csv&#39;</span><span class="p">:</span> <span class="n">StudyFactory</span><span
+        class="o">.</span><span class="n">_load_csv</span><span
+        class="p">,</span>
+<span class="s">&#39;json&#39;</span><span class="p">:</span> <span class="n">StudyFactory</span><span
+        class="o">.</span><span class="n">_load_json</span><span
+        class="p">,</span>
+<span class="s">&#39;pickle_df&#39;</span><span class="p">:</span> <span
+        class="n">StudyFactory</span><span class="o">.</span><span class="n">_load_pickle_df</span><span
+        class="p">,</span>
+<span class="s">&#39;gzip_pickle_df&#39;</span><span class="p">:</span> <span
+        class="n">StudyFactory</span><span class="o">.</span><span class="n">_load_gzip_pickle_df</span><span
+        class="p">}</span>
 
-    <span class="n">_default_reducer_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;whiten&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
-                               <span class="s">&#39;show_point_labels&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
-                               <span class="s">&#39;show_vectors&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">}</span>
+<span class="n">_default_reducer_kwargs</span> <span class="o">=</span> <span
+        class="p">{</span><span class="s">&#39;whiten&#39;</span><span
+        class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+<span class="s">&#39;show_point_labels&#39;</span><span class="p">:</span> <span
+        class="bp">False</span><span class="p">,</span>
+<span class="s">&#39;show_vectors&#39;</span><span class="p">:</span> <span
+        class="bp">False</span><span class="p">}</span>
 
-    <span class="n">_default_plot_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;marker&#39;</span><span class="p">:</span> <span class="s">&#39;o&#39;</span><span class="p">,</span> <span class="s">&#39;color&#39;</span><span class="p">:</span> <span class="n">blue</span><span class="p">}</span>
+<span class="n">_default_plot_kwargs</span> <span class="o">=</span> <span
+        class="p">{</span><span class="s">&#39;marker&#39;</span><span
+        class="p">:</span> <span class="s">&#39;o&#39;</span><span
+        class="p">,</span> <span class="s">&#39;color&#39;</span><span
+        class="p">:</span> <span class="n">blue</span><span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">experiment_design_data</span><span class="p">,</span> <span class="n">expression_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                 <span class="n">splicing_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                 <span class="n">expression_feature_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                 <span class="n">expression_feature_rename_col</span><span class="o">=</span><span class="s">&#39;gene_name&#39;</span><span class="p">,</span>
-                 <span class="n">splicing_feature_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                 <span class="n">splicing_feature_rename_col</span><span class="o">=</span><span class="s">&#39;gene_name&#39;</span><span class="p">,</span>
-                 <span class="n">mapping_stats_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                 <span class="n">mapping_stats_number_mapped_col</span><span class="o">=</span><span class="s">&quot;Uniquely mapped reads &quot;</span>
-                                                 <span class="s">&quot;number&quot;</span><span class="p">,</span>
-                 <span class="n">spikein_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                 <span class="n">spikein_feature_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                 <span class="n">drop_outliers</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">species</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                 <span class="n">gene_ontology_data</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Construct a biological study</span>
+<span class="k">def</span> <span class="nf">__init__</span><span
+        class="p">(</span><span class="bp">self</span><span class="p">,</span>
+<span class="n">experiment_design_data</span><span class="p">,</span> <span
+        class="n">expression_data</span><span class="o">=</span><span
+        class="bp">None</span><span class="p">,</span>
+<span class="n">splicing_data</span><span class="o">=</span><span class="bp">None</span><span
+        class="p">,</span>
+<span class="n">expression_feature_data</span><span class="o">=</span><span
+        class="bp">None</span><span class="p">,</span>
+<span class="n">expression_feature_rename_col</span><span
+        class="o">=</span><span class="s">&#39;gene_name&#39;</span><span
+        class="p">,</span>
+<span class="n">splicing_feature_data</span><span class="o">=</span><span
+        class="bp">None</span><span class="p">,</span>
+<span class="n">splicing_feature_rename_col</span><span class="o">=</span><span
+        class="s">&#39;gene_name&#39;</span><span class="p">,</span>
+<span class="n">mapping_stats_data</span><span class="o">=</span><span
+        class="bp">None</span><span class="p">,</span>
+<span class="n">mapping_stats_number_mapped_col</span><span
+        class="o">=</span><span
+        class="s">&quot;Uniquely mapped reads &quot;</span>
+<span class="s">&quot;number&quot;</span><span class="p">,</span>
+<span class="n">spikein_data</span><span class="o">=</span><span
+        class="bp">None</span><span class="p">,</span>
+<span class="n">spikein_feature_data</span><span class="o">=</span><span
+        class="bp">None</span><span class="p">,</span>
+<span class="n">drop_outliers</span><span class="o">=</span><span class="bp">False</span><span
+        class="p">,</span> <span class="n">species</span><span
+        class="o">=</span><span class="bp">None</span><span class="p">,</span>
+<span class="n">gene_ontology_data</span><span class="o">=</span><span
+        class="bp">None</span><span class="p">):</span>
+<span class="sd">&quot;&quot;&quot;Construct a biological study</span>
 
 <span class="sd">        This class only accepts data, no filenames. All data must already</span>
 <span class="sd">        have been read in and exist as Python objects.</span>
@@ -377,534 +632,1134 @@
 
 <span class="sd">        [1] http://stackoverflow.com/questions/12513185/removing-the-work-from-init-to-aid-unit-testing</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Study</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
-        <span class="c"># if params_dict is None:</span>
-        <span class="c">#     params_dict = {}</span>
-        <span class="c"># self.update(params_dict)</span>
-        <span class="c"># self.initialize_required_getters()</span>
-        <span class="c"># self.apply_getters()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">species</span> <span class="o">=</span> <span class="n">species</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">gene_ontology_data</span> <span class="o">=</span> <span class="n">gene_ontology_data</span>
+<span class="nb">super</span><span class="p">(</span><span
+        class="n">Study</span><span class="p">,</span> <span
+        class="bp">self</span><span class="p">)</span><span
+        class="o">.</span><span class="n">__init__</span><span
+        class="p">()</span>
+<span class="c"># if params_dict is None:</span>
+<span class="c">#     params_dict = {}</span>
+<span class="c"># self.update(params_dict)</span>
+<span class="c"># self.initialize_required_getters()</span>
+<span class="c"># self.apply_getters()</span>
+<span class="bp">self</span><span class="o">.</span><span
+        class="n">species</span> <span class="o">=</span> <span class="n">species</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">gene_ontology_data</span>
+<span class="o">=</span> <span class="n">gene_ontology_data</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span> <span class="o">=</span> <span class="n">ExperimentDesignData</span><span class="p">(</span><span class="n">experiment_design_data</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">default_sample_subsets</span> <span class="o">=</span> \
-            <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span>
-             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="nb">bool</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">default_sample_subsets</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s">&#39;all_samples&#39;</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span>
+<span class="o">=</span> <span class="n">MetaData</span><span class="p">(</span><span
+        class="n">experiment_design_data</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">default_sample_subsets</span>
+<span class="o">=</span> \
+<span class="p">[</span><span class="n">col</span> <span class="k">for</span>
+<span class="n">col</span> <span class="ow">in</span> <span
+        class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span
+        class="o">.</span><span class="n">data</span><span
+        class="o">.</span><span class="n">columns</span>
+<span class="k">if</span> <span class="bp">self</span><span
+        class="o">.</span><span class="n">experiment_design</span><span
+        class="o">.</span><span class="n">data</span><span
+        class="p">[</span><span class="n">col</span><span
+        class="p">]</span><span class="o">.</span><span class="n">dtype</span>
+<span class="o">==</span> <span class="nb">bool</span><span class="p">]</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">default_sample_subsets</span><span
+        class="o">.</span><span class="n">insert</span><span
+        class="p">(</span><span class="mi">0</span><span class="p">,</span>
+<span class="s">&#39;all_samples&#39;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="s">&#39;outlier&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span class="o">.</span><span class="n">data</span> <span class="ow">and</span> <span class="n">drop_outliers</span><span class="p">:</span>
-            <span class="n">outliers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">[</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">outlier</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">outliers</span> <span class="o">=</span> <span class="bp">None</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;outlier&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="k">if</span> <span class="s">&#39;outlier&#39;</span> <span
+        class="ow">in</span> <span class="bp">self</span><span
+        class="o">.</span><span class="n">experiment_design</span><span
+        class="o">.</span><span class="n">data</span> <span
+        class="ow">and</span> <span class="n">drop_outliers</span><span
+        class="p">:</span>
+<span class="n">outliers</span> <span class="o">=</span> <span
+        class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span
+        class="o">.</span><span class="n">data</span><span
+        class="o">.</span><span class="n">index</span><span class="p">[</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span
+        class="o">.</span><span class="n">data</span><span
+        class="o">.</span><span class="n">outlier</span><span class="p">]</span>
+<span class="k">else</span><span class="p">:</span>
+<span class="n">outliers</span> <span class="o">=</span> <span
+        class="bp">None</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span
+        class="o">.</span><span class="n">data</span><span
+        class="p">[</span><span class="s">&#39;outlier&#39;</span><span
+        class="p">]</span> <span class="o">=</span> <span
+        class="bp">False</span>
 
-        <span class="k">if</span> <span class="n">expression_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">expression</span> <span class="o">=</span> <span class="n">ExpressionData</span><span class="p">(</span><span class="n">expression_data</span><span class="p">,</span>
-                                             <span class="n">expression_feature_data</span><span class="p">,</span>
-                                             <span class="n">feature_rename_col</span><span class="o">=</span><span class="n">expression_feature_rename_col</span><span class="p">,</span>
-                                             <span class="n">outliers</span><span class="o">=</span><span class="n">outliers</span><span class="p">,</span> <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">networks</span> <span class="o">=</span> <span class="n">NetworkerViz</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">expression</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">default_feature_set_ids</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">feature_sets</span>
-                                                <span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-        <span class="k">if</span> <span class="n">splicing_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">splicing</span> <span class="o">=</span> <span class="n">SplicingData</span><span class="p">(</span><span class="n">splicing_data</span><span class="p">,</span> <span class="n">splicing_feature_data</span><span class="p">,</span>
-                                         <span class="n">feature_rename_col</span><span class="o">=</span><span class="n">splicing_feature_rename_col</span><span class="p">,</span>
-                                         <span class="n">outliers</span><span class="o">=</span><span class="n">outliers</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">splicing</span><span class="o">.</span><span class="n">networks</span> <span class="o">=</span> <span class="n">NetworkerViz</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">splicing</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">mapping_stats_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">mapping_stats</span> <span class="o">=</span> <span class="n">MappingStatsData</span><span class="p">(</span><span class="n">mapping_stats_data</span><span class="p">,</span>
-                                                  <span class="n">mapping_stats_number_mapped_col</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">spikein_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">spikein</span> <span class="o">=</span> <span class="n">SpikeInData</span><span class="p">(</span><span class="n">spikein_data</span><span class="p">,</span> <span class="n">spikein_feature_data</span><span class="p">)</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;subclasses initialized</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">validate_params</span><span class="p">()</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;package validated</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">expression_data</span> <span
+        class="ow">is</span> <span class="ow">not</span> <span
+        class="bp">None</span><span class="p">:</span>
+<span class="bp">self</span><span class="o">.</span><span
+        class="n">expression</span> <span class="o">=</span> <span class="n">ExpressionData</span><span
+        class="p">(</span><span class="n">expression_data</span><span class="p">,</span>
+<span class="n">expression_feature_data</span><span class="p">,</span>
+<span class="n">feature_rename_col</span><span class="o">=</span><span
+        class="n">expression_feature_rename_col</span><span class="p">,</span>
+<span class="n">outliers</span><span class="o">=</span><span
+        class="n">outliers</span><span class="p">,</span> <span
+        class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span
+        class="n">expression</span><span class="o">.</span><span class="n">networks</span>
+<span class="o">=</span> <span class="n">NetworkerViz</span><span
+        class="p">(</span><span class="bp">self</span><span
+        class="o">.</span><span class="n">expression</span><span
+        class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">default_feature_set_ids</span><span
+        class="o">.</span><span class="n">extend</span><span
+        class="p">(</span><span class="bp">self</span><span
+        class="o">.</span><span class="n">expression</span><span
+        class="o">.</span><span class="n">feature_sets</span>
+<span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<span class="k">if</span> <span class="n">splicing_data</span> <span class="ow">is</span>
+<span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+<span class="bp">self</span><span class="o">.</span><span
+        class="n">splicing</span> <span class="o">=</span> <span class="n">SplicingData</span><span
+        class="p">(</span><span class="n">splicing_data</span><span
+        class="p">,</span> <span class="n">splicing_feature_data</span><span
+        class="p">,</span>
+<span class="n">feature_rename_col</span><span class="o">=</span><span
+        class="n">splicing_feature_rename_col</span><span class="p">,</span>
+<span class="n">outliers</span><span class="o">=</span><span
+        class="n">outliers</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span
+        class="n">splicing</span><span class="o">.</span><span class="n">networks</span>
+<span class="o">=</span> <span class="n">NetworkerViz</span><span
+        class="p">(</span><span class="bp">self</span><span
+        class="o">.</span><span class="n">splicing</span><span
+        class="p">)</span>
+<span class="k">if</span> <span class="n">mapping_stats_data</span> <span
+        class="ow">is</span> <span class="ow">not</span> <span
+        class="bp">None</span><span class="p">:</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">mapping_stats</span>
+<span class="o">=</span> <span class="n">MappingStatsData</span><span class="p">(</span><span
+        class="n">mapping_stats_data</span><span class="p">,</span>
+<span class="n">mapping_stats_number_mapped_col</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">spikein_data</span> <span class="ow">is</span>
+<span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+<span class="bp">self</span><span class="o">.</span><span
+        class="n">spikein</span> <span class="o">=</span> <span class="n">SpikeInData</span><span
+        class="p">(</span><span class="n">spikein_data</span><span
+        class="p">,</span> <span class="n">spikein_feature_data</span><span
+        class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span
+        class="n">stderr</span><span class="o">.</span><span
+        class="n">write</span><span class="p">(</span><span class="s">&quot;subclasses initialized</span><span
+        class="se">\n</span><span class="s">&quot;</span><span
+        class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">validate_params</span><span
+        class="p">()</span>
+<span class="n">sys</span><span class="o">.</span><span
+        class="n">stderr</span><span class="o">.</span><span
+        class="n">write</span><span class="p">(</span><span class="s">&quot;package validated</span><span
+        class="se">\n</span><span class="s">&quot;</span><span
+        class="p">)</span>
 
-    <span class="nd">@property</span>
-<div class="viewcode-block" id="Study.default_feature_subsets"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.study.Study.default_feature_subsets">[docs]</a>    <span class="k">def</span> <span class="nf">default_feature_subsets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">feature_sets</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subsetable_data_types</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">data_type</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                <span class="k">continue</span>
-            <span class="n">feature_sets</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_type</span><span class="o">.</span><span class="n">feature_sets</span>
-        <span class="k">return</span> <span class="n">feature_sets</span>
+<span class="nd">@property</span>
+
+<div class="viewcode-block" id="Study.default_feature_subsets"><a
+        class="viewcode-back"
+        href="../../../flotilla.data_model.html#flotilla.data_model.study.Study.default_feature_subsets">[docs]</a>
+    <span class="k">def</span> <span
+            class="nf">default_feature_subsets</span><span
+            class="p">(</span><span class="bp">self</span><span
+            class="p">):</span>
+    <span class="n">feature_sets</span> <span class="o">=</span> <span
+            class="p">{}</span>
+    <span class="k">for</span> <span class="n">name</span> <span
+            class="ow">in</span> <span class="bp">self</span><span
+            class="o">.</span><span class="n">_subsetable_data_types</span><span
+            class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+    <span class="n">data_type</span> <span class="o">=</span> <span class="nb">getattr</span><span
+            class="p">(</span><span class="bp">self</span><span
+            class="p">,</span> <span class="n">name</span><span
+            class="p">)</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span
+            class="p">:</span>
+    <span class="k">continue</span>
+    <span class="n">feature_sets</span><span class="p">[</span><span class="n">name</span><span
+            class="p">]</span> <span class="o">=</span> <span class="n">data_type</span><span
+            class="o">.</span><span class="n">feature_sets</span>
+    <span class="k">return</span> <span class="n">feature_sets</span>
 </div>
-    <span class="nd">@property</span>
-<div class="viewcode-block" id="Study.sample_id_to_color"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.study.Study.sample_id_to_color">[docs]</a>    <span class="k">def</span> <span class="nf">sample_id_to_color</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;If &quot;color&quot; is a column in the experiment_design data, return a</span>
-<span class="sd">        dict of that {sample_id: color} mapping, else try to create it using</span>
-<span class="sd">        the &quot;celltype&quot; columns, else just return a dict mapping to a default</span>
-<span class="sd">        color (blue)</span>
+<span class="nd">@property</span>
+
+<div class="viewcode-block" id="Study.sample_id_to_color"><a
+        class="viewcode-back"
+        href="../../../flotilla.data_model.html#flotilla.data_model.study.Study.sample_id_to_color">[docs]</a>
+    <span class="k">def</span> <span class="nf">sample_id_to_color</span><span
+            class="p">(</span><span class="bp">self</span><span
+            class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;If &quot;color&quot; is a column in the experiment_design data, return a</span>
+    <span class="sd">        dict of that {sample_id: color} mapping, else try to create it using</span>
+    <span class="sd">        the &quot;celltype&quot; columns, else just return a dict mapping to a default</span>
+    <span class="sd">        color (blue)</span>
+    <span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s">&#39;color&#39;</span> <span
+            class="ow">in</span> <span class="bp">self</span><span
+            class="o">.</span><span class="n">experiment_design</span><span
+            class="o">.</span><span class="n">data</span><span
+            class="p">:</span>
+    <span class="k">return</span> <span class="bp">self</span><span
+            class="o">.</span><span class="n">experiment_design</span><span
+            class="o">.</span><span class="n">data</span><span
+            class="o">.</span><span class="n">color</span><span
+            class="o">.</span><span class="n">to_dict</span><span
+            class="p">()</span>
+    <span class="k">elif</span> <span class="s">&#39;celltype&#39;</span> <span
+            class="ow">in</span> <span class="bp">self</span><span
+            class="o">.</span><span class="n">experiment_design</span><span
+            class="o">.</span><span class="n">data</span><span
+            class="p">:</span>
+    <span class="n">grouped</span> <span class="o">=</span> <span class="bp">self</span><span
+            class="o">.</span><span class="n">experiment_design</span><span
+            class="o">.</span><span class="n">data</span><span
+            class="o">.</span><span class="n">groupby</span><span
+            class="p">(</span><span class="s">&#39;celltype&#39;</span><span
+            class="p">)</span>
+    <span class="n">palette</span> <span class="o">=</span> <span class="nb">iter</span><span
+            class="p">(</span><span class="n">sns</span><span class="o">.</span><span
+            class="n">color_palette</span><span class="p">(</span><span
+            class="n">n_colors</span><span class="o">=</span><span class="n">grouped</span><span
+            class="o">.</span><span class="n">ngroups</span> <span
+            class="o">+</span> <span class="mi">1</span><span
+            class="p">))</span>
+    <span class="n">color</span> <span class="o">=</span> <span class="n">grouped</span><span
+            class="o">.</span><span class="n">apply</span><span
+            class="p">(</span><span class="k">lambda</span> <span
+            class="n">x</span><span class="p">:</span> <span
+            class="n">mplcolors</span><span class="o">.</span><span class="n">rgb2hex</span><span
+            class="p">(</span><span class="n">palette</span><span
+            class="o">.</span><span class="n">next</span><span
+            class="p">()))</span>
+    <span class="n">color</span><span class="o">.</span><span
+            class="n">name</span> <span class="o">=</span> <span class="s">&#39;color&#39;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span
+            class="o">.</span><span class="n">data</span> <span
+            class="o">=</span> <span class="bp">self</span><span
+            class="o">.</span><span class="n">experiment_design</span><span
+            class="o">.</span><span class="n">data</span><span
+            class="o">.</span><span class="n">join</span><span
+            class="p">(</span>
+    <span class="n">color</span><span class="p">,</span> <span
+            class="n">on</span><span class="o">=</span><span class="s">&#39;celltype&#39;</span><span
+            class="p">)</span>
+
+    <span class="k">return</span> <span class="bp">self</span><span
+            class="o">.</span><span class="n">experiment_design</span><span
+            class="o">.</span><span class="n">data</span><span
+            class="o">.</span><span class="n">color</span><span
+            class="o">.</span><span class="n">to_dict</span><span
+            class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">defaultdict</span><span
+            class="p">(</span><span class="k">lambda</span> <span
+            class="n">x</span><span class="p">:</span> <span
+            class="n">blue</span><span class="p">)</span>
+</div>
+<span class="nd">@classmethod</span>
+
+<div class="viewcode-block" id="Study.from_data_package_url"><a
+        class="viewcode-back"
+        href="../../../flotilla.data_model.html#flotilla.data_model.study.Study.from_data_package_url">[docs]</a>
+    <span class="k">def</span> <span
+            class="nf">from_data_package_url</span><span class="p">(</span><span
+            class="n">cls</span><span class="p">,</span> <span class="n">data_package_url</span><span
+            class="p">,</span>
+    <span class="n">species_data_package_base_url</span><span class="o">=</span><span
+            class="n">SPECIES_DATA_PACKAGE_BASE_URL</span><span
+            class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create a study from a url of a datapackage.json file</span>
+
+    <span class="sd">        Parameters</span>
+    <span class="sd">        ----------</span>
+    <span class="sd">        data_package_url : str</span>
+    <span class="sd">            HTTP url of a datapackage.json file, following the specification</span>
+    <span class="sd">            described here: http://dataprotocols.org/data-packages/ and</span>
+    <span class="sd">            requiring the following data resources: experiment_design,</span>
+    <span class="sd">            expression, splicing</span>
+    <span class="sd">        species_data_pacakge_base_url : str</span>
+    <span class="sd">            Base URL to fetch species-specific gene and splicing event</span>
+    <span class="sd">            metadata from. Default &#39;http://sauron.ucsd.edu/flotilla_projects&#39;</span>
+
+    <span class="sd">        Returns</span>
+    <span class="sd">        -------</span>
+    <span class="sd">        study : Study</span>
+    <span class="sd">            A &quot;study&quot; object containing the data described in the</span>
+    <span class="sd">            data_package_url file</span>
+
+    <span class="sd">        Raises</span>
+    <span class="sd">        ------</span>
+    <span class="sd">        AttributeError</span>
+    <span class="sd">            If the datapackage.json file does not contain the required</span>
+    <span class="sd">            resources of experiment_design, expression, and splicing.</span>
+    <span class="sd">        &quot;&quot;&quot;</span>
+    <span class="n">data_package</span> <span class="o">=</span> <span
+            class="n">data_package_url_to_dict</span><span
+            class="p">(</span><span class="n">data_package_url</span><span
+            class="p">)</span>
+    <span class="k">return</span> <span class="n">cls</span><span
+            class="o">.</span><span class="n">from_data_package</span><span
+            class="p">(</span><span class="n">data_package</span><span
+            class="p">,</span>
+    <span class="n">species_data_package_base_url</span><span class="o">=</span><span
+            class="n">species_data_package_base_url</span><span
+            class="p">)</span>
+</div>
+<span class="nd">@classmethod</span>
+
+<div class="viewcode-block" id="Study.from_data_package_file"><a
+        class="viewcode-back"
+        href="../../../flotilla.data_model.html#flotilla.data_model.study.Study.from_data_package_file">[docs]</a>
+    <span class="k">def</span> <span
+            class="nf">from_data_package_file</span><span
+            class="p">(</span><span class="n">cls</span><span class="p">,</span>
+    <span class="n">data_package_filename</span><span class="p">,</span>
+    <span class="n">species_data_package_base_url</span><span class="o">=</span><span
+            class="n">SPECIES_DATA_PACKAGE_BASE_URL</span><span
+            class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span
+            class="p">(</span><span class="n">data_package_filename</span><span
+            class="p">)</span> <span class="k">as</span> <span
+            class="n">f</span><span class="p">:</span>
+    <span class="n">data_package</span> <span class="o">=</span> <span
+            class="n">json</span><span class="o">.</span><span
+            class="n">load</span><span class="p">(</span><span
+            class="n">f</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cls</span><span
+            class="o">.</span><span class="n">from_data_package</span><span
+            class="p">(</span><span class="n">data_package</span><span
+            class="p">,</span>
+    <span class="n">species_data_package_base_url</span><span class="p">)</span>
+
+</div>
+<span class="nd">@classmethod</span>
+
+<div class="viewcode-block" id="Study.from_data_package"><a
+        class="viewcode-back"
+        href="../../../flotilla.data_model.html#flotilla.data_model.study.Study.from_data_package">[docs]</a>
+    <span class="k">def</span> <span class="nf">from_data_package</span><span
+            class="p">(</span><span class="n">cls</span><span class="p">,</span>
+    <span class="n">data_package</span><span class="p">,</span>
+    <span class="n">species_data_package_base_url</span><span class="o">=</span><span
+            class="n">SPECIES_DATA_PACKAGE_BASE_URL</span><span
+            class="p">):</span>
+    <span class="n">dfs</span> <span class="o">=</span> <span
+            class="p">{}</span>
+    <span class="k">for</span> <span class="n">resource</span> <span class="ow">in</span>
+    <span class="n">data_package</span><span class="p">[</span><span class="s">&#39;resources&#39;</span><span
+            class="p">]:</span>
+    <span class="n">resource_url</span> <span class="o">=</span> <span
+            class="n">resource</span><span class="p">[</span><span class="s">&#39;url&#39;</span><span
+            class="p">]</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="n">resource</span><span
+            class="p">[</span><span class="s">&#39;name&#39;</span><span
+            class="p">]</span>
+
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">check_if_already_downloaded</span><span
+            class="p">(</span><span class="n">resource_url</span><span
+            class="p">)</span>
+    <span class="n">reader</span> <span class="o">=</span> <span
+            class="n">cls</span><span class="o">.</span><span
+            class="n">readers</span><span class="p">[</span><span class="n">resource</span><span
+            class="p">[</span><span class="s">&#39;format&#39;</span><span
+            class="p">]]</span>
+    <span class="n">dfs</span><span class="p">[</span><span
+            class="n">name</span><span class="p">]</span> <span
+            class="o">=</span> <span class="n">reader</span><span
+            class="p">(</span><span class="n">filename</span><span
+            class="p">)</span>
+
+    <span class="k">if</span> <span class="s">&#39;species&#39;</span> <span
+            class="ow">in</span> <span class="n">data_package</span><span
+            class="p">:</span>
+    <span class="n">species_data_url</span> <span class="o">=</span> <span
+            class="s">&#39;{}/{}/datapackage.json&#39;</span><span
+            class="o">.</span><span class="n">format</span><span
+            class="p">(</span>
+    <span class="n">species_data_package_base_url</span><span class="p">,</span>
+    <span class="n">data_package</span><span class="p">[</span><span class="s">&#39;species&#39;</span><span
+            class="p">])</span>
+    <span class="n">species_data_package</span> <span class="o">=</span> <span
+            class="n">data_package_url_to_dict</span><span
+            class="p">(</span><span class="n">species_data_url</span><span
+            class="p">)</span>
+    <span class="n">species_dfs</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">resource</span> <span class="ow">in</span>
+    <span class="n">species_data_package</span><span class="p">[</span><span
+            class="s">&#39;resources&#39;</span><span class="p">]:</span>
+    <span class="n">resource_url</span> <span class="o">=</span> <span
+            class="n">resource</span><span class="p">[</span><span class="s">&#39;url&#39;</span><span
+            class="p">]</span>
+
+    <span class="c"># reader = getattr(cls, &#39;_load_&#39; + resource[&#39;format&#39;])</span>
+    <span class="n">reader</span> <span class="o">=</span> <span
+            class="n">cls</span><span class="o">.</span><span
+            class="n">readers</span><span class="p">[</span><span class="n">resource</span><span
+            class="p">[</span><span class="s">&#39;format&#39;</span><span
+            class="p">]]</span>
+
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">check_if_already_downloaded</span><span
+            class="p">(</span><span class="n">resource_url</span><span
+            class="p">)</span>
+    <span class="n">compression</span> <span class="o">=</span> <span
+            class="bp">None</span> <span class="k">if</span> <span class="s">&#39;compression&#39;</span>
+    <span class="ow">not</span> <span class="ow">in</span> <span class="n">resource</span>
+    <span class="k">else</span> \
+    <span class="n">resource</span><span class="p">[</span><span class="s">&#39;compression&#39;</span><span
+            class="p">]</span>
+    <span class="n">species_dfs</span><span class="p">[</span><span class="n">resource</span><span
+            class="p">[</span><span class="s">&#39;name&#39;</span><span
+            class="p">]]</span> <span class="o">=</span> <span
+            class="n">reader</span><span class="p">(</span><span class="n">filename</span><span
+            class="p">,</span>
+    <span class="n">compression</span><span class="o">=</span><span class="n">compression</span><span
+            class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+    <span class="n">species_dfs</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">try</span><span class="p">:</span>
+    <span class="n">experiment_design_data</span> <span class="o">=</span> <span
+            class="n">dfs</span><span class="p">[</span><span class="s">&#39;experiment_design&#39;</span><span
+            class="p">]</span>
+    <span class="n">expression_data</span> <span class="o">=</span> <span
+            class="n">dfs</span><span class="p">[</span><span class="s">&#39;expression&#39;</span><span
+            class="p">]</span>
+    <span class="n">splicing_data</span> <span class="o">=</span> <span
+            class="n">dfs</span><span class="p">[</span><span class="s">&#39;splicing&#39;</span><span
+            class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span
+            class="p">:</span>
+    <span class="k">raise</span> <span class="ne">AttributeError</span><span
+            class="p">(</span><span class="s">&#39;The datapackage.json file is required to &#39;</span>
+    <span class="s">&#39;have these three resources with the &#39;</span>
+    <span class="s">&#39;specified names: &#39;</span>
+    <span class="s">&#39;&quot;experiment_design&quot;, &quot;expression&quot;, &#39;</span>
+    <span class="s">&#39;&quot;splicing&quot;&#39;</span><span
+            class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+    <span class="n">mapping_stats_data</span> <span class="o">=</span> <span
+            class="n">dfs</span><span class="p">[</span><span class="s">&#39;mapping_stats&#39;</span><span
+            class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span
+            class="p">:</span>
+    <span class="n">mapping_stats_data</span> <span class="o">=</span> <span
+            class="bp">None</span>
+    <span class="k">try</span><span class="p">:</span>
+    <span class="n">spikein_data</span> <span class="o">=</span> <span
+            class="n">dfs</span><span class="p">[</span><span class="s">&#39;spikein&#39;</span><span
+            class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span
+            class="p">:</span>
+    <span class="n">spikein_data</span> <span class="o">=</span> <span
+            class="bp">None</span>
+
+    <span class="n">study</span> <span class="o">=</span> <span
+            class="n">Study</span><span class="p">(</span><span class="n">experiment_design_data</span><span
+            class="o">=</span><span class="n">experiment_design_data</span><span
+            class="p">,</span>
+    <span class="n">expression_data</span><span class="o">=</span><span
+            class="n">expression_data</span><span class="p">,</span>
+    <span class="n">splicing_data</span><span class="o">=</span><span class="n">splicing_data</span><span
+            class="p">,</span>
+    <span class="n">mapping_stats_data</span><span class="o">=</span><span
+            class="n">mapping_stats_data</span><span class="p">,</span>
+    <span class="n">spikein_data</span><span class="o">=</span><span class="n">spikein_data</span><span
+            class="p">,</span>
+    <span class="n">expression_feature_rename_col</span><span class="o">=</span><span
+            class="s">&#39;gene_name&#39;</span><span class="p">,</span>
+    <span class="n">splicing_feature_rename_col</span><span
+            class="o">=</span><span class="s">&#39;gene_name&#39;</span><span
+            class="p">,</span> <span class="o">**</span><span class="n">species_dfs</span><span
+            class="p">)</span>
+    <span class="k">return</span> <span class="n">study</span>
+</div>
+<span class="k">def</span> <span class="nf">__add__</span><span
+        class="p">(</span><span class="bp">self</span><span class="p">,</span>
+<span class="n">other</span><span class="p">):</span>
+<span class="sd">&quot;&quot;&quot;Sanely concatenate one or more Study objects</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="s">&#39;color&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">color</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="s">&#39;celltype&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
-            <span class="n">grouped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">&#39;celltype&#39;</span><span class="p">)</span>
-            <span class="n">palette</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="n">n_colors</span><span class="o">=</span><span class="n">grouped</span><span class="o">.</span><span class="n">ngroups</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
-            <span class="n">color</span> <span class="o">=</span> <span class="n">grouped</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">mplcolors</span><span class="o">.</span><span class="n">rgb2hex</span><span class="p">(</span><span class="n">palette</span><span class="o">.</span><span class="n">next</span><span class="p">()))</span>
-            <span class="n">color</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s">&#39;color&#39;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-                <span class="n">color</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s">&#39;celltype&#39;</span><span class="p">)</span>
+<span class="k">raise</span> <span class="ne">NotImplementedError</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span>
+<span class="o">=</span> <span class="n">MetaData</span><span class="p">(</span><span
+        class="n">pd</span><span class="o">.</span><span class="n">concat</span><span
+        class="p">([</span><span class="bp">self</span>
+<span class="o">.</span><span class="n">experiment_design</span><span class="o">.</span><span
+        class="n">data</span><span class="p">,</span>
+<span class="n">other</span><span class="o">.</span><span class="n">experiment_design</span><span
+        class="o">.</span><span class="n">data</span><span class="p">]))</span>
+<span class="bp">self</span><span class="o">.</span><span
+        class="n">expression</span><span class="o">.</span><span
+        class="n">data</span> <span class="o">=</span> <span class="n">ExpressionData</span><span
+        class="p">(</span><span class="n">pd</span><span class="o">.</span><span
+        class="n">concat</span><span class="p">([</span><span
+        class="bp">self</span><span class="o">.</span><span
+        class="n">expression</span><span class="o">.</span><span
+        class="n">data</span><span class="p">,</span>
+<span class="n">other</span><span class="o">.</span><span
+        class="n">expression</span><span class="o">.</span><span
+        class="n">data</span><span class="p">]))</span>
 
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">color</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">blue</span><span class="p">)</span>
-</div>
-    <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="Study.from_data_package_url"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.study.Study.from_data_package_url">[docs]</a>    <span class="k">def</span> <span class="nf">from_data_package_url</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">data_package_url</span><span class="p">,</span>
-                              <span class="n">species_data_package_base_url</span><span class="o">=</span><span class="n">SPECIES_DATA_PACKAGE_BASE_URL</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create a study from a url of a datapackage.json file</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        data_package_url : str</span>
-<span class="sd">            HTTP url of a datapackage.json file, following the specification</span>
-<span class="sd">            described here: http://dataprotocols.org/data-packages/ and</span>
-<span class="sd">            requiring the following data resources: experiment_design,</span>
-<span class="sd">            expression, splicing</span>
-<span class="sd">        species_data_pacakge_base_url : str</span>
-<span class="sd">            Base URL to fetch species-specific gene and splicing event</span>
-<span class="sd">            metadata from. Default &#39;http://sauron.ucsd.edu/flotilla_projects&#39;</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        study : Study</span>
-<span class="sd">            A &quot;study&quot; object containing the data described in the</span>
-<span class="sd">            data_package_url file</span>
-
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        AttributeError</span>
-<span class="sd">            If the datapackage.json file does not contain the required</span>
-<span class="sd">            resources of experiment_design, expression, and splicing.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">data_package</span> <span class="o">=</span> <span class="n">data_package_url_to_dict</span><span class="p">(</span><span class="n">data_package_url</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">from_data_package</span><span class="p">(</span><span class="n">data_package</span><span class="p">,</span>
-                                     <span class="n">species_data_package_base_url</span><span class="o">=</span><span class="n">species_data_package_base_url</span><span class="p">)</span>
-</div>
-    <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="Study.from_data_package_file"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.study.Study.from_data_package_file">[docs]</a>    <span class="k">def</span> <span class="nf">from_data_package_file</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">data_package_filename</span><span class="p">,</span>
-                               <span class="n">species_data_package_base_url</span><span class="o">=</span><span class="n">SPECIES_DATA_PACKAGE_BASE_URL</span><span class="p">):</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">data_package_filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">data_package</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">from_data_package</span><span class="p">(</span><span class="n">data_package</span><span class="p">,</span>
-                                     <span class="n">species_data_package_base_url</span><span class="p">)</span>
-
-</div>
-    <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="Study.from_data_package"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.study.Study.from_data_package">[docs]</a>    <span class="k">def</span> <span class="nf">from_data_package</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">data_package</span><span class="p">,</span>
-                          <span class="n">species_data_package_base_url</span><span class="o">=</span><span class="n">SPECIES_DATA_PACKAGE_BASE_URL</span><span class="p">):</span>
-        <span class="n">dfs</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">resource</span> <span class="ow">in</span> <span class="n">data_package</span><span class="p">[</span><span class="s">&#39;resources&#39;</span><span class="p">]:</span>
-            <span class="n">resource_url</span> <span class="o">=</span> <span class="n">resource</span><span class="p">[</span><span class="s">&#39;url&#39;</span><span class="p">]</span>
-
-            <span class="n">name</span> <span class="o">=</span> <span class="n">resource</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
-
-            <span class="n">filename</span> <span class="o">=</span> <span class="n">check_if_already_downloaded</span><span class="p">(</span><span class="n">resource_url</span><span class="p">)</span>
-            <span class="n">reader</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">readers</span><span class="p">[</span><span class="n">resource</span><span class="p">[</span><span class="s">&#39;format&#39;</span><span class="p">]]</span>
-            <span class="n">dfs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">reader</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="s">&#39;species&#39;</span> <span class="ow">in</span> <span class="n">data_package</span><span class="p">:</span>
-            <span class="n">species_data_url</span> <span class="o">=</span> <span class="s">&#39;{}/{}/datapackage.json&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">species_data_package_base_url</span><span class="p">,</span> <span class="n">data_package</span><span class="p">[</span><span class="s">&#39;species&#39;</span><span class="p">])</span>
-            <span class="n">species_data_package</span> <span class="o">=</span> <span class="n">data_package_url_to_dict</span><span class="p">(</span><span class="n">species_data_url</span><span class="p">)</span>
-            <span class="n">species_dfs</span> <span class="o">=</span> <span class="p">{}</span>
-
-            <span class="k">for</span> <span class="n">resource</span> <span class="ow">in</span> <span class="n">species_data_package</span><span class="p">[</span><span class="s">&#39;resources&#39;</span><span class="p">]:</span>
-                <span class="n">resource_url</span> <span class="o">=</span> <span class="n">resource</span><span class="p">[</span><span class="s">&#39;url&#39;</span><span class="p">]</span>
-
-                <span class="c"># reader = getattr(cls, &#39;_load_&#39; + resource[&#39;format&#39;])</span>
-                <span class="n">reader</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">readers</span><span class="p">[</span><span class="n">resource</span><span class="p">[</span><span class="s">&#39;format&#39;</span><span class="p">]]</span>
-
-                <span class="n">filename</span> <span class="o">=</span> <span class="n">check_if_already_downloaded</span><span class="p">(</span><span class="n">resource_url</span><span class="p">)</span>
-                <span class="n">compression</span> <span class="o">=</span> <span class="bp">None</span> <span class="k">if</span> <span class="s">&#39;compression&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">resource</span> <span class="k">else</span> \
-                    <span class="n">resource</span><span class="p">[</span><span class="s">&#39;compression&#39;</span><span class="p">]</span>
-                <span class="n">species_dfs</span><span class="p">[</span><span class="n">resource</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">reader</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span>
-                                                       <span class="n">compression</span><span class="o">=</span><span class="n">compression</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">species_dfs</span> <span class="o">=</span> <span class="p">{}</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">experiment_design_data</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="s">&#39;experiment_design&#39;</span><span class="p">]</span>
-            <span class="n">expression_data</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="s">&#39;expression&#39;</span><span class="p">]</span>
-            <span class="n">splicing_data</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="s">&#39;splicing&#39;</span><span class="p">]</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s">&#39;The datapackage.json file is required to &#39;</span>
-                                 <span class="s">&#39;have these three resources with the &#39;</span>
-                                 <span class="s">&#39;specified names: &#39;</span>
-                                 <span class="s">&#39;&quot;experiment_design&quot;, &quot;expression&quot;, &#39;</span>
-                                 <span class="s">&#39;&quot;splicing&quot;&#39;</span><span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">mapping_stats_data</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="s">&#39;mapping_stats&#39;</span><span class="p">]</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">mapping_stats_data</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">spikein_data</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="s">&#39;spikein&#39;</span><span class="p">]</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">spikein_data</span> <span class="o">=</span> <span class="bp">None</span>
-
-        <span class="n">study</span> <span class="o">=</span> <span class="n">Study</span><span class="p">(</span><span class="n">experiment_design_data</span><span class="o">=</span><span class="n">experiment_design_data</span><span class="p">,</span>
-                      <span class="n">expression_data</span><span class="o">=</span><span class="n">expression_data</span><span class="p">,</span>
-                      <span class="n">splicing_data</span><span class="o">=</span><span class="n">splicing_data</span><span class="p">,</span>
-                      <span class="n">mapping_stats_data</span><span class="o">=</span><span class="n">mapping_stats_data</span><span class="p">,</span>
-                      <span class="n">spikein_data</span><span class="o">=</span><span class="n">spikein_data</span><span class="p">,</span>
-                      <span class="n">expression_feature_rename_col</span><span class="o">=</span><span class="s">&#39;gene_name&#39;</span><span class="p">,</span>
-                      <span class="n">splicing_feature_rename_col</span><span class="o">=</span><span class="s">&#39;gene_name&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">species_dfs</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">study</span>
-</div>
-    <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Sanely concatenate one or more Study objects</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span> <span class="o">=</span> <span class="n">ExperimentDesignData</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span>
-                                                                     <span class="o">.</span><span class="n">experiment_design</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-                                                                 <span class="n">other</span><span class="o">.</span><span class="n">experiment_design</span><span class="o">.</span><span class="n">data</span><span class="p">]))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">ExpressionData</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-                                                         <span class="n">other</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">data</span><span class="p">]))</span>
-
-    <span class="k">def</span> <span class="nf">_set_plot_colors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;If there is a column &#39;color&#39; in the sample metadata, specify this</span>
+<span class="k">def</span> <span class="nf">_set_plot_colors</span><span
+        class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="sd">&quot;&quot;&quot;If there is a column &#39;color&#39; in the sample metadata, specify this</span>
 <span class="sd">        as the plotting color</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_default_reducer_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
-                <span class="p">{</span><span class="s">&#39;colors_dict&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment_design_data</span><span class="o">.</span><span class="n">color</span><span class="p">})</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_default_plot_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
-                <span class="p">{</span><span class="s">&#39;color&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment_design_data</span><span class="o">.</span><span class="n">color</span><span class="o">.</span><span class="n">tolist</span><span class="p">()})</span>
-        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;There is no column named &#39;color&#39; in the &quot;</span>
-                             <span class="s">&quot;metadata, defaulting to blue for all samples</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_default_reducer_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
-                <span class="p">{</span><span class="s">&#39;colors_dict&#39;</span><span class="p">:</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">blue</span><span class="p">)})</span>
+<span class="k">try</span><span class="p">:</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">_default_reducer_kwargs</span><span
+        class="o">.</span><span class="n">update</span><span class="p">(</span>
+<span class="p">{</span><span class="s">&#39;colors_dict&#39;</span><span
+        class="p">:</span> <span class="bp">self</span><span
+        class="o">.</span><span class="n">experiment_design_data</span><span
+        class="o">.</span><span class="n">color</span><span class="p">})</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">_default_plot_kwargs</span><span
+        class="o">.</span><span class="n">update</span><span class="p">(</span>
+<span class="p">{</span><span class="s">&#39;color&#39;</span><span
+        class="p">:</span> <span class="bp">self</span><span
+        class="o">.</span><span class="n">experiment_design_data</span><span
+        class="o">.</span><span class="n">color</span><span
+        class="o">.</span><span class="n">tolist</span><span
+        class="p">()})</span>
+<span class="k">except</span> <span class="ne">AttributeError</span><span
+        class="p">:</span>
+<span class="n">sys</span><span class="o">.</span><span
+        class="n">stderr</span><span class="o">.</span><span
+        class="n">write</span><span class="p">(</span><span class="s">&quot;There is no column named &#39;color&#39; in the &quot;</span>
+<span class="s">&quot;metadata, defaulting to blue for all samples</span><span
+        class="se">\n</span><span class="s">&quot;</span><span
+        class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">_default_reducer_kwargs</span><span
+        class="o">.</span><span class="n">update</span><span class="p">(</span>
+<span class="p">{</span><span class="s">&#39;colors_dict&#39;</span><span
+        class="p">:</span> <span class="n">defaultdict</span><span
+        class="p">(</span><span class="k">lambda</span><span class="p">:</span>
+<span class="n">blue</span><span class="p">)})</span>
 
-    <span class="k">def</span> <span class="nf">_set_plot_markers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;If there is a column &#39;marker&#39; in the sample metadata, specify this</span>
+<span class="k">def</span> <span class="nf">_set_plot_markers</span><span
+        class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="sd">&quot;&quot;&quot;If there is a column &#39;marker&#39; in the sample metadata, specify this</span>
 <span class="sd">        as the plotting marker (aka the plotting shape). Only valid matplotlib</span>
 <span class="sd">        symbols are allowed. See http://matplotlib.org/api/markers_api.html</span>
 <span class="sd">        for a more complete description.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_default_reducer_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
-                <span class="p">{</span><span class="s">&#39;markers_dict&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment_design_data</span><span class="o">.</span><span class="n">marker</span><span class="p">})</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_default_plot_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
-                <span class="p">{</span><span class="s">&#39;marker&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment_design_data</span><span class="o">.</span><span class="n">marker</span><span class="o">.</span><span class="n">tolist</span><span class="p">()})</span>
-        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;There is no column named &#39;marker&#39; in the sample &quot;</span>
-                             <span class="s">&quot;metadata, defaulting to a circle for all &quot;</span>
-                             <span class="s">&quot;samples</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_default_reducer_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s">&#39;markers_dict&#39;</span><span class="p">:</span>
-                                                     <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="s">&#39;o&#39;</span><span class="p">)})</span>
+<span class="k">try</span><span class="p">:</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">_default_reducer_kwargs</span><span
+        class="o">.</span><span class="n">update</span><span class="p">(</span>
+<span class="p">{</span><span class="s">&#39;markers_dict&#39;</span><span
+        class="p">:</span> <span class="bp">self</span><span
+        class="o">.</span><span class="n">experiment_design_data</span><span
+        class="o">.</span><span class="n">marker</span><span class="p">})</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">_default_plot_kwargs</span><span
+        class="o">.</span><span class="n">update</span><span class="p">(</span>
+<span class="p">{</span><span class="s">&#39;marker&#39;</span><span
+        class="p">:</span> <span class="bp">self</span><span
+        class="o">.</span><span class="n">experiment_design_data</span><span
+        class="o">.</span><span class="n">marker</span><span
+        class="o">.</span><span class="n">tolist</span><span
+        class="p">()})</span>
+<span class="k">except</span> <span class="ne">AttributeError</span><span
+        class="p">:</span>
+<span class="n">sys</span><span class="o">.</span><span
+        class="n">stderr</span><span class="o">.</span><span
+        class="n">write</span><span class="p">(</span><span class="s">&quot;There is no column named &#39;marker&#39; in the sample &quot;</span>
+<span class="s">&quot;metadata, defaulting to a circle for all &quot;</span>
+<span class="s">&quot;samples</span><span class="se">\n</span><span class="s">&quot;</span><span
+        class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">_default_reducer_kwargs</span><span
+        class="o">.</span><span class="n">update</span><span class="p">({</span><span
+        class="s">&#39;markers_dict&#39;</span><span class="p">:</span>
+<span class="n">defaultdict</span><span class="p">(</span><span
+        class="k">lambda</span><span class="p">:</span> <span class="s">&#39;o&#39;</span><span
+        class="p">)})</span>
 
 
-<div class="viewcode-block" id="Study.main"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.study.Study.main">[docs]</a>    <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-        <span class="c">#TODO.md: make this an entry-point, parse flotilla package to load from cmd line, do something</span>
-        <span class="c">#this is for the user... who will know little to nothing about queues and the way jobs are done on the backend</span>
+<div class="viewcode-block" id="Study.main"><a class="viewcode-back"
+                                               href="../../../flotilla.data_model.html#flotilla.data_model.study.Study.main">[docs]</a>
+    <span class="k">def</span> <span class="nf">main</span><span
+            class="p">(</span><span class="bp">self</span><span
+            class="p">):</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+    <span class="c">#TODO.md: make this an entry-point, parse flotilla package to load from cmd line, do something</span>
+    <span class="c">#this is for the user... who will know little to nothing about queues and the way jobs are done on the backend</span>
 
-        <span class="n">usage</span> <span class="o">=</span> <span class="s">&quot;run_flotilla_cmd cmd_name runner_name&quot;</span>
-        <span class="c"># def runner_concept(self, flotilla_package_target = &quot;barebones_package&quot;, tool_name):</span>
-        <span class="c">#</span>
-        <span class="c">#     #a constructor for a new study, takes a long time and maybe runs in parallel. Probably on a cluster...</span>
-        <span class="c">#     #same as `import flotilla_package_target as imported_package`</span>
-        <span class="c">#</span>
-        <span class="c">#     imported_package = __import__(flotilla_package_target)</span>
-        <span class="c">#     study = Study.__new__()</span>
-        <span class="c">#</span>
-        <span class="c">#     #should use importlib though...</span>
-        <span class="c">#</span>
-        <span class="c">#</span>
-        <span class="c">#     if this_is_not a parallel process</span>
-        <span class="c">#         try:</span>
-        <span class="c">#             make a new runner_name.lock file</span>
-        <span class="c">#         except: #exists(runner_name.lock)</span>
-        <span class="c">#             raise RuntimeError</span>
-        <span class="c">#</span>
-        <span class="c">#     study.do_something()</span>
+    <span class="n">usage</span> <span class="o">=</span> <span class="s">&quot;run_flotilla_cmd cmd_name runner_name&quot;</span>
+    <span class="c"># def runner_concept(self, flotilla_package_target = &quot;barebones_package&quot;, tool_name):</span>
+    <span class="c">#</span>
+    <span class="c">#     #a constructor for a new study, takes a long time and maybe runs in parallel. Probably on a cluster...</span>
+    <span class="c">#     #same as `import flotilla_package_target as imported_package`</span>
+    <span class="c">#</span>
+    <span class="c">#     imported_package = __import__(flotilla_package_target)</span>
+    <span class="c">#     study = Study.__new__()</span>
+    <span class="c">#</span>
+    <span class="c">#     #should use importlib though...</span>
+    <span class="c">#</span>
+    <span class="c">#</span>
+    <span class="c">#     if this_is_not a parallel process</span>
+    <span class="c">#         try:</span>
+    <span class="c">#             make a new runner_name.lock file</span>
+    <span class="c">#         except: #exists(runner_name.lock)</span>
+    <span class="c">#             raise RuntimeError</span>
+    <span class="c">#</span>
+    <span class="c">#     study.do_something()</span>
 
 </div>
-<div class="viewcode-block" id="Study.detect_outliers"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.study.Study.detect_outliers">[docs]</a>    <span class="k">def</span> <span class="nf">detect_outliers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Detects outlier cells from expression, mapping, and splicing</span>
-<span class="sd">        study_data and labels the outliers as such for future analysis.</span>
+<div class="viewcode-block" id="Study.detect_outliers"><a class="viewcode-back"
+                                                          href="../../../flotilla.data_model.html#flotilla.data_model.study.Study.detect_outliers">[docs]</a>
+    <span class="k">def</span> <span class="nf">detect_outliers</span><span
+            class="p">(</span><span class="bp">self</span><span
+            class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Detects outlier cells from expression, mapping, and splicing</span>
+    <span class="sd">        study_data and labels the outliers as such for future analysis.</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        self</span>
+    <span class="sd">        Parameters</span>
+    <span class="sd">        ----------</span>
+    <span class="sd">        self</span>
 
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
+    <span class="sd">        Returns</span>
+    <span class="sd">        -------</span>
 
 
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
+    <span class="sd">        Raises</span>
+    <span class="sd">        ------</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c">#TODO.md: Boyko/Patrick please implement</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+    <span class="sd">        &quot;&quot;&quot;</span>
+    <span class="c">#TODO.md: Boyko/Patrick please implement</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
 </div>
-    <span class="k">def</span> <span class="nf">jsd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Performs Jensen-Shannon Divergence on both splicing and expression study_data</span>
+<span class="k">def</span> <span class="nf">jsd</span><span
+        class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="sd">&quot;&quot;&quot;Performs Jensen-Shannon Divergence on both splicing and expression study_data</span>
 
 <span class="sd">        Jensen-Shannon divergence is a method of quantifying the amount of</span>
 <span class="sd">        change in distribution of one measurement (e.g. a splicing event or a</span>
 <span class="sd">        gene expression) from one celltype to another.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-        <span class="c">#TODO.md: Check if JSD has not already been calculated (cacheing or memoizing)</span>
+<span class="k">raise</span> <span class="ne">NotImplementedError</span>
+<span class="c">#TODO.md: Check if JSD has not already been calculated (cacheing or memoizing)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">jsd</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">splicing</span><span class="o">.</span><span class="n">jsd</span><span class="p">()</span>
+<span class="bp">self</span><span class="o">.</span><span
+        class="n">expression</span><span class="o">.</span><span
+        class="n">jsd</span><span class="p">()</span>
+<span class="bp">self</span><span class="o">.</span><span
+        class="n">splicing</span><span class="o">.</span><span
+        class="n">jsd</span><span class="p">()</span>
 
 
-<div class="viewcode-block" id="Study.normalize_to_spikein"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.study.Study.normalize_to_spikein">[docs]</a>    <span class="k">def</span> <span class="nf">normalize_to_spikein</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+<div class="viewcode-block" id="Study.normalize_to_spikein"><a
+        class="viewcode-back"
+        href="../../../flotilla.data_model.html#flotilla.data_model.study.Study.normalize_to_spikein">[docs]</a>
+    <span class="k">def</span> <span class="nf">normalize_to_spikein</span><span
+            class="p">(</span><span class="bp">self</span><span
+            class="p">):</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </div>
-<div class="viewcode-block" id="Study.compute_expression_splicing_covariance"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.study.Study.compute_expression_splicing_covariance">[docs]</a>    <span class="k">def</span> <span class="nf">compute_expression_splicing_covariance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+<div class="viewcode-block" id="Study.compute_expression_splicing_covariance"><a
+        class="viewcode-back"
+        href="../../../flotilla.data_model.html#flotilla.data_model.study.Study.compute_expression_splicing_covariance">[docs]</a>
+    <span class="k">def</span> <span class="nf">compute_expression_splicing_covariance</span><span
+            class="p">(</span><span class="bp">self</span><span
+            class="p">):</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </div>
-<div class="viewcode-block" id="Study.jsd"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.study.Study.jsd">[docs]</a>    <span class="k">def</span> <span class="nf">jsd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+<div class="viewcode-block" id="Study.jsd"><a class="viewcode-back"
+                                              href="../../../flotilla.data_model.html#flotilla.data_model.study.Study.jsd">[docs]</a>
+    <span class="k">def</span> <span class="nf">jsd</span><span
+            class="p">(</span><span class="bp">self</span><span
+            class="p">):</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </div>
-    <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="Study.maybe_make_directory"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.study.Study.maybe_make_directory">[docs]</a>    <span class="k">def</span> <span class="nf">maybe_make_directory</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-        <span class="c"># Make the directory if it&#39;s not already there</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">directory</span><span class="p">))</span>
-        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
-            <span class="k">pass</span>
+<span class="nd">@staticmethod</span>
+
+<div class="viewcode-block" id="Study.maybe_make_directory"><a
+        class="viewcode-back"
+        href="../../../flotilla.data_model.html#flotilla.data_model.study.Study.maybe_make_directory">[docs]</a>
+    <span class="k">def</span> <span class="nf">maybe_make_directory</span><span
+            class="p">(</span><span class="n">filename</span><span
+            class="p">):</span>
+    <span class="c"># Make the directory if it&#39;s not already there</span>
+    <span class="k">try</span><span class="p">:</span>
+    <span class="n">directory</span> <span class="o">=</span> <span
+            class="n">os</span><span class="o">.</span><span
+            class="n">path</span><span class="o">.</span><span
+            class="n">abspath</span><span class="p">(</span><span
+            class="n">os</span><span class="o">.</span><span
+            class="n">path</span><span class="o">.</span><span
+            class="n">dirname</span><span class="p">(</span><span class="n">filename</span><span
+            class="p">))</span>
+    <span class="n">os</span><span class="o">.</span><span
+            class="n">makedirs</span><span class="p">(</span><span
+            class="n">os</span><span class="o">.</span><span
+            class="n">path</span><span class="o">.</span><span
+            class="n">abspath</span><span class="p">(</span><span class="n">directory</span><span
+            class="p">))</span>
+    <span class="k">except</span> <span class="ne">OSError</span><span
+            class="p">:</span>
+    <span class="k">pass</span>
 </div>
-<div class="viewcode-block" id="Study.feature_subset_to_feature_ids"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.study.Study.feature_subset_to_feature_ids">[docs]</a>    <span class="k">def</span> <span class="nf">feature_subset_to_feature_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">feature_subset</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                                      <span class="n">rename</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Given a name of a feature subset, get the associated feature ids</span>
+<div class="viewcode-block" id="Study.feature_subset_to_feature_ids"><a
+        class="viewcode-back"
+        href="../../../flotilla.data_model.html#flotilla.data_model.study.Study.feature_subset_to_feature_ids">[docs]</a>
+    <span class="k">def</span> <span
+            class="nf">feature_subset_to_feature_ids</span><span
+            class="p">(</span><span class="bp">self</span><span
+            class="p">,</span> <span class="n">data_type</span><span
+            class="p">,</span> <span class="n">feature_subset</span><span
+            class="o">=</span><span class="bp">None</span><span
+            class="p">,</span>
+    <span class="n">rename</span><span class="o">=</span><span
+            class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Given a name of a feature subset, get the associated feature ids</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        data_type : str</span>
-<span class="sd">            A string describing the data type, e.g. &quot;expression&quot;</span>
-<span class="sd">        feature_subset : str</span>
-<span class="sd">            A string describing the subset of data type (must be already</span>
-<span class="sd">            calculated)</span>
+    <span class="sd">        Parameters</span>
+    <span class="sd">        ----------</span>
+    <span class="sd">        data_type : str</span>
+    <span class="sd">            A string describing the data type, e.g. &quot;expression&quot;</span>
+    <span class="sd">        feature_subset : str</span>
+    <span class="sd">            A string describing the subset of data type (must be already</span>
+    <span class="sd">            calculated)</span>
 
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        feature_ids : list of strings</span>
-<span class="sd">            List of features ids from the specified datatype</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="s">&#39;expression&#39;</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">data_type</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">feature_subset_to_feature_ids</span><span class="p">(</span>
-                <span class="n">feature_subset</span><span class="p">,</span> <span class="n">rename</span><span class="p">)</span>
-            <span class="c"># if feature_subset is not None:</span>
-            <span class="c">#     feature_ids = self.expression.feature_sets[feature_subset]</span>
-            <span class="c"># else:</span>
-            <span class="c">#     feature_ids = self.expression.data.columns</span>
-            <span class="c"># if rename:</span>
-            <span class="c">#     feature_ids = feature_ids.map(self.expression.feature_renamer)</span>
-        <span class="k">elif</span> <span class="s">&#39;splicing&#39;</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">data_type</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">splicing</span><span class="o">.</span><span class="n">feature_subset_to_feature_ids</span><span class="p">(</span>
-                <span class="n">feature_subset</span><span class="p">,</span> <span class="n">rename</span><span class="p">)</span>
-            <span class="c"># if feature_subset is not None:</span>
-            <span class="c">#     feature_ids = self.splicing.feature_sets[feature_subset]</span>
-            <span class="c"># else:</span>
-            <span class="c">#     feature_ids = self.splicing.data.columns</span>
-            <span class="c"># if rename:</span>
-            <span class="c">#     feature_ids = feature_ids.map(self.expression.feature_renamer)</span>
-            <span class="c"># return feature_ids</span>
+    <span class="sd">        Returns</span>
+    <span class="sd">        -------</span>
+    <span class="sd">        feature_ids : list of strings</span>
+    <span class="sd">            List of features ids from the specified datatype</span>
+    <span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s">&#39;expression&#39;</span><span
+            class="o">.</span><span class="n">startswith</span><span
+            class="p">(</span><span class="n">data_type</span><span
+            class="p">):</span>
+    <span class="k">return</span> <span class="bp">self</span><span
+            class="o">.</span><span class="n">expression</span><span
+            class="o">.</span><span
+            class="n">feature_subset_to_feature_ids</span><span
+            class="p">(</span>
+    <span class="n">feature_subset</span><span class="p">,</span> <span
+            class="n">rename</span><span class="p">)</span>
+    <span class="c"># if feature_subset is not None:</span>
+    <span class="c">#     feature_ids = self.expression.feature_sets[feature_subset]</span>
+    <span class="c"># else:</span>
+    <span class="c">#     feature_ids = self.expression.data.columns</span>
+    <span class="c"># if rename:</span>
+    <span class="c">#     feature_ids = feature_ids.map(self.expression.feature_renamer)</span>
+    <span class="k">elif</span> <span class="s">&#39;splicing&#39;</span><span
+            class="o">.</span><span class="n">startswith</span><span
+            class="p">(</span><span class="n">data_type</span><span
+            class="p">):</span>
+    <span class="k">return</span> <span class="bp">self</span><span
+            class="o">.</span><span class="n">splicing</span><span
+            class="o">.</span><span
+            class="n">feature_subset_to_feature_ids</span><span
+            class="p">(</span>
+    <span class="n">feature_subset</span><span class="p">,</span> <span
+            class="n">rename</span><span class="p">)</span>
+    <span class="c"># if feature_subset is not None:</span>
+    <span class="c">#     feature_ids = self.splicing.feature_sets[feature_subset]</span>
+    <span class="c"># else:</span>
+    <span class="c">#     feature_ids = self.splicing.data.columns</span>
+    <span class="c"># if rename:</span>
+    <span class="c">#     feature_ids = feature_ids.map(self.expression.feature_renamer)</span>
+    <span class="c"># return feature_ids</span>
 </div>
-<div class="viewcode-block" id="Study.sample_subset_to_sample_ids"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.study.Study.sample_subset_to_sample_ids">[docs]</a>    <span class="k">def</span> <span class="nf">sample_subset_to_sample_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phenotype_subset</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Convert a string naming a subset of phenotypes in the data in to </span>
-<span class="sd">        sample ids</span>
-<span class="sd">        </span>
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        phenotype_subset : str</span>
-<span class="sd">            A valid string describing a boolean phenotype described in the</span>
-<span class="sd">            experiment_design data</span>
-<span class="sd">        </span>
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        sample_ids : list of strings</span>
-<span class="sd">            List of sample ids in the data</span>
-<span class="sd">            </span>
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        </span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">phenotype_subset</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="s">&#39;all_samples&#39;</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span>
-                <span class="n">phenotype_subset</span><span class="p">):</span>
-            <span class="n">sample_ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                                 <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">phenotype_subset</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;~&quot;</span><span class="p">):</span>
-            <span class="n">sample_ind</span> <span class="o">=</span> <span class="o">~</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">phenotype_subset</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s">&quot;~&quot;</span><span class="p">)],</span>
-                <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;bool&#39;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">sample_ind</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span class="o">.</span><span class="n">data</span><span class="p">[</span>
-                                       <span class="n">phenotype_subset</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;bool&#39;</span><span class="p">)</span>
-        <span class="n">sample_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">sample_ind</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">sample_ids</span>
+<div class="viewcode-block" id="Study.sample_subset_to_sample_ids"><a
+        class="viewcode-back"
+        href="../../../flotilla.data_model.html#flotilla.data_model.study.Study.sample_subset_to_sample_ids">[docs]</a>
+    <span class="k">def</span> <span
+            class="nf">sample_subset_to_sample_ids</span><span
+            class="p">(</span><span class="bp">self</span><span
+            class="p">,</span> <span class="n">phenotype_subset</span><span
+            class="o">=</span><span class="bp">None</span><span
+            class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert a string naming a subset of phenotypes in the data in to </span>
+    <span class="sd">        sample ids</span>
+    <span class="sd">        </span>
+    <span class="sd">        Parameters</span>
+    <span class="sd">        ----------</span>
+    <span class="sd">        phenotype_subset : str</span>
+    <span class="sd">            A valid string describing a boolean phenotype described in the</span>
+    <span class="sd">            experiment_design data</span>
+    <span class="sd">        </span>
+    <span class="sd">        Returns</span>
+    <span class="sd">        -------</span>
+    <span class="sd">        sample_ids : list of strings</span>
+    <span class="sd">            List of sample ids in the data</span>
+    <span class="sd">            </span>
+    <span class="sd">        Raises</span>
+    <span class="sd">        ------</span>
+    <span class="sd">        </span>
+    <span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">phenotype_subset</span> <span
+            class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span>
+    <span class="s">&#39;all_samples&#39;</span><span class="o">.</span><span
+            class="n">startswith</span><span class="p">(</span>
+    <span class="n">phenotype_subset</span><span class="p">):</span>
+    <span class="n">sample_ind</span> <span class="o">=</span> <span class="n">np</span><span
+            class="o">.</span><span class="n">ones</span><span
+            class="p">(</span><span class="bp">self</span><span
+            class="o">.</span><span class="n">experiment_design</span><span
+            class="o">.</span><span class="n">data</span><span
+            class="o">.</span><span class="n">shape</span><span
+            class="p">[</span><span class="mi">0</span><span class="p">],</span>
+    <span class="n">dtype</span><span class="o">=</span><span
+            class="nb">bool</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">phenotype_subset</span><span
+            class="o">.</span><span class="n">startswith</span><span
+            class="p">(</span><span class="s">&quot;~&quot;</span><span
+            class="p">):</span>
+    <span class="n">sample_ind</span> <span class="o">=</span> <span
+            class="o">~</span><span class="n">pd</span><span
+            class="o">.</span><span class="n">Series</span><span
+            class="p">(</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span
+            class="o">.</span><span class="n">data</span><span
+            class="p">[</span><span class="n">phenotype_subset</span><span
+            class="o">.</span><span class="n">lstrip</span><span
+            class="p">(</span><span class="s">&quot;~&quot;</span><span
+            class="p">)],</span>
+    <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;bool&#39;</span><span
+            class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+    <span class="n">sample_ind</span> <span class="o">=</span> <span class="n">pd</span><span
+            class="o">.</span><span class="n">Series</span><span
+            class="p">(</span><span class="bp">self</span><span
+            class="o">.</span><span class="n">experiment_design</span><span
+            class="o">.</span><span class="n">data</span><span
+            class="p">[</span>
+    <span class="n">phenotype_subset</span><span class="p">],</span> <span
+            class="n">dtype</span><span class="o">=</span><span class="s">&#39;bool&#39;</span><span
+            class="p">)</span>
+    <span class="n">sample_ids</span> <span class="o">=</span> <span class="bp">self</span><span
+            class="o">.</span><span class="n">experiment_design</span><span
+            class="o">.</span><span class="n">data</span><span
+            class="o">.</span><span class="n">index</span><span
+            class="p">[</span><span class="n">sample_ind</span><span
+            class="p">]</span>
+    <span class="k">return</span> <span class="n">sample_ids</span>
 </div>
-<div class="viewcode-block" id="Study.plot_pca"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.study.Study.plot_pca">[docs]</a>    <span class="k">def</span> <span class="nf">plot_pca</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s">&#39;expression&#39;</span><span class="p">,</span> <span class="n">x_pc</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y_pc</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-                 <span class="n">sample_subset</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">feature_subset</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                 <span class="n">title</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">featurewise</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                 <span class="n">show_point_labels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Performs PCA on both expression and splicing study_data</span>
+<div class="viewcode-block" id="Study.plot_pca"><a class="viewcode-back"
+                                                   href="../../../flotilla.data_model.html#flotilla.data_model.study.Study.plot_pca">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot_pca</span><span
+            class="p">(</span><span class="bp">self</span><span
+            class="p">,</span> <span class="n">data_type</span><span
+            class="o">=</span><span class="s">&#39;expression&#39;</span><span
+            class="p">,</span> <span class="n">x_pc</span><span
+            class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">y_pc</span><span class="o">=</span><span class="mi">2</span><span
+            class="p">,</span>
+    <span class="n">sample_subset</span><span class="o">=</span><span
+            class="bp">None</span><span class="p">,</span> <span class="n">feature_subset</span><span
+            class="o">=</span><span class="bp">None</span><span
+            class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s">&#39;&#39;</span><span
+            class="p">,</span> <span class="n">featurewise</span><span
+            class="o">=</span><span class="bp">False</span><span
+            class="p">,</span>
+    <span class="n">show_point_labels</span><span class="o">=</span><span
+            class="bp">False</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span
+            class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Performs PCA on both expression and splicing study_data</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        data_type : str</span>
-<span class="sd">            One of the names of the data types, e.g. &quot;expression&quot; or &quot;splicing&quot;</span>
-<span class="sd">        x_pc : int</span>
-<span class="sd">            Which principal component to plot on the x-axis</span>
-<span class="sd">        y_pc : int</span>
-<span class="sd">            Which principal component to plot on the y-axis</span>
-<span class="sd">        sample_subset : str or None</span>
-<span class="sd">            Which subset of the samples to use, based on some phenotype</span>
-<span class="sd">            column in the experiment design data. If None, all samples are</span>
-<span class="sd">            used.</span>
-<span class="sd">        feature_subset : str or None</span>
-<span class="sd">            Which subset of the features to used, based on some feature type</span>
-<span class="sd">            in the expression data (e.g. &quot;variant&quot;). If None, all features</span>
-<span class="sd">            are used.</span>
-<span class="sd">        title : str</span>
-<span class="sd">            The title of the plot</span>
-<span class="sd">        show_point_labels : bool</span>
-<span class="sd">            Whether or not to show the labels of the points. If this is</span>
-<span class="sd">            samplewise (default), then this labels the samples. If this is</span>
-<span class="sd">            featurewise, then this labels the features.</span>
+    <span class="sd">        Parameters</span>
+    <span class="sd">        ----------</span>
+    <span class="sd">        data_type : str</span>
+    <span class="sd">            One of the names of the data types, e.g. &quot;expression&quot; or &quot;splicing&quot;</span>
+    <span class="sd">        x_pc : int</span>
+    <span class="sd">            Which principal component to plot on the x-axis</span>
+    <span class="sd">        y_pc : int</span>
+    <span class="sd">            Which principal component to plot on the y-axis</span>
+    <span class="sd">        sample_subset : str or None</span>
+    <span class="sd">            Which subset of the samples to use, based on some phenotype</span>
+    <span class="sd">            column in the experiment design data. If None, all samples are</span>
+    <span class="sd">            used.</span>
+    <span class="sd">        feature_subset : str or None</span>
+    <span class="sd">            Which subset of the features to used, based on some feature type</span>
+    <span class="sd">            in the expression data (e.g. &quot;variant&quot;). If None, all features</span>
+    <span class="sd">            are used.</span>
+    <span class="sd">        title : str</span>
+    <span class="sd">            The title of the plot</span>
+    <span class="sd">        show_point_labels : bool</span>
+    <span class="sd">            Whether or not to show the labels of the points. If this is</span>
+    <span class="sd">            samplewise (default), then this labels the samples. If this is</span>
+    <span class="sd">            featurewise, then this labels the features.</span>
 
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
+    <span class="sd">        Raises</span>
+    <span class="sd">        ------</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">sample_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_subset_to_sample_ids</span><span class="p">(</span><span class="n">sample_subset</span><span class="p">)</span>
-        <span class="n">feature_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_subset_to_feature_ids</span><span class="p">(</span><span class="n">data_type</span><span class="p">,</span>
-                                                         <span class="n">feature_subset</span><span class="p">,</span>
-                                                         <span class="n">rename</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-        <span class="c">#TODO: move this kwarg stuff into visualize</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;x_pc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_pc</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;y_pc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_pc</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;sample_ids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sample_ids</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;feature_ids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">feature_ids</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">title</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;featurewise&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">featurewise</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;show_point_labels&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">show_point_labels</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;colors_dict&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_id_to_color</span>
+    <span class="sd">        &quot;&quot;&quot;</span>
+    <span class="n">sample_ids</span> <span class="o">=</span> <span class="bp">self</span><span
+            class="o">.</span><span class="n">sample_subset_to_sample_ids</span><span
+            class="p">(</span><span class="n">sample_subset</span><span
+            class="p">)</span>
+    <span class="n">feature_ids</span> <span class="o">=</span> <span
+            class="bp">self</span><span class="o">.</span><span class="n">feature_subset_to_feature_ids</span><span
+            class="p">(</span><span class="n">data_type</span><span
+            class="p">,</span>
+    <span class="n">feature_subset</span><span class="p">,</span>
+    <span class="n">rename</span><span class="o">=</span><span
+            class="bp">False</span><span class="p">)</span>
+    <span class="c">#TODO: move this kwarg stuff into visualize</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;x_pc&#39;</span><span
+            class="p">]</span> <span class="o">=</span> <span
+            class="n">x_pc</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;y_pc&#39;</span><span
+            class="p">]</span> <span class="o">=</span> <span
+            class="n">y_pc</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;sample_ids&#39;</span><span
+            class="p">]</span> <span class="o">=</span> <span class="n">sample_ids</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;feature_ids&#39;</span><span
+            class="p">]</span> <span class="o">=</span> <span class="n">feature_ids</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;title&#39;</span><span
+            class="p">]</span> <span class="o">=</span> <span
+            class="n">title</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;featurewise&#39;</span><span
+            class="p">]</span> <span class="o">=</span> <span class="n">featurewise</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;show_point_labels&#39;</span><span
+            class="p">]</span> <span class="o">=</span> <span class="n">show_point_labels</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;colors_dict&#39;</span><span
+            class="p">]</span> <span class="o">=</span> <span
+            class="bp">self</span><span class="o">.</span><span class="n">sample_id_to_color</span>
 
-        <span class="k">if</span> <span class="s">&#39;marker&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
-            <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;markers_dict&#39;</span><span class="p">]</span> <span class="o">=</span> \
-                <span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">marker</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+    <span class="k">if</span> <span class="s">&#39;marker&#39;</span> <span
+            class="ow">in</span> <span class="bp">self</span><span
+            class="o">.</span><span class="n">experiment_design</span><span
+            class="o">.</span><span class="n">data</span><span
+            class="p">:</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;markers_dict&#39;</span><span
+            class="p">]</span> <span class="o">=</span> \
+    <span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span
+            class="o">.</span><span class="n">data</span><span
+            class="o">.</span><span class="n">marker</span><span
+            class="o">.</span><span class="n">to_dict</span><span
+            class="p">()</span>
 
-        <span class="k">if</span> <span class="s">&quot;expression&quot;</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">data_type</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">plot_dimensionality_reduction</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="s">&quot;splicing&quot;</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">data_type</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">splicing</span><span class="o">.</span><span class="n">plot_dimensionality_reduction</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s">&quot;expression&quot;</span><span
+            class="o">.</span><span class="n">startswith</span><span
+            class="p">(</span><span class="n">data_type</span><span
+            class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">expression</span><span
+            class="o">.</span><span
+            class="n">plot_dimensionality_reduction</span><span
+            class="p">(</span><span class="o">**</span><span
+            class="n">kwargs</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="s">&quot;splicing&quot;</span><span
+            class="o">.</span><span class="n">startswith</span><span
+            class="p">(</span><span class="n">data_type</span><span
+            class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span
+            class="n">splicing</span><span class="o">.</span><span class="n">plot_dimensionality_reduction</span><span
+            class="p">(</span><span class="o">**</span><span
+            class="n">kwargs</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Study.plot_graph"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.study.Study.plot_graph">[docs]</a>    <span class="k">def</span> <span class="nf">plot_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s">&#39;expression&#39;</span><span class="p">,</span> <span class="n">sample_subset</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                   <span class="n">feature_subset</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                   <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Plot the graph (network) of these data</span>
+<div class="viewcode-block" id="Study.plot_graph"><a class="viewcode-back"
+                                                     href="../../../flotilla.data_model.html#flotilla.data_model.study.Study.plot_graph">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot_graph</span><span
+            class="p">(</span><span class="bp">self</span><span
+            class="p">,</span> <span class="n">data_type</span><span
+            class="o">=</span><span class="s">&#39;expression&#39;</span><span
+            class="p">,</span> <span class="n">sample_subset</span><span
+            class="o">=</span><span class="bp">None</span><span
+            class="p">,</span>
+    <span class="n">feature_subset</span><span class="o">=</span><span
+            class="bp">None</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span
+            class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plot the graph (network) of these data</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        data_type : str</span>
-<span class="sd">            One of the names of the data types, e.g. &quot;expression&quot; or &quot;splicing&quot;</span>
-<span class="sd">        sample_subset : str or None</span>
-<span class="sd">            Which subset of the samples to use, based on some phenotype</span>
-<span class="sd">            column in the experiment design data. If None, all samples are</span>
-<span class="sd">            used.</span>
-<span class="sd">        feature_subset : str or None</span>
-<span class="sd">            Which subset of the features to used, based on some feature type</span>
-<span class="sd">            in the expression data (e.g. &quot;variant&quot;). If None, all features</span>
-<span class="sd">            are used.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">sample_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_subset_to_sample_ids</span><span class="p">(</span><span class="n">sample_subset</span><span class="p">)</span>
-        <span class="n">feature_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_subset_to_feature_ids</span><span class="p">(</span><span class="n">data_type</span><span class="p">,</span>
-                                                         <span class="n">feature_subset</span><span class="p">,</span>
-                                                         <span class="n">rename</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="sd">        Parameters</span>
+    <span class="sd">        ----------</span>
+    <span class="sd">        data_type : str</span>
+    <span class="sd">            One of the names of the data types, e.g. &quot;expression&quot; or &quot;splicing&quot;</span>
+    <span class="sd">        sample_subset : str or None</span>
+    <span class="sd">            Which subset of the samples to use, based on some phenotype</span>
+    <span class="sd">            column in the experiment design data. If None, all samples are</span>
+    <span class="sd">            used.</span>
+    <span class="sd">        feature_subset : str or None</span>
+    <span class="sd">            Which subset of the features to used, based on some feature type</span>
+    <span class="sd">            in the expression data (e.g. &quot;variant&quot;). If None, all features</span>
+    <span class="sd">            are used.</span>
+    <span class="sd">        &quot;&quot;&quot;</span>
+    <span class="n">sample_ids</span> <span class="o">=</span> <span class="bp">self</span><span
+            class="o">.</span><span class="n">sample_subset_to_sample_ids</span><span
+            class="p">(</span><span class="n">sample_subset</span><span
+            class="p">)</span>
+    <span class="n">feature_ids</span> <span class="o">=</span> <span
+            class="bp">self</span><span class="o">.</span><span class="n">feature_subset_to_feature_ids</span><span
+            class="p">(</span><span class="n">data_type</span><span
+            class="p">,</span>
+    <span class="n">feature_subset</span><span class="p">,</span>
+    <span class="n">rename</span><span class="o">=</span><span
+            class="bp">False</span><span class="p">)</span>
 
-        <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;sample_id_to_color&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_id_to_color</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;sample_ids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sample_ids</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;feature_ids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">feature_ids</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;sample_id_to_color&#39;</span><span
+            class="p">]</span> <span class="o">=</span> <span
+            class="bp">self</span><span class="o">.</span><span class="n">sample_id_to_color</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;sample_ids&#39;</span><span
+            class="p">]</span> <span class="o">=</span> <span class="n">sample_ids</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;feature_ids&#39;</span><span
+            class="p">]</span> <span class="o">=</span> <span class="n">feature_ids</span>
 
-        <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s">&quot;expression&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">networks</span><span class="o">.</span><span class="n">draw_graph</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s">&quot;splicing&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">splicing</span><span class="o">.</span><span class="n">networks</span><span class="o">.</span><span class="n">draw_graph</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span>
+    <span class="s">&quot;expression&quot;</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">expression</span><span
+            class="o">.</span><span class="n">networks</span><span
+            class="o">.</span><span class="n">draw_graph</span><span
+            class="p">(</span><span class="o">**</span><span
+            class="n">kwargs</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span
+            class="o">==</span> <span class="s">&quot;splicing&quot;</span><span
+            class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span
+            class="n">splicing</span><span class="o">.</span><span class="n">networks</span><span
+            class="o">.</span><span class="n">draw_graph</span><span
+            class="p">(</span><span class="o">**</span><span
+            class="n">kwargs</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Study.plot_classifier"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.study.Study.plot_classifier">[docs]</a>    <span class="k">def</span> <span class="nf">plot_classifier</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s">&#39;expression&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span>
-                        <span class="n">show_point_labels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">sample_subset</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                        <span class="n">feature_subset</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                        <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Plot a predictor for the specified data type and trait(s)</span>
+<div class="viewcode-block" id="Study.plot_classifier"><a class="viewcode-back"
+                                                          href="../../../flotilla.data_model.html#flotilla.data_model.study.Study.plot_classifier">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot_classifier</span><span
+            class="p">(</span><span class="bp">self</span><span
+            class="p">,</span> <span class="n">trait</span><span
+            class="p">,</span> <span class="n">data_type</span><span
+            class="o">=</span><span class="s">&#39;expression&#39;</span><span
+            class="p">,</span> <span class="n">title</span><span
+            class="o">=</span><span class="s">&#39;&#39;</span><span
+            class="p">,</span>
+    <span class="n">show_point_labels</span><span class="o">=</span><span
+            class="bp">False</span><span class="p">,</span> <span class="n">sample_subset</span><span
+            class="o">=</span><span class="bp">None</span><span
+            class="p">,</span>
+    <span class="n">feature_subset</span><span class="o">=</span><span
+            class="bp">None</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span
+            class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plot a predictor for the specified data type and trait(s)</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        data_type : str</span>
-<span class="sd">            One of the names of the data types, e.g. &quot;expression&quot; or &quot;splicing&quot;</span>
-<span class="sd">        trait : str</span>
-<span class="sd">            Column name in the experiment_design data that you would like</span>
-<span class="sd">            to classify on</span>
+    <span class="sd">        Parameters</span>
+    <span class="sd">        ----------</span>
+    <span class="sd">        data_type : str</span>
+    <span class="sd">            One of the names of the data types, e.g. &quot;expression&quot; or &quot;splicing&quot;</span>
+    <span class="sd">        trait : str</span>
+    <span class="sd">            Column name in the experiment_design data that you would like</span>
+    <span class="sd">            to classify on</span>
 
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
+    <span class="sd">        Returns</span>
+    <span class="sd">        -------</span>
 
 
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">trait_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">trait</span><span class="p">]</span>
-        <span class="n">sample_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_subset_to_sample_ids</span><span class="p">(</span><span class="n">sample_subset</span><span class="p">)</span>
-        <span class="n">feature_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_subset_to_feature_ids</span><span class="p">(</span><span class="n">data_type</span><span class="p">,</span>
-                                                         <span class="n">feature_subset</span><span class="p">,</span>
-                                                         <span class="n">rename</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="sd">        &quot;&quot;&quot;</span>
+    <span class="n">trait_data</span> <span class="o">=</span> <span class="bp">self</span><span
+            class="o">.</span><span class="n">experiment_design</span><span
+            class="o">.</span><span class="n">data</span><span
+            class="p">[</span><span class="n">trait</span><span
+            class="p">]</span>
+    <span class="n">sample_ids</span> <span class="o">=</span> <span class="bp">self</span><span
+            class="o">.</span><span class="n">sample_subset_to_sample_ids</span><span
+            class="p">(</span><span class="n">sample_subset</span><span
+            class="p">)</span>
+    <span class="n">feature_ids</span> <span class="o">=</span> <span
+            class="bp">self</span><span class="o">.</span><span class="n">feature_subset_to_feature_ids</span><span
+            class="p">(</span><span class="n">data_type</span><span
+            class="p">,</span>
+    <span class="n">feature_subset</span><span class="p">,</span>
+    <span class="n">rename</span><span class="o">=</span><span
+            class="bp">False</span><span class="p">)</span>
 
-        <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;trait&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">trait_data</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">title</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;show_point_labels&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">show_point_labels</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;colors_dict&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_id_to_color</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;sample_ids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sample_ids</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;feature_ids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">feature_ids</span>
-        <span class="c"># print(kwargs.keys())</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;trait&#39;</span><span
+            class="p">]</span> <span class="o">=</span> <span class="n">trait_data</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;title&#39;</span><span
+            class="p">]</span> <span class="o">=</span> <span
+            class="n">title</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;show_point_labels&#39;</span><span
+            class="p">]</span> <span class="o">=</span> <span class="n">show_point_labels</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;colors_dict&#39;</span><span
+            class="p">]</span> <span class="o">=</span> <span
+            class="bp">self</span><span class="o">.</span><span class="n">sample_id_to_color</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;sample_ids&#39;</span><span
+            class="p">]</span> <span class="o">=</span> <span class="n">sample_ids</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;feature_ids&#39;</span><span
+            class="p">]</span> <span class="o">=</span> <span class="n">feature_ids</span>
+    <span class="c"># print(kwargs.keys())</span>
 
-        <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s">&quot;expression&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">plot_classifier</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s">&quot;splicing&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">splicing</span><span class="o">.</span><span class="n">plot_classifier</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span>
+    <span class="s">&quot;expression&quot;</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">expression</span><span
+            class="o">.</span><span class="n">plot_classifier</span><span
+            class="p">(</span><span class="o">**</span><span
+            class="n">kwargs</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span
+            class="o">==</span> <span class="s">&quot;splicing&quot;</span><span
+            class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span
+            class="n">splicing</span><span class="o">.</span><span class="n">plot_classifier</span><span
+            class="p">(</span><span class="o">**</span><span
+            class="n">kwargs</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Study.plot_regressor"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.study.Study.plot_regressor">[docs]</a>    <span class="k">def</span> <span class="nf">plot_regressor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s">&#39;expression&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-        <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s">&quot;expression&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">plot_regressor</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s">&quot;splicing&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">splicing</span><span class="o">.</span><span class="n">plot_regressor</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="viewcode-block" id="Study.plot_regressor"><a class="viewcode-back"
+                                                         href="../../../flotilla.data_model.html#flotilla.data_model.study.Study.plot_regressor">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot_regressor</span><span
+            class="p">(</span><span class="bp">self</span><span
+            class="p">,</span> <span class="n">data_type</span><span
+            class="o">=</span><span class="s">&#39;expression&#39;</span><span
+            class="p">,</span> <span class="o">**</span><span
+            class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+    <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span>
+    <span class="s">&quot;expression&quot;</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">expression</span><span
+            class="o">.</span><span class="n">plot_regressor</span><span
+            class="p">(</span><span class="o">**</span><span
+            class="n">kwargs</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span
+            class="o">==</span> <span class="s">&quot;splicing&quot;</span><span
+            class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span
+            class="n">splicing</span><span class="o">.</span><span class="n">plot_regressor</span><span
+            class="p">(</span><span class="o">**</span><span
+            class="n">kwargs</span><span class="p">)</span>
 
-<span class="c"># Add interactive visualizations</span></div></div>
-<span class="n">Study</span><span class="o">.</span><span class="n">interactive_classifier</span> <span class="o">=</span> <span class="n">Interactive</span><span class="o">.</span><span class="n">interactive_classifier</span>
-<span class="n">Study</span><span class="o">.</span><span class="n">interactive_graph</span> <span class="o">=</span> <span class="n">Interactive</span><span class="o">.</span><span class="n">interactive_graph</span>
-<span class="n">Study</span><span class="o">.</span><span class="n">interactive_pca</span> <span class="o">=</span> <span class="n">Interactive</span><span class="o">.</span><span class="n">interactive_pca</span>
-<span class="n">Study</span><span class="o">.</span><span class="n">interactive_localZ</span> <span class="o">=</span> <span class="n">Interactive</span><span class="o">.</span><span class="n">interactive_localZ</span>
-</pre></div>
+    <span class="c"># Add interactive visualizations</span></div>
+</div>
+<span class="n">Study</span><span class="o">.</span><span class="n">interactive_classifier</span> <span
+        class="o">=</span> <span class="n">Interactive</span><span
+        class="o">.</span><span class="n">interactive_classifier</span>
+<span class="n">Study</span><span class="o">.</span><span class="n">interactive_graph</span> <span
+        class="o">=</span> <span class="n">Interactive</span><span
+        class="o">.</span><span class="n">interactive_graph</span>
+<span class="n">Study</span><span class="o">.</span><span class="n">interactive_pca</span> <span
+        class="o">=</span> <span class="n">Interactive</span><span
+        class="o">.</span><span class="n">interactive_pca</span>
+<span class="n">Study</span><span class="o">.</span><span class="n">interactive_localZ</span> <span
+        class="o">=</span> <span class="n">Interactive</span><span
+        class="o">.</span><span class="n">interactive_localZ</span>
+</pre>
+</div>
 
-    </div>
-      
-  </div>
+</div>
+
+</div>
 </div>
 <footer class="footer">
-  <div class="container">
-    <p class="pull-right">
-      <a href="#">Back to top</a>
-      
-    </p>
-    <p>
-        &copy; Copyright 2014, Olga Botvinnik, Michael Lovci, Patrick Liu, Yan Song.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.<br/>
-    </p>
-  </div>
+    <div class="container">
+        <p class="pull-right">
+            <a href="#">Back to top</a>
+
+        </p>
+
+        <p>
+            &copy; Copyright 2014, Olga Botvinnik, Michael Lovci, Patrick Liu,
+            Yan Song.<br/>
+            Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>
+            1.2.2.<br/>
+        </p>
+    </div>
 </footer>
-  </body>
+</body>
 </html>

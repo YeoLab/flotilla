@@ -22,34 +22,37 @@ def L2_distance(x, y):
 
 class DecompositionViz(object):
     """
-        Given a pandas dataframe, performs PCA and plots the results in a
-        convenient single function.
+    Given a pandas dataframe, performs PCA and plots the results in a
+    convenient single function.
 
-        @param c_scale: Component scaling of the plot, e.g. for making the
-        plotted vectors larger or smaller.
-        @param x_pc: Integer, which principal component to use for the x-axis
-        (usually 1)
-        @param y_pc: Integer, which principal component to use for the y-axis
-        (usually 2)
-        @param distance:
-        @param colors_dict: A dictionary of index (samples) to matplotlib colors
-        @param markers_dict: A dictionary of index (samples) to matplotlib markers
-        @param markers_size_dict: A dictionary of index (samples) to matplotlib marker sizes
-        @param title: A string, the title of the plot
-        @param show_vectors: Boolean, whether or not to show vectors
-        @param show_point_labels: Boolean, whether or not to show the index,
-        e.g. the sample name, on the plot
-        @param column_ids_dict: A dictionary of column names to another
-        value, e.g. if the columns are splicing events with a strange ID,
-        this could be a dictionary that matches the ID to a gene name.
-        @param index_ids_dict: A dictionary of index names to another
-        value, e.g. if the indexes are samples with a strange ID, this could be a
-         dictionary that matches the ID to a more readable sample name.
-        @param show_vector_labels: Boolean. Can be helpful if the vector labels
-        are gene names.
-        @param scale_by_variance: Boolean. Scale vector components by explained variance
-        @return: x, y, marker, distance of each vector in the study_data.
-        """
+
+    @param c_scale: Component scaling of the plot, e.g. for making the
+    plotted vectors larger or smaller.
+    @param x_pc: Integer, which principal component to use for the x-axis
+    (usually 1)
+    @param y_pc: Integer, which principal component to use for the y-axis
+    (usually 2)
+    @param distance:
+    @param colors_dict: A dictionary of index (samples) to matplotlib colors
+    @param markers_dict: A dictionary of index (samples) to matplotlib markers
+    @param markers_size_dict: A dictionary of index (samples) to matplotlib
+        marker sizes
+    @param title: A string, the title of the plot
+    @param show_vectors: Boolean, whether or not to show vectors
+    @param show_point_labels: Boolean, whether or not to show the index,
+    e.g. the sample name, on the plot
+    @param column_ids_dict: A dictionary of column names to another
+    value, e.g. if the columns are splicing events with a strange ID,
+    this could be a dictionary that matches the ID to a gene name.
+    @param index_ids_dict: A dictionary of index names to another
+    value, e.g. if the indexes are samples with a strange ID, this could be a
+     dictionary that matches the ID to a more readable sample name.
+    @param show_vector_labels: Boolean. Can be helpful if the vector labels
+    are gene names.
+    @param scale_by_variance: Boolean. Scale vector components by explained
+        variance
+    @return: x, y, marker, distance of each vector in the study_data.
+    """
 
     _default_plotting_args = {'ax': None, 'x_pc': 'pc_1', 'y_pc': 'pc_2',
                               'num_vectors': 20,
@@ -88,7 +91,6 @@ class DecompositionViz(object):
         self.reduced_space = self.fit_transform(self.df)
 
     def __call__(self, ax=None, **kwargs):
-        #self._validate_params(self._default_plotting_args, **kwargs)
         gs_x = 14
         gs_y = 12
 
@@ -101,7 +103,6 @@ class DecompositionViz(object):
             fig = plt.gcf()
 
         ax_components = plt.subplot(gs[:, :5])
-        #ax_components.set_aspect('equal')
         ax_loading1 = plt.subplot(gs[:, 6:8])
         ax_loading2 = plt.subplot(gs[:, 10:14])
 
@@ -122,27 +123,33 @@ class DecompositionViz(object):
             try:
                 assert key in valid.keys()
             except:
+<<<<<<< HEAD
+                print self.__doc__
+                raise ValueError("unrecognized parameter for pc plot: "
+=======
                 sys.stdout.write(self.__doc__)
                 raise ValueError("unrecognized parameter for pc plot: " \
+>>>>>>> dev
                                  "%s. acceptable values are:\n%s" % (
                                      key, "\n".join(valid.keys())))
 
     def plot_samples(self, show_point_labels=False, **kwargs):
         self._validate_params(self._default_plotting_args, **kwargs)
-        default_params = self.plotting_kwargs.copy()  #fill missing parameters
+        # fill missing parameters
+        default_params = self.plotting_kwargs.copy()
         default_params.update(kwargs)
         kwargs = default_params
 
-        #cheating!
-        #move kwargs out of a dict, into local namespace, mostly because I don't want to refactor below
+        # cheating!
+        # move kwargs out of a dict, into local namespace, mostly because I
+        # don't want to refactor below
 
         for key in kwargs.keys():
-            #
-            # the following makes several errors appear in pycharm. they're not errors~~! laziness? :(
-            #
-            # imports variables from dictionaries and uses them as variable names in the code ... cheating because
+            # the following makes several errors appear in pycharm.
+            #  they're not errors~~! laziness? :(
+            # imports variables from dictionaries and uses them as variable
+            # names in the code ... cheating because
             # TODO.md: needs to be refactored
-            #
             exec (key + " = kwargs['" + key + "']")
         x_loading, y_loading = self.components_.ix[x_pc], self.components_.ix[
             y_pc]
@@ -158,34 +165,35 @@ class DecompositionViz(object):
         if not c_scale:
             c_scale = .75 * max(
                 [norm(point) for point in zip(x_list, y_list)]) / \
-                      max([norm(vector) for vector in
-                           zip(x_loading, y_loading)])
+                max([norm(vector) for vector in
+                    zip(x_loading, y_loading)])
 
         figsize = tuple(plt.gcf().get_size_inches())
         size_scale = math.sqrt(figsize[0] * figsize[1]) / 1.5
         default_marker_size = size_scale * 20 if not default_marker_size else \
             default_marker_size
         vector_width = .5 if not vector_width else vector_width
-        axis_label_size = size_scale * 1.5 if not axis_label_size else axis_label_size
+        axis_label_size = size_scale * 1.5 if not axis_label_size \
+            else axis_label_size
         title_size = size_scale * 2 if not title_size else title_size
-        vector_label_size = size_scale * 1.5 if not vector_label_size else vector_label_size
-        point_label_size = size_scale * 1.5 if not point_label_size else point_label_size
+        vector_label_size = size_scale * 1.5 if not vector_label_size \
+            else vector_label_size
+        point_label_size = size_scale * 1.5 if not point_label_size \
+            else point_label_size
 
         # get amount of variance explained
         try:
-            #not all reduction methods have this attr, if it doesn't assume equal , not true.. but easy!
+            # not all reduction methods have this attr, if it doesn't assume
+            # equal , not true.. but easy!
             var_1 = int(self.explained_variance_ratio_[x_pc] * 100)
             var_2 = int(self.explained_variance_ratio_[y_pc] * 100)
         except AttributeError:
             var_1, var_2 = 1., 1.
 
         # sort features by magnitude/contribution to transformation
-
-
         comp_magn = []
         magnitudes = []
         for (x, y, an_id) in zip(x_loading, y_loading, self.df.columns):
-
             x = x * c_scale
             y = y * c_scale
 
@@ -228,15 +236,20 @@ class DecompositionViz(object):
 
             if show_point_labels:
                 ax.text(x, y, an_id, color=color, size=point_label_size)
+<<<<<<< HEAD
+            thresh = 0.00001
+            if abs(x) < thresh and abs(y) < thresh:
+                print "error with %s " % an_id
+=======
             if x >= -0.00001 and x <= 0.00001 and y >= -0.00001 and y <= 0.00001:
                 sys.stdout.write("error with {} ".format(an_id))
+>>>>>>> dev
                 tiny += 1
             ax.scatter(x, y, marker=marker, color=color, s=marker_size,
                        edgecolor='none')
 
-        #print "there were %d errors of %d" % (tiny, len(x_list))
-        vectors = sorted(comp_magn, key=lambda item: item[3], reverse=True)[
-                  :num_vectors]
+        vectors = sorted(comp_magn, key=lambda item: item[3],
+                         reverse=True)[:num_vectors]
         if show_vectors:
 
             for x, y, marker, distance in vectors:
@@ -285,10 +298,9 @@ class DecompositionViz(object):
         ax.plot(dd, np.arange(len(dd)), 'o', label='hi')
         ax.set_yticks(np.arange(max(len(dd), n_features)))
         shorten = lambda x: "id too long" if len(x) > 30 else x
-        _ = ax.set_yticklabels(map(shorten, labels))  #, rotation=90)
+        ax.set_yticklabels(map(shorten, labels))
         ax.set_title("loadings on " + pc)
         x_offset = max(dd) * .05
-        #xmin, xmax = ax.get_xlim()
         ax.set_xlim(left=min(dd) - x_offset, right=max(dd) + x_offset)
         [lab.set_rotation(90) for lab in ax.get_xticklabels()]
         sns.despine(ax=ax)
@@ -324,11 +336,10 @@ class PCAViz(DecompositionViz, PCA):
 
 
 class NMFViz(DecompositionViz, NMF):
-    _default_reduction_args = {'n_components': 2,  #'init': 'nndsvda',
+    _default_reduction_args = {'n_components': 2,
                                'max_iter': 20000, 'nls_max_iter': 40000}
 
     def __call__(self, ax=None, **kwargs):
-        #self._validate_params(self._default_plotting_args, **kwargs)
         gs_x = 14
         gs_y = 12
 
@@ -341,7 +352,6 @@ class NMFViz(DecompositionViz, NMF):
             fig = plt.gcf()
 
         ax_components = plt.subplot(gs[:, :5])
-        #ax_components.set_aspect('equal')
         ax_loading1 = plt.subplot(gs[:, 6:8])
         ax_loading2 = plt.subplot(gs[:, 10:14])
 

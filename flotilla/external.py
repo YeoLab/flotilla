@@ -5,13 +5,14 @@ from collections import defaultdict
 import gzip
 import json
 import os
-import numpy as np
-import pandas as pd
-from scipy.stats import hypergeom
 import string
 import subprocess
 import sys
 import urllib2
+
+import numpy as np
+import pandas as pd
+from scipy.stats import hypergeom
 
 
 FLOTILLA_DOWNLOAD_DIR = os.path.expanduser('~/flotilla_projects')
@@ -47,7 +48,7 @@ def GO_enrichment(geneList, ontology, expressedGenes=None, printIt=False,
         if len(inBoth) <= 3 or len(expressedGOGenes) < 5:
             pValues[GOTerm] = 'notest'
             continue
-        #survival function is more accurate on small p-values...
+        # survival function is more accurate on small p-values...
         pVal = hypergeom.sf(len(inBoth), lenAllGenes, len(expressedGOGenes),
                             lenTheseGenes)
         if pVal < 0:
@@ -65,7 +66,7 @@ def GO_enrichment(geneList, ontology, expressedGenes=None, printIt=False,
 
     for k, v in pValues.items():
         try:
-            pValues[k][0] = v * float(nCmps)  #bonferroni correction
+            pValues[k][0] = v * float(nCmps)  # bonferroni correction
         except:
             pass
     import operator
@@ -83,7 +84,6 @@ def GO_enrichment(geneList, ontology, expressedGenes=None, printIt=False,
             if v[0] > pCut:
                 continue
             if printIt:
-                #[k, "|".join(ontology[k]['name']), v[0], v[1], v[2], v[3], ",".join(v[4]),  ",".join(v[5])]
                 print k, "|".join(ontology[k]['name']), "%.3e" % v[0], v[1], v[
                     2], v[3], "|".join(v[3])
                 pass
@@ -95,7 +95,8 @@ def GO_enrichment(geneList, ontology, expressedGenes=None, printIt=False,
 
     try:
         df = pd.DataFrame(y, columns=['GO Term ID', 'GO Term Description',
-                                      'Bonferroni-corrected Hypergeometric p-Value',
+                                      'Bonferroni-corrected Hypergeometric '
+                                      'p-Value',
                                       'N Genes in List and GO Category',
                                       'N Expressed Genes in GO Category',
                                       'N Genes in GO category',
@@ -104,7 +105,8 @@ def GO_enrichment(geneList, ontology, expressedGenes=None, printIt=False,
         df.set_index('GO Term ID', inplace=True)
     except:
         df = pd.DataFrame(None, columns=['GO Term ID', 'GO Term Description',
-                                         'Bonferroni-corrected Hypergeometric p-Value',
+                                         'Bonferroni-corrected Hypergeometric '
+                                         'p-Value',
                                          'N Genes in List and GO Category',
                                          'N Expressed Genes in GO Category',
                                          'N Genes in GO category',
@@ -141,7 +143,7 @@ class GO(object):
         self.geneXref = geneXref
 
     def enrichment(self, geneList, background=None, **kwargs):
-        if background == None:
+        if background is None:
             background = self.allGenes
         return GO_enrichment(geneList, self.GO, expressedGenes=background,
                              xRef=self.geneXref)
@@ -165,7 +167,8 @@ def link_to_list(link):
 
     if link.startswith("http"):
         sys.stderr.write(
-            "WARNING, downloading things from the internet, potential danger from untrusted sources")
+            "WARNING, downloading things from the internet, potential danger "
+            "from untrusted sources\n")
         xx = subprocess.check_output(
             ["curl", "-k", '--location-trusted', link]).split("\n")
     elif link.startswith("/"):
@@ -225,45 +228,6 @@ def check_if_already_downloaded(url, download_dir=FLOTILLA_DOWNLOAD_DIR):
         with open(filename, 'w') as f:
             f.write(opened_url.read())
     return filename
-
-
-"""
-{
-	"name" : "neural_diff",
-	"title" : "Single-cell analysis of celltypes representative of motor neuron differentiation",
-	"licenses" : null,
-	"sources" : "Craig Venter and Yan Song's magic hands",
-	"datapackage_version" : "0.1.0",
-	"resources" : [
-		{
-			"format" : "tsv",
-			"name" : "experiment_design",
-			"url" : "http://sauron.ucsd.edu/flotilla_projects/neural_diff/experiment_design.tsv"
-		},
-		{
-			"format" : "tsv",
-			"name" : "expression",
-			"url" : "http://sauron.ucsd.edu/flotilla_projects/neural_diff/tpm.tsv"
-		},
-		{
-			"format" : "tsv",
-			"name" : "splicing",
-			"url" : "http://sauron.ucsd.edu/flotilla_projects/neural_diff/psi.tsv"
-		},
-		{
-			"format" : "tsv",
-			"name" : "spikein",
-			"url" : "http://sauron.ucsd.edu/flotilla_projects/neural_diff/spikein.tsv"
-		},
-		{
-			"format" : "tsv",
-			"name" : "mapping_stats",
-			"url" : "http://sauron.ucsd.edu/flotilla_projects/neural_diff/mapping_stats.tsv"
-		}
-	],
-	"species" : "hg19"
-}
-"""
 
 
 def make_study_datapackage(name, experiment_design_data,
@@ -328,16 +292,19 @@ def make_feature_datapackage():
                 {
                     'format': 'json',
                     'name': 'expression_feature_data',
-                    'url': 'http://sauron.ucsd.edu/flotilla_projects/hg19/gencode.v19.annotation.gene.attributes.plus.json'
+                    'url': 'http://sauron.ucsd.edu/flotilla_projects/hg19/'
+                           'gencode.v19.annotation.gene.attributes.plus.json'
                 },
                 {
                     'format': 'csv',
                     'name': 'splicing_feature_data',
-                    'url': 'http://sauron.ucsd.edu/flotilla_projects/hg19/miso_to_ids.csv'
+                    'url': 'http://sauron.ucsd.edu/flotilla_projects/hg19/'
+                           'miso_to_ids.csv'
                 },
                 {
                     'format': 'json',
                     'name': 'gene_ontology_data',
-                    'url': 'http://sauron.ucsd.edu/flotilla_projects/hg19/ens_to_go.json'
+                    'url': 'http://sauron.ucsd.edu/flotilla_projects/hg19/'
+                           'ens_to_go.json'
                 }
             ]}

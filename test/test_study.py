@@ -8,7 +8,7 @@ import pandas.util.testing as pdt
 def test_study_init(example_data):
     from flotilla.data_model import ExpressionData, SplicingData, Study
 
-    study = Study(experiment_design_data=example_data.experiment_design_data,
+    study = Study(sample_metadata=example_data.experiment_design_data,
                   expression_data=example_data.expression,
                   splicing_data=example_data.splicing)
     expression = ExpressionData(data=example_data.expression)
