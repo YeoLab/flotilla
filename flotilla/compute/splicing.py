@@ -65,8 +65,8 @@ def switchy_score(array):
     Returns
     -------
     float
-        The "switchy score" of the study_data which can then be compared to other
-        splicing event study_data
+        The "switchy score" of the study_data which can then be compared to
+        other splicing event study_data
 
     """
     array = np.array(array)

@@ -1,22 +1,23 @@
 import collections
 import sys
+import itertools
 
 import pandas as pd
+
 import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.colors import rgb2hex
+import seaborn as sns
 
 from .base import BaseData
 from ..compute.infotheory import binify
 from ..compute.splicing import Modalities
+
 from ..visualize.decomposition import NMFViz, PCAViz
 from ..visualize.color import purples
 from ..visualize.predict import ClassifierViz
 from ..visualize.splicing import ModalitiesViz
 from ..util import cached_property, memoize
-import itertools
-import matplotlib.pyplot as plt
-from matplotlib.colors import rgb2hex
-
-import seaborn as sns
 from ..visualize.color import red, grey
 from ..visualize.splicing import lavalamp
 
@@ -32,7 +33,7 @@ class SplicingData(BaseData):
     _last_reducer_accessed = None
 
     def __init__(self, data,
-                 feature_data=None, binsize=0.1,
+                 metadata=None, binsize=0.1,
                  var_cut=_var_cut, outliers=None,
                  feature_rename_col=None, excluded_max=0.2, included_min=0.8):
         """Instantiate a object for percent spliced in (PSI) scores
@@ -44,7 +45,8 @@ class SplicingData(BaseData):
         n_components : int
             Number of components to use in the reducer
         binsize : float
-            Value between 0 and 1, the bin size for binning the study_data scores
+            Value between 0 and 1, the bin size for binning the study_data
+            scores
         reducer : sklearn.decomposition object
             An scikit-learn class that reduces the dimensionality of study_data
             somehow. Must accept the parameter n_components, have the
@@ -54,9 +56,10 @@ class SplicingData(BaseData):
         included_max : float
             Minimum value for the "included" bin of psi scores. Default 0.8.
         """
-        super(SplicingData, self).__init__(data, feature_data,
-                                           feature_rename_col=feature_rename_col,
-                                           outliers=outliers)
+        super(SplicingData, self).__init__(
+            data, metadata,
+            feature_rename_col=feature_rename_col,
+            outliers=outliers)
         self.binsize = binsize
         self.bins = np.arange(0, 1 + self.binsize, self.binsize)
         psi_variant = pd.Index(
@@ -148,8 +151,6 @@ class SplicingData(BaseData):
 
         reducer_kwargs = {} if reducer_kwargs is None else reducer_kwargs
         reducer_kwargs['title'] = title
-        # feature_renamer = self.feature_renamer()
-
         subset, means = self._subset_and_standardize(data,
                                                      sample_ids, feature_ids,
                                                      standardize)
@@ -158,11 +159,12 @@ class SplicingData(BaseData):
         if featurewise:
             subset = subset.T
         reducer_object = reducer(subset, **reducer_kwargs)
-        reducer_object.means = means  #always the mean of input features... i
-        # .e.
-        # featurewise doesn't change this.
 
-        #add mean gene_expression
+        # always the mean of input features. i.e. featurewise doesn't change
+        # this.
+        reducer_object.means = means
+
+        # add mean gene_expression
         return reducer_object
 
     @memoize
@@ -233,18 +235,19 @@ class SplicingData(BaseData):
         modalities_counts = self.modalities_counts(sample_ids, feature_ids)
         self.modalities_visualizer.bar(modalities_counts, ax, i, normed,
                                        legend)
-        modalities_fractions = modalities_counts / modalities_counts.sum().astype(
-            float)
+        modalities_fractions = \
+            modalities_counts / modalities_counts.sum().astype(float)
         sys.stdout.write(str(modalities_fractions) + '\n')
 
     def plot_modalities_lavalamps(self, sample_ids=None, feature_ids=None,
-                                 color=None, **kwargs):
+                                  color=None, **kwargs):
         """Plot modality assignments in NMF space (option for lavalamp?)
         """
         modalities_assignments = self.modalities(sample_ids, feature_ids)
         modalities_names = self.modalities_calculator.modalities_names
 
-        f, axes = plt.subplots(len(modalities_names), 1, figsize=(18, 3*len(modalities_names)))
+        f, axes = plt.subplots(len(modalities_names), 1,
+                               figsize=(18, 3 * len(modalities_names)))
         axes = itertools.chain(axes)
 
         if color is None:
@@ -255,15 +258,13 @@ class SplicingData(BaseData):
 
         for modality in modalities_names:
             ax = axes.next()
-            modal_psis = self.data[modalities_assignments[modalities_assignments == modality].index]
+            modal_psis = self.data[modalities_assignments[
+                modalities_assignments == modality].index]
             lavalamp(modal_psis, color=color, ax=ax, **kwargs)
             ax.set_title(modality)
 
-
     def plot_event(self, feature_id, sample_groupby, sample_colors):
         pass
-
-        # def plot_shared_events(self):
 
 
 class SpliceJunctionData(SplicingData):
@@ -304,7 +305,6 @@ class DownsampledSplicingData(BaseData):
     n_components = 2
     _binsize = 0.1
     _var_cut = 0.2
-
 
     def __init__(self, df, sample_descriptors):
         """Instantiate an object of downsampled splicing data
@@ -353,11 +353,7 @@ class DownsampledSplicingData(BaseData):
 
             for (splice_type, probability), df in self.df.groupby(
                     ['splice_type', 'probability']):
-                # print splice_type, probability, data.shape, \
-                #     data.event_name.unique().shape[0],
-                # n_iter = data.iteration.unique().shape[0]
                 event_count = collections.Counter(df.event_name)
-                # print sum(1 for k, v in event_count.iteritems() if v == n_iter)
                 shared_events[(splice_type, probability)] = pd.Series(
                     event_count)
 
@@ -378,7 +374,6 @@ class DownsampledSplicingData(BaseData):
         """
         figure_dir = figure_dir.rstrip('/')
         colors = purples + ['#262626']
-
 
         for splice_type, df in self.shared_events.groupby(level=0, axis=1):
             print splice_type, df.dropna(how='all').shape
@@ -406,9 +401,9 @@ class DownsampledSplicingData(BaseData):
             ax.set_ylabel('number of events')
             sns.despine()
             fig.tight_layout()
-            fig.savefig('{}/downsampled_shared_events_{}.pdf'.format(figure_dir,
-                                                                     splice_type),
-                        bbox_extra_artists=(legend,), bbox_inches='tight')
+            fig.savefig('{}/downsampled_shared_events_{}.pdf'.format(
+                figure_dir, splice_type), bbox_extra_artists=(legend,),
+                bbox_inches='tight')
 
     def shared_events_percentage(self, min_iter_shared=5, figure_dir='./'):
         """Plot the percentage of all events detected at that iteration,
@@ -423,7 +418,6 @@ class DownsampledSplicingData(BaseData):
         """
         figure_dir = figure_dir.rstrip('/')
         sns.set(style='whitegrid', context='talk')
-
 
         for splice_type, df in self.shared_events.groupby(level=0, axis=1):
             df = df.dropna()
