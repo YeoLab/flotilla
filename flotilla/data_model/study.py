@@ -283,11 +283,14 @@ class Study(StudyFactory):
             self.experiment_design.data['outlier'] = False
 
         # Get pooled samples
-        if experiment_design_pooled_col is not None \
-                and experiment_design_pooled_col in self.experiment_design.data:
-            pooled = self.experiment_design.data.index[
-                self.experiment_design.data[
-                    experiment_design_pooled_col].astype(bool)]
+        if experiment_design_pooled_col is not None:
+            if experiment_design_pooled_col in self.experiment_design.data:
+                try:
+                    pooled = self.experiment_design.data.index[
+                        self.experiment_design.data[
+                            experiment_design_pooled_col].astype(bool)]
+                except:
+                    pooled = None
         else:
             pooled = None
 
@@ -466,16 +469,17 @@ class Study(StudyFactory):
         except KeyError:
             spikein_data = None
 
-        study = Study(sample_metadata=experiment_design_data,
-                      expression_data=expression_data,
-                      splicing_data=splicing_data,
-                      mapping_stats_data=mapping_stats_data,
-                      spikein_data=spikein_data,
-                      expression_feature_rename_col='gene_name',
-                      splicing_feature_rename_col='gene_name',
-                      expression_log_base=log_base,
-                      experiment_design_pooled_col=experiment_design_pooled_col,
-                      **species_dfs)
+        study = Study(
+            sample_metadata=experiment_design_data,
+            expression_data=expression_data,
+            splicing_data=splicing_data,
+            mapping_stats_data=mapping_stats_data,
+            spikein_data=spikein_data,
+            expression_feature_rename_col='gene_name',
+            splicing_feature_rename_col='gene_name',
+            expression_log_base=log_base,
+            experiment_design_pooled_col=experiment_design_pooled_col,
+            **species_dfs)
         return study
 
     def __add__(self, other):
@@ -849,9 +853,8 @@ class Study(StudyFactory):
             colors = self.experiment_design.data['color']
         else:
             colors = pd.Series(red, index=self.splicing.data.index)
-        from sklearn.preprocessing import LabelEncoder
 
-        self.splicing.plot_modalities_lavalamps(color=colors, jitter=jitter,
+        self.splicing.plot_modalities_lavalamps(color=colors,
                                                 **kwargs)
         for modality in set(self.splicing.modalities()):
             self.splicing.feature_data[

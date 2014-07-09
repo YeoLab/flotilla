@@ -2,6 +2,7 @@ import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn
+import sys
 
 from .color import green
 from ..compute.network import Networker
@@ -176,7 +177,8 @@ class NetworkerViz(Networker, DecompositionViz):
             try:
                 nx.write_gml(graph, graph_file)
             except Exception as e:
-                sys.stdout.write("error writing graph file:\n{}".format(str(e)))
+                sys.stdout.write("error writing graph file:"
+                                 "\n{}".format(str(e)))
 
         return graph, pos
 
@@ -309,6 +311,7 @@ class NetworkerViz(Networker, DecompositionViz):
             try:
                 nx.write_gml(g, graph_file)
             except Exception as e:
-                sys.stdout.write("error writing graph file:\n{}".format(str(e)))
+                sys.stdout.write("error writing graph file:"
+                                 "\n{}".format(str(e)))
 
         return(g, pos)
