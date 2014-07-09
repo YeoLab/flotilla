@@ -32,7 +32,7 @@ class PredictorBaseViz(object):
         raise NotImplementedError
         trait, classifier_name = self.attributes
         X = self.X
-        sorter = np.array([np.median(i[1]) - np.median(j[1]) for (i, j) in \
+        sorter = np.array([np.median(i[1]) - np.median(j[1]) for (i, j) in
                            itertools.izip(X[self.y[trait] == 0].iteritems(),
                                           X[self.y[trait] == 1].iteritems())])
 
@@ -113,12 +113,15 @@ class PredictorBaseViz(object):
 
 class RegressorViz(Regressor, PredictorBaseViz):
     def check_a_feature(self, feature_name, trait, **violinplot_kwargs):
-        """Make Violin Plots for a gene/probe's value in the sets defined in sets
+        """Make Violin Plots for a gene/probe's value in the sets defined in
+        sets
+
         feature_name - gene/probe id. must be in the index of self._parent.X
         sets - list of sample ids
         violinplot_kwargs - extra parameters for violinplot
 
-        returns a list of lists with values for feature_name in each set of sets
+        returns a list of lists with values for feature_name in each set of
+        sets
         """
         sns.violinplot(self.X[feature_name], linewidth=0, groupby=trait,
                        alpha=0.5, bw='silverman', inner='points',
@@ -159,25 +162,22 @@ class ClassifierViz(Classifier, PredictorBaseViz):
         plt.tight_layout()
         return pca
 
-
     def plot_classifier_scores(self, trait, ax=None, classifier_name=None):
         """
         plot kernel density of predictor scores and draw a vertical line where
         the cutoff was selected
         ax - ax to plot on. if None: plt.gca()
         """
-        if ax == None:
+        if ax is None:
             ax = plt.gca()
 
         # for trait in traits:
         clf = self.predictor
         sns.kdeplot(clf.scores_, shade=True, ax=ax,
-                    label="%s\n%d features\noob:%.2f" \
+                    label="%s\n%d features\noob:%.2f"
                           % (trait, clf.n_good_features_, clf.oob_score_))
         ax.axvline(x=clf.score_cutoff_, color=green)
 
         for lab in ax.get_xticklabels():
             lab.set_rotation(90)
         sns.despine(ax=ax)
-
-

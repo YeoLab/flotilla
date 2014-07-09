@@ -223,7 +223,6 @@ class SpikeInData(ExpressionData):
         """
         super(SpikeInData, self).__init__(data, feature_data)
 
-
         # def spikeins_violinplot(self):
         #     import matplotlib.pyplot as plt
         #     import seaborn as sns
