@@ -1,0 +1,885 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>flotilla.data_model package &mdash; flotilla  documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="flotilla  documentation" href="index.html" />
+    <link rel="up" title="flotilla package" href="flotilla.html" />
+    <link rel="next" title="flotilla.visualize package" href="flotilla.visualize.html" />
+    <link rel="prev" title="flotilla.compute package" href="flotilla.compute.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="flotilla.visualize.html" title="flotilla.visualize package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="flotilla.compute.html" title="flotilla.compute package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">flotilla  documentation</a> &raquo;</li>
+          <li><a href="flotilla.html" accesskey="U">flotilla package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="flotilla-data-model-package">
+<h1>flotilla.data_model package<a class="headerlink" href="#flotilla-data-model-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-flotilla.data_model.base">
+<span id="flotilla-data-model-base-module"></span><h2>flotilla.data_model.base module<a class="headerlink" href="#module-flotilla.data_model.base" title="Permalink to this headline">¶</a></h2>
+<p>Base data class for all data types. All data types in flotilla inherit from
+this, or a child object (like ExpressionData).</p>
+<dl class="class">
+<dt id="flotilla.data_model.base.BaseData">
+<em class="property">class </em><tt class="descclassname">flotilla.data_model.base.</tt><tt class="descname">BaseData</tt><big>(</big><em>data=None</em>, <em>metadata=None</em>, <em>species=None</em>, <em>feature_rename_col=None</em>, <em>outliers=None</em>, <em>min_samples=10</em>, <em>pooled=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Generic study_data model for both splicing and expression study_data</p>
+<dl class="method">
+<dt id="flotilla.data_model.base.BaseData.calculate_distances">
+<tt class="descname">calculate_distances</tt><big>(</big><em>metric='euclidean'</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.calculate_distances"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.calculate_distances" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a squareform distance matrix for clustering fun</p>
+<p>Needed for some clustering algorithms</p>
+<dl class="docutils">
+<dt>metric <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd>One of any valid scipy.distance metric strings. Default &#8216;euclidean&#8217;</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.base.BaseData.correlate">
+<tt class="descname">correlate</tt><big>(</big><em>method='spearman'</em>, <em>between='features'</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.correlate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.correlate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find correlations between either splicing/expression measurements
+or cells</p>
+<dl class="docutils">
+<dt>method <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>Specify to calculate either &#8216;spearman&#8217; (rank-based) or &#8216;pearson&#8217;
+(linear) correlation. Default &#8216;spearman&#8217;</dd>
+<dt>between <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>Either &#8216;features&#8217; or &#8216;samples&#8217;. Default &#8216;features&#8217;</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.base.BaseData.drop_outliers">
+<tt class="descname">drop_outliers</tt><big>(</big><em>df</em>, <em>outliers</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.drop_outliers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.drop_outliers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.data_model.base.BaseData.feature_renamer">
+<tt class="descname">feature_renamer</tt><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.feature_renamer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.feature_renamer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.base.BaseData.feature_subset_to_feature_ids">
+<tt class="descname">feature_subset_to_feature_ids</tt><big>(</big><em>feature_subset</em>, <em>rename=True</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.feature_subset_to_feature_ids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.feature_subset_to_feature_ids" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.base.BaseData.jsd">
+<tt class="descname">jsd</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.jsd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.jsd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Jensen-Shannon divergence showing most varying measurements within a
+celltype and between celltypes</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.data_model.base.BaseData.min_samples">
+<tt class="descname">min_samples</tt><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.min_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.min_samples" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.base.BaseData.plot_classifier">
+<tt class="descname">plot_classifier</tt><big>(</big><em>trait</em>, <em>sample_ids=None</em>, <em>feature_ids=None</em>, <em>standardize=True</em>, <em>predictor=&lt;class 'flotilla.visualize.predict.ClassifierViz'&gt;</em>, <em>predictor_kwargs=None</em>, <em>predictor_scoring_fun=None</em>, <em>score_cutoff_fun=None</em>, <em>**plotting_kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.plot_classifier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.plot_classifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Principal component-like analysis of measurements</p>
+<dl class="docutils">
+<dt>obj_id <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>key of the object getting plotted</dd>
+<dt>sample_subset <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>???</dd>
+<dt>categorical_trait <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>predictor feature</dd>
+<dt>feature_subset <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>subset of genes to use for building class</dd>
+</dl>
+<p>self</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.base.BaseData.plot_dimensionality_reduction">
+<tt class="descname">plot_dimensionality_reduction</tt><big>(</big><em>x_pc=1</em>, <em>y_pc=2</em>, <em>sample_ids=None</em>, <em>feature_ids=None</em>, <em>featurewise=False</em>, <em>**plotting_kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.plot_dimensionality_reduction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.plot_dimensionality_reduction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Principal component-like analysis of measurements</p>
+<dl class="docutils">
+<dt>x_pc <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>Which principal component to plot on the x-axis</dd>
+<dt>y_pc <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>Which principal component to plot on the y-axis</dd>
+<dt>sample_ids <span class="classifier-delimiter">:</span> <span class="classifier">None or list of strings</span></dt>
+<dd>If None, plot all the samples. If a list of strings, must be
+valid sample ids of the data</dd>
+<dt>feature_ids <span class="classifier-delimiter">:</span> <span class="classifier">None or list of strings</span></dt>
+<dd>If None, plot all the features. If a list of strings</dd>
+</dl>
+<p>self</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-flotilla.data_model.expression">
+<span id="flotilla-data-model-expression-module"></span><h2>flotilla.data_model.expression module<a class="headerlink" href="#module-flotilla.data_model.expression" title="Permalink to this headline">¶</a></h2>
+<p>Data types related to gene expression, e.g. from RNA-Seq or microarrays.
+Included SpikeIn data.</p>
+<dl class="class">
+<dt id="flotilla.data_model.expression.ExpressionData">
+<em class="property">class </em><tt class="descclassname">flotilla.data_model.expression.</tt><tt class="descname">ExpressionData</tt><big>(</big><em>data</em>, <em>metadata=None</em>, <em>expression_thresh=0.1</em>, <em>feature_rename_col=None</em>, <em>outliers=None</em>, <em>log_base=None</em>, <em>pooled=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/expression.html#ExpressionData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.expression.ExpressionData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#flotilla.data_model.base.BaseData" title="flotilla.data_model.base.BaseData"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.data_model.base.BaseData</span></tt></a></p>
+<dl class="method">
+<dt id="flotilla.data_model.expression.ExpressionData.classify">
+<tt class="descname">classify</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/expression.html#ExpressionData.classify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.expression.ExpressionData.classify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make and memoize a predictor on a categorical trait (associated
+with samples) subset of genes</p>
+<dl class="docutils">
+<dt>trait <span class="classifier-delimiter">:</span> <span class="classifier">pandas.Series</span></dt>
+<dd>samples x categorical feature</dd>
+<dt>sample_ids <span class="classifier-delimiter">:</span> <span class="classifier">None or list of strings</span></dt>
+<dd>If None, all sample ids will be used, else only the sample ids
+specified</dd>
+<dt>feature_ids <span class="classifier-delimiter">:</span> <span class="classifier">None or list of strings</span></dt>
+<dd>If None, all features will be used, else only the features
+specified</dd>
+<dt>standardize <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd>Whether or not to &#8220;whiten&#8221; (make all variables uncorrelated) and
+mean-center and make unit-variance all the data via sklearn
+.preprocessing.StandardScaler</dd>
+<dt>predictor <span class="classifier-delimiter">:</span> <span class="classifier">flotilla.visualize.predict classifier</span></dt>
+<dd>Must inherit from flotilla.visualize.PredictorBaseViz. Default is
+flotilla.visualize.predict.ClassifierViz</dd>
+<dt>predictor_kwargs <span class="classifier-delimiter">:</span> <span class="classifier">dict or None</span></dt>
+<dd>Additional &#8216;keyword arguments&#8217; to supply to the predictor class</dd>
+<dt>predictor_scoring_fun <span class="classifier-delimiter">:</span> <span class="classifier">function</span></dt>
+<dd>Function to get the feature scores for a scikit-learn classifier.
+This can be different for different classifiers, e.g. for a
+classifier named &#8220;x&#8221; it could be <a href="#id1"><span class="problematic" id="id2">x.scores_</span></a>, for other it&#8217;s
+<a href="#id3"><span class="problematic" id="id4">x.feature_importances_</span></a>. Default: lambda x: <a href="#id5"><span class="problematic" id="id6">x.feature_importances_</span></a></dd>
+<dt>score_cutoff_fun <span class="classifier-delimiter">:</span> <span class="classifier">function</span></dt>
+<dd>Function to cut off insignificant scores
+Default: lambda scores: np.mean(x) + 2 * np.std(x)</dd>
+</dl>
+<dl class="docutils">
+<dt>predictor <span class="classifier-delimiter">:</span> <span class="classifier">flotilla.compute.predict.PredictorBaseViz</span></dt>
+<dd>A ready-to-plot object containing the predictions</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.expression.ExpressionData.plot_twoway">
+<tt class="descname">plot_twoway</tt><big>(</big><em>sample1</em>, <em>sample2</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/expression.html#ExpressionData.plot_twoway"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.expression.ExpressionData.plot_twoway" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.expression.ExpressionData.reduce">
+<tt class="descname">reduce</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/expression.html#ExpressionData.reduce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.expression.ExpressionData.reduce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make and memoize a reduced dimensionality representation of data</p>
+<dl class="docutils">
+<dt>sample_ids <span class="classifier-delimiter">:</span> <span class="classifier">None or list of strings</span></dt>
+<dd>If None, all sample ids will be used, else only the sample ids
+specified</dd>
+<dt>feature_ids <span class="classifier-delimiter">:</span> <span class="classifier">None or list of strings</span></dt>
+<dd>If None, all features will be used, else only the features
+specified</dd>
+<dt>featurewise <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd>Whether or not to use the features as the &#8220;samples&#8221;, e.g. if you
+want to reduce the features in to &#8220;sample-space&#8221; instead of
+reducing the samples into &#8220;feature-space&#8221;</dd>
+<dt>standardize <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd>Whether or not to &#8220;whiten&#8221; (make all variables uncorrelated) and
+mean-center via sklearn.preprocessing.StandardScaler</dd>
+<dt>title <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>Title of the plot</dd>
+<dt>reducer_kwargs <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd>Any additional arguments to send to the reducer</dd>
+</dl>
+<dl class="docutils">
+<dt>reducer_object <span class="classifier-delimiter">:</span> <span class="classifier">flotilla.compute.reduce.ReducerViz</span></dt>
+<dd>A ready-to-plot object containing the reduced space</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.expression.ExpressionData.twoway">
+<tt class="descname">twoway</tt><big>(</big><em>sample1</em>, <em>sample2</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/expression.html#ExpressionData.twoway"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.expression.ExpressionData.twoway" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="flotilla.data_model.expression.SpikeInData">
+<em class="property">class </em><tt class="descclassname">flotilla.data_model.expression.</tt><tt class="descname">SpikeInData</tt><big>(</big><em>data</em>, <em>feature_data=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/expression.html#SpikeInData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.expression.SpikeInData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#flotilla.data_model.expression.ExpressionData" title="flotilla.data_model.expression.ExpressionData"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.data_model.expression.ExpressionData</span></tt></a></p>
+<p>Class for Spikein data and associated functions
+Attributes
+&#8212;&#8212;&#8212;-</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-flotilla.data_model.metadata">
+<span id="flotilla-data-model-metadata-module"></span><h2>flotilla.data_model.metadata module<a class="headerlink" href="#module-flotilla.data_model.metadata" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="flotilla.data_model.metadata.MetaData">
+<em class="property">class </em><tt class="descclassname">flotilla.data_model.metadata.</tt><tt class="descname">MetaData</tt><big>(</big><em>data=None</em>, <em>metadata=None</em>, <em>species=None</em>, <em>feature_rename_col=None</em>, <em>outliers=None</em>, <em>min_samples=10</em>, <em>pooled=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/metadata.html#MetaData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.metadata.MetaData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#flotilla.data_model.base.BaseData" title="flotilla.data_model.base.BaseData"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.data_model.base.BaseData</span></tt></a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-flotilla.data_model.quality_control">
+<span id="flotilla-data-model-quality-control-module"></span><h2>flotilla.data_model.quality_control module<a class="headerlink" href="#module-flotilla.data_model.quality_control" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="flotilla.data_model.quality_control.MappingStatsData">
+<em class="property">class </em><tt class="descclassname">flotilla.data_model.quality_control.</tt><tt class="descname">MappingStatsData</tt><big>(</big><em>data</em>, <em>number_mapped_col</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/quality_control.html#MappingStatsData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.quality_control.MappingStatsData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#flotilla.data_model.base.BaseData" title="flotilla.data_model.base.BaseData"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.data_model.base.BaseData</span></tt></a></p>
+<p>Constructor for mapping statistics data from STAR</p>
+<dl class="attribute">
+<dt id="flotilla.data_model.quality_control.MappingStatsData.mapped_reads">
+<tt class="descname">mapped_reads</tt><a class="reference internal" href="_modules/flotilla/data_model/quality_control.html#MappingStatsData.mapped_reads"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.quality_control.MappingStatsData.mapped_reads" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="flotilla-data-model-splicing-module">
+<h2>flotilla.data_model.splicing module<a class="headerlink" href="#flotilla-data-model-splicing-module" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-flotilla.data_model.splicing"></span><dl class="class">
+<dt id="flotilla.data_model.splicing.DownsampledSplicingData">
+<em class="property">class </em><tt class="descclassname">flotilla.data_model.splicing.</tt><tt class="descname">DownsampledSplicingData</tt><big>(</big><em>df</em>, <em>sample_descriptors</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#DownsampledSplicingData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.DownsampledSplicingData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#flotilla.data_model.base.BaseData" title="flotilla.data_model.base.BaseData"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.data_model.base.BaseData</span></tt></a></p>
+<dl class="attribute">
+<dt id="flotilla.data_model.splicing.DownsampledSplicingData.binned_reducer">
+<tt class="descname">binned_reducer</tt><em class="property"> = None</em><a class="headerlink" href="#flotilla.data_model.splicing.DownsampledSplicingData.binned_reducer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.data_model.splicing.DownsampledSplicingData.n_components">
+<tt class="descname">n_components</tt><em class="property"> = 2</em><a class="headerlink" href="#flotilla.data_model.splicing.DownsampledSplicingData.n_components" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.data_model.splicing.DownsampledSplicingData.raw_reducer">
+<tt class="descname">raw_reducer</tt><em class="property"> = None</em><a class="headerlink" href="#flotilla.data_model.splicing.DownsampledSplicingData.raw_reducer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.data_model.splicing.DownsampledSplicingData.shared_events">
+<tt class="descname">shared_events</tt><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#DownsampledSplicingData.shared_events"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.DownsampledSplicingData.shared_events" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>event_count_df <span class="classifier-delimiter">:</span> <span class="classifier">pandas.DataFrame</span></dt>
+<dd>Splicing events on the rows, splice types and probability as
+column MultiIndex. Values are the number of iterations which
+share this splicing event at that probability and splice type.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.splicing.DownsampledSplicingData.shared_events_barplot">
+<tt class="descname">shared_events_barplot</tt><big>(</big><em>figure_dir='./'</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#DownsampledSplicingData.shared_events_barplot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.DownsampledSplicingData.shared_events_barplot" title="Permalink to this definition">¶</a></dt>
+<dd><p>PLot a &#8220;histogram&#8221; via colored bars of the number of events shared by
+different iterations at a particular sampling probability</p>
+<dl class="docutils">
+<dt>figure_dir <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>Where to save the pdf figures created</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.splicing.DownsampledSplicingData.shared_events_percentage">
+<tt class="descname">shared_events_percentage</tt><big>(</big><em>min_iter_shared=5</em>, <em>figure_dir='./'</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#DownsampledSplicingData.shared_events_percentage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.DownsampledSplicingData.shared_events_percentage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the percentage of all events detected at that iteration,
+shared by at least &#8216;min_iter_shared&#8217;</p>
+<dl class="docutils">
+<dt>min_iter_shared <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>Minimum number of iterations sharing an event</dd>
+<dt>figure_dir <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>Where to save the pdf figures created</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="flotilla.data_model.splicing.SpliceJunctionData">
+<em class="property">class </em><tt class="descclassname">flotilla.data_model.splicing.</tt><tt class="descname">SpliceJunctionData</tt><big>(</big><em>df</em>, <em>phenotype_data</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SpliceJunctionData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SpliceJunctionData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#flotilla.data_model.splicing.SplicingData" title="flotilla.data_model.splicing.SplicingData"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.data_model.splicing.SplicingData</span></tt></a></p>
+<p>Class to hold splice junction information from SJ.out.tab files from
+STAR</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="flotilla.data_model.splicing.SplicingData">
+<em class="property">class </em><tt class="descclassname">flotilla.data_model.splicing.</tt><tt class="descname">SplicingData</tt><big>(</big><em>data</em>, <em>metadata=None</em>, <em>binsize=0.1</em>, <em>var_cut=0.2</em>, <em>outliers=None</em>, <em>feature_rename_col=None</em>, <em>excluded_max=0.2</em>, <em>included_min=0.8</em>, <em>pooled=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#flotilla.data_model.base.BaseData" title="flotilla.data_model.base.BaseData"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.data_model.base.BaseData</span></tt></a></p>
+<dl class="method">
+<dt id="flotilla.data_model.splicing.SplicingData.binify">
+<tt class="descname">binify</tt><big>(</big><em>data</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData.binify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.binify" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.splicing.SplicingData.binned_reduced">
+<tt class="descname">binned_reduced</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData.binned_reduced"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.binned_reduced" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.data_model.splicing.SplicingData.binned_reducer">
+<tt class="descname">binned_reducer</tt><em class="property"> = None</em><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.binned_reducer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.splicing.SplicingData.bootstrapped_modalities">
+<tt class="descname">bootstrapped_modalities</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData.bootstrapped_modalities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.bootstrapped_modalities" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.splicing.SplicingData.classify">
+<tt class="descname">classify</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData.classify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.classify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make and memoize a predictor on a categorical trait (associated
+with samples) subset of genes</p>
+<dl class="docutils">
+<dt>trait <span class="classifier-delimiter">:</span> <span class="classifier">pandas.Series</span></dt>
+<dd>samples x categorical feature</dd>
+<dt>sample_ids <span class="classifier-delimiter">:</span> <span class="classifier">None or list of strings</span></dt>
+<dd>If None, all sample ids will be used, else only the sample ids
+specified</dd>
+<dt>feature_ids <span class="classifier-delimiter">:</span> <span class="classifier">None or list of strings</span></dt>
+<dd>If None, all features will be used, else only the features
+specified</dd>
+<dt>standardize <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd>Whether or not to &#8220;whiten&#8221; (make all variables uncorrelated) and
+mean-center and make unit-variance all the data via sklearn
+.preprocessing.StandardScaler</dd>
+<dt>predictor <span class="classifier-delimiter">:</span> <span class="classifier">flotilla.visualize.predict classifier</span></dt>
+<dd>Must inherit from flotilla.visualize.PredictorBaseViz. Default is
+flotilla.visualize.predict.ClassifierViz</dd>
+<dt>predictor_kwargs <span class="classifier-delimiter">:</span> <span class="classifier">dict or None</span></dt>
+<dd>Additional &#8216;keyword arguments&#8217; to supply to the predictor class</dd>
+<dt>predictor_scoring_fun <span class="classifier-delimiter">:</span> <span class="classifier">function</span></dt>
+<dd>Function to get the feature scores for a scikit-learn classifier.
+This can be different for different classifiers, e.g. for a
+classifier named &#8220;x&#8221; it could be <a href="#id7"><span class="problematic" id="id8">x.scores_</span></a>, for other it&#8217;s
+<a href="#id9"><span class="problematic" id="id10">x.feature_importances_</span></a>. Default: lambda x: <a href="#id11"><span class="problematic" id="id12">x.feature_importances_</span></a></dd>
+<dt>score_cutoff_fun <span class="classifier-delimiter">:</span> <span class="classifier">function</span></dt>
+<dd>Function to cut off insignificant scores
+Default: lambda scores: np.mean(x) + 2 * np.std(x)</dd>
+</dl>
+<dl class="docutils">
+<dt>predictor <span class="classifier-delimiter">:</span> <span class="classifier">flotilla.compute.predict.PredictorBaseViz</span></dt>
+<dd>A ready-to-plot object containing the predictions</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.splicing.SplicingData.modalities">
+<tt class="descname">modalities</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData.modalities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.modalities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assigned modalities for these samples and features.</p>
+<dl class="docutils">
+<dt>sample_ids <span class="classifier-delimiter">:</span> <span class="classifier">list of str</span></dt>
+<dd>Which samples to use. If None, use all. Default None.</dd>
+<dt>feature_ids <span class="classifier-delimiter">:</span> <span class="classifier">list of str</span></dt>
+<dd>Which features to use. If None, use all. Default None.</dd>
+</dl>
+<dl class="docutils">
+<dt>modality_assignments <span class="classifier-delimiter">:</span> <span class="classifier">pandas.Series</span></dt>
+<dd>The modality assignments of each feature given these samples</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.splicing.SplicingData.modalities_counts">
+<tt class="descname">modalities_counts</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData.modalities_counts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.modalities_counts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Count the number of each modalities of these samples and features</p>
+<dl class="docutils">
+<dt>sample_ids <span class="classifier-delimiter">:</span> <span class="classifier">list of str</span></dt>
+<dd>Which samples to use. If None, use all. Default None.</dd>
+<dt>feature_ids <span class="classifier-delimiter">:</span> <span class="classifier">list of str</span></dt>
+<dd>Which features to use. If None, use all. Default None.</dd>
+</dl>
+<dl class="docutils">
+<dt>modalities_counts <span class="classifier-delimiter">:</span> <span class="classifier">pandas.Series</span></dt>
+<dd>The number of events detected in each modality</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.data_model.splicing.SplicingData.n_components">
+<tt class="descname">n_components</tt><em class="property"> = 2</em><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.n_components" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.splicing.SplicingData.plot_event">
+<tt class="descname">plot_event</tt><big>(</big><em>feature_id</em>, <em>sample_ids=None</em>, <em>sample_groupby=None</em>, <em>sample_order=None</em>, <em>ax=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData.plot_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.plot_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the violinplot of a splicing event (should also show NMF movement)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.splicing.SplicingData.plot_modalities_bar">
+<tt class="descname">plot_modalities_bar</tt><big>(</big><em>sample_ids=None</em>, <em>feature_ids=None</em>, <em>ax=None</em>, <em>i=0</em>, <em>normed=True</em>, <em>legend=True</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData.plot_modalities_bar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.plot_modalities_bar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot stacked bar graph of each modality</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.splicing.SplicingData.plot_modalities_lavalamps">
+<tt class="descname">plot_modalities_lavalamps</tt><big>(</big><em>sample_ids=None</em>, <em>feature_ids=None</em>, <em>color=None</em>, <em>x_offset=0</em>, <em>axes=None</em>, <em>use_these_modalities=True</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData.plot_modalities_lavalamps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.plot_modalities_lavalamps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot &#8220;lavalamp&#8221; scatterplot of each event</p>
+<dl class="docutils">
+<dt>sample_ids <span class="classifier-delimiter">:</span> <span class="classifier">None or list of str</span></dt>
+<dd>Which samples to use. If None, use all</dd>
+<dt>feature_ids <span class="classifier-delimiter">:</span> <span class="classifier">None or list of str</span></dt>
+<dd>Which features to use. If None, use all</dd>
+<dt>color <span class="classifier-delimiter">:</span> <span class="classifier">None or matplotlib color</span></dt>
+<dd>Which color to use for plotting the lavalamps of these features
+and samples</dd>
+<dt>x_offset <span class="classifier-delimiter">:</span> <span class="classifier">numeric</span></dt>
+<dd>How much to offset the x-axis of each event. Useful if you want
+to plot the same event, but in several iterations with different
+celltypes or colors</dd>
+<dt>axes <span class="classifier-delimiter">:</span> <span class="classifier">None or list of matplotlib.axes.Axes objects</span></dt>
+<dd>Which axes to plot these on</dd>
+<dt>use_these_modalities <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd>If True, then use these sample ids to calculate modalities.
+Otherwise, use the modalities assigned using ALL samples and
+features</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.splicing.SplicingData.plot_modalities_reduced">
+<tt class="descname">plot_modalities_reduced</tt><big>(</big><em>sample_ids=None</em>, <em>feature_ids=None</em>, <em>ax=None</em>, <em>title=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData.plot_modalities_reduced"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.plot_modalities_reduced" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot modality assignments in NMF space (option for lavalamp?)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.data_model.splicing.SplicingData.raw_reducer">
+<tt class="descname">raw_reducer</tt><em class="property"> = None</em><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.raw_reducer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.splicing.SplicingData.reduce">
+<tt class="descname">reduce</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData.reduce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.reduce" title="Permalink to this definition">¶</a></dt>
+<dd><p>make and cache a reduced dimensionality representation of data</p>
+<p>Default is PCAViz because</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-flotilla.data_model.study">
+<span id="flotilla-data-model-study-module"></span><h2>flotilla.data_model.study module<a class="headerlink" href="#module-flotilla.data_model.study" title="Permalink to this headline">¶</a></h2>
+<p>Data models for &#8220;studies&#8221; studies include attributes about the data and are
+heavier in terms of data load</p>
+<dl class="class">
+<dt id="flotilla.data_model.study.Study">
+<em class="property">class </em><tt class="descclassname">flotilla.data_model.study.</tt><tt class="descname">Study</tt><big>(</big><em>sample_metadata</em>, <em>expression_data=None</em>, <em>splicing_data=None</em>, <em>expression_feature_data=None</em>, <em>expression_feature_rename_col='gene_name'</em>, <em>splicing_feature_data=None</em>, <em>splicing_feature_rename_col='gene_name'</em>, <em>mapping_stats_data=None</em>, <em>mapping_stats_number_mapped_col='Uniquely mapped reads number'</em>, <em>spikein_data=None</em>, <em>spikein_feature_data=None</em>, <em>drop_outliers=True</em>, <em>species=None</em>, <em>gene_ontology_data=None</em>, <em>expression_log_base=None</em>, <em>experiment_design_pooled_col=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#flotilla.data_model.study.StudyFactory" title="flotilla.data_model.study.StudyFactory"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.data_model.study.StudyFactory</span></tt></a></p>
+<p>A biological study, with associated metadata, expression, and splicing
+data.</p>
+<dl class="attribute">
+<dt id="flotilla.data_model.study.Study.celltype_event_counts">
+<tt class="descname">celltype_event_counts</tt><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.celltype_event_counts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.celltype_event_counts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of cells that detected this event in that celltype</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.data_model.study.Study.celltype_modalities">
+<tt class="descname">celltype_modalities</tt><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.celltype_modalities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.celltype_modalities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return modality assignments of each celltype</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.study.Study.celltype_sizes">
+<tt class="descname">celltype_sizes</tt><big>(</big><em>data_type='splicing'</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.celltype_sizes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.celltype_sizes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.study.Study.compute_expression_splicing_covariance">
+<tt class="descname">compute_expression_splicing_covariance</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.compute_expression_splicing_covariance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.compute_expression_splicing_covariance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.data_model.study.Study.default_feature_set_ids">
+<tt class="descname">default_feature_set_ids</tt><em class="property"> = []</em><a class="headerlink" href="#flotilla.data_model.study.Study.default_feature_set_ids" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.data_model.study.Study.default_feature_subsets">
+<tt class="descname">default_feature_subsets</tt><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.default_feature_subsets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.default_feature_subsets" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.study.Study.detect_outliers">
+<tt class="descname">detect_outliers</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.detect_outliers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.detect_outliers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Detects outlier cells from expression, mapping, and splicing
+study_data and labels the outliers as such for future analysis.</p>
+<p>self</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.study.Study.feature_subset_to_feature_ids">
+<tt class="descname">feature_subset_to_feature_ids</tt><big>(</big><em>data_type</em>, <em>feature_subset=None</em>, <em>rename=False</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.feature_subset_to_feature_ids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.feature_subset_to_feature_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a name of a feature subset, get the associated feature ids</p>
+<dl class="docutils">
+<dt>data_type <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>A string describing the data type, e.g. &#8220;expression&#8221;</dd>
+<dt>feature_subset <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>A string describing the subset of data type (must be already
+calculated)</dd>
+</dl>
+<dl class="docutils">
+<dt>feature_ids <span class="classifier-delimiter">:</span> <span class="classifier">list of strings</span></dt>
+<dd>List of features ids from the specified datatype</dd>
+</dl>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="flotilla.data_model.study.Study.from_data_package">
+<em class="property">classmethod </em><tt class="descname">from_data_package</tt><big>(</big><em>data_package</em>, <em>species_data_package_base_url='http://sauron.ucsd.edu/flotilla_projects'</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.from_data_package"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.from_data_package" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="flotilla.data_model.study.Study.from_data_package_file">
+<em class="property">classmethod </em><tt class="descname">from_data_package_file</tt><big>(</big><em>data_package_filename</em>, <em>species_data_package_base_url='http://sauron.ucsd.edu/flotilla_projects'</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.from_data_package_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.from_data_package_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="flotilla.data_model.study.Study.from_data_package_url">
+<em class="property">classmethod </em><tt class="descname">from_data_package_url</tt><big>(</big><em>data_package_url</em>, <em>species_data_package_base_url='http://sauron.ucsd.edu/flotilla_projects'</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.from_data_package_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.from_data_package_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a study from a url of a datapackage.json file</p>
+<dl class="docutils">
+<dt>data_package_url <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>HTTP url of a datapackage.json file, following the specification
+described here: <a class="reference external" href="http://dataprotocols.org/data-packages/">http://dataprotocols.org/data-packages/</a> and
+requiring the following data resources: experiment_design,
+expression, splicing</dd>
+<dt>species_data_pacakge_base_url <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>Base URL to fetch species-specific gene and splicing event
+metadata from. Default &#8216;<a class="reference external" href="http://sauron.ucsd.edu/flotilla_projects">http://sauron.ucsd.edu/flotilla_projects</a>&#8216;</dd>
+</dl>
+<dl class="docutils">
+<dt>study <span class="classifier-delimiter">:</span> <span class="classifier">Study</span></dt>
+<dd>A &#8220;study&#8221; object containing the data described in the
+data_package_url file</dd>
+</dl>
+<dl class="docutils">
+<dt>AttributeError</dt>
+<dd>If the datapackage.json file does not contain the required
+resources of experiment_design, expression, and splicing.</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.data_model.study.Study.initializers">
+<tt class="descname">initializers</tt><em class="property"> = {'splicing_data': &lt;class 'flotilla.data_model.splicing.SplicingData'&gt;, 'expression_data': &lt;class 'flotilla.data_model.expression.ExpressionData'&gt;, 'experiment_design_data': &lt;class 'flotilla.data_model.metadata.MetaData'&gt;, 'mapping_stats_data': &lt;class 'flotilla.data_model.quality_control.MappingStatsData'&gt;, 'spikein_data': &lt;class 'flotilla.data_model.expression.SpikeInData'&gt;}</em><a class="headerlink" href="#flotilla.data_model.study.Study.initializers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.study.Study.interactive_classifier">
+<tt class="descname">interactive_classifier</tt><big>(</big><big>)</big><a class="headerlink" href="#flotilla.data_model.study.Study.interactive_classifier" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.study.Study.interactive_graph">
+<tt class="descname">interactive_graph</tt><big>(</big><big>)</big><a class="headerlink" href="#flotilla.data_model.study.Study.interactive_graph" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.study.Study.interactive_localZ">
+<tt class="descname">interactive_localZ</tt><big>(</big><big>)</big><a class="headerlink" href="#flotilla.data_model.study.Study.interactive_localZ" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.study.Study.interactive_pca">
+<tt class="descname">interactive_pca</tt><big>(</big><big>)</big><a class="headerlink" href="#flotilla.data_model.study.Study.interactive_pca" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.study.Study.jsd">
+<tt class="descname">jsd</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.jsd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.jsd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs Jensen-Shannon Divergence on both splicing and expression
+study_data</p>
+<p>Jensen-Shannon divergence is a method of quantifying the amount of
+change in distribution of one measurement (e.g. a splicing event or a
+gene expression) from one celltype to another.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="flotilla.data_model.study.Study.maybe_make_directory">
+<em class="property">static </em><tt class="descname">maybe_make_directory</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.maybe_make_directory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.maybe_make_directory" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.study.Study.modalities">
+<tt class="descname">modalities</tt><big>(</big><em>sample_subset=None</em>, <em>feature_subset=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.modalities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.modalities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get modality assignments of</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.study.Study.normalize_to_spikein">
+<tt class="descname">normalize_to_spikein</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.normalize_to_spikein"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.normalize_to_spikein" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.study.Study.percent_unique_celltype_events">
+<tt class="descname">percent_unique_celltype_events</tt><big>(</big><em>n=1</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.percent_unique_celltype_events"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.percent_unique_celltype_events" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.study.Study.plot_classifier">
+<tt class="descname">plot_classifier</tt><big>(</big><em>trait</em>, <em>data_type='expression'</em>, <em>title=''</em>, <em>show_point_labels=False</em>, <em>sample_subset=None</em>, <em>feature_subset=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.plot_classifier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.plot_classifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot a predictor for the specified data type and trait(s)</p>
+<dl class="docutils">
+<dt>data_type <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>One of the names of the data types, e.g. &#8220;expression&#8221; or &#8220;splicing&#8221;</dd>
+<dt>trait <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>Column name in the experiment_design data that you would like
+to classify on</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.study.Study.plot_event">
+<tt class="descname">plot_event</tt><big>(</big><em>feature_id</em>, <em>sample_subset=None</em>, <em>ax=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.plot_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.plot_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the violinplot of an event</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.study.Study.plot_graph">
+<tt class="descname">plot_graph</tt><big>(</big><em>data_type='expression'</em>, <em>sample_subset=None</em>, <em>feature_subset=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.plot_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.plot_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the graph (network) of these data</p>
+<dl class="docutils">
+<dt>data_type <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>One of the names of the data types, e.g. &#8220;expression&#8221; or &#8220;splicing&#8221;</dd>
+<dt>sample_subset <span class="classifier-delimiter">:</span> <span class="classifier">str or None</span></dt>
+<dd>Which subset of the samples to use, based on some phenotype
+column in the experiment design data. If None, all samples are
+used.</dd>
+<dt>feature_subset <span class="classifier-delimiter">:</span> <span class="classifier">str or None</span></dt>
+<dd>Which subset of the features to used, based on some feature type
+in the expression data (e.g. &#8220;variant&#8221;). If None, all features
+are used.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.study.Study.plot_modalities">
+<tt class="descname">plot_modalities</tt><big>(</big><em>sample_subset=None</em>, <em>feature_subset=None</em>, <em>normed=True</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.plot_modalities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.plot_modalities" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.study.Study.plot_modalities_lavalamps">
+<tt class="descname">plot_modalities_lavalamps</tt><big>(</big><em>celltype=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.plot_modalities_lavalamps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.plot_modalities_lavalamps" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.study.Study.plot_pca">
+<tt class="descname">plot_pca</tt><big>(</big><em>data_type='expression'</em>, <em>x_pc=1</em>, <em>y_pc=2</em>, <em>sample_subset=None</em>, <em>feature_subset=None</em>, <em>title=''</em>, <em>featurewise=False</em>, <em>show_point_labels=False</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.plot_pca"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.plot_pca" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs PCA on both expression and splicing study_data</p>
+<dl class="docutils">
+<dt>data_type <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>One of the names of the data types, e.g. &#8220;expression&#8221; or
+&#8220;splicing&#8221;</dd>
+<dt>x_pc <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>Which principal component to plot on the x-axis</dd>
+<dt>y_pc <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>Which principal component to plot on the y-axis</dd>
+<dt>sample_subset <span class="classifier-delimiter">:</span> <span class="classifier">str or None</span></dt>
+<dd>Which subset of the samples to use, based on some phenotype
+column in the experiment design data. If None, all samples are
+used.</dd>
+<dt>feature_subset <span class="classifier-delimiter">:</span> <span class="classifier">str or None</span></dt>
+<dd>Which subset of the features to used, based on some feature type
+in the expression data (e.g. &#8220;variant&#8221;). If None, all features
+are used.</dd>
+<dt>title <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>The title of the plot</dd>
+<dt>show_point_labels <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd>Whether or not to show the labels of the points. If this is
+samplewise (default), then this labels the samples. If this is
+featurewise, then this labels the features.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.study.Study.plot_regressor">
+<tt class="descname">plot_regressor</tt><big>(</big><em>data_type='expression'</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.plot_regressor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.plot_regressor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.data_model.study.Study.readers">
+<tt class="descname">readers</tt><em class="property"> = {'tsv': &lt;function _load_tsv at 0x112dad140&gt;, 'json': &lt;function _load_json at 0x112dad1b8&gt;, 'csv': &lt;function _load_csv at 0x112dad2a8&gt;, 'gzip_pickle_df': &lt;function _load_gzip_pickle_df at 0x112dad050&gt;, 'pickle_df': &lt;function _load_pickle_df at 0x112d9fed8&gt;}</em><a class="headerlink" href="#flotilla.data_model.study.Study.readers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.data_model.study.Study.sample_id_to_celltype">
+<tt class="descname">sample_id_to_celltype</tt><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.sample_id_to_celltype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.sample_id_to_celltype" title="Permalink to this definition">¶</a></dt>
+<dd><p>If &#8220;celltype&#8221; is a column in the experiment_design data, return a
+dict of that {sample_id: celltype} mapping.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.data_model.study.Study.sample_id_to_color">
+<tt class="descname">sample_id_to_color</tt><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.sample_id_to_color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.sample_id_to_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>If &#8220;color&#8221; is a column in the experiment_design data, return a
+dict of that {sample_id: color} mapping, else try to create it using
+the &#8220;celltype&#8221; columns, else just return a dict mapping to a default
+color (blue)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.study.Study.sample_subset_to_sample_ids">
+<tt class="descname">sample_subset_to_sample_ids</tt><big>(</big><em>phenotype_subset=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.sample_subset_to_sample_ids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.sample_subset_to_sample_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a string naming a subset of phenotypes in the data into
+sample ids</p>
+<dl class="docutils">
+<dt>phenotype_subset <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>A valid string describing a boolean phenotype described in the
+experiment_design data</dd>
+</dl>
+<dl class="docutils">
+<dt>sample_ids <span class="classifier-delimiter">:</span> <span class="classifier">list of strings</span></dt>
+<dd>List of sample ids in the data</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.study.Study.unique_celltype_event_counts">
+<tt class="descname">unique_celltype_event_counts</tt><big>(</big><em>n=1</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.unique_celltype_event_counts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.unique_celltype_event_counts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="flotilla.data_model.study.StudyFactory">
+<em class="property">class </em><tt class="descclassname">flotilla.data_model.study.</tt><tt class="descname">StudyFactory</tt><a class="reference internal" href="_modules/flotilla/data_model/study.html#StudyFactory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.StudyFactory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<dl class="method">
+<dt id="flotilla.data_model.study.StudyFactory.load">
+<tt class="descname">load</tt><big>(</big><em>file_name</em>, <em>file_type='pickle_df'</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#StudyFactory.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.StudyFactory.load" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.study.StudyFactory.validate_params">
+<tt class="descname">validate_params</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#StudyFactory.validate_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.StudyFactory.validate_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>make sure that all necessary attributes are present</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-flotilla.data_model">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-flotilla.data_model" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">flotilla.data_model package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-flotilla.data_model.base">flotilla.data_model.base module</a></li>
+<li><a class="reference internal" href="#module-flotilla.data_model.expression">flotilla.data_model.expression module</a></li>
+<li><a class="reference internal" href="#module-flotilla.data_model.metadata">flotilla.data_model.metadata module</a></li>
+<li><a class="reference internal" href="#module-flotilla.data_model.quality_control">flotilla.data_model.quality_control module</a></li>
+<li><a class="reference internal" href="#flotilla-data-model-splicing-module">flotilla.data_model.splicing module</a></li>
+<li><a class="reference internal" href="#module-flotilla.data_model.study">flotilla.data_model.study module</a></li>
+<li><a class="reference internal" href="#module-flotilla.data_model">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="flotilla.compute.html"
+                        title="previous chapter">flotilla.compute package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="flotilla.visualize.html"
+                        title="next chapter">flotilla.visualize package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/flotilla.data_model.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="flotilla.visualize.html" title="flotilla.visualize package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="flotilla.compute.html" title="flotilla.compute package"
+             >previous</a> |</li>
+        <li><a href="index.html">flotilla  documentation</a> &raquo;</li>
+          <li><a href="flotilla.html" >flotilla package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
