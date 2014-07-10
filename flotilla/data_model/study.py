@@ -442,12 +442,14 @@ class Study(StudyFactory):
             species_dfs = {}
 
             for resource in species_data_package['resources']:
-                resource_url = resource['url']
+                if 'url' in resource:
+                    resource_url = resource['url']
+                    filename = check_if_already_downloaded(resource_url)
+                else:
+                    filename = resource['path']
 
                 # reader = getattr(cls, '_load_' + resource['format'])
                 reader = cls.readers[resource['format']]
-
-                filename = check_if_already_downloaded(resource_url)
                 compression = None if 'compression' not in resource else \
                     resource['compression']
                 species_dfs[resource['name']] = reader(filename,
