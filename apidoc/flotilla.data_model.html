@@ -1,20 +1,21 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>flotilla.data_model package &mdash; flotilla  documentation</title>
+    <title>flotilla.data_model package &mdash; flotilla 0.1.0 documentation</title>
     
-    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootswatch-3.1.0/flatly/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '',
+        VERSION:     '0.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,27 +24,123 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="flotilla  documentation" href="../index.html" /> 
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="flotilla 0.1.0 documentation" href="../index.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
   </head>
   <body>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li><a href="../index.html">flotilla  documentation</a> &raquo;</li> 
-      </ul>
-    </div>  
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body">
+  <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          Flotilla</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
             
+                <li><a href="../examples.html">Examples</a></li>
+                <li><a href="http://example.com">Link</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../flotilla.html">flotilla package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../flotilla.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flotilla.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flotilla.html#module-flotilla.external">flotilla.external module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flotilla.html#flotilla-setup-module">flotilla.setup module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flotilla.html#module-flotilla.util">flotilla.util module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flotilla.html#module-flotilla">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">flotilla.data_model package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-flotilla.data_model.base">flotilla.data_model.base module</a></li>
+<li><a class="reference internal" href="#flotilla-data-model-experiment-design-module">flotilla.data_model.experiment_design module</a></li>
+<li><a class="reference internal" href="#module-flotilla.data_model.expression">flotilla.data_model.expression module</a></li>
+<li><a class="reference internal" href="#module-flotilla.data_model.quality_control">flotilla.data_model.quality_control module</a></li>
+<li><a class="reference internal" href="#flotilla-data-model-splicing-module">flotilla.data_model.splicing module</a></li>
+<li><a class="reference internal" href="#module-flotilla.data_model.study">flotilla.data_model.study module</a></li>
+<li><a class="reference internal" href="#module-flotilla.data_model">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="../_sources/apidoc/flotilla.data_model.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
   <div class="section" id="flotilla-data-model-package">
 <h1>flotilla.data_model package<a class="headerlink" href="#flotilla-data-model-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="submodules">
@@ -58,15 +155,25 @@ this, or a child object (like ExpressionData).</p>
 <em class="property">class </em><tt class="descclassname">flotilla.data_model.base.</tt><tt class="descname">BaseData</tt><big>(</big><em>data=None</em>, <em>metadata=None</em>, <em>species=None</em>, <em>feature_rename_col=None</em>, <em>outliers=None</em>, <em>min_samples=10</em>, <em>pooled=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/data_model/base.html#BaseData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
 <p>Generic study_data model for both splicing and expression study_data</p>
+<p class="rubric">Attributes</p>
+<p class="rubric">Methods</p>
 <dl class="method">
 <dt id="flotilla.data_model.base.BaseData.calculate_distances">
 <tt class="descname">calculate_distances</tt><big>(</big><em>metric='euclidean'</em><big>)</big><a class="reference internal" href="../_modules/flotilla/data_model/base.html#BaseData.calculate_distances"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.calculate_distances" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a squareform distance matrix for clustering fun</p>
 <p>Needed for some clustering algorithms</p>
-<dl class="docutils">
-<dt>metric <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
-<dd>One of any valid scipy.distance metric strings. Default &#8216;euclidean&#8217;</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>metric</strong> : str, optional</p>
+<blockquote class="last">
+<div><p>One of any valid scipy.distance metric strings. Default &#8216;euclidean&#8217;</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -74,13 +181,23 @@ this, or a child object (like ExpressionData).</p>
 <tt class="descname">correlate</tt><big>(</big><em>method='spearman'</em>, <em>between='features'</em><big>)</big><a class="reference internal" href="../_modules/flotilla/data_model/base.html#BaseData.correlate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.correlate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find correlations between either splicing/expression measurements
 or cells</p>
-<dl class="docutils">
-<dt>method <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd>Specify to calculate either &#8216;spearman&#8217; (rank-based) or &#8216;pearson&#8217;
-(linear) correlation. Default &#8216;spearman&#8217;</dd>
-<dt>between <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd>Either &#8216;features&#8217; or &#8216;samples&#8217;. Default &#8216;features&#8217;</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>method</strong> : str</p>
+<blockquote>
+<div><p>Specify to calculate either &#8216;spearman&#8217; (rank-based) or &#8216;pearson&#8217;
+(linear) correlation. Default &#8216;spearman&#8217;</p>
+</div></blockquote>
+<p><strong>between</strong> : str</p>
+<blockquote class="last">
+<div><p>Either &#8216;features&#8217; or &#8216;samples&#8217;. Default &#8216;features&#8217;</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -114,35 +231,48 @@ celltype and between celltypes</p>
 <dt id="flotilla.data_model.base.BaseData.plot_classifier">
 <tt class="descname">plot_classifier</tt><big>(</big><em>trait</em>, <em>sample_ids=None</em>, <em>feature_ids=None</em>, <em>standardize=True</em>, <em>predictor=&lt;class 'flotilla.visualize.predict.ClassifierViz'&gt;</em>, <em>predictor_kwargs=None</em>, <em>predictor_scoring_fun=None</em>, <em>score_cutoff_fun=None</em>, <em>**plotting_kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/data_model/base.html#BaseData.plot_classifier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.plot_classifier" title="Permalink to this definition">¶</a></dt>
 <dd><p>Principal component-like analysis of measurements</p>
-<dl class="docutils">
-<dt>obj_id <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd>key of the object getting plotted</dd>
-<dt>sample_subset <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd>???</dd>
-<dt>categorical_trait <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd>predictor feature</dd>
-<dt>feature_subset <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd>subset of genes to use for building class</dd>
-</dl>
-<p>self</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">self</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="flotilla.data_model.base.BaseData.plot_dimensionality_reduction">
 <tt class="descname">plot_dimensionality_reduction</tt><big>(</big><em>x_pc=1</em>, <em>y_pc=2</em>, <em>sample_ids=None</em>, <em>feature_ids=None</em>, <em>featurewise=False</em>, <em>**plotting_kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/data_model/base.html#BaseData.plot_dimensionality_reduction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.plot_dimensionality_reduction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Principal component-like analysis of measurements</p>
-<dl class="docutils">
-<dt>x_pc <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd>Which principal component to plot on the x-axis</dd>
-<dt>y_pc <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd>Which principal component to plot on the y-axis</dd>
-<dt>sample_ids <span class="classifier-delimiter">:</span> <span class="classifier">None or list of strings</span></dt>
-<dd>If None, plot all the samples. If a list of strings, must be
-valid sample ids of the data</dd>
-<dt>feature_ids <span class="classifier-delimiter">:</span> <span class="classifier">None or list of strings</span></dt>
-<dd>If None, plot all the features. If a list of strings</dd>
-</dl>
-<p>self</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x_pc</strong> : int</p>
+<blockquote>
+<div><p>Which principal component to plot on the x-axis</p>
+</div></blockquote>
+<p><strong>y_pc</strong> : int</p>
+<blockquote>
+<div><p>Which principal component to plot on the y-axis</p>
+</div></blockquote>
+<p><strong>sample_ids</strong> : None or list of strings</p>
+<blockquote>
+<div><p>If None, plot all the samples. If a list of strings, must be
+valid sample ids of the data</p>
+</div></blockquote>
+<p><strong>feature_ids</strong> : None or list of strings</p>
+<blockquote>
+<div><p>If None, plot all the features. If a list of strings</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">self</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -159,42 +289,68 @@ Included SpikeIn data.</p>
 <dt id="flotilla.data_model.expression.ExpressionData">
 <em class="property">class </em><tt class="descclassname">flotilla.data_model.expression.</tt><tt class="descname">ExpressionData</tt><big>(</big><em>data</em>, <em>metadata=None</em>, <em>expression_thresh=0.1</em>, <em>feature_rename_col=None</em>, <em>outliers=None</em>, <em>log_base=None</em>, <em>pooled=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/data_model/expression.html#ExpressionData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.expression.ExpressionData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../flotilla.data_model.html#flotilla.data_model.base.BaseData" title="flotilla.data_model.base.BaseData"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.data_model.base.BaseData</span></tt></a></p>
+<p class="rubric">Attributes</p>
+<p class="rubric">Methods</p>
 <dl class="method">
 <dt id="flotilla.data_model.expression.ExpressionData.classify">
 <tt class="descname">classify</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/data_model/expression.html#ExpressionData.classify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.expression.ExpressionData.classify" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make and memoize a predictor on a categorical trait (associated
 with samples) subset of genes</p>
-<dl class="docutils">
-<dt>trait <span class="classifier-delimiter">:</span> <span class="classifier">pandas.Series</span></dt>
-<dd>samples x categorical feature</dd>
-<dt>sample_ids <span class="classifier-delimiter">:</span> <span class="classifier">None or list of strings</span></dt>
-<dd>If None, all sample ids will be used, else only the sample ids
-specified</dd>
-<dt>feature_ids <span class="classifier-delimiter">:</span> <span class="classifier">None or list of strings</span></dt>
-<dd>If None, all features will be used, else only the features
-specified</dd>
-<dt>standardize <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd>Whether or not to &#8220;whiten&#8221; (make all variables uncorrelated) and
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>trait</strong> : pandas.Series</p>
+<blockquote>
+<div><p>samples x categorical feature</p>
+</div></blockquote>
+<p><strong>sample_ids</strong> : None or list of strings</p>
+<blockquote>
+<div><p>If None, all sample ids will be used, else only the sample ids
+specified</p>
+</div></blockquote>
+<p><strong>feature_ids</strong> : None or list of strings</p>
+<blockquote>
+<div><p>If None, all features will be used, else only the features
+specified</p>
+</div></blockquote>
+<p><strong>standardize</strong> : bool</p>
+<blockquote>
+<div><p>Whether or not to &#8220;whiten&#8221; (make all variables uncorrelated) and
 mean-center and make unit-variance all the data via sklearn
-.preprocessing.StandardScaler</dd>
-<dt>predictor <span class="classifier-delimiter">:</span> <span class="classifier">flotilla.visualize.predict classifier</span></dt>
-<dd>Must inherit from flotilla.visualize.PredictorBaseViz. Default is
-flotilla.visualize.predict.ClassifierViz</dd>
-<dt>predictor_kwargs <span class="classifier-delimiter">:</span> <span class="classifier">dict or None</span></dt>
-<dd>Additional &#8216;keyword arguments&#8217; to supply to the predictor class</dd>
-<dt>predictor_scoring_fun <span class="classifier-delimiter">:</span> <span class="classifier">function</span></dt>
-<dd>Function to get the feature scores for a scikit-learn classifier.
+.preprocessing.StandardScaler</p>
+</div></blockquote>
+<p><strong>predictor</strong> : flotilla.visualize.predict classifier</p>
+<blockquote>
+<div><p>Must inherit from flotilla.visualize.PredictorBaseViz. Default is
+flotilla.visualize.predict.ClassifierViz</p>
+</div></blockquote>
+<p><strong>predictor_kwargs</strong> : dict or None</p>
+<blockquote>
+<div><p>Additional &#8216;keyword arguments&#8217; to supply to the predictor class</p>
+</div></blockquote>
+<p><strong>predictor_scoring_fun</strong> : function</p>
+<blockquote>
+<div><p>Function to get the feature scores for a scikit-learn classifier.
 This can be different for different classifiers, e.g. for a
 classifier named &#8220;x&#8221; it could be <a href="#id1"><span class="problematic" id="id2">x.scores_</span></a>, for other it&#8217;s
-<a href="#id3"><span class="problematic" id="id4">x.feature_importances_</span></a>. Default: lambda x: <a href="#id5"><span class="problematic" id="id6">x.feature_importances_</span></a></dd>
-<dt>score_cutoff_fun <span class="classifier-delimiter">:</span> <span class="classifier">function</span></dt>
-<dd>Function to cut off insignificant scores
-Default: lambda scores: np.mean(x) + 2 * np.std(x)</dd>
-</dl>
-<dl class="docutils">
-<dt>predictor <span class="classifier-delimiter">:</span> <span class="classifier">flotilla.compute.predict.PredictorBaseViz</span></dt>
-<dd>A ready-to-plot object containing the predictions</dd>
-</dl>
+<a href="#id3"><span class="problematic" id="id4">x.feature_importances_</span></a>. Default: lambda x: <a href="#id5"><span class="problematic" id="id6">x.feature_importances_</span></a></p>
+</div></blockquote>
+<p><strong>score_cutoff_fun</strong> : function</p>
+<blockquote>
+<div><p>Function to cut off insignificant scores
+Default: lambda scores: np.mean(x) + 2 * np.std(x)</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>predictor</strong> : flotilla.compute.predict.PredictorBaseViz</p>
+<blockquote class="last">
+<div><p>A ready-to-plot object containing the predictions</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -206,29 +362,49 @@ Default: lambda scores: np.mean(x) + 2 * np.std(x)</dd>
 <dt id="flotilla.data_model.expression.ExpressionData.reduce">
 <tt class="descname">reduce</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/data_model/expression.html#ExpressionData.reduce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.expression.ExpressionData.reduce" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make and memoize a reduced dimensionality representation of data</p>
-<dl class="docutils">
-<dt>sample_ids <span class="classifier-delimiter">:</span> <span class="classifier">None or list of strings</span></dt>
-<dd>If None, all sample ids will be used, else only the sample ids
-specified</dd>
-<dt>feature_ids <span class="classifier-delimiter">:</span> <span class="classifier">None or list of strings</span></dt>
-<dd>If None, all features will be used, else only the features
-specified</dd>
-<dt>featurewise <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd>Whether or not to use the features as the &#8220;samples&#8221;, e.g. if you
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>sample_ids</strong> : None or list of strings</p>
+<blockquote>
+<div><p>If None, all sample ids will be used, else only the sample ids
+specified</p>
+</div></blockquote>
+<p><strong>feature_ids</strong> : None or list of strings</p>
+<blockquote>
+<div><p>If None, all features will be used, else only the features
+specified</p>
+</div></blockquote>
+<p><strong>featurewise</strong> : bool</p>
+<blockquote>
+<div><p>Whether or not to use the features as the &#8220;samples&#8221;, e.g. if you
 want to reduce the features in to &#8220;sample-space&#8221; instead of
-reducing the samples into &#8220;feature-space&#8221;</dd>
-<dt>standardize <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd>Whether or not to &#8220;whiten&#8221; (make all variables uncorrelated) and
-mean-center via sklearn.preprocessing.StandardScaler</dd>
-<dt>title <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd>Title of the plot</dd>
-<dt>reducer_kwargs <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
-<dd>Any additional arguments to send to the reducer</dd>
-</dl>
-<dl class="docutils">
-<dt>reducer_object <span class="classifier-delimiter">:</span> <span class="classifier">flotilla.compute.reduce.ReducerViz</span></dt>
-<dd>A ready-to-plot object containing the reduced space</dd>
-</dl>
+reducing the samples into &#8220;feature-space&#8221;</p>
+</div></blockquote>
+<p><strong>standardize</strong> : bool</p>
+<blockquote>
+<div><p>Whether or not to &#8220;whiten&#8221; (make all variables uncorrelated) and
+mean-center via sklearn.preprocessing.StandardScaler</p>
+</div></blockquote>
+<p><strong>title</strong> : str</p>
+<blockquote>
+<div><p>Title of the plot</p>
+</div></blockquote>
+<p><strong>reducer_kwargs</strong> : dict</p>
+<blockquote>
+<div><p>Any additional arguments to send to the reducer</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>reducer_object</strong> : flotilla.compute.reduce.ReducerViz</p>
+<blockquote class="last">
+<div><p>A ready-to-plot object containing the reduced space</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -245,6 +421,8 @@ mean-center via sklearn.preprocessing.StandardScaler</dd>
 <p>Class for Spikein data and associated functions
 Attributes
 &#8212;&#8212;&#8212;-</p>
+<p class="rubric">Attributes</p>
+<p class="rubric">Methods</p>
 </dd></dl>
 
 </div>
@@ -255,6 +433,8 @@ Attributes
 <em class="property">class </em><tt class="descclassname">flotilla.data_model.quality_control.</tt><tt class="descname">MappingStatsData</tt><big>(</big><em>data</em>, <em>number_mapped_col</em><big>)</big><a class="reference internal" href="../_modules/flotilla/data_model/quality_control.html#MappingStatsData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.quality_control.MappingStatsData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../flotilla.data_model.html#flotilla.data_model.base.BaseData" title="flotilla.data_model.base.BaseData"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.data_model.base.BaseData</span></tt></a></p>
 <p>Constructor for mapping statistics data from STAR</p>
+<p class="rubric">Attributes</p>
+<p class="rubric">Methods</p>
 <dl class="attribute">
 <dt id="flotilla.data_model.quality_control.MappingStatsData.mapped_reads">
 <tt class="descname">mapped_reads</tt><a class="reference internal" href="../_modules/flotilla/data_model/quality_control.html#MappingStatsData.mapped_reads"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.quality_control.MappingStatsData.mapped_reads" title="Permalink to this definition">¶</a></dt>
@@ -269,6 +449,22 @@ Attributes
 <dt id="flotilla.data_model.splicing.DownsampledSplicingData">
 <em class="property">class </em><tt class="descclassname">flotilla.data_model.splicing.</tt><tt class="descname">DownsampledSplicingData</tt><big>(</big><em>df</em>, <em>sample_descriptors</em><big>)</big><a class="reference internal" href="../_modules/flotilla/data_model/splicing.html#DownsampledSplicingData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.DownsampledSplicingData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../flotilla.data_model.html#flotilla.data_model.base.BaseData" title="flotilla.data_model.base.BaseData"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.data_model.base.BaseData</span></tt></a></p>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="58%" />
+<col width="42%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>binned_reducer</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>raw_reducer</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
 <dl class="attribute">
 <dt id="flotilla.data_model.splicing.DownsampledSplicingData.binned_reducer">
 <tt class="descname">binned_reducer</tt><em class="property"> = None</em><a class="headerlink" href="#flotilla.data_model.splicing.DownsampledSplicingData.binned_reducer" title="Permalink to this definition">¶</a></dt>
@@ -287,12 +483,20 @@ Attributes
 <dl class="attribute">
 <dt id="flotilla.data_model.splicing.DownsampledSplicingData.shared_events">
 <tt class="descname">shared_events</tt><a class="reference internal" href="../_modules/flotilla/data_model/splicing.html#DownsampledSplicingData.shared_events"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.DownsampledSplicingData.shared_events" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>event_count_df <span class="classifier-delimiter">:</span> <span class="classifier">pandas.DataFrame</span></dt>
-<dd>Splicing events on the rows, splice types and probability as
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>event_count_df</strong> : pandas.DataFrame</p>
+<blockquote class="last">
+<div><p>Splicing events on the rows, splice types and probability as
 column MultiIndex. Values are the number of iterations which
-share this splicing event at that probability and splice type.</dd>
-</dl>
+share this splicing event at that probability and splice type.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -300,10 +504,18 @@ share this splicing event at that probability and splice type.</dd>
 <tt class="descname">shared_events_barplot</tt><big>(</big><em>figure_dir='./'</em><big>)</big><a class="reference internal" href="../_modules/flotilla/data_model/splicing.html#DownsampledSplicingData.shared_events_barplot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.DownsampledSplicingData.shared_events_barplot" title="Permalink to this definition">¶</a></dt>
 <dd><p>PLot a &#8220;histogram&#8221; via colored bars of the number of events shared by
 different iterations at a particular sampling probability</p>
-<dl class="docutils">
-<dt>figure_dir <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd>Where to save the pdf figures created</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>figure_dir</strong> : str</p>
+<blockquote class="last">
+<div><p>Where to save the pdf figures created</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -311,12 +523,22 @@ different iterations at a particular sampling probability</p>
 <tt class="descname">shared_events_percentage</tt><big>(</big><em>min_iter_shared=5</em>, <em>figure_dir='./'</em><big>)</big><a class="reference internal" href="../_modules/flotilla/data_model/splicing.html#DownsampledSplicingData.shared_events_percentage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.DownsampledSplicingData.shared_events_percentage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the percentage of all events detected at that iteration,
 shared by at least &#8216;min_iter_shared&#8217;</p>
-<dl class="docutils">
-<dt>min_iter_shared <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd>Minimum number of iterations sharing an event</dd>
-<dt>figure_dir <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd>Where to save the pdf figures created</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>min_iter_shared</strong> : int</p>
+<blockquote>
+<div><p>Minimum number of iterations sharing an event</p>
+</div></blockquote>
+<p><strong>figure_dir</strong> : str</p>
+<blockquote class="last">
+<div><p>Where to save the pdf figures created</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -327,12 +549,44 @@ shared by at least &#8216;min_iter_shared&#8217;</p>
 <dd><p>Bases: <a class="reference internal" href="../flotilla.data_model.html#flotilla.data_model.splicing.SplicingData" title="flotilla.data_model.splicing.SplicingData"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.data_model.splicing.SplicingData</span></tt></a></p>
 <p>Class to hold splice junction information from SJ.out.tab files from
 STAR</p>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="58%" />
+<col width="42%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>binned_reducer</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>raw_reducer</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="flotilla.data_model.splicing.SplicingData">
 <em class="property">class </em><tt class="descclassname">flotilla.data_model.splicing.</tt><tt class="descname">SplicingData</tt><big>(</big><em>data</em>, <em>metadata=None</em>, <em>binsize=0.1</em>, <em>var_cut=0.2</em>, <em>outliers=None</em>, <em>feature_rename_col=None</em>, <em>excluded_max=0.2</em>, <em>included_min=0.8</em>, <em>pooled=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/data_model/splicing.html#SplicingData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../flotilla.data_model.html#flotilla.data_model.base.BaseData" title="flotilla.data_model.base.BaseData"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.data_model.base.BaseData</span></tt></a></p>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="58%" />
+<col width="42%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>binned_reducer</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>raw_reducer</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
 <dl class="method">
 <dt id="flotilla.data_model.splicing.SplicingData.binify">
 <tt class="descname">binify</tt><big>(</big><em>data</em><big>)</big><a class="reference internal" href="../_modules/flotilla/data_model/splicing.html#SplicingData.binify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.binify" title="Permalink to this definition">¶</a></dt>
@@ -358,69 +612,117 @@ STAR</p>
 <tt class="descname">classify</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/data_model/splicing.html#SplicingData.classify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.classify" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make and memoize a predictor on a categorical trait (associated
 with samples) subset of genes</p>
-<dl class="docutils">
-<dt>trait <span class="classifier-delimiter">:</span> <span class="classifier">pandas.Series</span></dt>
-<dd>samples x categorical feature</dd>
-<dt>sample_ids <span class="classifier-delimiter">:</span> <span class="classifier">None or list of strings</span></dt>
-<dd>If None, all sample ids will be used, else only the sample ids
-specified</dd>
-<dt>feature_ids <span class="classifier-delimiter">:</span> <span class="classifier">None or list of strings</span></dt>
-<dd>If None, all features will be used, else only the features
-specified</dd>
-<dt>standardize <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd>Whether or not to &#8220;whiten&#8221; (make all variables uncorrelated) and
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>trait</strong> : pandas.Series</p>
+<blockquote>
+<div><p>samples x categorical feature</p>
+</div></blockquote>
+<p><strong>sample_ids</strong> : None or list of strings</p>
+<blockquote>
+<div><p>If None, all sample ids will be used, else only the sample ids
+specified</p>
+</div></blockquote>
+<p><strong>feature_ids</strong> : None or list of strings</p>
+<blockquote>
+<div><p>If None, all features will be used, else only the features
+specified</p>
+</div></blockquote>
+<p><strong>standardize</strong> : bool</p>
+<blockquote>
+<div><p>Whether or not to &#8220;whiten&#8221; (make all variables uncorrelated) and
 mean-center and make unit-variance all the data via sklearn
-.preprocessing.StandardScaler</dd>
-<dt>predictor <span class="classifier-delimiter">:</span> <span class="classifier">flotilla.visualize.predict classifier</span></dt>
-<dd>Must inherit from flotilla.visualize.PredictorBaseViz. Default is
-flotilla.visualize.predict.ClassifierViz</dd>
-<dt>predictor_kwargs <span class="classifier-delimiter">:</span> <span class="classifier">dict or None</span></dt>
-<dd>Additional &#8216;keyword arguments&#8217; to supply to the predictor class</dd>
-<dt>predictor_scoring_fun <span class="classifier-delimiter">:</span> <span class="classifier">function</span></dt>
-<dd>Function to get the feature scores for a scikit-learn classifier.
+.preprocessing.StandardScaler</p>
+</div></blockquote>
+<p><strong>predictor</strong> : flotilla.visualize.predict classifier</p>
+<blockquote>
+<div><p>Must inherit from flotilla.visualize.PredictorBaseViz. Default is
+flotilla.visualize.predict.ClassifierViz</p>
+</div></blockquote>
+<p><strong>predictor_kwargs</strong> : dict or None</p>
+<blockquote>
+<div><p>Additional &#8216;keyword arguments&#8217; to supply to the predictor class</p>
+</div></blockquote>
+<p><strong>predictor_scoring_fun</strong> : function</p>
+<blockquote>
+<div><p>Function to get the feature scores for a scikit-learn classifier.
 This can be different for different classifiers, e.g. for a
 classifier named &#8220;x&#8221; it could be <a href="#id7"><span class="problematic" id="id8">x.scores_</span></a>, for other it&#8217;s
-<a href="#id9"><span class="problematic" id="id10">x.feature_importances_</span></a>. Default: lambda x: <a href="#id11"><span class="problematic" id="id12">x.feature_importances_</span></a></dd>
-<dt>score_cutoff_fun <span class="classifier-delimiter">:</span> <span class="classifier">function</span></dt>
-<dd>Function to cut off insignificant scores
-Default: lambda scores: np.mean(x) + 2 * np.std(x)</dd>
-</dl>
-<dl class="docutils">
-<dt>predictor <span class="classifier-delimiter">:</span> <span class="classifier">flotilla.compute.predict.PredictorBaseViz</span></dt>
-<dd>A ready-to-plot object containing the predictions</dd>
-</dl>
+<a href="#id9"><span class="problematic" id="id10">x.feature_importances_</span></a>. Default: lambda x: <a href="#id11"><span class="problematic" id="id12">x.feature_importances_</span></a></p>
+</div></blockquote>
+<p><strong>score_cutoff_fun</strong> : function</p>
+<blockquote>
+<div><p>Function to cut off insignificant scores
+Default: lambda scores: np.mean(x) + 2 * np.std(x)</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>predictor</strong> : flotilla.compute.predict.PredictorBaseViz</p>
+<blockquote class="last">
+<div><p>A ready-to-plot object containing the predictions</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="flotilla.data_model.splicing.SplicingData.modalities">
 <tt class="descname">modalities</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/data_model/splicing.html#SplicingData.modalities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.modalities" title="Permalink to this definition">¶</a></dt>
 <dd><p>Assigned modalities for these samples and features.</p>
-<dl class="docutils">
-<dt>sample_ids <span class="classifier-delimiter">:</span> <span class="classifier">list of str</span></dt>
-<dd>Which samples to use. If None, use all. Default None.</dd>
-<dt>feature_ids <span class="classifier-delimiter">:</span> <span class="classifier">list of str</span></dt>
-<dd>Which features to use. If None, use all. Default None.</dd>
-</dl>
-<dl class="docutils">
-<dt>modality_assignments <span class="classifier-delimiter">:</span> <span class="classifier">pandas.Series</span></dt>
-<dd>The modality assignments of each feature given these samples</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>sample_ids</strong> : list of str</p>
+<blockquote>
+<div><p>Which samples to use. If None, use all. Default None.</p>
+</div></blockquote>
+<p><strong>feature_ids</strong> : list of str</p>
+<blockquote>
+<div><p>Which features to use. If None, use all. Default None.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>modality_assignments</strong> : pandas.Series</p>
+<blockquote class="last">
+<div><p>The modality assignments of each feature given these samples</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="flotilla.data_model.splicing.SplicingData.modalities_counts">
 <tt class="descname">modalities_counts</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/data_model/splicing.html#SplicingData.modalities_counts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.modalities_counts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Count the number of each modalities of these samples and features</p>
-<dl class="docutils">
-<dt>sample_ids <span class="classifier-delimiter">:</span> <span class="classifier">list of str</span></dt>
-<dd>Which samples to use. If None, use all. Default None.</dd>
-<dt>feature_ids <span class="classifier-delimiter">:</span> <span class="classifier">list of str</span></dt>
-<dd>Which features to use. If None, use all. Default None.</dd>
-</dl>
-<dl class="docutils">
-<dt>modalities_counts <span class="classifier-delimiter">:</span> <span class="classifier">pandas.Series</span></dt>
-<dd>The number of events detected in each modality</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>sample_ids</strong> : list of str</p>
+<blockquote>
+<div><p>Which samples to use. If None, use all. Default None.</p>
+</div></blockquote>
+<p><strong>feature_ids</strong> : list of str</p>
+<blockquote>
+<div><p>Which features to use. If None, use all. Default None.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>modalities_counts</strong> : pandas.Series</p>
+<blockquote class="last">
+<div><p>The number of events detected in each modality</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
@@ -444,25 +746,43 @@ Default: lambda scores: np.mean(x) + 2 * np.std(x)</dd>
 <dt id="flotilla.data_model.splicing.SplicingData.plot_modalities_lavalamps">
 <tt class="descname">plot_modalities_lavalamps</tt><big>(</big><em>sample_ids=None</em>, <em>feature_ids=None</em>, <em>color=None</em>, <em>x_offset=0</em>, <em>axes=None</em>, <em>use_these_modalities=True</em><big>)</big><a class="reference internal" href="../_modules/flotilla/data_model/splicing.html#SplicingData.plot_modalities_lavalamps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.plot_modalities_lavalamps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot &#8220;lavalamp&#8221; scatterplot of each event</p>
-<dl class="docutils">
-<dt>sample_ids <span class="classifier-delimiter">:</span> <span class="classifier">None or list of str</span></dt>
-<dd>Which samples to use. If None, use all</dd>
-<dt>feature_ids <span class="classifier-delimiter">:</span> <span class="classifier">None or list of str</span></dt>
-<dd>Which features to use. If None, use all</dd>
-<dt>color <span class="classifier-delimiter">:</span> <span class="classifier">None or matplotlib color</span></dt>
-<dd>Which color to use for plotting the lavalamps of these features
-and samples</dd>
-<dt>x_offset <span class="classifier-delimiter">:</span> <span class="classifier">numeric</span></dt>
-<dd>How much to offset the x-axis of each event. Useful if you want
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>sample_ids</strong> : None or list of str</p>
+<blockquote>
+<div><p>Which samples to use. If None, use all</p>
+</div></blockquote>
+<p><strong>feature_ids</strong> : None or list of str</p>
+<blockquote>
+<div><p>Which features to use. If None, use all</p>
+</div></blockquote>
+<p><strong>color</strong> : None or matplotlib color</p>
+<blockquote>
+<div><p>Which color to use for plotting the lavalamps of these features
+and samples</p>
+</div></blockquote>
+<p><strong>x_offset</strong> : numeric</p>
+<blockquote>
+<div><p>How much to offset the x-axis of each event. Useful if you want
 to plot the same event, but in several iterations with different
-celltypes or colors</dd>
-<dt>axes <span class="classifier-delimiter">:</span> <span class="classifier">None or list of matplotlib.axes.Axes objects</span></dt>
-<dd>Which axes to plot these on</dd>
-<dt>use_these_modalities <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd>If True, then use these sample ids to calculate modalities.
+celltypes or colors</p>
+</div></blockquote>
+<p><strong>axes</strong> : None or list of matplotlib.axes.Axes objects</p>
+<blockquote>
+<div><p>Which axes to plot these on</p>
+</div></blockquote>
+<p><strong>use_these_modalities</strong> : bool</p>
+<blockquote class="last">
+<div><p>If True, then use these sample ids to calculate modalities.
 Otherwise, use the modalities assigned using ALL samples and
-features</dd>
-</dl>
+features</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -496,6 +816,8 @@ heavier in terms of data load</p>
 <dd><p>Bases: <a class="reference internal" href="../flotilla.data_model.html#flotilla.data_model.study.StudyFactory" title="flotilla.data_model.study.StudyFactory"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.data_model.study.StudyFactory</span></tt></a></p>
 <p>A biological study, with associated metadata, expression, and splicing
 data.</p>
+<p class="rubric">Attributes</p>
+<p class="rubric">Methods</p>
 <dl class="attribute">
 <dt id="flotilla.data_model.study.Study.celltype_event_counts">
 <tt class="descname">celltype_event_counts</tt><a class="reference internal" href="../_modules/flotilla/data_model/study.html#Study.celltype_event_counts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.celltype_event_counts" title="Permalink to this definition">¶</a></dt>
@@ -533,24 +855,43 @@ data.</p>
 <tt class="descname">detect_outliers</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/flotilla/data_model/study.html#Study.detect_outliers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.detect_outliers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Detects outlier cells from expression, mapping, and splicing
 study_data and labels the outliers as such for future analysis.</p>
-<p>self</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>self</strong></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="flotilla.data_model.study.Study.feature_subset_to_feature_ids">
 <tt class="descname">feature_subset_to_feature_ids</tt><big>(</big><em>data_type</em>, <em>feature_subset=None</em>, <em>rename=False</em><big>)</big><a class="reference internal" href="../_modules/flotilla/data_model/study.html#Study.feature_subset_to_feature_ids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.feature_subset_to_feature_ids" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given a name of a feature subset, get the associated feature ids</p>
-<dl class="docutils">
-<dt>data_type <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd>A string describing the data type, e.g. &#8220;expression&#8221;</dd>
-<dt>feature_subset <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd>A string describing the subset of data type (must be already
-calculated)</dd>
-</dl>
-<dl class="docutils">
-<dt>feature_ids <span class="classifier-delimiter">:</span> <span class="classifier">list of strings</span></dt>
-<dd>List of features ids from the specified datatype</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data_type</strong> : str</p>
+<blockquote>
+<div><p>A string describing the data type, e.g. &#8220;expression&#8221;</p>
+</div></blockquote>
+<p><strong>feature_subset</strong> : str</p>
+<blockquote>
+<div><p>A string describing the subset of data type (must be already
+calculated)</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>feature_ids</strong> : list of strings</p>
+<blockquote class="last">
+<div><p>List of features ids from the specified datatype</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="classmethod">
@@ -567,26 +908,40 @@ calculated)</dd>
 <dt id="flotilla.data_model.study.Study.from_data_package_url">
 <em class="property">classmethod </em><tt class="descname">from_data_package_url</tt><big>(</big><em>data_package_url</em>, <em>species_data_package_base_url='http://sauron.ucsd.edu/flotilla_projects'</em><big>)</big><a class="reference internal" href="../_modules/flotilla/data_model/study.html#Study.from_data_package_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.from_data_package_url" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a study from a url of a datapackage.json file</p>
-<dl class="docutils">
-<dt>data_package_url <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd>HTTP url of a datapackage.json file, following the specification
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data_package_url</strong> : str</p>
+<blockquote>
+<div><p>HTTP url of a datapackage.json file, following the specification
 described here: <a class="reference external" href="http://dataprotocols.org/data-packages/">http://dataprotocols.org/data-packages/</a> and
 requiring the following data resources: experiment_design,
-expression, splicing</dd>
-<dt>species_data_pacakge_base_url <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd>Base URL to fetch species-specific gene and splicing event
-metadata from. Default &#8216;<a class="reference external" href="http://sauron.ucsd.edu/flotilla_projects">http://sauron.ucsd.edu/flotilla_projects</a>&#8216;</dd>
-</dl>
-<dl class="docutils">
-<dt>study <span class="classifier-delimiter">:</span> <span class="classifier">Study</span></dt>
-<dd>A &#8220;study&#8221; object containing the data described in the
-data_package_url file</dd>
-</dl>
-<dl class="docutils">
-<dt>AttributeError</dt>
-<dd>If the datapackage.json file does not contain the required
-resources of experiment_design, expression, and splicing.</dd>
-</dl>
+expression, splicing</p>
+</div></blockquote>
+<p><strong>species_data_pacakge_base_url</strong> : str</p>
+<blockquote>
+<div><p>Base URL to fetch species-specific gene and splicing event
+metadata from. Default &#8216;<a class="reference external" href="http://sauron.ucsd.edu/flotilla_projects">http://sauron.ucsd.edu/flotilla_projects</a>&#8216;</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>study</strong> : Study</p>
+<blockquote>
+<div><p>A &#8220;study&#8221; object containing the data described in the
+data_package_url file</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><strong>AttributeError</strong></p>
+<blockquote class="last">
+<div><p>If the datapackage.json file does not contain the required
+resources of experiment_design, expression, and splicing.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
@@ -649,13 +1004,23 @@ gene expression) from one celltype to another.</p>
 <dt id="flotilla.data_model.study.Study.plot_classifier">
 <tt class="descname">plot_classifier</tt><big>(</big><em>trait</em>, <em>data_type='expression'</em>, <em>title=''</em>, <em>show_point_labels=False</em>, <em>sample_subset=None</em>, <em>feature_subset=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/data_model/study.html#Study.plot_classifier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.plot_classifier" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot a predictor for the specified data type and trait(s)</p>
-<dl class="docutils">
-<dt>data_type <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd>One of the names of the data types, e.g. &#8220;expression&#8221; or &#8220;splicing&#8221;</dd>
-<dt>trait <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd>Column name in the experiment_design data that you would like
-to classify on</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data_type</strong> : str</p>
+<blockquote>
+<div><p>One of the names of the data types, e.g. &#8220;expression&#8221; or &#8220;splicing&#8221;</p>
+</div></blockquote>
+<p><strong>trait</strong> : str</p>
+<blockquote class="last">
+<div><p>Column name in the experiment_design data that you would like
+to classify on</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -668,18 +1033,30 @@ to classify on</dd>
 <dt id="flotilla.data_model.study.Study.plot_graph">
 <tt class="descname">plot_graph</tt><big>(</big><em>data_type='expression'</em>, <em>sample_subset=None</em>, <em>feature_subset=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/data_model/study.html#Study.plot_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.plot_graph" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the graph (network) of these data</p>
-<dl class="docutils">
-<dt>data_type <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd>One of the names of the data types, e.g. &#8220;expression&#8221; or &#8220;splicing&#8221;</dd>
-<dt>sample_subset <span class="classifier-delimiter">:</span> <span class="classifier">str or None</span></dt>
-<dd>Which subset of the samples to use, based on some phenotype
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data_type</strong> : str</p>
+<blockquote>
+<div><p>One of the names of the data types, e.g. &#8220;expression&#8221; or &#8220;splicing&#8221;</p>
+</div></blockquote>
+<p><strong>sample_subset</strong> : str or None</p>
+<blockquote>
+<div><p>Which subset of the samples to use, based on some phenotype
 column in the experiment design data. If None, all samples are
-used.</dd>
-<dt>feature_subset <span class="classifier-delimiter">:</span> <span class="classifier">str or None</span></dt>
-<dd>Which subset of the features to used, based on some feature type
+used.</p>
+</div></blockquote>
+<p><strong>feature_subset</strong> : str or None</p>
+<blockquote class="last">
+<div><p>Which subset of the features to used, based on some feature type
 in the expression data (e.g. &#8220;variant&#8221;). If None, all features
-are used.</dd>
-</dl>
+are used.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -696,29 +1073,49 @@ are used.</dd>
 <dt id="flotilla.data_model.study.Study.plot_pca">
 <tt class="descname">plot_pca</tt><big>(</big><em>data_type='expression'</em>, <em>x_pc=1</em>, <em>y_pc=2</em>, <em>sample_subset=None</em>, <em>feature_subset=None</em>, <em>title=''</em>, <em>featurewise=False</em>, <em>show_point_labels=False</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/data_model/study.html#Study.plot_pca"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.plot_pca" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performs PCA on both expression and splicing study_data</p>
-<dl class="docutils">
-<dt>data_type <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd>One of the names of the data types, e.g. &#8220;expression&#8221; or
-&#8220;splicing&#8221;</dd>
-<dt>x_pc <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd>Which principal component to plot on the x-axis</dd>
-<dt>y_pc <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd>Which principal component to plot on the y-axis</dd>
-<dt>sample_subset <span class="classifier-delimiter">:</span> <span class="classifier">str or None</span></dt>
-<dd>Which subset of the samples to use, based on some phenotype
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data_type</strong> : str</p>
+<blockquote>
+<div><p>One of the names of the data types, e.g. &#8220;expression&#8221; or
+&#8220;splicing&#8221;</p>
+</div></blockquote>
+<p><strong>x_pc</strong> : int</p>
+<blockquote>
+<div><p>Which principal component to plot on the x-axis</p>
+</div></blockquote>
+<p><strong>y_pc</strong> : int</p>
+<blockquote>
+<div><p>Which principal component to plot on the y-axis</p>
+</div></blockquote>
+<p><strong>sample_subset</strong> : str or None</p>
+<blockquote>
+<div><p>Which subset of the samples to use, based on some phenotype
 column in the experiment design data. If None, all samples are
-used.</dd>
-<dt>feature_subset <span class="classifier-delimiter">:</span> <span class="classifier">str or None</span></dt>
-<dd>Which subset of the features to used, based on some feature type
+used.</p>
+</div></blockquote>
+<p><strong>feature_subset</strong> : str or None</p>
+<blockquote>
+<div><p>Which subset of the features to used, based on some feature type
 in the expression data (e.g. &#8220;variant&#8221;). If None, all features
-are used.</dd>
-<dt>title <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd>The title of the plot</dd>
-<dt>show_point_labels <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd>Whether or not to show the labels of the points. If this is
+are used.</p>
+</div></blockquote>
+<p><strong>title</strong> : str</p>
+<blockquote>
+<div><p>The title of the plot</p>
+</div></blockquote>
+<p><strong>show_point_labels</strong> : bool</p>
+<blockquote class="last">
+<div><p>Whether or not to show the labels of the points. If this is
 samplewise (default), then this labels the samples. If this is
-featurewise, then this labels the features.</dd>
-</dl>
+featurewise, then this labels the features.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -728,7 +1125,7 @@ featurewise, then this labels the features.</dd>
 
 <dl class="attribute">
 <dt id="flotilla.data_model.study.Study.readers">
-<tt class="descname">readers</tt><em class="property"> = {'tsv': &lt;function _load_tsv at 0x10fba89b0&gt;, 'json': &lt;function _load_json at 0x10fba8a28&gt;, 'csv': &lt;function _load_csv at 0x10fba8b18&gt;, 'gzip_pickle_df': &lt;function _load_gzip_pickle_df at 0x10fba88c0&gt;, 'pickle_df': &lt;function _load_pickle_df at 0x10fba87d0&gt;}</em><a class="headerlink" href="#flotilla.data_model.study.Study.readers" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">readers</tt><em class="property"> = {'tsv': &lt;function _load_tsv at 0x10d28b2a8&gt;, 'json': &lt;function _load_json at 0x10d28b320&gt;, 'csv': &lt;function _load_csv at 0x10d28b410&gt;, 'gzip_pickle_df': &lt;function _load_gzip_pickle_df at 0x10d28b1b8&gt;, 'pickle_df': &lt;function _load_pickle_df at 0x10d28b0c8&gt;}</em><a class="headerlink" href="#flotilla.data_model.study.Study.readers" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -752,15 +1149,25 @@ color (blue)</p>
 <tt class="descname">sample_subset_to_sample_ids</tt><big>(</big><em>phenotype_subset=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/data_model/study.html#Study.sample_subset_to_sample_ids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.sample_subset_to_sample_ids" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a string naming a subset of phenotypes in the data into
 sample ids</p>
-<dl class="docutils">
-<dt>phenotype_subset <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd>A valid string describing a boolean phenotype described in the
-experiment_design data</dd>
-</dl>
-<dl class="docutils">
-<dt>sample_ids <span class="classifier-delimiter">:</span> <span class="classifier">list of strings</span></dt>
-<dd>List of sample ids in the data</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>phenotype_subset</strong> : str</p>
+<blockquote>
+<div><p>A valid string describing a boolean phenotype described in the
+experiment_design data</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>sample_ids</strong> : list of strings</p>
+<blockquote class="last">
+<div><p>List of sample ids in the data</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -774,6 +1181,7 @@ experiment_design data</dd>
 <dt id="flotilla.data_model.study.StudyFactory">
 <em class="property">class </em><tt class="descclassname">flotilla.data_model.study.</tt><tt class="descname">StudyFactory</tt><a class="reference internal" href="../_modules/flotilla/data_model/study.html#StudyFactory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.StudyFactory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p class="rubric">Methods</p>
 <dl class="method">
 <dt id="flotilla.data_model.study.StudyFactory.load">
 <tt class="descname">load</tt><big>(</big><em>file_name</em>, <em>file_type='pickle_df'</em><big>)</big><a class="reference internal" href="../_modules/flotilla/data_model/study.html#StudyFactory.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.StudyFactory.load" title="Permalink to this definition">¶</a></dt>
@@ -794,63 +1202,26 @@ experiment_design data</dd>
 </div>
 
 
-          </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="../index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">flotilla.data_model package</a><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-flotilla.data_model.base">flotilla.data_model.base module</a></li>
-<li><a class="reference internal" href="#flotilla-data-model-experiment-design-module">flotilla.data_model.experiment_design module</a></li>
-<li><a class="reference internal" href="#module-flotilla.data_model.expression">flotilla.data_model.expression module</a></li>
-<li><a class="reference internal" href="#module-flotilla.data_model.quality_control">flotilla.data_model.quality_control module</a></li>
-<li><a class="reference internal" href="#flotilla-data-model-splicing-module">flotilla.data_model.splicing module</a></li>
-<li><a class="reference internal" href="#module-flotilla.data_model.study">flotilla.data_model.study module</a></li>
-<li><a class="reference internal" href="#module-flotilla.data_model">Module contents</a></li>
-</ul>
-</li>
-</ul>
-
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../_sources/apidoc/flotilla.data_model.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
+    </div>
+      
+  </div>
+</div>  <div class="container">
+	
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
     </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li><a href="../index.html">flotilla  documentation</a> &raquo;</li> 
-      </ul>
-    </div>
-    <div class="footer">
-        &copy; Copyright 2014, Author.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
-    </div>
+    <p>
+        &copy; Copyright 2014, Olga Botvinnik, Michael Lovci, Patrick Liu, Yan Song.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.<br/>
+    </p>
+  </div>
+</footer>
+	Funded by <a href="http://numfocus.org/">NumFOCUS</a> <a href="http://numfocus.org/pages/john_hunter_fellowship_2014.html">John Hunter Technology Fellowship</a> to <a href="http://olgabotvinnik.com/">Olga Botvinnik</a>.<br/>
+	Partially funded by <a href="http://www.nih.gov/">NIH</a> grants NS075449 and HG004659 and <a href="http://www.cirm.ca.gov/">CIRM</a> grants RB4-06045 and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene Yeo</a>. <br/>
+
+
   </body>
 </html>
