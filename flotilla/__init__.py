@@ -1,3 +1,5 @@
+import os
+
 from .data_model.study import Study
 import compute
 import data_model
@@ -16,7 +18,7 @@ def main():
     pass
 
 
-def embark(data_package_url):
+def embark(study_name):
     """
     Begin your journey of data exploration.
 
@@ -30,5 +32,11 @@ def embark(data_package_url):
     -------
     study : flotilla.Study
         A biological study created from the data package specified
+
     """
-    return Study.from_data_package_url(data_package_url)
+    try:
+        filename = os.path.abspath(os.path.expanduser(
+            '~/flotilla_projects/{}/datapackage.json'.format(study_name)))
+        return Study.from_data_package_file(filename)
+    except:
+        return Study.from_data_package_url(study_name)
