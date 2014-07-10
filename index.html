@@ -1,0 +1,317 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Welcome to flotilla’s documentation! &mdash; flotilla  documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="flotilla  documentation" href="#" />
+    <link rel="next" title="flotilla package" href="flotilla.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="flotilla.html" title="flotilla package"
+             accesskey="N">next</a> |</li>
+        <li><a href="#">flotilla  documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="welcome-to-flotilla-s-documentation">
+<h1>Welcome to flotilla&#8217;s documentation!<a class="headerlink" href="#welcome-to-flotilla-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference external" href="https://travis-ci.org/YeoLab/flotilla"><img alt="Build Status" src="https://travis-ci.org/YeoLab/flotilla.svg?branch=master" /></a><a class="reference external" href="https://coveralls.io/r/YeoLab/flotilla?branch=master"><img alt="Coverage Status" src="https://img.shields.io/coveralls/YeoLab/flotilla.svg" /></a></p>
+</div>
+<div class="section" id="flotilla">
+<h1>flotilla<a class="headerlink" href="#flotilla" title="Permalink to this headline">¶</a></h1>
+<div class="figure">
+<img alt="flotilla Logo" src="flotilla.png" />
+<p class="caption">flotilla Logo</p>
+</div>
+</div>
+<div class="section" id="download">
+<h1>Download<a class="headerlink" href="#download" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-python"><div class="highlight"><pre>git clone https://github.com/YeoLab/flotilla.git
+</pre></div>
+</div>
+</div>
+<div class="section" id="install">
+<h1>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h1>
+<p>for some reason patsy doesn&#8217;t always automatically with pip, use
+easy_install first instead</p>
+<div class="highlight-python"><div class="highlight"><pre>easy_install -U patsy
+cd flotilla
+pip install .
+</pre></div>
+</div>
+<div class="section" id="example-data">
+<h2>Example data<a class="headerlink" href="#example-data" title="Permalink to this headline">¶</a></h2>
+<p>All of the following should work, with expression data. No guarantees on
+splicing.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">flotilla</span>
+<span class="n">test_study</span> <span class="o">=</span> <span class="n">flotilla</span><span class="o">.</span><span class="n">embark</span><span class="p">(</span><span class="s">&#39;http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22/datapackage.json&#39;</span><span class="p">)</span>
+<span class="n">test_study</span><span class="o">.</span><span class="n">plot_pca</span><span class="p">()</span>
+<span class="n">test_study</span><span class="o">.</span><span class="n">interactive_pca</span><span class="p">()</span>
+<span class="n">test_study</span><span class="o">.</span><span class="n">plot_graph</span><span class="p">()</span>
+<span class="n">test_study</span><span class="o">.</span><span class="n">interactive_graph</span><span class="p">()</span>
+<span class="n">test_study</span><span class="o">.</span><span class="n">plot_classifier</span><span class="p">()</span>
+<span class="n">test_study</span><span class="o">.</span><span class="n">interactive_classifier</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="for-developers">
+<h1>For developers<a class="headerlink" href="#for-developers" title="Permalink to this headline">¶</a></h1>
+<p>Please put ALL import statements at the top of the <tt class="docutils literal"><span class="pre">*.py</span></tt> file
+(potentially underneath docstrings, of course). The only exception is if
+a package is not listed in <tt class="docutils literal"><span class="pre">requirements.txt</span></tt>,then a &#8220;function-only&#8221;
+import may be allowed. If this doesn&#8217;t make sense to you, just put the
+import at the top of the file.</p>
+<div class="section" id="git-branching">
+<h2>Git branching<a class="headerlink" href="#git-branching" title="Permalink to this headline">¶</a></h2>
+<p>We use the
+<a class="reference external" href="http://nvie%20.com/posts/a-successful-git-branching-model/">git-flow</a>
+model. So if you have a feature (called <tt class="docutils literal"><span class="pre">myfeature</span></tt> as an example) you
+want to add, please add it off of the <tt class="docutils literal"><span class="pre">dev</span></tt> branch, as so:</p>
+<div class="highlight-python"><div class="highlight"><pre>git checkout -b myfeature dev
+</pre></div>
+</div>
+<p>When you&#8217;re done working on your feature, merge it back to <tt class="docutils literal"><span class="pre">dev</span></tt> via:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ git checkout develop
+Switched to branch &#39;dev&#39;
+$ git merge --no-ff myfeature
+Updating ea1b82a..05e9557
+(Summary of changes)
+$ git branch -d myfeature
+Deleted branch myfeature (was 05e9557).
+$ git push origin dev
+</pre></div>
+</div>
+<p>The reason for the <tt class="docutils literal"><span class="pre">--no-ff</span></tt> flag is because it makes it easy to
+reverse changes in case there was a simple mistake.</p>
+</div>
+<div class="section" id="naming-conventions">
+<h2>Naming conventions<a class="headerlink" href="#naming-conventions" title="Permalink to this headline">¶</a></h2>
+<p>When in doubt, please defer to [Python Enhancement Proposal 8 (aka
+[PEP8] (<a class="reference external" href="http://legacy.python.org/dev/peps/pep-0008/">http://legacy.python.org/dev/peps/pep-0008/</a>)) and the [Zen of
+Python] (<a class="reference external" href="http://legacy.python.org/dev/peps/pep-0020/">http://legacy.python.org/dev/peps/pep-0020/</a>)</p>
+<ul class="simple">
+<li>Classes are <tt class="docutils literal"><span class="pre">CamelCase</span></tt>, e.g.: <tt class="docutils literal"><span class="pre">BaseData</span></tt> and <tt class="docutils literal"><span class="pre">PCAViz</span></tt></li>
+<li>Functions are <tt class="docutils literal"><span class="pre">lower_case_with_underscores</span></tt>, e.g. <tt class="docutils literal"><span class="pre">go_enrichment</span></tt>
+and <tt class="docutils literal"><span class="pre">binify</span></tt></li>
+<li>Explicit is better than implicit</li>
+</ul>
+</div>
+<div class="section" id="docstring-conventions">
+<h2>Docstring conventions<a class="headerlink" href="#docstring-conventions" title="Permalink to this headline">¶</a></h2>
+<p>We will attempt to stick to the <tt class="docutils literal"><span class="pre">`numpy</span></tt> docstring
+specification &lt;<a class="reference external" href="https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt">https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt</a>&gt;`__
+(aka &#8220;<tt class="docutils literal"><span class="pre">numpydoc</span></tt>&#8221;).</p>
+<p>To make this easier, I use [&#8220;Live Templates&#8221; in PyCharm]
+(<a class="reference external" href="http://peter-hoffmann.com/2010/python-live-templates-for-pycharm.html">http://peter-hoffmann.com/2010/python-live-templates-for-pycharm.html</a>),
+check out the instructions
+<a class="reference external" href="https://github%20.com/YeoLab/PyCharm-Python-Templates">here</a> for how
+to install and use them.</p>
+</div>
+</div>
+<div class="section" id="what-flotilla-is-not">
+<h1>What flotilla is not<a class="headerlink" href="#what-flotilla-is-not" title="Permalink to this headline">¶</a></h1>
+<p>Flotilla does not claim to solve the data management problem of biology,
+i.e. how you store all the data associated with a particular study that
+was investigating a specific biological question. Flotilla only makes it
+easy to integrate all those data parts together.</p>
+</div>
+<div class="section" id="testing">
+<h1>Testing<a class="headerlink" href="#testing" title="Permalink to this headline">¶</a></h1>
+<p>In the source directory (wherever you cloned <tt class="docutils literal"><span class="pre">flotilla</span></tt> to that has
+this README.md file), do:</p>
+<div class="highlight-python"><div class="highlight"><pre>make test
+</pre></div>
+</div>
+<p>This will run the unit test suite.</p>
+<div class="section" id="coverage">
+<h2>Coverage<a class="headerlink" href="#coverage" title="Permalink to this headline">¶</a></h2>
+<p>To check coverage of the test suite, run</p>
+<div class="highlight-python"><div class="highlight"><pre>make coverage
+</pre></div>
+</div>
+<p>in the source directory.</p>
+</div>
+<div class="section" id="pep8-conventions">
+<h2>PEP8 Conventions<a class="headerlink" href="#pep8-conventions" title="Permalink to this headline">¶</a></h2>
+<p>To run <tt class="docutils literal"><span class="pre">pep8</span></tt> and <tt class="docutils literal"><span class="pre">pyflakes</span></tt> over the code, make sure you have [this
+fork] (pip install <a class="reference external" href="https://github.com/dcramer/pyflakes/tarball/master">https://github.com/dcramer/pyflakes/tarball/master</a>)
+of <tt class="docutils literal"><span class="pre">pyflakes</span></tt> installed (e.g. via
+<tt class="docutils literal"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">https://github</span> <span class="pre">.com/dcramer/pyflakes/tarball/master</span></tt>) and
+run:</p>
+<div class="highlight-python"><div class="highlight"><pre>make lint
+</pre></div>
+</div>
+<p>Contents:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="flotilla.html">flotilla package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="flotilla.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="flotilla.compute.html">flotilla.compute package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="flotilla.compute.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flotilla.compute.html#module-flotilla.compute.decomposition">flotilla.compute.decomposition module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flotilla.compute.html#module-flotilla.compute.expression">flotilla.compute.expression module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flotilla.compute.html#module-flotilla.compute.generic">flotilla.compute.generic module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flotilla.compute.html#module-flotilla.compute.infotheory">flotilla.compute.infotheory module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flotilla.compute.html#module-flotilla.compute.network">flotilla.compute.network module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flotilla.compute.html#module-flotilla.compute.predict">flotilla.compute.predict module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flotilla.compute.html#module-flotilla.compute.splicing">flotilla.compute.splicing module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flotilla.compute.html#module-flotilla.compute">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="flotilla.data_model.html">flotilla.data_model package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="flotilla.data_model.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flotilla.data_model.html#module-flotilla.data_model.base">flotilla.data_model.base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flotilla.data_model.html#module-flotilla.data_model.expression">flotilla.data_model.expression module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flotilla.data_model.html#module-flotilla.data_model.metadata">flotilla.data_model.metadata module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flotilla.data_model.html#module-flotilla.data_model.quality_control">flotilla.data_model.quality_control module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flotilla.data_model.html#flotilla-data-model-splicing-module">flotilla.data_model.splicing module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flotilla.data_model.html#module-flotilla.data_model.study">flotilla.data_model.study module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flotilla.data_model.html#module-flotilla.data_model">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="flotilla.visualize.html">flotilla.visualize package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="flotilla.visualize.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flotilla.visualize.html#module-flotilla.visualize.color">flotilla.visualize.color module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flotilla.visualize.html#module-flotilla.visualize.decomposition">flotilla.visualize.decomposition module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flotilla.visualize.html#module-flotilla.visualize.expression">flotilla.visualize.expression module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flotilla.visualize.html#module-flotilla.visualize.ipython_interact">flotilla.visualize.ipython_interact module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flotilla.visualize.html#module-flotilla.visualize.network">flotilla.visualize.network module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flotilla.visualize.html#module-flotilla.visualize.predict">flotilla.visualize.predict module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flotilla.visualize.html#module-flotilla.visualize.splicing">flotilla.visualize.splicing module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flotilla.visualize.html#module-flotilla.visualize">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="flotilla.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flotilla.html#module-flotilla.external">flotilla.external module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flotilla.html#flotilla-setup-module">flotilla.setup module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flotilla.html#module-flotilla.util">flotilla.util module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flotilla.html#module-flotilla">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
+<li><a class="reference internal" href="py-modindex.html"><em>Module Index</em></a></li>
+<li><a class="reference internal" href="search.html"><em>Search Page</em></a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Welcome to flotilla&#8217;s documentation!</a></li>
+<li><a class="reference internal" href="#flotilla">flotilla</a></li>
+<li><a class="reference internal" href="#download">Download</a></li>
+<li><a class="reference internal" href="#install">Install</a><ul>
+<li><a class="reference internal" href="#example-data">Example data</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#for-developers">For developers</a><ul>
+<li><a class="reference internal" href="#git-branching">Git branching</a></li>
+<li><a class="reference internal" href="#naming-conventions">Naming conventions</a></li>
+<li><a class="reference internal" href="#docstring-conventions">Docstring conventions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#what-flotilla-is-not">What flotilla is not</a></li>
+<li><a class="reference internal" href="#testing">Testing</a><ul>
+<li><a class="reference internal" href="#coverage">Coverage</a></li>
+<li><a class="reference internal" href="#pep8-conventions">PEP8 Conventions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+
+  <h4>Next topic</h4>
+  <p class="topless"><a href="flotilla.html"
+                        title="next chapter">flotilla package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="flotilla.html" title="flotilla package"
+             >next</a> |</li>
+        <li><a href="#">flotilla  documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

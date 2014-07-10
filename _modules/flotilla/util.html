@@ -1,0 +1,263 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>flotilla.util &mdash; flotilla  documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="flotilla  documentation" href="../../index.html" />
+    <link rel="up" title="flotilla" href="../flotilla.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">flotilla  documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../flotilla.html" accesskey="U">flotilla</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for flotilla.util</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">general utilities</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+<span class="kn">import</span> <span class="nn">errno</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">signal</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+
+<div class="viewcode-block" id="TimeoutError"><a class="viewcode-back" href="../../flotilla.html#flotilla.util.TimeoutError">[docs]</a><span class="k">class</span> <span class="nc">TimeoutError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    From:</span>
+<span class="sd">    http://stackoverflow.com/questions/2281850/timeout-function-if-it-takes-too-long-to-finish</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+</div>
+<div class="viewcode-block" id="timeout"><a class="viewcode-back" href="../../flotilla.html#flotilla.util.timeout">[docs]</a><span class="k">def</span> <span class="nf">timeout</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">error_message</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">strerror</span><span class="p">(</span><span class="n">errno</span><span class="o">.</span><span class="n">ETIME</span><span class="p">)):</span>
+    <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">_handle_timeout</span><span class="p">(</span><span class="n">signum</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">TimeoutError</span><span class="p">(</span><span class="n">error_message</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGALRM</span><span class="p">,</span> <span class="n">_handle_timeout</span><span class="p">)</span>
+            <span class="n">signal</span><span class="o">.</span><span class="n">alarm</span><span class="p">(</span><span class="n">seconds</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">finally</span><span class="p">:</span>
+                <span class="n">signal</span><span class="o">.</span><span class="n">alarm</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="k">return</span> <span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)(</span><span class="n">wrapper</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">decorator</span>
+
+</div>
+<div class="viewcode-block" id="serve_ipython"><a class="viewcode-back" href="../../flotilla.html#flotilla.util.serve_ipython">[docs]</a><span class="k">def</span> <span class="nf">serve_ipython</span><span class="p">():</span>
+    <span class="k">try</span><span class="p">:</span>
+
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;specify a notebook directory as the first and only &quot;</span>
+                         <span class="s">&quot;argument&quot;</span><span class="p">)</span>
+
+    <span class="n">c</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">([</span><span class="s">&#39;ipython&#39;</span><span class="p">,</span> <span class="s">&#39;notebook&#39;</span><span class="p">,</span> <span class="s">&#39;--script&#39;</span><span class="p">,</span> <span class="s">&#39;--notebook-dir&#39;</span><span class="p">,</span>
+                          <span class="n">path</span><span class="p">])</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="dict_to_str"><a class="viewcode-back" href="../../flotilla.html#flotilla.util.dict_to_str">[docs]</a><span class="k">def</span> <span class="nf">dict_to_str</span><span class="p">(</span><span class="n">dic</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;join dictionary study_data into a string with that study_data&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">k</span> <span class="o">+</span> <span class="s">&quot;:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="n">dic</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+
+</div>
+<div class="viewcode-block" id="install_development_package"><a class="viewcode-back" href="../../flotilla.html#flotilla.util.install_development_package">[docs]</a><span class="k">def</span> <span class="nf">install_development_package</span><span class="p">(</span><span class="n">package_location</span><span class="p">):</span>
+    <span class="n">original_location</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">package_location</span><span class="p">)</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="s">&#39;pip install -e </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">package_location</span><span class="p">],</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">original_location</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="memoize"><a class="viewcode-back" href="../../flotilla.html#flotilla.util.memoize">[docs]</a><span class="k">def</span> <span class="nf">memoize</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &#39;memoize&#39; aka remember the output from a function and return that,</span>
+<span class="sd">    rather than recalculating</span>
+
+<span class="sd">    Stolen from:</span>
+<span class="sd">    https://wiki.python.org/moin/PythonDecoratorLibrary#CA-237e205c0d5bd1459c3663a3feb7f78236085e0a_1</span>
+
+<span class="sd">    do_not_memoize : bool</span>
+<span class="sd">        IF this is a keyword argument (kwarg) in the function, and it is true,</span>
+<span class="sd">        then just evaluate the function and don&#39;t memoize it.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cache</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">cache</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="nd">@functools.wraps</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">memoizer</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s">&#39;do_not_memoize&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;do_not_memoize&#39;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">obj</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cache</span><span class="p">:</span>
+            <span class="n">cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">memoizer</span>
+
+</div>
+<div class="viewcode-block" id="cached_property"><a class="viewcode-back" href="../../flotilla.html#flotilla.util.cached_property">[docs]</a><span class="k">class</span> <span class="nc">cached_property</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Decorator for read-only properties evaluated only once within TTL period.</span>
+
+<span class="sd">    It can be used to created a cached property like this::</span>
+
+<span class="sd">        import random</span>
+
+<span class="sd">        # the class containing the property must be a new-style class</span>
+<span class="sd">        class MyClass(object):</span>
+<span class="sd">            # create property whose value is cached for ten minutes</span>
+<span class="sd">            @cached_property(ttl=600)</span>
+<span class="sd">            def randint(self):</span>
+<span class="sd">                # will only be evaluated every 10 min. at maximum.</span>
+<span class="sd">                return random.randint(0, 100)</span>
+
+<span class="sd">    The value is cached  in the &#39;_cache&#39; attribute of the object instance that</span>
+<span class="sd">    has the property getter method wrapped by this decorator. The &#39;_cache&#39;</span>
+<span class="sd">    attribute value is a dictionary which has a key for every property of the</span>
+<span class="sd">    object which is wrapped by this decorator. Each entry in the cache is</span>
+<span class="sd">    created only when the property is accessed for the first time and is a</span>
+<span class="sd">    two-element tuple with the last computed property value and the last time</span>
+<span class="sd">    it was updated in seconds since the epoch.</span>
+
+<span class="sd">    The default time-to-live (TTL) is 300 seconds (5 minutes). Set the TTL to</span>
+<span class="sd">    zero for the cached value to never expire.</span>
+
+<span class="sd">    To expire a cached property value manually just do::</span>
+
+<span class="sd">        del instance._cache[&lt;property name&gt;]</span>
+
+<span class="sd">    Stolen from:</span>
+<span class="sd">    https://wiki.python.org/moin/PythonDecoratorLibrary#Cached_Properties</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ttl</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ttl</span> <span class="o">=</span> <span class="n">ttl</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fget</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fget</span> <span class="o">=</span> <span class="n">fget</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__doc__</span> <span class="o">=</span> <span class="n">doc</span> <span class="ow">or</span> <span class="n">fget</span><span class="o">.</span><span class="n">__doc__</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__name__</span> <span class="o">=</span> <span class="n">fget</span><span class="o">.</span><span class="n">__name__</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__module__</span> <span class="o">=</span> <span class="n">fget</span><span class="o">.</span><span class="n">__module__</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inst</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">value</span><span class="p">,</span> <span class="n">last_update</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__name__</span><span class="p">]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ttl</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">now</span> <span class="o">-</span> <span class="n">last_update</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">ttl</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">AttributeError</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fget</span><span class="p">(</span><span class="n">inst</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">cache</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">_cache</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="n">cache</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">cache</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__name__</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">now</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+</div>
+<div class="viewcode-block" id="as_numpy"><a class="viewcode-back" href="../../flotilla.html#flotilla.util.as_numpy">[docs]</a><span class="k">def</span> <span class="nf">as_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Given either a pandas dataframe or a numpy array, always return a</span>
+<span class="sd">    numpy array.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c"># Pandas DataFrame</span>
+        <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">values</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="c"># Numpy array</span>
+        <span class="k">return</span> <span class="n">x</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">flotilla  documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../flotilla.html" >flotilla</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

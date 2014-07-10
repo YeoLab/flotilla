@@ -1,0 +1,326 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>flotilla.visualize.ipython_interact &mdash; flotilla  documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="flotilla  documentation" href="../../../index.html" />
+    <link rel="up" title="flotilla" href="../../flotilla.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">flotilla  documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../flotilla.html" accesskey="U">flotilla</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for flotilla.visualize.ipython_interact</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Named `ipython_interact.py` rather than just `interact.py` to differentiate</span>
+<span class="sd">between IPython interactive visualizations vs D3 interactive visualizations.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">from</span> <span class="nn">IPython.html.widgets</span> <span class="kn">import</span> <span class="n">interact</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+<span class="kn">from</span> <span class="nn">.network</span> <span class="kn">import</span> <span class="n">NetworkerViz</span>
+
+
+<div class="viewcode-block" id="Interactive"><a class="viewcode-back" href="../../../flotilla.visualize.html#flotilla.visualize.ipython_interact.Interactive">[docs]</a><span class="k">class</span> <span class="nc">Interactive</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+
+
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_default_x_pc</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_default_y_pc</span> <span class="o">=</span> <span class="mi">2</span>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Interactive.interactive_pca"><a class="viewcode-back" href="../../../flotilla.visualize.html#flotilla.visualize.ipython_interact.Interactive.interactive_pca">[docs]</a>    <span class="k">def</span> <span class="nf">interactive_pca</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">do_interact</span><span class="p">(</span><span class="n">data_type</span><span class="o">=</span><span class="s">&#39;expression&#39;</span><span class="p">,</span>
+                        <span class="n">sample_subset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_sample_subsets</span><span class="p">,</span>
+                        <span class="n">feature_subset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_feature_subset</span><span class="p">,</span>
+                        <span class="n">featurewise</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                        <span class="n">list_link</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span>
+                        <span class="n">x_pc</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y_pc</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                        <span class="n">show_point_labels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                        <span class="n">savefile</span><span class="o">=</span><span class="s">&#39;data/last.pca.pdf&#39;</span><span class="p">):</span>
+
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s">&#39;self&#39;</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;{} : {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">feature_subset</span> <span class="o">!=</span> <span class="s">&quot;custom&quot;</span> <span class="ow">and</span> <span class="n">list_link</span> <span class="o">!=</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s">&quot;set feature_subset to </span><span class="se">\&quot;</span><span class="s">custom</span><span class="se">\&quot;</span><span class="s"> to use list_link&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">feature_subset</span> <span class="o">==</span> <span class="s">&quot;custom&quot;</span> <span class="ow">and</span> <span class="n">list_link</span> <span class="o">==</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;use a custom list name please&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">feature_subset</span> <span class="o">==</span> <span class="s">&#39;custom&#39;</span><span class="p">:</span>
+                <span class="n">feature_subset</span> <span class="o">=</span> <span class="n">list_link</span>
+            <span class="k">elif</span> <span class="n">feature_subset</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_feature_subsets</span><span class="p">[</span><span class="n">data_type</span><span class="p">]:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;This feature_subset (&#39;{}&#39;) is not available in &quot;</span>
+                              <span class="s">&quot;this data type (&#39;{}&#39;). Falling back on all &quot;</span>
+                              <span class="s">&quot;features.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">feature_subset</span><span class="p">,</span> <span class="n">data_type</span><span class="p">))</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">plot_pca</span><span class="p">(</span><span class="n">sample_subset</span><span class="o">=</span><span class="n">sample_subset</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="n">data_type</span><span class="p">,</span>
+                          <span class="n">featurewise</span><span class="o">=</span><span class="n">featurewise</span><span class="p">,</span>
+                          <span class="n">x_pc</span><span class="o">=</span><span class="n">x_pc</span><span class="p">,</span> <span class="n">y_pc</span><span class="o">=</span><span class="n">y_pc</span><span class="p">,</span>
+                          <span class="n">show_point_labels</span><span class="o">=</span><span class="n">show_point_labels</span><span class="p">,</span>
+                          <span class="n">feature_subset</span><span class="o">=</span><span class="n">feature_subset</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">savefile</span> <span class="o">!=</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+                <span class="c"># Make the directory if it&#39;s not already there</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">maybe_make_directory</span><span class="p">(</span><span class="n">savefile</span><span class="p">)</span>
+                <span class="n">f</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">savefile</span><span class="p">)</span>
+
+        <span class="n">feature_sets</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">default_feature_subsets</span>
+                                                <span class="o">.</span><span class="n">values</span><span class="p">())))</span>
+        <span class="n">interact</span><span class="p">(</span><span class="n">do_interact</span><span class="p">,</span>
+                 <span class="n">data_type</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;expression&#39;</span><span class="p">,</span> <span class="s">&#39;splicing&#39;</span><span class="p">),</span>
+                 <span class="n">sample_subset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_sample_subsets</span><span class="p">,</span>
+                 <span class="n">feature_subset</span><span class="o">=</span><span class="n">feature_sets</span><span class="p">,</span>
+                 <span class="n">featurewise</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                 <span class="n">x_pc</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">y_pc</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+                 <span class="n">show_point_labels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="p">)</span>
+</div>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Interactive.interactive_graph"><a class="viewcode-back" href="../../../flotilla.visualize.html#flotilla.visualize.ipython_interact.Interactive.interactive_graph">[docs]</a>    <span class="k">def</span> <span class="nf">interactive_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">IPython.html.widgets</span> <span class="kn">import</span> <span class="n">interact</span>
+
+        <span class="c"># not sure why nested fxns are required for this, but they are... i</span>
+        <span class="c"># think...</span>
+        <span class="k">def</span> <span class="nf">do_interact</span><span class="p">(</span><span class="n">data_type</span><span class="o">=</span><span class="s">&#39;expression&#39;</span><span class="p">,</span>
+                        <span class="n">sample_subset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_sample_subsets</span><span class="p">,</span>
+                        <span class="n">feature_subset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_feature_subsets</span><span class="p">,</span>
+                        <span class="n">weight_fun</span><span class="o">=</span><span class="n">NetworkerViz</span><span class="o">.</span><span class="n">weight_funs</span><span class="p">,</span>
+                        <span class="n">featurewise</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                        <span class="n">use_pc_1</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">use_pc_2</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">use_pc_3</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                        <span class="n">use_pc_4</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">degree_cut</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                        <span class="n">cov_std_cut</span><span class="o">=</span><span class="mf">1.8</span><span class="p">,</span> <span class="n">n_pcs</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                        <span class="n">feature_of_interest</span><span class="o">=</span><span class="s">&quot;RBFOX2&quot;</span><span class="p">,</span>
+                        <span class="n">draw_labels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                        <span class="n">savefile</span><span class="o">=</span><span class="s">&#39;data/last.graph.pdf&#39;</span><span class="p">):</span>
+
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s">&#39;self&#39;</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;{} : {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s">&#39;expression&#39;</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="p">(</span><span class="n">feature_subset</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">feature_sets</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s">&#39;splicing&#39;</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="p">(</span><span class="n">feature_subset</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">feature_sets</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">plot_graph</span><span class="p">(</span><span class="n">data_type</span><span class="o">=</span><span class="n">data_type</span><span class="p">,</span>
+                            <span class="n">sample_subset</span><span class="o">=</span><span class="n">sample_subset</span><span class="p">,</span>
+                            <span class="n">feature_subset</span><span class="o">=</span><span class="n">feature_subset</span><span class="p">,</span>
+                            <span class="n">featurewise</span><span class="o">=</span><span class="n">featurewise</span><span class="p">,</span> <span class="n">draw_labels</span><span class="o">=</span><span class="n">draw_labels</span><span class="p">,</span>
+                            <span class="n">degree_cut</span><span class="o">=</span><span class="n">degree_cut</span><span class="p">,</span> <span class="n">cov_std_cut</span><span class="o">=</span><span class="n">cov_std_cut</span><span class="p">,</span>
+                            <span class="n">n_pcs</span><span class="o">=</span><span class="n">n_pcs</span><span class="p">,</span>
+                            <span class="n">feature_of_interest</span><span class="o">=</span><span class="n">feature_of_interest</span><span class="p">,</span>
+                            <span class="n">use_pc_1</span><span class="o">=</span><span class="n">use_pc_1</span><span class="p">,</span> <span class="n">use_pc_2</span><span class="o">=</span><span class="n">use_pc_2</span><span class="p">,</span>
+                            <span class="n">use_pc_3</span><span class="o">=</span><span class="n">use_pc_3</span><span class="p">,</span>
+                            <span class="n">use_pc_4</span><span class="o">=</span><span class="n">use_pc_4</span><span class="p">,</span>
+                            <span class="n">weight_function</span><span class="o">=</span><span class="n">weight_fun</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">savefile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">maybe_make_directory</span><span class="p">(</span><span class="n">savefile</span><span class="p">)</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">savefile</span><span class="p">)</span>
+
+        <span class="n">feature_sets</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">default_feature_subsets</span>
+                                                <span class="o">.</span><span class="n">values</span><span class="p">())))</span>
+        <span class="n">interact</span><span class="p">(</span><span class="n">do_interact</span><span class="p">,</span>
+                 <span class="n">data_type</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;expression&#39;</span><span class="p">,</span> <span class="s">&#39;splicing&#39;</span><span class="p">),</span>
+                 <span class="n">sample_subset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_sample_subsets</span><span class="p">,</span>
+                 <span class="n">feature_subset</span><span class="o">=</span><span class="n">feature_sets</span><span class="p">,</span>
+                 <span class="n">featurewise</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                 <span class="n">cov_std_cut</span><span class="o">=</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+                 <span class="n">degree_cut</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+                 <span class="n">n_pcs</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
+                 <span class="n">draw_labels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                 <span class="n">feature_of_interest</span><span class="o">=</span><span class="s">&quot;RBFOX2&quot;</span><span class="p">,</span>
+                 <span class="n">use_pc_1</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">use_pc_2</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">use_pc_3</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">use_pc_4</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</div>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Interactive.interactive_classifier"><a class="viewcode-back" href="../../../flotilla.visualize.html#flotilla.visualize.ipython_interact.Interactive.interactive_classifier">[docs]</a>    <span class="k">def</span> <span class="nf">interactive_classifier</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="kn">from</span> <span class="nn">IPython.html.widgets</span> <span class="kn">import</span> <span class="n">interact</span>
+
+        <span class="k">def</span> <span class="nf">do_interact</span><span class="p">(</span><span class="n">data_type</span><span class="p">,</span>
+                        <span class="n">sample_subset</span><span class="p">,</span>
+                        <span class="n">feature_subset</span><span class="p">,</span>
+                        <span class="n">categorical_variable</span><span class="o">=</span><span class="s">&#39;outlier&#39;</span><span class="p">,</span>
+                        <span class="n">feature_score_std_cutoff</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                        <span class="n">savefile</span><span class="o">=</span><span class="s">&#39;data/last.clf.pdf&#39;</span><span class="p">):</span>
+
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s">&#39;self&#39;</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">prik</span><span class="p">,</span> <span class="s">&quot;:&quot;</span><span class="p">,</span> <span class="n">v</span>
+
+            <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s">&#39;expression&#39;</span><span class="p">:</span>
+                <span class="n">data_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">expression</span>
+            <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s">&#39;splicing&#39;</span><span class="p">:</span>
+                <span class="n">data_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">splicing</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">plot_classifier</span><span class="p">(</span>
+                <span class="n">trait</span><span class="o">=</span><span class="n">categorical_variable</span><span class="p">,</span>
+                <span class="n">feature_subset</span><span class="o">=</span><span class="n">feature_subset</span><span class="p">,</span>
+                <span class="n">sample_subset</span><span class="o">=</span><span class="n">sample_subset</span><span class="p">,</span>
+                <span class="n">feature_score_std_cutoff</span><span class="o">=</span><span class="n">feature_score_std_cutoff</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;retrieve this predictor &quot;</span>
+                             <span class="s">&quot;with:</span><span class="se">\n</span><span class="s">predictor=study.</span><span class="si">%s</span><span class="s">.get_predictor(&#39;</span><span class="si">%s</span><span class="s">&#39;, &quot;</span>
+                             <span class="s">&quot;&#39;</span><span class="si">%s</span><span class="s">&#39;, &#39;</span><span class="si">%s</span><span class="s">&#39;) pca=predictor(&#39;</span><span class="si">%s</span><span class="s">&#39;, &quot;</span>
+                             <span class="s">&quot;feature_score_std_cutoff=</span><span class="si">%f</span><span class="s">)&quot;</span>
+                             <span class="o">%</span> <span class="p">(</span><span class="n">data_type</span><span class="p">,</span> <span class="n">feature_subset</span><span class="p">,</span> <span class="n">sample_subset</span><span class="p">,</span>
+                                <span class="n">categorical_variable</span><span class="p">,</span> <span class="n">categorical_variable</span><span class="p">,</span>
+                                <span class="n">feature_score_std_cutoff</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">savefile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">maybe_make_directory</span><span class="p">(</span><span class="n">savefile</span><span class="p">)</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">savefile</span><span class="p">)</span>
+
+        <span class="n">feature_sets</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">default_feature_subsets</span>
+                                                <span class="o">.</span><span class="n">values</span><span class="p">())))</span>
+        <span class="n">categorical_variable</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_sample_subsets</span> <span class="k">if</span>
+                                <span class="ow">not</span> <span class="n">i</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;~&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">!=</span> <span class="s">&#39;all_samples&#39;</span><span class="p">]</span>
+        <span class="n">interact</span><span class="p">(</span><span class="n">do_interact</span><span class="p">,</span>
+                 <span class="n">data_type</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;expression&#39;</span><span class="p">,</span> <span class="s">&#39;splicing&#39;</span><span class="p">),</span>
+                 <span class="n">sample_subset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_sample_subsets</span><span class="p">,</span>
+                 <span class="n">feature_subset</span><span class="o">=</span><span class="n">feature_sets</span><span class="p">,</span>
+                 <span class="n">categorical_variable</span><span class="o">=</span><span class="n">categorical_variable</span><span class="p">,</span>
+                 <span class="n">feature_score_std_cutoff</span><span class="o">=</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>
+                 <span class="n">draw_labels</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</div>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Interactive.interactive_localZ"><a class="viewcode-back" href="../../../flotilla.visualize.html#flotilla.visualize.ipython_interact.Interactive.interactive_localZ">[docs]</a>    <span class="k">def</span> <span class="nf">interactive_localZ</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="kn">from</span> <span class="nn">IPython.html.widgets</span> <span class="kn">import</span> <span class="n">interact</span>
+
+        <span class="k">def</span> <span class="nf">do_interact</span><span class="p">(</span><span class="n">data_type</span><span class="o">=</span><span class="s">&#39;expression&#39;</span><span class="p">,</span> <span class="n">sample1</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">sample2</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span>
+                        <span class="n">pCut</span><span class="o">=</span><span class="s">&#39;0.01&#39;</span><span class="p">):</span>
+
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s">&#39;self&#39;</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;{} : {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+
+            <span class="n">pCut</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">pCut</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">pCut</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s">&#39;expression&#39;</span><span class="p">:</span>
+                <span class="n">data_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">expression</span>
+            <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s">&#39;splicing&#39;</span><span class="p">:</span>
+                <span class="n">data_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">splicing</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="n">sample1</span> <span class="ow">in</span> <span class="n">data_obj</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;sample: {}, is not in {} DataFrame, &quot;</span>
+                                 <span class="s">&quot;try a different sample ID&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sample1</span><span class="p">,</span>
+                                                                    <span class="n">data_type</span><span class="p">))</span>
+                <span class="k">return</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="n">sample2</span> <span class="ow">in</span> <span class="n">data_obj</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;sample: {}, is not in {} DataFrame, &quot;</span>
+                                 <span class="s">&quot;try a different sample ID&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sample2</span><span class="p">,</span>
+                                                                    <span class="n">data_type</span><span class="p">))</span>
+                <span class="k">return</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">localZ_result</span> <span class="o">=</span> <span class="n">data_obj</span><span class="o">.</span><span class="n">plot_twoway</span><span class="p">(</span><span class="n">sample1</span><span class="p">,</span> <span class="n">sample2</span><span class="p">,</span>
+                                                      <span class="n">pCut</span><span class="o">=</span><span class="n">pCut</span><span class="p">)</span><span class="o">.</span><span class="n">result_</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;local_z finished, find the result in &quot;</span>
+                             <span class="s">&quot;&lt;this_object&gt;.localZ_result_&quot;</span><span class="p">)</span>
+
+        <span class="n">interact</span><span class="p">(</span><span class="n">do_interact</span><span class="p">,</span>
+                 <span class="n">data_type</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;expression&#39;</span><span class="p">,</span> <span class="s">&#39;splicing&#39;</span><span class="p">),</span>
+                 <span class="n">sample1</span><span class="o">=</span><span class="s">&#39;replaceme&#39;</span><span class="p">,</span>
+                 <span class="n">sample2</span><span class="o">=</span><span class="s">&#39;replaceme&#39;</span><span class="p">,</span>
+                 <span class="n">pCut</span><span class="o">=</span><span class="s">&#39;0.01&#39;</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">flotilla  documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../flotilla.html" >flotilla</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

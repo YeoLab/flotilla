@@ -1,0 +1,545 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>flotilla.compute package &mdash; flotilla  documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="flotilla  documentation" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">flotilla  documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="flotilla-compute-package">
+<h1>flotilla.compute package<a class="headerlink" href="#flotilla-compute-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-flotilla.compute.decomposition">
+<span id="flotilla-compute-decomposition-module"></span><h2>flotilla.compute.decomposition module<a class="headerlink" href="#module-flotilla.compute.decomposition" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="flotilla.compute.decomposition.NMF">
+<em class="property">class </em><tt class="descclassname">flotilla.compute.decomposition.</tt><tt class="descname">NMF</tt><big>(</big><em>n_components=None</em>, <em>init=None</em>, <em>sparseness=None</em>, <em>beta=1</em>, <em>eta=0.1</em>, <em>tol=0.0001</em>, <em>max_iter=200</em>, <em>nls_max_iter=2000</em>, <em>random_state=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/decomposition.html#NMF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.NMF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../flotilla.compute.html#flotilla.compute.decomposition.PrettyReducer" title="flotilla.compute.decomposition.PrettyReducer"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.decomposition.PrettyReducer</span></tt></a>, <tt class="xref py py-class docutils literal"><span class="pre">sklearn.decomposition.nmf.NMF</span></tt></p>
+<dl class="method">
+<dt id="flotilla.compute.decomposition.NMF.fit">
+<tt class="descname">fit</tt><big>(</big><em>X</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/decomposition.html#NMF.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.NMF.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>duplicated fit code for NMF because sklearn&#8217;s NMF cheats for
+efficiency and calls fit_transform. MRO resolves the closest
+(in this package)
+fit_transform first and so there&#8217;s a recursion error:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>def fit(self, X, y=None, <a href="#id1"><span class="problematic" id="id2">**</span></a>params):</dt>
+<dd>self.fit_transform(X, <a href="#id3"><span class="problematic" id="id4">**</span></a>params)
+return self</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.compute.decomposition.NMF.here">
+<tt class="descname">here</tt><em class="property"> = True</em><a class="headerlink" href="#flotilla.compute.decomposition.NMF.here" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="flotilla.compute.decomposition.PCA">
+<em class="property">class </em><tt class="descclassname">flotilla.compute.decomposition.</tt><tt class="descname">PCA</tt><big>(</big><em>n_components=None</em>, <em>copy=True</em>, <em>whiten=False</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/decomposition.html#PCA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.PCA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../flotilla.compute.html#flotilla.compute.decomposition.PrettyReducer" title="flotilla.compute.decomposition.PrettyReducer"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.decomposition.PrettyReducer</span></tt></a>, <tt class="xref py py-class docutils literal"><span class="pre">sklearn.decomposition.pca.PCA</span></tt></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="flotilla.compute.decomposition.PrettyReducer">
+<em class="property">class </em><tt class="descclassname">flotilla.compute.decomposition.</tt><tt class="descname">PrettyReducer</tt><a class="reference internal" href="../_modules/flotilla/compute/decomposition.html#PrettyReducer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.PrettyReducer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Just like scikit-learn&#8217;s reducers, but with prettied up DataFrames.</p>
+<dl class="method">
+<dt id="flotilla.compute.decomposition.PrettyReducer.fit">
+<tt class="descname">fit</tt><big>(</big><em>X</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/decomposition.html#PrettyReducer.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.PrettyReducer.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flotilla.compute.decomposition.PrettyReducer.fit_transform">
+<tt class="descname">fit_transform</tt><big>(</big><em>X</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/decomposition.html#PrettyReducer.fit_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.PrettyReducer.fit_transform" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flotilla.compute.decomposition.PrettyReducer.relabel_pcs">
+<tt class="descname">relabel_pcs</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/decomposition.html#PrettyReducer.relabel_pcs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.PrettyReducer.relabel_pcs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flotilla.compute.decomposition.PrettyReducer.transform">
+<tt class="descname">transform</tt><big>(</big><em>X</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/decomposition.html#PrettyReducer.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.PrettyReducer.transform" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-flotilla.compute.expression">
+<span id="flotilla-compute-expression-module"></span><h2>flotilla.compute.expression module<a class="headerlink" href="#module-flotilla.compute.expression" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="flotilla.compute.expression.TwoWayGeneComparisonLocal">
+<em class="property">class </em><tt class="descclassname">flotilla.compute.expression.</tt><tt class="descname">TwoWayGeneComparisonLocal</tt><big>(</big><em>sample1_name</em>, <em>sample2_name</em>, <em>df</em>, <em>p_value_cutoff=0.001</em>, <em>local_fraction=0.1</em>, <em>bonferroni=True</em>, <em>fdr=None</em>, <em>dtype='RPKM'</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/expression.html#TwoWayGeneComparisonLocal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.expression.TwoWayGeneComparisonLocal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<dl class="method">
+<dt id="flotilla.compute.expression.TwoWayGeneComparisonLocal.gstats">
+<tt class="descname">gstats</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/expression.html#TwoWayGeneComparisonLocal.gstats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.expression.TwoWayGeneComparisonLocal.gstats" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.compute.expression.benjamini_hochberg">
+<tt class="descclassname">flotilla.compute.expression.</tt><tt class="descname">benjamini_hochberg</tt><big>(</big><em>p_values</em>, <em>fdr=0.1</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/expression.html#benjamini_hochberg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.expression.benjamini_hochberg" title="Permalink to this definition">¶</a></dt>
+<dd><p>benjamini-hochberg correction for MHT
+p_values : list</p>
+<blockquote>
+<div>List of p-values</div></blockquote>
+<dl class="docutils">
+<dt>fdr <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>Desired false-discovery rate cutoff</dd>
+</dl>
+<p>from: <a class="reference external" href="http://udel.edu/~mcdonald/statmultcomp.html">http://udel.edu/~mcdonald/statmultcomp.html</a>
+One good technique for controlling the false discovery rate was briefly
+mentioned by Simes (1986) and developed in detail by Benjamini and Hochberg
+(1995). Put the individual P-values in order, from smallest to largest.
+The smallest P-value has a rank of i=1, the next has i=2, etc. Then
+compare each individual P-value to (i/m)Q, where m is the total number of
+test and Q is the chosen false discovery rate. The largest P-value that
+has P&lt;(i/m)Q is significant, and all P-values smaller than it are also
+significant.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-flotilla.compute.generic">
+<span id="flotilla-compute-generic-module"></span><h2>flotilla.compute.generic module<a class="headerlink" href="#module-flotilla.compute.generic" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="flotilla.compute.generic.apply_calc_robust">
+<tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">apply_calc_robust</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#apply_calc_robust"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.apply_calc_robust" title="Permalink to this definition">¶</a></dt>
+<dd><p>X and y are dataframes, returns slope, t-value and p-value of robust
+regression</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.compute.generic.apply_calc_rs">
+<tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">apply_calc_rs</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#apply_calc_rs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.apply_calc_rs" title="Permalink to this definition">¶</a></dt>
+<dd><p>apply R calculation method on each gene separately (for nan values)</p>
+<p>input:
+X - (cells X rpkms) pd.DataFrame
+y - (cells X psi) pd.Series</p>
+<p>output:
+two pd.Series of:
+R coef, p-value</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.compute.generic.apply_calc_slope">
+<tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">apply_calc_slope</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#apply_calc_slope"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.apply_calc_slope" title="Permalink to this definition">¶</a></dt>
+<dd><p>X and y are dataframes, returns slope, t-value and p-value of robust
+regression</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.compute.generic.apply_dcor">
+<tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">apply_dcor</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#apply_dcor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.apply_dcor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="flotilla.compute.generic.do_r">
+<tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">do_r</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#do_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.do_r" title="Permalink to this definition">¶</a></dt>
+<dd><p>do an R calculation, remove items with values missing in either</p>
+<p>input:
+x - predictor vector
+y - target vector</p>
+<p>optional:
+method - method to use (scipy.stats.pearsonr or scipy.stats.spearmanr)</p>
+<p>output:
+r, p (order as determined by the chosen method)</p>
+<p>return (nan, nan) if too few items overlap</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.compute.generic.dropna_mean">
+<tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">dropna_mean</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#dropna_mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.dropna_mean" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="flotilla.compute.generic.get_boosting_regressor">
+<tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">get_boosting_regressor</tt><big>(</big><em>x</em>, <em>y</em>, <em>verbose=False</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#get_boosting_regressor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.get_boosting_regressor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="flotilla.compute.generic.get_dcor">
+<tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">get_dcor</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#get_dcor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.get_dcor" title="Permalink to this definition">¶</a></dt>
+<dd><p>get dcor</p>
+<p>see: <a class="reference external" href="https://github.com/andrewdyates/dcor">https://github.com/andrewdyates/dcor</a></p>
+<p>input:
+x - predictor vector
+y - target vector</p>
+<p>output:
+dc, dr, dvx, dvy</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.compute.generic.get_regressor">
+<tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">get_regressor</tt><big>(</big><em>x</em>, <em>y</em>, <em>n_estimators=1500</em>, <em>n_tries=5</em>, <em>verbose=False</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#get_regressor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.get_regressor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="flotilla.compute.generic.get_robust_values">
+<tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">get_robust_values</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#get_robust_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.get_robust_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>get robust linear regression</p>
+<p>input:
+x - predictor vector
+y - target vector</p>
+<p>output:
+intercept, slope, t-statistic, p-value</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.compute.generic.get_slope">
+<tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">get_slope</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#get_slope"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.get_slope" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="flotilla.compute.generic.get_unstarted_events">
+<tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">get_unstarted_events</tt><big>(</big><em>mongodb</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#get_unstarted_events"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.get_unstarted_events" title="Permalink to this definition">¶</a></dt>
+<dd><p>get events that have not been started yet.
+generator sets started to True before returning an event</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-flotilla.compute.network">
+<span id="flotilla-compute-network-module"></span><h2>flotilla.compute.network module<a class="headerlink" href="#module-flotilla.compute.network" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="flotilla.compute.network.Networker">
+<em class="property">class </em><tt class="descclassname">flotilla.compute.network.</tt><tt class="descname">Networker</tt><a class="reference internal" href="../_modules/flotilla/compute/network.html#Networker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.network.Networker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Networks (the kind with nodes and edges)</p>
+<dl class="method">
+<dt id="flotilla.compute.network.Networker.adjacency">
+<tt class="descname">adjacency</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/network.html#Networker.adjacency"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.network.Networker.adjacency" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flotilla.compute.network.Networker.get_weight_fun">
+<tt class="descname">get_weight_fun</tt><big>(</big><em>fun_name='no_weight'</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/network.html#Networker.get_weight_fun"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.network.Networker.get_weight_fun" title="Permalink to this definition">¶</a></dt>
+<dd><p>return a function that performs a common transform on distance</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.compute.network.Networker.graph">
+<tt class="descname">graph</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/network.html#Networker.graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.network.Networker.graph" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.compute.network.Networker.weight_funs">
+<tt class="descname">weight_funs</tt><em class="property"> = ['no_weight', 'sq', 'arctan', 'arctan_sq']</em><a class="headerlink" href="#flotilla.compute.network.Networker.weight_funs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-flotilla.compute.predict">
+<span id="flotilla-compute-predict-module"></span><h2>flotilla.compute.predict module<a class="headerlink" href="#module-flotilla.compute.predict" title="Permalink to this headline">¶</a></h2>
+<p>Compute predictors on data, i.e. regressors or classifiers</p>
+<dl class="class">
+<dt id="flotilla.compute.predict.Classifier">
+<em class="property">class </em><tt class="descclassname">flotilla.compute.predict.</tt><tt class="descname">Classifier</tt><big>(</big><em>data</em>, <em>trait</em>, <em>predictor=&lt;class 'sklearn.ensemble.forest.ExtraTreesClassifier'&gt;</em>, <em>name='ExtraTreesClassifier'</em>, <em>predictor_kwargs=None</em>, <em>predictor_scoring_fun=None</em>, <em>score_cutoff_fun=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/predict.html#Classifier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.Classifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../flotilla.compute.html#flotilla.compute.predict.PredictorBase" title="flotilla.compute.predict.PredictorBase"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.predict.PredictorBase</span></tt></a></p>
+<p>Classifier - for categorical data</p>
+<dl class="attribute">
+<dt id="flotilla.compute.predict.Classifier.boosting_classifier_kwargs">
+<tt class="descname">boosting_classifier_kwargs</tt><em class="property"> = {'n_estimators': 80, 'max_features': 1000, 'learning_rate': 0.2, 'subsample': 0.6}</em><a class="headerlink" href="#flotilla.compute.predict.Classifier.boosting_classifier_kwargs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flotilla.compute.predict.Classifier.boosting_scoring_cutoff_fun">
+<tt class="descname">boosting_scoring_cutoff_fun</tt><big>(</big><em>scores</em><big>)</big><a class="headerlink" href="#flotilla.compute.predict.Classifier.boosting_scoring_cutoff_fun" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flotilla.compute.predict.Classifier.boosting_scoring_fun">
+<tt class="descname">boosting_scoring_fun</tt><big>(</big><em>clf</em><big>)</big><a class="headerlink" href="#flotilla.compute.predict.Classifier.boosting_scoring_fun" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.compute.predict.Classifier.default_classifier">
+<tt class="descname">default_classifier</tt><a class="headerlink" href="#flotilla.compute.predict.Classifier.default_classifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">ExtraTreesClassifier</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.compute.predict.Classifier.default_classifier_name">
+<tt class="descname">default_classifier_name</tt><em class="property"> = 'ExtraTreesClassifier'</em><a class="headerlink" href="#flotilla.compute.predict.Classifier.default_classifier_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="flotilla.compute.predict.PredictorBase">
+<em class="property">class </em><tt class="descclassname">flotilla.compute.predict.</tt><tt class="descname">PredictorBase</tt><big>(</big><em>data</em>, <em>trait</em>, <em>predictor=None</em>, <em>name='Predictor'</em>, <em>predictor_kwargs=None</em>, <em>predictor_scoring_fun=None</em>, <em>score_cutoff_fun=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/predict.html#PredictorBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.PredictorBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<dl class="attribute">
+<dt id="flotilla.compute.predict.PredictorBase.default_predictor_kwargs">
+<tt class="descname">default_predictor_kwargs</tt><em class="property"> = {'oob_score': True, 'n_jobs': 2, 'verbose': True, 'bootstrap': True, 'n_estimators': 100, 'random_state': 0, 'max_features': 'auto'}</em><a class="headerlink" href="#flotilla.compute.predict.PredictorBase.default_predictor_kwargs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="flotilla.compute.predict.PredictorBase.default_predictor_scoring_fun">
+<em class="property">static </em><tt class="descname">default_predictor_scoring_fun</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/predict.html#PredictorBase.default_predictor_scoring_fun"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.PredictorBase.default_predictor_scoring_fun" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="flotilla.compute.predict.PredictorBase.default_score_cutoff_fun">
+<em class="property">static </em><tt class="descname">default_score_cutoff_fun</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/predict.html#PredictorBase.default_score_cutoff_fun"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.PredictorBase.default_score_cutoff_fun" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flotilla.compute.predict.PredictorBase.fit">
+<tt class="descname">fit</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/predict.html#PredictorBase.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.PredictorBase.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit predictor to the data</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.compute.predict.PredictorBase.score">
+<tt class="descname">score</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/predict.html#PredictorBase.score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.PredictorBase.score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Collect scores from predictor</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="flotilla.compute.predict.Regressor">
+<em class="property">class </em><tt class="descclassname">flotilla.compute.predict.</tt><tt class="descname">Regressor</tt><big>(</big><em>data</em>, <em>trait</em>, <em>predictor=&lt;class 'sklearn.ensemble.forest.ExtraTreesRegressor'&gt;</em>, <em>name='ExtraTreesRegressor'</em>, <em>predictor_kwargs=None</em>, <em>predictor_scoring_fun=None</em>, <em>score_cutoff_fun=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/predict.html#Regressor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.Regressor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../flotilla.compute.html#flotilla.compute.predict.PredictorBase" title="flotilla.compute.predict.PredictorBase"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.predict.PredictorBase</span></tt></a></p>
+<p>Regressor - for continuous data</p>
+<dl class="attribute">
+<dt id="flotilla.compute.predict.Regressor.default_regressor">
+<tt class="descname">default_regressor</tt><a class="headerlink" href="#flotilla.compute.predict.Regressor.default_regressor" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">ExtraTreesRegressor</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-flotilla.compute.splicing">
+<span id="flotilla-compute-splicing-module"></span><h2>flotilla.compute.splicing module<a class="headerlink" href="#module-flotilla.compute.splicing" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="flotilla.compute.splicing.Modalities">
+<em class="property">class </em><tt class="descclassname">flotilla.compute.splicing.</tt><tt class="descname">Modalities</tt><big>(</big><em>excluded_max=0.2</em>, <em>included_min=0.8</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/splicing.html#Modalities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.Modalities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<dl class="method">
+<dt id="flotilla.compute.splicing.Modalities.assignments">
+<tt class="descname">assignments</tt><big>(</big><em>sqrt_jsd_modalities</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/splicing.html#Modalities.assignments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.Modalities.assignments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the modality which has the smallest square root JSD to each event</p>
+<dl class="docutils">
+<dt>sqrt_jsd_modalities <span class="classifier-delimiter">:</span> <span class="classifier">pandas.DataFrame</span></dt>
+<dd>A modalities x features dataframe of the square root
+Jensen-Shannon divergence between this event and each modality</dd>
+</dl>
+<dl class="docutils">
+<dt>assignments <span class="classifier-delimiter">:</span> <span class="classifier">pandas.Series</span></dt>
+<dd>The closest modality to each splicing event</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.compute.splicing.Modalities.bootstrapped_fit_transform">
+<tt class="descname">bootstrapped_fit_transform</tt><big>(</big><em>data</em>, <em>n_iter=100</em>, <em>thresh=0.6</em>, <em>min_samples=10</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/splicing.html#Modalities.bootstrapped_fit_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.Modalities.bootstrapped_fit_transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resample each splicing event n_iter times to robustly estimate
+modalities.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.compute.splicing.Modalities.counts">
+<tt class="descname">counts</tt><big>(</big><em>psi</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/splicing.html#Modalities.counts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.Modalities.counts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of events in each modality category</p>
+<dl class="docutils">
+<dt>psi <span class="classifier-delimiter">:</span> <span class="classifier">pandas.DataFrame</span></dt>
+<dd>A samples x features dataframe of psi scores of a splicing event</dd>
+</dl>
+<dl class="docutils">
+<dt>counts <span class="classifier-delimiter">:</span> <span class="classifier">pandas.Series</span></dt>
+<dd>Counts of each modality</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.compute.splicing.Modalities.fit_transform">
+<tt class="descname">fit_transform</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/splicing.html#Modalities.fit_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.Modalities.fit_transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given psi scores, estimate the modality of each</p>
+<dl class="docutils">
+<dt>data <span class="classifier-delimiter">:</span> <span class="classifier">pandas.DataFrame</span></dt>
+<dd>A samples x features dataframe, where you want to find the
+splicing modality of each column (feature)</dd>
+<dt>do_not_memoize <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd>Whether or not to memoize the results of the fit_transform on this
+data</dd>
+</dl>
+<dl class="docutils">
+<dt>assignments <span class="classifier-delimiter">:</span> <span class="classifier">pandas.Series</span></dt>
+<dd>Modality assignments of each column (feature)</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.compute.splicing.Modalities.modalities_bins">
+<tt class="descname">modalities_bins</tt><em class="property"> = array([[1, 0, 0],        [0, 1, 0],        [0, 0, 1],        [1, 0, 1],        [1, 1, 1]])</em><a class="headerlink" href="#flotilla.compute.splicing.Modalities.modalities_bins" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.compute.splicing.Modalities.modalities_names">
+<tt class="descname">modalities_names</tt><em class="property"> = ['excluded', 'middle', 'included', 'bimodal', 'uniform']</em><a class="headerlink" href="#flotilla.compute.splicing.Modalities.modalities_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flotilla.compute.splicing.Modalities.sqrt_jsd_modalities">
+<tt class="descname">sqrt_jsd_modalities</tt><big>(</big><em>binned</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/splicing.html#Modalities.sqrt_jsd_modalities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.Modalities.sqrt_jsd_modalities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the square root of the JSD of each splicing event versus
+all the modalities. Use square root of JSD because it&#8217;s a metric.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.compute.splicing.Modalities.true_modalities">
+<tt class="descname">true_modalities</tt><em class="property"> =    excluded  middle  included  bimodal  uniform 0         1       0         0        1        1 1         0       1         0        0        1 2         0       0         1        1        1  [3 rows x 5 columns]</em><a class="headerlink" href="#flotilla.compute.splicing.Modalities.true_modalities" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.compute.splicing.get_switchy_score_order">
+<tt class="descclassname">flotilla.compute.splicing.</tt><tt class="descname">get_switchy_score_order</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/splicing.html#get_switchy_score_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.get_switchy_score_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply switchy scores to a 2D array of data scores</p>
+<dl class="docutils">
+<dt>x <span class="classifier-delimiter">:</span> <span class="classifier">numpy.array</span></dt>
+<dd>A 2-D numpy array in the shape [n_events, n_samples]</dd>
+</dl>
+<dl class="docutils">
+<dt>numpy.array</dt>
+<dd>A 1-D array of the ordered indices, in switchy score order</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.compute.splicing.switchy_score">
+<tt class="descclassname">flotilla.compute.splicing.</tt><tt class="descname">switchy_score</tt><big>(</big><em>array</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/splicing.html#switchy_score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.switchy_score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform a 1D array of data scores to a vector of &#8220;switchy scores&#8221;</p>
+<p>Calculates std deviation and mean of sine- and cosine-transformed
+versions of the array. Better than sorting by just the mean which doesn&#8217;t
+push the really lowly variant events to the ends.</p>
+<dl class="docutils">
+<dt>array <span class="classifier-delimiter">:</span> <span class="classifier">numpy.array</span></dt>
+<dd>A 1-D numpy array or something that could be cast as such (like a list)</dd>
+</dl>
+<dl class="docutils">
+<dt>float</dt>
+<dd>The &#8220;switchy score&#8221; of the study_data which can then be compared to
+other splicing event study_data</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-flotilla.compute">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-flotilla.compute" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">flotilla.compute package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-flotilla.compute.decomposition">flotilla.compute.decomposition module</a></li>
+<li><a class="reference internal" href="#module-flotilla.compute.expression">flotilla.compute.expression module</a></li>
+<li><a class="reference internal" href="#module-flotilla.compute.generic">flotilla.compute.generic module</a></li>
+<li><a class="reference internal" href="#module-flotilla.compute.network">flotilla.compute.network module</a></li>
+<li><a class="reference internal" href="#module-flotilla.compute.predict">flotilla.compute.predict module</a></li>
+<li><a class="reference internal" href="#module-flotilla.compute.splicing">flotilla.compute.splicing module</a></li>
+<li><a class="reference internal" href="#module-flotilla.compute">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/apidoc/flotilla.compute.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">flotilla  documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
