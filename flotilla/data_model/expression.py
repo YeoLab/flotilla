@@ -16,7 +16,8 @@ class ExpressionData(BaseData):
 
     def __init__(self, data,
                  metadata=None, expression_thresh=_expression_thresh,
-                 feature_rename_col=None, outliers=None, log_base=None):
+                 feature_rename_col=None, outliers=None, log_base=None,
+                 pooled=None):
         """
         Parameters
         ----------
@@ -34,7 +35,7 @@ class ExpressionData(BaseData):
         super(ExpressionData, self).__init__(
             data, metadata,
             feature_rename_col=feature_rename_col,
-            outliers=outliers)
+            outliers=outliers, pooled=pooled)
 
         self._var_cut = data.var().dropna().mean() + 2 * data.var() \
             .dropna().std()

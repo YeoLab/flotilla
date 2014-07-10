@@ -5,7 +5,6 @@ import itertools
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.colors import rgb2hex
 import seaborn as sns
 
 from .base import BaseData
@@ -16,7 +15,7 @@ from ..visualize.color import purples
 from ..visualize.predict import ClassifierViz
 from ..visualize.splicing import ModalitiesViz
 from ..util import cached_property, memoize
-from ..visualize.color import red, grey
+from ..visualize.color import red
 from ..visualize.splicing import lavalamp
 
 
@@ -58,7 +57,7 @@ class SplicingData(BaseData):
         super(SplicingData, self).__init__(
             data, metadata,
             feature_rename_col=feature_rename_col,
-            outliers=outliers)
+            outliers=outliers, pooled=pooled)
 
         self.binsize = binsize
         self.bins = np.arange(0, 1 + self.binsize, self.binsize)
@@ -105,7 +104,6 @@ class SplicingData(BaseData):
         data = self._subset(self.data, sample_ids, feature_ids)
         return self.modalities_calculator.bootstrapped_fit_transform(
             data, n_iter=n_iter, thresh=thresh)
-
 
     @memoize
     def modalities_counts(self, sample_ids=None, feature_ids=None):
@@ -290,7 +288,8 @@ class SplicingData(BaseData):
             modalities_assignments = self.modalities()
         modalities_names = self.modalities_calculator.modalities_names
 
-        f, axes = plt.subplots(len(modalities_names), 1, figsize=(18, 3*len(modalities_names)))
+        f, axes = plt.subplots(len(modalities_names), 1,
+                               figsize=(18, 3 * len(modalities_names)))
         axes = itertools.chain(axes)
 
         if color is None:
@@ -305,8 +304,7 @@ class SplicingData(BaseData):
             lavalamp(psi, color=color, ax=ax, x_offset=x_offset)
             ax.set_title(modality)
 
-
-    def plot_event(self, feature_id, sample_ids=None, sample_groupby=None, 
+    def plot_event(self, feature_id, sample_ids=None, sample_groupby=None,
                    sample_order=None, ax=None):
         """
         Plot the violinplot of a splicing event (should also show NMF movement)
@@ -343,8 +341,10 @@ class SplicingData(BaseData):
 
                 # def plot_shared_events(self):
 
+
 class SpliceJunctionData(SplicingData):
-    """Class to hold splice junction information from SJ.out.tab files from STAR
+    """Class to hold splice junction information from SJ.out.tab files from
+    STAR
 
     Attributes
     ----------
@@ -381,7 +381,6 @@ class DownsampledSplicingData(BaseData):
     n_components = 2
     _binsize = 0.1
     _var_cut = 0.2
-
 
     def __init__(self, df, sample_descriptors):
         """Instantiate an object of downsampled splicing data

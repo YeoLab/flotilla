@@ -97,7 +97,6 @@ def memoize(obj):
     return memoizer
 
 
-
 class cached_property(object):
     '''Decorator for read-only properties evaluated only once within TTL period.
 
