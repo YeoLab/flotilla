@@ -2,8 +2,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 
-from ..compute.splicing import get_switchy_score_order
 from .color import red, blue, purple, grey, green
+from ..compute.splicing import get_switchy_score_order
+from ..util import as_numpy
 
 
 class ModalitiesViz(object):
@@ -94,7 +95,8 @@ class ModalitiesViz(object):
         pass
 
 
-def lavalamp(psi, color=None, x_offset=0, title='', ax=None):
+def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
+             switchy_score_psi=None, marker='d', plot_kws=None):
     """Make a 'lavalamp' scatter plot of many splicing events
 
     Useful for visualizing many splicing events at once.
@@ -112,10 +114,16 @@ def lavalamp(psi, color=None, x_offset=0, title='', ax=None):
         celltypes at once.
     title : str
         Title of the plot. Default ''
-
     ax : matplotlib.Axes object
         The axes to plot on. If not provided, will be created
-
+    switchy_score_psi : pandas.DataFrame
+        The psi scores to sort on for the plotting order. By default use the
+        psi provided, but sometimes you want to plot multiple psi scores on
+        the same plot, with the same events.
+    marker : str
+        A valid matplotlib marker. Default is 'd' (thin diamond)
+    plot_kws : dict
+        Keyword arguments to supply to plot()
 
     Returns
     -------
@@ -128,29 +136,34 @@ def lavalamp(psi, color=None, x_offset=0, title='', ax=None):
     else:
         fig = plt.gcf()
 
-    try:
-        # This is a pandas Dataframe
-        y = psi.values
-    except AttributeError:
-        # This is a numpy array
-        y = psi
+    color = green if color is None else color
+    plot_kws = {} if plot_kws is None else plot_kws
+    plot_kws.setdefault('color', color)
+    plot_kws.setdefault('alpha', 0.2)
+    plot_kws.setdefault('markersize', 10)
+    plot_kws.setdefault('marker', marker)
+    plot_kws.setdefault('linestyle', 'None')
 
-    order = get_switchy_score_order(y)
+    y = as_numpy(psi)
+
+    if switchy_score_psi is not None:
+        switchy_score_y = as_numpy(switchy_score_psi)
+    else:
+        switchy_score_y = y
+
+    order = get_switchy_score_order(switchy_score_y)
     y = y[:, order]
 
     n_samples, n_events = psi.shape
     # .astype(float) is to get rid of a deprecation warning
-    # x = np.repeat(np.arange(n_samples), n_events).reshape(n_samples,
-    #                                                        n_events).astype(float)
-    x = np.vstack((np.arange(n_events) for _ in xrange(n_samples))).astype(
-        float)
+    x = np.vstack((np.arange(n_events)
+                   for _ in xrange(n_samples))).astype(float)
     x += x_offset
 
     # Add one so the last value is actually included instead of cut off
     xmax = x.max() + 1
 
-    color = green if color is None else color
-    ax.plot(x, y, 'd', color=color, alpha=0.2, markersize=10)
+    ax.plot(x, y, **plot_kws)
     sns.despine()
     ax.set_ylabel('$\Psi$')
     ax.set_xlabel('{} splicing events'.format(n_events))
