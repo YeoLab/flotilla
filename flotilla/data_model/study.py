@@ -886,7 +886,7 @@ class Study(StudyFactory):
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
         self.splicing.plot_event(feature_id, sample_ids,
                                  sample_groupby=self.sample_id_to_celltype,
-                                                                                                ax=ax)
+                                 ax=ax)
 
 
 # Add interactive visualizations

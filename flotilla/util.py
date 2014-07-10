@@ -155,3 +155,15 @@ class cached_property(object):
                 cache = inst._cache = {}
             cache[self.__name__] = (value, now)
         return value
+
+
+def as_numpy(x):
+    """Given either a pandas dataframe or a numpy array, always return a
+    numpy array.
+    """
+    try:
+        # Pandas DataFrame
+        return x.values
+    except AttributeError:
+        # Numpy array
+        return x
