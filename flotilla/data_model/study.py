@@ -30,6 +30,7 @@ SPECIES_DATA_PACKAGE_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects'
 # import flotilla
 # FLOTILLA_DIR = os.path.dirname(flotilla.__file__)
 
+
 class StudyFactory(object):
     _accepted_filetypes = 'tsv'
 
@@ -262,7 +263,7 @@ class Study(StudyFactory):
         __init__ then experienced developers will certainly see your code as a
         kid's playground."
 
-        [1] http://stackoverflow.com/questions/12513185/removing-the-work-from-init-to-aid-unit-testing
+        [1] http://stackoverflow.com/q/12513185/1628971
         """
         super(Study, self).__init__()
         # if params_dict is None:
@@ -273,7 +274,7 @@ class Study(StudyFactory):
         self.species = species
         self.gene_ontology_data = gene_ontology_data
 
-        self.experiment_design = Metadata(sample_metadata)
+        self.experiment_design = MetaData(sample_metadata)
         self.default_sample_subsets = \
             [col for col in self.experiment_design.data.columns
              if self.experiment_design.data[col].dtype == bool]
@@ -299,11 +300,12 @@ class Study(StudyFactory):
             pooled = None
 
         if expression_data is not None:
-            self.expression = ExpressionData(expression_data,
+            self.expression = ExpressionData(
+                expression_data,
                 expression_feature_data,
                 feature_rename_col=expression_feature_rename_col,
                 outliers=outliers,
-                log_base=expression_log_base)
+                log_base=expression_log_base, pooled=pooled)
             self.expression.networks = NetworkerViz(self.expression)
             self.default_feature_set_ids.extend(self.expression.feature_sets
                                                 .keys())
@@ -311,7 +313,7 @@ class Study(StudyFactory):
             self.splicing = SplicingData(
                 splicing_data, splicing_feature_data,
                 feature_rename_col=splicing_feature_rename_col,
-                outliers=outliers)
+                outliers=outliers, pooled=pooled)
             self.splicing.networks = NetworkerViz(self.splicing)
         if mapping_stats_data is not None:
             self.mapping_stats = MappingStatsData(
@@ -545,12 +547,12 @@ class Study(StudyFactory):
         ------
 
         """
-        #TODO.md: Boyko/Patrick please implement
+        # TODO.md: Boyko/Patrick please implement
         raise NotImplementedError
 
-
     def jsd(self):
-        """Performs Jensen-Shannon Divergence on both splicing and expression study_data
+        """Performs Jensen-Shannon Divergence on both splicing and expression
+        study_data
 
         Jensen-Shannon divergence is a method of quantifying the amount of
         change in distribution of one measurement (e.g. a splicing event or a
@@ -601,23 +603,19 @@ class Study(StudyFactory):
                 feature_subset, rename)
 
     def sample_subset_to_sample_ids(self, phenotype_subset=None):
-        """Convert a string naming a subset of phenotypes in the data in to 
+        """Convert a string naming a subset of phenotypes in the data into
         sample ids
-        
+
         Parameters
         ----------
         phenotype_subset : str
             A valid string describing a boolean phenotype described in the
             experiment_design data
-        
+
         Returns
         -------
         sample_ids : list of strings
             List of sample ids in the data
-            
-        Raises
-        ------
-        
         """
         if phenotype_subset is None or 'all_samples'.startswith(
                 phenotype_subset):
@@ -628,8 +626,8 @@ class Study(StudyFactory):
                 self.experiment_design.data[phenotype_subset.lstrip("~")],
                 dtype='bool')
         else:
-            sample_ind = pd.Series(self.experiment_design.data[
-                                       phenotype_subset], dtype='bool')
+            sample_ind = pd.Series(
+                self.experiment_design.data[phenotype_subset], dtype='bool')
         sample_ids = self.experiment_design.data.index[sample_ind]
         return sample_ids
 
@@ -643,7 +641,8 @@ class Study(StudyFactory):
         Parameters
         ----------
         data_type : str
-            One of the names of the data types, e.g. "expression" or "splicing"
+            One of the names of the data types, e.g. "expression" or
+            "splicing"
         x_pc : int
             Which principal component to plot on the x-axis
         y_pc : int
@@ -671,7 +670,7 @@ class Study(StudyFactory):
         feature_ids = self.feature_subset_to_feature_ids(data_type,
                                                          feature_subset,
                                                          rename=False)
-        #TODO: move this kwarg stuff into visualize
+        # TODO: move this kwarg stuff into visualize
         kwargs['x_pc'] = x_pc
         kwargs['y_pc'] = y_pc
         kwargs['sample_ids'] = sample_ids
@@ -842,8 +841,9 @@ class Study(StudyFactory):
         return celltype_event_counts[celltype_event_counts <= n]
 
     def percent_unique_celltype_events(self, n=1):
-        return self.unique_celltype_event_counts(n).sum(axis=1) \
-               / self.celltype_event_counts.sum(axis=1).astype(float) * 100
+        n_unique = self.unique_celltype_event_counts(n).sum(axis=1)
+        n_total = self.celltype_event_counts.sum(axis=1).astype(float)
+        return n_unique / n_total * 100
 
     @property
     def celltype_modalities(self):
@@ -872,11 +872,12 @@ class Study(StudyFactory):
         for i, (color, sample_ids) in enumerate(grouped.groups.iteritems()):
             x_offset = 1. / (i + 1)
             sample_ids = celltype_samples.intersection(sample_ids)
-            self.splicing.plot_modalities_lavalamps(sample_ids=sample_ids,
-                                                    color=color,
-                                                    x_offset=x_offset,
-                                                    axes=axes,
-                                                    use_these_modalities=use_these_modalities)
+            self.splicing.plot_modalities_lavalamps(
+                sample_ids=sample_ids,
+                color=color,
+                x_offset=x_offset,
+                axes=axes,
+                use_these_modalities=use_these_modalities)
 
     def plot_event(self, feature_id, sample_subset=None, ax=None):
         """Plot the violinplot of an event
