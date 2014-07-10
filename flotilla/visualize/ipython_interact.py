@@ -6,6 +6,7 @@ import itertools
 import sys
 import warnings
 
+from IPython.html.widgets import interact
 import matplotlib.pyplot as plt
 
 from .network import NetworkerViz
@@ -24,24 +25,11 @@ class Interactive(object):
     """
 
     def __init__(self, *args, **kwargs):
-        # super(InteractiveStudy, self).__init__(*args, **kwargs)
         self._default_x_pc = 1
         self._default_y_pc = 2
-        # [self.minimal_study_parameters.add(param) for param in
-        #  ['default_group_id', 'default_group_ids',
-        #   'default_list_id', 'default_list_ids', ]]
-        # [self.minimal_study_parameters.add(i) for i in
-        #  ['experiment_design_data', ]]
-        # self.validate_params()
-
 
     @staticmethod
     def interactive_pca(self):
-
-        from IPython.html.widgets import interact
-
-
-        #not sure why nested fxns are required for this, but they are... i think...
         def do_interact(data_type='expression',
                         sample_subset=self.default_sample_subsets,
                         feature_subset=self.default_feature_subset,
@@ -83,10 +71,6 @@ class Interactive(object):
 
         feature_sets = list(set(itertools.chain(*self.default_feature_subsets
                                                 .values())))
-        # for k, v in feature_sets.items():
-        #     v.update({'custom': None})
-        #TODO: use nested interact or something to switch between
-        # feature_sets for a particular data type
         interact(do_interact,
                  data_type=('expression', 'splicing'),
                  sample_subset=self.default_sample_subsets,
@@ -99,7 +83,8 @@ class Interactive(object):
     def interactive_graph(self):
         from IPython.html.widgets import interact
 
-        #not sure why nested fxns are required for this, but they are... i think...
+        # not sure why nested fxns are required for this, but they are... i
+        # think...
         def do_interact(data_type='expression',
                         sample_subset=self.default_sample_subsets,
                         feature_subset=self.default_feature_subsets,
@@ -156,7 +141,6 @@ class Interactive(object):
 
         from IPython.html.widgets import interact
 
-        #not sure why nested fxns are required for this, but they are... i think...
         def do_interact(data_type,
                         sample_subset,
                         feature_subset,
@@ -174,21 +158,15 @@ class Interactive(object):
             if data_type == 'splicing':
                 data_object = self.splicing
 
-            # assert (feature_subset in data_object.feature_subsets.keys())
-
-            # classifier = data_object.classify(feature_subset, sample_subset,
-            #                                   categorical_variable)
-            # classifier(categorical_variable,
-            #            feature_score_std_cutoff=feature_score_std_cutoff)
-
-            self.plot_classifier(trait=categorical_variable,
-                                 feature_subset=feature_subset,
-                                 sample_subset=sample_subset,
-                                 feature_score_std_cutoff=feature_score_std_cutoff)
-            sys.stdout.write("retrieve this predictor " \
+            self.plot_classifier(
+                trait=categorical_variable,
+                feature_subset=feature_subset,
+                sample_subset=sample_subset,
+                feature_score_std_cutoff=feature_score_std_cutoff)
+            sys.stdout.write("retrieve this predictor "
                              "with:\npredictor=study.%s.get_predictor('%s', "
                              "'%s', '%s') pca=predictor('%s', "
-                             "feature_score_std_cutoff=%f)" \
+                             "feature_score_std_cutoff=%f)"
                              % (data_type, feature_subset, sample_subset,
                                 categorical_variable, categorical_variable,
                                 feature_score_std_cutoff))
@@ -231,18 +209,21 @@ class Interactive(object):
             try:
                 assert sample1 in data_obj.df.index
             except:
-                sys.stdout.write("sample: {}, is not in {} DataFrame, try a different sample ID".format(
-                    sample1, data_type))
+                sys.stdout.write("sample: {}, is not in {} DataFrame, "
+                                 "try a different sample ID".format(sample1,
+                                                                    data_type))
                 return
             try:
                 assert sample2 in data_obj.df.index
             except:
-                sys.stdout.write("sample: {}, is not in {} DataFrame, try a different sample ID".format(
-                    sample2, data_type))
+                sys.stdout.write("sample: {}, is not in {} DataFrame, "
+                                 "try a different sample ID".format(sample2,
+                                                                    data_type))
                 return
             self.localZ_result = data_obj.plot_twoway(sample1, sample2,
                                                       pCut=pCut).result_
-            sys.stdout.write("local_z finished, find the result in <this_object>.localZ_result_")
+            sys.stdout.write("local_z finished, find the result in "
+                             "<this_object>.localZ_result_")
 
         interact(do_interact,
                  data_type=('expression', 'splicing'),
