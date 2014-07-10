@@ -142,17 +142,17 @@
 <span class="kn">from</span> <span class="nn">.color</span> <span class="kn">import</span> <span class="n">green</span>
 
 
-<div class="viewcode-block" id="PredictorBaseViz"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.predict.PredictorBaseViz">[docs]</a><span class="k">class</span> <span class="nc">PredictorBaseViz</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorBaseViz"><a class="viewcode-back" href="../../../flotilla.visualize.html#flotilla.visualize.predict.PredictorBaseViz">[docs]</a><span class="k">class</span> <span class="nc">PredictorBaseViz</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="c"># class PredictorBaseViz(DecompositionViz):</span>
     <span class="n">_reducer_plotting_args</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="c"># def __init__(self, *args, **kwargs):</span>
     <span class="c">#     super(PredictorBaseViz, self).__init__(*args, **kwargs)</span>
 
-<div class="viewcode-block" id="PredictorBaseViz.set_reducer_plotting_args"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.predict.PredictorBaseViz.set_reducer_plotting_args">[docs]</a>    <span class="k">def</span> <span class="nf">set_reducer_plotting_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rpa</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorBaseViz.set_reducer_plotting_args"><a class="viewcode-back" href="../../../flotilla.visualize.html#flotilla.visualize.predict.PredictorBaseViz.set_reducer_plotting_args">[docs]</a>    <span class="k">def</span> <span class="nf">set_reducer_plotting_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rpa</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reducer_plotting_args</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">rpa</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="PredictorBaseViz.generate_scatter_table"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.predict.PredictorBaseViz.generate_scatter_table">[docs]</a>    <span class="k">def</span> <span class="nf">generate_scatter_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+<div class="viewcode-block" id="PredictorBaseViz.generate_scatter_table"><a class="viewcode-back" href="../../../flotilla.visualize.html#flotilla.visualize.predict.PredictorBaseViz.generate_scatter_table">[docs]</a>    <span class="k">def</span> <span class="nf">generate_scatter_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                                <span class="n">excel_out</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">external_xref</span><span class="o">=</span><span class="p">[]):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        make a table to make scatterplots... maybe for plot.ly</span>
@@ -217,7 +217,7 @@
 
         <span class="k">return</span> <span class="n">zz</span>
 </div>
-<div class="viewcode-block" id="PredictorBaseViz.do_pca"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.predict.PredictorBaseViz.do_pca">[docs]</a>    <span class="k">def</span> <span class="nf">do_pca</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">classifier_name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">plotting_kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorBaseViz.do_pca"><a class="viewcode-back" href="../../../flotilla.visualize.html#flotilla.visualize.predict.PredictorBaseViz.do_pca">[docs]</a>    <span class="k">def</span> <span class="nf">do_pca</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">classifier_name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">plotting_kwargs</span><span class="p">):</span>
 
         <span class="sd">&quot;&quot;&quot;plot kernel density of predictor scores and draw a vertical line</span>
 <span class="sd">        where the cutoff was selected</span>
@@ -242,8 +242,8 @@
         <span class="k">return</span> <span class="n">pca</span>
 
 </div></div>
-<div class="viewcode-block" id="RegressorViz"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.predict.RegressorViz">[docs]</a><span class="k">class</span> <span class="nc">RegressorViz</span><span class="p">(</span><span class="n">Regressor</span><span class="p">,</span> <span class="n">PredictorBaseViz</span><span class="p">):</span>
-<div class="viewcode-block" id="RegressorViz.check_a_feature"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.predict.RegressorViz.check_a_feature">[docs]</a>    <span class="k">def</span> <span class="nf">check_a_feature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_name</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="o">**</span><span class="n">violinplot_kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="RegressorViz"><a class="viewcode-back" href="../../../flotilla.visualize.html#flotilla.visualize.predict.RegressorViz">[docs]</a><span class="k">class</span> <span class="nc">RegressorViz</span><span class="p">(</span><span class="n">Regressor</span><span class="p">,</span> <span class="n">PredictorBaseViz</span><span class="p">):</span>
+<div class="viewcode-block" id="RegressorViz.check_a_feature"><a class="viewcode-back" href="../../../flotilla.visualize.html#flotilla.visualize.predict.RegressorViz.check_a_feature">[docs]</a>    <span class="k">def</span> <span class="nf">check_a_feature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_name</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="o">**</span><span class="n">violinplot_kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Make Violin Plots for a gene/probe&#39;s value in the sets defined in</span>
 <span class="sd">        sets</span>
 
@@ -260,7 +260,7 @@
         <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">()</span>
 
 </div></div>
-<div class="viewcode-block" id="ClassifierViz"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.predict.ClassifierViz">[docs]</a><span class="k">class</span> <span class="nc">ClassifierViz</span><span class="p">(</span><span class="n">Classifier</span><span class="p">,</span> <span class="n">PredictorBaseViz</span><span class="p">):</span>
+<div class="viewcode-block" id="ClassifierViz"><a class="viewcode-back" href="../../../flotilla.visualize.html#flotilla.visualize.predict.ClassifierViz">[docs]</a><span class="k">class</span> <span class="nc">ClassifierViz</span><span class="p">(</span><span class="n">Classifier</span><span class="p">,</span> <span class="n">PredictorBaseViz</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Visualize results from classification</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -293,7 +293,7 @@
         <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">pca</span>
 
-<div class="viewcode-block" id="ClassifierViz.plot_classifier_scores"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.predict.ClassifierViz.plot_classifier_scores">[docs]</a>    <span class="k">def</span> <span class="nf">plot_classifier_scores</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">classifier_name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="ClassifierViz.plot_classifier_scores"><a class="viewcode-back" href="../../../flotilla.visualize.html#flotilla.visualize.predict.ClassifierViz.plot_classifier_scores">[docs]</a>    <span class="k">def</span> <span class="nf">plot_classifier_scores</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">classifier_name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        plot kernel density of predictor scores and draw a vertical line where</span>
 <span class="sd">        the cutoff was selected</span>

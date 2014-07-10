@@ -94,7 +94,7 @@
 <li><a class="reference internal" href="#">flotilla package</a><ul>
 <li><a class="reference internal" href="#subpackages">Subpackages</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#flotilla-database-module">flotilla.database module</a></li>
+<li><a class="reference internal" href="#module-flotilla.database">flotilla.database module</a></li>
 <li><a class="reference internal" href="#module-flotilla.external">flotilla.external module</a></li>
 <li><a class="reference internal" href="#flotilla-setup-module">flotilla.setup module</a></li>
 <li><a class="reference internal" href="#module-flotilla.util">flotilla.util module</a></li>
@@ -187,8 +187,54 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="flotilla-database-module">
-<h2>flotilla.database module<a class="headerlink" href="#flotilla-database-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-flotilla.database">
+<span id="flotilla-database-module"></span><h2>flotilla.database module<a class="headerlink" href="#module-flotilla.database" title="Permalink to this headline">¶</a></h2>
+<p>handles database connection, performs operations as a slave if run as a script.</p>
+<dl class="function">
+<dt id="flotilla.database.begin">
+<tt class="descclassname">flotilla.database.</tt><tt class="descname">begin</tt><big>(</big><em>flotilla_project='http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22'</em><big>)</big><a class="reference internal" href="../_modules/flotilla/database.html#begin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.database.begin" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="flotilla.database.fill_database">
+<tt class="descclassname">flotilla.database.</tt><tt class="descname">fill_database</tt><big>(</big><em>mongodb, predictor, target, verbose=False, letters=['P', 'N', 'M', 'S']</em><big>)</big><a class="reference internal" href="../_modules/flotilla/database.html#fill_database"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.database.fill_database" title="Permalink to this definition">¶</a></dt>
+<dd><p>mongodb - mongo database connection object
+predictor - X values, i.e. RPKMs.  Rows == cell ids, cols == gene ids
+target - Y values, i.e. PSIs.  Rows == cell ids, cols == exon ids</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.database.get_mongo_db">
+<tt class="descclassname">flotilla.database.</tt><tt class="descname">get_mongo_db</tt><big>(</big><em>db</em>, <em>mongoHost='sauron.ucsd.edu'</em>, <em>mongoPort=8838</em><big>)</big><a class="reference internal" href="../_modules/flotilla/database.html#get_mongo_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.database.get_mongo_db" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="flotilla.database.get_unstarted_events">
+<tt class="descclassname">flotilla.database.</tt><tt class="descname">get_unstarted_events</tt><big>(</big><em>mongodb</em><big>)</big><a class="reference internal" href="../_modules/flotilla/database.html#get_unstarted_events"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.database.get_unstarted_events" title="Permalink to this definition">¶</a></dt>
+<dd><p>get events that have not been started yet.
+generator sets started to True before returning an event</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.database.load_event_list">
+<tt class="descclassname">flotilla.database.</tt><tt class="descname">load_event_list</tt><big>(</big><em>mongo</em>, <em>target</em>, <em>target_type='SE'</em><big>)</big><a class="reference internal" href="../_modules/flotilla/database.html#load_event_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.database.load_event_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="flotilla.database.poll">
+<tt class="descclassname">flotilla.database.</tt><tt class="descname">poll</tt><big>(</big><em>mongodb</em><big>)</big><a class="reference internal" href="../_modules/flotilla/database.html#poll"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.database.poll" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="flotilla.database.reset_event_data">
+<tt class="descclassname">flotilla.database.</tt><tt class="descname">reset_event_data</tt><big>(</big><em>mongodb</em><big>)</big><a class="reference internal" href="../_modules/flotilla/database.html#reset_event_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.database.reset_event_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="flotilla.database.reset_event_list">
+<tt class="descclassname">flotilla.database.</tt><tt class="descname">reset_event_list</tt><big>(</big><em>mongodb</em><big>)</big><a class="reference internal" href="../_modules/flotilla/database.html#reset_event_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.database.reset_event_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 <div class="section" id="module-flotilla.external">
 <span id="flotilla-external-module"></span><h2>flotilla.external module<a class="headerlink" href="#module-flotilla.external" title="Permalink to this headline">¶</a></h2>
@@ -374,7 +420,7 @@ then just evaluate the function and don&#8217;t memoize it.</dd>
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-flotilla" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="flotilla.embark">
-<tt class="descclassname">flotilla.</tt><tt class="descname">embark</tt><big>(</big><em>data_package_url</em><big>)</big><a class="reference internal" href="../_modules/flotilla.html#embark"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.embark" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">flotilla.</tt><tt class="descname">embark</tt><big>(</big><em>study_name</em><big>)</big><a class="reference internal" href="../_modules/flotilla.html#embark"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.embark" title="Permalink to this definition">¶</a></dt>
 <dd><p>Begin your journey of data exploration.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />

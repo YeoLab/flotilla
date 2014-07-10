@@ -136,7 +136,8 @@
 <span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">TimeoutError</span>
 
 
-<div class="viewcode-block" id="get_regressor"><a class="viewcode-back" href="../../../flotilla.compute.html#flotilla.compute.generic.get_regressor">[docs]</a><span class="k">def</span> <span class="nf">get_regressor</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_estimators</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span> <span class="n">n_tries</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="get_regressor"><a class="viewcode-back" href="../../../flotilla.compute.html#flotilla.compute.generic.get_regressor">[docs]</a><span class="k">def</span> <span class="nf">get_regressor</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_estimators</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span> <span class="n">pCut</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">n_tries</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                  <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;getting regressor</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
     <span class="n">clfs</span> <span class="o">=</span> <span class="p">[]</span>
@@ -181,22 +182,25 @@
 <span class="sd">    generator sets started to True before returning an event</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">go_on</span> <span class="o">=</span> <span class="bp">True</span>
-    <span class="k">while</span> <span class="n">go_on</span><span class="p">:</span>
+    <span class="k">while</span> <span class="n">go_on</span> <span class="o">==</span> <span class="bp">True</span><span class="p">:</span>
+
         <span class="n">event</span> <span class="o">=</span> <span class="n">mongodb</span><span class="p">[</span><span class="s">&#39;list&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s">&quot;started&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">})</span>
+
         <span class="k">if</span> <span class="n">event</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">go_on</span> <span class="o">=</span> <span class="bp">False</span>
+
         <span class="k">else</span><span class="p">:</span>
             <span class="n">event</span><span class="p">[</span><span class="s">&#39;started&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
             <span class="n">mongodb</span><span class="p">[</span><span class="s">&#39;list&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
             <span class="k">yield</span> <span class="n">event</span>
 
 </div>
-<span class="nd">@timeout</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>  <span class="c"># because these sometimes hang</span>
+<span class="nd">@timeout</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>  <span class="c">#because these sometimes hang</span>
 <div class="viewcode-block" id="get_slope"><a class="viewcode-back" href="../../../flotilla.compute.html#flotilla.compute.generic.get_slope">[docs]</a><span class="k">def</span> <span class="nf">get_slope</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">stats</span><span class="o">.</span><span class="n">linregress</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
 </div>
-<span class="nd">@timeout</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>  <span class="c"># because these sometimes hang</span>
+<span class="nd">@timeout</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>  <span class="c">#because these sometimes hang</span>
 <div class="viewcode-block" id="do_r"><a class="viewcode-back" href="../../../flotilla.compute.html#flotilla.compute.generic.do_r">[docs]</a><span class="k">def</span> <span class="nf">do_r</span><span class="p">(</span><span class="n">s_1</span><span class="p">,</span> <span class="n">s_2</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">stats</span><span class="o">.</span><span class="n">pearsonr</span><span class="p">,</span> <span class="n">min_items</span><span class="o">=</span><span class="mi">12</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    do an R calculation, remove items with values missing in either</span>
@@ -220,7 +224,7 @@
     <span class="k">return</span> <span class="n">method</span><span class="p">(</span><span class="n">s_1</span><span class="p">,</span> <span class="n">s_2</span><span class="p">)</span>
 
 </div>
-<span class="nd">@timeout</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>  <span class="c"># because these sometimes hang</span>
+<span class="nd">@timeout</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>  <span class="c">#because these sometimes hang</span>
 <div class="viewcode-block" id="get_robust_values"><a class="viewcode-back" href="../../../flotilla.compute.html#flotilla.compute.generic.get_robust_values">[docs]</a><span class="k">def</span> <span class="nf">get_robust_values</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    get robust linear regression</span>
@@ -236,9 +240,8 @@
     <span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="kn">as</span> <span class="nn">sm</span>
 
     <span class="n">rlm_result</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">RLM</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">sm</span><span class="o">.</span><span class="n">add_constant</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">missing</span><span class="o">=</span><span class="s">&#39;drop&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
-    <span class="n">results</span> <span class="o">=</span> <span class="n">rlm_result</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">rlm_result</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> \
-        <span class="n">rlm_result</span><span class="o">.</span><span class="n">tvalues</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">rlm_result</span><span class="o">.</span><span class="n">pvalues</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">results</span>
+    <span class="k">return</span> <span class="n">rlm_result</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">rlm_result</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">rlm_result</span><span class="o">.</span><span class="n">tvalues</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> \
+           <span class="n">rlm_result</span><span class="o">.</span><span class="n">pvalues</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
 
 </div>
 <span class="nd">@timeout</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
@@ -256,7 +259,7 @@
 <span class="sd">    dc, dr, dvx, dvy</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c"># cython version of dcor</span>
+    <span class="c">#cython version of dcor</span>
     <span class="kn">import</span> <span class="nn">dcor_cpy</span> <span class="kn">as</span> <span class="nn">dcor</span>
 
     <span class="n">dc</span><span class="p">,</span> <span class="n">dr</span><span class="p">,</span> <span class="n">dvx</span><span class="p">,</span> <span class="n">dvy</span> <span class="o">=</span> <span class="n">dcor</span><span class="o">.</span><span class="n">dcov_all</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
@@ -265,7 +268,8 @@
 </div>
 <span class="nd">@timeout</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
 <div class="viewcode-block" id="apply_calc_rs"><a class="viewcode-back" href="../../../flotilla.compute.html#flotilla.compute.generic.apply_calc_rs">[docs]</a><span class="k">def</span> <span class="nf">apply_calc_rs</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">stats</span><span class="o">.</span><span class="n">pearsonr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;apply R calculation method on each gene separately (for nan values)</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    apply R calculation method on each gene separately (for nan values)</span>
 
 <span class="sd">    input:</span>
 <span class="sd">    X - (cells X rpkms) pd.DataFrame</span>
@@ -294,16 +298,14 @@
 </div>
 <span class="nd">@timeout</span><span class="p">(</span><span class="mi">220</span><span class="p">)</span>
 <div class="viewcode-block" id="apply_calc_robust"><a class="viewcode-back" href="../../../flotilla.compute.html#flotilla.compute.generic.apply_calc_robust">[docs]</a><span class="k">def</span> <span class="nf">apply_calc_robust</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;X and y are dataframes, returns slope, t-value and p-value of robust</span>
-<span class="sd">    regression</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;X and y are dataframes, returns slope, t-value and p-value of robust regression&quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;getting robust regression</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
-    <span class="n">out_I</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">y</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>  <span class="c"># intercept</span>
-    <span class="n">out_S</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">y</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>  <span class="c"># slope</span>
-    <span class="n">out_T</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">y</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>  <span class="c"># t-value</span>
-    <span class="n">out_P</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">y</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>  <span class="c"># p-value</span>
+    <span class="n">out_I</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">y</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>  <span class="c">#intercept</span>
+    <span class="n">out_S</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">y</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>  <span class="c">#slope</span>
+    <span class="n">out_T</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">y</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>  <span class="c">#t-value</span>
+    <span class="n">out_P</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">y</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>  <span class="c">#p-value</span>
 
     <span class="k">for</span> <span class="n">this_id</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">X</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">this_id</span><span class="p">)</span>
@@ -322,8 +324,7 @@
 </div>
 <span class="nd">@timeout</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
 <div class="viewcode-block" id="apply_calc_slope"><a class="viewcode-back" href="../../../flotilla.compute.html#flotilla.compute.generic.apply_calc_slope">[docs]</a><span class="k">def</span> <span class="nf">apply_calc_slope</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;X and y are dataframes, returns slope, t-value and p-value of robust</span>
-<span class="sd">    regression&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;X and y are dataframes, returns slope, t-value and p-value of robust regression&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;getting slope</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
 

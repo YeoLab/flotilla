@@ -138,7 +138,7 @@
 <span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">StandardScaler</span>
 
 <span class="kn">from</span> <span class="nn">..visualize.predict</span> <span class="kn">import</span> <span class="n">ClassifierViz</span>
-
+<span class="kn">from</span> <span class="nn">..external</span> <span class="kn">import</span> <span class="n">link_to_list</span>
 
 <span class="n">MINIMUM_SAMPLES</span> <span class="o">=</span> <span class="mi">10</span>
 
@@ -224,7 +224,11 @@
             <span class="k">elif</span> <span class="n">feature_subset</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_features</span><span class="p">:</span>
                 <span class="n">feature_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;There are no {} features in this data: {}&quot;</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">feature_ids</span> <span class="o">=</span> <span class="n">link_to_list</span><span class="p">(</span><span class="n">feature_subset</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">feature_sets</span><span class="p">[</span><span class="n">feature_subset</span><span class="p">]</span> <span class="o">=</span> <span class="n">feature_ids</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;There are no {} features in this data: {}&quot;</span>
                                  <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">feature_subset</span><span class="p">,</span> <span class="bp">self</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">rename</span><span class="p">:</span>
                 <span class="n">feature_ids</span> <span class="o">=</span> <span class="n">feature_ids</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_renamer</span><span class="p">)</span>

@@ -140,7 +140,7 @@
 <span class="kn">from</span> <span class="nn">.network</span> <span class="kn">import</span> <span class="n">NetworkerViz</span>
 
 
-<div class="viewcode-block" id="Interactive"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.ipython_interact.Interactive">[docs]</a><span class="k">class</span> <span class="nc">Interactive</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Interactive"><a class="viewcode-back" href="../../../flotilla.visualize.html#flotilla.visualize.ipython_interact.Interactive">[docs]</a><span class="k">class</span> <span class="nc">Interactive</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    Attributes</span>
@@ -157,7 +157,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_default_y_pc</span> <span class="o">=</span> <span class="mi">2</span>
 
     <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="Interactive.interactive_pca"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.ipython_interact.Interactive.interactive_pca">[docs]</a>    <span class="k">def</span> <span class="nf">interactive_pca</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Interactive.interactive_pca"><a class="viewcode-back" href="../../../flotilla.visualize.html#flotilla.visualize.ipython_interact.Interactive.interactive_pca">[docs]</a>    <span class="k">def</span> <span class="nf">interactive_pca</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">def</span> <span class="nf">do_interact</span><span class="p">(</span><span class="n">data_type</span><span class="o">=</span><span class="s">&#39;expression&#39;</span><span class="p">,</span>
                         <span class="n">sample_subset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_sample_subsets</span><span class="p">,</span>
                         <span class="n">feature_subset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_feature_subset</span><span class="p">,</span>
@@ -202,13 +202,13 @@
         <span class="n">interact</span><span class="p">(</span><span class="n">do_interact</span><span class="p">,</span>
                  <span class="n">data_type</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;expression&#39;</span><span class="p">,</span> <span class="s">&#39;splicing&#39;</span><span class="p">),</span>
                  <span class="n">sample_subset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_sample_subsets</span><span class="p">,</span>
-                 <span class="n">feature_subset</span><span class="o">=</span><span class="n">feature_sets</span><span class="p">,</span>
+                 <span class="n">feature_subset</span><span class="o">=</span><span class="n">feature_sets</span> <span class="o">+</span> <span class="p">[</span><span class="s">&#39;custom&#39;</span><span class="p">],</span>
                  <span class="n">featurewise</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
                  <span class="n">x_pc</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">y_pc</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
                  <span class="n">show_point_labels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="p">)</span>
 </div>
     <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="Interactive.interactive_graph"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.ipython_interact.Interactive.interactive_graph">[docs]</a>    <span class="k">def</span> <span class="nf">interactive_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Interactive.interactive_graph"><a class="viewcode-back" href="../../../flotilla.visualize.html#flotilla.visualize.ipython_interact.Interactive.interactive_graph">[docs]</a>    <span class="k">def</span> <span class="nf">interactive_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">IPython.html.widgets</span> <span class="kn">import</span> <span class="n">interact</span>
 
         <span class="c"># not sure why nested fxns are required for this, but they are... i</span>
@@ -255,7 +255,7 @@
         <span class="n">interact</span><span class="p">(</span><span class="n">do_interact</span><span class="p">,</span>
                  <span class="n">data_type</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;expression&#39;</span><span class="p">,</span> <span class="s">&#39;splicing&#39;</span><span class="p">),</span>
                  <span class="n">sample_subset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_sample_subsets</span><span class="p">,</span>
-                 <span class="n">feature_subset</span><span class="o">=</span><span class="n">feature_sets</span><span class="p">,</span>
+                 <span class="n">feature_subset</span><span class="o">=</span><span class="n">feature_sets</span> <span class="o">+</span> <span class="p">[</span><span class="s">&#39;custom&#39;</span><span class="p">],</span>
                  <span class="n">featurewise</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
                  <span class="n">cov_std_cut</span><span class="o">=</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
                  <span class="n">degree_cut</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
@@ -265,7 +265,7 @@
                  <span class="n">use_pc_1</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">use_pc_2</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">use_pc_3</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">use_pc_4</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </div>
     <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="Interactive.interactive_classifier"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.ipython_interact.Interactive.interactive_classifier">[docs]</a>    <span class="k">def</span> <span class="nf">interactive_classifier</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Interactive.interactive_classifier"><a class="viewcode-back" href="../../../flotilla.visualize.html#flotilla.visualize.ipython_interact.Interactive.interactive_classifier">[docs]</a>    <span class="k">def</span> <span class="nf">interactive_classifier</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="kn">from</span> <span class="nn">IPython.html.widgets</span> <span class="kn">import</span> <span class="n">interact</span>
 
@@ -279,7 +279,7 @@
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s">&#39;self&#39;</span><span class="p">:</span>
                     <span class="k">continue</span>
-                <span class="n">prik</span><span class="p">,</span> <span class="s">&quot;:&quot;</span><span class="p">,</span> <span class="n">v</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;{} : {}</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
 
             <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s">&#39;expression&#39;</span><span class="p">:</span>
                 <span class="n">data_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">expression</span>
@@ -309,13 +309,13 @@
         <span class="n">interact</span><span class="p">(</span><span class="n">do_interact</span><span class="p">,</span>
                  <span class="n">data_type</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;expression&#39;</span><span class="p">,</span> <span class="s">&#39;splicing&#39;</span><span class="p">),</span>
                  <span class="n">sample_subset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_sample_subsets</span><span class="p">,</span>
-                 <span class="n">feature_subset</span><span class="o">=</span><span class="n">feature_sets</span><span class="p">,</span>
+                 <span class="n">feature_subset</span><span class="o">=</span><span class="n">feature_sets</span> <span class="o">+</span> <span class="p">[</span><span class="s">&#39;custom&#39;</span><span class="p">],</span>
                  <span class="n">categorical_variable</span><span class="o">=</span><span class="n">categorical_variable</span><span class="p">,</span>
                  <span class="n">feature_score_std_cutoff</span><span class="o">=</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>
                  <span class="n">draw_labels</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 </div>
     <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="Interactive.interactive_localZ"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.ipython_interact.Interactive.interactive_localZ">[docs]</a>    <span class="k">def</span> <span class="nf">interactive_localZ</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Interactive.interactive_localZ"><a class="viewcode-back" href="../../../flotilla.visualize.html#flotilla.visualize.ipython_interact.Interactive.interactive_localZ">[docs]</a>    <span class="k">def</span> <span class="nf">interactive_localZ</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="kn">from</span> <span class="nn">IPython.html.widgets</span> <span class="kn">import</span> <span class="n">interact</span>
 

@@ -548,13 +548,19 @@
         <span class="n">experiment_design_pooled_col</span> <span class="o">=</span> <span class="bp">None</span>
 
         <span class="k">for</span> <span class="n">resource</span> <span class="ow">in</span> <span class="n">data_package</span><span class="p">[</span><span class="s">&#39;resources&#39;</span><span class="p">]:</span>
-            <span class="n">resource_url</span> <span class="o">=</span> <span class="n">resource</span><span class="p">[</span><span class="s">&#39;url&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s">&#39;url&#39;</span> <span class="ow">in</span> <span class="n">resource</span><span class="p">:</span>
+                <span class="n">resource_url</span> <span class="o">=</span> <span class="n">resource</span><span class="p">[</span><span class="s">&#39;url&#39;</span><span class="p">]</span>
+                <span class="n">filename</span> <span class="o">=</span> <span class="n">check_if_already_downloaded</span><span class="p">(</span><span class="n">resource_url</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">filename</span> <span class="o">=</span> <span class="n">resource</span><span class="p">[</span><span class="s">&#39;path&#39;</span><span class="p">]</span>
 
             <span class="n">name</span> <span class="o">=</span> <span class="n">resource</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
 
-            <span class="n">filename</span> <span class="o">=</span> <span class="n">check_if_already_downloaded</span><span class="p">(</span><span class="n">resource_url</span><span class="p">)</span>
             <span class="n">reader</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">readers</span><span class="p">[</span><span class="n">resource</span><span class="p">[</span><span class="s">&#39;format&#39;</span><span class="p">]]</span>
-            <span class="n">dfs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">reader</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+            <span class="n">compression</span> <span class="o">=</span> <span class="bp">None</span> <span class="k">if</span> <span class="s">&#39;compression&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">resource</span> <span class="k">else</span> \
+                <span class="n">resource</span><span class="p">[</span><span class="s">&#39;compression&#39;</span><span class="p">]</span>
+
+            <span class="n">dfs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">reader</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="n">compression</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s">&#39;expression&#39;</span><span class="p">:</span>
                 <span class="k">if</span> <span class="s">&#39;log_transformed&#39;</span> <span class="ow">in</span> <span class="n">resource</span><span class="p">:</span>
@@ -570,12 +576,15 @@
             <span class="n">species_dfs</span> <span class="o">=</span> <span class="p">{}</span>
 
             <span class="k">for</span> <span class="n">resource</span> <span class="ow">in</span> <span class="n">species_data_package</span><span class="p">[</span><span class="s">&#39;resources&#39;</span><span class="p">]:</span>
-                <span class="n">resource_url</span> <span class="o">=</span> <span class="n">resource</span><span class="p">[</span><span class="s">&#39;url&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="s">&#39;url&#39;</span> <span class="ow">in</span> <span class="n">resource</span><span class="p">:</span>
+                    <span class="n">resource_url</span> <span class="o">=</span> <span class="n">resource</span><span class="p">[</span><span class="s">&#39;url&#39;</span><span class="p">]</span>
+                    <span class="n">filename</span> <span class="o">=</span> <span class="n">check_if_already_downloaded</span><span class="p">(</span><span class="n">resource_url</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">filename</span> <span class="o">=</span> <span class="n">resource</span><span class="p">[</span><span class="s">&#39;path&#39;</span><span class="p">]</span>
 
                 <span class="c"># reader = getattr(cls, &#39;_load_&#39; + resource[&#39;format&#39;])</span>
                 <span class="n">reader</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">readers</span><span class="p">[</span><span class="n">resource</span><span class="p">[</span><span class="s">&#39;format&#39;</span><span class="p">]]</span>
 
-                <span class="n">filename</span> <span class="o">=</span> <span class="n">check_if_already_downloaded</span><span class="p">(</span><span class="n">resource_url</span><span class="p">)</span>
                 <span class="n">compression</span> <span class="o">=</span> <span class="bp">None</span> <span class="k">if</span> <span class="s">&#39;compression&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">resource</span> <span class="k">else</span> \
                     <span class="n">resource</span><span class="p">[</span><span class="s">&#39;compression&#39;</span><span class="p">]</span>
                 <span class="n">species_dfs</span><span class="p">[</span><span class="n">resource</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">reader</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span>
@@ -585,14 +594,11 @@
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">experiment_design_data</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="s">&#39;experiment_design&#39;</span><span class="p">]</span>
-            <span class="n">expression_data</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="s">&#39;expression&#39;</span><span class="p">]</span>
-            <span class="n">splicing_data</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="s">&#39;splicing&#39;</span><span class="p">]</span>
+            <span class="n">expression_data</span> <span class="o">=</span> <span class="bp">None</span> <span class="k">if</span> <span class="s">&#39;expression&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dfs</span> <span class="k">else</span> <span class="n">dfs</span><span class="p">[</span><span class="s">&#39;expression&#39;</span><span class="p">]</span>
+            <span class="n">splicing_data</span> <span class="o">=</span> <span class="bp">None</span> <span class="k">if</span> <span class="s">&#39;splicing&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dfs</span> <span class="k">else</span> <span class="n">dfs</span><span class="p">[</span><span class="s">&#39;splicing&#39;</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s">&#39;The datapackage.json file is required to &#39;</span>
-                                 <span class="s">&#39;have these three resources with the &#39;</span>
-                                 <span class="s">&#39;specified names: &#39;</span>
-                                 <span class="s">&#39;&quot;experiment_design&quot;, &quot;expression&quot;, &#39;</span>
-                                 <span class="s">&#39;&quot;splicing&quot;&#39;</span><span class="p">)</span>
+                                 <span class="s">&#39;have the &quot;experiment_design&quot; resource&#39;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">mapping_stats_data</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="s">&#39;mapping_stats&#39;</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>

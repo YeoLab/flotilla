@@ -139,7 +139,7 @@
 <span class="kn">from</span> <span class="nn">..visualize.decomposition</span> <span class="kn">import</span> <span class="n">DecompositionViz</span>
 
 
-<div class="viewcode-block" id="NetworkerViz"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.network.NetworkerViz">[docs]</a><span class="k">class</span> <span class="nc">NetworkerViz</span><span class="p">(</span><span class="n">Networker</span><span class="p">,</span> <span class="n">DecompositionViz</span><span class="p">):</span>
+<div class="viewcode-block" id="NetworkerViz"><a class="viewcode-back" href="../../../flotilla.visualize.html#flotilla.visualize.network.NetworkerViz">[docs]</a><span class="k">class</span> <span class="nc">NetworkerViz</span><span class="p">(</span><span class="n">Networker</span><span class="p">,</span> <span class="n">DecompositionViz</span><span class="p">):</span>
     <span class="c"># TODO.md: needs to be decontaminated, as it requires methods from</span>
     <span class="c"># data_object;</span>
     <span class="c"># maybe this class should move to data_model.BaseData</span>
@@ -147,7 +147,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">data_obj</span> <span class="o">=</span> <span class="n">data_obj</span>
         <span class="n">Networker</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-<div class="viewcode-block" id="NetworkerViz.draw_graph"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.network.NetworkerViz.draw_graph">[docs]</a>    <span class="k">def</span> <span class="nf">draw_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+<div class="viewcode-block" id="NetworkerViz.draw_graph"><a class="viewcode-back" href="../../../flotilla.visualize.html#flotilla.visualize.network.NetworkerViz.draw_graph">[docs]</a>    <span class="k">def</span> <span class="nf">draw_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                    <span class="n">n_pcs</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
                    <span class="n">use_pc_1</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">use_pc_2</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">use_pc_3</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">use_pc_4</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
                    <span class="n">degree_cut</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">cov_std_cut</span><span class="o">=</span><span class="mf">1.8</span><span class="p">,</span>
@@ -310,7 +310,7 @@
 
         <span class="k">return</span> <span class="n">graph</span><span class="p">,</span> <span class="n">pos</span>
 </div>
-<div class="viewcode-block" id="NetworkerViz.draw_nonreduced_graph"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.network.NetworkerViz.draw_nonreduced_graph">[docs]</a>    <span class="k">def</span> <span class="nf">draw_nonreduced_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+<div class="viewcode-block" id="NetworkerViz.draw_nonreduced_graph"><a class="viewcode-back" href="../../../flotilla.visualize.html#flotilla.visualize.network.NetworkerViz.draw_nonreduced_graph">[docs]</a>    <span class="k">def</span> <span class="nf">draw_nonreduced_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                               <span class="n">degree_cut</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">cov_std_cut</span><span class="o">=</span><span class="mf">1.8</span><span class="p">,</span>
                               <span class="n">wt_fun</span><span class="o">=</span><span class="s">&#39;abs&#39;</span><span class="p">,</span>
                               <span class="n">featurewise</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>  <span class="c"># else feature_components</span>
