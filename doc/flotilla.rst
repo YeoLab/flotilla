@@ -13,14 +13,6 @@ Subpackages
 Submodules
 ----------
 
-flotilla.database module
-------------------------
-
-.. automodule:: flotilla.database
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 flotilla.external module
 ------------------------
 

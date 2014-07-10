@@ -10,3 +10,4 @@ virtualenv
 
 # emacs
 *~
+.coverage

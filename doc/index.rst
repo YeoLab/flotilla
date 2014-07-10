@@ -1,24 +1,19 @@
 .. flotilla documentation master file, created by
-   sphinx-quickstart on Tue Jul  1 17:19:58 2014.
+   sphinx-quickstart on Thu Jul 10 10:03:26 2014.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
 Welcome to flotilla's documentation!
 ====================================
-
-Flotilla is a Python analysis library targeted at analyzing single-cell RNA-seq projects.
+.. include:: ../README.rst
 
 Contents:
 
 .. toctree::
-   :maxdepth: 2
-   
-   tutorial/quick_start
+   :maxdepth: 4
 
-.. automodule:: flotilla
+   flotilla
 
-.. autoclass:: Study
-    :members:
 
 Indices and tables
 ==================
