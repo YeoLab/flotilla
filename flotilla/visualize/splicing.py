@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import seaborn as sns
 
 from ..compute.splicing import get_switchy_score_order
@@ -8,16 +9,7 @@ from .color import red, blue, purple, grey, green
 
 class ModalitiesViz(object):
     """Visualize results of modality assignments
-    
-    Attributes
-    ----------
-    
-    
-    Methods
-    -------
-    
     """
-
     modalities_colors = {'included': red,
                          'excluded': blue,
                          'bimodal': purple,
@@ -29,25 +21,6 @@ class ModalitiesViz(object):
 
     colors = [modalities_colors[modality] for modality in
               modalities_order]
-
-    def __init__(self):
-        """Constructor for ModalitiesViz
-        
-        Parameters
-        ----------
-        assignments, binned
-        
-        Returns
-        -------
-        
-        
-        Raises
-        ------
-        
-        """
-        # super(ModalitiesViz, self).__init__(binned.T, n_components=2)
-        # self.modalities_assignments = modalities_assignments
-        # self.binned_reduced = binned_reduced
 
     def plot_reduced_space(self, binned_reduced, modalities_assignments,
                            ax=None, title=None):

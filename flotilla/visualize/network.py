@@ -2,9 +2,9 @@ import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn
+import sys
 
 from .color import green
-
 from ..compute.network import Networker
 from ..util import dict_to_str
 from ..visualize.color import blue
@@ -12,8 +12,9 @@ from ..visualize.decomposition import DecompositionViz
 
 
 class NetworkerViz(Networker, DecompositionViz):
-    #TODO.md: needs to be decontaminated, as it requires methods from data_object;
-    #maybe this class should move to data_model.BaseData
+    # TODO.md: needs to be decontaminated, as it requires methods from
+    # data_object;
+    # maybe this class should move to data_model.BaseData
     def __init__(self, data_obj):
         self.data_obj = data_obj
         Networker.__init__(self)
@@ -23,8 +24,8 @@ class NetworkerViz(Networker, DecompositionViz):
                    use_pc_1=True, use_pc_2=True, use_pc_3=True, use_pc_4=True,
                    degree_cut=2, cov_std_cut=1.8,
                    weight_function='no_weight',
-                   featurewise=False,  #else feature_components
-                   rpkms_not_events=False,  #else event features
+                   featurewise=False,  # else feature_components
+                   rpkms_not_events=False,  # else event features
                    feature_of_interest='RBFOX2', draw_labels=True,
                    reduction_name=None,
                    feature_ids=None,
@@ -52,7 +53,7 @@ class NetworkerViz(Networker, DecompositionViz):
         use_pc{1-4} use these pcs in cov calculation (default True)
         degree_cut : int??
             miniumum degree for a node to be included in graph display
-        weight_function :
+        weight_function : ['arctan' | 'sq' | 'abs' | 'arctan_sq']
             weight function (arctan (arctan cov), sq (sq cov), abs (abs cov),
             arctan_sq (sqared arctan of cov))
         gene_of_interest : str
@@ -67,9 +68,7 @@ class NetworkerViz(Networker, DecompositionViz):
             ???
         pos : ???
             ???
-
         """
-
         node_color_mapper = self._default_node_color_mapper
         node_size_mapper = self._default_node_color_mapper
         settings = locals().copy()
@@ -96,8 +95,8 @@ class NetworkerViz(Networker, DecompositionViz):
         pca = self.data_obj.reduce(**pca_settings)
 
         if featurewise:
-            node_color_mapper = lambda \
-                    x: 'r' if x == feature_of_interest else 'k'
+            node_color_mapper = lambda x: 'r' \
+                if x == feature_of_interest else 'k'
             node_size_mapper = lambda x: (pca.means.ix[x] ** 2) + 10
         else:
             if sample_id_to_color is not None:
@@ -113,8 +112,6 @@ class NetworkerViz(Networker, DecompositionViz):
         ax_pev.set_xlabel("component")
         ax_pev.set_title("Explained variance from dim reduction")
         seaborn.despine(ax=ax_pev)
-
-        # adjacency_name = "_".join([dict_to_str(adjacency_settings), pca.obj_id])
 
         adjacency = self.adjacency(pca.reduced_space, **adjacency_settings)
         cov_dist = np.array(
@@ -138,27 +135,29 @@ class NetworkerViz(Networker, DecompositionViz):
 
         graph, pos = self.graph(adjacency, **graph_settings)
 
-        nx.draw_networkx_nodes(graph, pos,
-                               node_color=map(node_color_mapper, graph.nodes()),
-                               node_size=map(node_size_mapper, graph.nodes()),
-                               ax=main_ax, alpha=0.5)
+        nx.draw_networkx_nodes(
+            graph, pos,
+            node_color=map(node_color_mapper, graph.nodes()),
+            node_size=map(node_size_mapper, graph.nodes()),
+            ax=main_ax, alpha=0.5)
 
         try:
-            nx.draw_networkx_nodes(graph, pos, node_color=map(
-                lambda x: pca.X[feature_of_interest].ix[x], graph.nodes()),
+            node_color = map(
+                lambda x: pca.X[feature_of_interest].ix[x], graph.nodes())
+
+            nx.draw_networkx_nodes(graph, pos, node_color=node_color,
                                    cmap=plt.cm.Greys,
                                    node_size=map(
                                        lambda x: node_size_mapper(x) * .5,
                                        graph.nodes()), ax=main_ax, alpha=1)
         except:
             pass
+
         namer = lambda x: x
         labels = dict([(name, namer(name)) for name in graph.nodes()])
         if draw_labels:
             nx.draw_networkx_labels(graph, pos, labels=labels, ax=main_ax)
-        #mst = nx.minimum_spanning_tree(g, weight='inv_weight')
         nx.draw_networkx_edges(graph, pos, ax=main_ax, alpha=0.1)
-        #nx.draw_networkx_edges(g, pos, edgelist=mst.edges(), edge_color="m", edge_width=200, ax=main_ax)
         main_ax.set_axis_off()
         degree = nx.degree(graph)
         seaborn.kdeplot(np.array(degree.values()), ax=ax_degree)
@@ -174,20 +173,20 @@ class NetworkerViz(Networker, DecompositionViz):
             pass
 
         seaborn.despine(ax=ax_degree)
-        #f.tight_layout(pad=5)
         if graph_file != '':
             try:
                 nx.write_gml(graph, graph_file)
             except Exception as e:
-                sys.stdout.write("error writing graph file:\n{}".format(str(e)))
+                sys.stdout.write("error writing graph file:"
+                                 "\n{}".format(str(e)))
 
         return graph, pos
 
     def draw_nonreduced_graph(self,
                               degree_cut=2, cov_std_cut=1.8,
                               wt_fun='abs',
-                              featurewise=False,  #else feature_components
-                              rpkms_not_events=False,  #else event features
+                              featurewise=False,  # else feature_components
+                              rpkms_not_events=False,  # else event features
                               feature_of_interest='RBFOX2', draw_labels=True,
                               feature_ids=None,
                               group_id=None,
@@ -195,30 +194,46 @@ class NetworkerViz(Networker, DecompositionViz):
                               compare=""):
 
         """
-        feature_ids - name of genelist used in making pcas
-        sample_subset - celltype code
-        x_pc - x component for PCA
-        y_pc - y component for PCA
-        n_pcs - n components to use for cells' covariance calculation
-        cov_std_cut - covariance cutoff for edges
-        pc{1-4} use these pcs in cov calculation (default True)
-        degree_cut - miniumum degree for a node to be included in graph display
-        wt_fun - weight function (arctan (arctan cov), sq (sq cov), abs (abs cov), arctan_sq (sqared arctan of cov))
-        gene_of_interest - map a gradient representing this gene's data onto nodes
-        """
+                Parameters
+        ----------
+        feature_ids : list of str, or None
+            Feature ids to subset the data. If None, all features will be used.
+        sample_ids : list of str, or None
+            Sample ids to subset the data. If None, all features will be used.
+        x_pc : str
+            x component for PCA, default "pc_1"
+        y_pc :
+            y component for PCA, default "pc_2"
+        n_pcs : int???
+            n components to use for cells' covariance calculation
+        cov_std_cut : float??
+            covariance cutoff for edges
+        use_pc{1-4} use these pcs in cov calculation (default True)
+        degree_cut : int??
+            miniumum degree for a node to be included in graph display
+        weight_function : ['arctan' | 'sq' | 'abs' | 'arctan_sq']
+            weight function (arctan (arctan cov), sq (sq cov), abs (abs cov),
+            arctan_sq (sqared arctan of cov))
+        gene_of_interest : str
+            map a gradient representing this gene's data onto nodes (ENSEMBL
+            id or gene name???)
 
+
+        Returns
+        -------
+        #TODO: Mike please fill these in
+        graph : ???
+            ???
+        pos : ???
+            ???
+        """
         node_color_mapper = self._default_node_color_mapper
         node_size_mapper = self._default_node_color_mapper
         settings = locals().copy()
 
         adjacency_settings = dict(('non_reduced', True))
 
-        #del settings['gene_of_interest']
-        #del settings['graph_file']
-        #del settings['draw_labels']
-
         f = plt.figure(figsize=(10, 10))
-        #gs = GridSpec(2, 2)
         plt.axis((-0.2, 1.2, -0.2, 1.2))
         main_ax = plt.gca()
         ax_cov = plt.axes([0.1, 0.1, .2, .15])
@@ -227,18 +242,15 @@ class NetworkerViz(Networker, DecompositionViz):
         data = self.data_obj.df
 
         if featurewise:
-            node_color_mapper = lambda \
-                    x: 'r' if x == feature_of_interest else 'k'
+            node_color_mapper = lambda x: 'r' \
+                if x == feature_of_interest else 'k'
             node_size_mapper = lambda x: (data.mean().ix[x] ** 2) + 10
         else:
-            node_color_mapper = lambda x: self.data_obj.sample_metadata.color[x]
+            node_color_mapper = lambda x: \
+                self.data_obj.sample_metadata.color[x]
             node_size_mapper = lambda x: 75
 
         adjacency_name = "_".join([dict_to_str(adjacency_settings)])
-        #adjacency_settings['name'] = adjacency_name
-
-        #import pdb
-        #pdb.set_trace()
         adjacency = self.adjacency(data, name=adjacency_name,
                                    **adjacency_settings)
         cov_dist = np.array(
@@ -264,25 +276,22 @@ class NetworkerViz(Networker, DecompositionViz):
                                node_color=map(node_color_mapper, g.nodes()),
                                node_size=map(node_size_mapper, g.nodes()),
                                ax=main_ax, alpha=0.5)
-        #nx.draw_networkx_nodes(g, pos, node_color=map(node_color_mapper, g.nodes()),
-        #                       node_size=map(node_size_mapper, g.nodes()),
-        #                       ax=ax4, alpha=0.5)
         try:
-            nx.draw_networkx_nodes(g, pos, node_color=map(
-                lambda x: data[feature_of_interest].ix[x], g.nodes()),
+            node_color = map(lambda x: data[feature_of_interest].ix[x],
+                             g.nodes())
+            nx.draw_networkx_nodes(g, pos, node_color=node_color,
                                    cmap=plt.cm.Greys,
                                    node_size=map(
                                        lambda x: node_size_mapper(x) * .5,
                                        g.nodes()), ax=main_ax, alpha=1)
         except:
             pass
+
         nmr = lambda x: x
         labels = dict([(nm, nmr(nm)) for nm in g.nodes()])
         if draw_labels:
             nx.draw_networkx_labels(g, pos, labels=labels, ax=main_ax)
-        #mst = nx.minimum_spanning_tree(g, weight='inv_weight')
         nx.draw_networkx_edges(g, pos, ax=main_ax, alpha=0.1)
-        #nx.draw_networkx_edges(g, pos, edgelist=mst.edges(), edge_color="m", edge_width=200, ax=main_ax)
         main_ax.set_axis_off()
         degree = nx.degree(g)
         seaborn.kdeplot(np.array(degree.values()), ax=ax_degree)
@@ -298,11 +307,11 @@ class NetworkerViz(Networker, DecompositionViz):
             pass
 
         seaborn.despine(ax=ax_degree)
-        #f.tight_layout(pad=5)
         if graph_file != '':
             try:
                 nx.write_gml(g, graph_file)
             except Exception as e:
-                sys.stdout.write("error writing graph file:\n{}".format(str(e)))
+                sys.stdout.write("error writing graph file:"
+                                 "\n{}".format(str(e)))
 
         return(g, pos)

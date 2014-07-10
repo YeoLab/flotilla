@@ -1,17 +1,13 @@
 import networkx as nx
-
 import numpy as np
 import pandas as pd
 
 from ..util import memoize
-
 from ..visualize.color import red
 
 
 class Networker(object):
-    
-    """ Networks (the kind with nodes and edges) """
-    
+    """Networks (the kind with nodes and edges) """
     weight_funs = ['no_weight', 'sq', 'arctan', 'arctan_sq']
 
     def __init__(self):
@@ -74,11 +70,11 @@ class Networker(object):
             node_size = node_size_mapper(node_label)
             graph.add_node(node_label, node_size=node_size,
                            node_color=node_color)
-            #    g.add_nodes_from(adjacency.index) #to add without setting attributes...neater, but does same thing as above loop
         for cell1, others in adjacency.iterrows():
             for cell2, value in others.iteritems():
                 if value > cov_cut:
-                    #cast to floats because write_gml doesn't like numpy dtypes
+                    # cast to floats because write_gml doesn't like numpy
+                    # dtypes
                     graph.add_edge(cell1, cell2, weight=float(weight(value)),
                                    inv_weight=float(1 / weight(value)),
                                    alpha=0.05)

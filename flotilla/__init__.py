@@ -5,11 +5,11 @@ from .external import make_study_datapackage
 import visualize
 
 
-def call_main():
-    # where is this "agrparser" initialized?
-    args = argparser.parse_args()
-    params = vars(args)
-    main(params)
+# def call_main():
+#     # where is this "agrparser" initialized?
+#     args = argparser.parse_args()
+#     params = vars(args)
+#     main(params)
 
 
 def main():
