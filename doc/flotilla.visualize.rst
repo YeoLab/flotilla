@@ -28,14 +28,6 @@ flotilla.visualize.expression module
     :undoc-members:
     :show-inheritance:
 
-flotilla.visualize.generic module
----------------------------------
-
-.. automodule:: flotilla.visualize.generic
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 flotilla.visualize.ipython_interact module
 ------------------------------------------
 

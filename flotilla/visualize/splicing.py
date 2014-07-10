@@ -1,25 +1,15 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 import seaborn as sns
 
-from ..compute.splicing import get_switchy_score_order
 from .color import red, blue, purple, grey, green
-import itertools
+from ..compute.splicing import get_switchy_score_order
+from ..util import as_numpy
 
 
 class ModalitiesViz(object):
     """Visualize results of modality assignments
-    
-    Attributes
-    ----------
-    
-    
-    Methods
-    -------
-    
     """
-
     modalities_colors = {'included': red,
                          'excluded': blue,
                          'bimodal': purple,
@@ -31,25 +21,6 @@ class ModalitiesViz(object):
 
     colors = [modalities_colors[modality] for modality in
               modalities_order]
-
-    def __init__(self):
-        """Constructor for ModalitiesViz
-        
-        Parameters
-        ----------
-        assignments, binned
-        
-        Returns
-        -------
-        
-        
-        Raises
-        ------
-        
-        """
-        # super(ModalitiesViz, self).__init__(binned.T, n_components=2)
-        # self.modalities_assignments = modalities_assignments
-        # self.binned_reduced = binned_reduced
 
     def plot_reduced_space(self, binned_reduced, modalities_assignments,
                            ax=None, title=None):
@@ -123,7 +94,9 @@ class ModalitiesViz(object):
         """
         pass
 
-def lavalamp(psi, color=None, jitter=None, title='', ax=None):
+
+def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
+             switchy_score_psi=None, marker='d', plot_kws=None):
     """Make a 'lavalamp' scatter plot of many splicing events
 
     Useful for visualizing many splicing events at once.
@@ -134,16 +107,23 @@ def lavalamp(psi, color=None, jitter=None, title='', ax=None):
     data : array
         A (n_events, n_samples) matrix either as a numpy array or as a pandas
         DataFrame
-
     color : matplotlib color
         Color of the scatterplot. Defaults to a dark teal
-
+    x_offset : numeric or None
+        How much to offset the x-values off of 1. Useful for plotting several
+        celltypes at once.
     title : str
         Title of the plot. Default ''
-
     ax : matplotlib.Axes object
         The axes to plot on. If not provided, will be created
-
+    switchy_score_psi : pandas.DataFrame
+        The psi scores to sort on for the plotting order. By default use the
+        psi provided, but sometimes you want to plot multiple psi scores on
+        the same plot, with the same events.
+    marker : str
+        A valid matplotlib marker. Default is 'd' (thin diamond)
+    plot_kws : dict
+        Keyword arguments to supply to plot()
 
     Returns
     -------
@@ -152,47 +132,43 @@ def lavalamp(psi, color=None, jitter=None, title='', ax=None):
     """
 
     if ax is None:
-        fig, ax = plt.subplots(figsize=(16,4))
+        fig, ax = plt.subplots(figsize=(16, 4))
     else:
         fig = plt.gcf()
-    nrow, ncol = psi.shape
-    x = np.vstack(np.arange(ncol,) for i in range(nrow)).T
 
-    color = pd.Series('#FFFF00', index=psi.index) if color is None else color
+    color = green if color is None else color
+    plot_kws = {} if plot_kws is None else plot_kws
+    plot_kws.setdefault('color', color)
+    plot_kws.setdefault('alpha', 0.2)
+    plot_kws.setdefault('markersize', 10)
+    plot_kws.setdefault('marker', marker)
+    plot_kws.setdefault('linestyle', 'None')
 
-    try:
-        # This is a pandas Dataframe
-        y = psi.values
-    except AttributeError:
-        # This is a numpy array
-        y = psi
+    y = as_numpy(psi)
 
-    if jitter is None:
-        jitter = np.ones(y.shape[0])
+    if switchy_score_psi is not None:
+        switchy_score_y = as_numpy(switchy_score_psi)
     else:
-        assert np.all(np.abs(jitter) < 1)
-        assert np.min(jitter) > -.0000000001
+        switchy_score_y = y
 
-    order = get_switchy_score_order(y)
+    order = get_switchy_score_order(switchy_score_y)
     y = y[:, order]
-    assert type(color) == pd.Series
+
+    n_samples, n_events = psi.shape
+    # .astype(float) is to get rid of a deprecation warning
+    x = np.vstack((np.arange(n_events)
+                   for _ in xrange(n_samples))).astype(float)
+    x += x_offset
+
     # Add one so the last value is actually included instead of cut off
     xmax = x.max() + 1
 
-    x_jitter = np.array([i+jitter for i in x]).T
-
-    for co, xx, yy in zip(color, x_jitter, y):
-
-        ax.scatter(xx, yy, marker='d', color=co, alpha=0.2, edgecolor='none', linewidth=0.5, )
-        #print map(int, xx), map(lambda x: "%.2f" % x, yy)
-        #import pdb
-        #pdb.set_trace()#
-
+    ax.plot(x, y, **plot_kws)
     sns.despine()
     ax.set_ylabel('$\Psi$')
-    ax.set_xlabel('{} splicing events'.format(ncol))
+    ax.set_xlabel('{} splicing events'.format(n_events))
     ax.set_xticks([])
 
-    ax.set_xlim(0, xmax)
+    ax.set_xlim(-0.5, xmax + .5)
     ax.set_ylim(0, 1)
     ax.set_title(title)

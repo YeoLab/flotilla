@@ -20,13 +20,32 @@ install:
   - conda create -n testenv --yes python=$TRAVIS_PYTHON_VERSION
   - source activate testenv
   # install as much as we can via conda
-  - conda install --yes pip numpy scipy cython matplotlib nose six scikit-learn ipython networkx pandas tornado statsmodels setuptools pytest
+  - conda install --yes pip numpy scipy cython matplotlib nose six
+  scikit-learn ipython networkx pandas tornado statsmodels setuptools pytest pyzmq jinja2 pyyaml
   # Install the rest via pip (brewer2mpl, gspread, seaborn, etc)
   - pip install -r requirements.txt
+  # For building the docs
+  - pip install sphinx numpydoc sphinx_bootstrap_theme runipy
+  - sudo apt-get install pandoc
+  - pip install pep8
+  - pip install https://github.com/dcramer/pyflakes/tarball/master
   - pip install .
 
+# Build documentation
+before_script:
+  - if [ ${TRAVIS_PYTHON_VERSION:0:1} == "2" ]; then
+    make lint;
+    fi
+  - if [ ${TRAVIS_PYTHON_VERSION:0:1} == "2" ]; then
+    cd doc;
+    make html;
+    cd ../gh-pages;
+    git add . ; git commit -m "Update from Travis-CI on $(date)";
+    git push -u origin gh-pages;
+    fi
+
 # command to run tests
-script: py.test --cov flotilla test/
+script: make coverage
 
 # Check test coverage
 after_success:
@@ -36,5 +55,4 @@ after_success:
 notifications:
   slack:
     rooms:
-      - yeolab:HxLwrd5FGhZQ8SyBD9Fvh3dn#drylab
       - yeolab:HxLwrd5FGhZQ8SyBD9Fvh3dn#flotilla

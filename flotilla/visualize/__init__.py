@@ -2,7 +2,6 @@
 
 
 import seaborn
-
 seaborn.set_style({'axes.axisbelow': True,
                    'axes.edgecolor': '.15',
                    'axes.facecolor': 'white',
@@ -26,6 +25,5 @@ seaborn.set_style({'axes.axisbelow': True,
                    'ytick.direction': 'out',
                    'ytick.major.size': 0,
                    'ytick.minor.size': 0})
-
-from predict import PredictorBaseViz
-from ipython_interact import Interactive
+from .ipython_interact import Interactive
+from .predict import PredictorBaseViz

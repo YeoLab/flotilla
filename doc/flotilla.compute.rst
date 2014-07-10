@@ -28,6 +28,14 @@ flotilla.compute.generic module
     :undoc-members:
     :show-inheritance:
 
+flotilla.compute.infotheory module
+----------------------------------
+
+.. automodule:: flotilla.compute.infotheory
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 flotilla.compute.network module
 -------------------------------
 

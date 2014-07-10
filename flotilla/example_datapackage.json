@@ -1,0 +1,35 @@
+{
+    "name": "neural_diff",
+    "title": "Single-cell analysis of celltypes representative of motor neuron differentiation",
+    "licenses": null,
+    "sources": "Craig Venter and Yan Song's magic hands",
+    "datapackage_version": "0.1.0",
+    "resources": [
+        {
+            "format": "tsv",
+            "name": "experiment_design",
+            "url": "http://sauron.ucsd.edu/flotilla_projects/neural_diff/experiment_design.tsv"
+        },
+        {
+            "format": "tsv",
+            "name": "expression",
+            "url": "http://sauron.ucsd.edu/flotilla_projects/neural_diff/tpm.tsv"
+        },
+        {
+            "format": "tsv",
+            "name": "splicing",
+            "url": "http://sauron.ucsd.edu/flotilla_projects/neural_diff/psi.tsv"
+        },
+        {
+            "format": "tsv",
+            "name": "spikein",
+            "url": "http://sauron.ucsd.edu/flotilla_projects/neural_diff/spikein.tsv"
+        },
+        {
+            "format": "tsv",
+            "name": "mapping_stats",
+            "url": "http://sauron.ucsd.edu/flotilla_projects/neural_diff/mapping_stats.tsv"
+        }
+    ],
+    "species": "hg19"
+}

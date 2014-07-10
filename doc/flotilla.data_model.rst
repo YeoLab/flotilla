@@ -12,18 +12,18 @@ flotilla.data_model.base module
     :undoc-members:
     :show-inheritance:
 
-flotilla.data_model.experiment_design module
---------------------------------------------
-
-.. automodule:: flotilla.data_model.experiment_design
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 flotilla.data_model.expression module
 -------------------------------------
 
 .. automodule:: flotilla.data_model.expression
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+flotilla.data_model.metadata module
+-----------------------------------
+
+.. automodule:: flotilla.data_model.metadata
     :members:
     :undoc-members:
     :show-inheritance:
