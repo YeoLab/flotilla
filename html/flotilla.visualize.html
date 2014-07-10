@@ -1,20 +1,21 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>flotilla.visualize package &mdash; flotilla  documentation</title>
+    <title>flotilla.visualize package &mdash; flotilla 0.1.0 documentation</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootswatch-3.1.0/flatly/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '',
+        VERSION:     '0.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,33 +24,130 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="flotilla  documentation" href="index.html" />
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="flotilla 0.1.0 documentation" href="index.html" />
     <link rel="up" title="flotilla package" href="flotilla.html" />
-    <link rel="prev" title="flotilla.data_model package" href="flotilla.data_model.html" /> 
+    <link rel="prev" title="flotilla.data_model package" href="flotilla.data_model.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
   </head>
   <body>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="flotilla.data_model.html" title="flotilla.data_model package"
-             accesskey="P">previous</a> |</li>
-        <li><a href="index.html">flotilla  documentation</a> &raquo;</li>
-          <li><a href="flotilla.html" accesskey="U">flotilla package</a> &raquo;</li> 
-      </ul>
-    </div>  
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body">
+  <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          Flotilla</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
             
+                <li><a href="examples.html">Examples</a></li>
+                <li><a href="http://example.com">Link</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="flotilla.html">flotilla package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="flotilla.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flotilla.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flotilla.html#module-flotilla.external">flotilla.external module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flotilla.html#flotilla-setup-module">flotilla.setup module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flotilla.html#module-flotilla.util">flotilla.util module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flotilla.html#module-flotilla">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">flotilla.visualize package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-flotilla.visualize.color">flotilla.visualize.color module</a></li>
+<li><a class="reference internal" href="#module-flotilla.visualize.decomposition">flotilla.visualize.decomposition module</a></li>
+<li><a class="reference internal" href="#module-flotilla.visualize.expression">flotilla.visualize.expression module</a></li>
+<li><a class="reference internal" href="#module-flotilla.visualize.ipython_interact">flotilla.visualize.ipython_interact module</a></li>
+<li><a class="reference internal" href="#module-flotilla.visualize.network">flotilla.visualize.network module</a></li>
+<li><a class="reference internal" href="#module-flotilla.visualize.predict">flotilla.visualize.predict module</a></li>
+<li><a class="reference internal" href="#module-flotilla.visualize.splicing">flotilla.visualize.splicing module</a></li>
+<li><a class="reference internal" href="#module-flotilla.visualize">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="flotilla.data_model.html" title="Previous Chapter: flotilla.data_model package"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm">&laquo; flotilla.data_mo...</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="_sources/flotilla.visualize.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
   <div class="section" id="flotilla-visualize-package">
 <h1>flotilla.visualize package<a class="headerlink" href="#flotilla-visualize-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="submodules">
@@ -95,6 +193,7 @@ are gene names.
 <blockquote>
 <div>variance</div></blockquote>
 <p>&#64;return: x, y, marker, distance of each vector in the study_data.</p>
+<p class="rubric">Methods</p>
 <dl class="method">
 <dt id="flotilla.visualize.decomposition.DecompositionViz.plot_explained_variance">
 <tt class="descname">plot_explained_variance</tt><big>(</big><em>title='PCA'</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/decomposition.html#DecompositionViz.plot_explained_variance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.decomposition.DecompositionViz.plot_explained_variance" title="Permalink to this definition">¶</a></dt>
@@ -130,12 +229,14 @@ ratio by the components.</p>
 <dt id="flotilla.visualize.decomposition.NMFViz">
 <em class="property">class </em><tt class="descclassname">flotilla.visualize.decomposition.</tt><tt class="descname">NMFViz</tt><big>(</big><em>df</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/decomposition.html#NMFViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.decomposition.NMFViz" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#flotilla.visualize.decomposition.DecompositionViz" title="flotilla.visualize.decomposition.DecompositionViz"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.visualize.decomposition.DecompositionViz</span></tt></a>, <a class="reference internal" href="flotilla.compute.html#flotilla.compute.decomposition.NMF" title="flotilla.compute.decomposition.NMF"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.decomposition.NMF</span></tt></a></p>
+<p class="rubric">Methods</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="flotilla.visualize.decomposition.PCAViz">
 <em class="property">class </em><tt class="descclassname">flotilla.visualize.decomposition.</tt><tt class="descname">PCAViz</tt><big>(</big><em>df</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/decomposition.html#PCAViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.decomposition.PCAViz" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#flotilla.visualize.decomposition.DecompositionViz" title="flotilla.visualize.decomposition.DecompositionViz"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.visualize.decomposition.DecompositionViz</span></tt></a>, <a class="reference internal" href="flotilla.compute.html#flotilla.compute.decomposition.PCA" title="flotilla.compute.decomposition.PCA"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.decomposition.PCA</span></tt></a></p>
+<p class="rubric">Methods</p>
 </dd></dl>
 
 <dl class="function">
@@ -151,6 +252,7 @@ ratio by the components.</p>
 <dt id="flotilla.visualize.expression.TwoWayScatterViz">
 <em class="property">class </em><tt class="descclassname">flotilla.visualize.expression.</tt><tt class="descname">TwoWayScatterViz</tt><big>(</big><em>sample1_name</em>, <em>sample2_name</em>, <em>df</em>, <em>p_value_cutoff=0.001</em>, <em>local_fraction=0.1</em>, <em>bonferroni=True</em>, <em>fdr=None</em>, <em>dtype='RPKM'</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/expression.html#TwoWayScatterViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.expression.TwoWayScatterViz" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="flotilla.compute.html#flotilla.compute.expression.TwoWayGeneComparisonLocal" title="flotilla.compute.expression.TwoWayGeneComparisonLocal"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.expression.TwoWayGeneComparisonLocal</span></tt></a></p>
+<p class="rubric">Methods</p>
 <dl class="method">
 <dt id="flotilla.visualize.expression.TwoWayScatterViz.plot">
 <tt class="descname">plot</tt><big>(</big><em>ax=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/expression.html#TwoWayScatterViz.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.expression.TwoWayScatterViz.plot" title="Permalink to this definition">¶</a></dt>
@@ -167,6 +269,7 @@ between IPython interactive visualizations vs D3 interactive visualizations.</p>
 <dt id="flotilla.visualize.ipython_interact.Interactive">
 <em class="property">class </em><tt class="descclassname">flotilla.visualize.ipython_interact.</tt><tt class="descname">Interactive</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/ipython_interact.html#Interactive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.ipython_interact.Interactive" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p class="rubric">Methods</p>
 <dl class="staticmethod">
 <dt id="flotilla.visualize.ipython_interact.Interactive.interactive_classifier">
 <em class="property">static </em><tt class="descname">interactive_classifier</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_classifier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.ipython_interact.Interactive.interactive_classifier" title="Permalink to this definition">¶</a></dt>
@@ -196,85 +299,132 @@ between IPython interactive visualizations vs D3 interactive visualizations.</p>
 <dt id="flotilla.visualize.network.NetworkerViz">
 <em class="property">class </em><tt class="descclassname">flotilla.visualize.network.</tt><tt class="descname">NetworkerViz</tt><big>(</big><em>data_obj</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/network.html#NetworkerViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.network.NetworkerViz" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="flotilla.compute.html#flotilla.compute.network.Networker" title="flotilla.compute.network.Networker"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.network.Networker</span></tt></a>, <a class="reference internal" href="#flotilla.visualize.decomposition.DecompositionViz" title="flotilla.visualize.decomposition.DecompositionViz"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.visualize.decomposition.DecompositionViz</span></tt></a></p>
+<p class="rubric">Methods</p>
 <dl class="method">
 <dt id="flotilla.visualize.network.NetworkerViz.draw_graph">
 <tt class="descname">draw_graph</tt><big>(</big><em>n_pcs=5</em>, <em>use_pc_1=True</em>, <em>use_pc_2=True</em>, <em>use_pc_3=True</em>, <em>use_pc_4=True</em>, <em>degree_cut=2</em>, <em>cov_std_cut=1.8</em>, <em>weight_function='no_weight'</em>, <em>featurewise=False</em>, <em>rpkms_not_events=False</em>, <em>feature_of_interest='RBFOX2'</em>, <em>draw_labels=True</em>, <em>reduction_name=None</em>, <em>feature_ids=None</em>, <em>sample_ids=None</em>, <em>graph_file=''</em>, <em>compare=''</em>, <em>sample_id_to_color=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/network.html#NetworkerViz.draw_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.network.NetworkerViz.draw_graph" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draw the graph (network) of these events</p>
-<dl class="docutils">
-<dt>feature_ids <span class="classifier-delimiter">:</span> <span class="classifier">list of str, or None</span></dt>
-<dd>Feature ids to subset the data. If None, all features will be used.</dd>
-<dt>sample_ids <span class="classifier-delimiter">:</span> <span class="classifier">list of str, or None</span></dt>
-<dd>Sample ids to subset the data. If None, all features will be used.</dd>
-<dt>x_pc <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd>x component for PCA, default &#8220;pc_1&#8221;</dd>
-<dt>y_pc :</dt>
-<dd>y component for PCA, default &#8220;pc_2&#8221;</dd>
-<dt>n_pcs <span class="classifier-delimiter">:</span> <span class="classifier">int???</span></dt>
-<dd>n components to use for cells&#8217; covariance calculation</dd>
-<dt>cov_std_cut <span class="classifier-delimiter">:</span> <span class="classifier">float??</span></dt>
-<dd>covariance cutoff for edges</dd>
-</dl>
-<p>use_pc{1-4} use these pcs in cov calculation (default True)
-degree_cut : int??</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>feature_ids</strong> : list of str, or None</p>
 <blockquote>
-<div>miniumum degree for a node to be included in graph display</div></blockquote>
-<dl class="docutils">
-<dt>weight_function <span class="classifier-delimiter">:</span> <span class="classifier">[&#8216;arctan&#8217; | &#8216;sq&#8217; | &#8216;abs&#8217; | &#8216;arctan_sq&#8217;]</span></dt>
-<dd>weight function (arctan (arctan cov), sq (sq cov), abs (abs cov),
-arctan_sq (sqared arctan of cov))</dd>
-<dt>gene_of_interest <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd>map a gradient representing this gene&#8217;s data onto nodes (ENSEMBL
-id or gene name???)</dd>
-</dl>
-<p>#TODO: Mike please fill these in
-graph : ???</p>
+<div><p>Feature ids to subset the data. If None, all features will be used.</p>
+</div></blockquote>
+<p><strong>sample_ids</strong> : list of str, or None</p>
 <blockquote>
-<div>???</div></blockquote>
-<dl class="docutils">
-<dt>pos <span class="classifier-delimiter">:</span> <span class="classifier">???</span></dt>
-<dd>???</dd>
-</dl>
+<div><p>Sample ids to subset the data. If None, all features will be used.</p>
+</div></blockquote>
+<p><strong>x_pc</strong> : str</p>
+<blockquote>
+<div><p>x component for PCA, default &#8220;pc_1&#8221;</p>
+</div></blockquote>
+<p><strong>y_pc :</strong></p>
+<blockquote>
+<div><p>y component for PCA, default &#8220;pc_2&#8221;</p>
+</div></blockquote>
+<p><strong>n_pcs</strong> : int???</p>
+<blockquote>
+<div><p>n components to use for cells&#8217; covariance calculation</p>
+</div></blockquote>
+<p><strong>cov_std_cut</strong> : float??</p>
+<blockquote>
+<div><p>covariance cutoff for edges</p>
+</div></blockquote>
+<p><strong>use_pc{1-4} use these pcs in cov calculation (default True)</strong></p>
+<p><strong>degree_cut</strong> : int??</p>
+<blockquote>
+<div><p>miniumum degree for a node to be included in graph display</p>
+</div></blockquote>
+<p><strong>weight_function</strong> : [&#8216;arctan&#8217; | &#8216;sq&#8217; | &#8216;abs&#8217; | &#8216;arctan_sq&#8217;]</p>
+<blockquote>
+<div><p>weight function (arctan (arctan cov), sq (sq cov), abs (abs cov),
+arctan_sq (sqared arctan of cov))</p>
+</div></blockquote>
+<p><strong>gene_of_interest</strong> : str</p>
+<blockquote>
+<div><p>map a gradient representing this gene&#8217;s data onto nodes (ENSEMBL
+id or gene name???)</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">#TODO: Mike please fill these in</p>
+<p><strong>graph</strong> : ???</p>
+<blockquote>
+<div><p>???</p>
+</div></blockquote>
+<p><strong>pos</strong> : ???</p>
+<blockquote class="last">
+<div><p>???</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="flotilla.visualize.network.NetworkerViz.draw_nonreduced_graph">
 <tt class="descname">draw_nonreduced_graph</tt><big>(</big><em>degree_cut=2</em>, <em>cov_std_cut=1.8</em>, <em>wt_fun='abs'</em>, <em>featurewise=False</em>, <em>rpkms_not_events=False</em>, <em>feature_of_interest='RBFOX2'</em>, <em>draw_labels=True</em>, <em>feature_ids=None</em>, <em>group_id=None</em>, <em>graph_file=''</em>, <em>compare=''</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/network.html#NetworkerViz.draw_nonreduced_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.network.NetworkerViz.draw_nonreduced_graph" title="Permalink to this definition">¶</a></dt>
-<dd><blockquote>
-<div>Parameters</div></blockquote>
-<dl class="docutils">
-<dt>feature_ids <span class="classifier-delimiter">:</span> <span class="classifier">list of str, or None</span></dt>
-<dd>Feature ids to subset the data. If None, all features will be used.</dd>
-<dt>sample_ids <span class="classifier-delimiter">:</span> <span class="classifier">list of str, or None</span></dt>
-<dd>Sample ids to subset the data. If None, all features will be used.</dd>
-<dt>x_pc <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd>x component for PCA, default &#8220;pc_1&#8221;</dd>
-<dt>y_pc :</dt>
-<dd>y component for PCA, default &#8220;pc_2&#8221;</dd>
-<dt>n_pcs <span class="classifier-delimiter">:</span> <span class="classifier">int???</span></dt>
-<dd>n components to use for cells&#8217; covariance calculation</dd>
-<dt>cov_std_cut <span class="classifier-delimiter">:</span> <span class="classifier">float??</span></dt>
-<dd>covariance cutoff for edges</dd>
-</dl>
-<p>use_pc{1-4} use these pcs in cov calculation (default True)
-degree_cut : int??</p>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>feature_ids</strong> : list of str, or None</p>
 <blockquote>
-<div>miniumum degree for a node to be included in graph display</div></blockquote>
-<dl class="docutils">
-<dt>weight_function <span class="classifier-delimiter">:</span> <span class="classifier">[&#8216;arctan&#8217; | &#8216;sq&#8217; | &#8216;abs&#8217; | &#8216;arctan_sq&#8217;]</span></dt>
-<dd>weight function (arctan (arctan cov), sq (sq cov), abs (abs cov),
-arctan_sq (sqared arctan of cov))</dd>
-<dt>gene_of_interest <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd>map a gradient representing this gene&#8217;s data onto nodes (ENSEMBL
-id or gene name???)</dd>
-</dl>
-<p>#TODO: Mike please fill these in
-graph : ???</p>
+<div><p>Feature ids to subset the data. If None, all features will be used.</p>
+</div></blockquote>
+<p><strong>sample_ids</strong> : list of str, or None</p>
 <blockquote>
-<div>???</div></blockquote>
-<dl class="docutils">
-<dt>pos <span class="classifier-delimiter">:</span> <span class="classifier">???</span></dt>
-<dd>???</dd>
-</dl>
+<div><p>Sample ids to subset the data. If None, all features will be used.</p>
+</div></blockquote>
+<p><strong>x_pc</strong> : str</p>
+<blockquote>
+<div><p>x component for PCA, default &#8220;pc_1&#8221;</p>
+</div></blockquote>
+<p><strong>y_pc :</strong></p>
+<blockquote>
+<div><p>y component for PCA, default &#8220;pc_2&#8221;</p>
+</div></blockquote>
+<p><strong>n_pcs</strong> : int???</p>
+<blockquote>
+<div><p>n components to use for cells&#8217; covariance calculation</p>
+</div></blockquote>
+<p><strong>cov_std_cut</strong> : float??</p>
+<blockquote>
+<div><p>covariance cutoff for edges</p>
+</div></blockquote>
+<p><strong>use_pc{1-4} use these pcs in cov calculation (default True)</strong></p>
+<p><strong>degree_cut</strong> : int??</p>
+<blockquote>
+<div><p>miniumum degree for a node to be included in graph display</p>
+</div></blockquote>
+<p><strong>weight_function</strong> : [&#8216;arctan&#8217; | &#8216;sq&#8217; | &#8216;abs&#8217; | &#8216;arctan_sq&#8217;]</p>
+<blockquote>
+<div><p>weight function (arctan (arctan cov), sq (sq cov), abs (abs cov),
+arctan_sq (sqared arctan of cov))</p>
+</div></blockquote>
+<p><strong>gene_of_interest</strong> : str</p>
+<blockquote>
+<div><p>map a gradient representing this gene&#8217;s data onto nodes (ENSEMBL
+id or gene name???)</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">#TODO: Mike please fill these in</p>
+<p><strong>graph</strong> : ???</p>
+<blockquote>
+<div><p>???</p>
+</div></blockquote>
+<p><strong>pos</strong> : ???</p>
+<blockquote class="last">
+<div><p>???</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -288,6 +438,7 @@ graph : ???</p>
 <em class="property">class </em><tt class="descclassname">flotilla.visualize.predict.</tt><tt class="descname">ClassifierViz</tt><big>(</big><em>data</em>, <em>trait</em>, <em>predictor=&lt;class 'sklearn.ensemble.forest.ExtraTreesClassifier'&gt;</em>, <em>name='ExtraTreesClassifier'</em>, <em>predictor_kwargs=None</em>, <em>predictor_scoring_fun=None</em>, <em>score_cutoff_fun=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/predict.html#ClassifierViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.predict.ClassifierViz" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="flotilla.compute.html#flotilla.compute.predict.Classifier" title="flotilla.compute.predict.Classifier"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.predict.Classifier</span></tt></a>, <a class="reference internal" href="#flotilla.visualize.predict.PredictorBaseViz" title="flotilla.visualize.predict.PredictorBaseViz"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.visualize.predict.PredictorBaseViz</span></tt></a></p>
 <p>Visualize results from classification</p>
+<p class="rubric">Methods</p>
 <dl class="method">
 <dt id="flotilla.visualize.predict.ClassifierViz.plot_classifier_scores">
 <tt class="descname">plot_classifier_scores</tt><big>(</big><em>trait</em>, <em>ax=None</em>, <em>classifier_name=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/predict.html#ClassifierViz.plot_classifier_scores"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.predict.ClassifierViz.plot_classifier_scores" title="Permalink to this definition">¶</a></dt>
@@ -302,6 +453,7 @@ ax - ax to plot on. if None: plt.gca()</p>
 <dt id="flotilla.visualize.predict.PredictorBaseViz">
 <em class="property">class </em><tt class="descclassname">flotilla.visualize.predict.</tt><tt class="descname">PredictorBaseViz</tt><a class="reference internal" href="_modules/flotilla/visualize/predict.html#PredictorBaseViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.predict.PredictorBaseViz" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p class="rubric">Methods</p>
 <dl class="method">
 <dt id="flotilla.visualize.predict.PredictorBaseViz.do_pca">
 <tt class="descname">do_pca</tt><big>(</big><em>trait</em>, <em>ax=None</em>, <em>classifier_name=None</em>, <em>**plotting_kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/predict.html#PredictorBaseViz.do_pca"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.predict.PredictorBaseViz.do_pca" title="Permalink to this definition">¶</a></dt>
@@ -332,6 +484,7 @@ map row index -&gt; an attribute)</p>
 <dt id="flotilla.visualize.predict.RegressorViz">
 <em class="property">class </em><tt class="descclassname">flotilla.visualize.predict.</tt><tt class="descname">RegressorViz</tt><big>(</big><em>data</em>, <em>trait</em>, <em>predictor=&lt;class 'sklearn.ensemble.forest.ExtraTreesRegressor'&gt;</em>, <em>name='ExtraTreesRegressor'</em>, <em>predictor_kwargs=None</em>, <em>predictor_scoring_fun=None</em>, <em>score_cutoff_fun=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/predict.html#RegressorViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.predict.RegressorViz" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="flotilla.compute.html#flotilla.compute.predict.Regressor" title="flotilla.compute.predict.Regressor"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.predict.Regressor</span></tt></a>, <a class="reference internal" href="#flotilla.visualize.predict.PredictorBaseViz" title="flotilla.visualize.predict.PredictorBaseViz"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.visualize.predict.PredictorBaseViz</span></tt></a></p>
+<p class="rubric">Methods</p>
 <dl class="method">
 <dt id="flotilla.visualize.predict.RegressorViz.check_a_feature">
 <tt class="descname">check_a_feature</tt><big>(</big><em>feature_name</em>, <em>trait</em>, <em>**violinplot_kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/predict.html#RegressorViz.check_a_feature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.predict.RegressorViz.check_a_feature" title="Permalink to this definition">¶</a></dt>
@@ -354,6 +507,7 @@ sets</p>
 <em class="property">class </em><tt class="descclassname">flotilla.visualize.splicing.</tt><tt class="descname">ModalitiesViz</tt><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#ModalitiesViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
 <p>Visualize results of modality assignments</p>
+<p class="rubric">Methods</p>
 <dl class="method">
 <dt id="flotilla.visualize.splicing.ModalitiesViz.bar">
 <tt class="descname">bar</tt><big>(</big><em>modalities_counts</em>, <em>ax=None</em>, <em>i=0</em>, <em>normed=True</em>, <em>legend=True</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#ModalitiesViz.bar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.bar" title="Permalink to this definition">¶</a></dt>
@@ -399,34 +553,57 @@ violin plots</p>
 <tt class="descclassname">flotilla.visualize.splicing.</tt><tt class="descname">lavalamp</tt><big>(</big><em>psi</em>, <em>color=None</em>, <em>x_offset=0</em>, <em>title=''</em>, <em>ax=None</em>, <em>switchy_score_psi=None</em>, <em>marker='d'</em>, <em>plot_kws=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#lavalamp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.lavalamp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make a &#8216;lavalamp&#8217; scatter plot of many splicing events</p>
 <p>Useful for visualizing many splicing events at once.</p>
-<p>TODO.md: (n_events, n_samples).transpose()
-data : array</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>TODO.md: (n_events, n_samples).transpose()</strong></p>
+<p><strong>data</strong> : array</p>
 <blockquote>
-<div>A (n_events, n_samples) matrix either as a numpy array or as a pandas
-DataFrame</div></blockquote>
-<dl class="docutils">
-<dt>color <span class="classifier-delimiter">:</span> <span class="classifier">matplotlib color</span></dt>
-<dd>Color of the scatterplot. Defaults to a dark teal</dd>
-<dt>x_offset <span class="classifier-delimiter">:</span> <span class="classifier">numeric or None</span></dt>
-<dd>How much to offset the x-values off of 1. Useful for plotting several
-celltypes at once.</dd>
-<dt>title <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd>Title of the plot. Default &#8216;&#8217;</dd>
-<dt>ax <span class="classifier-delimiter">:</span> <span class="classifier">matplotlib.Axes object</span></dt>
-<dd>The axes to plot on. If not provided, will be created</dd>
-<dt>switchy_score_psi <span class="classifier-delimiter">:</span> <span class="classifier">pandas.DataFrame</span></dt>
-<dd>The psi scores to sort on for the plotting order. By default use the
+<div><p>A (n_events, n_samples) matrix either as a numpy array or as a pandas
+DataFrame</p>
+</div></blockquote>
+<p><strong>color</strong> : matplotlib color</p>
+<blockquote>
+<div><p>Color of the scatterplot. Defaults to a dark teal</p>
+</div></blockquote>
+<p><strong>x_offset</strong> : numeric or None</p>
+<blockquote>
+<div><p>How much to offset the x-values off of 1. Useful for plotting several
+celltypes at once.</p>
+</div></blockquote>
+<p><strong>title</strong> : str</p>
+<blockquote>
+<div><p>Title of the plot. Default &#8216;&#8217;</p>
+</div></blockquote>
+<p><strong>ax</strong> : matplotlib.Axes object</p>
+<blockquote>
+<div><p>The axes to plot on. If not provided, will be created</p>
+</div></blockquote>
+<p><strong>switchy_score_psi</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>The psi scores to sort on for the plotting order. By default use the
 psi provided, but sometimes you want to plot multiple psi scores on
-the same plot, with the same events.</dd>
-<dt>marker <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd>A valid matplotlib marker. Default is &#8216;d&#8217; (thin diamond)</dd>
-<dt>plot_kws <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
-<dd>Keyword arguments to supply to plot()</dd>
-</dl>
-<dl class="docutils">
-<dt>fig <span class="classifier-delimiter">:</span> <span class="classifier">matplotlib.Figure</span></dt>
-<dd>A figure object for saving.</dd>
-</dl>
+the same plot, with the same events.</p>
+</div></blockquote>
+<p><strong>marker</strong> : str</p>
+<blockquote>
+<div><p>A valid matplotlib marker. Default is &#8216;d&#8217; (thin diamond)</p>
+</div></blockquote>
+<p><strong>plot_kws</strong> : dict</p>
+<blockquote>
+<div><p>Keyword arguments to supply to plot()</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>fig</strong> : matplotlib.Figure</p>
+<blockquote class="last">
+<div><p>A figure object for saving.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -437,71 +614,26 @@ the same plot, with the same events.</dd>
 </div>
 
 
-          </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">flotilla.visualize package</a><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-flotilla.visualize.color">flotilla.visualize.color module</a></li>
-<li><a class="reference internal" href="#module-flotilla.visualize.decomposition">flotilla.visualize.decomposition module</a></li>
-<li><a class="reference internal" href="#module-flotilla.visualize.expression">flotilla.visualize.expression module</a></li>
-<li><a class="reference internal" href="#module-flotilla.visualize.ipython_interact">flotilla.visualize.ipython_interact module</a></li>
-<li><a class="reference internal" href="#module-flotilla.visualize.network">flotilla.visualize.network module</a></li>
-<li><a class="reference internal" href="#module-flotilla.visualize.predict">flotilla.visualize.predict module</a></li>
-<li><a class="reference internal" href="#module-flotilla.visualize.splicing">flotilla.visualize.splicing module</a></li>
-<li><a class="reference internal" href="#module-flotilla.visualize">Module contents</a></li>
-</ul>
-</li>
-</ul>
-
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="flotilla.data_model.html"
-                        title="previous chapter">flotilla.data_model package</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/flotilla.visualize.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
+    </div>
+      
+  </div>
+</div>  <div class="container">
+	
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
     </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="flotilla.data_model.html" title="flotilla.data_model package"
-             >previous</a> |</li>
-        <li><a href="index.html">flotilla  documentation</a> &raquo;</li>
-          <li><a href="flotilla.html" >flotilla package</a> &raquo;</li> 
-      </ul>
-    </div>
-    <div class="footer">
-        &copy; Copyright 2014, Author.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
-    </div>
+    <p>
+        &copy; Copyright 2014, Olga Botvinnik, Michael Lovci, Patrick Liu, Yan Song.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.<br/>
+    </p>
+  </div>
+</footer>
+	Funded by <a href="http://numfocus.org/">NumFOCUS</a> <a href="http://numfocus.org/pages/john_hunter_fellowship_2014.html">John Hunter Technology Fellowship</a> to <a href="http://olgabotvinnik.com/">Olga Botvinnik</a>.<br/>
+	Partially funded by <a href="http://www.nih.gov/">NIH</a> grants NS075449 and HG004659 and <a href="http://www.cirm.ca.gov/">CIRM</a> grants RB4-06045 and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene Yeo</a>. <br/>
+
+
   </body>
 </html>
