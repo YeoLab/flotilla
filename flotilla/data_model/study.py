@@ -420,11 +420,14 @@ class Study(StudyFactory):
         experiment_design_pooled_col = None
 
         for resource in data_package['resources']:
-            resource_url = resource['url']
+            if 'url' in resource:
+                resource_url = resource['url']
+                filename = check_if_already_downloaded(resource_url)
+            else:
+                filename = resource['path']
 
             name = resource['name']
 
-            filename = check_if_already_downloaded(resource_url)
             reader = cls.readers[resource['format']]
             dfs[name] = reader(filename)
 
