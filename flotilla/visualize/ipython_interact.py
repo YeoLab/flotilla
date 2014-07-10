@@ -151,7 +151,7 @@ class Interactive(object):
             for k, v in locals().iteritems():
                 if k == 'self':
                     continue
-                prik, ":", v
+                sys.stdout.write('{} : {}\n'.format(k, v))
 
             if data_type == 'expression':
                 data_object = self.expression
