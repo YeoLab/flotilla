@@ -14,8 +14,6 @@ import numpy as np
 import pandas as pd
 from scipy.stats import hypergeom
 
-from .data_model.study import Study
-
 
 FLOTILLA_DOWNLOAD_DIR = os.path.expanduser('~/flotilla_projects')
 
@@ -246,7 +244,11 @@ def make_study_datapackage(name, experiment_design_data,
         raise ValueError("Datapackage can only contain lowercase letters")
 
     datapackage_dir = '{}/{}'.format(flotilla_dir, name)
-    Study.maybe_make_directory(datapackage_dir)
+    try:
+        os.makedirs(datapackage_dir)
+    except OSError:
+        pass
+
     datapackage = {}
     datapackage['name'] = name
     datapackage['title'] = title
