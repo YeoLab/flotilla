@@ -84,7 +84,8 @@ def GO_enrichment(geneList, ontology, expressedGenes=None, printIt=False,
             if v[0] > pCut:
                 continue
             if printIt:
-                print k, "|".join(ontology[k]['name']), "%.3e" % v[0], v[1], v[2], v[3], "|".join(v[3])
+                print k, "|".join(ontology[k]['name']), "%.3e" % v[0], v[1], \
+                    v[2], v[3], "|".join(v[3])
                 pass
             y.append([k, "|".join(ontology[k]['name']), v[0], v[1], v[2], v[3],
                       ",".join(v[4]), ",".join(v[5])])
@@ -279,7 +280,6 @@ def make_study_datapackage(name, experiment_design_data,
         resource['path'] = data_filename
         resource['compression'] = 'gzip'
         resource['format'] = 'csv'
-
 
     filename = '{}/datapackage.json'.format(datapackage_dir)
     with open(filename, 'w') as f:
