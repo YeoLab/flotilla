@@ -10,7 +10,7 @@ from scipy.spatial.distance import pdist, squareform
 from sklearn.preprocessing import StandardScaler
 
 from ..visualize.predict import ClassifierViz
-
+from ..external import link_to_list
 
 MINIMUM_SAMPLES = 10
 
@@ -96,7 +96,11 @@ class BaseData(object):
             elif feature_subset == self.all_features:
                 feature_ids = self.data.columns
             else:
-                raise ValueError("There are no {} features in this data: {}"
+                try:
+                    feature_ids = link_to_list(feature_subset)
+                    self.feature_sets[feature_subset] = feature_ids
+                except:
+                    raise ValueError("There are no {} features in this data: {}"
                                  .format(feature_subset, self))
             if rename:
                 feature_ids = feature_ids.map(self.feature_renamer)
