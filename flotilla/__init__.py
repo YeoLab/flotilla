@@ -35,7 +35,8 @@ def embark(study_name):
 
     """
     try:
-        filename = os.path.abspath(os.path.expanduser('~/flotilla_projects/{}/datapackage.json'.format(study_name)))
+        filename = os.path.abspath(os.path.expanduser(
+            '~/flotilla_projects/{}/datapackage.json'.format(study_name)))
         return Study.from_data_package_file(filename)
     except:
         return Study.from_data_package_url(study_name)

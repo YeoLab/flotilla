@@ -74,7 +74,7 @@ class Interactive(object):
         interact(do_interact,
                  data_type=('expression', 'splicing'),
                  sample_subset=self.default_sample_subsets,
-                 feature_subset=feature_sets,
+                 feature_subset=feature_sets + ['custom'],
                  featurewise=False,
                  x_pc=(1, 10), y_pc=(1, 10),
                  show_point_labels=False, )
@@ -127,7 +127,7 @@ class Interactive(object):
         interact(do_interact,
                  data_type=('expression', 'splicing'),
                  sample_subset=self.default_sample_subsets,
-                 feature_subset=feature_sets,
+                 feature_subset=feature_sets + ['custom'],
                  featurewise=False,
                  cov_std_cut=(0.1, 3),
                  degree_cut=(0, 10),
@@ -181,7 +181,7 @@ class Interactive(object):
         interact(do_interact,
                  data_type=('expression', 'splicing'),
                  sample_subset=self.default_sample_subsets,
-                 feature_subset=feature_sets,
+                 feature_subset=feature_sets + ['custom'],
                  categorical_variable=categorical_variable,
                  feature_score_std_cutoff=(0.1, 20),
                  draw_labels=False)

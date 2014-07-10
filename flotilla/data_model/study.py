@@ -420,13 +420,19 @@ class Study(StudyFactory):
         experiment_design_pooled_col = None
 
         for resource in data_package['resources']:
-            resource_url = resource['url']
+            if 'url' in resource:
+                resource_url = resource['url']
+                filename = check_if_already_downloaded(resource_url)
+            else:
+                filename = resource['path']
 
             name = resource['name']
 
-            filename = check_if_already_downloaded(resource_url)
             reader = cls.readers[resource['format']]
-            dfs[name] = reader(filename)
+            compression = None if 'compression' not in resource else \
+                resource['compression']
+
+            dfs[name] = reader(filename, compression=compression)
 
             if name == 'expression':
                 if 'log_transformed' in resource:
@@ -442,12 +448,15 @@ class Study(StudyFactory):
             species_dfs = {}
 
             for resource in species_data_package['resources']:
-                resource_url = resource['url']
+                if 'url' in resource:
+                    resource_url = resource['url']
+                    filename = check_if_already_downloaded(resource_url)
+                else:
+                    filename = resource['path']
 
                 # reader = getattr(cls, '_load_' + resource['format'])
                 reader = cls.readers[resource['format']]
 
-                filename = check_if_already_downloaded(resource_url)
                 compression = None if 'compression' not in resource else \
                     resource['compression']
                 species_dfs[resource['name']] = reader(filename,
@@ -457,14 +466,11 @@ class Study(StudyFactory):
 
         try:
             experiment_design_data = dfs['experiment_design']
-            expression_data = dfs['expression']
-            splicing_data = dfs['splicing']
+            expression_data = None if 'expression' not in dfs else dfs['expression']
+            splicing_data = None if 'splicing' not in dfs else dfs['splicing']
         except KeyError:
             raise AttributeError('The datapackage.json file is required to '
-                                 'have these three resources with the '
-                                 'specified names: '
-                                 '"experiment_design", "expression", '
-                                 '"splicing"')
+                                 'have the "experiment_design" resource')
         try:
             mapping_stats_data = dfs['mapping_stats']
         except KeyError:
