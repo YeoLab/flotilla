@@ -40,7 +40,7 @@ before_script:
     make html;
     cd ../gh-pages;
     git add . ; git commit -m "Update from Travis-CI on $(date)";
-    git push -u origin gh-pages
+    git push -u origin gh-pages;
     fi
 
 # command to run tests
