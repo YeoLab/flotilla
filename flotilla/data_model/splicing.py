@@ -400,8 +400,10 @@ class SplicingData(BaseData):
                                                        fraction_diff_thresh)
         singles, pooled = self._subset_singles_and_pooled(
             self.data, self.pooled, sample_ids, feature_ids)
+        percent = self.percent_pooled_inconsistent(sample_ids, feature_ids,
+                                                   fraction_diff_thresh)
         lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
-                                     color=color)
+                                     color=color, percent=percent)
 
 
     def plot_hist_single_vs_pooled_diff(self, sample_ids,

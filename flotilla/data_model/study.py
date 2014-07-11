@@ -18,7 +18,7 @@ import seaborn as sns
 from .metadata import MetaData
 from .expression import ExpressionData, SpikeInData
 from .quality_control import MappingStatsData
-from .splicing import SplicingData
+from .splicing import SplicingData, FRACTION_DIFF_THRESH
 from ..visualize.color import blue
 from ..visualize.ipython_interact import Interactive
 from ..visualize.network import NetworkerViz
@@ -898,9 +898,9 @@ class Study(StudyFactory):
                                  sample_groupby=self.sample_id_to_celltype,
                                  ax=ax)
 
-    def plot_lavalamp_pooled_inconsistent(self, celltype=None,
-                                          feature_ids=None,
-                                          fraction_diff_thresh=0.15):
+    def plot_lavalamp_pooled_inconsistent(
+            self, celltype=None, feature_ids=None,
+            fraction_diff_thresh=FRACTION_DIFF_THRESH):
         # grouped_ids = self.splicing.data.groupby(self.sample_id_to_color,
         #                                          axis=0)
         celltype_groups = self.experiment_design.data.groupby(
@@ -926,6 +926,33 @@ class Study(StudyFactory):
             self.splicing.plot_lavalamp_pooled_inconsistent(
                 sample_ids, feature_ids, fraction_diff_thresh,
                 color=color)
+
+    def percent_pooled_inconsistent(self,
+                                    celltype=None, feature_ids=None,
+                                    fraction_diff_thresh=FRACTION_DIFF_THRESH):
+
+        celltype_groups = self.experiment_design.data.groupby(
+            self.sample_id_to_celltype, axis=0)
+
+        if celltype is not None:
+            # Only plotting one celltype
+            celltype_samples = set(celltype_groups.groups[celltype])
+        else:
+            # Plotting all the celltypes
+            celltype_samples = self.experiment_design.data.index
+
+        celltype_and_sample_ids = celltype_groups.groups.iteritems()
+        for i, (celltype, sample_ids) in enumerate(celltype_and_sample_ids):
+            # import pdb; pdb.set_trace()
+
+            # Assumes all samples of a celltype have the same color...
+            # probably wrong
+            color = self.sample_id_to_color[sample_ids[0]]
+            sample_ids = celltype_samples.intersection(sample_ids)
+            if len(sample_ids) == 0:
+                continue
+            self.splicing.percent_pooled_inconsistent(sample_ids, feature_ids,
+                                                      fraction_diff_thresh)
 
 
 # Add interactive visualizations
