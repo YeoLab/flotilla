@@ -282,8 +282,8 @@ class BaseData(object):
         pooled_ids = self.pooled.index.intersection(sample_ids)
         # import pdb; pdb.set_trace()
         singles = self._subset(singles, singles_ids, feature_ids,
-                               require_min_samples=False).dropna(axis=1,
-                                                                 how='all')
+                               require_min_samples=True).dropna(axis=1,
+                                                                how='all')
         pooled = pooled.ix[pooled_ids, singles.columns]
         return singles, pooled
 
