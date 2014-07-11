@@ -98,6 +98,19 @@ check out the instructions [here](https://github
 .com/YeoLab/PyCharm-Python-Templates) for how to install and use them.
 
 
+How to build the docs
+---------------------
+How to make and upload the docs. From the `flotilla` base directory,
+
+```
+cd doc/
+make html
+cd ../gh-pages/
+git add .
+git commit -m "informative commit message about documentation updates"
+git push -u origin gh-pages
+```
+
 
 What flotilla is not
 ====================
@@ -113,7 +126,7 @@ Testing
 
 In the source directory (wherever you cloned `flotilla` to that has this README.md file), do:
 
-    make test
+    make tests
 
 This will run the unit test suite.
 
