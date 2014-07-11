@@ -16,7 +16,11 @@ from ..visualize.predict import ClassifierViz
 from ..visualize.splicing import ModalitiesViz
 from ..util import cached_property, memoize
 from ..visualize.color import red
-from ..visualize.splicing import lavalamp
+from ..visualize.splicing import lavalamp, hist_single_vs_pooled_diff, \
+    lavalamp_pooled_inconsistent
+
+
+FRACTION_DIFF_THRESH = 0.1
 
 
 class SplicingData(BaseData):
@@ -315,9 +319,7 @@ class SplicingData(BaseData):
         psi = self._subset(self.data, sample_ids, [feature_id]).dropna()
         # psi = self.data.ix[sample_ids, feature_id].dropna()
 
-        import pdb
-
-        pdb.set_trace()
+        # import pdb; pdb.set_trace()
 
         # Add a tiny amount of uniform random noise in case all the values
         # are equal
@@ -339,7 +341,93 @@ class SplicingData(BaseData):
                 ax.annotate('pooled', (x, y), textcoords='offset points',
                             xytext=(10, 5), fontsize=14)
 
-                # def plot_shared_events(self):
+    @memoize
+    def pooled_inconsistent(self, sample_ids, feature_ids=None,
+                            fraction_diff_thresh=FRACTION_DIFF_THRESH):
+        """Return splicing events which pooled samples are consistently
+        different from the single cells.
+
+        Parameters
+        ----------
+        singles_ids : list-like
+            List of sample ids of single cells (in the main ".data" DataFrame)
+        pooled_ids : list-like
+            List of sample ids of pooled cells (in the other ".pooled"
+            DataFrame)
+        feature_ids : None or list-like
+            List of feature ids. If None, use all
+        fraction_diff_thresh : float
+
+
+        Returns
+        -------
+        large_diff : pandas.DataFrame
+            All splicing events which have a scaled difference larger than
+            the fraction diff thresh
+        """
+        # singles = self._subset(self.data, singles_ids, feature_ids)
+        diff_from_singles = self._diff_from_singles(sample_ids,
+                                                    feature_ids, scaled=True)
+
+        large_diff = \
+            diff_from_singles[diff_from_singles.abs()
+                              >= fraction_diff_thresh].dropna(axis=1,
+                                                              how='all')
+        return large_diff
+
+    @memoize
+    def _diff_from_singles(self, sample_ids,
+                           feature_ids=None, scaled=True, dropna=True):
+        singles, pooled = self._subset_singles_and_pooled(
+            self.data, self.pooled, sample_ids, feature_ids)
+
+        diff_from_singles = pooled.apply(
+            lambda x: (singles - x.values).abs().sum(), axis=1)
+
+        if scaled:
+            diff_from_singles = \
+                diff_from_singles / singles.count().astype(float)
+        if dropna:
+            diff_from_singles = diff_from_singles.dropna(axis=1, how='all')
+        return diff_from_singles
+
+
+    def plot_lavalamp_pooled_inconsistent(
+            self, sample_ids, feature_ids=None,
+            fraction_diff_thresh=FRACTION_DIFF_THRESH, color=None):
+        pooled_inconsistent = self.pooled_inconsistent(sample_ids,
+                                                       feature_ids,
+                                                       fraction_diff_thresh)
+        singles, pooled = self._subset_singles_and_pooled(
+            self.data, self.pooled, sample_ids, feature_ids)
+        lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
+                                     color=color)
+
+
+    def plot_hist_single_vs_pooled_diff(self, sample_ids,
+                                        feature_ids=None,
+                                        color=None, title='', hist_kws=None):
+        diff_from_singles = self._diff_from_singles(sample_ids,
+                                                    feature_ids)
+        diff_from_singles_scaled = self._diff_from_singles(sample_ids,
+                                                           feature_ids,
+                                                           scaled=True)
+        hist_single_vs_pooled_diff(diff_from_singles,
+                                   diff_from_singles_scaled, color=color,
+                                   title=title, hist_kws=hist_kws)
+
+    @memoize
+    def percent_pooled_inconsistent(self, sample_ids,
+                                    feature_ids=None,
+                                    fraction_diff_thresh=FRACTION_DIFF_THRESH):
+        """The percent of splicing events which are
+
+        """
+        singles, pooled = self._subset_singles_and_pooled(
+            self.data, self.pooled, sample_ids, feature_ids)
+        large_diff = self.pooled_inconsistent(sample_ids, feature_ids,
+                                              fraction_diff_thresh)
+        return large_diff.shape[1] / float(pooled.shape[1]) * 100
 
 
 class SpliceJunctionData(SplicingData):
@@ -479,7 +567,7 @@ class DownsampledSplicingData(BaseData):
             fig.tight_layout()
             fig.savefig('{}/downsampled_shared_events_{}.pdf'.format(
                 figure_dir, splice_type), bbox_extra_artists=(legend,),
-                bbox_inches='tight')
+                        bbox_inches='tight')
 
     def shared_events_percentage(self, min_iter_shared=5, figure_dir='./'):
         """Plot the percentage of all events detected at that iteration,

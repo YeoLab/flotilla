@@ -12,6 +12,7 @@ from sklearn.preprocessing import StandardScaler
 from ..visualize.predict import ClassifierViz
 from ..external import link_to_list
 
+
 MINIMUM_SAMPLES = 10
 
 
@@ -245,7 +246,8 @@ class BaseData(object):
     def min_samples(self, values):
         self._min_samples = values
 
-    def _subset(self, data, sample_ids=None, feature_ids=None):
+    def _subset(self, data, sample_ids=None, feature_ids=None,
+                require_min_samples=True):
         """Take only a subset of the data, and require at least the minimum
         samples observed to be not NA for each feature.
 
@@ -263,14 +265,27 @@ class BaseData(object):
         subset : pandas.DataFrame
         """
         if feature_ids is None:
-            feature_ids = self.data.columns
+            feature_ids = data.columns
         if sample_ids is None:
-            sample_ids = self.data.index
+            sample_ids = data.index
 
         subset = data.ix[sample_ids]
         subset = subset.T.ix[feature_ids].T
-        subset = subset.ix[:, subset.count() > self.min_samples]
+
+        if require_min_samples:
+            subset = subset.ix[:, subset.count() > self.min_samples]
         return subset
+
+    def _subset_singles_and_pooled(self, singles, pooled, sample_ids,
+                                   feature_ids=None):
+        singles_ids = self.data.index.intersection(sample_ids)
+        pooled_ids = self.pooled.index.intersection(sample_ids)
+        # import pdb; pdb.set_trace()
+        singles = self._subset(singles, singles_ids, feature_ids,
+                               require_min_samples=False).dropna(axis=1,
+                                                                 how='all')
+        pooled = pooled.ix[pooled_ids, singles.columns]
+        return singles, pooled
 
     def _subset_and_standardize(self, data, sample_ids=None,
                                 feature_ids=None,
