@@ -198,7 +198,7 @@ def hist_single_vs_pooled_diff(diff_from_singles, diff_from_singles_scaled,
 
 
 def lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
-                                 color=None):
+                                 color=None, percent=None):
     plot_order = \
         pooled_inconsistent.sum() / pooled_inconsistent.count().astype(float)
     plot_order.sort()
@@ -208,6 +208,8 @@ def lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
 
     pooled = pooled.dropna(axis=1, how='all')
 
+    suffix = ' of events measured in both pooled and single'
+
     try:
         singles_values = singles.ix[:, pooled_inconsistent.columns].values
         lavalamp(singles_values, color=color)
@@ -216,7 +218,9 @@ def lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
                  switchy_score_psi=singles_values,
                  ax=plt.gca(), plot_kws=scatter_kws)
         ax = plt.gca()
-        ax.set_title('failing events')
+        title_suffix = '' if percent is None else ' ({:.1f}%){}'.format(
+            percent, suffix)
+        ax.set_title('failing events{}'.format(title_suffix))
     except IndexError:
         # There are no inconsistent events
         pass
@@ -229,7 +233,9 @@ def lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
              switchy_score_psi=singles.ix[:, non_failing_events],
              ax=plt.gca(), plot_kws=scatter_kws)
     ax = plt.gca()
-    ax.set_title('non-failing events')
+    title_suffix = '' if percent is None else ' ({:.1f}%){}'.format(
+        100 - percent, suffix)
+    ax.set_title('non-failing events{}'.format(title_suffix))
 
 
 def violinplot(psi, color=None, ax=None, pooled_psi=None,
