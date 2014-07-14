@@ -8,5 +8,5 @@ coverage:
 
 lint:
 	pyflakes -x W -X flotilla/visualize/decomposition.py flotilla
-	pep8 flotilla
+#	pep8 flotilla
 
