@@ -236,7 +236,10 @@ def make_study_datapackage(name, experiment_design_data,
                            mapping_stats_data=None,
                            title='',
                            sources='', license=None, species=None,
-                           flotilla_dir=FLOTILLA_DOWNLOAD_DIR):
+                           flotilla_dir=FLOTILLA_DOWNLOAD_DIR,
+                           host="sauron.ucsd.edu",
+                           host_destination='/zfs/www/flotilla_packages/'):
+
     """Example code for making a datapackage for a Study
     """
     if ' ' in name:
@@ -276,6 +279,11 @@ def make_study_datapackage(name, experiment_design_data,
         data_filename = '{}/{}.csv.gz'.format(datapackage_dir, resource_name)
         with gzip.open(data_filename, 'wb') as f:
             resource_data.to_csv(f)
+        try:
+            #TODO: only transmit data if it has been updated
+            subprocess.call("scp {} {}:{}{}.".format(data_filename, host, host_destination, name), shell=True)
+        except Exception as e:
+            sys.stderr.write("error sending data to host: {}".format(e))
 
         resource['path'] = data_filename
         resource['compression'] = 'gzip'
