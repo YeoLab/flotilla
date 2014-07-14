@@ -21,7 +21,7 @@ class PredictorBase(object):
 
     def __init__(self, data, trait, predictor=None, name="Predictor",
                  predictor_kwargs=None, predictor_scoring_fun=None,
-                 score_cutoff_fun=None):
+                 score_cutoff_fun=None, score_coefficient=2):
         """Initializer for scikit-learn predictors (classifiers and regressors)
 
         Initalizes everything except the "y" (response variable). This must
@@ -59,7 +59,7 @@ class PredictorBase(object):
             Default: lambda scores: np.mean(scores) + 2 * np.std(scores)
         """
         self.predictor_class = predictor
-
+        self.score_coefficient = score_coefficient
         self.has_been_fit = False
         self.has_been_scored = False
         self.name = name
@@ -94,8 +94,8 @@ class PredictorBase(object):
         return x.feature_importances_
 
     @staticmethod
-    def default_score_cutoff_fun(x):
-        return np.mean(x) + 2 * np.std(x)
+    def default_score_cutoff_fun(x, std_multiplier=2):
+        return np.mean(x) + std_multiplier * np.std(x)
 
     def fit(self):
         """Fit predictor to the data
@@ -123,12 +123,22 @@ class PredictorBase(object):
                              'PredictorBase class yet')
         self.predictor.scores_ = pd.Series(index=self.X.columns, data=scores)
         self.predictor.score_cutoff_ = \
-            self.score_cutoff_fun(self.predictor.scores_)
+            self.score_cutoff_fun(self.predictor.scores_, self.score_coefficient)
         self.important_features = \
             self.predictor.scores_ > self.predictor.score_cutoff_
         self.predictor.n_good_features_ = \
             np.sum(self.important_features)
+
+        if self.predictor.n_good_features_ <= 1:
+            sys.stderr.write("cutoff: %.4f\n" % self.predictor.score_cutoff_)
+            sys.stderr.write("WARNING: These classifier settings produced "
+            "<= 1 important feature, consider reducing score_coefficient. "
+            "PCA will fail with this error: \"ValueError: failed "
+            "to create intent(cache|hide)|optional array-- must have defined "
+            "dimensions but got (0,)\"\n")
+
         self.predictor.subset_ = self.X.T[self.important_features].T
+
 
         sys.stdout.write("\tFinished.\n")
         self.has_been_scored = True
@@ -144,7 +154,7 @@ class Regressor(PredictorBase):
     def __init__(self, data, trait, predictor=ExtraTreesRegressor,
                  name="ExtraTreesRegressor",
                  predictor_kwargs=None, predictor_scoring_fun=None,
-                 score_cutoff_fun=None):
+                 score_cutoff_fun=None, score_coefficient=2):
         """Train a regressor on data.
 
         Parameters
@@ -182,7 +192,7 @@ class Regressor(PredictorBase):
             predictor=predictor, name=name,
             predictor_kwargs=predictor_kwargs,
             predictor_scoring_fun=predictor_scoring_fun,
-            score_cutoff_fun=score_cutoff_fun)
+            score_cutoff_fun=score_cutoff_fun, score_coefficient=score_coefficient)
         self.y = self.trait
         self.predictor_class = ExtraTreesRegressor \
             if self.predictor_class is None else self.predictor_class
@@ -205,6 +215,7 @@ class Classifier(PredictorBase):
     def __init__(self, data, trait, predictor=ExtraTreesClassifier,
                  name="ExtraTreesClassifier",
                  predictor_kwargs=None, predictor_scoring_fun=None,
+                 score_coefficient=2,
                  score_cutoff_fun=None):
         """Train a classifier on data.
 
@@ -242,7 +253,8 @@ class Classifier(PredictorBase):
             predictor=predictor, name=name,
             predictor_kwargs=predictor_kwargs,
             predictor_scoring_fun=predictor_scoring_fun,
-            score_cutoff_fun=score_cutoff_fun)
+            score_cutoff_fun=score_cutoff_fun,
+            score_coefficient=score_coefficient)
         self.predictor_class = ExtraTreesClassifier \
             if self.predictor_class is None else self.predictor_class
 
