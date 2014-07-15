@@ -264,7 +264,7 @@ class Interactive(object):
             except:
                 raise RuntimeError("this sample designator is not boolean")
 
-            sample_ids = self.experiment_design.data[sample_subset].index[study.experiment_design.data[sample_subset]]
+            sample_ids = self.experiment_design.data[sample_subset].index[self.experiment_design.data[sample_subset]]
 
 
             self.splicing.plot_lavalamp_pooled_inconsistent(sample_ids, feature_ids,
