@@ -109,6 +109,7 @@ class ExpressionData(BaseData):
     def classify(self, trait, sample_ids=None, feature_ids=None,
                  standardize=True, predictor=ClassifierViz,
                  predictor_kwargs=None, predictor_scoring_fun=None,
+                 score_coefficient=None,
                  score_cutoff_fun=None, plotting_kwargs=None):
         """Make and memoize a predictor on a categorical trait (associated
         with samples) subset of genes
@@ -150,11 +151,14 @@ class ExpressionData(BaseData):
                                                      sample_ids,
                                                      feature_ids,
                                                      standardize)
+        if plotting_kwargs is None:
+            plotting_kwargs = {}
 
         classifier = predictor(subset, trait=trait,
                                predictor_kwargs=predictor_kwargs,
                                predictor_scoring_fun=predictor_scoring_fun,
                                score_cutoff_fun=score_cutoff_fun,
+                               score_coefficient=score_coefficient,
                                **plotting_kwargs)
         # classifier.set_reducer_plotting_args(classifier.reduction_kwargs)
         return classifier

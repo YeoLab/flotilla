@@ -38,9 +38,9 @@ before_script:
   - if [ ${TRAVIS_PYTHON_VERSION:0:1} == "2" ]; then
     cd doc;
     make html;
-    cd ../gh-pages;
-    git add . ; git commit -m "Update from Travis-CI on $(date)";
-    git push -u origin gh-pages;
+    #cd ../gh-pages;
+    # git add . ; git commit -m "Update from Travis-CI on $(date)";
+    # git push -u origin gh-pages;
     fi
 
 # command to run tests
