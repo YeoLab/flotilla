@@ -12,13 +12,15 @@ pymongo >= 2.7
 ipython >= 2.0.0
 husl
 patsy >= 0.2.1
+pandas >= 0.13.1
 statsmodels >= 0.5.0
 seaborn >= 0.3.1
-pandas >= 0.13.1
 networkx
 tornado >= 3.2.1
+pyzmq
 #'dcor_cpy' #needs to be built with extutils
 six
 pytest-cov
 python-coveralls
 sphinx_bootstrap_theme
+jinja2
