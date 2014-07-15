@@ -43,6 +43,7 @@ after_success:
   - coveralls
   # Push to github pages for documentation
   - git config credential.helper "store --file=.git/credentials"
+  - git remote set-url origin https://github.com/YeoLab/flotilla.git
   - echo "https://${GH_TOKEN}:@github.com" > .git/credentials
   - if [ ${TRAVIS_PYTHON_VERSION:0:1} == "2" ]; then
     cd doc;
