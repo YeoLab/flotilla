@@ -139,7 +139,8 @@ class SplicingData(BaseData):
             data, n_iter=n_iter, thresh=thresh)
 
     @memoize
-    def modalities_counts(self, sample_ids=None, feature_ids=None):
+    def modalities_counts(self, sample_ids=None, feature_ids=None,
+                          bootstrapped=False, bootstrapped_kws=False):
         """Count the number of each modalities of these samples and features
 
         Parameters
@@ -287,10 +288,13 @@ class SplicingData(BaseData):
             modalities_assignments, ax=ax, title=title)
 
     def plot_modalities_bar(self, sample_ids=None, feature_ids=None, ax=None,
-                            i=0, normed=True, legend=True):
+                            i=0, normed=True, legend=True,
+                            bootstrapped=False, bootstrapped_kws=None):
         """Plot stacked bar graph of each modality
         """
-        modalities_counts = self.modalities_counts(sample_ids, feature_ids)
+        modalities_counts = self.modalities_counts(
+            sample_ids, feature_ids, bootstrapped=bootstrapped,
+            bootstrapped_kws=bootstrapped_kws)
         self.modalities_visualizer.bar(modalities_counts, ax, i, normed,
                                        legend)
         modalities_fractions = \

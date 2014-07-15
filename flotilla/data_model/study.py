@@ -785,7 +785,8 @@ class Study(StudyFactory):
         return self.splicing.modalities(sample_ids, feature_ids)
 
     def plot_modalities(self, sample_subset=None, feature_subset=None,
-                        normed=True):
+                        normed=True, bootstrapped=False,
+                        bootstrapped_kws=None):
         # try:
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
         feature_ids = self.feature_subset_to_feature_ids('splicing',
@@ -859,7 +860,8 @@ class Study(StudyFactory):
             self.sample_id_to_celltype, axis=0).apply(
             lambda x: self.splicing.modalities(x.index))
 
-    def plot_modalities_lavalamps(self, celltype=None):
+    def plot_modalities_lavalamps(self, celltype=None, bootstrapped=False,
+                                  bootstrapped_kws=None):
         grouped = self.splicing.data.groupby(self.sample_id_to_color, axis=0)
         celltype_groups = self.splicing.data.groupby(
             self.sample_id_to_celltype, axis=0)
@@ -871,10 +873,6 @@ class Study(StudyFactory):
             celltype_samples = self.splicing.data.index
             use_these_modalities = False
 
-        nrows = len(self.splicing.modalities_calculator.modalities_names)
-
-        # fig, axes = plt.subplots(nrows=nrows, figsize=(18, 3 * nrows))
-
         for i, (color, sample_ids) in enumerate(grouped.groups.iteritems()):
             x_offset = 1. / (i + 1)
             sample_ids = celltype_samples.intersection(sample_ids)
@@ -883,7 +881,9 @@ class Study(StudyFactory):
                     sample_ids=sample_ids,
                     color=color,
                     x_offset=x_offset,
-                    use_these_modalities=use_these_modalities)
+                    use_these_modalities=use_these_modalities,
+                    bootstrapped=bootstrapped,
+                    bootstrapped_kws=bootstrapped_kws)
 
     def plot_event(self, feature_id, sample_subset=None, ax=None):
         """Plot the violinplot of an event
