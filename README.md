@@ -20,56 +20,56 @@ All others must fend for themselves to install matplotlib, scipy and their third
  * Install [homebrew](http://brew.sh/)
 
 
-    ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
+    `ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"`
 
 
  * Install freetype:
 
 
-    brew install freetype
+    `brew install freetype`
 
 
  * Install heavy packages (this can take an hour or more)
 
 
-    conda install pip scipy matplotlib pandas scikit-learn patsy ipython pyzmq
+    `conda install pip scipy matplotlib pandas scikit-learn patsy ipython pyzmq`
 
 
  * Create a virtual environment
 
 
-    conda create -n flotilla_env pip scipy matplotlib pandas scikit-learn patsy ipython pyzmq
+    `conda create -n flotilla_env pip scipy matplotlib pandas scikit-learn patsy ipython pyzmq`
 
 
  * Switch to virtual environment
 
 
-    source activate flotilla_env
+    `source activate flotilla_env`
 
 
  * Install flotilla and its dependencies (this can take a few minutes):
 
 
-    pip install git+https://github.com/YeoLab/flotilla.git
+    `pip install git+https://github.com/YeoLab/flotilla.git`
 
 
  * Create a scratch space for your work
 
 
-    mkdir ~/flotilla_scratch
+    `mkdir ~/flotilla_scratch`
 
 
  * Make a place to store flotilla projects
 
 
-    mkdir ~/flotilla_projects
+    `mkdir ~/flotilla_projects`
 
 
  * Go back to the real world
 
 
 
-    source deactivate
+    `source deactivate`
 
 
 Start using flotilla:
@@ -80,13 +80,13 @@ Start using flotilla:
  * switch to virtual environment
 
 
-    source activate flotilla_env
+    `source activate flotilla_env`
 
 
  * start an ipython notebook:
 
 
-    ipython notebook --notebook-dir=~/flotilla_scratch
+    `ipython notebook --notebook-dir=~/flotilla_scratch`
 
 
  * create a new notebook by clicking `New Notebook`
@@ -94,7 +94,7 @@ Start using flotilla:
  * load matplotlib backend using every notebook must use this to display inline output
 
 
-    %matplotlib inline
+    `%matplotlib inline`
 
 Test interactive features with example data:
 ------------
@@ -114,7 +114,7 @@ Run each of the following code lines in its own ipython notebook cell for an int
 
 IMPORTANT NOTE: for this test,several failures are expected since the test set is small.
 Adjust parameters to explore valid parameter spaces.
-For example, you can manually select "all_genes" as the "feature_subset"
+For example, you can manually select `all_genes` as the `feature_subset`
 from the drop-down menu that appears after running these interactive functions.
 
 
