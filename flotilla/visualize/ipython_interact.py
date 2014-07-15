@@ -42,7 +42,7 @@ class Interactive(object):
             for k, v in locals().iteritems():
                 if k == 'self':
                     continue
-                sys.stdout.write('{} : {}'.format(k, v))
+                sys.stdout.write('{} : {}\n'.format(k, v))
 
             if feature_subset != "custom" and list_link != "":
                 raise ValueError(
@@ -100,7 +100,7 @@ class Interactive(object):
             for k, v in locals().iteritems():
                 if k == 'self':
                     continue
-                sys.stdout.write('{} : {}'.format(k, v))
+                sys.stdout.write('{} : {}\n'.format(k, v))
 
             if data_type == 'expression':
                 assert (feature_subset in self.expression.feature_sets.keys())
@@ -145,7 +145,7 @@ class Interactive(object):
                         sample_subset,
                         feature_subset,
                         categorical_variable='outlier',
-                        feature_score_std_cutoff=2,
+                        score_coefficient=2,
                         savefile='data/last.clf.pdf'):
 
             for k, v in locals().iteritems():
@@ -162,14 +162,14 @@ class Interactive(object):
                 trait=categorical_variable,
                 feature_subset=feature_subset,
                 sample_subset=sample_subset,
-                feature_score_std_cutoff=feature_score_std_cutoff)
+                score_coefficient=score_coefficient)
             sys.stdout.write("retrieve this predictor "
                              "with:\npredictor=study.%s.get_predictor('%s', "
                              "'%s', '%s') pca=predictor('%s', "
-                             "feature_score_std_cutoff=%f)"
+                             "score_coefficient=%f)"
                              % (data_type, feature_subset, sample_subset,
                                 categorical_variable, categorical_variable,
-                                feature_score_std_cutoff))
+                                score_coefficient))
             if savefile is not '':
                 self.maybe_make_directory(savefile)
                 plt.gcf().savefig(savefile)
@@ -183,7 +183,7 @@ class Interactive(object):
                  sample_subset=self.default_sample_subsets,
                  feature_subset=feature_sets + ['custom'],
                  categorical_variable=categorical_variable,
-                 feature_score_std_cutoff=(0.1, 20),
+                 score_coefficient=(0.1, 20),
                  draw_labels=False)
 
     @staticmethod
