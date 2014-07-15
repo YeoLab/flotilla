@@ -204,7 +204,8 @@ def lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
     plot_order.sort()
 
     color = green if color is None else color
-    scatter_kws = {'alpha': 0.5}
+    pooled_plot_kws = {'alpha': 0.5, 'markeredgecolor': 'k',
+                       'markerfacecolor': 'none', 'markeredgewidth': 1}
 
     pooled = pooled.dropna(axis=1, how='all')
 
@@ -216,11 +217,12 @@ def lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
         lavalamp(pooled.ix[:, pooled_inconsistent.columns], marker='o',
                  color='k',
                  switchy_score_psi=singles_values,
-                 ax=plt.gca(), plot_kws=scatter_kws)
+                 ax=plt.gca(), plot_kws=pooled_plot_kws)
         ax = plt.gca()
         title_suffix = '' if percent is None else ' ({:.1f}%){}'.format(
             percent, suffix)
-        ax.set_title('failing events{}'.format(title_suffix))
+        ax.set_title('Pooled splicing events inconsistent with singles{}'
+                     .format(title_suffix))
     except IndexError:
         # There are no inconsistent events
         pass
@@ -231,11 +233,12 @@ def lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
     lavalamp(singles.ix[:, non_failing_events], color=color)
     lavalamp(pooled.ix[:, non_failing_events], color='k', marker='o',
              switchy_score_psi=singles.ix[:, non_failing_events],
-             ax=plt.gca(), plot_kws=scatter_kws)
+             ax=plt.gca(), plot_kws=pooled_plot_kws)
     ax = plt.gca()
     title_suffix = '' if percent is None else ' ({:.1f}%){}'.format(
         100 - percent, suffix)
-    ax.set_title('non-failing events{}'.format(title_suffix))
+    ax.set_title('Pooled splicing events consistent with singles{}'
+                 .format(title_suffix))
 
 
 def violinplot(psi, color=None, ax=None, pooled_psi=None,
