@@ -31,22 +31,23 @@ install:
   - pip install .
 
 # Build documentation
-#before_script:
+before_script:
 #  - if [ ${TRAVIS_PYTHON_VERSION:0:1} == "2" ]; then
 #    make lint;
 #    fi
-#  - if [ ${TRAVIS_PYTHON_VERSION:0:1} == "2" ]; then
-#    cd doc;
-#    make html;
-#    cd ../gh-pages;
-#    git add . ; git commit -m "Update from Travis-CI on $(date)";
-#    git push -u origin gh-pages;
-#    fi
+  # credentials for logging in
+  - git config credential.helper "store --file=.git/credentials"
+  - echo "https://${GH_TOKEN}:@github.com" > .git/credentials
+  - if [ ${TRAVIS_PYTHON_VERSION:0:1} == "2" ]; then
+    cd doc;
+    make html;
+    cd ../gh-pages;
+    git add . ; git commit -m "Update from Travis-CI on $(date)";
+    git push -u origin gh-pages;
+    fi
 
 # command to run tests
 script: make coverage
-
-# Check test coverage
 after_success:
   - coveralls
 
@@ -54,4 +55,7 @@ after_success:
 notifications:
   slack:
     rooms:
-      - yeolab:HxLwrd5FGhZQ8SyBD9Fvh3dn#flotilla
+    - yeolab:HxLwrd5FGhZQ8SyBD9Fvh3dn#flotilla
+env:
+  global:
+    secure: N8LIn+ZtvaL+j9uHJFRtTWHbJtLk47r+7PUaSPapmpRPkqD4zClwC1+xVrfRXYiTWLVmCMfbcOAjQmZR8OjL8TKD4yGPzXAS5yb9QUhlMBf2is7CECIZQcQ/kht4KGKF72QoRY4r/Eh4NKhayBUWwZmHXd5zIKn8C/irvr+6LBI=
