@@ -172,3 +172,100 @@ def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
     ax.set_xlim(-0.5, xmax + .5)
     ax.set_ylim(0, 1)
     ax.set_title(title)
+
+
+def hist_single_vs_pooled_diff(diff_from_singles, diff_from_singles_scaled,
+                               color=None, title='', nbins=50, hist_kws=None):
+    """Plot a histogram of both the original difference difference of psi
+    scores from the pooled to the singles, and the scaled difference
+
+    """
+    hist_kws = {} if hist_kws is None else hist_kws
+
+    fig, axes = plt.subplots(ncols=2, figsize=(8, 4))
+    dfs = (diff_from_singles, diff_from_singles_scaled)
+    names = ('total_diff', 'scaled_diff')
+
+    for ax, df, name in zip(axes, dfs, names):
+        vmin = df.min().min()
+        vmax = df.max().max()
+        ax.hist(df.values.flat, bins=np.linspace(vmin, vmax, nbins),
+                color=color, edgecolor='white', linewidth=0.5, **hist_kws)
+        ax.set_title(title)
+        # ax.set_title('{}, {}'.format(celltype, name))
+        ax.grid(which='y', color='white')
+    sns.despine()
+
+
+def lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
+                                 color=None, percent=None):
+    plot_order = \
+        pooled_inconsistent.sum() / pooled_inconsistent.count().astype(float)
+    plot_order.sort()
+
+    color = green if color is None else color
+    pooled_plot_kws = {'alpha': 0.5, 'markeredgecolor': 'k',
+                       'markerfacecolor': 'none', 'markeredgewidth': 1}
+
+    pooled = pooled.dropna(axis=1, how='all')
+
+    suffix = ' of events measured in both pooled and single'
+
+    try:
+        singles_values = singles.ix[:, pooled_inconsistent.columns].values
+        lavalamp(singles_values, color=color)
+        lavalamp(pooled.ix[:, pooled_inconsistent.columns], marker='o',
+                 color='k',
+                 switchy_score_psi=singles_values,
+                 ax=plt.gca(), plot_kws=pooled_plot_kws)
+        ax = plt.gca()
+        title_suffix = '' if percent is None else ' ({:.1f}%){}'.format(
+            percent, suffix)
+        ax.set_title('Pooled splicing events inconsistent with singles{}'
+                     .format(title_suffix))
+    except IndexError:
+        # There are no inconsistent events
+        pass
+
+    singles = singles.dropna(axis=1, how='all')
+    non_failing_events = singles.columns[
+        ~singles.columns.isin(pooled_inconsistent.columns)]
+    lavalamp(singles.ix[:, non_failing_events], color=color)
+    lavalamp(pooled.ix[:, non_failing_events], color='k', marker='o',
+             switchy_score_psi=singles.ix[:, non_failing_events],
+             ax=plt.gca(), plot_kws=pooled_plot_kws)
+    ax = plt.gca()
+    title_suffix = '' if percent is None else ' ({:.1f}%){}'.format(
+        100 - percent, suffix)
+    ax.set_title('Pooled splicing events consistent with singles{}'
+                 .format(title_suffix))
+
+
+def violinplot(psi, color=None, ax=None, pooled_psi=None,
+               violinplot_kws=None):
+    if ax is None:
+        ax = plt.gca()
+
+    violinplot_kws = {} if violinplot_kws is None else violinplot_kws
+
+    # Add a tiny amount of random noise in case the values are all identical,
+    # Otherwise we get a LinAlg error.
+    psi += np.random.uniform(0, 0.001, psi.shape[0])
+    sns.violinplot(psi, bw=0.1, inner='points', color=color, linewidth=0.5,
+                   ax=ax, **violinplot_kws)
+    if pooled_psi is not None:
+        # if 'positions' not in violinplot_kws:
+        # TODO: Deal with positions kwargs
+        try:
+            xs = np.ones(pooled_psi.shape[0])
+        except AttributeError:
+            xs = np.ones(1)
+        for x, y in zip(xs, pooled_psi):
+            if np.isnan(y):
+                continue
+            ax.annotate('pooled', (x, y), textcoords='offset points',
+                        xytext=(5, 5))
+    ax.set_ylim(0, 1)
+    ax.set_yticks([0, 0.5, 1])
+    ax.set_ylabel('$\Psi$')
+    sns.despine()
