@@ -1,4 +1,5 @@
 import math
+import sys
 
 from matplotlib.gridspec import GridSpec, GridSpecFromSubplotSpec
 import matplotlib.pyplot as plt
@@ -6,7 +7,6 @@ import numpy as np
 import pandas as pd
 from scipy.linalg import norm
 import seaborn as sns
-import sys
 
 from ..compute.decomposition import NMF, PCA
 
@@ -323,7 +323,7 @@ class PCAViz(DecompositionViz, PCA):
     # def __init__(self, *args, **kwargs):
     #     DecompositionViz.__init__(self, *args, **kwargs)
     #     PCA.__init__(self, **self.reduction_kwargs)
-    #     self.binned_reduced = self.fit_transform(self.df)
+    #     self.binned_reduced = self._single_fit_transform(self.df)
 
 
 class NMFViz(DecompositionViz, NMF):

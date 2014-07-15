@@ -89,11 +89,11 @@ class SplicingData(BaseData):
         feature_ids : list of str
             Which features to use. If None, use all. Default None.
         bootstrapped : bool
-            Whether or not to use bootstrapped modalities. Default False.
-        bootstrapped_kws : dict
-            Dictionary of keyword arguments for
-            SplicingData._bootstrapped_modalities. Default is None (use
-            defaults)
+            Whether or not to use bootstrapping, i.e. resample each splicing
+            event several times to get a better estimate of its true modality.
+        bootstrappped_kws : dict
+            Valid arguments to _bootstrapped_fit_transform. If None, default is
+            dict(n_iter=100, thresh=0.6, min_samples=10)
 
         Returns
         -------
@@ -101,42 +101,8 @@ class SplicingData(BaseData):
             The modality assignments of each feature given these samples
         """
         data = self._subset(self.data, sample_ids, feature_ids)
-        if not bootstrapped:
-            return self.modalities_calculator.fit_transform(data)
-        else:
-            bootstrapped_kws = {} if bootstrapped_kws is None \
-                else bootstrapped_kws
-            return self._bootstrapped_modalities(sample_ids, feature_ids,
-                                                 **bootstrapped_kws)
-
-    @memoize
-    def _bootstrapped_modalities(self, sample_ids=None, feature_ids=None,
-                                 thresh=0.6, n_iter=100):
-        """Randomly sample each splicing event a number of times and assign
-        modalities based on the most common modality that appears in the
-        different iterations.
-
-        Parameters
-        ----------
-        sample_ids : list of str
-            Which samlpes to use. If None, use all. Default None.
-        feature_ids : list of str
-            Which features to use. If None, use all. Default None.
-        thresh : float
-            Threshold for the minimum fraction of a time a splicing event
-            must be called. Default 0.6. Do not go lower than 0.5 or else
-            you'll get crappy modalities assignments.
-        n_iter : int
-            Number of iterations to perform. Default 100.
-
-        Returns
-        -------
-        modality_assignments : pandas.Series
-            The modality assignments of each feature given these samples
-        """
-        data = self._subset(self.data, sample_ids, feature_ids)
-        return self.modalities_calculator.bootstrapped_fit_transform(
-            data, n_iter=n_iter, thresh=thresh)
+        return self.modalities_calculator.fit_transform(data, bootstrapped,
+                                                        bootstrapped_kws)
 
     @memoize
     def modalities_counts(self, sample_ids=None, feature_ids=None,
@@ -149,6 +115,13 @@ class SplicingData(BaseData):
             Which samples to use. If None, use all. Default None.
         feature_ids : list of str
             Which features to use. If None, use all. Default None.
+        bootstrapped : bool
+            Whether or not to use bootstrapping, i.e. resample each splicing
+            event several times to get a better estimate of its true modality.
+            Default False.
+        bootstrappped_kws : dict
+            Valid arguments to _bootstrapped_fit_transform. If None, default is
+            dict(n_iter=100, thresh=0.6, min_samples=10)
 
         Returns
         -------
@@ -156,7 +129,8 @@ class SplicingData(BaseData):
             The number of events detected in each modality
         """
         data = self._subset(self.data, sample_ids, feature_ids)
-        return self.modalities_calculator.counts(data)
+        return self.modalities_calculator.counts(data, bootstrapped,
+                                                 bootstrapped_kws)
 
     def binify(self, data):
         return binify(data, self.bins)
@@ -279,10 +253,28 @@ class SplicingData(BaseData):
                                 ax=None, title=None,
                                 bootstrapped=False, bootstrapped_kws=None):
         """Plot modality assignments in NMF space (option for lavalamp?)
+
+        Parameters
+        ----------
+        bootstrapped : bool
+            Whether or not to use bootstrapping, i.e. resample each splicing
+            event several times to get a better estimate of its true modality.
+            Default False.
+        bootstrappped_kws : dict
+            Valid arguments to _bootstrapped_fit_transform. If None, default is
+            dict(n_iter=100, thresh=0.6, min_samples=10)
+
+
+        Returns
+        -------
+
+
+        Raises
+        ------
         """
-        modalities_assignments = self.modalities(sample_ids, feature_ids,
-                                                 bootstrapped=bootstrapped,
-                                                 bootstrapped_kws=bootstrapped_kws)
+        modalities_assignments = self.modalities(
+            sample_ids, feature_ids, bootstrapped=bootstrapped,
+            bootstrapped_kws=bootstrapped_kws)
         self.modalities_visualizer.plot_reduced_space(
             self.binned_reduced(sample_ids, feature_ids),
             modalities_assignments, ax=ax, title=title)
@@ -291,6 +283,24 @@ class SplicingData(BaseData):
                             i=0, normed=True, legend=True,
                             bootstrapped=False, bootstrapped_kws=None):
         """Plot stacked bar graph of each modality
+
+        Parameters
+        ----------
+        bootstrapped : bool
+            Whether or not to use bootstrapping, i.e. resample each splicing
+            event several times to get a better estimate of its true modality.
+            Default False.
+        bootstrappped_kws : dict
+            Valid arguments to _bootstrapped_fit_transform. If None, default is
+            dict(n_iter=100, thresh=0.6, min_samples=10)
+
+
+        Returns
+        -------
+
+
+        Raises
+        ------
         """
         modalities_counts = self.modalities_counts(
             sample_ids, feature_ids, bootstrapped=bootstrapped,
@@ -326,6 +336,13 @@ class SplicingData(BaseData):
             If True, then use these sample ids to calculate modalities.
             Otherwise, use the modalities assigned using ALL samples and
             features
+        bootstrapped : bool
+            Whether or not to use bootstrapping, i.e. resample each splicing
+            event several times to get a better estimate of its true modality.
+            Default False.
+        bootstrappped_kws : dict
+            Valid arguments to _bootstrapped_fit_transform. If None, default is
+            dict(n_iter=100, thresh=0.6, min_samples=10)
         """
         if use_these_modalities:
             modalities_assignments = self.modalities(
@@ -488,8 +505,8 @@ class DownsampledSplicingData(BaseData):
             return self._shared_events
 
     def shared_events_barplot(self, figure_dir='./'):
-        """PLot a "histogram" via colored bars of the number of events shared by
-        different iterations at a particular sampling probability
+        """PLot a "histogram" via colored bars of the number of events shared
+        by different iterations at a particular sampling probability
 
         Parameters
         ----------
