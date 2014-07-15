@@ -78,7 +78,8 @@ class SplicingData(BaseData):
             pass
 
     @memoize
-    def modalities(self, sample_ids=None, feature_ids=None):
+    def modalities(self, sample_ids=None, feature_ids=None,
+                   bootstrapped=False, bootstrapped_kws=None):
         """Assigned modalities for these samples and features.
 
         Parameters
@@ -87,6 +88,12 @@ class SplicingData(BaseData):
             Which samples to use. If None, use all. Default None.
         feature_ids : list of str
             Which features to use. If None, use all. Default None.
+        bootstrapped : bool
+            Whether or not to use bootstrapped modalities. Default False.
+        bootstrapped_kws : dict
+            Dictionary of keyword arguments for
+            SplicingData._bootstrapped_modalities. Default is None (use
+            defaults)
 
         Returns
         -------
@@ -94,12 +101,38 @@ class SplicingData(BaseData):
             The modality assignments of each feature given these samples
         """
         data = self._subset(self.data, sample_ids, feature_ids)
-        return self.modalities_calculator.fit_transform(data)
+        if not bootstrapped:
+            return self.modalities_calculator.fit_transform(data)
+        else:
+            bootstrapped_kws = {} if bootstrapped_kws is None \
+                else bootstrapped_kws
+            return self._bootstrapped_modalities(sample_ids, feature_ids,
+                                                 **bootstrapped_kws)
 
     @memoize
-    def bootstrapped_modalities(self, sample_ids=None, feature_ids=None,
-                                thresh=0.6, n_iter=100):
-        """
+    def _bootstrapped_modalities(self, sample_ids=None, feature_ids=None,
+                                 thresh=0.6, n_iter=100):
+        """Randomly sample each splicing event a number of times and assign
+        modalities based on the most common modality that appears in the
+        different iterations.
+
+        Parameters
+        ----------
+        sample_ids : list of str
+            Which samlpes to use. If None, use all. Default None.
+        feature_ids : list of str
+            Which features to use. If None, use all. Default None.
+        thresh : float
+            Threshold for the minimum fraction of a time a splicing event
+            must be called. Default 0.6. Do not go lower than 0.5 or else
+            you'll get crappy modalities assignments.
+        n_iter : int
+            Number of iterations to perform. Default 100.
+
+        Returns
+        -------
+        modality_assignments : pandas.Series
+            The modality assignments of each feature given these samples
         """
         data = self._subset(self.data, sample_ids, feature_ids)
         return self.modalities_calculator.bootstrapped_fit_transform(
@@ -242,10 +275,13 @@ class SplicingData(BaseData):
         return classifier
 
     def plot_modalities_reduced(self, sample_ids=None, feature_ids=None,
-                                ax=None, title=None):
+                                ax=None, title=None,
+                                bootstrapped=False, bootstrapped_kws=None):
         """Plot modality assignments in NMF space (option for lavalamp?)
         """
-        modalities_assignments = self.modalities(sample_ids, feature_ids)
+        modalities_assignments = self.modalities(sample_ids, feature_ids,
+                                                 bootstrapped=bootstrapped,
+                                                 bootstrapped_kws=bootstrapped_kws)
         self.modalities_visualizer.plot_reduced_space(
             self.binned_reduced(sample_ids, feature_ids),
             modalities_assignments, ax=ax, title=title)
@@ -262,8 +298,9 @@ class SplicingData(BaseData):
         sys.stdout.write(str(modalities_fractions) + '\n')
 
     def plot_modalities_lavalamps(self, sample_ids=None, feature_ids=None,
-                                  color=None, x_offset=0, axes=None,
-                                  use_these_modalities=True):
+                                  color=None, x_offset=0,
+                                  use_these_modalities=True,
+                                  bootstrapped=False, bootstrapped_kws=None):
         """Plot "lavalamp" scatterplot of each event
 
         Parameters
@@ -287,9 +324,12 @@ class SplicingData(BaseData):
             features
         """
         if use_these_modalities:
-            modalities_assignments = self.modalities(sample_ids, feature_ids)
+            modalities_assignments = self.modalities(
+                sample_ids, feature_ids, bootstrapped=bootstrapped,
+                bootstrapped_kws=bootstrapped_kws)
         else:
-            modalities_assignments = self.modalities()
+            modalities_assignments = self.modalities(
+                bootstrapped=bootstrapped, bootstrapped_kws=bootstrapped_kws)
         modalities_names = self.modalities_calculator.modalities_names
 
         f, axes = plt.subplots(len(modalities_names), 1,
@@ -483,7 +523,7 @@ class DownsampledSplicingData(BaseData):
             fig.tight_layout()
             fig.savefig('{}/downsampled_shared_events_{}.pdf'.format(
                 figure_dir, splice_type), bbox_extra_artists=(legend,),
-                bbox_inches='tight')
+                        bbox_inches='tight')
 
     def shared_events_percentage(self, min_iter_shared=5, figure_dir='./'):
         """Plot the percentage of all events detected at that iteration,
