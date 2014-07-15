@@ -9,6 +9,7 @@ import pandas as pd
 from scipy.spatial.distance import pdist, squareform
 from sklearn.preprocessing import StandardScaler
 
+from ..visualize.decomposition import PCAViz
 from ..visualize.predict import ClassifierViz
 from ..external import link_to_list
 
@@ -200,7 +201,7 @@ class BaseData(object):
 
     def plot_dimensionality_reduction(self, x_pc=1, y_pc=2,
                                       sample_ids=None, feature_ids=None,
-                                      featurewise=False,
+                                      featurewise=False, reducer=PCAViz,
                                       **plotting_kwargs):
         """Principal component-like analysis of measurements
 
@@ -226,7 +227,7 @@ class BaseData(object):
 
         """
         pca = self.reduce(sample_ids, feature_ids,
-                          featurewise=featurewise)
+                          featurewise=featurewise, reducer=reducer)
         pca(markers_size_dict=defaultdict(lambda x: 400),
             show_vectors=False,
             title_size=10,
