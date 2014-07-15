@@ -230,3 +230,55 @@ class Interactive(object):
                  sample1='replaceme',
                  sample2='replaceme',
                  pCut='0.01')
+
+    @staticmethod
+    def interactive_lavalamp_pooled_inconsistent(self):
+        from IPython.html.widgets import interact
+
+        # not sure why nested fxns are required for this, but they are... i
+        # think...
+        def do_interact(sample_subset=self.default_sample_subsets,
+                        feature_subset=self.default_feature_subsets,
+                        difference_threshold=0.1, savefile='data/last.lavalamp_pooled_inconsistent.pdf'):
+
+            for k, v in locals().iteritems():
+                if k == 'self':
+                    continue
+                sys.stdout.write('{} : {}\n'.format(k, v))
+
+            assert (feature_subset in self.splicing.feature_sets.keys())
+            feature_ids = self.splicing.feature_sets[feature_subset]
+
+            from sklearn.preprocessing import LabelEncoder
+            le = LabelEncoder()
+            n_in_this_class = len(set(le.fit_transform(self.experiment_design.data[sample_subset])))
+            try:
+                assert n_in_this_class
+            except:
+                raise RuntimeError("this sample designator is not binary")
+
+            sample_series = self.experiment_design.data[sample_subset]
+            #TODO: cast non-boolean binary ids to boolean
+            try:
+                assert self.experiment_design.data[sample_subset].dtype == 'bool'
+            except:
+                raise RuntimeError("this sample designator is not boolean")
+
+            sample_ids = self.experiment_design.data[sample_subset].index[study.experiment_design.data[sample_subset]]
+
+
+            self.splicing.plot_lavalamp_pooled_inconsistent(sample_ids, feature_ids,
+                                                            difference_threshold, color=None)
+            if savefile is not '':
+                self.maybe_make_directory(savefile)
+                plt.gcf().savefig(savefile)
+
+        feature_sets = list(set(itertools.chain(*self.default_feature_subsets
+                                                .values())))
+        interact(do_interact,
+                 sample_subset=self.default_sample_subsets,
+                 feature_subset=self.splicing.feature_sets.keys() + ['custom'],
+                 difference_threshold=(0.,3.),
+                 color='red',
+                 savefile=''
+                )
