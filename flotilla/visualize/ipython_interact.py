@@ -42,7 +42,7 @@ class Interactive(object):
             for k, v in locals().iteritems():
                 if k == 'self':
                     continue
-                sys.stdout.write('{} : {}'.format(k, v))
+                sys.stdout.write('{} : {}\n'.format(k, v))
 
             if feature_subset != "custom" and list_link != "":
                 raise ValueError(
@@ -100,7 +100,7 @@ class Interactive(object):
             for k, v in locals().iteritems():
                 if k == 'self':
                     continue
-                sys.stdout.write('{} : {}'.format(k, v))
+                sys.stdout.write('{} : {}\n'.format(k, v))
 
             if data_type == 'expression':
                 assert (feature_subset in self.expression.feature_sets.keys())
