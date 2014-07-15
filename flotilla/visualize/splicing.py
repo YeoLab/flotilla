@@ -14,10 +14,11 @@ class ModalitiesViz(object):
                          'excluded': blue,
                          'bimodal': purple,
                          'uniform': grey,
-                         'middle': green}
+                         'middle': green,
+                         'unassigned': 'k'}
 
     modalities_order = ['excluded', 'uniform', 'bimodal', 'middle',
-                        'included']
+                        'included', 'unassigned']
 
     colors = [modalities_colors[modality] for modality in
               modalities_order]
