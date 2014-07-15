@@ -164,7 +164,7 @@ class BaseData(object):
     def plot_classifier(self, trait, sample_ids=None, feature_ids=None,
                         standardize=True, predictor=ClassifierViz,
                         predictor_kwargs=None, predictor_scoring_fun=None,
-                        score_cutoff_fun=None, **plotting_kwargs):
+                        score_cutoff_fun=None, score_coefficient=None, **plotting_kwargs):
         """Principal component-like analysis of measurements
 
         Params
@@ -194,6 +194,7 @@ class BaseData(object):
                             standardize=standardize, predictor=predictor,
                             predictor_kwargs=predictor_kwargs,
                             predictor_scoring_fun=predictor_scoring_fun,
+                            score_coefficient=score_coefficient,
                             score_cutoff_fun=score_cutoff_fun)
         clf(**plotting_kwargs)
         # clf()

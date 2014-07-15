@@ -2,150 +2,118 @@
 
 flotilla
 ========
+
 ![flotilla Logo](flotilla.png)
 
-Download
-========
+Installation instructions
+=========================
 
-```
-git clone https://github.com/YeoLab/flotilla.git
-```
+From a clean install of Mavericks 10.9.4, follow these steps.
 
-Install
-=======
+All others must fend for themselves to install matplotlib, scipy and their third-party dependencies.
 
-for some reason patsy doesn't always automatically with pip, use easy_install first instead
+ *This part only needs to be done once*
 
-```
-easy_install -U patsy
-cd flotilla
-pip install .
-```
+ * [Install anaconda](https://store.continuum.io/cshop/anaconda/)
+ * [Install Xcode (this can take an hour)](https://itunes.apple.com/us/app/xcode/id497799835?mt=12)
+ * Open Xcode and agree to terms and services (it is very important to read them thoroughly)
+ * Install [homebrew](http://brew.sh/)
 
 
-Example data
+    `ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"`
+
+
+ * Install freetype:
+
+
+    `brew install freetype`
+
+
+ * Install heavy packages (this can take an hour or more)
+
+
+    `conda install pip scipy matplotlib pandas scikit-learn patsy ipython pyzmq`
+
+
+ * Create a virtual environment
+
+
+    `conda create -n flotilla_env pip scipy matplotlib pandas scikit-learn patsy ipython pyzmq`
+
+
+ * Switch to virtual environment
+
+
+    `source activate flotilla_env`
+
+
+ * Install flotilla and its dependencies (this can take a few minutes):
+
+
+    `pip install git+https://github.com/YeoLab/flotilla.git`
+
+
+ * Create a scratch space for your work
+
+
+    `mkdir ~/flotilla_scratch`
+
+
+ * Make a place to store flotilla projects
+
+
+    `mkdir ~/flotilla_projects`
+
+
+ * Go back to the real world
+
+    `source deactivate`
+
+
+Start using flotilla:
+=====================
+
+ Use the above instructions to create a flotilla-friendly environment, then:
+
+
+ * switch to virtual environment
+
+
+    `source activate flotilla_env`
+
+
+ * start an ipython notebook:
+
+
+    `ipython notebook --notebook-dir=~/flotilla_scratch`
+
+
+ * create a new notebook by clicking `New Notebook`
+ * rename your notebook from "Untitled" to something more informative by clicking the title panel.
+ * load matplotlib backend using every notebook must use this to display inline output
+
+
+    `%matplotlib inline`
+
+Test interactive features with example data:
 ------------
 
-All of the following should work, with expression data. No guarantees on
-splicing.
+We have prepared a slice of the full dataset for testing and demonstration purposes.
+
+Run each of the following code lines in its own ipython notebook cell for an interactive feature.
+
+    import flotilla
+    test_study = flotilla.embark('http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22/datapackage.json')
+
+    test_study.interactive_pca()
+
+    test_study.interactive_graph()
+
+    test_study.interactive_classifier()
+
+IMPORTANT NOTE: for this test,several failures are expected since the test set is small.
+Adjust parameters to explore valid parameter spaces.
+For example, you can manually select `all_genes` as the `feature_subset`
+from the drop-down menu that appears after running these interactive functions.
 
 
-```
-import flotilla
-test_study = flotilla.embark('http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22/datapackage.json')
-test_study.plot_pca()
-test_study.interactive_pca()
-test_study.plot_graph()
-test_study.interactive_graph()
-test_study.plot_classifier()
-test_study.interactive_classifier()
-```
-
-
-For developers
-==============
-
-Please put ALL import statements at the top of the `*.py` file (potentially underneath docstrings, of course).
-The only exception is if a package is not listed in `requirements.txt`,then a "function-only" import may be allowed.
-If this doesn't make sense to you, just put the import at the top of the file.
-
-Git branching
--------------
-
-We use the [git-flow](http://nvie
-.com/posts/a-successful-git-branching-model/) model. So if you have a feature
-(called `myfeature` as an example) you want to add, please add it off of the
-`dev` branch, as so:
-
-    git checkout -b myfeature dev
-
-When you're done working on your feature, merge it back to `dev` via:
-
-    $ git checkout develop
-    Switched to branch 'dev'
-    $ git merge --no-ff myfeature
-    Updating ea1b82a..05e9557
-    (Summary of changes)
-    $ git branch -d myfeature
-    Deleted branch myfeature (was 05e9557).
-    $ git push origin dev
-
-The reason for the `--no-ff` flag is because it makes it easy to reverse
-changes in case there was a simple mistake.
-
-Naming conventions
-------------------
-
-When in doubt, please defer to [Python Enhancement Proposal 8 (aka [PEP8]
-(http://legacy.python.org/dev/peps/pep-0008/)) and the [Zen of Python]
-(http://legacy.python.org/dev/peps/pep-0020/)
-
-* Classes are `CamelCase`, e.g.:  `BaseData` and `PCAViz`
-* Functions are `lower_case_with_underscores`, e.g. `go_enrichment` and
-`binify`
-* Explicit is better than implicit
-
-
-Docstring conventions
----------------------
-
-We will attempt to stick to the [`numpy` docstring specification](https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt) (aka
-"`numpydoc`").
-
-To make this easier, I use ["Live Templates" in PyCharm]
-(http://peter-hoffmann.com/2010/python-live-templates-for-pycharm.html),
-check out the instructions [here](https://github
-.com/YeoLab/PyCharm-Python-Templates) for how to install and use them.
-
-
-How to build the docs
----------------------
-How to make and upload the docs. From the `flotilla` base directory,
-
-```
-cd doc/
-make html
-cd ../gh-pages/
-git add .
-git commit -m "informative commit message about documentation updates"
-git push -u origin gh-pages
-```
-
-
-What flotilla is not
-====================
-
-Flotilla does not claim to solve the data management problem of biology,
-i.e. how you store all the data associated with a particular study that was
-investigating a specific biological question. Flotilla only makes it easy to
-integrate all those data parts together.
-
-
-Testing
-=======
-
-In the source directory (wherever you cloned `flotilla` to that has this README.md file), do:
-
-    make tests
-
-This will run the unit test suite.
-
-Coverage
---------
-
-To check coverage of the test suite, run
-
-    make coverage
-
-in the source directory.
-
-
-PEP8 Conventions
-----------------
-
-To run `pep8` and `pyflakes` over the code, make sure you have [this fork]
-(pip install https://github.com/dcramer/pyflakes/tarball/master) of
-`pyflakes` installed (e.g. via `pip install https://github
-.com/dcramer/pyflakes/tarball/master`) and run:
-
-    make lint
