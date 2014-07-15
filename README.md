@@ -67,8 +67,6 @@ All others must fend for themselves to install matplotlib, scipy and their third
 
  * Go back to the real world
 
-
-
     `source deactivate`
 
 
@@ -76,6 +74,7 @@ Start using flotilla:
 =====================
 
  Use the above instructions to create a flotilla-friendly environment, then:
+
 
  * switch to virtual environment
 

@@ -38,11 +38,15 @@ install:
 
 # command to run tests
 script: make coverage
+
+# After the build is successful, run coveralls and push docs
 after_success:
   # Push to coveralls.io for test coverage stats
   - coveralls
   # Push to github pages for documentation
-  - git config credential.helper "store --file=.git/credentials"
+  - git config --global credential.helper "store --file=.git/credentials"
+  - git config --global user.email "olga.botvinnik@gmail.com"
+  - git config --global user.name "Olga Botvinnik"
   - echo "https://${GH_TOKEN}:@github.com" > .git/credentials
   - if [ ${TRAVIS_PYTHON_VERSION:0:1} == "2" ]; then
     cd doc;
