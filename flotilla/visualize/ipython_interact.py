@@ -105,7 +105,7 @@ class Interactive(object):
             if data_type == 'expression':
                 assert (feature_subset in self.expression.feature_sets.keys())
             if data_type == 'splicing':
-                assert (feature_subset in self.expression.feature_sets.keys())
+                assert (feature_subset in self.splicing.feature_sets.keys())
 
             self.plot_graph(data_type=data_type,
                             sample_subset=sample_subset,
