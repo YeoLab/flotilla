@@ -323,7 +323,7 @@ class PCAViz(DecompositionViz, PCA):
     # def __init__(self, *args, **kwargs):
     #     DecompositionViz.__init__(self, *args, **kwargs)
     #     PCA.__init__(self, **self.reduction_kwargs)
-    #     self.binned_reduced = self._single_fit_transform(self.df)
+    #     self.binned_reduced = self.fit_transform(self.df)
 
 
 class NMFViz(DecompositionViz, NMF):
