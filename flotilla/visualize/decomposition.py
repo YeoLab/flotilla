@@ -231,7 +231,6 @@ class DecompositionViz(object):
                 marker_size = default_marker_size
 
             if show_point_labels:
-                print an_id
                 ax.text(x, y, an_id, color=color, size=point_label_size)
 
             thresh = 0.00001
