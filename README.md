@@ -111,6 +111,8 @@ Run each of the following code lines in its own ipython notebook cell for an int
 
     test_study.interactive_classifier()
 
+    test_study.interactive_lavalamp_pooled_inconsistent()
+
 IMPORTANT NOTE: for this test,several failures are expected since the test set is small.
 Adjust parameters to explore valid parameter spaces.
 For example, you can manually select `all_genes` as the `feature_subset`
