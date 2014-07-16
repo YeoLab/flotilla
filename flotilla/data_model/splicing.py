@@ -351,10 +351,10 @@ class SplicingData(BaseData):
         else:
             modalities_assignments = self.modalities(
                 bootstrapped=bootstrapped, bootstrapped_kws=bootstrapped_kws)
-        modalities_names = self.modalities_calculator.modalities_names
+        modalities_names = modalities_assignments.unique()
 
-        f, axes = plt.subplots(len(modalities_names), 1,
-                               figsize=(18, 3 * len(modalities_names)))
+        fig, axes = plt.subplots(len(modalities_names), 1,
+                                 figsize=(18, 3 * len(modalities_names)))
         axes = itertools.chain(axes)
 
         if color is None:
