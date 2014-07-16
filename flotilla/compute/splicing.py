@@ -18,7 +18,8 @@ class Modalities(object):
                                 [1, 0, 1],  # bimodal
                                 [1, 1, 1]])  # uniform
 
-    modalities_names = ['excluded', 'middle', 'included', 'bimodal', 'uniform']
+    modalities_names = ['excluded', 'middle', 'included', 'bimodal',
+                        'uniform']
 
     true_modalities = pd.DataFrame(modalities_bins.T, columns=modalities_names)
 
@@ -56,7 +57,35 @@ class Modalities(object):
         return pd.Series(modalities, sqrt_jsd_modalities.columns)
 
     @memoize
-    def fit_transform(self, data, do_not_memoize=False):
+    def fit_transform(self, data, bootstrapped=False, bootstrapped_kws=None):
+        """Given psi scores, estimate the modality of each
+
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            A samples x features dataframe, where you want to find the
+            splicing modality of each column (feature)
+        bootstrapped : bool
+            Whether or not to use bootstrapping, i.e. resample each splicing
+            event several times to get a better estimate of its true modality.
+            Default False.
+        bootstrappped_kws : dict
+            Valid arguments to _bootstrapped_fit_transform. If None, default is
+            dict(n_iter=100, thresh=0.6, min_samples=10)
+
+        Returns
+        -------
+        assignments : pandas.Series
+            Modality assignments of each column (feature)
+        """
+        if bootstrapped:
+            bootstrapped_kws = {} if bootstrapped_kws \
+                is None else bootstrapped_kws
+            return self._bootstrapped_fit_transform(data, **bootstrapped_kws)
+        else:
+            return self._single_fit_transform(data)
+
+    def _single_fit_transform(self, data, do_not_memoize=False):
         """Given psi scores, estimate the modality of each
 
         Parameters
@@ -65,8 +94,8 @@ class Modalities(object):
             A samples x features dataframe, where you want to find the
             splicing modality of each column (feature)
         do_not_memoize : bool
-            Whether or not to memoize the results of the fit_transform on this
-            data
+            Whether or not to memoize the results of the _single_fit_transform on this
+            data (used by @memoize decorator)
 
         Returns
         -------
@@ -77,8 +106,8 @@ class Modalities(object):
         self.true_modalities.index = binned.index
         return self.assignments(self.sqrt_jsd_modalities(binned))
 
-    def bootstrapped_fit_transform(self, data, n_iter=100, thresh=0.6,
-                                   min_samples=10):
+    def _bootstrapped_fit_transform(self, data, n_iter=100, thresh=0.6,
+                                    min_samples=10):
         """Resample each splicing event n_iter times to robustly estimate
         modalities.
         """
@@ -91,7 +120,8 @@ class Modalities(object):
             index = train_index + test_index
             psi = data.ix[data.index[index], :]
             psi = psi.dropna(axis=1, thresh=min_samples)
-            assignments.ix[i] = self.fit_transform(psi, do_not_memoize=True)
+            assignments.ix[i] = self._single_fit_transform(psi,
+                                                           do_not_memoize=True)
 
         counts = assignments.apply(lambda x: pd.Series(
             collections.Counter(x.dropna())))
@@ -111,7 +141,7 @@ class Modalities(object):
         else:
             return np.argmax(x)
 
-    def counts(self, psi):
+    def counts(self, psi, bootstrapped=False, bootstrapped_kws=None):
         """Return the number of events in each modality category
 
         Parameters
@@ -124,7 +154,7 @@ class Modalities(object):
         counts : pandas.Series
             Counts of each modality
         """
-        assignments = self.fit_transform(psi)
+        assignments = self.fit_transform(psi, bootstrapped, bootstrapped_kws)
         return assignments.groupby(assignments).size()
 
 

@@ -82,7 +82,8 @@ class SplicingData(BaseData):
             pass
 
     @memoize
-    def modalities(self, sample_ids=None, feature_ids=None):
+    def modalities(self, sample_ids=None, feature_ids=None,
+                   bootstrapped=False, bootstrapped_kws=None):
         """Assigned modalities for these samples and features.
 
         Parameters
@@ -91,6 +92,12 @@ class SplicingData(BaseData):
             Which samples to use. If None, use all. Default None.
         feature_ids : list of str
             Which features to use. If None, use all. Default None.
+        bootstrapped : bool
+            Whether or not to use bootstrapping, i.e. resample each splicing
+            event several times to get a better estimate of its true modality.
+        bootstrappped_kws : dict
+            Valid arguments to _bootstrapped_fit_transform. If None, default is
+            dict(n_iter=100, thresh=0.6, min_samples=10)
 
         Returns
         -------
@@ -98,19 +105,12 @@ class SplicingData(BaseData):
             The modality assignments of each feature given these samples
         """
         data = self._subset(self.data, sample_ids, feature_ids)
-        return self.modalities_calculator.fit_transform(data)
+        return self.modalities_calculator.fit_transform(data, bootstrapped,
+                                                        bootstrapped_kws)
 
     @memoize
-    def bootstrapped_modalities(self, sample_ids=None, feature_ids=None,
-                                thresh=0.6, n_iter=100):
-        """
-        """
-        data = self._subset(self.data, sample_ids, feature_ids)
-        return self.modalities_calculator.bootstrapped_fit_transform(
-            data, n_iter=n_iter, thresh=thresh)
-
-    @memoize
-    def modalities_counts(self, sample_ids=None, feature_ids=None):
+    def modalities_counts(self, sample_ids=None, feature_ids=None,
+                          bootstrapped=False, bootstrapped_kws=False):
         """Count the number of each modalities of these samples and features
 
         Parameters
@@ -119,6 +119,13 @@ class SplicingData(BaseData):
             Which samples to use. If None, use all. Default None.
         feature_ids : list of str
             Which features to use. If None, use all. Default None.
+        bootstrapped : bool
+            Whether or not to use bootstrapping, i.e. resample each splicing
+            event several times to get a better estimate of its true modality.
+            Default False.
+        bootstrappped_kws : dict
+            Valid arguments to _bootstrapped_fit_transform. If None, default is
+            dict(n_iter=100, thresh=0.6, min_samples=10)
 
         Returns
         -------
@@ -126,7 +133,8 @@ class SplicingData(BaseData):
             The number of events detected in each modality
         """
         data = self._subset(self.data, sample_ids, feature_ids)
-        return self.modalities_calculator.counts(data)
+        return self.modalities_calculator.counts(data, bootstrapped,
+                                                 bootstrapped_kws)
 
     def binify(self, data):
         return binify(data, self.bins)
@@ -246,19 +254,61 @@ class SplicingData(BaseData):
         return classifier
 
     def plot_modalities_reduced(self, sample_ids=None, feature_ids=None,
-                                ax=None, title=None):
+                                ax=None, title=None,
+                                bootstrapped=False, bootstrapped_kws=None):
         """Plot modality assignments in NMF space (option for lavalamp?)
+
+        Parameters
+        ----------
+        bootstrapped : bool
+            Whether or not to use bootstrapping, i.e. resample each splicing
+            event several times to get a better estimate of its true modality.
+            Default False.
+        bootstrappped_kws : dict
+            Valid arguments to _bootstrapped_fit_transform. If None, default is
+            dict(n_iter=100, thresh=0.6, min_samples=10)
+
+
+        Returns
+        -------
+
+
+        Raises
+        ------
         """
-        modalities_assignments = self.modalities(sample_ids, feature_ids)
+        modalities_assignments = self.modalities(
+            sample_ids, feature_ids, bootstrapped=bootstrapped,
+            bootstrapped_kws=bootstrapped_kws)
         self.modalities_visualizer.plot_reduced_space(
             self.binned_reduced(sample_ids, feature_ids),
             modalities_assignments, ax=ax, title=title)
 
     def plot_modalities_bar(self, sample_ids=None, feature_ids=None, ax=None,
-                            i=0, normed=True, legend=True):
+                            i=0, normed=True, legend=True,
+                            bootstrapped=False, bootstrapped_kws=None):
         """Plot stacked bar graph of each modality
+
+        Parameters
+        ----------
+        bootstrapped : bool
+            Whether or not to use bootstrapping, i.e. resample each splicing
+            event several times to get a better estimate of its true modality.
+            Default False.
+        bootstrappped_kws : dict
+            Valid arguments to _bootstrapped_fit_transform. If None, default is
+            dict(n_iter=100, thresh=0.6, min_samples=10)
+
+
+        Returns
+        -------
+
+
+        Raises
+        ------
         """
-        modalities_counts = self.modalities_counts(sample_ids, feature_ids)
+        modalities_counts = self.modalities_counts(
+            sample_ids, feature_ids, bootstrapped=bootstrapped,
+            bootstrapped_kws=bootstrapped_kws)
         self.modalities_visualizer.bar(modalities_counts, ax, i, normed,
                                        legend)
         modalities_fractions = \
@@ -266,8 +316,9 @@ class SplicingData(BaseData):
         sys.stdout.write(str(modalities_fractions) + '\n')
 
     def plot_modalities_lavalamps(self, sample_ids=None, feature_ids=None,
-                                  color=None, x_offset=0, axes=None,
-                                  use_these_modalities=True):
+                                  color=None, x_offset=0,
+                                  use_these_modalities=True,
+                                  bootstrapped=False, bootstrapped_kws=None):
         """Plot "lavalamp" scatterplot of each event
 
         Parameters
@@ -289,15 +340,25 @@ class SplicingData(BaseData):
             If True, then use these sample ids to calculate modalities.
             Otherwise, use the modalities assigned using ALL samples and
             features
+        bootstrapped : bool
+            Whether or not to use bootstrapping, i.e. resample each splicing
+            event several times to get a better estimate of its true modality.
+            Default False.
+        bootstrappped_kws : dict
+            Valid arguments to _bootstrapped_fit_transform. If None, default is
+            dict(n_iter=100, thresh=0.6, min_samples=10)
         """
         if use_these_modalities:
-            modalities_assignments = self.modalities(sample_ids, feature_ids)
+            modalities_assignments = self.modalities(
+                sample_ids, feature_ids, bootstrapped=bootstrapped,
+                bootstrapped_kws=bootstrapped_kws)
         else:
-            modalities_assignments = self.modalities()
-        modalities_names = self.modalities_calculator.modalities_names
+            modalities_assignments = self.modalities(
+                bootstrapped=bootstrapped, bootstrapped_kws=bootstrapped_kws)
+        modalities_names = modalities_assignments.unique()
 
-        f, axes = plt.subplots(len(modalities_names), 1,
-                               figsize=(18, 3 * len(modalities_names)))
+        fig, axes = plt.subplots(len(modalities_names), 1,
+                                 figsize=(18, 3 * len(modalities_names)))
         axes = itertools.chain(axes)
 
         if color is None:
@@ -534,8 +595,8 @@ class DownsampledSplicingData(BaseData):
             return self._shared_events
 
     def shared_events_barplot(self, figure_dir='./'):
-        """PLot a "histogram" via colored bars of the number of events shared by
-        different iterations at a particular sampling probability
+        """PLot a "histogram" via colored bars of the number of events shared
+        by different iterations at a particular sampling probability
 
         Parameters
         ----------
