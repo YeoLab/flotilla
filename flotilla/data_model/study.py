@@ -859,7 +859,8 @@ class Study(StudyFactory):
             self.sample_id_to_celltype, axis=0).apply(
             lambda x: self.splicing.modalities(x.index))
 
-    def plot_modalities_lavalamps(self, celltype=None):
+    def plot_modalities_lavalamps(self, celltype=None, bootstrapped=False,
+                                  bootstrapped_kws=None):
         grouped = self.splicing.data.groupby(self.sample_id_to_color, axis=0)
         celltype_groups = self.splicing.data.groupby(
             self.sample_id_to_celltype, axis=0)
@@ -868,6 +869,7 @@ class Study(StudyFactory):
             # Only plotting one celltype, use the modality assignments from
             # just the samples from this celltype
             celltype_samples = celltype_groups.groups[celltype]
+            celltype_samples = set(celltype_groups.groups[celltype])
             use_these_modalities = True
         else:
             # Plotting all the celltypes, use the modality assignments from
@@ -875,19 +877,17 @@ class Study(StudyFactory):
             celltype_samples = self.splicing.data.index
             use_these_modalities = False
 
-        nrows = len(self.splicing.modalities_calculator.modalities_names)
-
-        fig, axes = plt.subplots(nrows=nrows, figsize=(18, 3 * nrows))
-
         for i, (color, sample_ids) in enumerate(grouped.groups.iteritems()):
             x_offset = 1. / (i + 1)
             sample_ids = celltype_samples.intersection(sample_ids)
-            self.splicing.plot_modalities_lavalamps(
-                sample_ids=sample_ids,
-                color=color,
-                x_offset=x_offset,
-                axes=axes,
-                use_these_modalities=use_these_modalities)
+            if len(sample_ids) > 0:
+                self.splicing.plot_modalities_lavalamps(
+                    sample_ids=sample_ids,
+                    color=color,
+                    x_offset=x_offset,
+                    use_these_modalities=use_these_modalities,
+                    bootstrapped=bootstrapped,
+                    bootstrapped_kws=bootstrapped_kws)
 
     def plot_event(self, feature_id, sample_subset=None, ax=None):
         """Plot the violinplot of an event
@@ -960,3 +960,4 @@ Study.interactive_classifier = Interactive.interactive_classifier
 Study.interactive_graph = Interactive.interactive_graph
 Study.interactive_pca = Interactive.interactive_pca
 Study.interactive_localZ = Interactive.interactive_localZ
+Study.interactive_lavalamp_pooled_inconsistent = Interactive.interactive_lavalamp_pooled_inconsistent

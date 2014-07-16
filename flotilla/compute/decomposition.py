@@ -1,7 +1,8 @@
+import sys
+
 import sklearn
 from sklearn import decomposition
 import pandas as pd
-import sys
 
 
 class PrettyReducer(object):
@@ -67,12 +68,12 @@ class NMF(PrettyReducer, decomposition.NMF):
     def fit(self, X):
         """
         duplicated fit code for NMF because sklearn's NMF cheats for
-        efficiency and calls fit_transform. MRO resolves the closest
+        efficiency and calls _single_fit_transform. MRO resolves the closest
         (in this package)
-        fit_transform first and so there's a recursion error:
+        _single_fit_transform first and so there's a recursion error:
 
             def fit(self, X, y=None, **params):
-                self.fit_transform(X, **params)
+                self._single_fit_transform(X, **params)
                 return self
         """
 
@@ -84,7 +85,7 @@ class NMF(PrettyReducer, decomposition.NMF):
                              'was of type {} instead'.format(str(type(X))))
 
         self.X = X
-        # notice this is fit_transform, not fit
+        # notice this is _single_fit_transform, not fit
         super(sklearn.decomposition.NMF, self).fit_transform(X)
         self.components_ = pd.DataFrame(self.components_,
                                         columns=self.X.columns).rename_axis(

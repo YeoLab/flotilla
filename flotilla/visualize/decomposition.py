@@ -1,4 +1,5 @@
 import math
+import sys
 
 from matplotlib.gridspec import GridSpec, GridSpecFromSubplotSpec
 import matplotlib.pyplot as plt
@@ -6,7 +7,6 @@ import numpy as np
 import pandas as pd
 from scipy.linalg import norm
 import seaborn as sns
-import sys
 
 from ..compute.decomposition import NMF, PCA
 
