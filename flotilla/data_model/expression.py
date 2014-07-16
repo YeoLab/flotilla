@@ -199,6 +199,9 @@ class ExpressionData(BaseData):
         vz()
         return vz
 
+    def _calculate_linkage(self, sample_ids, feature_ids):
+        subset = self._subset_and_standardize(sample_ids, feature_ids)
+
 
 class SpikeInData(ExpressionData):
     """Class for Spikein data and associated functions

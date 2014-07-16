@@ -7,6 +7,7 @@ import sys
 
 import pandas as pd
 from scipy.spatial.distance import pdist, squareform
+import seaborn as sns
 from sklearn.preprocessing import StandardScaler
 
 from ..visualize.decomposition import PCAViz
@@ -339,3 +340,16 @@ class BaseData(object):
         subset = pd.DataFrame(data, index=subset.index,
                               columns=subset.columns)
         return subset, means
+
+    def plot_clusteredheatmap(self, sample_ids, feature_ids,
+                              linkage_method='average',
+                              metric='euclidean', sample_colors=None,
+                              feature_colors=None):
+        subset, row_linkage, col_linkage = self._calculate_linkage(
+            sample_ids, feature_ids, linkage_method=linkage_method,
+            metric=metric)
+
+        col_kws = dict(linkage=col_linkage, side_colors=feature_colors)
+        row_kws = dict(linkage=row_linkage, side_colors=sample_colors)
+        sns.clusteredheatmap(subset, row_kws=row_kws, col_kws=col_kws,
+                             data_na_ok=self.data)
