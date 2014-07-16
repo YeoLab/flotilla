@@ -129,7 +129,7 @@ class DecompositionViz(object):
                                  "%s. acceptable values are:\n%s" % (
                                      key, "\n".join(valid.keys())))
 
-    def plot_samples(self, show_point_labels=False, **kwargs):
+    def plot_samples(self, **kwargs):
         self._validate_params(self._default_plotting_args, **kwargs)
         # fill missing parameters
         default_params = self.plotting_kwargs.copy()
@@ -232,6 +232,7 @@ class DecompositionViz(object):
 
             if show_point_labels:
                 ax.text(x, y, an_id, color=color, size=point_label_size)
+
             thresh = 0.00001
             if abs(x) < thresh and abs(y) < thresh:
                 print "error with %s " % an_id
