@@ -466,7 +466,8 @@ class Study(StudyFactory):
 
         try:
             experiment_design_data = dfs['experiment_design']
-            expression_data = None if 'expression' not in dfs else dfs['expression']
+            expression_data = None if 'expression' not in dfs else dfs[
+                'expression']
             splicing_data = None if 'splicing' not in dfs else dfs['splicing']
         except KeyError:
             raise AttributeError('The datapackage.json file is required to '
@@ -954,10 +955,37 @@ class Study(StudyFactory):
             self.splicing.percent_pooled_inconsistent(sample_ids, feature_ids,
                                                       fraction_diff_thresh)
 
+    def plot_clusteredheatmap(self, celltype=None, feature_subset='variant',
+                              data_type='expression', linkage_method='average',
+                              metric='euclidean'):
+        celltype_groups = self.experiment_design.data.groupby(
+            self.sample_id_to_celltype, axis=0)
+
+        if celltype is not None:
+            # Only plotting one celltype
+            celltype_samples = set(celltype_groups.groups[celltype])
+        else:
+            # Plotting all the celltypes
+            celltype_samples = self.experiment_design.data.index
+
+        feature_ids = self.feature_subset_to_feature_ids(data_type,
+                                                         feature_subset,
+                                                         rename=False)
+
+        if data_type == "expression":
+            self.expression.plot_clusteredheatmap(
+                sample_ids, feature_ids, linkage_method=linkage_method,
+                metric=metric, sample_colors=sample_colors)
+        elif data_type == "splicing":
+            self.splicing.plot_clusteredheatmap(
+                sample_ids, feature_ids, linkage_method=linkage_method,
+                metric=metric, sample_colors=sample_colors)
+
 
 # Add interactive visualizations
 Study.interactive_classifier = Interactive.interactive_classifier
 Study.interactive_graph = Interactive.interactive_graph
 Study.interactive_pca = Interactive.interactive_pca
 Study.interactive_localZ = Interactive.interactive_localZ
-Study.interactive_lavalamp_pooled_inconsistent = Interactive.interactive_lavalamp_pooled_inconsistent
+Study.interactive_lavalamp_pooled_inconsistent = \
+    Interactive.interactive_lavalamp_pooled_inconsistent
