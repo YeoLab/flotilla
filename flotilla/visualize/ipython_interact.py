@@ -239,7 +239,8 @@ class Interactive(object):
         # think...
         def do_interact(sample_subset=self.default_sample_subsets,
                         feature_subset=self.default_feature_subsets,
-                        difference_threshold=0.1, savefile='data/last.lavalamp_pooled_inconsistent.pdf'):
+                        difference_threshold=0.1, color='red',
+                        savefile='data/last.lavalamp_pooled_inconsistent.pdf'):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -268,7 +269,7 @@ class Interactive(object):
 
 
             self.splicing.plot_lavalamp_pooled_inconsistent(sample_ids, feature_ids,
-                                                            difference_threshold, color=None)
+                                                            difference_threshold, color=color)
             if savefile is not '':
                 self.maybe_make_directory(savefile)
                 plt.gcf().savefig(savefile)
