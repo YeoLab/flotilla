@@ -10,6 +10,7 @@ from IPython.html.widgets import interact
 import matplotlib.pyplot as plt
 
 from .network import NetworkerViz
+from .color import str_to_color
 
 
 class Interactive(object):
@@ -251,8 +252,10 @@ class Interactive(object):
             feature_ids = self.splicing.feature_sets[feature_subset]
 
             from sklearn.preprocessing import LabelEncoder
+
             le = LabelEncoder()
-            n_in_this_class = len(set(le.fit_transform(self.experiment_design.data[sample_subset])))
+            n_in_this_class = len(set(
+                le.fit_transform(self.experiment_design.data[sample_subset])))
             try:
                 assert n_in_this_class
             except:
@@ -261,15 +264,20 @@ class Interactive(object):
             sample_series = self.experiment_design.data[sample_subset]
             #TODO: cast non-boolean binary ids to boolean
             try:
-                assert self.experiment_design.data[sample_subset].dtype == 'bool'
+                assert self.experiment_design.data[
+                           sample_subset].dtype == 'bool'
             except:
                 raise RuntimeError("this sample designator is not boolean")
 
-            sample_ids = self.experiment_design.data[sample_subset].index[self.experiment_design.data[sample_subset]]
+            sample_ids = self.experiment_design.data[sample_subset].index[
+                self.experiment_design.data[sample_subset]]
 
+            color = str_to_color(color)
 
-            self.splicing.plot_lavalamp_pooled_inconsistent(sample_ids, feature_ids,
-                                                            difference_threshold, color=color)
+            self.splicing.plot_lavalamp_pooled_inconsistent(sample_ids,
+                                                            feature_ids,
+                                                            difference_threshold,
+                                                            color=color)
             if savefile is not '':
                 self.maybe_make_directory(savefile)
                 plt.gcf().savefig(savefile)
@@ -279,17 +287,20 @@ class Interactive(object):
         interact(do_interact,
                  sample_subset=self.default_sample_subsets,
                  feature_subset=self.splicing.feature_sets.keys() + ['custom'],
-                 difference_threshold=(0.,3.),
+                 difference_threshold=(0., 3.),
                  color='red',
                  savefile=''
-                )
+        )
 
     @staticmethod
     def interactive_clusteredheatmap(self):
         def do_interact(data_type='expression',
                         sample_subset=self.default_sample_subsets,
                         feature_subset=self.default_feature_subset,
-                        savefile='data/last.pca.pdf'):
+                        metric='euclidean',
+                        linkage_method='median',
+                        list_link='',
+                        savefile='data/last.clusteredheatmap.pdf'):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -310,11 +321,11 @@ class Interactive(object):
                               "this data type ('{}'). Falling back on all "
                               "features.".format(feature_subset, data_type))
 
-            self.plot_pca(sample_subset=sample_subset, data_type=data_type,
-                          featurewise=featurewise,
-                          x_pc=x_pc, y_pc=y_pc,
-                          show_point_labels=show_point_labels,
-                          feature_subset=feature_subset)
+            self.plot_clusteredheatmap(sample_subset=sample_subset,
+                                       feature_subset=feature_subset,
+                                       data_type=data_type,
+                                       metric=metric,
+                                       linkage_method=linkage_method)
             if savefile != '':
                 # Make the directory if it's not already there
                 self.maybe_make_directory(savefile)
@@ -323,10 +334,11 @@ class Interactive(object):
 
         feature_sets = list(set(itertools.chain(*self.default_feature_subsets
                                                 .values())))
+        linkage_method = ('single', 'median', 'centroid')
+        metric = ('euclidean', 'seuclidean')
         interact(do_interact,
                  data_type=('expression', 'splicing'),
                  sample_subset=self.default_sample_subsets,
                  feature_subset=feature_sets + ['custom'],
-                 featurewise=False,
-                 x_pc=(1, 10), y_pc=(1, 10),
-                 show_point_labels=False, )
+                 metric=metric,
+                 linkage_method=linkage_method)
