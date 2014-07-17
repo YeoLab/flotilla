@@ -3,7 +3,7 @@ import sys
 import sklearn
 from sklearn import decomposition
 import pandas as pd
-
+from ..util import memoize
 
 class PrettyReducer(object):
     """
@@ -63,7 +63,6 @@ class PCA(PrettyReducer, decomposition.PCA):
 
 
 class NMF(PrettyReducer, decomposition.NMF):
-    here = True
 
     def fit(self, X):
         """

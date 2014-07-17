@@ -271,6 +271,10 @@ class BaseData(object):
         if sample_ids is None:
             sample_ids = data.index
 
+
+        sample_ids = pd.Index(set(sample_ids).intersection(set(data.index)))
+        feature_ids = pd.Index(set(feature_ids).intersection(set(data.columns)))
+
         subset = data.ix[sample_ids]
         subset = subset.T.ix[feature_ids].T
 
