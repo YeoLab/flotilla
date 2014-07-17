@@ -250,29 +250,9 @@ class Interactive(object):
 
             assert (feature_subset in self.splicing.feature_sets.keys())
             feature_ids = self.splicing.feature_sets[feature_subset]
+            sample_ids = self.sample_subset_to_sample_ids(sample_subset)
 
-            from sklearn.preprocessing import LabelEncoder
-
-            le = LabelEncoder()
-            n_in_this_class = len(set(
-                le.fit_transform(self.experiment_design.data[sample_subset])))
-            try:
-                assert n_in_this_class
-            except:
-                raise RuntimeError("this sample designator is not binary")
-
-            sample_series = self.experiment_design.data[sample_subset]
-            #TODO: cast non-boolean binary ids to boolean
-            try:
-                assert self.experiment_design.data[
-                           sample_subset].dtype == 'bool'
-            except:
-                raise RuntimeError("this sample designator is not boolean")
-
-            sample_ids = self.experiment_design.data[sample_subset].index[
-                self.experiment_design.data[sample_subset]]
-
-            color = str_to_color(color)
+            color = str_to_color[color]
 
             self.splicing.plot_lavalamp_pooled_inconsistent(sample_ids,
                                                             feature_ids,
@@ -287,8 +267,8 @@ class Interactive(object):
         interact(do_interact,
                  sample_subset=self.default_sample_subsets,
                  feature_subset=self.splicing.feature_sets.keys() + ['custom'],
-                 difference_threshold=(0., 3.),
-                 color='red',
+                 difference_threshold=(0., 1.),
+                 color=['red', 'blue', 'green', 'orange', 'purple'],
                  savefile=''
         )
 
