@@ -29,7 +29,14 @@ class Interactive(object):
         self._default_y_pc = 2
 
     @staticmethod
-    def interactive_pca(self):
+    def interactive_pca(self, data_types=('expression', 'splicing'),
+                         sample_subsets=None,
+                         feature_subsets=None,
+                         featurewise=False,
+                         x_pc=(1, 10), y_pc=(1, 10),
+                         show_point_labels=False,
+                         savefile='data/last.pca.pdf'):
+
         def do_interact(data_type='expression',
                         sample_subset=self.default_sample_subsets,
                         feature_subset=self.default_feature_subset,
@@ -69,18 +76,36 @@ class Interactive(object):
                 f = plt.gcf()
                 f.savefig(savefile)
 
-        feature_sets = list(set(itertools.chain(*self.default_feature_subsets
+        if sample_subsets is None:
+            sample_subsets = self.default_sample_subsets
+
+        if feature_subsets is None:
+            feature_sets = list(set(itertools.chain(*self.default_feature_subsets
                                                 .values())))
+            feature_subsets = feature_sets + ['custom']
+
         interact(do_interact,
-                 data_type=('expression', 'splicing'),
-                 sample_subset=self.default_sample_subsets,
-                 feature_subset=feature_sets + ['custom'],
-                 featurewise=False,
-                 x_pc=(1, 10), y_pc=(1, 10),
-                 show_point_labels=False, )
+                 data_type=data_types,
+                 sample_subset=sample_subsets,
+                 feature_subset=feature_subsets,
+                 featurewise=featurewise,
+                 x_pc=x_pc, y_pc=y_pc,
+                 show_point_labels=show_point_labels,
+                 savefile=savefile)
 
     @staticmethod
-    def interactive_graph(self):
+    def interactive_graph(self, data_types=('expression', 'splicing'),
+                 sample_subsets=None,
+                 feature_subsets=None,
+                 featurewise=False,
+                 cov_std_cut=(0.1, 3),
+                 degree_cut=(0, 10),
+                 n_pcs=(2, 100),
+                 draw_labels=False,
+                 feature_of_interest="RBFOX2",
+                 weight_fun = None,
+                 use_pc_1=True, use_pc_2=True, use_pc_3=True, use_pc_4=True,
+                 savefile='data/last.graph.pdf'):
         from IPython.html.widgets import interact
 
         # not sure why nested fxns are required for this, but they are... i
@@ -122,22 +147,38 @@ class Interactive(object):
                 self.maybe_make_directory(savefile)
                 plt.gcf().savefig(savefile)
 
-        feature_sets = list(set(itertools.chain(*self.default_feature_subsets
+        if feature_subsets is None:
+            feature_sets = list(set(itertools.chain(*self.default_feature_subsets
                                                 .values())))
+            feature_subsets = feature_sets + ['custom']
+
+        if sample_subsets is None:
+            sample_subsets = self.default_sample_subsets
+        if weight_fun is None:
+            weight_fun = NetworkerViz.weight_funs
         interact(do_interact,
-                 data_type=('expression', 'splicing'),
-                 sample_subset=self.default_sample_subsets,
-                 feature_subset=feature_sets + ['custom'],
-                 featurewise=False,
-                 cov_std_cut=(0.1, 3),
-                 degree_cut=(0, 10),
-                 n_pcs=(2, 100),
-                 draw_labels=False,
-                 feature_of_interest="RBFOX2",
-                 use_pc_1=True, use_pc_2=True, use_pc_3=True, use_pc_4=True)
+                 data_type=data_types,
+                 sample_subset=sample_subsets,
+                 feature_subset=feature_subsets,
+                 featurewise=featurewise,
+                 cov_std_cut=cov_std_cut,
+                 degree_cut=degree_cut,
+                 n_pcs=n_pcs,
+                 draw_labels=draw_labels,
+                 weight_fun=weight_fun,
+                 feature_of_interest=feature_of_interest,
+                 use_pc_1=use_pc_1, use_pc_2=use_pc_2,
+                 use_pc_3=use_pc_3, use_pc_4=use_pc_4,
+                 savefile=savefile)
 
     @staticmethod
-    def interactive_classifier(self):
+    def interactive_classifier(self, data_types=('expression', 'splicing'),
+                 sample_subsets=None,
+                 feature_subsets=None,
+                 categorical_variables=None,
+                 score_coefficient=(0.1, 20),
+                 draw_labels=False,
+                 savefile='data/last.clf.pdf'):
 
         from IPython.html.widgets import interact
 
@@ -174,17 +215,24 @@ class Interactive(object):
                 self.maybe_make_directory(savefile)
                 plt.gcf().savefig(savefile)
 
-        feature_sets = list(set(itertools.chain(*self.default_feature_subsets
+        if feature_subsets is None:
+            feature_sets = list(set(itertools.chain(*self.default_feature_subsets
                                                 .values())))
-        categorical_variable = [i for i in self.default_sample_subsets if
+            feature_subsets = feature_sets + ['custom']
+
+        if sample_subsets is None:
+            sample_subsets = self.default_sample_subsets
+        if categorical_variables is None:
+            categorical_variables = [i for i in self.default_sample_subsets if
                                 not i.startswith("~") and i != 'all_samples']
         interact(do_interact,
-                 data_type=('expression', 'splicing'),
-                 sample_subset=self.default_sample_subsets,
-                 feature_subset=feature_sets + ['custom'],
-                 categorical_variable=categorical_variable,
-                 score_coefficient=(0.1, 20),
-                 draw_labels=False)
+                 data_type=data_types,
+                 sample_subset=sample_subsets,
+                 feature_subset=feature_subsets,
+                 categorical_variable=categorical_variables,
+                 score_coefficient=score_coefficient,
+                 draw_labels=draw_labels,
+                 savefile=savefile)
 
     @staticmethod
     def interactive_localZ(self):
@@ -232,14 +280,20 @@ class Interactive(object):
                  pCut='0.01')
 
     @staticmethod
-    def interactive_lavalamp_pooled_inconsistent(self):
+    def interactive_lavalamp_pooled_inconsistent(self,
+                                                 sample_subsets=None,
+                                                 feature_subsets=None,
+                                                 difference_threshold=(0.001,2.00),
+                                                 colors=['red', 'green', 'blue', 'purple', 'yellow'],
+                                                 savefile=''):
         from IPython.html.widgets import interact
 
         # not sure why nested fxns are required for this, but they are... i
         # think...
         def do_interact(sample_subset=self.default_sample_subsets,
                         feature_subset=self.default_feature_subsets,
-                        difference_threshold=0.1, color='red',
+                        difference_threshold=0.1,
+                        color='red',
                         savefile='data/last.lavalamp_pooled_inconsistent.pdf'):
 
             for k, v in locals().iteritems():
@@ -274,12 +328,18 @@ class Interactive(object):
                 self.maybe_make_directory(savefile)
                 plt.gcf().savefig(savefile)
 
-        feature_sets = list(set(itertools.chain(*self.default_feature_subsets
+        if feature_subsets is None:
+            feature_sets = list(set(itertools.chain(*self.default_feature_subsets
                                                 .values())))
+            feature_subsets = feature_sets + ['custom']
+
+        if sample_subsets is None:
+            sample_subsets = self.default_sample_subsets
+
         interact(do_interact,
-                 sample_subset=self.default_sample_subsets,
-                 feature_subset=self.splicing.feature_sets.keys() + ['custom'],
-                 difference_threshold=(0.,3.),
-                 color='red',
-                 savefile=''
+                 sample_subset=sample_subsets,
+                 feature_subset=feature_subsets,
+                 difference_threshold=difference_threshold,
+                 color=colors,
+                 savefile=savefile,
                 )

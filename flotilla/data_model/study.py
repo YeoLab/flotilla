@@ -324,6 +324,10 @@ class Study(StudyFactory):
         sys.stderr.write("subclasses initialized\n")
         self.validate_params()
         sys.stderr.write("package validated\n")
+        try:
+            self.hack_lazy()
+        except:
+            print "hackery failed"
 
     @property
     def default_feature_subsets(self):
@@ -691,9 +695,11 @@ class Study(StudyFactory):
                 self.experiment_design.data.marker.to_dict()
 
         if "expression".startswith(data_type):
-            self.expression.plot_dimensionality_reduction(**kwargs)
+            rdc = self.expression.plot_dimensionality_reduction(**kwargs)
         elif "splicing".startswith(data_type):
-            self.splicing.plot_dimensionality_reduction(**kwargs)
+            rdc = self.splicing.plot_dimensionality_reduction(**kwargs)
+
+        return rdc
 
     def plot_graph(self, data_type='expression', sample_subset=None,
                    feature_subset=None,
@@ -954,6 +960,39 @@ class Study(StudyFactory):
             self.splicing.percent_pooled_inconsistent(sample_ids, feature_ids,
                                                       fraction_diff_thresh)
 
+    def hack_lazy(study):
+
+        """
+         called by __init__ these things haven't been worked out, so it's probably ok if they fail.
+        """
+
+        #cast outlier column to bool
+        x = study.experiment_design.data['outlier']
+        x = x.astype('bool')
+        study.experiment_design.data['outlier'] = x
+
+        #add splicing gene type
+        splicing_genes = pd.Index(set(study.gene_ontology_data[study.gene_ontology_data['GO Term Name'].apply(lambda x: "splicing" in str(x))]['Ensembl Gene ID']))
+        study.expression.feature_sets['splicing'] = splicing_genes
+        study.expression.default_feature_sets.append('splicing')
+
+        #drop cells with too few mapped reads
+        read_cut = 2000000 # 2 million
+        test = study.mapping_stats.data['Uniquely mapped reads number'] < read_cut
+        samples_w_lt_million_reads = study.mapping_stats.data.index[test]
+        study.experiment_design.data['outlier'].ix[samples_w_lt_million_reads] = True
+        outliers = study.experiment_design.data['outlier'].ix[study.experiment_design.data['outlier']].index
+        study.expression.data = study.expression.drop_outliers(study.expression.data, outliers)
+        study.splicing.data = study.splicing.drop_outliers(study.splicing.data, outliers)
+        study.expression.sparse_data = study.expression.drop_outliers(study.expression.sparse_data, outliers)
+
+        #add logical inverse of boolean columns in experiment_design
+        for column in study.experiment_design.data.columns:
+            if study.experiment_design.data[column].dtype == 'bool':
+                if column.startswith("~"):
+                    continue
+                study.experiment_design.data['~' + column] = ~study.experiment_design.data[column]
+                study.default_sample_subsets.append('~' + column)
 
 # Add interactive visualizations
 Study.interactive_classifier = Interactive.interactive_classifier

@@ -53,7 +53,7 @@ class ExpressionData(BaseData):
         self.sparse_data = self.log_data[self.log_data > expression_thresh]
         self.default_feature_sets.extend(self.feature_sets.keys())
 
-    @memoize
+    #@memoize
     def reduce(self, sample_ids=None, feature_ids=None,
                featurewise=False,
                reducer=PCAViz,
@@ -87,6 +87,8 @@ class ExpressionData(BaseData):
         reducer_object : flotilla.compute.reduce.ReducerViz
             A ready-to-plot object containing the reduced space
         """
+        import sys
+
         reducer_kwargs = {} if reducer_kwargs is None else reducer_kwargs
         reducer_kwargs['title'] = title
 
