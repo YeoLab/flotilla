@@ -31,15 +31,14 @@ All others must fend for themselves to install matplotlib, scipy and their third
 
  * Install heavy packages (this can take an hour or more)
 
-
-    `conda install pip scipy matplotlib pandas scikit-learn patsy ipython pyzmq`
-
+```
+conda install pip numpy scipy cython matplotlib nose six scikit-learn ipython networkx pandas tornado statsmodels setuptools pytest pyzmq jinja2 pyyaml`
+```
 
  * Create a virtual environment
-
-
-    `conda create -n flotilla_env pip scipy matplotlib pandas scikit-learn patsy ipython pyzmq`
-
+```
+conda create -n flotilla_env pip numpy scipy cython matplotlib nose six scikit-learn ipython networkx pandas tornado statsmodels setuptools pytest pyzmq jinja2 pyyaml`
+```
 
  * Switch to virtual environment
 
