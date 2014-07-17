@@ -958,7 +958,7 @@ class Study(StudyFactory):
     def plot_clusteredheatmap(self, sample_subset=None,
                               feature_subset='variant',
                               data_type='expression', metric='euclidean',
-                              linkage_method='average'):
+                              linkage_method='median'):
 
         if data_type == 'expression':
             data = self.expression.data
@@ -969,7 +969,10 @@ class Study(StudyFactory):
 
         if sample_subset is not None:
             # Only plotting one sample_subset
-            sample_ids = set(celltype_groups.groups[sample_subset])
+            try:
+                sample_ids = set(celltype_groups.groups[sample_subset])
+            except KeyError:
+                sample_ids = self.sample_subset_to_sample_ids(sample_subset)
         else:
             # Plotting all the celltypes
             sample_ids = data.index
@@ -996,3 +999,4 @@ Study.interactive_pca = Interactive.interactive_pca
 Study.interactive_localZ = Interactive.interactive_localZ
 Study.interactive_lavalamp_pooled_inconsistent = \
     Interactive.interactive_lavalamp_pooled_inconsistent
+Study.interactive_clusteredheatmap = Interactive.interactive_clusteredheatmap
