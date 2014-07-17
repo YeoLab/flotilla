@@ -193,6 +193,10 @@ class SplicingData(BaseData):
         reducer_object.means = means
 
         # add mean gene_expression
+
+        #TODO: make this work with memoization
+        #self._last_reducer_accessed = reducer_object
+
         return reducer_object
 
     @memoize
