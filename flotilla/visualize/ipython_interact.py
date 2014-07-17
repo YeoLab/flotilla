@@ -283,3 +283,50 @@ class Interactive(object):
                  color='red',
                  savefile=''
                 )
+
+    @staticmethod
+    def interactive_clusteredheatmap(self):
+        def do_interact(data_type='expression',
+                        sample_subset=self.default_sample_subsets,
+                        feature_subset=self.default_feature_subset,
+                        savefile='data/last.pca.pdf'):
+
+            for k, v in locals().iteritems():
+                if k == 'self':
+                    continue
+                sys.stdout.write('{} : {}\n'.format(k, v))
+
+            if feature_subset != "custom" and list_link != "":
+                raise ValueError(
+                    "set feature_subset to \"custom\" to use list_link")
+
+            if feature_subset == "custom" and list_link == "":
+                raise ValueError("use a custom list name please")
+
+            if feature_subset == 'custom':
+                feature_subset = list_link
+            elif feature_subset not in self.default_feature_subsets[data_type]:
+                warnings.warn("This feature_subset ('{}') is not available in "
+                              "this data type ('{}'). Falling back on all "
+                              "features.".format(feature_subset, data_type))
+
+            self.plot_pca(sample_subset=sample_subset, data_type=data_type,
+                          featurewise=featurewise,
+                          x_pc=x_pc, y_pc=y_pc,
+                          show_point_labels=show_point_labels,
+                          feature_subset=feature_subset)
+            if savefile != '':
+                # Make the directory if it's not already there
+                self.maybe_make_directory(savefile)
+                f = plt.gcf()
+                f.savefig(savefile)
+
+        feature_sets = list(set(itertools.chain(*self.default_feature_subsets
+                                                .values())))
+        interact(do_interact,
+                 data_type=('expression', 'splicing'),
+                 sample_subset=self.default_sample_subsets,
+                 feature_subset=feature_sets + ['custom'],
+                 featurewise=False,
+                 x_pc=(1, 10), y_pc=(1, 10),
+                 show_point_labels=False, )
