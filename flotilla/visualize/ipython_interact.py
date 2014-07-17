@@ -84,6 +84,9 @@ class Interactive(object):
                                                 .values())))
             feature_subsets = feature_sets + ['custom']
 
+        if featurewise:
+            self.plot_study_sample_legend()
+
         interact(do_interact,
                  data_type=data_types,
                  sample_subset=sample_subsets,
@@ -146,7 +149,6 @@ class Interactive(object):
             if savefile is not '':
                 self.maybe_make_directory(savefile)
                 plt.gcf().savefig(savefile)
-
         if feature_subsets is None:
             feature_sets = list(set(itertools.chain(*self.default_feature_subsets
                                                 .values())))
@@ -156,6 +158,10 @@ class Interactive(object):
             sample_subsets = self.default_sample_subsets
         if weight_fun is None:
             weight_fun = NetworkerViz.weight_funs
+
+        if featurewise:
+            self.plot_study_sample_legend()
+
         interact(do_interact,
                  data_type=data_types,
                  sample_subset=sample_subsets,
@@ -225,6 +231,9 @@ class Interactive(object):
         if categorical_variables is None:
             categorical_variables = [i for i in self.default_sample_subsets if
                                 not i.startswith("~") and i != 'all_samples']
+
+        self.plot_study_sample_legend()
+
         interact(do_interact,
                  data_type=data_types,
                  sample_subset=sample_subsets,

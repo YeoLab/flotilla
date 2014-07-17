@@ -733,6 +733,23 @@ class Study(StudyFactory):
         elif data_type == "splicing":
             self.splicing.networks.draw_graph(**kwargs)
 
+    def plot_study_sample_legend(self):
+        markers = self.experiment_design.data.color.groupby(self.experiment_design.data.marker \
+                                                         + "." + self.experiment_design.data.celltype).last()
+
+        f, ax = plt.subplots(1,1, figsize=(3, len(markers)))
+
+        for i, point_type in enumerate(markers.iteritems(),):
+            mrk, celltype = point_type[0].split('.')
+            ax.scatter(0, 0, marker=mrk, c=point_type[1],
+                       edgecolor='none', label=celltype,
+                       s=160)
+        ax.set_xlim(1,2)
+        ax.set_ylim(1,2)
+        ax.axis('off')
+        legend = ax.legend(title='cell type', fontsize=20,)
+        return legend
+
     def plot_classifier(self, trait, data_type='expression', title='',
                         show_point_labels=False, sample_subset=None,
                         feature_subset=None,
