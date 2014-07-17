@@ -84,7 +84,7 @@ class Interactive(object):
                                                 .values())))
             feature_subsets = feature_sets + ['custom']
 
-        if featurewise:
+        if not featurewise:
             self.plot_study_sample_legend()
 
         interact(do_interact,
@@ -159,7 +159,7 @@ class Interactive(object):
         if weight_fun is None:
             weight_fun = NetworkerViz.weight_funs
 
-        if featurewise:
+        if not featurewise:
             self.plot_study_sample_legend()
 
         interact(do_interact,
