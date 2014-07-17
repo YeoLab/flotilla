@@ -10,6 +10,7 @@ from scipy.spatial.distance import pdist, squareform
 import seaborn as sns
 from sklearn.preprocessing import StandardScaler
 
+from ..compute.clustering import Cluster
 from ..visualize.decomposition import PCAViz
 from ..visualize.predict import ClassifierViz
 from ..external import link_to_list
@@ -55,6 +56,8 @@ class BaseData(object):
         self.feature_rename_col = feature_rename_col
         self.min_samples = min_samples
         self.default_feature_sets = []
+
+        self.clusterer = Cluster()
 
         self.species = species
         self.feature_sets = {}
@@ -272,6 +275,9 @@ class BaseData(object):
         if sample_ids is None:
             sample_ids = data.index
 
+        sample_ids = data.index.intersection(sample_ids)
+        feature_ids = data.columns.intersection(feature_ids)
+
         subset = data.ix[sample_ids]
         subset = subset.T.ix[feature_ids].T
 
@@ -292,7 +298,7 @@ class BaseData(object):
 
     def _subset_and_standardize(self, data, sample_ids=None,
                                 feature_ids=None,
-                                standardize=True):
+                                standardize=True, return_means=False):
 
         """Take only the sample ids and feature ids from this data, require
         at least some minimum samples, and standardize data using
@@ -339,17 +345,23 @@ class BaseData(object):
         # dataframe
         subset = pd.DataFrame(data, index=subset.index,
                               columns=subset.columns)
-        return subset, means
+        if return_means:
+            return subset, means
+        else:
+            return subset
 
     def plot_clusteredheatmap(self, sample_ids, feature_ids,
+                              metric='euclidean',
                               linkage_method='average',
-                              metric='euclidean', sample_colors=None,
+                              sample_colors=None,
                               feature_colors=None):
         subset, row_linkage, col_linkage = self._calculate_linkage(
             sample_ids, feature_ids, linkage_method=linkage_method,
             metric=metric)
 
-        col_kws = dict(linkage=col_linkage, side_colors=feature_colors)
-        row_kws = dict(linkage=row_linkage, side_colors=sample_colors)
-        sns.clusteredheatmap(subset, row_kws=row_kws, col_kws=col_kws,
-                             data_na_ok=self.data)
+        import pdb;
+
+        pdb.set_trace()
+        col_kws = dict(linkage_matrix=col_linkage, side_colors=feature_colors)
+        row_kws = dict(linkage_matrix=row_linkage, side_colors=sample_colors)
+        return sns.clusteredheatmap(subset, row_kws=row_kws, col_kws=col_kws)

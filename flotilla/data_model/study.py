@@ -860,17 +860,17 @@ class Study(StudyFactory):
             self.sample_id_to_celltype, axis=0).apply(
             lambda x: self.splicing.modalities(x.index))
 
-    def plot_modalities_lavalamps(self, celltype=None, bootstrapped=False,
+    def plot_modalities_lavalamps(self, sample_subset=None, bootstrapped=False,
                                   bootstrapped_kws=None):
         grouped = self.splicing.data.groupby(self.sample_id_to_color, axis=0)
         celltype_groups = self.splicing.data.groupby(
             self.sample_id_to_celltype, axis=0)
 
-        if celltype is not None:
-            # Only plotting one celltype, use the modality assignments from
-            # just the samples from this celltype
-            celltype_samples = celltype_groups.groups[celltype]
-            celltype_samples = set(celltype_groups.groups[celltype])
+        if sample_subset is not None:
+            # Only plotting one sample_subset, use the modality assignments from
+            # just the samples from this sample_subset
+            celltype_samples = celltype_groups.groups[sample_subset]
+            celltype_samples = set(celltype_groups.groups[sample_subset])
             use_these_modalities = True
         else:
             # Plotting all the celltypes, use the modality assignments from
@@ -955,29 +955,36 @@ class Study(StudyFactory):
             self.splicing.percent_pooled_inconsistent(sample_ids, feature_ids,
                                                       fraction_diff_thresh)
 
-    def plot_clusteredheatmap(self, celltype=None, feature_subset='variant',
-                              data_type='expression', linkage_method='average',
-                              metric='euclidean'):
-        celltype_groups = self.experiment_design.data.groupby(
+    def plot_clusteredheatmap(self, sample_subset=None,
+                              feature_subset='variant',
+                              data_type='expression', metric='euclidean',
+                              linkage_method='average'):
+
+        if data_type == 'expression':
+            data = self.expression.data
+        elif data_type == 'splicing':
+            data = self.splicing.data
+        celltype_groups = data.groupby(
             self.sample_id_to_celltype, axis=0)
 
-        if celltype is not None:
-            # Only plotting one celltype
-            celltype_samples = set(celltype_groups.groups[celltype])
+        if sample_subset is not None:
+            # Only plotting one sample_subset
+            sample_ids = set(celltype_groups.groups[sample_subset])
         else:
             # Plotting all the celltypes
-            celltype_samples = self.experiment_design.data.index
+            sample_ids = data.index
 
+        sample_colors = [self.sample_id_to_color[x] for x in sample_ids]
         feature_ids = self.feature_subset_to_feature_ids(data_type,
                                                          feature_subset,
                                                          rename=False)
 
         if data_type == "expression":
-            self.expression.plot_clusteredheatmap(
+            return self.expression.plot_clusteredheatmap(
                 sample_ids, feature_ids, linkage_method=linkage_method,
                 metric=metric, sample_colors=sample_colors)
         elif data_type == "splicing":
-            self.splicing.plot_clusteredheatmap(
+            return self.splicing.plot_clusteredheatmap(
                 sample_ids, feature_ids, linkage_method=linkage_method,
                 metric=metric, sample_colors=sample_colors)
 
