@@ -104,6 +104,9 @@ class ExpressionData(BaseData):
         # this.
         reducer_object.means = means
 
+        #TODO: make this work with memoization
+        #self._last_reducer_accessed = reducer_object
+
         # add mean gene_expression
         return reducer_object
 
