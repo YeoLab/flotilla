@@ -24,3 +24,4 @@ pytest-cov
 python-coveralls
 sphinx_bootstrap_theme
 jinja2
+fastcluster
