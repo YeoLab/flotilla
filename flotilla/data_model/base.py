@@ -107,7 +107,7 @@ class BaseData(object):
                     self.feature_sets[feature_subset] = feature_ids
                 except:
                     raise ValueError("There are no {} features in this data: {}"
-                                 .format(feature_subset, self))
+                                     .format(feature_subset, self))
             if rename:
                 feature_ids = feature_ids.map(self.feature_renamer)
         else:
@@ -168,7 +168,8 @@ class BaseData(object):
     def plot_classifier(self, trait, sample_ids=None, feature_ids=None,
                         standardize=True, predictor=ClassifierViz,
                         predictor_kwargs=None, predictor_scoring_fun=None,
-                        score_cutoff_fun=None, score_coefficient=None, **plotting_kwargs):
+                        score_cutoff_fun=None, score_coefficient=None,
+                        **plotting_kwargs):
         """Principal component-like analysis of measurements
 
         Params
@@ -221,15 +222,16 @@ class BaseData(object):
             valid sample ids of the data
         feature_ids : None or list of strings
             If None, plot all the features. If a list of strings
-
+        featurewise : bool
+            Whether to keep the features and reduce on the samples (default
+            is to keep the samples and reduce the features)
+        reducer : flotilla.visualize.DecompositionViz
+            Which decomposition object to use. Must be a flotilla object,
+            as this has built-in compatibility with pandas.DataFrames.
 
         Returns
         -------
         self
-
-        Raises
-        ------
-
         """
         pca = self.reduce(sample_ids, feature_ids,
                           featurewise=featurewise, reducer=reducer)
