@@ -44,7 +44,6 @@ after_success:
   # Push to coveralls.io for test coverage stats
   - coveralls
   # Push to github pages for documentation
-<<<<<<< HEAD
   - git config credential.helper "store --file=.git/credentials"
   - git remote set-url origin https://github.com/YeoLab/flotilla.git
   - git config --global credential.helper "store --file=.git/credentials"
