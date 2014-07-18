@@ -243,6 +243,7 @@ class Interactive(object):
                  draw_labels=draw_labels,
                  savefile=savefile)
 
+
     @staticmethod
     def interactive_localZ(self):
 
