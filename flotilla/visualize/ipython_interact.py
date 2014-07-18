@@ -343,8 +343,7 @@ class Interactive(object):
 
 
         if feature_subsets is None:
-            feature_sets = list(set(itertools.chain(*self.default_feature_subsets
-                                                .values())))
+            feature_sets = list(set(itertools.chain(*self.splicing.feature_sets.keys())))
             feature_subsets = feature_sets
 
         if sample_subsets is None:
@@ -411,8 +410,7 @@ class Interactive(object):
                 plt.gcf().savefig(savefile)
 
         if feature_subsets is None:
-            feature_sets = list(set(itertools.chain(*self.default_feature_subsets
-                                                .values())))
+            feature_sets = list(set(itertools.chain(*self.splicing.feature_sets.keys())))
             feature_subsets = feature_sets + ['custom']
 
         if sample_subsets is None:
