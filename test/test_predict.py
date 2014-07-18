@@ -85,8 +85,8 @@ class TestRegressor:
     def regressor(self, reduced, y, predictor_kwargs):
         import flotilla
 
-        return flotilla.compute.predict.Regressor(reduced, y,
-                                                  predictor_kwargs=predictor_kwargs)
+        return flotilla.compute.predict.Regressor(
+            reduced, y, predictor_kwargs=predictor_kwargs)
 
     def test_init(self, regressor, y):
         assert regressor.predictor_class == ExtraTreesRegressor
@@ -94,8 +94,8 @@ class TestRegressor:
 
     def test_fit(self, regressor, reduced, y):
         regressor.fit()
-        regressor.predictor.scores_ = regressor.predictor_scoring_fun(regressor
-                                                                      .predictor)
+        regressor.predictor.scores_ = regressor.predictor_scoring_fun(
+            regressor.predictor)
 
         true_regressor = ExtraTreesRegressor(**regressor.predictor_kwargs)
         true_regressor.fit(reduced, y)
@@ -136,7 +136,6 @@ class TestRegressor:
 
 
 class TestClassifier:
-    pass
 
     @pytest.fixture
     def trait(self, study):
