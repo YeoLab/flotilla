@@ -337,6 +337,7 @@ class Interactive(object):
                                                     use_these_modalities=use_these_modalities,
                                                     bootstrapped=bootstrapped, bootstrapped_kws=bootstrapped_kws,
                                                     ax=None)
+            plt.tight_layout()
             if savefile is not '':
                 self.maybe_make_directory(savefile)
                 plt.gcf().savefig(savefile)
