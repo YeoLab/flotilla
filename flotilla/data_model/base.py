@@ -229,9 +229,14 @@ class BaseData(object):
             Which decomposition object to use. Must be a flotilla object,
             as this has built-in compatibility with pandas.DataFrames.
 
+
         Returns
         -------
         self
+
+        Raises
+        ------
+
         """
         pca = self.reduce(sample_ids, feature_ids,
                           featurewise=featurewise, reducer=reducer)
@@ -277,8 +282,9 @@ class BaseData(object):
         if sample_ids is None:
             sample_ids = data.index
 
-        sample_ids = data.index.intersection(sample_ids)
-        feature_ids = data.columns.intersection(feature_ids)
+
+        sample_ids = pd.Index(set(sample_ids).intersection(set(data.index)))
+        feature_ids = pd.Index(set(feature_ids).intersection(set(data.columns)))
 
         subset = data.ix[sample_ids]
         subset = subset.T.ix[feature_ids].T

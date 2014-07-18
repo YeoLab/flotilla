@@ -58,7 +58,7 @@ class DecompositionViz(object):
     _default_plotting_args = {'ax': None, 'x_pc': 'pc_1', 'y_pc': 'pc_2',
                               'num_vectors': 20,
                               'title': 'Dimensionality Reduction',
-                              'title_size': None, 'axis_label_size': None,
+                              'title_size': 16, 'axis_label_size': 14,
                               'colors_dict': None, 'markers_dict': None,
                               'markers_size_dict': None,
                               'default_marker_size': 100,
@@ -129,7 +129,7 @@ class DecompositionViz(object):
                                  "%s. acceptable values are:\n%s" % (
                                      key, "\n".join(valid.keys())))
 
-    def plot_samples(self, show_point_labels=False, **kwargs):
+    def plot_samples(self, **kwargs):
         self._validate_params(self._default_plotting_args, **kwargs)
         # fill missing parameters
         default_params = self.plotting_kwargs.copy()
@@ -165,15 +165,21 @@ class DecompositionViz(object):
                     zip(x_loading, y_loading)])
 
         figsize = tuple(plt.gcf().get_size_inches())
-        size_scale = math.sqrt(figsize[0] * figsize[1]) / 1.5
+        size_scale = math.sqrt(figsize[0] * figsize[1]) / 1.1
+
         default_marker_size = size_scale * 20 if not default_marker_size else \
             default_marker_size
+
         vector_width = .5 if not vector_width else vector_width
-        axis_label_size = size_scale * 1.5 if not axis_label_size \
+
+        axis_label_size = size_scale * 3 if not axis_label_size \
             else axis_label_size
+
         title_size = size_scale * 2 if not title_size else title_size
+
         vector_label_size = size_scale * 1.5 if not vector_label_size \
             else vector_label_size
+
         point_label_size = size_scale * 1.5 if not point_label_size \
             else point_label_size
 
@@ -232,6 +238,7 @@ class DecompositionViz(object):
 
             if show_point_labels:
                 ax.text(x, y, an_id, color=color, size=point_label_size)
+
             thresh = 0.00001
             if abs(x) < thresh and abs(y) < thresh:
                 print "error with %s " % an_id
@@ -258,11 +265,11 @@ class DecompositionViz(object):
         ax.set_xlabel(
             'Principal Component {} (Explains {}% Of Variance)'.format(
                 str(x_pc),
-                str(var_1)), size=axis_label_size)
+                str(var_1)), size=axis_label_size*2)
         ax.set_ylabel(
             'Principal Component {} (Explains {}% Of Variance)'.format(
                 str(y_pc),
-                str(var_2)), size=axis_label_size)
+                str(var_2)), size=axis_label_size*2)
         ax.set_title(title, size=title_size)
 
         return comp_magn[:num_vectors], ax
@@ -290,7 +297,7 @@ class DecompositionViz(object):
         ax.set_yticks(np.arange(max(len(dd), n_features)))
         shorten = lambda x: "id too long" if len(x) > 30 else x
         ax.set_yticklabels(map(shorten, labels))
-        ax.set_title("loadings on " + pc)
+        ax.set_title("Component " + pc)
         x_offset = max(dd) * .05
         ax.set_xlim(left=min(dd) - x_offset, right=max(dd) + x_offset)
         [lab.set_rotation(90) for lab in ax.get_xticklabels()]
