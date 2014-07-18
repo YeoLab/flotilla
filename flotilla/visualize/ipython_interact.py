@@ -10,6 +10,7 @@ from IPython.html.widgets import interact
 import matplotlib.pyplot as plt
 
 from .network import NetworkerViz
+from .color import str_to_color
 
 
 class Interactive(object):
@@ -249,27 +250,14 @@ class Interactive(object):
 
             assert (feature_subset in self.splicing.feature_sets.keys())
             feature_ids = self.splicing.feature_sets[feature_subset]
+            sample_ids = self.sample_subset_to_sample_ids(sample_subset)
 
-            from sklearn.preprocessing import LabelEncoder
-            le = LabelEncoder()
-            n_in_this_class = len(set(le.fit_transform(self.experiment_design.data[sample_subset])))
-            try:
-                assert n_in_this_class
-            except:
-                raise RuntimeError("this sample designator is not binary")
+            color = str_to_color[color]
 
-            sample_series = self.experiment_design.data[sample_subset]
-            #TODO: cast non-boolean binary ids to boolean
-            try:
-                assert self.experiment_design.data[sample_subset].dtype == 'bool'
-            except:
-                raise RuntimeError("this sample designator is not boolean")
-
-            sample_ids = self.experiment_design.data[sample_subset].index[self.experiment_design.data[sample_subset]]
-
-
-            self.splicing.plot_lavalamp_pooled_inconsistent(sample_ids, feature_ids,
-                                                            difference_threshold, color=color)
+            self.splicing.plot_lavalamp_pooled_inconsistent(sample_ids,
+                                                            feature_ids,
+                                                            difference_threshold,
+                                                            color=color)
             if savefile is not '':
                 self.maybe_make_directory(savefile)
                 plt.gcf().savefig(savefile)
@@ -279,7 +267,58 @@ class Interactive(object):
         interact(do_interact,
                  sample_subset=self.default_sample_subsets,
                  feature_subset=self.splicing.feature_sets.keys() + ['custom'],
-                 difference_threshold=(0.,3.),
-                 color='red',
+                 difference_threshold=(0., 1.),
+                 color=['red', 'blue', 'green', 'orange', 'purple'],
                  savefile=''
-                )
+        )
+
+    @staticmethod
+    def interactive_clusteredheatmap(self):
+        def do_interact(data_type='expression',
+                        sample_subset=self.default_sample_subsets,
+                        feature_subset=self.default_feature_subset,
+                        metric='euclidean',
+                        linkage_method='median',
+                        list_link='',
+                        savefile='data/last.clusteredheatmap.pdf'):
+
+            for k, v in locals().iteritems():
+                if k == 'self':
+                    continue
+                sys.stdout.write('{} : {}\n'.format(k, v))
+
+            if feature_subset != "custom" and list_link != "":
+                raise ValueError(
+                    "set feature_subset to \"custom\" to use list_link")
+
+            if feature_subset == "custom" and list_link == "":
+                raise ValueError("use a custom list name please")
+
+            if feature_subset == 'custom':
+                feature_subset = list_link
+            elif feature_subset not in self.default_feature_subsets[data_type]:
+                warnings.warn("This feature_subset ('{}') is not available in "
+                              "this data type ('{}'). Falling back on all "
+                              "features.".format(feature_subset, data_type))
+
+            self.plot_clusteredheatmap(sample_subset=sample_subset,
+                                       feature_subset=feature_subset,
+                                       data_type=data_type,
+                                       metric=metric,
+                                       linkage_method=linkage_method)
+            if savefile != '':
+                # Make the directory if it's not already there
+                self.maybe_make_directory(savefile)
+                f = plt.gcf()
+                f.savefig(savefile)
+
+        feature_sets = list(set(itertools.chain(*self.default_feature_subsets
+                                                .values())))
+        linkage_method = ('single', 'median', 'centroid')
+        metric = ('euclidean', 'seuclidean')
+        interact(do_interact,
+                 data_type=('expression', 'splicing'),
+                 sample_subset=self.default_sample_subsets,
+                 feature_subset=feature_sets + ['custom'],
+                 metric=metric,
+                 linkage_method=linkage_method)

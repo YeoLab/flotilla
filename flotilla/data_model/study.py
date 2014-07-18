@@ -466,7 +466,8 @@ class Study(StudyFactory):
 
         try:
             experiment_design_data = dfs['experiment_design']
-            expression_data = None if 'expression' not in dfs else dfs['expression']
+            expression_data = None if 'expression' not in dfs else dfs[
+                'expression']
             splicing_data = None if 'splicing' not in dfs else dfs['splicing']
         except KeyError:
             raise AttributeError('The datapackage.json file is required to '
@@ -859,17 +860,17 @@ class Study(StudyFactory):
             self.sample_id_to_celltype, axis=0).apply(
             lambda x: self.splicing.modalities(x.index))
 
-    def plot_modalities_lavalamps(self, celltype=None, bootstrapped=False,
+    def plot_modalities_lavalamps(self, sample_subset=None, bootstrapped=False,
                                   bootstrapped_kws=None):
         grouped = self.splicing.data.groupby(self.sample_id_to_color, axis=0)
         celltype_groups = self.splicing.data.groupby(
             self.sample_id_to_celltype, axis=0)
 
-        if celltype is not None:
-            # Only plotting one celltype, use the modality assignments from
-            # just the samples from this celltype
-            celltype_samples = celltype_groups.groups[celltype]
-            celltype_samples = set(celltype_groups.groups[celltype])
+        if sample_subset is not None:
+            # Only plotting one sample_subset, use the modality assignments from
+            # just the samples from this sample_subset
+            celltype_samples = celltype_groups.groups[sample_subset]
+            celltype_samples = set(celltype_groups.groups[sample_subset])
             use_these_modalities = True
         else:
             # Plotting all the celltypes, use the modality assignments from
@@ -954,10 +955,48 @@ class Study(StudyFactory):
             self.splicing.percent_pooled_inconsistent(sample_ids, feature_ids,
                                                       fraction_diff_thresh)
 
+    def plot_clusteredheatmap(self, sample_subset=None,
+                              feature_subset='variant',
+                              data_type='expression', metric='euclidean',
+                              linkage_method='median'):
+
+        if data_type == 'expression':
+            data = self.expression.data
+        elif data_type == 'splicing':
+            data = self.splicing.data
+        celltype_groups = data.groupby(
+            self.sample_id_to_celltype, axis=0)
+
+        if sample_subset is not None:
+            # Only plotting one sample_subset
+            try:
+                sample_ids = set(celltype_groups.groups[sample_subset])
+            except KeyError:
+                sample_ids = self.sample_subset_to_sample_ids(sample_subset)
+        else:
+            # Plotting all the celltypes
+            sample_ids = data.index
+
+        sample_colors = [self.sample_id_to_color[x] for x in sample_ids]
+        feature_ids = self.feature_subset_to_feature_ids(data_type,
+                                                         feature_subset,
+                                                         rename=False)
+
+        if data_type == "expression":
+            return self.expression.plot_clusteredheatmap(
+                sample_ids, feature_ids, linkage_method=linkage_method,
+                metric=metric, sample_colors=sample_colors)
+        elif data_type == "splicing":
+            return self.splicing.plot_clusteredheatmap(
+                sample_ids, feature_ids, linkage_method=linkage_method,
+                metric=metric, sample_colors=sample_colors)
+
 
 # Add interactive visualizations
 Study.interactive_classifier = Interactive.interactive_classifier
 Study.interactive_graph = Interactive.interactive_graph
 Study.interactive_pca = Interactive.interactive_pca
 Study.interactive_localZ = Interactive.interactive_localZ
-Study.interactive_lavalamp_pooled_inconsistent = Interactive.interactive_lavalamp_pooled_inconsistent
+Study.interactive_lavalamp_pooled_inconsistent = \
+    Interactive.interactive_lavalamp_pooled_inconsistent
+Study.interactive_clusteredheatmap = Interactive.interactive_clusteredheatmap

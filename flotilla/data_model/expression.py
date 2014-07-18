@@ -92,7 +92,8 @@ class ExpressionData(BaseData):
 
         subset, means = self._subset_and_standardize(self.sparse_data,
                                                      sample_ids, feature_ids,
-                                                     standardize)
+                                                     standardize,
+                                                     return_means=True)
 
         # compute reduction
         if featurewise:
@@ -147,10 +148,10 @@ class ExpressionData(BaseData):
         predictor : flotilla.compute.predict.PredictorBaseViz
             A ready-to-plot object containing the predictions
         """
-        subset, means = self._subset_and_standardize(self.log_data,
-                                                     sample_ids,
-                                                     feature_ids,
-                                                     standardize)
+        subset = self._subset_and_standardize(self.log_data,
+                                              sample_ids,
+                                              feature_ids,
+                                              standardize)
         if plotting_kwargs is None:
             plotting_kwargs = {}
 
@@ -198,6 +199,14 @@ class ExpressionData(BaseData):
         vz = self.twoway(sample1, sample2, **kwargs)
         vz()
         return vz
+
+    def _calculate_linkage(self, sample_ids, feature_ids, metric='euclidean',
+                           linkage_method='average', ):
+        subset = self._subset_and_standardize(self.log_data, sample_ids,
+                                              feature_ids)
+        row_linkage, col_linkage = self.clusterer(subset, metric,
+                                                  linkage_method)
+        return subset, row_linkage, col_linkage
 
 
 class SpikeInData(ExpressionData):
