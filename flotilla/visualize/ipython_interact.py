@@ -8,7 +8,9 @@ import warnings
 
 from IPython.html.widgets import interact
 import matplotlib.pyplot as plt
-
+from ..visualize.color import red
+from matplotlib.colors import rgb2hex
+red = rgb2hex(red)
 from .network import NetworkerViz
 
 
@@ -152,7 +154,7 @@ class Interactive(object):
         if feature_subsets is None:
             feature_sets = list(set(itertools.chain(*self.default_feature_subsets
                                                 .values())))
-            feature_subsets = feature_sets + ['custom']
+            feature_subsets = feature_sets
 
         if sample_subsets is None:
             sample_subsets = self.default_sample_subsets
@@ -224,7 +226,7 @@ class Interactive(object):
         if feature_subsets is None:
             feature_sets = list(set(itertools.chain(*self.default_feature_subsets
                                                 .values())))
-            feature_subsets = feature_sets + ['custom']
+            feature_subsets = feature_sets
 
         if sample_subsets is None:
             sample_subsets = self.default_sample_subsets
@@ -288,6 +290,76 @@ class Interactive(object):
                  sample1='replaceme',
                  sample2='replaceme',
                  pCut='0.01')
+    @staticmethod
+    def interactive_plot_modalities_lavalamps(self, sample_subsets=None, feature_subsets=None,
+                                              color=red, x_offset=0,
+                                              use_these_modalities=True,
+                                              bootstrapped=False, bootstrapped_kws=None,
+                                              savefile=''):
+        """"""
+
+        from IPython.html.widgets import interact
+
+        def do_interact(sample_subset=None, feature_subset=None,
+                        color=red, x_offset=0,
+                        use_these_modalities=True,
+                        bootstrapped=False, bootstrapped_kws=None,
+                        savefile=''):
+
+            for k, v in locals().iteritems():
+                if k == 'self':
+                    continue
+                sys.stdout.write('{} : {}\n'.format(k, v))
+
+            assert (feature_subset in self.splicing.feature_sets.keys())
+            feature_ids = self.splicing.feature_sets[feature_subset]
+
+            from sklearn.preprocessing import LabelEncoder
+            le = LabelEncoder()
+            n_in_this_class = len(set(le.fit_transform(self.experiment_design.data[sample_subset])))
+            try:
+                assert n_in_this_class
+            except:
+                raise RuntimeError("this sample designator is not binary")
+
+            sample_series = self.experiment_design.data[sample_subset]
+            #TODO: cast non-boolean binary ids to boolean
+            try:
+                assert self.experiment_design.data[sample_subset].dtype == 'bool'
+            except:
+                raise RuntimeError("this sample designator is not boolean")
+
+            sample_ids = self.experiment_design.data[sample_subset].index[self.experiment_design.data[sample_subset]]
+
+
+            self.splicing.plot_modalities_lavalamps(sample_ids, feature_ids,
+                                                    color=color, x_offset=x_offset,
+                                                    use_these_modalities=use_these_modalities,
+                                                    bootstrapped=bootstrapped, bootstrapped_kws=bootstrapped_kws,
+                                                    ax=None)
+            if savefile is not '':
+                self.maybe_make_directory(savefile)
+                plt.gcf().savefig(savefile)
+
+
+        if feature_subsets is None:
+            feature_sets = list(set(itertools.chain(*self.default_feature_subsets
+                                                .values())))
+            feature_subsets = feature_sets
+
+        if sample_subsets is None:
+            sample_subsets = self.default_sample_subsets
+
+        if bootstrapped_kws is None:
+            bootstrapped_kws = {}
+
+        interact(do_interact,
+                 sample_subset=sample_subsets, feature_subset=feature_subsets,
+                 color=color, x_offset=x_offset,
+                 use_these_modalities=use_these_modalities,
+                 bootstrapped=bootstrapped, bootstrapped_kws=bootstrapped_kws,
+                 savefile=savefile)
+
 
     @staticmethod
     def interactive_lavalamp_pooled_inconsistent(self,
