@@ -26,7 +26,8 @@ class TestExpressionData:
         import pandas as pd
 
         expression.subset, expression.means = \
-            expression._subset_and_standardize(expression.sparse_data)
+            expression._subset_and_standardize(expression.sparse_data,
+                                               return_means=True)
 
         columns = expression.sparse_data.count() > expression.min_samples
         subset = expression.sparse_data.ix[:, columns]
@@ -49,7 +50,7 @@ class TestExpressionData:
         expression.reduced = expression.reduce()
 
         subset, means = expression._subset_and_standardize(
-            expression.sparse_data)
+            expression.sparse_data, return_means=True)
         reducer_kwargs = {'title': ""}
         reduced = PCAViz(subset, **reducer_kwargs)
         reduced.means = means

@@ -181,7 +181,8 @@ class SplicingData(BaseData):
         reducer_kwargs['title'] = title
         subset, means = self._subset_and_standardize(data,
                                                      sample_ids, feature_ids,
-                                                     standardize)
+                                                     standardize,
+                                                     return_means=True)
 
         # compute reduction
         if featurewise:
@@ -237,10 +238,10 @@ class SplicingData(BaseData):
         predictor : flotilla.compute.predict.PredictorBaseViz
             A ready-to-plot object containing the predictions
         """
-        subset, means = self._subset_and_standardize(self.data,
-                                                     sample_ids,
-                                                     feature_ids,
-                                                     standardize)
+        subset = self._subset_and_standardize(self.data,
+                                              sample_ids,
+                                              feature_ids,
+                                              standardize)
         if plotting_kwargs is None:
             plotting_kwargs = {}
 
