@@ -343,7 +343,7 @@ class Interactive(object):
 
 
         if feature_subsets is None:
-            feature_sets = list(set(itertools.chain(*self.splicing.feature_sets.keys())))
+            feature_sets = self.splicing.feature_sets.keys()
             feature_subsets = feature_sets
 
         if sample_subsets is None:
@@ -405,12 +405,13 @@ class Interactive(object):
 
             self.splicing.plot_lavalamp_pooled_inconsistent(sample_ids, feature_ids,
                                                             difference_threshold, color=color)
+            plt.tight_layout()
             if savefile is not '':
                 self.maybe_make_directory(savefile)
                 plt.gcf().savefig(savefile)
 
         if feature_subsets is None:
-            feature_sets = list(set(itertools.chain(*self.splicing.feature_sets.keys())))
+            feature_sets = self.splicing.feature_sets.keys()
             feature_subsets = feature_sets + ['custom']
 
         if sample_subsets is None:
