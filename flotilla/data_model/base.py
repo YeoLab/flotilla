@@ -361,9 +361,6 @@ class BaseData(object):
             sample_ids, feature_ids, linkage_method=linkage_method,
             metric=metric)
 
-        import pdb;
-
-        pdb.set_trace()
         col_kws = dict(linkage_matrix=col_linkage, side_colors=feature_colors)
         row_kws = dict(linkage_matrix=row_linkage, side_colors=sample_colors)
         return sns.clusteredheatmap(subset, row_kws=row_kws, col_kws=col_kws)
