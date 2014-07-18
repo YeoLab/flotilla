@@ -1,11 +1,14 @@
 import os
-
 from .data_model.study import Study
 import compute
 import data_model
 from .external import make_study_datapackage
 import visualize
 
+try:
+    get_ipython().magic(u'matplotlib inline')
+except:
+    pass
 
 # def call_main():
 #     # where is this "agrparser" initialized?

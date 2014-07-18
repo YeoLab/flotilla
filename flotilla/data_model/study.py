@@ -324,6 +324,10 @@ class Study(StudyFactory):
         sys.stderr.write("subclasses initialized\n")
         self.validate_params()
         sys.stderr.write("package validated\n")
+        try:
+            self.hack_lazy()
+        except:
+            print "hackery failed"
 
     @property
     def default_feature_subsets(self):
@@ -692,9 +696,11 @@ class Study(StudyFactory):
                 self.experiment_design.data.marker.to_dict()
 
         if "expression".startswith(data_type):
-            self.expression.plot_dimensionality_reduction(**kwargs)
+            reducer = self.expression.plot_dimensionality_reduction(**kwargs)
         elif "splicing".startswith(data_type):
-            self.splicing.plot_dimensionality_reduction(**kwargs)
+            reducer = self.splicing.plot_dimensionality_reduction(**kwargs)
+
+        return reducer
 
     def plot_graph(self, data_type='expression', sample_subset=None,
                    feature_subset=None,
@@ -727,6 +733,23 @@ class Study(StudyFactory):
             self.expression.networks.draw_graph(**kwargs)
         elif data_type == "splicing":
             self.splicing.networks.draw_graph(**kwargs)
+
+    def plot_study_sample_legend(self):
+        markers = self.experiment_design.data.color.groupby(self.experiment_design.data.marker \
+                                                         + "." + self.experiment_design.data.celltype).last()
+
+        f, ax = plt.subplots(1,1, figsize=(3, len(markers)))
+
+        for i, point_type in enumerate(markers.iteritems(),):
+            mrk, celltype = point_type[0].split('.')
+            ax.scatter(0, 0, marker=mrk, c=point_type[1],
+                       edgecolor='none', label=celltype,
+                       s=160)
+        ax.set_xlim(1,2)
+        ax.set_ylim(1,2)
+        ax.axis('off')
+        legend = ax.legend(title='cell type', fontsize=20,)
+        return legend
 
     def plot_classifier(self, trait, data_type='expression', title='',
                         show_point_labels=False, sample_subset=None,
@@ -959,14 +982,13 @@ class Study(StudyFactory):
                               feature_subset='variant',
                               data_type='expression', metric='euclidean',
                               linkage_method='median'):
-
         if data_type == 'expression':
             data = self.expression.data
         elif data_type == 'splicing':
             data = self.splicing.data
         celltype_groups = data.groupby(
             self.sample_id_to_celltype, axis=0)
-
+    
         if sample_subset is not None:
             # Only plotting one sample_subset
             try:
@@ -976,12 +998,12 @@ class Study(StudyFactory):
         else:
             # Plotting all the celltypes
             sample_ids = data.index
-
+    
         sample_colors = [self.sample_id_to_color[x] for x in sample_ids]
         feature_ids = self.feature_subset_to_feature_ids(data_type,
                                                          feature_subset,
                                                          rename=False)
-
+    
         if data_type == "expression":
             return self.expression.plot_clusteredheatmap(
                 sample_ids, feature_ids, linkage_method=linkage_method,
@@ -991,12 +1013,53 @@ class Study(StudyFactory):
                 sample_ids, feature_ids, linkage_method=linkage_method,
                 metric=metric, sample_colors=sample_colors)
 
+    def hack_lazy(self):
+
+        """
+         called by __init__ these things haven't been worked out, so it's probably ok if they fail.
+        """
+
+        #cast outlier column to bool
+        x = self.experiment_design.data['outlier']
+        x = x.astype('bool')
+        self.experiment_design.data['outlier'] = x
+
+        #add splicing gene type
+        splicing_genes = pd.Index(set(self.gene_ontology_data[
+            self.gene_ontology_data['GO Term Name'].apply(
+                lambda x: "splicing" in str(x))]['Ensembl Gene ID']))
+        self.expression.feature_sets['splicing'] = splicing_genes
+        self.expression.default_feature_sets.append('splicing')
+
+        #drop cells with too few mapped reads
+        read_cut = 2000000  # 2 million
+        test = self.mapping_stats.data[
+                   'Uniquely mapped reads number'] < read_cut
+        samples_w_lt_million_reads = self.mapping_stats.data.index[test]
+        self.experiment_design.data['outlier'].ix[
+            samples_w_lt_million_reads] = True
+        outliers = self.experiment_design.data['outlier'].ix[
+            self.experiment_design.data['outlier']].index
+        self.expression.data = self.expression.drop_outliers(
+            self.expression.data, outliers)
+        self.splicing.data = self.splicing.drop_outliers(
+            self.splicing.data, outliers)
+        self.expression.sparse_data = self.expression.drop_outliers(
+            self.expression.sparse_data, outliers)
+
+        #add logical inverse of boolean columns in experiment_design
+        for column in self.experiment_design.data.columns:
+            if self.experiment_design.data[column].dtype == 'bool':
+                if column.startswith("~"):
+                    continue
+                self.experiment_design.data['~' + column] = ~ \
+                    self.experiment_design.data[column]
+                self.default_sample_subsets.append('~' + column)
+
 
 # Add interactive visualizations
 Study.interactive_classifier = Interactive.interactive_classifier
 Study.interactive_graph = Interactive.interactive_graph
 Study.interactive_pca = Interactive.interactive_pca
 Study.interactive_localZ = Interactive.interactive_localZ
-Study.interactive_lavalamp_pooled_inconsistent = \
-    Interactive.interactive_lavalamp_pooled_inconsistent
-Study.interactive_clusteredheatmap = Interactive.interactive_clusteredheatmap
+Study.interactive_lavalamp_pooled_inconsistent = Interactive.interactive_lavalamp_pooled_inconsistent

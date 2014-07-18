@@ -163,7 +163,7 @@ class SplicingData(BaseData):
         #                         keys=reduced.columns, axis=1)
         return reduced
 
-    @memoize
+    #@memoize
     def reduce(self, sample_ids=None, feature_ids=None,
                featurewise=False, reducer=PCAViz,
                standardize=True, title='',
@@ -194,6 +194,10 @@ class SplicingData(BaseData):
         reducer_object.means = means
 
         # add mean gene_expression
+
+        #TODO: make this work with memoization
+        #self._last_reducer_accessed = reducer_object
+
         return reducer_object
 
     @memoize
@@ -319,7 +323,8 @@ class SplicingData(BaseData):
     def plot_modalities_lavalamps(self, sample_ids=None, feature_ids=None,
                                   color=None, x_offset=0,
                                   use_these_modalities=True,
-                                  bootstrapped=False, bootstrapped_kws=None):
+                                  bootstrapped=False, bootstrapped_kws=None,
+                                  ax=None):
         """Plot "lavalamp" scatterplot of each event
 
         Parameters
@@ -349,6 +354,8 @@ class SplicingData(BaseData):
             Valid arguments to _bootstrapped_fit_transform. If None, default is
             dict(n_iter=100, thresh=0.6, min_samples=10)
         """
+        from matplotlib.gridspec import GridSpec, GridSpecFromSubplotSpec
+
         if use_these_modalities:
             modalities_assignments = self.modalities(
                 sample_ids, feature_ids, bootstrapped=bootstrapped,
@@ -357,22 +364,38 @@ class SplicingData(BaseData):
             modalities_assignments = self.modalities(
                 bootstrapped=bootstrapped, bootstrapped_kws=bootstrapped_kws)
         modalities_names = modalities_assignments.unique()
+        from matplotlib.gridspec import GridSpec, GridSpecFromSubplotSpec
+        import matplotlib.pyplot as plt
 
-        fig, axes = plt.subplots(len(modalities_names), 1,
-                                 figsize=(18, 3 * len(modalities_names)))
-        axes = itertools.chain(axes)
+        gs_x = len(modalities_names)
+        gs_y = 15
 
+        if ax is None:
+            fig, ax = plt.subplots(1, 1, figsize=(18, 3 * len(modalities_names)))
+            gs = GridSpec(gs_x, gs_y)
+
+        else:
+            gs = GridSpecFromSubplotSpec(gs_x, gs_y, ax.get_subplotspec())
+            fig = plt.gcf()
+
+        lavalamp_axes = [plt.subplot(gs[i,:12]) for i in xrange(len(modalities_names))]
+        pie_axis = plt.subplot(gs[:,12:])
+        pie_axis.set_aspect('equal')
+        pie_axis.axis('off')
         if color is None:
             color = pd.Series(red, index=modalities_assignments.index)
-        else:
-            axes = itertools.chain(axes)
 
         modalities_grouped = modalities_assignments.groupby(
             modalities_assignments)
-        for ax, (modality, s) in zip(axes, modalities_grouped):
+        modality_count = {}
+        for ax, (modality, s) in itertools.izip(lavalamp_axes, modalities_grouped):
+
+            modality_count[modality] = len(s)
             psi = self.data[s.index]
             lavalamp(psi, color=color, ax=ax, x_offset=x_offset)
             ax.set_title(modality)
+
+        pie_axis.pie(map(int, modality_count.values()), labels=modality_count.keys(), autopct='%1.1f%%')
 
     def plot_event(self, feature_id, sample_ids=None, sample_groupby=None,
                    sample_order=None, ax=None):
