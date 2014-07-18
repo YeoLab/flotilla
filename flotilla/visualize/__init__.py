@@ -25,5 +25,8 @@ seaborn.set_style({'axes.axisbelow': True,
                    'ytick.direction': 'out',
                    'ytick.major.size': 0,
                    'ytick.minor.size': 0})
+
+seaborn.set_context('talk')
+
 from .ipython_interact import Interactive
 from .predict import PredictorBaseViz
