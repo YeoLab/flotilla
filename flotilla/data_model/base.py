@@ -162,9 +162,7 @@ class BaseData(object):
 
     # TODO.md: Specify dtypes in docstring
     def plot_classifier(self, trait, sample_ids=None, feature_ids=None,
-                        standardize=True, predictor=ClassifierViz,
-                        predictor_kwargs=None, predictor_scoring_fun=None,
-                        score_cutoff_fun=None, score_coefficient=None, **plotting_kwargs):
+                        standardize=True, score_coefficient=None, **plotting_kwargs):
         """Principal component-like analysis of measurements
 
         Params
@@ -183,7 +181,6 @@ class BaseData(object):
         self
         """
         # print trait
-        predictor_kwargs = {} if predictor_kwargs is None else predictor_kwargs
         plotting_kwargs = {} if plotting_kwargs is None else plotting_kwargs
 
         # local_plotting_args = self.pca_plotting_args.copy()
@@ -192,10 +189,8 @@ class BaseData(object):
         clf = self.classify(trait, sample_ids=sample_ids,
                             feature_ids=feature_ids,
                             standardize=standardize, predictor=predictor,
-                            predictor_kwargs=predictor_kwargs,
-                            predictor_scoring_fun=predictor_scoring_fun,
                             score_coefficient=score_coefficient,
-                            score_cutoff_fun=score_cutoff_fun)
+                            )
         clf(**plotting_kwargs)
         # clf()
         return self

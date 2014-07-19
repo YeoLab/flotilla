@@ -12,10 +12,11 @@ from .compute.generic import get_boosting_regressor, get_regressor, get_dcor, \
     get_robust_values, get_slope, apply_dcor, apply_calc_robust, \
     apply_calc_slope, apply_calc_rs, np, stats, TimeoutError, pd
 import pymongo
-
-mongoHost = "sauron.ucsd.edu"
+import subprocess
+mongoHost = "localhost"
 mongoPort = 8838
 min_cells=12
+
 
 def get_unstarted_events(mongodb):
     """

@@ -15,11 +15,8 @@ from .color import green
 
 
 class PredictorBaseViz(object):
-    # class PredictorBaseViz(DecompositionViz):
-    _reducer_plotting_args = {}
 
-    # def __init__(self, *args, **kwargs):
-    #     super(PredictorBaseViz, self).__init__(*args, **kwargs)
+    _reducer_plotting_args = {}
 
     def set_reducer_plotting_args(self, rpa):
         self._reducer_plotting_args.update(rpa)
@@ -33,7 +30,7 @@ class PredictorBaseViz(object):
         map row index -> an attribute)
         """
         raise NotImplementedError
-        trait, classifier_name = self.attributes
+        trait, classifier_name = self.data.trait, self.predictor.name
         X = self.X
         sorter = np.array([np.median(i[1]) - np.median(j[1]) for (i, j) in
                            itertools.izip(X[self.y[trait] == 0].iteritems(),
@@ -89,7 +86,7 @@ class PredictorBaseViz(object):
 
         return zz
 
-    def do_pca(self, trait, ax=None, classifier_name=None, **plotting_kwargs):
+    def do_pca(self, ax=None, **plotting_kwargs):
 
         """plot kernel density of predictor scores and draw a vertical line
         where the cutoff was selected
@@ -103,8 +100,6 @@ class PredictorBaseViz(object):
 
         if ax is None:
             ax = plt.gca()
-        if classifier_name is None:
-            classifier_name = self.name
 
         local_plotting_kwargs = self._reducer_plotting_args
         local_plotting_kwargs.update(plotting_kwargs)
@@ -113,8 +108,17 @@ class PredictorBaseViz(object):
         pca(ax=ax)
         return pca
 
+    def __call__(self, score_coefficient=None, *args, **kwargs):
+
+        if not self.has_been_fit:
+            self.fit()
+        self.score(score_coefficient)
+
+        self.do_pca(*args, **kwargs)
+
 
 class RegressorViz(Regressor, PredictorBaseViz):
+
     def check_a_feature(self, feature_name, trait, **violinplot_kwargs):
         """Make Violin Plots for a gene/probe's value in the sets defined in
         sets
@@ -137,7 +141,7 @@ class ClassifierViz(Classifier, PredictorBaseViz):
     Visualize results from classification
     """
 
-    def __call__(self, trait=None, ax=None, feature_score_std_cutoff=None,
+    def __call__(self, ax=None, feature_score_std_cutoff=None,
                  **plotting_kwargs):
 
         if not self.has_been_fit:
@@ -159,13 +163,13 @@ class ClassifierViz(Classifier, PredictorBaseViz):
 
         ax_scores.set_xlabel("Feature Importance")
         ax_scores.set_ylabel("Density Estimate")
-        self.plot_classifier_scores(trait, ax=ax_scores)
-        pca = self.do_pca(trait, ax=ax_pca, show_vectors=True,
+        self.plot_classifier_scores(self.data.trait, ax=ax_scores)
+        pca = self.do_pca(ax=ax_pca, show_vectors=True,
                           **plotting_kwargs)
         plt.tight_layout()
         return pca
 
-    def plot_classifier_scores(self, trait, ax=None, classifier_name=None):
+    def plot_classifier_scores(self,  ax=None, classifier_name=None):
         """
         plot kernel density of predictor scores and draw a vertical line where
         the cutoff was selected
@@ -175,11 +179,10 @@ class ClassifierViz(Classifier, PredictorBaseViz):
             ax = plt.gca()
 
         # for trait in traits:
-        clf = self.predictor
-        sns.kdeplot(clf.scores_, shade=True, ax=ax,
+        sns.kdeplot(self.scores_, shade=True, ax=ax,
                     label="%s\n%d features\noob:%.2f"
-                          % (trait, clf.n_good_features_, clf.oob_score_))
-        ax.axvline(x=clf.score_cutoff_, color=green)
+                    % (self.data.trait_name, self.n_good_features_, self.oob_score_))
+        ax.axvline(x=self.score_cutoff_, color=green)
 
         for lab in ax.get_xticklabels():
             lab.set_rotation(90)
