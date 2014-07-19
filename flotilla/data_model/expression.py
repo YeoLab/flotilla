@@ -111,11 +111,18 @@ class ExpressionData(BaseData):
         return reducer_object
 
     @memoize
-    def classify(self, trait, sample_ids=None, feature_ids=None,
-                 standardize=True, predictor=ClassifierViz,
-                 predictor_kwargs=None, predictor_scoring_fun=None,
-                 score_coefficient=None,
-                 score_cutoff_fun=None, plotting_kwargs=None):
+    def classify(self, sample_ids, feature_ids, trait, standardize=True,
+                 data_name='expression',
+                 predictor_name='ExtraTreesClassifier',
+                 predictor_obj=None,
+                 predictor_scoring_fun=None,
+                 score_cutoff_fun=None,
+                 n_features_dependent_parameters=None,
+                 constant_parameters=None,
+                 plotting_kwargs=None,
+                 ):
+        #Should all this be exposed to the user???
+
         """Make and memoize a predictor on a categorical trait (associated
         with samples) subset of genes
 
@@ -159,13 +166,16 @@ class ExpressionData(BaseData):
         if plotting_kwargs is None:
             plotting_kwargs = {}
 
-        classifier = predictor(subset, trait=trait,
-                               predictor_kwargs=predictor_kwargs,
-                               predictor_scoring_fun=predictor_scoring_fun,
-                               score_cutoff_fun=score_cutoff_fun,
-                               score_coefficient=score_coefficient,
-                               **plotting_kwargs)
-        # classifier.set_reducer_plotting_args(classifier.reduction_kwargs)
+        classifier = ClassifierViz(data_name,
+                                   data=subset,
+                                   trait=trait,
+                                   predictor_name=predictor_name,
+                                   predictor_obj=predictor_obj,
+                                   predictor_scoring_fun=predictor_scoring_fun,
+                                   score_cutoff_fun=score_cutoff_fun,
+                                   n_features_dependent_parameters=n_features_dependent_parameters,
+                                   constant_parameters=constant_parameters,
+                                   **plotting_kwargs)
         return classifier
 
     # def load_cargo(self, rename=True, **kwargs):
