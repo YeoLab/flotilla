@@ -265,11 +265,11 @@ class DecompositionViz(object):
         ax.set_xlabel(
             'Principal Component {} (Explains {}% Of Variance)'.format(
                 str(x_pc),
-                str(var_1)), size=axis_label_size*2)
+                str(var_1)), size=10)
         ax.set_ylabel(
             'Principal Component {} (Explains {}% Of Variance)'.format(
                 str(y_pc),
-                str(var_2)), size=axis_label_size*2)
+                str(var_2)), size=10)
         ax.set_title(title, size=title_size)
 
         return comp_magn[:num_vectors], ax
