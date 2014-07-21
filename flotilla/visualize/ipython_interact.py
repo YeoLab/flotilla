@@ -11,11 +11,11 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import rgb2hex
 
 from ..visualize.color import red
+from .network import NetworkerViz
+from .color import str_to_color
 
 
 red = rgb2hex(red)
-from .network import NetworkerViz
-from .color import str_to_color
 
 
 class Interactive(object):
