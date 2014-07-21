@@ -1062,4 +1062,6 @@ Study.interactive_classifier = Interactive.interactive_classifier
 Study.interactive_graph = Interactive.interactive_graph
 Study.interactive_pca = Interactive.interactive_pca
 Study.interactive_localZ = Interactive.interactive_localZ
-Study.interactive_lavalamp_pooled_inconsistent = Interactive.interactive_lavalamp_pooled_inconsistent
+Study.interactive_lavalamp_pooled_inconsistent = \
+    Interactive.interactive_lavalamp_pooled_inconsistent
+Study.interactive_clusteredheatmap = Interactive.interactive_clusteredheatmap
