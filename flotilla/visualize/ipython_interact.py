@@ -12,6 +12,7 @@ from matplotlib.colors import rgb2hex
 
 from ..visualize.color import red
 
+
 red = rgb2hex(red)
 from .network import NetworkerViz
 from .color import str_to_color
@@ -82,6 +83,8 @@ class Interactive(object):
 
             feature_sets = list(set(itertools.chain(*self.default_feature_subsets
                                                 .values())))
+
+        self.plot_study_sample_legend()
 
         if feature_subsets is None:
             feature_sets = list(
@@ -226,10 +229,17 @@ class Interactive(object):
                 self.maybe_make_directory(savefile)
                 plt.gcf().savefig(savefile)
 
-        feature_sets = list(set(itertools.chain(*self.default_feature_subsets
-                                                .values())))
-        categorical_variable = [i for i in self.default_sample_subsets if
-                                not i.startswith("~") and i != 'all_samples']
+        if feature_subsets is None:
+            feature_subsets = list(
+                set(itertools.chain(*self.default_feature_subsets
+                                    .values())))
+        if sample_subsets is None:
+            sample_subsets = self.default_sample_subsets
+
+        if categorical_variables is None:
+            categorical_variables = [i for i in self.default_sample_subsets if
+                                     not i.startswith(
+                                         "~") and i != 'all_samples']
 
         self.plot_study_sample_legend()
 
