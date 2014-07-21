@@ -91,7 +91,7 @@ class Interactive(object):
             feature_subsets = list(set(itertools.chain(
                 *self.default_feature_subsets.values())))
             feature_subsets.pop(feature_subsets.index('variant'))
-            feature_subsets.insert('variant', 0)
+            feature_subsets.insert(0, 'variant')
 
         if sample_subsets is None:
             sample_subsets = self.default_sample_subsets
