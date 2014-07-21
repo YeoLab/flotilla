@@ -8,8 +8,10 @@ import warnings
 
 from IPython.html.widgets import interact
 import matplotlib.pyplot as plt
-from ..visualize.color import red
 from matplotlib.colors import rgb2hex
+
+from ..visualize.color import red
+
 red = rgb2hex(red)
 from .network import NetworkerViz
 from .color import str_to_color
@@ -80,6 +82,16 @@ class Interactive(object):
 
             feature_sets = list(set(itertools.chain(*self.default_feature_subsets
                                                 .values())))
+
+        if feature_subsets is None:
+            feature_sets = list(
+                set(itertools.chain(*self.default_feature_subsets
+                                    .values())))
+            feature_subsets = feature_sets
+
+        if sample_subsets is None:
+            sample_subsets = self.default_sample_subsets
+
         interact(do_interact,
                  data_type=data_types,
                  sample_subset=sample_subsets,
