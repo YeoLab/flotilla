@@ -95,6 +95,7 @@ class PredictorBase(object):
 
     @staticmethod
     def default_score_cutoff_fun(x, std_multiplier=2):
+        std_multiplier = 2 if std_multiplier is None else std_multiplier
         return np.mean(x) + std_multiplier * np.std(x)
 
     def fit(self):

@@ -137,11 +137,12 @@ class ClassifierViz(Classifier, PredictorBaseViz):
     Visualize results from classification
     """
 
-    def __call__(self, trait=None, ax=None, feature_score_std_cutoff=None,
+    def __call__(self, trait=None, ax=None, feature_score_std_cutoff=2,
                  **plotting_kwargs):
 
         if not self.has_been_fit:
             self.fit()
+        if not self.has_been_scored:
             self.score()
 
         gs_x = 18
