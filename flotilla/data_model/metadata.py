@@ -6,8 +6,9 @@ from .base import BaseData
 # Any informational data goes here
 
 class MetaData(BaseData):
-    def __init__(self, data):
+    def __init__(self, data, celltype_order=None):
         super(MetaData, self).__init__(data, outliers=None)
+        self.celltype_order = celltype_order
 
     def _get(self, sample_metadata_filename=None, gene_metadata_filename=None,
              event_metadata_filename=None):

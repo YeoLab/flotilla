@@ -354,7 +354,6 @@ class SplicingData(BaseData):
             Valid arguments to _bootstrapped_fit_transform. If None, default is
             dict(n_iter=100, thresh=0.6, min_samples=10)
         """
-        from matplotlib.gridspec import GridSpec, GridSpecFromSubplotSpec
 
         if use_these_modalities:
             modalities_assignments = self.modalities(
@@ -398,7 +397,7 @@ class SplicingData(BaseData):
         pie_axis.pie(map(int, modality_count.values()), labels=modality_count.keys(), autopct='%1.1f%%')
 
     def plot_event(self, feature_id, sample_ids=None, sample_groupby=None,
-                   sample_order=None, ax=None):
+                   celltype_order=None, ax=None):
         """
         Plot the violinplot of a splicing event (should also show NMF movement)
         """
@@ -414,7 +413,7 @@ class SplicingData(BaseData):
         # are equal
         psi += np.random.uniform(0, 0.01, psi.shape)
         sns.violinplot(psi, groupby=sample_groupby, ax=ax, bw=0.2,
-                       inner='points')
+                       inner='points', order=celltype_order)
         sns.despine()
         ax.set_ylim(0, 1)
         ax.set_yticks((0, 0.5, 1))
