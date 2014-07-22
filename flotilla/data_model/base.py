@@ -49,7 +49,8 @@ class BaseData(object):
             self.pooled = self.data.ix[pooled]
 
         if outliers is not None:
-            self.data = self.drop_outliers(self.data, outliers)
+            self.data, self.outliers = self.drop_outliers(self.data,
+                                                          outliers)
 
         # self.experiment_design_data = experiment_design_data
         self.feature_data = metadata
@@ -93,7 +94,7 @@ class BaseData(object):
         # assert 'outlier' in self.experiment_design_data.columns
         outliers = set(outliers).intersection(df.index)
         sys.stdout.write("dropping {}\n".format(outliers))
-        return df.drop(outliers)
+        return df.drop(outliers), df.ix[outliers]
 
     def feature_subset_to_feature_ids(self, feature_subset, rename=True):
         if feature_subset is not None:
