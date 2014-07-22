@@ -187,7 +187,8 @@ class Study(StudyFactory):
                  drop_outliers=True, species=None,
                  gene_ontology_data=None,
                  expression_log_base=None,
-                 experiment_design_pooled_col=None):
+                 experiment_design_pooled_col=None,
+                 celltype_order=None):
         """Construct a biological study
 
         This class only accepts data, no filenames. All data must already
@@ -274,7 +275,7 @@ class Study(StudyFactory):
         self.species = species
         self.gene_ontology_data = gene_ontology_data
 
-        self.experiment_design = MetaData(sample_metadata)
+        self.experiment_design = MetaData(sample_metadata, celltype_order)
         self.default_sample_subsets = \
             [col for col in self.experiment_design.data.columns
              if self.experiment_design.data[col].dtype == bool]
@@ -422,6 +423,7 @@ class Study(StudyFactory):
         dfs = {}
         log_base = None
         experiment_design_pooled_col = None
+        celltype_order = None
 
         for resource in data_package['resources']:
             if 'url' in resource:
@@ -444,6 +446,8 @@ class Study(StudyFactory):
             if name == 'experiment_design':
                 if 'pooled_col' in resource:
                     experiment_design_pooled_col = resource['pooled_col']
+                if 'celltype_order' in resource:
+                    celltype_order = resource['celltype_order']
 
         if 'species' in data_package:
             species_data_url = '{}/{}/datapackage.json'.format(
@@ -1012,6 +1016,11 @@ class Study(StudyFactory):
             return self.splicing.plot_clusteredheatmap(
                 sample_ids, feature_ids, linkage_method=linkage_method,
                 metric=metric, sample_colors=sample_colors)
+
+    def plot_event(self, feature_id, sample_ids):
+        self.splicing.plot_event(feature_id, sample_ids,
+                                 sample_groupby=self.sample_id_to_celltype,
+                                 celltype_order=self.experiment_design.celltype_order)
 
     def hack_lazy(self):
 
