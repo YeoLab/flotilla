@@ -362,7 +362,6 @@ class Interactive(object):
                 self.maybe_make_directory(savefile)
                 plt.gcf().savefig(savefile)
 
-
         if feature_subsets is None:
             feature_subsets = self.splicing.feature_sets.keys()
 
@@ -379,10 +378,10 @@ class Interactive(object):
                  bootstrapped=bootstrapped, bootstrapped_kws=bootstrapped_kws,
                  savefile=savefile)
 
-
+    @staticmethod
     def interactive_lavalamp_pooled_inconsistent(
             self, sample_subsets=None, feature_subsets=None,
-            difference_threshold=(0.001, 2.00),
+            difference_threshold=(0.001, 1.00),
             colors=['red', 'green', 'blue', 'purple', 'yellow'], savefile=''):
         from IPython.html.widgets import interact
 
