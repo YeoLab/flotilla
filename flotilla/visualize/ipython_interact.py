@@ -99,7 +99,7 @@ class Interactive(object):
         interact(do_interact,
                  data_type=data_types,
                  sample_subset=sample_subsets,
-                 feature_subset=feature_subsets,
+                 feature_subset=feature_subsets + ['custom'],
                  featurewise=featurewise,
                  x_pc=x_pc, y_pc=y_pc,
                  show_point_labels=show_point_labels,
@@ -379,7 +379,7 @@ class Interactive(object):
                  bootstrapped=bootstrapped, bootstrapped_kws=bootstrapped_kws,
                  savefile=savefile)
 
-
+    @staticmethod
     def interactive_lavalamp_pooled_inconsistent(
             self, sample_subsets=None, feature_subsets=None,
             difference_threshold=(0.001, 2.00),
