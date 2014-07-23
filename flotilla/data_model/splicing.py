@@ -17,7 +17,7 @@ from ..visualize.splicing import ModalitiesViz
 from ..util import cached_property, memoize
 from ..visualize.color import red
 from ..visualize.splicing import lavalamp, hist_single_vs_pooled_diff, \
-    lavalamp_pooled_inconsistent
+    lavalamp_pooled_inconsistent, psi_violinplot
 
 
 FRACTION_DIFF_THRESH = 0.1
@@ -396,38 +396,45 @@ class SplicingData(BaseData):
 
         pie_axis.pie(map(int, modality_count.values()), labels=modality_count.keys(), autopct='%1.1f%%')
 
-    def plot_event(self, feature_id, sample_ids=None, sample_groupby=None,
-                   celltype_order=None, ax=None):
+    def plot_event(self, feature_id, sample_ids=None, phenotype_groupby=None,
+                   phenotype_order=None, ax=None, color=None):
         """
         Plot the violinplot of a splicing event (should also show NMF movement)
         """
         if ax is None:
             ax = plt.gca()
 
-        psi = self._subset(self.data, sample_ids, [feature_id]).dropna()
+        singles, pooled = self._subset_singles_and_pooled(
+            self.data, self.pooled, sample_ids, [feature_id])
+        title = self.feature_renamer(feature_id)
+        title = '{} {}'.format(title, ':'.join(feature_id.split(':')[:2]))
+
+        psi_violinplot(singles, groupby=phenotype_groupby, color=color,
+                       pooled_psi=pooled, order=phenotype_order,
+                       title=title)
         # psi = self.data.ix[sample_ids, feature_id].dropna()
 
         # import pdb; pdb.set_trace()
 
         # Add a tiny amount of uniform random noise in case all the values
         # are equal
-        psi += np.random.uniform(0, 0.01, psi.shape)
-        sns.violinplot(psi, groupby=sample_groupby, ax=ax, bw=0.2,
-                       inner='points', order=celltype_order)
-        sns.despine()
-        ax.set_ylim(0, 1)
-        ax.set_yticks((0, 0.5, 1))
-        ax.set_ylabel('PSI ($\Psi$) scores')
-
-        pooled_grouped = self.pooled.groupby(sample_groupby, axis=0)
-
-        for i, (celltype, df) in enumerate(pooled_grouped):
-            ys = df.ix[:, feature_id]
-            xs = np.ones(ys.shape) * i
-            for x, y in zip(xs, ys):
-                ax.scatter(x, y, marker='o', color='k', s=100)
-                ax.annotate('pooled', (x, y), textcoords='offset points',
-                            xytext=(10, 5), fontsize=14)
+        # psi += np.random.uniform(0, 0.01, psi.shape)
+        # sns.violinplot(psi, groupby=phenotype_groupby, ax=ax, bw=0.2,
+        #                inner='points', order=phenotype_order)
+        # sns.despine()
+        # ax.set_ylim(0, 1)
+        # ax.set_yticks((0, 0.5, 1))
+        # ax.set_ylabel('PSI ($\Psi$) scores')
+        #
+        # pooled_grouped = self.pooled.groupby(phenotype_groupby, axis=0)
+        #
+        # for i, (celltype, df) in enumerate(pooled_grouped):
+        #     ys = df.ix[:, feature_id]
+        #     xs = np.ones(ys.shape) * i
+        #     for x, y in zip(xs, ys):
+        #         ax.scatter(x, y, marker='o', color='k', s=100)
+        #         ax.annotate('pooled', (x, y), textcoords='offset points',
+        #                     xytext=(10, 5), fontsize=14)
 
     @memoize
     def pooled_inconsistent(self, sample_ids, feature_ids=None,
