@@ -93,6 +93,11 @@ class BaseData(object):
     def drop_outliers(self, df, outliers):
         # assert 'outlier' in self.experiment_design_data.columns
         outliers = set(outliers).intersection(df.index)
+        try:
+            # Remove pooled samples, if there are any
+            outliers = outliers.difference(self.pooled.index)
+        except AttributeError:
+            pass
         sys.stdout.write("dropping {}\n".format(outliers))
         return df.drop(outliers), df.ix[outliers]
 
