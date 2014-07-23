@@ -52,7 +52,6 @@ class BaseData(object):
             self.data, self.outliers = self.drop_outliers(self.data,
                                                           outliers)
 
-        # self.experiment_design_data = experiment_design_data
         self.feature_data = metadata
         self.feature_rename_col = feature_rename_col
         self.min_samples = min_samples
@@ -99,7 +98,9 @@ class BaseData(object):
         except AttributeError:
             pass
         sys.stdout.write("dropping {}\n".format(outliers))
-        return df.drop(outliers), df.ix[outliers]
+        data = df.drop(outliers)
+        outlier_data = df.ix[outliers]
+        return data, outlier_data
 
     def feature_subset_to_feature_ids(self, feature_subset, rename=True):
         if feature_subset is not None:
@@ -291,22 +292,42 @@ class BaseData(object):
         sample_ids = pd.Index(set(sample_ids).intersection(data.index))
         feature_ids = pd.Index(set(feature_ids).intersection(data.columns))
 
+        if len(sample_ids) == 1:
+            sample_ids = sample_ids[0]
+            single_sample = True
+        else:
+            single_sample = False
+
+        if len(feature_ids) == 1:
+            feature_ids = feature_ids[0]
+            single_feature = True
+        else:
+            single_feature = False
+
         subset = data.ix[sample_ids]
         subset = subset.T.ix[feature_ids].T
 
-        if require_min_samples:
+        if require_min_samples and not single_feature:
             subset = subset.ix[:, subset.count() > self.min_samples]
         return subset
 
-    def _subset_singles_and_pooled(self, singles, pooled, sample_ids,
+    def _subset_singles_and_pooled(self, singles, pooled, sample_ids=None,
                                    feature_ids=None):
-        singles_ids = self.data.index.intersection(sample_ids)
-        pooled_ids = self.pooled.index.intersection(sample_ids)
-        # import pdb; pdb.set_trace()
-        singles = self._subset(singles, singles_ids, feature_ids,
-                               require_min_samples=True).dropna(axis=1,
-                                                                how='all')
-        pooled = pooled.ix[pooled_ids, singles.columns]
+        # singles_ids = self.data.index.intersection(sample_ids)
+        # pooled_ids = self.pooled.index.intersection(sample_ids)
+        # # import pdb; pdb.set_trace()
+        singles = self._subset(singles, sample_ids, feature_ids,
+                               require_min_samples=True)
+        pooled = self._subset(pooled, sample_ids, feature_ids,
+                              require_min_samples=False)
+        if len(feature_ids) > 1:
+            # These are a DataFrame
+            singles, pooled = singles.align(pooled, axis=1, join='inner')
+        else:
+            # These are Series
+            singles = singles.dropna()
+            pooled = pooled.dropna()
+
         return singles, pooled
 
     def _subset_and_standardize(self, data, sample_ids=None,

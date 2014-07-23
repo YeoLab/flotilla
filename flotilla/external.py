@@ -239,7 +239,6 @@ def make_study_datapackage(name, experiment_design_data,
                            flotilla_dir=FLOTILLA_DOWNLOAD_DIR,
                            host="sauron.ucsd.edu",
                            host_destination='/zfs/www/flotilla_packages/'):
-
     """Example code for making a datapackage for a Study
     """
     if ' ' in name:
@@ -262,7 +261,7 @@ def make_study_datapackage(name, experiment_design_data,
     if species is not None:
         datapackage['species'] = species
 
-    resources = {'experiment_design': experiment_design_data,
+    resources = {'metadata': experiment_design_data,
                  'expression': expression_data,
                  'splicing': splicing_data,
                  'spikein': spikein_data,
@@ -281,7 +280,9 @@ def make_study_datapackage(name, experiment_design_data,
             resource_data.to_csv(f)
         try:
             #TODO: only transmit data if it has been updated
-            subprocess.call("scp {} {}:{}{}.".format(data_filename, host, host_destination, name), shell=True)
+            subprocess.call(
+                "scp {} {}:{}{}.".format(data_filename, host, host_destination,
+                                         name), shell=True)
         except Exception as e:
             sys.stderr.write("error sending data to host: {}".format(e))
 

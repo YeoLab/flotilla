@@ -31,8 +31,6 @@ class MappingStatsData(BaseData):
         super(MappingStatsData, self).__init__(data)
         self.number_mapped_col = number_mapped_col
 
-        pass
-
     @property
     def mapped_reads(self):
         return self.data[self.number_mapped_col]
