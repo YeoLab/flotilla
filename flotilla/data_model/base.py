@@ -247,16 +247,14 @@ class BaseData(object):
         """
         pca = self.reduce(sample_ids, feature_ids,
                           featurewise=featurewise, reducer=reducer)
-        pca(markers_size_dict=defaultdict(lambda x: 400),
-            show_vectors=False,
-            title_size=10,
-            axis_label_size=10,
+        pca(show_vectors=True,
             x_pc="pc_" + str(x_pc),
-            # this only affects the plot, not the study_data.
             y_pc="pc_" + str(y_pc),
-            # this only affects the plot, not the study_data.
             **plotting_kwargs)
         return self
+
+    def plot_pca(self, **kwargs):
+        self.plot_dimensionality_reduction(reducer=PCAViz, **kwargs)
 
     @property
     def min_samples(self):
