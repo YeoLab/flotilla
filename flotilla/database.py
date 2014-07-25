@@ -190,9 +190,8 @@ def load_event_list(mongo, target, target_type="SE"):
 
 
 def reset_event_list(mongodb):
-    mongodb['list'].update({}, {'$set':
-                                    {'started': False,
-                                     'finished': False}}, multi=True)
+    value = {'$set': {'started': False, 'finished': False}}
+    mongodb['list'].update({}, value, multi=True)
 
 
 def reset_event_data(mongodb):
