@@ -35,6 +35,47 @@ class Interactive(object):
         self._default_y_pc = 2
 
     @staticmethod
+    def get_feature_subsets(study, data_types):
+        """Given a study and list of data types, get the relevant feature
+        subsets
+
+        Parameters
+        ----------
+        study : flotilla.Study
+            A study object which
+
+        Returns
+        -------
+
+
+        Raises
+        ------
+
+        """
+        feature_subsets = ['custom']
+
+        # datatype_to_
+
+        if 'expression' in data_types:
+            try:
+                feature_subsets.extend(study.expression.feature_subsets.keys())
+            except AttributeError:
+                pass
+        if 'splicing' in data_types:
+            try:
+                feature_subsets.extend(study.splicing.feature_subsets.keys())
+            except AttributeError:
+                pass
+
+        # Cast to "set" to get rid of duplicates, then back to list
+        feature_subsets = list(sorted(list(set(feature_subsets))))
+
+        # Make sure "variant" is first because all datasets have that
+        feature_subsets.pop(feature_subsets.index('variant'))
+        feature_subsets.insert(0, 'variant')
+        return feature_subsets
+
+    @staticmethod
     def interactive_pca(self, data_types=('expression', 'splicing'),
                         sample_subsets=None,
                         feature_subsets=None,
@@ -68,6 +109,7 @@ class Interactive(object):
             elif feature_subset not in self.default_feature_subsets[data_type]:
                 warnings.warn("This feature_subset ('{}') is not available in "
                               "this data type ('{}'). Falling back on all "
+
                               "features.".format(feature_subset, data_type))
 
             self.plot_pca(sample_subset=sample_subset, data_type=data_type,
@@ -81,17 +123,14 @@ class Interactive(object):
                 f = plt.gcf()
                 f.savefig(savefile)
 
-            feature_sets = list(
+            feature_subsets = list(
                 set(itertools.chain(*self.default_feature_subsets
                                     .values())))
 
-        self.plot_study_sample_legend()
+        # self.plot_study_sample_legend()
 
         if feature_subsets is None:
-            feature_subsets = list(set(itertools.chain(
-                *self.default_feature_subsets.values())))
-            feature_subsets.pop(feature_subsets.index('variant'))
-            feature_subsets.insert(0, 'variant')
+            feature_subsets = Interactive.get_feature_subsets(self, data_types)
 
         if sample_subsets is None:
             sample_subsets = self.default_sample_subsets
@@ -141,9 +180,11 @@ class Interactive(object):
                 sys.stdout.write('{} : {}\n'.format(k, v))
 
             if data_type == 'expression':
-                assert (feature_subset in self.expression.feature_sets.keys())
+                assert (feature_subset in
+                        self.expression.feature_subsets.keys())
             if data_type == 'splicing':
-                assert (feature_subset in self.splicing.feature_sets.keys())
+                assert (feature_subset in
+                        self.splicing.feature_subsets.keys())
 
             self.plot_graph(data_type=data_type,
                             sample_subset=sample_subset,
@@ -161,18 +202,15 @@ class Interactive(object):
                 plt.gcf().savefig(savefile)
 
         if feature_subsets is None:
-            feature_subsets = list(set(itertools.chain(
-                *self.default_feature_subsets.values())))
-            feature_subsets.pop(feature_subsets.index('variant'))
-            feature_subsets.insert(0, 'variant')
+            feature_subsets = self.get_feature_subsets(self, data_types)
 
         if sample_subsets is None:
             sample_subsets = self.default_sample_subsets
         if weight_fun is None:
             weight_fun = NetworkerViz.weight_funs
 
-        if not featurewise:
-            self.plot_study_sample_legend()
+        # if not featurewise:
+        #     self.plot_study_sample_legend()
 
         interact(do_interact,
                  data_type=data_types,
@@ -246,7 +284,7 @@ class Interactive(object):
                                      not i.startswith(
                                          "~") and i != 'all_samples']
 
-        self.plot_study_sample_legend()
+        # self.plot_study_sample_legend()
 
         interact(do_interact,
                  data_type=data_types,
@@ -256,7 +294,6 @@ class Interactive(object):
                  score_coefficient=score_coefficient,
                  draw_labels=draw_labels,
                  savefile=savefile)
-
 
     @staticmethod
     def interactive_localZ(self):
@@ -326,45 +363,42 @@ class Interactive(object):
                     continue
                 sys.stdout.write('{} : {}\n'.format(k, v))
 
-            assert (feature_subset in self.splicing.feature_sets.keys())
-            feature_ids = self.splicing.feature_sets[feature_subset]
+            assert (feature_subset in self.splicing.feature_subsets.keys())
+            feature_ids = self.splicing.feature_subsets[feature_subset]
 
             from sklearn.preprocessing import LabelEncoder
 
             le = LabelEncoder()
             n_in_this_class = len(set(
-                le.fit_transform(self.experiment_design.data[sample_subset])))
+                le.fit_transform(self.metadata.data[sample_subset])))
             try:
                 assert n_in_this_class
             except:
                 raise RuntimeError("this sample designator is not binary")
 
-            sample_series = self.experiment_design.data[sample_subset]
-            #TODO: cast non-boolean binary ids to boolean
+            sample_series = self.metadata.data[sample_subset]
+            # TODO: cast non-boolean binary ids to boolean
             try:
-                assert self.experiment_design.data[
-                           sample_subset].dtype == 'bool'
-            except:
+                assert isinstance(self.metadata.data[sample_subset].dtype,
+                                  bool)
+            except AssertionError:
                 raise RuntimeError("this sample designator is not boolean")
 
-            sample_ids = self.experiment_design.data[sample_subset].index[
-                self.experiment_design.data[sample_subset]]
+            sample_ids = self.metadata.data[sample_subset].index[
+                self.metadata.data[sample_subset]]
 
-            self.splicing.plot_modalities_lavalamps(sample_ids, feature_ids,
-                                                    color=color,
-                                                    x_offset=x_offset,
-                                                    use_these_modalities=use_these_modalities,
-                                                    bootstrapped=bootstrapped,
-                                                    bootstrapped_kws=bootstrapped_kws,
-                                                    ax=None)
+            self.splicing.plot_modalities_lavalamps(
+                sample_ids, feature_ids, color=color, x_offset=x_offset,
+                use_these_modalities=use_these_modalities,
+                bootstrapped=bootstrapped, bootstrapped_kws=bootstrapped_kws,
+                ax=None)
             plt.tight_layout()
             if savefile is not '':
                 self.maybe_make_directory(savefile)
                 plt.gcf().savefig(savefile)
 
-
         if feature_subsets is None:
-            feature_subsets = self.splicing.feature_sets.keys()
+            feature_subsets = self.splicing.feature_subsets.keys()
 
         if sample_subsets is None:
             sample_subsets = self.default_sample_subsets
@@ -382,7 +416,7 @@ class Interactive(object):
     @staticmethod
     def interactive_lavalamp_pooled_inconsistent(
             self, sample_subsets=None, feature_subsets=None,
-            difference_threshold=(0.001, 2.00),
+            difference_threshold=(0.001, 1.00),
             colors=['red', 'green', 'blue', 'purple', 'yellow'], savefile=''):
         from IPython.html.widgets import interact
 
@@ -399,23 +433,21 @@ class Interactive(object):
                     continue
                 sys.stdout.write('{} : {}\n'.format(k, v))
 
-            assert (feature_subset in self.splicing.feature_sets.keys())
-            feature_ids = self.splicing.feature_sets[feature_subset]
+            assert (feature_subset in self.splicing.feature_subsets.keys())
+            feature_ids = self.splicing.feature_subsets[feature_subset]
             sample_ids = self.sample_subset_to_sample_ids(sample_subset)
 
             color = str_to_color[color]
 
-            self.splicing.plot_lavalamp_pooled_inconsistent(sample_ids,
-                                                            feature_ids,
-                                                            difference_threshold,
-                                                            color=color)
+            self.splicing.plot_lavalamp_pooled_inconsistent(
+                sample_ids, feature_ids, difference_threshold, color=color)
             plt.tight_layout()
             if savefile is not '':
                 self.maybe_make_directory(savefile)
                 plt.gcf().savefig(savefile)
 
         if feature_subsets is None:
-            feature_subsets = self.splicing.feature_sets.keys()
+            feature_subsets = self.splicing.feature_subsets.keys()
             feature_subsets.pop(feature_subsets.index('variant'))
             feature_subsets.insert(0, 'variant')
             feature_subsets = feature_subsets + ['custom']
@@ -428,8 +460,7 @@ class Interactive(object):
                  feature_subset=feature_subsets + ['custom'],
                  difference_threshold=(0., 1.),
                  color=['red', 'blue', 'green', 'orange', 'purple'],
-                 savefile=''
-        )
+                 savefile='')
 
     @staticmethod
     def interactive_clusteredheatmap(self):
