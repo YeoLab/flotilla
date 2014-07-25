@@ -16,4 +16,3 @@ setup(
         '=seaborn-0.4.clustering'],
     version="0.0.4"
 )
-
