@@ -1,5 +1,7 @@
 import sys
 
+import matplotlib as mpl
+
 from .base import BaseData
 from ..visualize.color import str_to_color
 
@@ -20,6 +22,11 @@ class MetaData(BaseData):
                 pass
 
         self.phenotype_to_marker = phenotype_to_marker
+        for phenoytpe, marker in self.phenotype_to_marker.iteritems():
+            if marker not in mpl.markers.MarkerStyle.filled_markers:
+                sys.stderr.write('{} is not a valid matplotlib marker style, '
+                                 'falling back on "o" (circle)'.format(marker))
+                self.phenotype_to_marker[phenotype] = 'o'
 
 
     def _get(self, sample_metadata_filename=None, gene_metadata_filename=None,

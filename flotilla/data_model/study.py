@@ -718,17 +718,17 @@ class Study(StudyFactory):
         kwargs['title'] = title
         kwargs['featurewise'] = featurewise
         kwargs['show_point_labels'] = show_point_labels
-        kwargs['colors_dict'] = self.sample_id_to_color
-
-        if 'marker' in self.metadata.data:
-            kwargs['markers_dict'] = \
-                self.metadata.data.marker.to_dict()
+        kwargs['groupby'] = self.sample_id_to_celltype
+        kwargs['label_to_color'] = self.phenotype_to_color
+        kwargs['label_to_marker'] = self.phenotype_to_marker
 
         if "expression".startswith(data_type):
-            reducer = self.expression.plot_dimensionality_reduction(**kwargs)
+            reducer = self.expression.plot_pca(**kwargs)
         elif "splicing".startswith(data_type):
-            reducer = self.splicing.plot_dimensionality_reduction(**kwargs)
-
+            reducer = self.splicing.plot_pca(**kwargs)
+        else:
+            raise ValueError('The data type {} does not exist in this study'
+                             .format(data_type))
         return reducer
 
     def plot_graph(self, data_type='expression', sample_subset=None,

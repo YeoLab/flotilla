@@ -6,23 +6,6 @@ import data_model
 from .external import make_study_datapackage
 import visualize
 
-
-try:
-    get_ipython().magic(u'matplotlib inline')
-except:
-    pass
-
-# def call_main():
-#     # where is this "agrparser" initialized?
-#     args = argparser.parse_args()
-#     params = vars(args)
-#     main(params)
-
-
-def main():
-    pass
-
-
 def embark(study_name):
     """
     Begin your journey of data exploration.
