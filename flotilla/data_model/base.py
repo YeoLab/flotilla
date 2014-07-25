@@ -60,7 +60,7 @@ class BaseData(object):
         self.clusterer = Cluster()
 
         self.species = species
-        self.feature_sets = {}
+        self.feature_subsets = {}
         if self.feature_data is not None and self.feature_rename_col is not \
                 None:
             def feature_renamer(x):
@@ -85,9 +85,9 @@ class BaseData(object):
                     continue
                 feature_set = self.feature_data.index[self.feature_data[col]]
                 if len(feature_set) > 1:
-                    self.feature_sets[col] = feature_set
+                    self.feature_subsets[col] = feature_set
         self.all_features = 'all_genes'
-        self.feature_sets[self.all_features] = data.columns
+        self.feature_subsets[self.all_features] = data.columns
 
     def drop_outliers(self, df, outliers):
         # assert 'outlier' in self.experiment_design_data.columns
@@ -104,14 +104,14 @@ class BaseData(object):
 
     def feature_subset_to_feature_ids(self, feature_subset, rename=True):
         if feature_subset is not None:
-            if feature_subset in self.feature_sets:
-                feature_ids = self.feature_sets[feature_subset]
+            if feature_subset in self.feature_subsets:
+                feature_ids = self.feature_subsets[feature_subset]
             elif feature_subset == self.all_features:
                 feature_ids = self.data.columns
             else:
                 try:
                     feature_ids = link_to_list(feature_subset)
-                    self.feature_sets[feature_subset] = feature_ids
+                    self.feature_subsets[feature_subset] = feature_ids
                 except:
                     raise ValueError("There are no {} features in this data: {}"
                                      .format(feature_subset, self))
