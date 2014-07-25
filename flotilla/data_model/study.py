@@ -315,7 +315,7 @@ class Study(StudyFactory):
                 outliers=outliers,
                 log_base=expression_log_base, pooled=pooled)
             self.expression.networks = NetworkerViz(self.expression)
-            self.default_feature_set_ids.extend(self.expression.feature_sets
+            self.default_feature_set_ids.extend(self.expression.feature_subsets
                                                 .keys())
         if splicing_data is not None:
             self.splicing = SplicingData(
@@ -343,14 +343,14 @@ class Study(StudyFactory):
 
     @property
     def default_feature_subsets(self):
-        feature_sets = {}
+        feature_subsets = {}
         for name in self._subsetable_data_types:
             try:
                 data_type = getattr(self, name)
             except AttributeError:
                 continue
-            feature_sets[name] = data_type.feature_sets
-        return feature_sets
+            feature_subsets[name] = data_type.feature_subsets
+        return feature_subsets
 
     @property
     def sample_id_to_color(self):
@@ -1065,8 +1065,8 @@ class Study(StudyFactory):
         #     splicing_genes = pd.Index(set(self.gene_ontology_data[
         #         self.gene_ontology_data['GO Term Name'].apply(
         #             lambda x: "splicing" in str(x))]['Ensembl Gene ID']))
-        #     self.expression.feature_sets['splicing'] = splicing_genes
-        #     self.expression.default_feature_sets.append('splicing')
+        #     self.expression.feature_subsets['splicing'] = splicing_genes
+        #     self.expression.default_feature_subsets.append('splicing')
         #
         #     #drop cells with too few mapped reads
         #     read_cut = 2000000  # 2 million

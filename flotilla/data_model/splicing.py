@@ -67,7 +67,7 @@ class SplicingData(BaseData):
         self.bins = np.arange(0, 1 + self.binsize, self.binsize)
         psi_variant = pd.Index(
             [i for i, j in (data.var().dropna() > var_cut).iteritems() if j])
-        self.feature_sets['variant'] = psi_variant
+        self.feature_subsets['variant'] = psi_variant
 
         self.modalities_calculator = Modalities(excluded_max=excluded_max,
                                                 included_min=included_min)
