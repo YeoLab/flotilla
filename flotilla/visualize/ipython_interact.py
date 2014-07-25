@@ -127,7 +127,7 @@ class Interactive(object):
                 set(itertools.chain(*self.default_feature_subsets
                                     .values())))
 
-        self.plot_study_sample_legend()
+        # self.plot_study_sample_legend()
 
         if feature_subsets is None:
             feature_subsets = Interactive.get_feature_subsets(self, data_types)
@@ -208,8 +208,8 @@ class Interactive(object):
         if weight_fun is None:
             weight_fun = NetworkerViz.weight_funs
 
-        if not featurewise:
-            self.plot_study_sample_legend()
+        # if not featurewise:
+        #     self.plot_study_sample_legend()
 
         interact(do_interact,
                  data_type=data_types,
@@ -283,7 +283,7 @@ class Interactive(object):
                                      not i.startswith(
                                          "~") and i != 'all_samples']
 
-        self.plot_study_sample_legend()
+        # self.plot_study_sample_legend()
 
         interact(do_interact,
                  data_type=data_types,

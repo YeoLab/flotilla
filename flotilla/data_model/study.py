@@ -718,9 +718,11 @@ class Study(StudyFactory):
         kwargs['title'] = title
         kwargs['featurewise'] = featurewise
         kwargs['show_point_labels'] = show_point_labels
-        kwargs['groupby'] = self.sample_id_to_celltype
-        kwargs['label_to_color'] = self.phenotype_to_color
-        kwargs['label_to_marker'] = self.phenotype_to_marker
+        kwargs['groupby'] = None
+        if not featurewise:
+            kwargs['label_to_color'] = self.phenotype_to_color
+            kwargs['label_to_marker'] = self.phenotype_to_marker
+            kwargs['groupby'] = self.sample_id_to_celltype
 
         if "expression".startswith(data_type):
             reducer = self.expression.plot_pca(**kwargs)

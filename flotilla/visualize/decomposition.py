@@ -1,7 +1,6 @@
 from collections import defaultdict
 from itertools import cycle
 import math
-import sys
 
 from matplotlib.gridspec import GridSpec, GridSpecFromSubplotSpec
 import matplotlib.pyplot as plt
@@ -208,19 +207,15 @@ class DecompositionViz(object):
             markers = cycle(['o', '^', 's', 'v', '*', 'D', 'h'])
             def marker_factory():
                 return markers.next()
-            label_to_color = defaultdict(marker_factory)
+
+            label_to_marker = defaultdict(marker_factory)
 
         if groupby is None:
-            groupby = defaultdict(lambda: 'all samples')
+            groupby = dict.fromkeys(self.reduced_space.index, 'all')
 
         # Plot the samples
-        for name, df in self.reduced_space.groupby(groupby, axis=0):
-            #         print df
-            # ind = df_pivot.index.isin(df.index)
-            # x = X[ind]
-            # y = Y[ind]
-            # if three_d:
-            #     z = Z[ind]
+        grouped = self.reduced_space.groupby(groupby, axis=0)
+        for name, df in grouped:
             color = label_to_color[name]
             marker = label_to_marker[name]
             x = df[x_pc]
@@ -230,15 +225,16 @@ class DecompositionViz(object):
             if show_point_labels:
                 for args in zip(x, y, df.index):
                     ax.text(*args)
-            # if name in text_group:
-            #     zipper = zip(x, y, z, df.index) if three_d else zip(x, y,
-            #                                                         df.index)
-            #     for args in zipper:
-            #         ax.text(*args)
+
+        # Get the explained variance
+        try:
+            vars = self.explained_variance_ratio_[[x_pc, y_pc]]
+        except AttributeError:
+            vars = pd.Series([1., 1.], index=[x_pc, y_pc])
+
         # Plot vectors, if asked
         if show_vectors:
             loadings = self.components_.ix[[x_pc, y_pc]]
-            vars = self.explained_variance_ratio_[[x_pc, y_pc]]
 
             if scale_by_variance:
                 loadings = loadings.multiply(vars, axis=0)
@@ -265,23 +261,14 @@ class DecompositionViz(object):
                                 textcoords='offset points',
                                 xytext=(x_offset, y_offset),
                                 horizontalalignment=horizontalalignment)
-                    # ax.text(1.1 * x, 1.1 * y, col_id)
 
-        # get amount of variance explained
-        try:
-            # not all reduction methods have this attr, if it doesn't assume
-            # equal , not true.. but easy!
-            var_1 = int(self.explained_variance_ratio_[x_pc] * 100)
-            var_2 = int(self.explained_variance_ratio_[y_pc] * 100)
-        except AttributeError:
-            var_1, var_2 = 1., 1.
-
+        # Label x and y axes
         ax.set_xlabel(
-            'Principal Component {} (Explains {}% Of Variance)'.format(
-                str(x_pc), str(var_1)))
+            'Principal Component {} (Explains {:.2f}% Of Variance)'.format(
+                str(x_pc), vars[x_pc]))
         ax.set_ylabel(
-            'Principal Component {} (Explains {}% Of Variance)'.format(
-                str(y_pc), str(var_2)))
+            'Principal Component {} (Explains {:.2f}% Of Variance)'.format(
+                str(y_pc), vars[y_pc]))
         ax.set_title(title)
 
         if legend:
