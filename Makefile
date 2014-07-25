@@ -7,5 +7,5 @@ coverage:
 	py.test --cov flotilla test/
 
 lint:
-	pyflakes -x W -X flotilla/visualize/decomposition.py flotilla
-
+	pyflakes -x W flotilla
+    pep8 flotilla
