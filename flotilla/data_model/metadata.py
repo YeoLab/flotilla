@@ -28,7 +28,6 @@ class MetaData(BaseData):
                                  'falling back on "o" (circle)'.format(marker))
                 self.phenotype_to_marker[phenotype] = 'o'
 
-
     def _get(self, sample_metadata_filename=None, gene_metadata_filename=None,
              event_metadata_filename=None):
 

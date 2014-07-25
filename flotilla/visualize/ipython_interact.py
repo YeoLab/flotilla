@@ -180,10 +180,11 @@ class Interactive(object):
                 sys.stdout.write('{} : {}\n'.format(k, v))
 
             if data_type == 'expression':
-                assert (
-                feature_subset in self.expression.feature_subsets.keys())
+                assert (feature_subset in
+                        self.expression.feature_subsets.keys())
             if data_type == 'splicing':
-                assert (feature_subset in self.splicing.feature_subsets.keys())
+                assert (feature_subset in
+                        self.splicing.feature_subsets.keys())
 
             self.plot_graph(data_type=data_type,
                             sample_subset=sample_subset,
@@ -294,7 +295,6 @@ class Interactive(object):
                  draw_labels=draw_labels,
                  savefile=savefile)
 
-
     @staticmethod
     def interactive_localZ(self):
 
@@ -370,30 +370,28 @@ class Interactive(object):
 
             le = LabelEncoder()
             n_in_this_class = len(set(
-                le.fit_transform(self.experiment_design.data[sample_subset])))
+                le.fit_transform(self.metadata.data[sample_subset])))
             try:
                 assert n_in_this_class
             except:
                 raise RuntimeError("this sample designator is not binary")
 
-            sample_series = self.experiment_design.data[sample_subset]
-            #TODO: cast non-boolean binary ids to boolean
+            sample_series = self.metadata.data[sample_subset]
+            # TODO: cast non-boolean binary ids to boolean
             try:
-                assert self.experiment_design.data[
-                           sample_subset].dtype == 'bool'
-            except:
+                assert isinstance(self.metadata.data[sample_subset].dtype,
+                                  bool)
+            except AssertionError:
                 raise RuntimeError("this sample designator is not boolean")
 
-            sample_ids = self.experiment_design.data[sample_subset].index[
-                self.experiment_design.data[sample_subset]]
+            sample_ids = self.metadata.data[sample_subset].index[
+                self.metadata.data[sample_subset]]
 
-            self.splicing.plot_modalities_lavalamps(sample_ids, feature_ids,
-                                                    color=color,
-                                                    x_offset=x_offset,
-                                                    use_these_modalities=use_these_modalities,
-                                                    bootstrapped=bootstrapped,
-                                                    bootstrapped_kws=bootstrapped_kws,
-                                                    ax=None)
+            self.splicing.plot_modalities_lavalamps(
+                sample_ids, feature_ids, color=color, x_offset=x_offset,
+                use_these_modalities=use_these_modalities,
+                bootstrapped=bootstrapped, bootstrapped_kws=bootstrapped_kws,
+                ax=None)
             plt.tight_layout()
             if savefile is not '':
                 self.maybe_make_directory(savefile)
@@ -441,10 +439,8 @@ class Interactive(object):
 
             color = str_to_color[color]
 
-            self.splicing.plot_lavalamp_pooled_inconsistent(sample_ids,
-                                                            feature_ids,
-                                                            difference_threshold,
-                                                            color=color)
+            self.splicing.plot_lavalamp_pooled_inconsistent(
+                sample_ids, feature_ids, difference_threshold, color=color)
             plt.tight_layout()
             if savefile is not '':
                 self.maybe_make_directory(savefile)
@@ -464,8 +460,7 @@ class Interactive(object):
                  feature_subset=feature_subsets + ['custom'],
                  difference_threshold=(0., 1.),
                  color=['red', 'blue', 'green', 'orange', 'purple'],
-                 savefile=''
-        )
+                 savefile='')
 
     @staticmethod
     def interactive_clusteredheatmap(self):

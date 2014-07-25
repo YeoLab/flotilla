@@ -56,38 +56,11 @@ class DecompositionViz(object):
     @return: x, y, marker, distance of each vector in the study_data.
     """
     _default_reduction_kwargs = {}
-    # _default_plotting_args = {'ax': None, 'x_pc': 'pc_1', 'y_pc': 'pc_2',
-    #                           'num_vectors': 20,
-    #                           'title': 'Dimensionality Reduction',
-    #                           'title_size': 16, 'axis_label_size': 14,
-    #                           'colors_dict': None, 'markers_dict': None,
-    #                           'markers_size_dict': None,
-    #                           'default_marker_size': 100,
-    #                           'distance': 'L1',
-    #                           'show_vectors': True, 'c_scale': None,
-    #                           'vector_width': None, 'vector_colors_dict': None,
-    #                           'show_vector_labels': True,
-    #                           'vector_label_size': None,
-    #                           'show_point_labels': False,
-    #                           'point_label_size': None,
-    #                           'scale_by_variance': True}
-    # _default_reduction_args = {'n_components': None, 'whiten': False}
-    # _default_args = dict(
-    #     _default_plotting_args.items() + _default_reduction_args.items())
 
     def __init__(self, df, title='', n_components=None, whiten=False,
                  **kwargs):
         self.title = title
         kwargs.update(self._default_reduction_kwargs)
-        # self._validate_params(self._default_args, **kwargs)
-
-        # self.plotting_kwargs = self._default_plotting_args.copy()
-        # self.plotting_kwargs.update(kwargs)
-        #
-        # self.reduction_kwargs = self._default_reduction_args.copy()
-        # self.reduction_kwargs.update([(k, v) for (k, v) in kwargs.items() if
-        #                               k in self._default_reduction_args])
-
 
         # This magically initializes the reducer like PCA or NMF
         super(DecompositionViz, self).__init__(n_components=n_components,
@@ -121,17 +94,6 @@ class DecompositionViz(object):
         sns.despine()
         fig.tight_layout()
         return self
-
-    # def _validate_params(self, valid, **kwargs):
-    #
-    #     for key in kwargs.keys():
-    #         try:
-    #             assert key in valid.keys()
-    #         except:
-    #             sys.stdout.write(self.__doc__)
-    #             raise ValueError("unrecognized parameter for pc plot: "
-    #                              "%s. acceptable values are:\n%s" % (
-    #                                  key, "\n".join(valid.keys())))
 
     def plot_samples(self, groupby=None, x_pc='pc_1', y_pc='pc_2',
                      show_point_labels=True,
@@ -198,12 +160,14 @@ class DecompositionViz(object):
 
         if label_to_color is None:
             colors = cycle(set1)
+
             def color_factory():
                 return colors.next()
             label_to_color = defaultdict(color_factory)
 
         if label_to_marker is None:
             markers = cycle(['o', '^', 's', 'v', '*', 'D', 'h'])
+
             def marker_factory():
                 return markers.next()
 
@@ -275,7 +239,6 @@ class DecompositionViz(object):
         sns.despine()
 
     def plot_loadings(self, pc='pc_1', n_features=50, ax=None):
-
         x = self.components_.ix[pc].copy()
         x.sort(ascending=True)
         half_features = int(n_features / 2)
@@ -326,17 +289,11 @@ class DecompositionViz(object):
 
 class PCAViz(DecompositionViz, PCA):
     pass
-    # _default_reduction_args = {'n_components': None, 'whiten': False}
-
-    # def __init__(self, *args, **kwargs):
-    #     DecompositionViz.__init__(self, *args, **kwargs)
-    #     PCA.__init__(self, **self.reduction_kwargs)
-    #     self.binned_reduced = self.fit_transform(self.df)
 
 
 class NMFViz(DecompositionViz, NMF):
-    _default_reduction_kwargs = {'n_components': 2,
-                               'max_iter': 20000, 'nls_max_iter': 40000}
+    _default_reduction_kwargs = \
+        {'n_components': 2, 'max_iter': 20000, 'nls_max_iter': 40000}
 
     def __call__(self, ax=None, **kwargs):
         gs_x = 14
@@ -369,5 +326,4 @@ class NMFViz(DecompositionViz, NMF):
 def plot_pca(df, **kwargs):
     """ for backwards-compatibility """
     pca = PCAViz(df, **kwargs)
-    return_me, ax = pca.plot_samples()
-    return return_me
+    pca.plot_samples()

@@ -2,7 +2,6 @@
 Base data class for all data types. All data types in flotilla inherit from
 this, or a child object (like ExpressionData).
 """
-from collections import defaultdict
 import sys
 
 import pandas as pd
@@ -113,8 +112,9 @@ class BaseData(object):
                     feature_ids = link_to_list(feature_subset)
                     self.feature_subsets[feature_subset] = feature_ids
                 except:
-                    raise ValueError("There are no {} features in this data: {}"
-                                     .format(feature_subset, self))
+                    raise ValueError(
+                        "There are no {} features in this data: "
+                        "{}".format(feature_subset, self))
             if rename:
                 feature_ids = feature_ids.map(self.feature_renamer)
         else:

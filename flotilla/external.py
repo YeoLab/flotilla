@@ -279,7 +279,7 @@ def make_study_datapackage(name, experiment_design_data,
         with gzip.open(data_filename, 'wb') as f:
             resource_data.to_csv(f)
         try:
-            #TODO: only transmit data if it has been updated
+            # TODO: only transmit data if it has been updated
             subprocess.call(
                 "scp {} {}:{}{}.".format(data_filename, host, host_destination,
                                          name), shell=True)

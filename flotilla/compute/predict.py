@@ -124,7 +124,8 @@ class PredictorBase(object):
                              'PredictorBase class yet')
         self.predictor.scores_ = pd.Series(index=self.X.columns, data=scores)
         self.predictor.score_cutoff_ = \
-            self.score_cutoff_fun(self.predictor.scores_, self.score_coefficient)
+            self.score_cutoff_fun(self.predictor.scores_,
+                                  self.score_coefficient)
         self.important_features = \
             self.predictor.scores_ > self.predictor.score_cutoff_
         self.predictor.n_good_features_ = \
@@ -133,13 +134,13 @@ class PredictorBase(object):
         if self.predictor.n_good_features_ <= 1:
             sys.stderr.write("cutoff: %.4f\n" % self.predictor.score_cutoff_)
             sys.stderr.write("WARNING: These classifier settings produced "
-            "<= 1 important feature, consider reducing score_coefficient. "
-            "PCA will fail with this error: \"ValueError: failed "
-            "to create intent(cache|hide)|optional array-- must have defined "
-            "dimensions but got (0,)\"\n")
+                             "<= 1 important feature, consider reducing "
+                             "score_coefficient. PCA will fail with this "
+                             "error: \"ValueError: failed to create "
+                             "intent(cache|hide)|optional array-- must have "
+                             "defined dimensions but got (0,)\"\n")
 
         self.predictor.subset_ = self.X.T[self.important_features].T
-
 
         sys.stdout.write("\tFinished.\n")
         self.has_been_scored = True
@@ -193,7 +194,8 @@ class Regressor(PredictorBase):
             predictor=predictor, name=name,
             predictor_kwargs=predictor_kwargs,
             predictor_scoring_fun=predictor_scoring_fun,
-            score_cutoff_fun=score_cutoff_fun, score_coefficient=score_coefficient)
+            score_cutoff_fun=score_cutoff_fun,
+            score_coefficient=score_coefficient)
         self.y = self.trait
         self.predictor_class = ExtraTreesRegressor \
             if self.predictor_class is None else self.predictor_class
