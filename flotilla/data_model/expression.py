@@ -53,7 +53,6 @@ class ExpressionData(BaseData):
         self.sparse_data = self.log_data[self.log_data > expression_thresh]
         self.default_feature_sets.extend(self.feature_subsets.keys())
 
-    #@memoize
     def reduce(self, sample_ids=None, feature_ids=None,
                featurewise=False,
                reducer=PCAViz,
@@ -100,14 +99,7 @@ class ExpressionData(BaseData):
         if featurewise:
             subset = subset.T
         reducer_object = reducer(subset, **reducer_kwargs)
-        # always the mean of input features. i.e. featurewise doesn't change
-        # this.
         reducer_object.means = means
-
-        #TODO: make this work with memoization
-        #self._last_reducer_accessed = reducer_object
-
-        # add mean gene_expression
         return reducer_object
 
     @memoize

@@ -151,19 +151,9 @@ class SplicingData(BaseData):
         """
         data = self._subset(self.data, sample_ids, feature_ids)
         binned = self.binify(data)
-        # redc = NMFViz(binned.T, n_components=2)
-
         reduced = self.nmf.transform(binned.T)
-
-        # # Make sure x-axis (component 0) is excluded, which is the first
-        # # element of a column in the binned dataframe
-        # x0 = reduced.ix[reduced.pc_1 == 0]
-        # if binned.ix[:, x0.index[0]][0] < 1:
-        #     reduced = pd.concat([reduced.pc_2, reduced.pc_1],
-        #                         keys=reduced.columns, axis=1)
         return reduced
 
-    #@memoize
     def reduce(self, sample_ids=None, feature_ids=None,
                featurewise=False, reducer=PCAViz,
                standardize=True, title='',
@@ -192,12 +182,6 @@ class SplicingData(BaseData):
         # always the mean of input features. i.e. featurewise doesn't change
         # this.
         reducer_object.means = means
-
-        # add mean gene_expression
-
-        #TODO: make this work with memoization
-        #self._last_reducer_accessed = reducer_object
-
         return reducer_object
 
     @memoize
@@ -370,15 +354,17 @@ class SplicingData(BaseData):
         gs_y = 15
 
         if ax is None:
-            fig, ax = plt.subplots(1, 1, figsize=(18, 3 * len(modalities_names)))
+            fig, ax = plt.subplots(1, 1,
+                                   figsize=(18, 3 * len(modalities_names)))
             gs = GridSpec(gs_x, gs_y)
 
         else:
             gs = GridSpecFromSubplotSpec(gs_x, gs_y, ax.get_subplotspec())
             fig = plt.gcf()
 
-        lavalamp_axes = [plt.subplot(gs[i,:12]) for i in xrange(len(modalities_names))]
-        pie_axis = plt.subplot(gs[:,12:])
+        lavalamp_axes = [plt.subplot(gs[i, :12]) for i in
+                         xrange(len(modalities_names))]
+        pie_axis = plt.subplot(gs[:, 12:])
         pie_axis.set_aspect('equal')
         pie_axis.axis('off')
         if color is None:
@@ -387,14 +373,14 @@ class SplicingData(BaseData):
         modalities_grouped = modalities_assignments.groupby(
             modalities_assignments)
         modality_count = {}
-        for ax, (modality, s) in itertools.izip(lavalamp_axes, modalities_grouped):
-
+        for ax, (modality, s) in itertools.izip(lavalamp_axes,
+                                                modalities_grouped):
             modality_count[modality] = len(s)
             psi = self.data[s.index]
             lavalamp(psi, color=color, ax=ax, x_offset=x_offset)
             ax.set_title(modality)
-
-        pie_axis.pie(map(int, modality_count.values()), labels=modality_count.keys(), autopct='%1.1f%%')
+        pie_axis.pie(map(int, modality_count.values()),
+                     labels=modality_count.keys(), autopct='%1.1f%%')
 
     def plot_event(self, feature_id, sample_ids=None, phenotype_groupby=None,
                    phenotype_order=None, ax=None, color=None):
@@ -486,7 +472,6 @@ class SplicingData(BaseData):
             diff_from_singles = diff_from_singles.dropna(axis=1, how='all')
         return diff_from_singles
 
-
     def plot_lavalamp_pooled_inconsistent(
             self, sample_ids, feature_ids=None,
             fraction_diff_thresh=FRACTION_DIFF_THRESH, color=None):
@@ -499,7 +484,6 @@ class SplicingData(BaseData):
                                                    fraction_diff_thresh)
         lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
                                      color=color, percent=percent)
-
 
     def plot_hist_single_vs_pooled_diff(self, sample_ids,
                                         feature_ids=None,
@@ -662,8 +646,9 @@ class DownsampledSplicingData(BaseData):
             ax.set_ylabel('number of events')
             sns.despine()
             fig.tight_layout()
-            fig.savefig('{}/downsampled_shared_events_{}.pdf'.format(
-                figure_dir, splice_type), bbox_extra_artists=(legend,),
+            filename = '{}/downsampled_shared_events_{}.pdf'.format(
+                figure_dir, splice_type)
+            fig.savefig(filename, bbox_extra_artists=(legend,),
                         bbox_inches='tight')
 
     def shared_events_percentage(self, min_iter_shared=5, figure_dir='./'):

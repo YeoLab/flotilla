@@ -766,8 +766,9 @@ class Study(StudyFactory):
             self.splicing.networks.draw_graph(**kwargs)
 
     def plot_study_sample_legend(self):
-        markers = self.metadata.data.color.groupby(self.metadata.data.marker \
-                                                   + "." + self.metadata.data.celltype).last()
+        markers = self.metadata.data.color.groupby(
+            self.metadata.data.marker
+            + "." + self.metadata.data.celltype).last()
 
         f, ax = plt.subplots(1, 1, figsize=(3, len(markers)))
 
@@ -921,8 +922,8 @@ class Study(StudyFactory):
             self.sample_id_to_celltype, axis=0)
 
         if sample_subset is not None:
-            # Only plotting one sample_subset, use the modality assignments from
-            # just the samples from this sample_subset
+            # Only plotting one sample_subset, use the modality assignments
+            # from just the samples from this sample_subset
             celltype_samples = celltype_groups.groups[sample_subset]
             celltype_samples = set(celltype_groups.groups[sample_subset])
             use_these_modalities = True
@@ -1051,49 +1052,6 @@ class Study(StudyFactory):
                                  phenotype_groupby=self.sample_id_to_celltype,
                                  phenotype_order=self.metadata.phenotype_order,
                                  color=self.phenotype_color_order, ax=ax)
-
-        # def hack_lazy(self):
-        #
-        #     """
-        #      called by __init__ these things haven't been worked out, so it's probably ok if they fail.
-        #     """
-        #
-        #     #cast outlier column to bool
-        #     x = self.metadata.data['outlier']
-        #     x = x.astype('bool')
-        #     self.metadata.data['outlier'] = x
-        #
-        #     #add splicing gene type
-        #     splicing_genes = pd.Index(set(self.gene_ontology_data[
-        #         self.gene_ontology_data['GO Term Name'].apply(
-        #             lambda x: "splicing" in str(x))]['Ensembl Gene ID']))
-        #     self.expression.feature_subsets['splicing'] = splicing_genes
-        #     self.expression.default_feature_subsets.append('splicing')
-        #
-        #     #drop cells with too few mapped reads
-        #     read_cut = 2000000  # 2 million
-        #     test = self.mapping_stats.data[
-        #                'Uniquely mapped reads number'] < read_cut
-        #     samples_w_lt_million_reads = self.mapping_stats.data.index[test]
-        #     self.metadata.data['outlier'].ix[
-        #         samples_w_lt_million_reads] = True
-        #     outliers = self.metadata.data['outlier'].ix[
-        #         self.metadata.data['outlier']].index
-        #     self.expression.data = self.expression.drop_outliers(
-        #         self.expression.data, outliers)
-        #     self.splicing.data = self.splicing.drop_outliers(
-        #         self.splicing.data, outliers)
-        #     self.expression.sparse_data = self.expression.drop_outliers(
-        #         self.expression.sparse_data, outliers)
-        #
-        #     #add logical inverse of boolean columns in metadata
-        #     for column in self.metadata.data.columns:
-        #         if self.metadata.data[column].dtype == 'bool':
-        #             if column.startswith("~"):
-        #                 continue
-        #             self.metadata.data['~' + column] = ~ \
-        #                 self.metadata.data[column]
-        #             self.default_sample_subsets.append('~' + column)
 
 
 # Add interactive visualizations

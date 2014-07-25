@@ -6,6 +6,7 @@ import data_model
 from .external import make_study_datapackage
 import visualize
 
+
 def embark(study_name):
     """
     Begin your journey of data exploration.
