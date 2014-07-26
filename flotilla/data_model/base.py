@@ -12,7 +12,7 @@ from sklearn.preprocessing import StandardScaler
 from ..compute.clustering import Cluster
 from ..visualize.decomposition import PCAViz
 from ..external import link_to_list
-from ..compute.predict import PredictorConfigManager, DataSetManager
+from ..compute.predict import PredictorConfigManager, PredictorDataSetManager
 
 
 MINIMUM_SAMPLES = 10
@@ -93,7 +93,7 @@ class BaseData(object):
         else:
             self.predictor_config_manager = predictor_config_manager
 
-        self.predictor_dataset_manager = DataSetManager(self.predictor_config_manager)
+        self.predictor_dataset_manager = PredictorDataSetManager(self.predictor_config_manager)
 
     def drop_outliers(self, df, outliers):
         # assert 'outlier' in self.experiment_design_data.columns

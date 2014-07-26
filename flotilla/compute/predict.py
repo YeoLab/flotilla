@@ -293,7 +293,7 @@ class PredictorConfigManager(object):
                        constant_parameters=constant_boosting_params)
 
 
-class DataSet(object):
+class PredictorDataSet(object):
     """
     X and y dataset
     """
@@ -390,9 +390,9 @@ class DataSet(object):
             raise RuntimeError
 
 
-class DataSetManager(object):
+class PredictorDataSetManager(object):
     """
-     a collection of DataSet instances.
+     a collection of PredictorDataSet instances.
      use self.datasets for convienient retrieval of predictors.
     """
 
@@ -459,7 +459,7 @@ class DataSetManager(object):
         predictor_config_manager = predictor_config_manager if predictor_config_manager is not None \
             else self.predictor_config_manager
 
-        return DataSet(data, trait, data_name,
+        return PredictorDataSet(data, trait, data_name,
                        categorical_trait=categorical_trait,
                        predictor_config_manager=predictor_config_manager)
 
@@ -538,7 +538,7 @@ class PredictorBase(object):
             else:
                 self.predictor_config_manager = predictor_config_manager
 
-            self.predictor_data_manager = DataSetManager(self.predictor_config_manager)
+            self.predictor_data_manager = PredictorDataSetManager(self.predictor_config_manager)
         else:
             self.predictor_data_manager = predictor_dataset_manager
 
