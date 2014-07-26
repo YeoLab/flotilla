@@ -3,8 +3,8 @@
 (Format copied from https://github.com/ipython/ipython/wiki/Roadmap:-IPython)
 
 This document describes the goals, vision and direction of the Flotilla
-project. Flotilla is a biological data analysis toolkit aiming to ease
-integration of various datatypes and datasets together to solve biological
+project. Flotilla is a biological dataset analysis toolkit aiming to ease
+integration of various datatypes and dataset_store together to solve biological
 questions, and put the biological interpretation of computational results
 into the hands of experimental biologists, and leave the algorithms and
 development to the computational biologists. Additionally,
@@ -43,7 +43,7 @@ We plan to release a working version before August 15th,
 2014. In addition to current functionality, this version ("0.2?") will have
 the following spec:
 
-* (E, 0) Naming issues. `experiment_design` data is apparently uninterpretable. 
+* (E, 0) Naming issues. `experiment_design` dataset is apparently uninterpretable.
 Could go with `sample_metadata` or `phenotype_data` (as in 
 [BioconductoR](http://www.bioconductor.org/)) instead.
     * https://github.com/YeoLab/flotilla/issues/47
@@ -56,8 +56,8 @@ Could go with `sample_metadata` or `phenotype_data` (as in
 * (M, 0) Clustergram
     * Highly requested feature. Use `seaborn.clusteredheatmap`,
     when it is added.
-* (E, 0) Easy data package creation
-    * Using the [data packages](http://dataprotocols.org/data-packages/)
+* (E, 0) Easy dataset package creation
+    * Using the [dataset packages](http://dataprotocols.org/dataset-packages/)
     specification from the Data Protocols people
 * (H, 2) "Monocle" ordering of cells via psuedotime
     * May need to use `rpy2`? Or rewrite Monocle ourselves using `networkx`
@@ -65,12 +65,12 @@ Could go with `sample_metadata` or `phenotype_data` (as in
     * [Trapnell et al, *Nat Biotech* (2014)](http://www.nature
     .com/nbt/journal/v32/n4/full/nbt.2859.html)
 * (H, 1) `DownsampledSplicingData`
-    * Given data created by running MISO or other splicing algorithm,
+    * Given dataset created by running MISO or other splicing algorithm,
     calculate log-log slopes for finding relationships between splicing
     events detected and sequencing depth.
 * (E, 2) `Study`/`ExpressionData` should have option for log base,
-e.g. if you have raw expresion data and want the `log10` transform. But we
-still need to keep the original data.
+e.g. if you have raw expresion dataset and want the `log10` transform. But we
+still need to keep the original dataset.
 * (E, 2) Refactor `Study` arguments to `expression_kws` and `splicing_kws`
 because right now there's a whole mess of arguments and it's hard to
 understand what's required and what's not.
@@ -79,7 +79,7 @@ understand what's required and what's not.
     concentration of molecules are detectable
     * Violin plots average distribution of spikein values within a cell
 * (H, 1) Normalize to spikeins
-    * Fit a `lowess` curve to spikein data across concentrations for each
+    * Fit a `lowess` curve to spikein dataset across concentrations for each
     cell, then normalize each cell to its spikeins.
     * Also need support for weird configurations,
     e.g. in the same experiment, celltype A has only
@@ -91,8 +91,8 @@ understand what's required and what's not.
     .org/content/111/26/E2770.full)
 * (E, 1) Security
     * Write up a document or disclaimer indicating to users that distributing
-     their data this way is not completely secure. This is important for
-     those working with clinical data shoe data storage and analysis
+     their dataset this way is not completely secure. This is important for
+     those working with clinical dataset shoe dataset storage and analysis
      tools must pass the United States' [HIPPA](http://en.wikipedia
      .org/wiki/Health_Insurance_Portability_and_Accountability_Act)
      regulations.
@@ -106,10 +106,10 @@ understand what's required and what's not.
 
 After this release, we will add:
 
-* (H, 1) Support for other species. Currently only have hand-curated datasets
+* (H, 1) Support for other species. Currently only have hand-curated dataset_store
  created for `hg19` and `mm10`.
     * Possibly through hooks into ENSEMBL/NCBI/other biological databases?
-* (H, 1) Examples of real single-cell datasets analyzed through flotilla,
+* (H, 1) Examples of real single-cell dataset_store analyzed through flotilla,
 and all their figures re-created.
 Candidate papers:
     * [Trapnell et al, *Nat Biotech* (2014)](http://www.nature

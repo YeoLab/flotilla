@@ -8,7 +8,7 @@ sanity check, make sure gene lists are used for expression and splicing lists ar
 
 add graph collider
 
-CLIPdata data model
+CLIPdata dataset model
 
 add title to NetworkerViz graph
 

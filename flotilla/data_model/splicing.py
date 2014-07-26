@@ -37,13 +37,13 @@ class SplicingData(BaseData):
                  metadata=None, binsize=0.1,
                  var_cut=_var_cut, outliers=None,
                  feature_rename_col=None, excluded_max=0.2, included_min=0.8,
-                 pooled=None):
+                 pooled=None, predictor_config_manager=None):
         """Instantiate a object for percent spliced in (PSI) scores
 
         Parameters
         ----------
-        data : pandas.DataFrame
-            A [n_events, n_samples] dataframe of data events
+        dataset : pandas.DataFrame
+            A [n_events, n_samples] dataframe of dataset events
         n_components : int
             Number of components to use in the reducer
         binsize : float
@@ -58,11 +58,13 @@ class SplicingData(BaseData):
         included_max : float
             Minimum value for the "included" bin of psi scores. Default 0.8.
         """
+        sys.stderr.write("initializing splicing\n")
         super(SplicingData, self).__init__(
             data, metadata,
             feature_rename_col=feature_rename_col,
-            outliers=outliers, pooled=pooled)
-
+            outliers=outliers, pooled=pooled,
+            predictor_config_manager=predictor_config_manager)
+        sys.stderr.write("done initializing splicing\n")
         self.binsize = binsize
         self.bins = np.arange(0, 1 + self.binsize, self.binsize)
         psi_variant = pd.Index(
@@ -168,7 +170,7 @@ class SplicingData(BaseData):
                featurewise=False, reducer=PCAViz,
                standardize=True, title='',
                reducer_kwargs=None, bins=None):
-        """make and cache a reduced dimensionality representation of data
+        """make and cache a reduced dimensionality representation of dataset
 
         Default is PCAViz because
         """
@@ -200,11 +202,19 @@ class SplicingData(BaseData):
         return reducer_object
 
     @memoize
-    def classify(self, trait, sample_ids=None, feature_ids=None,
-                 standardize=True, predictor=ClassifierViz,
-                 predictor_kwargs=None, predictor_scoring_fun=None,
-                 score_coefficient=None,
-                 score_cutoff_fun=None, plotting_kwargs=None):
+    def classify(self, trait, sample_ids, feature_ids,
+                 standardize=True,
+                 data_name='splicing',
+                 predictor_name='ExtraTreesClassifier',
+                 predictor_obj=None,
+                 predictor_scoring_fun=None,
+                 score_cutoff_fun=None,
+                 n_features_dependent_parameters=None,
+                 constant_parameters=None,
+                 plotting_kwargs=None,
+                 ):
+        #Should all this be exposed to the user???
+
         """Make and memoize a predictor on a categorical trait (associated
         with samples) subset of genes
 
@@ -220,7 +230,7 @@ class SplicingData(BaseData):
             specified
         standardize : bool
             Whether or not to "whiten" (make all variables uncorrelated) and
-            mean-center and make unit-variance all the data via sklearn
+            mean-center and make unit-variance all the dataset via sklearn
             .preprocessing.StandardScaler
         predictor : flotilla.visualize.predict classifier
             Must inherit from flotilla.visualize.PredictorBaseViz. Default is
@@ -241,20 +251,24 @@ class SplicingData(BaseData):
         predictor : flotilla.compute.predict.PredictorBaseViz
             A ready-to-plot object containing the predictions
         """
-        subset, means = self._subset_and_standardize(self.data,
+        subset, means = self._subset_and_standardize(self.log_data,
                                                      sample_ids,
                                                      feature_ids,
                                                      standardize)
         if plotting_kwargs is None:
             plotting_kwargs = {}
 
-        classifier = predictor(subset, trait=trait,
-                               predictor_kwargs=predictor_kwargs,
-                               predictor_scoring_fun=predictor_scoring_fun,
-                               score_cutoff_fun=score_cutoff_fun,
-                               score_coefficient=score_coefficient,
-                               **plotting_kwargs)
-        # classifier.set_reducer_plotting_args(classifier.reduction_kwargs)
+        classifier = ClassifierViz(data_name, trait.name,
+                                   predictor_name=predictor_name,
+                                   X_data=subset,
+                                   trait=trait,
+                                   predictor_obj=predictor_obj,
+                                   predictor_scoring_fun=predictor_scoring_fun,
+                                   score_cutoff_fun=score_cutoff_fun,
+                                   n_features_dependent_parameters=n_features_dependent_parameters,
+                                   constant_parameters=constant_parameters,
+                                   predictor_dataset_manager=self.predictor_dataset_manager,
+                                   **plotting_kwargs)
         return classifier
 
     def plot_modalities_reduced(self, sample_ids=None, feature_ids=None,
@@ -405,7 +419,7 @@ class SplicingData(BaseData):
             ax = plt.gca()
 
         psi = self._subset(self.data, sample_ids, [feature_id]).dropna()
-        # psi = self.data.ix[sample_ids, feature_id].dropna()
+        # psi = self.dataset.ix[sample_ids, feature_id].dropna()
 
         # import pdb; pdb.set_trace()
 
@@ -438,7 +452,7 @@ class SplicingData(BaseData):
         Parameters
         ----------
         singles_ids : list-like
-            List of sample ids of single cells (in the main ".data" DataFrame)
+            List of sample ids of single cells (in the main ".dataset" DataFrame)
         pooled_ids : list-like
             List of sample ids of pooled cells (in the other ".pooled"
             DataFrame)
@@ -453,7 +467,7 @@ class SplicingData(BaseData):
             All splicing events which have a scaled difference larger than
             the fraction diff thresh
         """
-        # singles = self._subset(self.data, singles_ids, feature_ids)
+        # singles = self._subset(self.dataset, singles_ids, feature_ids)
         diff_from_singles = self._diff_from_singles(sample_ids,
                                                     feature_ids, scaled=True)
 
@@ -538,7 +552,7 @@ class SpliceJunctionData(SplicingData):
 
         Parameters
         ----------
-        data, experiment_design_data
+        dataset, experiment_design_data
 
         Returns
         -------
@@ -561,11 +575,11 @@ class DownsampledSplicingData(BaseData):
     _var_cut = 0.2
 
     def __init__(self, df, sample_descriptors):
-        """Instantiate an object of downsampled splicing data
+        """Instantiate an object of downsampled splicing dataset
 
         Parameters
         ----------
-        data : pandas.DataFrame
+        dataset : pandas.DataFrame
             A "tall" dataframe of all miso summary events, with the usual
             MISO summary columns, and these are required: 'splice_type',
             'probability', 'iteration.' Where "probability" indicates the
@@ -576,7 +590,7 @@ class DownsampledSplicingData(BaseData):
 
         Notes
         -----
-        Warning: this data is usually HUGE (we're taking like 10GB raw .tsv
+        Warning: this dataset is usually HUGE (we're taking like 10GB raw .tsv
         files) so make sure you have the available memory for dealing with
         these.
 

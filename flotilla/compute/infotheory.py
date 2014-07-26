@@ -26,11 +26,11 @@ def binify(df, bins):
 
     Parameters
     ----------
-    data : pandas.DataFrame
+    dataset : pandas.DataFrame
         A samples x features dataframe. Each feature will be binned into the
         provided bins
     bins : iterable
-        Bins you would like to use for this data. Must include the final bin
+        Bins you would like to use for this dataset. Must include the final bin
         value, e.g. (0, 0.5, 1) for the two bins (0, 0.5) and (0.5, 1).
         nbins = len(bins) - 1
 

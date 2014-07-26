@@ -214,8 +214,8 @@ def poll(mongodb):
 def begin(flotilla_project="http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22"):
     import flotilla
     study = flotilla.embark(flotilla_project)
-    rpkms = study.expression.data
-    psi = study.splicing.data
+    rpkms = study.expression.dataset
+    psi = study.splicing.dataset
     rbp_genes = study.expression.feature_sets['rbp']
     rbpRpkms = rpkms[rbp_genes].fillna(0)
     project_id = flotilla_project.split("/")[-1]

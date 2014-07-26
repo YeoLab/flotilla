@@ -23,7 +23,7 @@ def main():
 
 def embark(study_name):
     """
-    Begin your journey of data exploration.
+    Begin your journey of dataset exploration.
 
     Parameters
     ----------
@@ -34,7 +34,7 @@ def embark(study_name):
     Returns
     -------
     study : flotilla.Study
-        A biological study created from the data package specified
+        A biological study created from the dataset package specified
 
     """
     try:

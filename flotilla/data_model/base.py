@@ -10,13 +10,12 @@ from scipy.spatial.distance import pdist, squareform
 from sklearn.preprocessing import StandardScaler
 
 from ..visualize.decomposition import PCAViz
-from ..visualize.predict import ClassifierViz
 from ..external import link_to_list
+from ..compute.predict import PredictorConfigManager, DataSetManager
 
 
 MINIMUM_SAMPLES = 10
-
-
+default_predictor_name = "ExtraTreesClassifier"
 class BaseData(object):
     """Generic study_data model for both splicing and expression study_data
 
@@ -31,12 +30,13 @@ class BaseData(object):
 
     def __init__(self, data=None, metadata=None,
                  species=None, feature_rename_col=None, outliers=None,
-                 min_samples=MINIMUM_SAMPLES, pooled=None):
-        """Base class for biological data measurements
+                 min_samples=MINIMUM_SAMPLES, pooled=None,
+                 predictor_config_manager=None):
+        """Base class for biological dataset measurements
 
         Parameters
         ----------
-        data : pandas.DataFrame
+        dataset : pandas.DataFrame
             A dataframe of samples x features (samples on rows, features on
             columns) with some kind of measurements of cells,
             e.g. gene expression values such as TPM, RPKM or FPKM, alternative
@@ -85,6 +85,13 @@ class BaseData(object):
         self.all_features = 'all_genes'
         self.feature_sets[self.all_features] = data.columns
 
+        if predictor_config_manager is None:
+            self.predictor_config_manager = PredictorConfigManager()
+        else:
+            self.predictor_config_manager = predictor_config_manager
+
+        self.predictor_dataset_manager = DataSetManager(self.predictor_config_manager)
+
     def drop_outliers(self, df, outliers):
         # assert 'outlier' in self.experiment_design_data.columns
         outliers = set(outliers).intersection(df.index)
@@ -102,7 +109,7 @@ class BaseData(object):
                     feature_ids = link_to_list(feature_subset)
                     self.feature_sets[feature_subset] = feature_ids
                 except:
-                    raise ValueError("There are no {} features in this data: {}"
+                    raise ValueError("There are no {} features in this dataset: {}"
                                  .format(feature_subset, self))
             if rename:
                 feature_ids = feature_ids.map(self.feature_renamer)
@@ -162,19 +169,20 @@ class BaseData(object):
 
     # TODO.md: Specify dtypes in docstring
     def plot_classifier(self, trait, sample_ids=None, feature_ids=None,
-                        standardize=True, score_coefficient=None, **plotting_kwargs):
+                        predictor_name=None,
+                        standardize=True, score_coefficient=None,
+                        data_name=None,
+                        **plotting_kwargs):
         """Principal component-like analysis of measurements
 
         Params
         -------
-        obj_id : str
-            key of the object getting plotted
-        sample_subset : str
-            ???
-        categorical_trait : str
-            predictor feature
-        feature_subset : str
-            subset of genes to use for building class
+        trait - a pandas series with categorical features, indexed like self.data
+        sample_ids - an iterable of row IDs to use
+        feature_ids - an iterable of column IDs to use
+        standardize - 0-center, 1-variance
+        score_coefficient - for calculating score cutoff, default == 2
+        data_name - a name (str) for this subset of the data
 
         Returns
         -------
@@ -185,14 +193,17 @@ class BaseData(object):
 
         # local_plotting_args = self.pca_plotting_args.copy()
         # local_plotting_args.update(plotting_kwargs)
+        if predictor_name is None:
+            predictor_name = default_predictor_name
 
         clf = self.classify(trait, sample_ids=sample_ids,
                             feature_ids=feature_ids,
-                            standardize=standardize, predictor=predictor,
-                            score_coefficient=score_coefficient,
+                            data_name=data_name,
+                            standardize=standardize,
+                            predictor_name=predictor_name,
                             )
+        clf.score_coefficient = score_coefficient
         clf(**plotting_kwargs)
-        # clf()
         return self
 
     def plot_dimensionality_reduction(self, x_pc=1, y_pc=2,
@@ -209,7 +220,7 @@ class BaseData(object):
             Which principal component to plot on the y-axis
         sample_ids : None or list of strings
             If None, plot all the samples. If a list of strings, must be
-            valid sample ids of the data
+            valid sample ids of the dataset
         feature_ids : None or list of strings
             If None, plot all the features. If a list of strings
 
@@ -245,12 +256,12 @@ class BaseData(object):
 
     def _subset(self, data, sample_ids=None, feature_ids=None,
                 require_min_samples=True):
-        """Take only a subset of the data, and require at least the minimum
+        """Take only a subset of the dataset, and require at least the minimum
         samples observed to be not NA for each feature.
 
         Parameters
         ----------
-        data : pandas.DataFrame
+        dataset : pandas.DataFrame
             Data to subset
         sample_ids : list of str
             Which samples to use. If None, use all.
@@ -292,15 +303,15 @@ class BaseData(object):
                                 feature_ids=None,
                                 standardize=True):
 
-        """Take only the sample ids and feature ids from this data, require
-        at least some minimum samples, and standardize data using
+        """Take only the sample ids and feature ids from this dataset, require
+        at least some minimum samples, and standardize dataset using
         scikit-learn. Will also fill na values with the mean of the feature
         (column)
 
         Parameters
         ----------
-        data : pandas.DataFrame
-            The data you want to standardize
+        dataset : pandas.DataFrame
+            The dataset you want to standardize
         sample_ids : None or list of strings
             If None, all sample ids will be used, else only the sample ids
             specified
@@ -333,7 +344,7 @@ class BaseData(object):
         else:
             data = subset
 
-        # "data" is a matrix so need to transform it back into a convenient
+        # "dataset" is a matrix so need to transform it back into a convenient
         # dataframe
         subset = pd.DataFrame(data, index=subset.index,
                               columns=subset.columns)

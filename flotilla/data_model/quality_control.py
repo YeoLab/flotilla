@@ -2,7 +2,7 @@ from .base import BaseData
 
 
 class MappingStatsData(BaseData):
-    """Constructor for mapping statistics data from STAR
+    """Constructor for mapping statistics dataset from STAR
 
     Attributes
     ----------
@@ -13,12 +13,12 @@ class MappingStatsData(BaseData):
 
     """
 
-    def __init__(self, data, number_mapped_col):
+    def __init__(self, data, number_mapped_col, predictor_config_manager=None):
         """Constructor for MappingStatsData
 
         Parameters
         ----------
-        data, sample_descriptors
+        dataset, sample_descriptors
 
         Returns
         -------
@@ -28,7 +28,8 @@ class MappingStatsData(BaseData):
         ------
 
         """
-        super(MappingStatsData, self).__init__(data)
+        super(MappingStatsData, self).__init__(data,
+                                               predictor_config_manager=predictor_config_manager)
         self.number_mapped_col = number_mapped_col
 
         pass

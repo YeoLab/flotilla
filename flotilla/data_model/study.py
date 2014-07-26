@@ -23,7 +23,7 @@ from ..visualize.color import blue
 from ..visualize.ipython_interact import Interactive
 from ..visualize.network import NetworkerViz
 from ..external import data_package_url_to_dict, check_if_already_downloaded
-
+from ..compute.predict import PredictorConfigManager
 
 SPECIES_DATA_PACKAGE_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects'
 
@@ -50,7 +50,7 @@ class StudyFactory(object):
 
     @staticmethod
     def _to_base_file_tuple(tup):
-        """for making new packages, auto-loadable data!"""
+        """for making new packages, auto-loadable dataset!"""
         assert len(tup) == 2
         return "os.path.join(study_data_dir, %s)" % os.path.basename(tup[0]), \
                tup[1]
@@ -145,14 +145,14 @@ class StudyFactory(object):
 
 class Study(StudyFactory):
     """A biological study, with associated metadata, expression, and splicing
-    data.
+    dataset.
     """
     default_feature_set_ids = []
 
-    # Data types with enough data that we'd probably reduce them, and even
+    # Data types with enough dataset that we'd probably reduce them, and even
     # then we might want to take subsets. E.g. most variant genes for
     # expresion. But we don't expect to do this for spikein or mapping_stats
-    # data
+    # dataset
     _subsetable_data_types = ['expression', 'splicing']
 
     initializers = {'experiment_design_data': MetaData,
@@ -187,10 +187,11 @@ class Study(StudyFactory):
                  drop_outliers=True, species=None,
                  gene_ontology_data=None,
                  expression_log_base=None,
-                 experiment_design_pooled_col=None):
+                 experiment_design_pooled_col=None,
+                 predictor_config_manager=None):
         """Construct a biological study
 
-        This class only accepts data, no filenames. All data must already
+        This class only accepts dataset, no filenames. All dataset must already
         have been read in and exist as Python objects.
 
         Parameters
@@ -244,7 +245,7 @@ class Study(StudyFactory):
             concentration of particular spikein transcripts
         drop_outliers : bool
             Whether or not to drop samples indicated as outliers in the
-            sample_metadata from the other data, i.e. with a column
+            sample_metadata from the other dataset, i.e. with a column
             named 'outlier' in sample_metadata, then remove those
             samples from expression_data for further analysis
         species : str
@@ -266,6 +267,12 @@ class Study(StudyFactory):
         [1] http://stackoverflow.com/q/12513185/1628971
         """
         super(Study, self).__init__()
+
+        sys.stderr.write("initializing study\n")
+        self.predictor_config_manager = predictor_config_manager\
+            if predictor_config_manager is not None \
+                else PredictorConfigManager()
+
         # if params_dict is None:
         #     params_dict = {}
         # self.update(params_dict)
@@ -273,12 +280,16 @@ class Study(StudyFactory):
         # self.apply_getters()
         self.species = species
         self.gene_ontology_data = gene_ontology_data
-
-        self.experiment_design = MetaData(sample_metadata)
+        sys.stderr.write("loading metadata\n")
+        self.experiment_design = MetaData(sample_metadata,
+                                          predictor_config_manager=self.predictor_config_manager)
+        sys.stderr.write("done initializing metadata\n")
         self.default_sample_subsets = \
             [col for col in self.experiment_design.data.columns
              if self.experiment_design.data[col].dtype == bool]
         self.default_sample_subsets.insert(0, 'all_samples')
+
+        sys.stderr.write("checking for outliers\n")
 
         if 'outlier' in self.experiment_design.data and drop_outliers:
             outliers = self.experiment_design.data.index[
@@ -288,6 +299,9 @@ class Study(StudyFactory):
             self.experiment_design.data['outlier'] = False
 
         # Get pooled samples
+
+        sys.stderr.write("checking for pooled samples\n")
+
         if experiment_design_pooled_col is not None:
             if experiment_design_pooled_col in self.experiment_design.data:
                 try:
@@ -300,27 +314,35 @@ class Study(StudyFactory):
             pooled = None
 
         if expression_data is not None:
+            sys.stderr.write("loading expression data\n")
             self.expression = ExpressionData(
                 expression_data,
                 expression_feature_data,
                 feature_rename_col=expression_feature_rename_col,
                 outliers=outliers,
-                log_base=expression_log_base, pooled=pooled)
+                log_base=expression_log_base, pooled=pooled,
+                predictor_config_manager=self.predictor_config_manager)
             self.expression.networks = NetworkerViz(self.expression)
             self.default_feature_set_ids.extend(self.expression.feature_sets
                                                 .keys())
         if splicing_data is not None:
+            sys.stderr.write("loading splicing data\n")
             self.splicing = SplicingData(
                 splicing_data, splicing_feature_data,
                 feature_rename_col=splicing_feature_rename_col,
-                outliers=outliers, pooled=pooled)
+                outliers=outliers, pooled=pooled,
+                predictor_config_manager=self.predictor_config_manager)
             self.splicing.networks = NetworkerViz(self.splicing)
+
         if mapping_stats_data is not None:
             self.mapping_stats = MappingStatsData(
                 mapping_stats_data,
-                mapping_stats_number_mapped_col)
+                mapping_stats_number_mapped_col,
+                predictor_config_manager=self.predictor_config_manager)
+
         if spikein_data is not None:
-            self.spikein = SpikeInData(spikein_data, spikein_feature_data)
+            self.spikein = SpikeInData(spikein_data, spikein_feature_data,
+                                       predictor_config_manager=self.predictor_config_manager)
         sys.stderr.write("subclasses initialized\n")
         self.validate_params()
         sys.stderr.write("package validated\n")
@@ -328,6 +350,7 @@ class Study(StudyFactory):
             self.hack_lazy()
         except:
             print "hackery failed"
+
 
     @property
     def default_feature_subsets(self):
@@ -342,7 +365,7 @@ class Study(StudyFactory):
 
     @property
     def sample_id_to_color(self):
-        """If "color" is a column in the experiment_design data, return a
+        """If "color" is a column in the experiment_design dataset, return a
         dict of that {sample_id: color} mapping, else try to create it using
         the "celltype" columns, else just return a dict mapping to a default
         color (blue)
@@ -363,7 +386,7 @@ class Study(StudyFactory):
 
     @property
     def sample_id_to_celltype(self):
-        """If "celltype" is a column in the experiment_design data, return a
+        """If "celltype" is a column in the experiment_design dataset, return a
         dict of that {sample_id: celltype} mapping.
         """
         if 'celltype' in self.experiment_design.data:
@@ -382,8 +405,8 @@ class Study(StudyFactory):
         ----------
         data_package_url : str
             HTTP url of a datapackage.json file, following the specification
-            described here: http://dataprotocols.org/data-packages/ and
-            requiring the following data resources: experiment_design,
+            described here: http://dataprotocols.org/dataset-packages/ and
+            requiring the following dataset resources: experiment_design,
             expression, splicing
         species_data_pacakge_base_url : str
             Base URL to fetch species-specific gene and splicing event
@@ -392,7 +415,7 @@ class Study(StudyFactory):
         Returns
         -------
         study : Study
-            A "study" object containing the data described in the
+            A "study" object containing the dataset described in the
             data_package_url file
 
         Raises
@@ -503,10 +526,10 @@ class Study(StudyFactory):
         raise NotImplementedError
         self.experiment_design = MetaData(
             pd.concat([self.experiment_design.data,
-                       other.experiment_design.data]))
-        self.expression.data = ExpressionData(
-            pd.concat([self.expression.data,
-                       other.expression.data]))
+                       other.experiment_design.dataset]))
+        self.expression.dataset = ExpressionData(
+            pd.concat([self.expression.dataset,
+                       other.expression.dataset]))
 
     def _set_plot_colors(self):
         """If there is a column 'color' in the sample metadata, specify this
@@ -595,9 +618,9 @@ class Study(StudyFactory):
         Parameters
         ----------
         data_type : str
-            A string describing the data type, e.g. "expression"
+            A string describing the dataset type, e.g. "expression"
         feature_subset : str
-            A string describing the subset of data type (must be already
+            A string describing the subset of dataset type (must be already
             calculated)
 
         Returns
@@ -613,31 +636,37 @@ class Study(StudyFactory):
                 feature_subset, rename)
 
     def sample_subset_to_sample_ids(self, phenotype_subset=None):
-        """Convert a string naming a subset of phenotypes in the data into
+
+        """Convert a string naming a subset of phenotypes in the dataset into
         sample ids
 
         Parameters
         ----------
         phenotype_subset : str
             A valid string describing a boolean phenotype described in the
-            experiment_design data
+            experiment_design dataset
 
         Returns
         -------
         sample_ids : list of strings
-            List of sample ids in the data
+            List of sample ids in the dataset
         """
+
+        #TODO: check this, seems like a strange usage: 'all_samples'.startswith(phenotype_subset)
         if phenotype_subset is None or 'all_samples'.startswith(
                 phenotype_subset):
             sample_ind = np.ones(self.experiment_design.data.shape[0],
                                  dtype=bool)
+
         elif phenotype_subset.startswith("~"):
             sample_ind = ~pd.Series(
                 self.experiment_design.data[phenotype_subset.lstrip("~")],
                 dtype='bool')
+
         else:
             sample_ind = pd.Series(
                 self.experiment_design.data[phenotype_subset], dtype='bool')
+
         sample_ids = self.experiment_design.data.index[sample_ind]
         return sample_ids
 
@@ -651,7 +680,7 @@ class Study(StudyFactory):
         Parameters
         ----------
         data_type : str
-            One of the names of the data types, e.g. "expression" or
+            One of the names of the dataset types, e.g. "expression" or
             "splicing"
         x_pc : int
             Which principal component to plot on the x-axis
@@ -659,11 +688,11 @@ class Study(StudyFactory):
             Which principal component to plot on the y-axis
         sample_subset : str or None
             Which subset of the samples to use, based on some phenotype
-            column in the experiment design data. If None, all samples are
+            column in the experiment design dataset. If None, all samples are
             used.
         feature_subset : str or None
             Which subset of the features to used, based on some feature type
-            in the expression data (e.g. "variant"). If None, all features
+            in the expression dataset (e.g. "variant"). If None, all features
             are used.
         title : str
             The title of the plot
@@ -704,19 +733,19 @@ class Study(StudyFactory):
     def plot_graph(self, data_type='expression', sample_subset=None,
                    feature_subset=None,
                    **kwargs):
-        """Plot the graph (network) of these data
+        """Plot the graph (network) of these dataset
 
         Parameters
         ----------
         data_type : str
-            One of the names of the data types, e.g. "expression" or "splicing"
+            One of the names of the dataset types, e.g. "expression" or "splicing"
         sample_subset : str or None
             Which subset of the samples to use, based on some phenotype
-            column in the experiment design data. If None, all samples are
+            column in the experiment design dataset. If None, all samples are
             used.
         feature_subset : str or None
             Which subset of the features to used, based on some feature type
-            in the expression data (e.g. "variant"). If None, all features
+            in the expression dataset (e.g. "variant"). If None, all features
             are used.
         """
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
@@ -750,18 +779,18 @@ class Study(StudyFactory):
         legend = ax.legend(title='cell type', fontsize=20,)
         return legend
 
-    def plot_classifier(self, trait, data_type='expression', title='',
-                        show_point_labels=False, sample_subset=None,
-                        feature_subset=None,
+    def plot_classifier(self, sample_subset, feature_subset, trait,
+                        data_type='expression', title='',
+                        show_point_labels=False,
                         **kwargs):
-        """Plot a predictor for the specified data type and trait(s)
+        """Plot a predictor for the specified dataset type and trait(s)
 
         Parameters
         ----------
         data_type : str
-            One of the names of the data types, e.g. "expression" or "splicing"
+            One of the names of the dataset types, e.g. "expression" or "splicing"
         trait : str
-            Column name in the experiment_design data that you would like
+            Column name in the experiment_design dataset that you would like
             to classify on
 
         Returns
@@ -775,12 +804,14 @@ class Study(StudyFactory):
                                                          feature_subset,
                                                          rename=False)
 
+        kwargs['data_name'] = '_'.join([sample_subset, feature_subset])
         kwargs['trait'] = trait_data
         kwargs['title'] = title
         kwargs['show_point_labels'] = show_point_labels
         kwargs['colors_dict'] = self.sample_id_to_color
         kwargs['sample_ids'] = sample_ids
         kwargs['feature_ids'] = feature_ids
+        #kwargs['predictor_config_manager'] = self.predictor_config_manager
         # print(kwargs.keys())
 
         if data_type == "expression":
@@ -924,7 +955,7 @@ class Study(StudyFactory):
     def plot_lavalamp_pooled_inconsistent(
             self, celltype=None, feature_ids=None,
             fraction_diff_thresh=FRACTION_DIFF_THRESH):
-        # grouped_ids = self.splicing.data.groupby(self.sample_id_to_color,
+        # grouped_ids = self.splicing.dataset.groupby(self.sample_id_to_color,
         #                                          axis=0)
         celltype_groups = self.experiment_design.data.groupby(
             self.sample_id_to_celltype, axis=0)

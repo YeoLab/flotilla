@@ -26,10 +26,10 @@ easy\_install first instead
     cd flotilla
     pip install .
 
-Example data
+Example dataset
 ------------
 
-All of the following should work, with expression data. No guarantees on
+All of the following should work, with expression dataset. No guarantees on
 splicing.
 
 ::
@@ -108,10 +108,10 @@ to install and use them.
 What flotilla is not
 ====================
 
-Flotilla does not claim to solve the data management problem of biology,
-i.e. how you store all the data associated with a particular study that
+Flotilla does not claim to solve the dataset management problem of biology,
+i.e. how you store all the dataset associated with a particular study that
 was investigating a specific biological question. Flotilla only makes it
-easy to integrate all those data parts together.
+easy to integrate all those dataset parts together.
 
 Testing
 =======

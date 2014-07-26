@@ -116,7 +116,7 @@
       
   <h1>Source code for flotilla.visualize.predict</h1><div class="highlight"><pre>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Visualize the result of a classifcation or regression algorithm on the data.</span>
+<span class="sd">Visualize the result of a classifcation or regression algorithm on the dataset.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">matplotlib.gridspec</span> <span class="kn">import</span> <span class="n">GridSpec</span><span class="p">,</span> <span class="n">GridSpecFromSubplotSpec</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
@@ -142,7 +142,7 @@
                                <span class="n">excel_out</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">external_xref</span><span class="o">=</span><span class="p">[]):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        make a table to make scatterplots... maybe for plot.ly</span>
-<span class="sd">        excelOut: full path to an excel output location for scatter data</span>
+<span class="sd">        excelOut: full path to an excel output location for scatter dataset</span>
 <span class="sd">        external_xref: list of tuples containing (attribute name, function to</span>
 <span class="sd">        map row index -&gt; an attribute)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -222,7 +222,7 @@
 
         <span class="n">local_plotting_kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reducer_plotting_args</span>
         <span class="n">local_plotting_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">plotting_kwargs</span><span class="p">)</span>
-        <span class="n">pca</span> <span class="o">=</span> <span class="n">PCAViz</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">ix</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">important_features</span><span class="p">],</span>
+        <span class="n">pca</span> <span class="o">=</span> <span class="n">PCAViz</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">ix</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">important_features_</span><span class="p">],</span>
                      <span class="o">**</span><span class="n">local_plotting_kwargs</span><span class="p">)</span>
         <span class="n">pca</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">pca</span>

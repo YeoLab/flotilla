@@ -132,7 +132,7 @@
 <span class="target" id="module-flotilla"></span><dl class="class">
 <dt id="flotilla.Study">
 <em class="property">class </em><tt class="descclassname">flotilla.</tt><tt class="descname">Study</tt><big>(</big><em>experiment_design_data</em>, <em>expression_data=None</em>, <em>splicing_data=None</em>, <em>expression_feature_data=None</em>, <em>expression_feature_rename_col='gene_name'</em>, <em>splicing_feature_data=None</em>, <em>splicing_feature_rename_col='gene_name'</em>, <em>mapping_stats_data=None</em>, <em>mapping_stats_number_mapped_col='Uniquely mapped reads number'</em>, <em>spikein_data=None</em>, <em>spikein_feature_data=None</em>, <em>drop_outliers=False</em>, <em>species=None</em>, <em>gene_ontology_data=None</em><big>)</big><a class="headerlink" href="#flotilla.Study" title="Permalink to this definition">¶</a></dt>
-<dd><p>store essential data associated with a study. Users specify how to build the
+<dd><p>store essential dataset associated with a study. Users specify how to build the
 necessary components from project-specific getters (see barebones_project
 for example getters)</p>
 <p class="rubric">Attributes</p>
@@ -162,11 +162,11 @@ study_data and labels the outliers as such for future analysis.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data_type</strong> : str</p>
 <blockquote>
-<div><p>A string describing the data type, e.g. &#8220;expression&#8221;</p>
+<div><p>A string describing the dataset type, e.g. &#8220;expression&#8221;</p>
 </div></blockquote>
 <p><strong>feature_subset</strong> : str</p>
 <blockquote>
-<div><p>A string describing the subset of data type (must be already
+<div><p>A string describing the subset of dataset type (must be already
 calculated)</p>
 </div></blockquote>
 </td>
@@ -192,8 +192,8 @@ calculated)</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data_package_url</strong> : str</p>
 <blockquote>
 <div><p>HTTP url of a datapackage.json file, following the specification
-described here: <a class="reference external" href="http://dataprotocols.org/data-packages/">http://dataprotocols.org/data-packages/</a> and
-requiring the following data resources: experiment_design,
+described here: <a class="reference external" href="http://dataprotocols.org/data-packages/">http://dataprotocols.org/dataset-packages/</a> and
+requiring the following dataset resources: experiment_design,
 expression, splicing</p>
 </div></blockquote>
 <p><strong>species_data_pacakge_base_url</strong> : str</p>
@@ -205,7 +205,7 @@ metadata from. Default &#8216;<a class="reference external" href="http://sauron.
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>study</strong> : Study</p>
 <blockquote>
-<div><p>A &#8220;study&#8221; object containing the data described in the
+<div><p>A &#8220;study&#8221; object containing the dataset described in the
 data_package_url file</p>
 </div></blockquote>
 </td>
@@ -224,18 +224,18 @@ resources of experiment_design, expression, and splicing.</p>
 <dl class="method">
 <dt id="flotilla.Study.plot_classifier">
 <tt class="descname">plot_classifier</tt><big>(</big><em>trait</em>, <em>data_type='expression'</em>, <em>title=''</em>, <em>show_point_labels=False</em>, <em>sample_subset=None</em>, <em>feature_subset=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#flotilla.Study.plot_classifier" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot a predictor for the specified data type and trait(s)</p>
+<dd><p>Plot a predictor for the specified dataset type and trait(s)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data_type</strong> : str</p>
 <blockquote>
-<div><p>One of the names of the data types, e.g. &#8220;expression&#8221; or &#8220;splicing&#8221;</p>
+<div><p>One of the names of the dataset types, e.g. &#8220;expression&#8221; or &#8220;splicing&#8221;</p>
 </div></blockquote>
 <p><strong>trait</strong> : str</p>
 <blockquote class="last">
-<div><p>Column name in the experiment_design data that you would like
+<div><p>Column name in the experiment_design dataset that you would like
 to classify on</p>
 </div></blockquote>
 </td>
@@ -247,25 +247,25 @@ to classify on</p>
 <dl class="method">
 <dt id="flotilla.Study.plot_graph">
 <tt class="descname">plot_graph</tt><big>(</big><em>data_type='expression'</em>, <em>sample_subset=None</em>, <em>feature_subset=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#flotilla.Study.plot_graph" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot the graph (network) of these data</p>
+<dd><p>Plot the graph (network) of these dataset</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data_type</strong> : str</p>
 <blockquote>
-<div><p>One of the names of the data types, e.g. &#8220;expression&#8221; or &#8220;splicing&#8221;</p>
+<div><p>One of the names of the dataset types, e.g. &#8220;expression&#8221; or &#8220;splicing&#8221;</p>
 </div></blockquote>
 <p><strong>sample_subset</strong> : str or None</p>
 <blockquote>
 <div><p>Which subset of the samples to use, based on some phenotype
-column in the experiment design data. If None, all samples are
+column in the experiment design dataset. If None, all samples are
 used.</p>
 </div></blockquote>
 <p><strong>feature_subset</strong> : str or None</p>
 <blockquote class="last">
 <div><p>Which subset of the features to used, based on some feature type
-in the expression data (e.g. &#8220;variant&#8221;). If None, all features
+in the expression dataset (e.g. &#8220;variant&#8221;). If None, all features
 are used.</p>
 </div></blockquote>
 </td>
@@ -284,7 +284,7 @@ are used.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data_type</strong> : str</p>
 <blockquote>
-<div><p>One of the names of the data types, e.g. &#8220;expression&#8221; or &#8220;splicing&#8221;</p>
+<div><p>One of the names of the dataset types, e.g. &#8220;expression&#8221; or &#8220;splicing&#8221;</p>
 </div></blockquote>
 <p><strong>x_pc</strong> : int</p>
 <blockquote>
@@ -297,13 +297,13 @@ are used.</p>
 <p><strong>sample_subset</strong> : str or None</p>
 <blockquote>
 <div><p>Which subset of the samples to use, based on some phenotype
-column in the experiment design data. If None, all samples are
+column in the experiment design dataset. If None, all samples are
 used.</p>
 </div></blockquote>
 <p><strong>feature_subset</strong> : str or None</p>
 <blockquote>
 <div><p>Which subset of the features to used, based on some feature type
-in the expression data (e.g. &#8220;variant&#8221;). If None, all features
+in the expression dataset (e.g. &#8220;variant&#8221;). If None, all features
 are used.</p>
 </div></blockquote>
 <p><strong>title</strong> : str</p>
@@ -330,7 +330,7 @@ featurewise, then this labels the features.</p>
 <dl class="attribute">
 <dt id="flotilla.Study.sample_id_to_color">
 <tt class="descname">sample_id_to_color</tt><a class="headerlink" href="#flotilla.Study.sample_id_to_color" title="Permalink to this definition">¶</a></dt>
-<dd><p>If &#8220;color&#8221; is a column in the experiment_design data, return a
+<dd><p>If &#8220;color&#8221; is a column in the experiment_design dataset, return a
 dict of that {sample_id: color} mapping, else try to create it using
 the &#8220;celltype&#8221; columns, else just return a dict mapping to a default
 color (blue)</p>
@@ -339,7 +339,7 @@ color (blue)</p>
 <dl class="method">
 <dt id="flotilla.Study.sample_subset_to_sample_ids">
 <tt class="descname">sample_subset_to_sample_ids</tt><big>(</big><em>phenotype_subset=None</em><big>)</big><a class="headerlink" href="#flotilla.Study.sample_subset_to_sample_ids" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert a string naming a subset of phenotypes in the data in to 
+<dd><p>Convert a string naming a subset of phenotypes in the dataset in to
 sample ids</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -348,13 +348,13 @@ sample ids</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>phenotype_subset</strong> : str</p>
 <blockquote>
 <div><p>A valid string describing a boolean phenotype described in the
-experiment_design data</p>
+experiment_design dataset</p>
 </div></blockquote>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>sample_ids</strong> : list of strings</p>
 <blockquote class="last">
-<div><p>List of sample ids in the data</p>
+<div><p>List of sample ids in the dataset</p>
 </div></blockquote>
 </td>
 </tr>

@@ -1,9 +1,9 @@
-data models
+dataset models
 
-BaseData - base data model class for splicing and expression data
+BaseData - base dataset model class for splicing and expression dataset
 
-SplicingData - data model for splicing
+SplicingData - dataset model for splicing
 
-ExpressionData - data model for expression
+ExpressionData - dataset model for expression
 
-Study - integrates SplicingData and ExpressionData data types and calls analyses
+Study - integrates SplicingData and ExpressionData dataset types and calls analyses
