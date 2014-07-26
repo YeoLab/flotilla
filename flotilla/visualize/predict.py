@@ -9,17 +9,12 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
-from .decomposition import PCAViz
-from ..compute.predict import Classifier, Regressor
+from ..compute.predict import Classifier, Regressor, PredictorBase
 from .color import green
 
+class PredictorBaseViz(PredictorBase):
 
-class PredictorBaseViz(object):
-    # class PredictorBaseViz(DecompositionViz):
     _reducer_plotting_args = {}
-
-    # def __init__(self, *args, **kwargs):
-    #     super(PredictorBaseViz, self).__init__(*args, **kwargs)
 
     def set_reducer_plotting_args(self, rpa):
         self._reducer_plotting_args.update(rpa)
@@ -33,7 +28,7 @@ class PredictorBaseViz(object):
         map row index -> an attribute)
         """
         raise NotImplementedError
-        trait, classifier_name = self.attributes
+        trait, classifier_name = self.dataset.trait, self.predictor_name
         X = self.X
         sorter = np.array([np.median(i[1]) - np.median(j[1]) for (i, j) in
                            itertools.izip(X[self.y[trait] == 0].iteritems(),
@@ -89,7 +84,8 @@ class PredictorBaseViz(object):
 
         return zz
 
-    def do_pca(self, trait, ax=None, classifier_name=None, **plotting_kwargs):
+
+    def do_pca(self, **plotting_kwargs):
 
         """plot kernel density of predictor scores and draw a vertical line
         where the cutoff was selected
@@ -101,21 +97,79 @@ class PredictorBaseViz(object):
         assert self.has_been_fit
         assert self.has_been_scored
 
-        if ax is None:
-            ax = plt.gca()
-        if classifier_name is None:
-            classifier_name = self.name
+        ax = plt.gca() if not 'ax' in plotting_kwargs else plotting_kwargs['ax']
 
         local_plotting_kwargs = self._reducer_plotting_args
         local_plotting_kwargs.update(plotting_kwargs)
-        pca = PCAViz(self.X.ix[:, self.important_features],
-                     **local_plotting_kwargs)
+        pca = self.pca(**local_plotting_kwargs)
         pca(ax=ax)
+        return pca
+
+    def plot_scores(self,  ax=None):
+
+        """
+        plot kernel density of predictor scores and draw a vertical line where
+        the cutoff was selected
+        ax - ax to plot on. if None: plt.gca()
+        """
+
+        if ax is None:
+            ax = plt.gca()
+
+        # for trait in traits:
+        sns.kdeplot(self.scores_, shade=True, ax=ax,
+                    label="%s\n%d features\noob:%.2f"
+                    % (self.dataset.trait_name, self.n_good_features_, self.oob_score_))
+        ax.axvline(x=self.score_cutoff_, color=green)
+
+
+        for lab in ax.get_xticklabels():
+            lab.set_rotation(90)
+        sns.despine(ax=ax)
+
+    def __call__(self, **pca_plotting_kwargs):
+
+        if not self.has_been_fit:
+            self.fit()
+
+        gs_x = 18
+        gs_y = 12
+
+        ax = None if not 'ax' in pca_plotting_kwargs else pca_plotting_kwargs['ax']
+
+        if ax is None:
+            fig, ax = plt.subplots(1, 1, figsize=(18, 8))
+            gs = GridSpec(gs_x, gs_y)
+        else:
+            gs = GridSpecFromSubplotSpec(gs_x, gs_y, ax.get_subplotspec())
+
+        ax_scores = plt.subplot(gs[5:10, :2])
+        ax_scores.set_xlabel("Feature Importance")
+        ax_scores.set_ylabel("Density Estimate")
+
+        if not 'show_vectors' in pca_plotting_kwargs:
+            pca_plotting_kwargs['show_vectors'] = True
+
+        ax_pca = plt.subplot(gs[:, 2:])
+        pca_plotting_kwargs['ax'] = ax_pca
+
+        self.plot_scores(ax=ax_scores)
+        pca = self.do_pca(**pca_plotting_kwargs)
+        plt.tight_layout()
+
         return pca
 
 
 class RegressorViz(Regressor, PredictorBaseViz):
-    def check_a_feature(self, feature_name, trait, **violinplot_kwargs):
+
+    pass
+
+class ClassifierViz(Classifier, PredictorBaseViz):
+    """
+    Visualize results from classification
+    """
+
+    def check_a_feature(self, feature_name, **violinplot_kwargs):
         """Make Violin Plots for a gene/probe's value in the sets defined in
         sets
 
@@ -126,62 +180,7 @@ class RegressorViz(Regressor, PredictorBaseViz):
         returns a list of lists with values for feature_name in each set of
         sets
         """
-        sns.violinplot(self.X[feature_name], linewidth=0, groupby=trait,
+        sns.violinplot(self.X[feature_name], linewidth=0, groupby=self.y,
                        alpha=0.5, bw='silverman', inner='points',
                        names=None, **violinplot_kwargs)
         sns.despine()
-
-
-class ClassifierViz(Classifier, PredictorBaseViz):
-    """
-    Visualize results from classification
-    """
-
-    def __call__(self, trait=None, ax=None, feature_score_std_cutoff=2,
-                 **plotting_kwargs):
-
-        if not self.has_been_fit:
-            self.fit()
-        if not self.has_been_scored:
-            self.score()
-
-        gs_x = 18
-        gs_y = 12
-
-        if ax is None:
-            fig, ax = plt.subplots(1, 1, figsize=(18, 8))
-            gs = GridSpec(gs_x, gs_y)
-        else:
-            gs = GridSpecFromSubplotSpec(gs_x, gs_y, ax.get_subplotspec())
-            fig = plt.gcf()
-
-        ax_pca = plt.subplot(gs[:, 2:])
-        ax_scores = plt.subplot(gs[5:10, :2])
-
-        ax_scores.set_xlabel("Feature Importance")
-        ax_scores.set_ylabel("Density Estimate")
-        self.plot_classifier_scores(trait, ax=ax_scores)
-        pca = self.do_pca(trait, ax=ax_pca, show_vectors=True,
-                          **plotting_kwargs)
-        plt.tight_layout()
-        return pca
-
-    def plot_classifier_scores(self, trait, ax=None, classifier_name=None):
-        """
-        plot kernel density of predictor scores and draw a vertical line where
-        the cutoff was selected
-        ax - ax to plot on. if None: plt.gca()
-        """
-        if ax is None:
-            ax = plt.gca()
-
-        # for trait in traits:
-        clf = self.predictor
-        sns.kdeplot(clf.scores_, shade=True, ax=ax,
-                    label="%s\n%d features\noob:%.2f"
-                          % (trait, clf.n_good_features_, clf.oob_score_))
-        ax.axvline(x=clf.score_cutoff_, color=green)
-
-        for lab in ax.get_xticklabels():
-            lab.set_rotation(90)
-        sns.despine(ax=ax)

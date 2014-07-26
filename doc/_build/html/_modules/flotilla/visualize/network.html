@@ -157,9 +157,9 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        feature_ids : list of str, or None</span>
-<span class="sd">            Feature ids to subset the data. If None, all features will be used.</span>
+<span class="sd">            Feature ids to subset the dataset. If None, all features will be used.</span>
 <span class="sd">        sample_ids : list of str, or None</span>
-<span class="sd">            Sample ids to subset the data. If None, all features will be used.</span>
+<span class="sd">            Sample ids to subset the dataset. If None, all features will be used.</span>
 <span class="sd">        x_pc : str</span>
 <span class="sd">            x component for PCA, default &quot;pc_1&quot;</span>
 <span class="sd">        y_pc :</span>
@@ -175,7 +175,7 @@
 <span class="sd">            weight function (arctan (arctan cov), sq (sq cov), abs (abs cov),</span>
 <span class="sd">            arctan_sq (sqared arctan of cov))</span>
 <span class="sd">        gene_of_interest : str</span>
-<span class="sd">            map a gradient representing this gene&#39;s data onto nodes (ENSEMBL</span>
+<span class="sd">            map a gradient representing this gene&#39;s dataset onto nodes (ENSEMBL</span>
 <span class="sd">            id or gene name???)</span>
 
 
@@ -324,7 +324,7 @@
 <span class="sd">        pc{1-4} use these pcs in cov calculation (default True)</span>
 <span class="sd">        degree_cut - miniumum degree for a node to be included in graph display</span>
 <span class="sd">        wt_fun - weight function (arctan (arctan cov), sq (sq cov), abs (abs cov), arctan_sq (sqared arctan of cov))</span>
-<span class="sd">        gene_of_interest - map a gradient representing this gene&#39;s data onto nodes</span>
+<span class="sd">        gene_of_interest - map a gradient representing this gene&#39;s dataset onto nodes</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">node_color_mapper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_node_color_mapper</span>
@@ -344,12 +344,12 @@
         <span class="n">ax_cov</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="o">.</span><span class="mi">15</span><span class="p">])</span>
         <span class="n">ax_degree</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">([</span><span class="mf">0.9</span><span class="p">,</span> <span class="o">.</span><span class="mi">8</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="o">.</span><span class="mi">15</span><span class="p">])</span>
 
-        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_obj</span><span class="o">.</span><span class="n">df</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_obj</span><span class="o">.</span><span class="n">df</span>
 
         <span class="k">if</span> <span class="n">featurewise</span><span class="p">:</span>
             <span class="n">node_color_mapper</span> <span class="o">=</span> <span class="k">lambda</span> \
                     <span class="n">x</span><span class="p">:</span> <span class="s">&#39;r&#39;</span> <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="n">feature_of_interest</span> <span class="k">else</span> <span class="s">&#39;k&#39;</span>
-            <span class="n">node_size_mapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">10</span>
+            <span class="n">node_size_mapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">10</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">node_color_mapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_obj</span><span class="o">.</span><span class="n">sample_metadata</span><span class="o">.</span><span class="n">color</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
             <span class="n">node_size_mapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">75</span>
@@ -359,7 +359,7 @@
 
         <span class="c">#import pdb</span>
         <span class="c">#pdb.set_trace()</span>
-        <span class="n">adjacency</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjacency</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">adjacency_name</span><span class="p">,</span>
+        <span class="n">adjacency</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjacency</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">adjacency_name</span><span class="p">,</span>
                                    <span class="o">**</span><span class="n">adjacency_settings</span><span class="p">)</span>
         <span class="n">cov_dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
             <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">adjacency</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span>
@@ -389,7 +389,7 @@
         <span class="c">#                       ax=ax4, alpha=0.5)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_nodes</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">node_color</span><span class="o">=</span><span class="nb">map</span><span class="p">(</span>
-                <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="n">feature_of_interest</span><span class="p">]</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">x</span><span class="p">],</span> <span class="n">g</span><span class="o">.</span><span class="n">nodes</span><span class="p">()),</span>
+                <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">dataset</span><span class="p">[</span><span class="n">feature_of_interest</span><span class="p">]</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">x</span><span class="p">],</span> <span class="n">g</span><span class="o">.</span><span class="n">nodes</span><span class="p">()),</span>
                                    <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Greys</span><span class="p">,</span>
                                    <span class="n">node_size</span><span class="o">=</span><span class="nb">map</span><span class="p">(</span>
                                        <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">node_size_mapper</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="o">.</span><span class="mi">5</span><span class="p">,</span>

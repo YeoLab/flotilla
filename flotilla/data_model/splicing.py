@@ -37,7 +37,7 @@ class SplicingData(BaseData):
                  metadata=None, binsize=0.1,
                  var_cut=_var_cut, outliers=None,
                  feature_rename_col=None, excluded_max=0.2, included_min=0.8,
-                 pooled=None):
+                 pooled=None, predictor_config_manager=None):
         """Instantiate a object for percent spliced in (PSI) scores
 
         Parameters
@@ -58,11 +58,13 @@ class SplicingData(BaseData):
         included_max : float
             Minimum value for the "included" bin of psi scores. Default 0.8.
         """
+        sys.stderr.write("initializing splicing\n")
         super(SplicingData, self).__init__(
             data, metadata,
             feature_rename_col=feature_rename_col,
-            outliers=outliers, pooled=pooled)
-
+            outliers=outliers, pooled=pooled,
+            predictor_config_manager=predictor_config_manager)
+        sys.stderr.write("done initializing splicing\n")
         self.binsize = binsize
         self.bins = np.arange(0, 1 + self.binsize, self.binsize)
         psi_variant = pd.Index(
@@ -201,11 +203,19 @@ class SplicingData(BaseData):
         return reducer_object
 
     @memoize
-    def classify(self, trait, sample_ids=None, feature_ids=None,
-                 standardize=True, predictor=ClassifierViz,
-                 predictor_kwargs=None, predictor_scoring_fun=None,
-                 score_coefficient=None,
-                 score_cutoff_fun=None, plotting_kwargs=None):
+    def classify(self, trait, sample_ids, feature_ids,
+                 standardize=True,
+                 data_name='splicing',
+                 predictor_name='ExtraTreesClassifier',
+                 predictor_obj=None,
+                 predictor_scoring_fun=None,
+                 score_cutoff_fun=None,
+                 n_features_dependent_parameters=None,
+                 constant_parameters=None,
+                 plotting_kwargs=None,
+                 ):
+        #Should all this be exposed to the user???
+
         """Make and memoize a predictor on a categorical trait (associated
         with samples) subset of genes
 
@@ -242,20 +252,25 @@ class SplicingData(BaseData):
         predictor : flotilla.compute.predict.PredictorBaseViz
             A ready-to-plot object containing the predictions
         """
-        subset = self._subset_and_standardize(self.data,
-                                              sample_ids,
-                                              feature_ids,
-                                              standardize)
+
+        subset, means = self._subset_and_standardize(self.data,
+                                                     sample_ids,
+                                                     feature_ids,
+                                                     standardize)
         if plotting_kwargs is None:
             plotting_kwargs = {}
 
-        classifier = predictor(subset, trait=trait,
-                               predictor_kwargs=predictor_kwargs,
-                               predictor_scoring_fun=predictor_scoring_fun,
-                               score_cutoff_fun=score_cutoff_fun,
-                               score_coefficient=score_coefficient,
-                               **plotting_kwargs)
-        # classifier.set_reducer_plotting_args(classifier.reduction_kwargs)
+        classifier = ClassifierViz(data_name, trait.name,
+                                   predictor_name=predictor_name,
+                                   X_data=subset,
+                                   trait=trait,
+                                   predictor_obj=predictor_obj,
+                                   predictor_scoring_fun=predictor_scoring_fun,
+                                   score_cutoff_fun=score_cutoff_fun,
+                                   n_features_dependent_parameters=n_features_dependent_parameters,
+                                   constant_parameters=constant_parameters,
+                                   predictor_dataset_manager=self.predictor_dataset_manager,
+                                   **plotting_kwargs)
         return classifier
 
     def plot_modalities_reduced(self, sample_ids=None, feature_ids=None,
@@ -566,7 +581,7 @@ class DownsampledSplicingData(BaseData):
 
         Parameters
         ----------
-        data : pandas.DataFrame
+        df : pandas.DataFrame
             A "tall" dataframe of all miso summary events, with the usual
             MISO summary columns, and these are required: 'splice_type',
             'probability', 'iteration.' Where "probability" indicates the
