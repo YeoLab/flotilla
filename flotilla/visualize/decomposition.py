@@ -77,7 +77,9 @@ class DecompositionViz(object):
         self.df = df
         self.reduced_space = self.fit_transform(self.df)
 
-    def __call__(self, ax=None, **kwargs):
+    def __call__(self, ax=None,
+                 x_pc='pc_1', y_pc='pc_2',
+                 **kwargs):
         gs_x = 14
         gs_y = 12
 
@@ -96,8 +98,8 @@ class DecompositionViz(object):
         kwargs.update({'ax': ax_components})
 
         self.plot_samples(**kwargs)
-        self.plot_loadings(pc=kwargs['x_pc'], ax=ax_loading1)
-        self.plot_loadings(pc=kwargs['y_pc'], ax=ax_loading2)
+        self.plot_loadings(pc=x_pc, ax=ax_loading1)
+        self.plot_loadings(pc=y_pc, ax=ax_loading2)
         sns.despine()
         fig.tight_layout()
         return self
