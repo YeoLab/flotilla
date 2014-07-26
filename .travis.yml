@@ -20,7 +20,7 @@ install:
   - conda create -n testenv --yes python=$TRAVIS_PYTHON_VERSION
   - source activate testenv
   # install as much as we can via conda
-  - conda install --yes pip numpy scipy cython matplotlib nose six scikit-learn ipython networkx pandas tornado statsmodels setuptools pytest
+  - conda install --yes pip numpy scipy cython matplotlib nose six scikit-learn ipython networkx pandas tornado statsmodels setuptools pytest pyzmq jinja2 pyyaml
   # Install the rest via pip (brewer2mpl, gspread, seaborn, etc)
   - pip install -r requirements.txt
   # For building the docs
@@ -31,25 +31,38 @@ install:
   - pip install .
 
 # Build documentation
-before_script:
-  - if [ ${TRAVIS_PYTHON_VERSION:0:1} == "2" ]; then
-    make lint;
-    fi
-  - if [ ${TRAVIS_PYTHON_VERSION:0:1} == "2" ]; then
-    cd doc;
-    make notebooks html;
-    cd ..;
-    fi
+#before_script:
+#  - if [ ${TRAVIS_PYTHON_VERSION:0:1} == "2" ]; then
+#    make lint;
+#    fi
 
 # command to run tests
 script: make coverage
 
-# Check test coverage
+# After the build is successful, run coveralls and push docs
 after_success:
+  # Push to coveralls.io for test coverage stats
   - coveralls
+  # Push to github pages for documentation
+  - git config credential.helper "store --file=.git/credentials"
+  - git remote set-url origin https://github.com/YeoLab/flotilla.git
+  - git config --global credential.helper "store --file=.git/credentials"
+  - git config --global user.email "olga.botvinnik@gmail.com"
+  - git config --global user.name "Olga Botvinnik"
+  - echo "https://${GH_TOKEN}:@github.com" > .git/credentials
+  - if [ ${TRAVIS_PYTHON_VERSION:0:1} == "2" ]; then
+    cd doc;
+    make html;
+    cd ../gh-pages;
+    git add . ; git commit -m "Update from Travis-CI on $(date)";
+    git push -u origin gh-pages;
+    fi
 
 # For slack notifications
 notifications:
   slack:
     rooms:
-      - yeolab:HxLwrd5FGhZQ8SyBD9Fvh3dn#flotilla
+    - yeolab:HxLwrd5FGhZQ8SyBD9Fvh3dn#flotilla
+env:
+  global:
+    secure: N8LIn+ZtvaL+j9uHJFRtTWHbJtLk47r+7PUaSPapmpRPkqD4zClwC1+xVrfRXYiTWLVmCMfbcOAjQmZR8OjL8TKD4yGPzXAS5yb9QUhlMBf2is7CECIZQcQ/kht4KGKF72QoRY4r/Eh4NKhayBUWwZmHXd5zIKn8C/irvr+6LBI=

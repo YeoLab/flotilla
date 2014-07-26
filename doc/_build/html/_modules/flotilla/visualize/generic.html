@@ -133,12 +133,12 @@
                 <span class="n">link_color_func</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s">&#39;k&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">    Run hierarchical clustering on data. Creates a heatmap of cluster-ordered data</span>
+<span class="sd">    Run hierarchical clustering on dataset. Creates a heatmap of cluster-ordered dataset</span>
 <span class="sd">    heavy-lifting is done by:</span>
 
 <span class="sd">    gets distances between rows/columns</span>
 
-<span class="sd">    y_events = scipy.spatial.distance.pdist(data, distance_metric)</span>
+<span class="sd">    y_events = scipy.spatial.distance.pdist(dataset, distance_metric)</span>
 
 <span class="sd">    calculates the closest rows/columns</span>
 
@@ -151,21 +151,21 @@
 <span class="sd">    set outfile == &quot;None&quot; to inibit saving an eps file (only show it, don&#39;t save it)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dataFrame</span><span class="p">)</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dataFrame</span><span class="p">)</span>
     <span class="n">colLabels</span> <span class="o">=</span> <span class="n">dataFrame</span><span class="o">.</span><span class="n">columns</span>
     <span class="n">rowLabels</span> <span class="o">=</span> <span class="n">dataFrame</span><span class="o">.</span><span class="n">index</span>
-    <span class="n">nRow</span><span class="p">,</span> <span class="n">nCol</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">nRow</span><span class="p">,</span> <span class="n">nCol</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">shape</span>
 
     <span class="k">if</span> <span class="n">clusterRows</span><span class="p">:</span>
         <span class="k">print</span> <span class="s">&quot;getting row distance matrix&quot;</span>
-        <span class="n">y_events</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">distance</span><span class="o">.</span><span class="n">pdist</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">distance_metric</span><span class="p">)</span>
+        <span class="n">y_events</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">distance</span><span class="o">.</span><span class="n">pdist</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">distance_metric</span><span class="p">)</span>
         <span class="k">print</span> <span class="s">&quot;calculating linkages&quot;</span>
         <span class="n">Z_events</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">hierarchy</span><span class="o">.</span><span class="n">linkage</span><span class="p">(</span><span class="n">y_events</span><span class="p">,</span> <span class="n">linkage_method</span><span class="p">,</span>
                                                    <span class="n">metric</span><span class="o">=</span><span class="n">distance_metric</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">clusterCols</span><span class="p">:</span>
         <span class="k">print</span> <span class="s">&quot;getting column distance matrix&quot;</span>
-        <span class="n">y_samples</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">distance</span><span class="o">.</span><span class="n">pdist</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">data</span><span class="p">),</span>
+        <span class="n">y_samples</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">distance</span><span class="o">.</span><span class="n">pdist</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">dataset</span><span class="p">),</span>
                                                  <span class="n">distance_metric</span><span class="p">)</span>
         <span class="k">print</span> <span class="s">&quot;calculating linkages&quot;</span>
         <span class="n">Z_samples</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">hierarchy</span><span class="o">.</span><span class="n">linkage</span><span class="p">(</span><span class="n">y_samples</span><span class="p">,</span> <span class="n">linkage_method</span><span class="p">,</span>
@@ -184,14 +184,14 @@
     <span class="n">ax1</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([])</span>
     <span class="n">ax1</span><span class="o">.</span><span class="n">set_frame_on</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
 
-    <span class="n">reordered</span> <span class="o">=</span> <span class="n">data</span>
+    <span class="n">reordered</span> <span class="o">=</span> <span class="n">dataset</span>
     <span class="n">event_order</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">nRow</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">clusterRows</span><span class="p">:</span>
         <span class="n">d_events</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">hierarchy</span><span class="o">.</span><span class="n">dendrogram</span><span class="p">(</span><span class="n">Z_events</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s">&#39;right&#39;</span><span class="p">,</span>
                                                       <span class="n">link_color_func</span><span class="o">=</span><span class="n">link_color_func</span><span class="p">,</span>
                                                       <span class="n">labels</span><span class="o">=</span><span class="n">rowLabels</span><span class="p">)</span>
         <span class="n">event_order</span> <span class="o">=</span> <span class="n">d_events</span><span class="p">[</span><span class="s">&#39;leaves&#39;</span><span class="p">]</span>
-        <span class="n">reordered</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">event_order</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="n">reordered</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="n">event_order</span><span class="p">,</span> <span class="p">:]</span>
 
     <span class="n">labels</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">get_yticklabels</span><span class="p">()</span>
 
@@ -227,7 +227,7 @@
     <span class="n">axmatrix</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([])</span>
     <span class="n">axcolor</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">6</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
-    <span class="n">cbTicks</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">data</span><span class="p">)]</span>
+    <span class="n">cbTicks</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">dataset</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dataset</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">dataset</span><span class="p">)]</span>
     <span class="n">cb</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="n">axcolor</span><span class="p">,</span> <span class="n">ticks</span><span class="o">=</span><span class="n">cbTicks</span><span class="p">,</span> <span class="n">use_gridspec</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
     <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="n">row_label_color_fun</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">get_text</span><span class="p">()))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ax1</span><span class="o">.</span><span class="n">get_yticklabels</span><span class="p">()]</span>

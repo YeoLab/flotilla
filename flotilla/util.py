@@ -79,11 +79,17 @@ def memoize(obj):
 
     Stolen from:
     https://wiki.python.org/moin/PythonDecoratorLibrary#CA-237e205c0d5bd1459c3663a3feb7f78236085e0a_1
+
+    do_not_memoize : bool
+        IF this is a keyword argument (kwarg) in the function, and it is true,
+        then just evaluate the function and don't memoize it.
     """
     cache = obj.cache = {}
 
     @functools.wraps(obj)
     def memoizer(*args, **kwargs):
+        if 'do_not_memoize' in kwargs and kwargs['do_not_memoize']:
+            return obj(*args, **kwargs)
         key = str(args) + str(kwargs)
         if key not in cache:
             cache[key] = obj(*args, **kwargs)
@@ -149,3 +155,15 @@ class cached_property(object):
                 cache = inst._cache = {}
             cache[self.__name__] = (value, now)
         return value
+
+
+def as_numpy(x):
+    """Given either a pandas dataframe or a numpy array, always return a
+    numpy array.
+    """
+    try:
+        # Pandas DataFrame
+        return x.values
+    except AttributeError:
+        # Numpy array
+        return x

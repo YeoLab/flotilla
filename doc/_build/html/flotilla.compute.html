@@ -421,7 +421,7 @@
                 <tr class="field-odd field">
                     <th class="field-name">Parameters:</th>
                     <td class="field-body"><p class="first">
-                        <strong>data</strong> : pandas.DataFrame</p>
+                        <strong>dataset</strong> : pandas.DataFrame</p>
                         <blockquote>
                             <div><p>The dataframe whose rows you&#8217;d like to
                                 binify.</p>
@@ -429,7 +429,7 @@
                         </blockquote>
                         <p><strong>bins</strong> : numpy.array</p>
                         <blockquote>
-                            <div><p>Bins you would like to use for this data.
+                            <div><p>Bins you would like to use for this dataset.
                                 Must include the final bin
                                 value, e.g. (0, 0.5, 1) for the two bins (0,
                                 0.5) and (0.5, 1)</p>
@@ -586,7 +586,7 @@
                                                             href="#flotilla.compute.generic.get_switchy_score_order"
                                                             title="Permalink to this definition">¶</a>
         </dt>
-        <dd><p>Apply switchy scores to a 2D array of data scores</p>
+        <dd><p>Apply switchy scores to a 2D array of dataset scores</p>
             <table class="docutils field-list" frame="void" rules="none">
                 <col class="field-name"/>
                 <col class="field-body"/>
@@ -642,7 +642,7 @@
                                                             href="#flotilla.compute.generic.switchy_score"
                                                             title="Permalink to this definition">¶</a>
         </dt>
-        <dd><p>Transform a 1D array of data scores to a vector of &#8220;switchy
+        <dd><p>Transform a 1D array of dataset scores to a vector of &#8220;switchy
             scores&#8221;</p>
 
             <p>Calculates std deviation and mean of sine- and cosine-transformed
@@ -760,11 +760,11 @@
                                           title="Permalink to this headline">¶</a>
     </h2>
 
-    <p>Compute predictors on data, e.g. regressors or classifiers</p>
+    <p>Compute predictors on dataset, e.g. regressors or classifiers</p>
     <dl class="class">
         <dt id="flotilla.compute.predict.Classifier">
             <em class="property">class </em><tt class="descclassname">flotilla.compute.predict.</tt><tt
-                class="descname">Classifier</tt><big>(</big><em>data</em>, <em>trait</em>,
+                class="descname">Classifier</tt><big>(</big><em>dataset</em>, <em>trait</em>,
             <em>predictor=&lt;class
                 'sklearn.ensemble.forest.ExtraTreesClassifier'&gt;</em>, <em>name='ExtraTreesClassifier'</em>,
             <em>predictor_kwargs=None</em>, <em>predictor_scoring_fun=None</em>,
@@ -781,7 +781,7 @@
                 class="xref py py-class docutils literal"><span class="pre">flotilla.compute.predict.PredictorBase</span></tt></a>
         </p>
 
-            <p>PredictorBase for categorical data</p>
+            <p>PredictorBase for categorical dataset</p>
 
             <p class="rubric">Methods</p>
             <dl class="attribute">
@@ -841,7 +841,7 @@
     <dl class="class">
         <dt id="flotilla.compute.predict.PredictorBase">
             <em class="property">class </em><tt class="descclassname">flotilla.compute.predict.</tt><tt
-                class="descname">PredictorBase</tt><big>(</big><em>data</em>,
+                class="descname">PredictorBase</tt><big>(</big><em>dataset</em>,
             <em>trait</em>, <em>predictor=None</em>, <em>name='Predictor'</em>,
             <em>predictor_kwargs=None</em>, <em>predictor_scoring_fun=None</em>,
             <em>score_cutoff_fun=None</em><big>)</big><a
@@ -900,7 +900,7 @@
                         class="headerlink"
                         href="#flotilla.compute.predict.PredictorBase.fit"
                         title="Permalink to this definition">¶</a></dt>
-                <dd><p>Fit predictor to the data</p>
+                <dd><p>Fit predictor to the dataset</p>
                 </dd>
             </dl>
 
@@ -923,7 +923,7 @@
     <dl class="class">
         <dt id="flotilla.compute.predict.Regressor">
             <em class="property">class </em><tt class="descclassname">flotilla.compute.predict.</tt><tt
-                class="descname">Regressor</tt><big>(</big><em>data</em>, <em>trait</em>,
+                class="descname">Regressor</tt><big>(</big><em>dataset</em>, <em>trait</em>,
             <em>predictor=&lt;class
                 'sklearn.ensemble.forest.ExtraTreesRegressor'&gt;</em>, <em>name='ExtraTreesRegressor'</em>,
             <em>predictor_kwargs=None</em>, <em>predictor_scoring_fun=None</em>,
@@ -940,7 +940,7 @@
                 class="xref py py-class docutils literal"><span class="pre">flotilla.compute.predict.PredictorBase</span></tt></a>
         </p>
 
-            <p>PredictorBase for continuous data</p>
+            <p>PredictorBase for continuous dataset</p>
 
             <p class="rubric">Methods</p>
             <dl class="attribute">
