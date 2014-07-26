@@ -175,6 +175,7 @@ def fill_database(mongodb, predictor, target, verbose=False,
 
 def get_mongo_db(db, mongoHost=mongoHost, mongoPort=mongoPort):
     from pymongo import MongoClient
+
     c = MongoClient(mongoHost, port=mongoPort)
     sys.stderr.write(
         'connected to database on %s:%d\n' % (mongoHost, mongoPort))

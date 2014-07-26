@@ -61,8 +61,8 @@ def serve_ipython():
 
 
 def dict_to_str(dic):
-        """join dictionary study_data into a string with that study_data"""
-        return "_".join([k + ":" + str(v) for (k, v) in dic.items()])
+    """join dictionary study_data into a string with that study_data"""
+    return "_".join([k + ":" + str(v) for (k, v) in dic.items()])
 
 
 def install_development_package(package_location):
@@ -94,6 +94,7 @@ def memoize(obj):
         if key not in cache:
             cache[key] = obj(*args, **kwargs)
         return cache[key]
+
     return memoizer
 
 
@@ -131,6 +132,7 @@ class cached_property(object):
     https://wiki.python.org/moin/PythonDecoratorLibrary#Cached_Properties
 
     '''
+
     def __init__(self, ttl=0):
         self.ttl = ttl
 

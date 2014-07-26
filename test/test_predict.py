@@ -95,8 +95,9 @@ class TestRegressor:
     def test_fit(self, regressor, reduced, y):
         regressor.fit()
 
-        regressor.predictor_config.scores_ = regressor.predictor_scoring_fun(regressor
-                                                                      .predictor_config)
+        regressor.predictor_config.scores_ = regressor.predictor_scoring_fun(
+            regressor
+            .predictor_config)
 
         true_regressor = ExtraTreesRegressor(**regressor.predictor_kwargs)
         true_regressor.fit(reduced, y)

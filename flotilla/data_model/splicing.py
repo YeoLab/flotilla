@@ -197,7 +197,7 @@ class SplicingData(BaseData):
                  n_features_dependent_parameters=None,
                  constant_parameters=None,
                  plotting_kwargs=None,
-                 ):
+    ):
         #Should all this be exposed to the user???
 
         """Make and memoize a predictor on a categorical trait (associated

@@ -4,7 +4,7 @@ flotilla
 ========
 
 .. figure:: flotilla.png
-   :alt: flotilla Logo
+:alt: flotilla Logo
 
    flotilla Logo
 Download
@@ -150,6 +150,6 @@ run:
     make lint
 
 .. |Build Status| image:: https://travis-ci.org/YeoLab/flotilla.svg?branch=master
-   :target: https://travis-ci.org/YeoLab/flotilla
+:target: https://travis-ci.org/YeoLab/flotilla
 .. |Coverage Status| image:: https://img.shields.io/coveralls/YeoLab/flotilla.svg
-   :target: https://coveralls.io/r/YeoLab/flotilla?branch=master
+:target: https://coveralls.io/r/YeoLab/flotilla?branch=master

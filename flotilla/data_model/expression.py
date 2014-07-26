@@ -2,6 +2,8 @@
 Data types related to gene expression, e.g. from RNA-Seq or microarrays.
 Included SpikeIn data.
 """
+import sys
+
 import numpy as np
 import pandas as pd
 
@@ -9,10 +11,9 @@ from .base import BaseData
 from ..visualize.decomposition import PCAViz
 from ..visualize.predict import ClassifierViz
 from ..util import memoize
-import sys
+
 
 class ExpressionData(BaseData):
-
     _expression_thresh = 0.1
 
     def __init__(self, data,
@@ -42,7 +43,6 @@ class ExpressionData(BaseData):
             predictor_config_manager=predictor_config_manager)
 
         sys.stderr.write("done initializing expression\n")
-
 
         self._var_cut = data.var().dropna().mean() + 2 * data.var() \
             .dropna().std()
@@ -121,7 +121,7 @@ class ExpressionData(BaseData):
                  n_features_dependent_parameters=None,
                  constant_parameters=None,
                  plotting_kwargs=None,
-                 ):
+    ):
         #Should all this be exposed to the user???
 
         """Make and memoize a predictor on a categorical trait (associated
@@ -251,7 +251,8 @@ class SpikeInData(ExpressionData):
         ------
 
         """
-        super(SpikeInData, self).__init__(data, feature_data, predictor_config_manager=predictor_config_manager)
+        super(SpikeInData, self).__init__(data, feature_data,
+                                          predictor_config_manager=predictor_config_manager)
 
         # def spikeins_violinplot(self):
         #     import matplotlib.pyplot as plt

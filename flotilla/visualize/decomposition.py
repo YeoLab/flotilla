@@ -67,7 +67,8 @@ class DecompositionViz(object):
         if reduction_args is None:
             reduction_args = self._default_reduction_kwargs
         else:
-            reduction_args = self._default_reduction_kwargs.update(reduction_args)
+            reduction_args = self._default_reduction_kwargs.update(
+                reduction_args)
 
         # This magically initializes the reducer like PCA or NMF
         super(DecompositionViz, self).__init__(n_components=n_components,
@@ -172,6 +173,7 @@ class DecompositionViz(object):
 
             def color_factory():
                 return colors.next()
+
             label_to_color = defaultdict(color_factory)
 
         if label_to_marker is None:

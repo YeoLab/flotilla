@@ -25,6 +25,7 @@ from ..visualize.network import NetworkerViz
 from ..external import data_package_url_to_dict, check_if_already_downloaded
 from ..compute.predict import PredictorConfigManager
 
+
 SPECIES_DATA_PACKAGE_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects'
 
 # import flotilla
@@ -272,9 +273,9 @@ class Study(StudyFactory):
         super(Study, self).__init__()
 
         sys.stderr.write("initializing study\n")
-        self.predictor_config_manager = predictor_config_manager\
+        self.predictor_config_manager = predictor_config_manager \
             if predictor_config_manager is not None \
-                else PredictorConfigManager()
+            else PredictorConfigManager()
 
         # if params_dict is None:
         #     params_dict = {}
@@ -283,7 +284,6 @@ class Study(StudyFactory):
         # self.apply_getters()
         self.species = species
         self.gene_ontology_data = gene_ontology_data
-
 
         self.metadata = MetaData(sample_metadata, phenotype_order,
                                  phenotype_to_color, phenotype_to_marker,
@@ -296,7 +296,6 @@ class Study(StudyFactory):
             [col for col in self.metadata.data.columns
              if self.metadata.data[col].dtype == bool]
         self.default_sample_subsets.insert(0, 'all_samples')
-
 
         if 'outlier' in self.metadata.data and drop_outliers:
             outliers = self.metadata.data.index[

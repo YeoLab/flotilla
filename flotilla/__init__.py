@@ -11,6 +11,7 @@ try:
 except:
     pass
 
+
 def embark(study_name):
     """
     Begin your journey of data exploration.

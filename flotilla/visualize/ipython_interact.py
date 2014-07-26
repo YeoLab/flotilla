@@ -8,13 +8,12 @@ import warnings
 
 from IPython.html.widgets import interact
 import matplotlib.pyplot as plt
-from matplotlib.colors import rgb2hex
 
 from ..visualize.color import red
 from .network import NetworkerViz
-
 from .color import str_to_color
 from ..compute.predict import default_classifier
+
 
 class Interactive(object):
     """
@@ -75,12 +74,12 @@ class Interactive(object):
 
     @staticmethod
     def interactive_pca(self, data_types=('expression', 'splicing'),
-                         sample_subsets=None,
-                         feature_subsets=None,
-                         featurewise=False,
-                         x_pc=(1, 10), y_pc=(1, 10),
-                         show_point_labels=False,
-                         savefile='data/last.pca.pdf'):
+                        sample_subsets=None,
+                        feature_subsets=None,
+                        featurewise=False,
+                        x_pc=(1, 10), y_pc=(1, 10),
+                        show_point_labels=False,
+                        savefile='data/last.pca.pdf'):
 
         def do_interact(data_type='expression',
                         sample_subset=self.default_sample_subsets,
@@ -145,17 +144,18 @@ class Interactive(object):
 
     @staticmethod
     def interactive_graph(self, data_types=('expression', 'splicing'),
-                 sample_subsets=None,
-                 feature_subsets=None,
-                 featurewise=False,
-                 cov_std_cut=(0.1, 3),
-                 degree_cut=(0, 10),
-                 n_pcs=(2, 100),
-                 draw_labels=False,
-                 feature_of_interest="RBFOX2",
-                 weight_fun = None,
-                 use_pc_1=True, use_pc_2=True, use_pc_3=True, use_pc_4=True,
-                 savefile='data/last.graph.pdf'):
+                          sample_subsets=None,
+                          feature_subsets=None,
+                          featurewise=False,
+                          cov_std_cut=(0.1, 3),
+                          degree_cut=(0, 10),
+                          n_pcs=(2, 100),
+                          draw_labels=False,
+                          feature_of_interest="RBFOX2",
+                          weight_fun=None,
+                          use_pc_1=True, use_pc_2=True, use_pc_3=True,
+                          use_pc_4=True,
+                          savefile='data/last.graph.pdf'):
 
         from IPython.html.widgets import interact
 
@@ -228,13 +228,13 @@ class Interactive(object):
 
     @staticmethod
     def interactive_classifier(self, data_types=('expression', 'splicing'),
-                                 sample_subsets=None,
-                                 feature_subsets=None,
-                                 categorical_variables=None,
-                                 predictor_types=None,
-                                 score_coefficient=(0.1, 20),
-                                 draw_labels=False,
-                                 savefile='data/last.clf.pdf'):
+                               sample_subsets=None,
+                               feature_subsets=None,
+                               categorical_variables=None,
+                               predictor_types=None,
+                               score_coefficient=(0.1, 20),
+                               draw_labels=False,
+                               savefile='data/last.clf.pdf'):
 
         from IPython.html.widgets import interact
 
@@ -272,7 +272,8 @@ class Interactive(object):
 
         if categorical_variables is None:
             categorical_variables = [i for i in self.default_sample_subsets if
-                                     not i.startswith("~") and i != 'all_samples']
+                                     not i.startswith(
+                                         "~") and i != 'all_samples']
 
         if predictor_types is None:
             predictor_types = self.predictor_config_manager.predictor_configs.keys()
@@ -286,7 +287,7 @@ class Interactive(object):
                  categorical_variable=categorical_variables,
                  score_coefficient=score_coefficient,
                  draw_labels=draw_labels,
-                 predictor_type = predictor_types,
+                 predictor_type=predictor_types,
                  savefile=savefile)
 
     @staticmethod
@@ -363,7 +364,8 @@ class Interactive(object):
             from sklearn.preprocessing import LabelEncoder
 
             le = LabelEncoder()
-            n_in_this_class = len(set(le.fit_transform(self.experiment_design.data[sample_subset])))
+            n_in_this_class = len(set(
+                le.fit_transform(self.experiment_design.data[sample_subset])))
 
             try:
                 assert n_in_this_class
@@ -373,12 +375,13 @@ class Interactive(object):
             sample_series = self.metadata.data[sample_subset]
             # TODO: cast non-boolean binary ids to boolean
             try:
-                assert self.experiment_design.data[sample_subset].dtype == 'bool'
+                assert self.experiment_design.data[
+                           sample_subset].dtype == 'bool'
             except:
                 raise RuntimeError("this sample designator is not boolean")
 
-            sample_ids = self.experiment_design.data[sample_subset].index[self.experiment_design.data[sample_subset]]
-
+            sample_ids = self.experiment_design.data[sample_subset].index[
+                self.experiment_design.data[sample_subset]]
 
             self.splicing.plot_modalities_lavalamps(
                 sample_ids, feature_ids, color=color, x_offset=x_offset,
@@ -430,11 +433,12 @@ class Interactive(object):
             feature_ids = self.splicing.feature_subsets[feature_subset]
             sample_ids = self.sample_subset_to_sample_ids(sample_subset)
 
-
             color = str_to_color[color]
             from sklearn.preprocessing import LabelEncoder
+
             le = LabelEncoder()
-            n_in_this_class = len(set(le.fit_transform(self.experiment_design.data[sample_subset])))
+            n_in_this_class = len(set(
+                le.fit_transform(self.experiment_design.data[sample_subset])))
             try:
                 assert n_in_this_class
             except:
@@ -443,12 +447,13 @@ class Interactive(object):
             sample_series = self.experiment_design.data[sample_subset]
             #TODO: cast non-boolean binary ids to boolean
             try:
-                assert self.experiment_design.data[sample_subset].dtype == 'bool'
+                assert self.experiment_design.data[
+                           sample_subset].dtype == 'bool'
             except:
                 raise RuntimeError("this sample designator is not boolean")
 
-            sample_ids = self.experiment_design.data[sample_subset].index[self.experiment_design.data[sample_subset]]
-
+            sample_ids = self.experiment_design.data[sample_subset].index[
+                self.experiment_design.data[sample_subset]]
 
             self.splicing.plot_lavalamp_pooled_inconsistent(
                 sample_ids, feature_ids, difference_threshold, color=color)
@@ -473,6 +478,7 @@ class Interactive(object):
                  color=colors,
                  savefile=''
         )
+
     @staticmethod
     def interactive_clusteredheatmap(self):
         def do_interact(data_type='expression',
