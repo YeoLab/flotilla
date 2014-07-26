@@ -158,7 +158,7 @@ def block_parser(part, rgxin, rgxout, fmtin, fmtout):
       blocks = [ (TOKEN0, data0), (TOKEN1, data1), ...]
 
     where TOKEN is one of [COMMENT | INPUT | OUTPUT ] and
-    data is, depending on the type of token::
+    dataset is, depending on the type of token::
 
       COMMENT : the comment string
 
@@ -385,7 +385,7 @@ class EmbeddedSphinxShell(object):
     # Callbacks for each type of token
     def process_input(self, data, input_prompt, lineno):
         """
-        Process data block for INPUT token.
+        Process dataset block for INPUT token.
 
         """
         decorator, input, rest = data
@@ -502,7 +502,7 @@ class EmbeddedSphinxShell(object):
     def process_output(self, data, output_prompt,
                        input_lines, output, is_doctest, decorator, image_file):
         """
-        Process data block for OUTPUT token.
+        Process dataset block for OUTPUT token.
 
         """
         TAB = ' ' * 4
@@ -552,7 +552,7 @@ class EmbeddedSphinxShell(object):
                 self.custom_doctest(decorator, input_lines, found, submitted)
 
     def process_comment(self, data):
-        """Process data fPblock for COMMENT token."""
+        """Process dataset fPblock for COMMENT token."""
         if not self.is_suppress:
             return [data]
 

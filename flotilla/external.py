@@ -123,7 +123,7 @@ class GO(object):
     >>> go = hg19GO()
     >>> go.geneXref['ENSG00000100320']
     'RBFOX2'
-    >>> data = go.enrichment(list, background)
+    >>> dataset = go.enrichment(list, background)
 
     """
 
@@ -210,7 +210,7 @@ def check_if_already_downloaded(url, download_dir=FLOTILLA_DOWNLOAD_DIR):
 
     try:
         os.mkdir(package_dir)
-        sys.stdout.write('Creating a directory for saving the data for this '
+        sys.stdout.write('Creating a directory for saving the dataset for this '
                          'project: {}\n'.format(package_dir))
     except OSError:
         pass
@@ -280,10 +280,10 @@ def make_study_datapackage(name, experiment_design_data,
         with gzip.open(data_filename, 'wb') as f:
             resource_data.to_csv(f)
         try:
-            #TODO: only transmit data if it has been updated
+            #TODO: only transmit dataset if it has been updated
             subprocess.call("scp {} {}:{}{}.".format(data_filename, host, host_destination, name), shell=True)
         except Exception as e:
-            sys.stderr.write("error sending data to host: {}".format(e))
+            sys.stderr.write("error sending dataset to host: {}".format(e))
 
         resource['path'] = data_filename
         resource['compression'] = 'gzip'

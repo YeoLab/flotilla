@@ -24,7 +24,7 @@ def reduced(study):
 class TestPredictorBase:
     @pytest.fixture
     def trait(self, study):
-        return study.experiment_design.data.celltype
+        return study.experiment_design.dataset.celltype
 
     @pytest.fixture
     def predictorbase(self, reduced, trait):
@@ -35,7 +35,7 @@ class TestPredictorBase:
     def test_init(self, reduced, predictorbase, trait):
         X, trait = reduced.align(trait, axis=0, join='inner')
 
-        assert predictorbase.predictor is None
+        assert predictorbase.predictor_config is None
         assert predictorbase.predictor_class is None
         pdt.assert_frame_equal(predictorbase.X, X)
         pdt.assert_series_equal(predictorbase.trait, trait)
@@ -73,9 +73,9 @@ class TestPredictorBase:
 class TestRegressor:
     @pytest.fixture
     def y(self, study):
-        return pd.Series(np.arange(study.expression.data.shape[0]),
+        return pd.Series(np.arange(study.expression.dataset.shape[0]),
                          name='dummy',
-                         index=study.expression.data.index)
+                         index=study.expression.dataset.index)
 
     @pytest.fixture
     def predictor_kwargs(self):
@@ -94,14 +94,14 @@ class TestRegressor:
 
     def test_fit(self, regressor, reduced, y):
         regressor.fit()
-        regressor.predictor.scores_ = regressor.predictor_scoring_fun(regressor
-                                                                      .predictor)
+        regressor.predictor_config.scores_ = regressor.predictor_scoring_fun(regressor
+                                                                      .predictor_config)
 
         true_regressor = ExtraTreesRegressor(**regressor.predictor_kwargs)
         true_regressor.fit(reduced, y)
         true_regressor.scores_ = regressor.predictor_scoring_fun(true_regressor)
 
-        npt.assert_array_equal(regressor.predictor.scores_,
+        npt.assert_array_equal(regressor.predictor_config.scores_,
                                true_regressor.scores_)
         assert regressor.has_been_fit
 
@@ -123,15 +123,15 @@ class TestRegressor:
             true_regressor.important_features].T
 
         pdt.assert_series_equal(true_regressor.scores_,
-                                regressor.predictor.scores_)
+                                regressor.predictor_config.scores_)
         npt.assert_equal(true_regressor.score_cutoff_,
-                         regressor.predictor.score_cutoff_)
+                         regressor.predictor_config.score_cutoff_)
         pdt.assert_series_equal(true_regressor.important_features,
-                                regressor.important_features)
+                                regressor.important_features_)
         assert true_regressor.n_good_features \
-               == regressor.predictor.n_good_features_
+               == regressor.predictor_config.n_good_features_
         pdt.assert_frame_equal(true_regressor.subset_,
-                               regressor.predictor.subset_)
+                               regressor.predictor_config.subset_)
         assert regressor.has_been_scored
 
 
@@ -140,7 +140,7 @@ class TestClassifier:
 
     @pytest.fixture
     def trait(self, study):
-        return study.experiment_design.data.celltype
+        return study.experiment_design.dataset.celltype
 
     @pytest.fixture
     def y(self, trait):
@@ -171,16 +171,16 @@ class TestClassifier:
         reduced, y = reduced_y_aligned
 
         classifier.fit()
-        classifier.predictor.scores_ = classifier.predictor_scoring_fun(
+        classifier.predictor_config.scores_ = classifier.predictor_scoring_fun(
             classifier
-            .predictor)
+            .predictor_config)
 
         true_classifier = ExtraTreesClassifier(**classifier.predictor_kwargs)
         true_classifier.fit(reduced, y)
         true_classifier.scores_ = classifier.predictor_scoring_fun(
             true_classifier)
 
-        npt.assert_array_equal(classifier.predictor.scores_,
+        npt.assert_array_equal(classifier.predictor_config.scores_,
                                true_classifier.scores_)
         assert classifier.has_been_fit
 
@@ -205,13 +205,13 @@ class TestClassifier:
             true_classifier.important_features].T
 
         pdt.assert_series_equal(true_classifier.scores_,
-                                classifier.predictor.scores_)
+                                classifier.predictor_config.scores_)
         npt.assert_equal(true_classifier.score_cutoff_,
-                         classifier.predictor.score_cutoff_)
+                         classifier.predictor_config.score_cutoff_)
         pdt.assert_series_equal(true_classifier.important_features,
-                                classifier.important_features)
+                                classifier.important_features_)
         assert true_classifier.n_good_features \
-               == classifier.predictor.n_good_features_
+               == classifier.predictor_config.n_good_features_
         pdt.assert_frame_equal(true_classifier.subset_,
-                               classifier.predictor.subset_)
+                               classifier.predictor_config.subset_)
         assert classifier.has_been_scored

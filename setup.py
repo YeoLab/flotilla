@@ -8,7 +8,7 @@ setup(
     license='',
     author='mlovci,olgabot',
     author_email='mlovci@ucsd.edu',
-    description='Embark on a journey of data exploration.',
+    description='Embark on a journey of dataset exploration.',
     install_requires=open('requirements.txt').readlines(),
     version="0.0.4"
 )

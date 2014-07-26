@@ -277,7 +277,7 @@
       var div = createCommentDiv(this);
       ul.append($(document.createElement('li')).html(div));
       appendComments(this.children, div.find('ul.comment-children'));
-      // To avoid stagnating data, don't store the comments children in data.
+      // To avoid stagnating dataset, don't store the comments children in dataset.
       this.children = null;
       div.data('comment', this);
     });
@@ -290,7 +290,7 @@
   function insertComment(comment) {
     var div = createCommentDiv(comment);
 
-    // To avoid stagnating data, don't store the comments children in data.
+    // To avoid stagnating dataset, don't store the comments children in dataset.
     comment.children = null;
     div.data('comment', comment);
 
@@ -440,7 +440,7 @@
     if (id.charAt(1) != 'u') {
       value = id.charAt(0) == 'u' ? 1 : -1;
     }
-    // The data to be sent to the server.
+    // The dataset to be sent to the server.
     var d = {
       comment_id: id.substring(2),
       value: value
@@ -462,7 +462,7 @@
       $('#' + (d.value == 1 ? 'd' : 'u') + 'v' + d.comment_id).show();
     }
 
-    // Update the comments rating in the local data.
+    // Update the comments rating in the local dataset.
     data.rating += (data.vote === 0) ? d.value : (d.value - data.vote);
     data.vote = d.value;
     div.data('comment', data);

@@ -170,13 +170,13 @@
                                           title="Permalink to this headline">¶</a>
     </h2>
 
-    <p>Base data class for all data types. All data types in flotilla inherit
+    <p>Base dataset class for all dataset types. All dataset types in flotilla inherit
         from
         this, or a child object (like ExpressionData).</p>
     <dl class="class">
         <dt id="flotilla.data_model.base.BaseData">
             <em class="property">class </em><tt class="descclassname">flotilla.data_model.base.</tt><tt
-                class="descname">BaseData</tt><big>(</big><em>data=None</em>,
+                class="descname">BaseData</tt><big>(</big><em>dataset=None</em>,
             <em>feature_data=None</em>, <em>species=None</em>, <em>feature_rename_col=None</em>,
             <em>outliers=None</em>, <em>min_samples=12</em><big>)</big><a
                 class="reference internal"
@@ -401,7 +401,7 @@
                                 <blockquote>
                                     <div><p>If None, plot all the samples. If a
                                         list of strings, must be
-                                        valid sample ids of the data</p>
+                                        valid sample ids of the dataset</p>
                                     </div>
                                 </blockquote>
                                 <p><strong>feature_ids</strong> : None or list
@@ -438,7 +438,7 @@
     <dl class="class">
         <dt id="flotilla.data_model.experiment_design.ExperimentDesignData">
             <em class="property">class </em><tt class="descclassname">flotilla.data_model.experiment_design.</tt><tt
-                class="descname">MetaData</tt><big>(</big><em>data=None</em>,
+                class="descname">MetaData</tt><big>(</big><em>dataset=None</em>,
             <em>feature_data=None</em>, <em>species=None</em>, <em>feature_rename_col=None</em>,
             <em>outliers=None</em>, <em>min_samples=12</em><big>)</big><a
                 class="reference internal"
@@ -469,11 +469,11 @@
     </h2>
 
     <p>Data types related to gene expression, e.g. from RNA-Seq or microarrays.
-        Included SpikeIn data.</p>
+        Included SpikeIn dataset.</p>
     <dl class="class">
         <dt id="flotilla.data_model.expression.ExpressionData">
             <em class="property">class </em><tt class="descclassname">flotilla.data_model.expression.</tt><tt
-                class="descname">ExpressionData</tt><big>(</big><em>data</em>,
+                class="descname">ExpressionData</tt><big>(</big><em>dataset</em>,
             <em>feature_data=None</em>, <em>expression_thresh=0.1</em>, <em>feature_rename_col=None</em>,
             <em>outliers=None</em><big>)</big><a class="reference internal"
                                                  href="_modules/flotilla/data_model/expression.html#ExpressionData"><span
@@ -536,7 +536,7 @@
                                     <div><p>Whether or not to &#8220;whiten&#8221;
                                         (make all variables uncorrelated) and
                                         mean-center and make unit-variance all
-                                        the data via sklearn
+                                        the dataset via sklearn
                                         .preprocessing.StandardScaler</p>
                                     </div>
                                 </blockquote>
@@ -624,7 +624,7 @@
                         href="#flotilla.data_model.expression.ExpressionData.reduce"
                         title="Permalink to this definition">¶</a></dt>
                 <dd><p>Make and memoize a reduced dimensionality representation
-                    of data</p>
+                    of dataset</p>
                     <table class="docutils field-list" frame="void"
                            rules="none">
                         <col class="field-name"/>
@@ -714,7 +714,7 @@
     <dl class="class">
         <dt id="flotilla.data_model.expression.SpikeInData">
             <em class="property">class </em><tt class="descclassname">flotilla.data_model.expression.</tt><tt
-                class="descname">SpikeInData</tt><big>(</big><em>data</em>, <em>feature_data=None</em><big>)</big><a
+                class="descname">SpikeInData</tt><big>(</big><em>dataset</em>, <em>feature_data=None</em><big>)</big><a
                 class="reference internal"
                 href="_modules/flotilla/data_model/expression.html#SpikeInData"><span
                 class="viewcode-link">[source]</span></a><a class="headerlink"
@@ -727,7 +727,7 @@
                 class="xref py py-class docutils literal"><span class="pre">flotilla.data_model.expression.ExpressionData</span></tt></a>
         </p>
 
-            <p>Class for Spikein data and associated functions
+            <p>Class for Spikein dataset and associated functions
                 Attributes
                 &#8212;&#8212;&#8212;-</p>
 
@@ -760,7 +760,7 @@
     <dl class="class">
         <dt id="flotilla.data_model.quality_control.MappingStatsData">
             <em class="property">class </em><tt class="descclassname">flotilla.data_model.quality_control.</tt><tt
-                class="descname">MappingStatsData</tt><big>(</big><em>data</em>,
+                class="descname">MappingStatsData</tt><big>(</big><em>dataset</em>,
             <em>number_mapped_col</em><big>)</big><a class="reference internal"
                                                      href="_modules/flotilla/data_model/quality_control.html#MappingStatsData"><span
                 class="viewcode-link">[source]</span></a><a class="headerlink"
@@ -773,7 +773,7 @@
                 class="xref py py-class docutils literal"><span class="pre">flotilla.data_model.base.BaseData</span></tt></a>
         </p>
 
-            <p>Constructor for mapping statistics data from STAR</p>
+            <p>Constructor for mapping statistics dataset from STAR</p>
 
             <p class="rubric">Attributes</p>
 
@@ -1012,7 +1012,7 @@
 <dl class="class">
     <dt id="flotilla.data_model.splicing.SplicingData">
         <em class="property">class </em><tt class="descclassname">flotilla.data_model.splicing.</tt><tt
-            class="descname">SplicingData</tt><big>(</big><em>data</em>, <em>feature_data=None</em>,
+            class="descname">SplicingData</tt><big>(</big><em>dataset</em>, <em>feature_data=None</em>,
         <em>binsize=0.1</em>, <em>var_cut=0.2</em>, <em>outliers=None</em>, <em>feature_rename_col=None</em><big>)</big><a
             class="reference internal"
             href="_modules/flotilla/data_model/splicing.html#SplicingData"><span
@@ -1110,7 +1110,7 @@
                                 <div><p>Whether or not to &#8220;whiten&#8221;
                                     (make all variables uncorrelated) and
                                     mean-center and make unit-variance all the
-                                    data via sklearn
+                                    dataset via sklearn
                                     .preprocessing.StandardScaler</p>
                                 </div>
                             </blockquote>
@@ -1214,7 +1214,7 @@
                     href="#flotilla.data_model.splicing.SplicingData.reduce"
                     title="Permalink to this definition">¶</a></dt>
             <dd><p>make and cache a reduced dimensionality representation of
-                data</p>
+                dataset</p>
 
                 <p>Default is PCAViz because</p>
             </dd>
@@ -1233,8 +1233,8 @@
 </h2>
 
 <p>Data models for &#8220;studies&#8221; studies include attributes about the
-    data and are
-    heavier in terms of data load</p>
+    dataset and are
+    heavier in terms of dataset load</p>
 <dl class="class">
 <dt id="flotilla.data_model.study.Study">
     <em class="property">class </em><tt class="descclassname">flotilla.data_model.study.</tt><tt
@@ -1257,7 +1257,7 @@
         class="xref py py-class docutils literal"><span class="pre">flotilla.data_model.study.StudyFactory</span></tt></a>
 </p>
 
-<p>store essential data associated with a study. Users specify how to build the
+<p>store essential dataset associated with a study. Users specify how to build the
     necessary components from project-specific getters (see barebones_project
     for example getters)</p>
 
@@ -1341,12 +1341,12 @@
                 <td class="field-body"><p class="first">
                     <strong>data_type</strong> : str</p>
                     <blockquote>
-                        <div><p>A string describing the data type, e.g. &#8220;expression&#8221;</p>
+                        <div><p>A string describing the dataset type, e.g. &#8220;expression&#8221;</p>
                         </div>
                     </blockquote>
                     <p><strong>feature_subset</strong> : str</p>
                     <blockquote>
-                        <div><p>A string describing the subset of data type
+                        <div><p>A string describing the subset of dataset type
                             (must be already
                             calculated)</p>
                         </div>
@@ -1418,9 +1418,9 @@
                         <div><p>HTTP url of a datapackage.json file, following
                             the specification
                             described here: <a class="reference external"
-                                               href="http://dataprotocols.org/data-packages/">http://dataprotocols.org/data-packages/</a>
+                                               href="http://dataprotocols.org/data-packages/">http://dataprotocols.org/dataset-packages/</a>
                             and
-                            requiring the following data resources:
+                            requiring the following dataset resources:
                             experiment_design,
                             expression, splicing</p>
                         </div>
@@ -1442,7 +1442,7 @@
                 <td class="field-body"><p class="first"><strong>study</strong> :
                     Study</p>
                     <blockquote>
-                        <div><p>A &#8220;study&#8221; object containing the data
+                        <div><p>A &#8220;study&#8221; object containing the dataset
                             described in the
                             data_package_url file</p>
                         </div>
@@ -1579,7 +1579,7 @@
                                                         href="#flotilla.data_model.study.Study.plot_classifier"
                                                         title="Permalink to this definition">¶</a>
     </dt>
-    <dd><p>Plot a predictor for the specified data type and trait(s)</p>
+    <dd><p>Plot a predictor for the specified dataset type and trait(s)</p>
         <table class="docutils field-list" frame="void" rules="none">
             <col class="field-name"/>
             <col class="field-body"/>
@@ -1589,13 +1589,13 @@
                 <td class="field-body"><p class="first">
                     <strong>data_type</strong> : str</p>
                     <blockquote>
-                        <div><p>One of the names of the data types, e.g. &#8220;expression&#8221;
+                        <div><p>One of the names of the dataset types, e.g. &#8220;expression&#8221;
                             or &#8220;splicing&#8221;</p>
                         </div>
                     </blockquote>
                     <p><strong>trait</strong> : str</p>
                     <blockquote class="last">
-                        <div><p>Column name in the experiment_design data that
+                        <div><p>Column name in the experiment_design dataset that
                             you would like
                             to classify on</p>
                         </div>
@@ -1617,7 +1617,7 @@
                                                         href="#flotilla.data_model.study.Study.plot_graph"
                                                         title="Permalink to this definition">¶</a>
     </dt>
-    <dd><p>Plot the graph (network) of these data</p>
+    <dd><p>Plot the graph (network) of these dataset</p>
         <table class="docutils field-list" frame="void" rules="none">
             <col class="field-name"/>
             <col class="field-body"/>
@@ -1627,7 +1627,7 @@
                 <td class="field-body"><p class="first">
                     <strong>data_type</strong> : str</p>
                     <blockquote>
-                        <div><p>One of the names of the data types, e.g. &#8220;expression&#8221;
+                        <div><p>One of the names of the dataset types, e.g. &#8220;expression&#8221;
                             or &#8220;splicing&#8221;</p>
                         </div>
                     </blockquote>
@@ -1635,7 +1635,7 @@
                     <blockquote>
                         <div><p>Which subset of the samples to use, based on
                             some phenotype
-                            column in the experiment design data. If None, all
+                            column in the experiment design dataset. If None, all
                             samples are
                             used.</p>
                         </div>
@@ -1644,7 +1644,7 @@
                     <blockquote class="last">
                         <div><p>Which subset of the features to used, based on
                             some feature type
-                            in the expression data (e.g. &#8220;variant&#8221;).
+                            in the expression dataset (e.g. &#8220;variant&#8221;).
                             If None, all features
                             are used.</p>
                         </div>
@@ -1677,7 +1677,7 @@
                 <td class="field-body"><p class="first">
                     <strong>data_type</strong> : str</p>
                     <blockquote>
-                        <div><p>One of the names of the data types, e.g. &#8220;expression&#8221;
+                        <div><p>One of the names of the dataset types, e.g. &#8220;expression&#8221;
                             or &#8220;splicing&#8221;</p>
                         </div>
                     </blockquote>
@@ -1697,7 +1697,7 @@
                     <blockquote>
                         <div><p>Which subset of the samples to use, based on
                             some phenotype
-                            column in the experiment design data. If None, all
+                            column in the experiment design dataset. If None, all
                             samples are
                             used.</p>
                         </div>
@@ -1706,7 +1706,7 @@
                     <blockquote>
                         <div><p>Which subset of the features to used, based on
                             some feature type
-                            in the expression data (e.g. &#8220;variant&#8221;).
+                            in the expression dataset (e.g. &#8220;variant&#8221;).
                             If None, all features
                             are used.</p>
                         </div>
@@ -1765,7 +1765,7 @@
                                                         href="#flotilla.data_model.study.Study.sample_id_to_color"
                                                         title="Permalink to this definition">¶</a>
     </dt>
-    <dd><p>If &#8220;color&#8221; is a column in the experiment_design data,
+    <dd><p>If &#8220;color&#8221; is a column in the experiment_design dataset,
         return a
         dict of that {sample_id: color} mapping, else try to create it using
         the &#8220;celltype&#8221; columns, else just return a dict mapping to a
@@ -1783,7 +1783,7 @@
                                                         href="#flotilla.data_model.study.Study.sample_subset_to_sample_ids"
                                                         title="Permalink to this definition">¶</a>
     </dt>
-    <dd><p>Convert a string naming a subset of phenotypes in the data in to
+    <dd><p>Convert a string naming a subset of phenotypes in the dataset in to
         sample ids</p>
         <table class="docutils field-list" frame="void" rules="none">
             <col class="field-name"/>
@@ -1796,7 +1796,7 @@
                     <blockquote>
                         <div><p>A valid string describing a boolean phenotype
                             described in the
-                            experiment_design data</p>
+                            experiment_design dataset</p>
                         </div>
                     </blockquote>
                 </td>
@@ -1806,7 +1806,7 @@
                 <td class="field-body"><p class="first">
                     <strong>sample_ids</strong> : list of strings</p>
                     <blockquote class="last">
-                        <div><p>List of sample ids in the data</p>
+                        <div><p>List of sample ids in the dataset</p>
                         </div>
                     </blockquote>
                 </td>

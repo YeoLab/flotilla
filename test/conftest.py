@@ -12,7 +12,7 @@ CURRENT_DIR = os.path.dirname(__file__)
 
 
 class ExampleData(object):
-    __slots__ = ('experiment_design_data', 'expression', 'splicing', 'data')
+    __slots__ = ('experiment_design_data', 'expression', 'splicing', 'dataset')
 
     def __init__(self, experiment_design_data, expression, splicing):
         self.experiment_design_data = experiment_design_data
@@ -23,7 +23,7 @@ class ExampleData(object):
 
 @pytest.fixture(scope='module')
 def example_data():
-    data_dir = '{}/data'.format(CURRENT_DIR.rstrip('/'))
+    data_dir = '{}/dataset'.format(CURRENT_DIR.rstrip('/'))
     expression = pd.read_table('{}/expression.tsv'.format(data_dir),
                                index_col=0)
     splicing = pd.read_table('{}/splicing.tsv'.format(data_dir), index_col=0)

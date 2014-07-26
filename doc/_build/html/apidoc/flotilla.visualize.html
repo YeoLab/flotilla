@@ -234,10 +234,10 @@ ratio by the components.</p>
 <dl class="function">
 <dt id="flotilla.visualize.generic.clusterGram">
 <tt class="descclassname">flotilla.visualize.generic.</tt><tt class="descname">clusterGram</tt><big>(</big><em>dataFrame</em>, <em>distance_metric='euclidean'</em>, <em>linkage_method='average'</em>, <em>outfile=None</em>, <em>clusterRows=True</em>, <em>clusterCols=True</em>, <em>timeSeries=False</em>, <em>doCovar=False</em>, <em>figsize=(8</em>, <em>10)</em>, <em>row_label_color_fun=&lt;function &lt;lambda&gt; at 0x11619e5f0&gt;</em>, <em>col_label_color_fun=&lt;function &lt;lambda&gt; at 0x11619e668&gt;</em>, <em>link_color_func=&lt;function &lt;lambda&gt; at 0x11619e6e0&gt;</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/generic.html#clusterGram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.generic.clusterGram" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run hierarchical clustering on data. Creates a heatmap of cluster-ordered data
+<dd><p>Run hierarchical clustering on dataset. Creates a heatmap of cluster-ordered dataset
 heavy-lifting is done by:</p>
 <p>gets distances between rows/columns</p>
-<p>y_events = scipy.spatial.distance.pdist(data, distance_metric)</p>
+<p>y_events = scipy.spatial.distance.pdist(dataset, distance_metric)</p>
 <p>calculates the closest rows/columns</p>
 <p>Z_events = scipy.cluster.hierarchy.linkage(y_events, linkage_method)</p>
 <p>genereates dendrogram (tree)</p>
@@ -295,11 +295,11 @@ between IPython interactive visualizations vs D3 interactive visualizations.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>feature_ids</strong> : list of str, or None</p>
 <blockquote>
-<div><p>Feature ids to subset the data. If None, all features will be used.</p>
+<div><p>Feature ids to subset the dataset. If None, all features will be used.</p>
 </div></blockquote>
 <p><strong>sample_ids</strong> : list of str, or None</p>
 <blockquote>
-<div><p>Sample ids to subset the data. If None, all features will be used.</p>
+<div><p>Sample ids to subset the dataset. If None, all features will be used.</p>
 </div></blockquote>
 <p><strong>x_pc</strong> : str</p>
 <blockquote>
@@ -329,7 +329,7 @@ arctan_sq (sqared arctan of cov))</p>
 </div></blockquote>
 <p><strong>gene_of_interest</strong> : str</p>
 <blockquote>
-<div><p>map a gradient representing this gene&#8217;s data onto nodes (ENSEMBL
+<div><p>map a gradient representing this gene&#8217;s dataset onto nodes (ENSEMBL
 id or gene name???)</p>
 </div></blockquote>
 </td>
@@ -361,7 +361,7 @@ cov_std_cut - covariance cutoff for edges
 pc{1-4} use these pcs in cov calculation (default True)
 degree_cut - miniumum degree for a node to be included in graph display
 wt_fun - weight function (arctan (arctan cov), sq (sq cov), abs (abs cov), arctan_sq (sqared arctan of cov))
-gene_of_interest - map a gradient representing this gene&#8217;s data onto nodes</p>
+gene_of_interest - map a gradient representing this gene&#8217;s dataset onto nodes</p>
 </dd></dl>
 
 </dd></dl>
@@ -369,10 +369,10 @@ gene_of_interest - map a gradient representing this gene&#8217;s data onto nodes
 </div>
 <div class="section" id="module-flotilla.visualize.predict">
 <span id="flotilla-visualize-predict-module"></span><h2>flotilla.visualize.predict module<a class="headerlink" href="#module-flotilla.visualize.predict" title="Permalink to this headline">¶</a></h2>
-<p>Visualize the result of a classifcation or regression algorithm on the data.</p>
+<p>Visualize the result of a classifcation or regression algorithm on the dataset.</p>
 <dl class="class">
 <dt id="flotilla.visualize.predict.ClassifierViz">
-<em class="property">class </em><tt class="descclassname">flotilla.visualize.predict.</tt><tt class="descname">ClassifierViz</tt><big>(</big><em>data</em>, <em>trait</em>, <em>predictor=&lt;class 'sklearn.ensemble.forest.ExtraTreesClassifier'&gt;</em>, <em>name='ExtraTreesClassifier'</em>, <em>predictor_kwargs=None</em>, <em>predictor_scoring_fun=None</em>, <em>score_cutoff_fun=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/predict.html#ClassifierViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.predict.ClassifierViz" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">flotilla.visualize.predict.</tt><tt class="descname">ClassifierViz</tt><big>(</big><em>dataset</em>, <em>trait</em>, <em>predictor=&lt;class 'sklearn.ensemble.forest.ExtraTreesClassifier'&gt;</em>, <em>name='ExtraTreesClassifier'</em>, <em>predictor_kwargs=None</em>, <em>predictor_scoring_fun=None</em>, <em>score_cutoff_fun=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/predict.html#ClassifierViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.predict.ClassifierViz" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../flotilla.compute.html#flotilla.compute.predict.Classifier" title="flotilla.compute.predict.Classifier"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.predict.Classifier</span></tt></a>, <a class="reference internal" href="../flotilla.visualize.html#flotilla.visualize.predict.PredictorBaseViz" title="flotilla.visualize.predict.PredictorBaseViz"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.visualize.predict.PredictorBaseViz</span></tt></a></p>
 <p>Visualize results from classification</p>
 <p class="rubric">Methods</p>
@@ -405,7 +405,7 @@ ax : matplotlib.axes.Axes</p>
 <dt id="flotilla.visualize.predict.PredictorBaseViz.generate_scatter_table">
 <tt class="descname">generate_scatter_table</tt><big>(</big><em>excel_out=None</em>, <em>external_xref=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/predict.html#PredictorBaseViz.generate_scatter_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.predict.PredictorBaseViz.generate_scatter_table" title="Permalink to this definition">¶</a></dt>
 <dd><p>make a table to make scatterplots... maybe for plot.ly
-excelOut: full path to an excel output location for scatter data
+excelOut: full path to an excel output location for scatter dataset
 external_xref: list of tuples containing (attribute name, function to
 map row index -&gt; an attribute)</p>
 </dd></dl>
@@ -419,7 +419,7 @@ map row index -&gt; an attribute)</p>
 
 <dl class="class">
 <dt id="flotilla.visualize.predict.RegressorViz">
-<em class="property">class </em><tt class="descclassname">flotilla.visualize.predict.</tt><tt class="descname">RegressorViz</tt><big>(</big><em>data</em>, <em>trait</em>, <em>predictor=&lt;class 'sklearn.ensemble.forest.ExtraTreesRegressor'&gt;</em>, <em>name='ExtraTreesRegressor'</em>, <em>predictor_kwargs=None</em>, <em>predictor_scoring_fun=None</em>, <em>score_cutoff_fun=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/predict.html#RegressorViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.predict.RegressorViz" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">flotilla.visualize.predict.</tt><tt class="descname">RegressorViz</tt><big>(</big><em>dataset</em>, <em>trait</em>, <em>predictor=&lt;class 'sklearn.ensemble.forest.ExtraTreesRegressor'&gt;</em>, <em>name='ExtraTreesRegressor'</em>, <em>predictor_kwargs=None</em>, <em>predictor_scoring_fun=None</em>, <em>score_cutoff_fun=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/predict.html#RegressorViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.predict.RegressorViz" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../flotilla.compute.html#flotilla.compute.predict.Regressor" title="flotilla.compute.predict.Regressor"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.predict.Regressor</span></tt></a>, <a class="reference internal" href="../flotilla.visualize.html#flotilla.visualize.predict.PredictorBaseViz" title="flotilla.visualize.predict.PredictorBaseViz"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.visualize.predict.PredictorBaseViz</span></tt></a></p>
 <p class="rubric">Methods</p>
 <dl class="method">

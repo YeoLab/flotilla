@@ -62,7 +62,7 @@ class Modalities(object):
 
         Parameters
         ----------
-        data : pandas.DataFrame
+        dataset : pandas.DataFrame
             A samples x features dataframe, where you want to find the
             splicing modality of each column (feature)
         bootstrapped : bool
@@ -90,12 +90,12 @@ class Modalities(object):
 
         Parameters
         ----------
-        data : pandas.DataFrame
+        dataset : pandas.DataFrame
             A samples x features dataframe, where you want to find the
             splicing modality of each column (feature)
         do_not_memoize : bool
             Whether or not to memoize the results of the _single_fit_transform on this
-            data (used by @memoize decorator)
+            dataset (used by @memoize decorator)
 
         Returns
         -------
@@ -159,7 +159,7 @@ class Modalities(object):
 
 
 def switchy_score(array):
-    """Transform a 1D array of data scores to a vector of "switchy scores"
+    """Transform a 1D array of dataset scores to a vector of "switchy scores"
 
     Calculates std deviation and mean of sine- and cosine-transformed
     versions of the array. Better than sorting by just the mean which doesn't
@@ -184,7 +184,7 @@ def switchy_score(array):
 
 
 def get_switchy_score_order(x):
-    """Apply switchy scores to a 2D array of data scores
+    """Apply switchy scores to a 2D array of dataset scores
 
     Parameters
     ----------

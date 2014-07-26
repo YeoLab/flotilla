@@ -12,7 +12,7 @@ from ..visualize.color import red
 from matplotlib.colors import rgb2hex
 red = rgb2hex(red)
 from .network import NetworkerViz
-
+from ..compute.predict import default_classifier
 
 class Interactive(object):
     """
@@ -37,7 +37,7 @@ class Interactive(object):
                          featurewise=False,
                          x_pc=(1, 10), y_pc=(1, 10),
                          show_point_labels=False,
-                         savefile='data/last.pca.pdf'):
+                         savefile='dataset/last.pca.pdf'):
 
         def do_interact(data_type='expression',
                         sample_subset=self.default_sample_subsets,
@@ -46,7 +46,7 @@ class Interactive(object):
                         list_link='',
                         x_pc=1, y_pc=2,
                         show_point_labels=False,
-                        savefile='data/last.pca.pdf'):
+                        savefile='dataset/last.pca.pdf'):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -64,7 +64,7 @@ class Interactive(object):
                 feature_subset = list_link
             elif feature_subset not in self.default_feature_subsets[data_type]:
                 warnings.warn("This feature_subset ('{}') is not available in "
-                              "this data type ('{}'). Falling back on all "
+                              "this dataset type ('{}'). Falling back on all "
                               "features.".format(feature_subset, data_type))
 
             self.plot_pca(sample_subset=sample_subset, data_type=data_type,
@@ -110,7 +110,7 @@ class Interactive(object):
                  feature_of_interest="RBFOX2",
                  weight_fun = None,
                  use_pc_1=True, use_pc_2=True, use_pc_3=True, use_pc_4=True,
-                 savefile='data/last.graph.pdf'):
+                 savefile='dataset/last.graph.pdf'):
         from IPython.html.widgets import interact
 
         # not sure why nested fxns are required for this, but they are... i
@@ -125,7 +125,7 @@ class Interactive(object):
                         cov_std_cut=1.8, n_pcs=5,
                         feature_of_interest="RBFOX2",
                         draw_labels=False,
-                        savefile='data/last.graph.pdf'):
+                        savefile='dataset/last.graph.pdf'):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -184,41 +184,33 @@ class Interactive(object):
                  sample_subsets=None,
                  feature_subsets=None,
                  categorical_variables=None,
+                 predictor_types=None,
                  score_coefficient=(0.1, 20),
                  draw_labels=False,
-                 savefile='data/last.clf.pdf'):
+                 savefile='dataset/last.clf.pdf'):
 
         from IPython.html.widgets import interact
 
         def do_interact(data_type,
                         sample_subset,
                         feature_subset,
+                        predictor_type=default_classifier,
                         categorical_variable='outlier',
                         score_coefficient=2,
-                        savefile='data/last.clf.pdf'):
+                        savefile='dataset/last.clf.pdf'):
 
             for k, v in locals().iteritems():
                 if k == 'self':
                     continue
                 sys.stdout.write('{} : {}\n'.format(k, v))
 
-            if data_type == 'expression':
-                data_object = self.expression
-            if data_type == 'splicing':
-                data_object = self.splicing
+            self.plot_classifier(trait=categorical_variable,
+                                 feature_subset=feature_subset,
+                                 sample_subset=sample_subset,
+                                 predictor_name=predictor_type,
+                                 score_coefficient=score_coefficient,
+                                 data_type=data_type)
 
-            self.plot_classifier(
-                trait=categorical_variable,
-                feature_subset=feature_subset,
-                sample_subset=sample_subset,
-                score_coefficient=score_coefficient)
-            sys.stdout.write("retrieve this predictor "
-                             "with:\npredictor=study.%s.get_predictor('%s', "
-                             "'%s', '%s') pca=predictor('%s', "
-                             "score_coefficient=%f)"
-                             % (data_type, feature_subset, sample_subset,
-                                categorical_variable, categorical_variable,
-                                score_coefficient))
             if savefile is not '':
                 self.maybe_make_directory(savefile)
                 plt.gcf().savefig(savefile)
@@ -232,7 +224,10 @@ class Interactive(object):
             sample_subsets = self.default_sample_subsets
         if categorical_variables is None:
             categorical_variables = [i for i in self.default_sample_subsets if
-                                not i.startswith("~") and i != 'all_samples']
+                                     not i.startswith("~") and i != 'all_samples']
+
+        if predictor_types is None:
+            predictor_types = self.predictor_config_manager.predictor_configs.keys()
 
         self.plot_study_sample_legend()
 
@@ -243,6 +238,7 @@ class Interactive(object):
                  categorical_variable=categorical_variables,
                  score_coefficient=score_coefficient,
                  draw_labels=draw_labels,
+                 predictor_type = predictor_types,
                  savefile=savefile)
 
 
@@ -316,20 +312,20 @@ class Interactive(object):
 
             from sklearn.preprocessing import LabelEncoder
             le = LabelEncoder()
-            n_in_this_class = len(set(le.fit_transform(self.experiment_design.data[sample_subset])))
+            n_in_this_class = len(set(le.fit_transform(self.experiment_design.dataset[sample_subset])))
             try:
                 assert n_in_this_class
             except:
                 raise RuntimeError("this sample designator is not binary")
 
-            sample_series = self.experiment_design.data[sample_subset]
+            sample_series = self.experiment_design.dataset[sample_subset]
             #TODO: cast non-boolean binary ids to boolean
             try:
-                assert self.experiment_design.data[sample_subset].dtype == 'bool'
+                assert self.experiment_design.dataset[sample_subset].dtype == 'bool'
             except:
                 raise RuntimeError("this sample designator is not boolean")
 
-            sample_ids = self.experiment_design.data[sample_subset].index[self.experiment_design.data[sample_subset]]
+            sample_ids = self.experiment_design.dataset[sample_subset].index[self.experiment_design.dataset[sample_subset]]
 
 
             self.splicing.plot_modalities_lavalamps(sample_ids, feature_ids,
@@ -376,7 +372,7 @@ class Interactive(object):
                         feature_subset=self.default_feature_subsets,
                         difference_threshold=0.1,
                         color='red',
-                        savefile='data/last.lavalamp_pooled_inconsistent.pdf'):
+                        savefile='dataset/last.lavalamp_pooled_inconsistent.pdf'):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -388,20 +384,20 @@ class Interactive(object):
 
             from sklearn.preprocessing import LabelEncoder
             le = LabelEncoder()
-            n_in_this_class = len(set(le.fit_transform(self.experiment_design.data[sample_subset])))
+            n_in_this_class = len(set(le.fit_transform(self.experiment_design.dataset[sample_subset])))
             try:
                 assert n_in_this_class
             except:
                 raise RuntimeError("this sample designator is not binary")
 
-            sample_series = self.experiment_design.data[sample_subset]
+            sample_series = self.experiment_design.dataset[sample_subset]
             #TODO: cast non-boolean binary ids to boolean
             try:
-                assert self.experiment_design.data[sample_subset].dtype == 'bool'
+                assert self.experiment_design.dataset[sample_subset].dtype == 'bool'
             except:
                 raise RuntimeError("this sample designator is not boolean")
 
-            sample_ids = self.experiment_design.data[sample_subset].index[self.experiment_design.data[sample_subset]]
+            sample_ids = self.experiment_design.dataset[sample_subset].index[self.experiment_design.dataset[sample_subset]]
 
 
             self.splicing.plot_lavalamp_pooled_inconsistent(sample_ids, feature_ids,

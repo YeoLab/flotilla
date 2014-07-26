@@ -89,7 +89,7 @@ To run `pep8` and `pyflakes` over the code, make sure you have [this fork]
 What flotilla is not
 ====================
 
-Flotilla does not claim to solve the data management problem of biology,
-i.e. how you store all the data associated with a particular study that was
+Flotilla does not claim to solve the dataset management problem of biology,
+i.e. how you store all the dataset associated with a particular study that was
 investigating a specific biological question. Flotilla only makes it easy to
-integrate all those data parts together.
+integrate all those dataset parts together.

@@ -105,7 +105,7 @@ def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
     Parameters
     ----------
     TODO.md: (n_events, n_samples).transpose()
-    data : array
+    dataset : array
         A (n_events, n_samples) matrix either as a numpy array or as a pandas
         DataFrame
     color : matplotlib color

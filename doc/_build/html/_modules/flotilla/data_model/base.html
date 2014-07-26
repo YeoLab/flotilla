@@ -116,7 +116,7 @@
       
   <h1>Source code for flotilla.data_model.base</h1><div class="highlight"><pre>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Base data class for all data types. All data types in flotilla inherit from</span>
+<span class="sd">Base dataset class for all dataset types. All dataset types in flotilla inherit from</span>
 <span class="sd">this, or a child object (like ExpressionData).</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
@@ -144,10 +144,10 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">feature_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">feature_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">species</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">feature_rename_col</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">outliers</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">min_samples</span><span class="o">=</span><span class="n">MINIMUM_SAMPLES</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Base class for biological data measurements</span>
+        <span class="sd">&quot;&quot;&quot;Base class for biological dataset measurements</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -155,7 +155,7 @@
 <span class="sd">            Metadata on the samples, with sample names as rows and columns as</span>
 <span class="sd">            attributes. Any boolean column will be added as an option to</span>
 <span class="sd">            interactive_pca</span>
-<span class="sd">        data : pandas.DataFrame</span>
+<span class="sd">        dataset : pandas.DataFrame</span>
 <span class="sd">            A dataframe of samples x features (samples on rows, features on</span>
 <span class="sd">            columns) with some kind of measurements of cells,</span>
 <span class="sd">            e.g. gene expression values such as TPM, RPKM or FPKM, alternative</span>
@@ -164,9 +164,9 @@
 <span class="sd">            The species in which this was measured</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span>
         <span class="k">if</span> <span class="n">outliers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">drop_outliers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">outliers</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">drop_outliers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">,</span> <span class="n">outliers</span><span class="p">)</span>
 
         <span class="c"># self.experiment_design_data = experiment_design_data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">feature_data</span> <span class="o">=</span> <span class="n">feature_data</span>
@@ -202,7 +202,7 @@
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">feature_set</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">feature_sets</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">feature_set</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">all_features</span> <span class="o">=</span> <span class="s">&#39;all_genes&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">feature_sets</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">all_features</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feature_sets</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">all_features</span><span class="p">]</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">columns</span>
 
 <div class="viewcode-block" id="BaseData.drop_outliers"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.base.BaseData.drop_outliers">[docs]</a>    <span class="k">def</span> <span class="nf">drop_outliers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">outliers</span><span class="p">):</span>
         <span class="c"># assert &#39;outlier&#39; in self.experiment_design_data.columns</span>
@@ -215,14 +215,14 @@
             <span class="k">if</span> <span class="n">feature_subset</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_sets</span><span class="p">:</span>
                 <span class="n">feature_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_sets</span><span class="p">[</span><span class="n">feature_subset</span><span class="p">]</span>
             <span class="k">elif</span> <span class="n">feature_subset</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_features</span><span class="p">:</span>
-                <span class="n">feature_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span>
+                <span class="n">feature_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">columns</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;There are no {} features in this data: {}&quot;</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;There are no {} features in this dataset: {}&quot;</span>
                                  <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">feature_subset</span><span class="p">,</span> <span class="bp">self</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">rename</span><span class="p">:</span>
                 <span class="n">feature_ids</span> <span class="o">=</span> <span class="n">feature_ids</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_renamer</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">feature_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span>
+            <span class="n">feature_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">columns</span>
         <span class="k">return</span> <span class="n">feature_ids</span>
 
 </div>
@@ -329,7 +329,7 @@
 <span class="sd">            Which principal component to plot on the y-axis</span>
 <span class="sd">        sample_ids : None or list of strings</span>
 <span class="sd">            If None, plot all the samples. If a list of strings, must be</span>
-<span class="sd">            valid sample ids of the data</span>
+<span class="sd">            valid sample ids of the dataset</span>
 <span class="sd">        feature_ids : None or list of strings</span>
 <span class="sd">            If None, plot all the features. If a list of strings</span>
 
@@ -363,19 +363,19 @@
 <div class="viewcode-block" id="BaseData.min_samples"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.base.BaseData.min_samples">[docs]</a>    <span class="k">def</span> <span class="nf">min_samples</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_min_samples</span> <span class="o">=</span> <span class="n">values</span>
 </div>
-    <span class="k">def</span> <span class="nf">_subset_and_standardize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">sample_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+    <span class="k">def</span> <span class="nf">_subset_and_standardize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">sample_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                                 <span class="n">feature_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                                 <span class="n">standardize</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
 
-        <span class="sd">&quot;&quot;&quot;Take only the sample ids and feature ids from this data, require</span>
-<span class="sd">    at least some minimum samples, and standardize data using</span>
+        <span class="sd">&quot;&quot;&quot;Take only the sample ids and feature ids from this dataset, require</span>
+<span class="sd">    at least some minimum samples, and standardize dataset using</span>
 <span class="sd">    scikit-learn. Will also fill na values with the mean of the feature</span>
 <span class="sd">    (column)</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    data : pandas.DataFrame</span>
-<span class="sd">        The data you want to standardize</span>
+<span class="sd">    dataset : pandas.DataFrame</span>
+<span class="sd">        The dataset you want to standardize</span>
 <span class="sd">    sample_ids : None or list of strings</span>
 <span class="sd">        If None, all sample ids will be used, else only the sample ids</span>
 <span class="sd">        specified</span>
@@ -396,11 +396,11 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">feature_ids</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">feature_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span>
+            <span class="n">feature_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">columns</span>
         <span class="k">if</span> <span class="n">sample_ids</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">sample_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">index</span>
+            <span class="n">sample_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">index</span>
 
-        <span class="n">subset</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">sample_ids</span><span class="p">]</span>
+        <span class="n">subset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">sample_ids</span><span class="p">]</span>
         <span class="n">subset</span> <span class="o">=</span> <span class="n">subset</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">feature_ids</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
         <span class="n">subset</span> <span class="o">=</span> <span class="n">subset</span><span class="o">.</span><span class="n">ix</span><span class="p">[:,</span> <span class="n">subset</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_samples</span><span class="p">]</span>
         <span class="c">#fill na with mean for each event</span>
@@ -410,13 +410,13 @@
 
         <span class="c"># whiten, mean-center</span>
         <span class="k">if</span> <span class="n">standardize</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">subset</span><span class="p">)</span>
+            <span class="n">dataset</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">subset</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">subset</span>
+            <span class="n">dataset</span> <span class="o">=</span> <span class="n">subset</span>
 
-        <span class="c"># &quot;data&quot; is a matrix so need to transform it back into a convenient</span>
+        <span class="c"># &quot;dataset&quot; is a matrix so need to transform it back into a convenient</span>
         <span class="c"># dataframe</span>
-        <span class="n">subset</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">subset</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+        <span class="n">subset</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">subset</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
                               <span class="n">columns</span><span class="o">=</span><span class="n">subset</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">subset</span><span class="p">,</span> <span class="n">means</span></div>
 </pre></div>

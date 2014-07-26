@@ -9,19 +9,20 @@ from .base import BaseData
 from ..visualize.decomposition import PCAViz
 from ..visualize.predict import ClassifierViz
 from ..util import memoize
-
+import sys
 
 class ExpressionData(BaseData):
+
     _expression_thresh = 0.1
 
     def __init__(self, data,
                  metadata=None, expression_thresh=_expression_thresh,
                  feature_rename_col=None, outliers=None, log_base=None,
-                 pooled=None):
+                 pooled=None, predictor_config_manager=None):
         """
         Parameters
         ----------
-        data : pandas.DataFrame
+        dataset : pandas.DataFrame
             Expression matrix. samples (rows) x features (columns
         metadata : pandas.DataFrame
 
@@ -32,10 +33,16 @@ class ExpressionData(BaseData):
 
 
         """
+        sys.stderr.write("initializing expression\n")
+
         super(ExpressionData, self).__init__(
             data, metadata,
             feature_rename_col=feature_rename_col,
-            outliers=outliers, pooled=pooled)
+            outliers=outliers, pooled=pooled,
+            predictor_config_manager=predictor_config_manager)
+
+        sys.stderr.write("done initializing expression\n")
+
 
         self._var_cut = data.var().dropna().mean() + 2 * data.var() \
             .dropna().std()
@@ -53,6 +60,7 @@ class ExpressionData(BaseData):
         self.sparse_data = self.log_data[self.log_data > expression_thresh]
         self.default_feature_sets.extend(self.feature_sets.keys())
 
+
     #@memoize
     def reduce(self, sample_ids=None, feature_ids=None,
                featurewise=False,
@@ -60,7 +68,7 @@ class ExpressionData(BaseData):
                standardize=True,
                title='',
                reducer_kwargs=None):
-        """Make and memoize a reduced dimensionality representation of data
+        """Make and memoize a reduced dimensionality representation of dataset
 
         Parameters
         ----------
@@ -111,7 +119,8 @@ class ExpressionData(BaseData):
         return reducer_object
 
     @memoize
-    def classify(self, sample_ids, feature_ids, trait, standardize=True,
+    def classify(self, trait, sample_ids, feature_ids,
+                 standardize=True,
                  data_name='expression',
                  predictor_name='ExtraTreesClassifier',
                  predictor_obj=None,
@@ -138,7 +147,7 @@ class ExpressionData(BaseData):
             specified
         standardize : bool
             Whether or not to "whiten" (make all variables uncorrelated) and
-            mean-center and make unit-variance all the data via sklearn
+            mean-center and make unit-variance all the dataset via sklearn
             .preprocessing.StandardScaler
         predictor : flotilla.visualize.predict classifier
             Must inherit from flotilla.visualize.PredictorBaseViz. Default is
@@ -166,15 +175,16 @@ class ExpressionData(BaseData):
         if plotting_kwargs is None:
             plotting_kwargs = {}
 
-        classifier = ClassifierViz(data_name,
-                                   data=subset,
-                                   trait=trait,
+        classifier = ClassifierViz(data_name, trait.name,
                                    predictor_name=predictor_name,
+                                   X_data=subset,
+                                   trait=trait,
                                    predictor_obj=predictor_obj,
                                    predictor_scoring_fun=predictor_scoring_fun,
                                    score_cutoff_fun=score_cutoff_fun,
                                    n_features_dependent_parameters=n_features_dependent_parameters,
                                    constant_parameters=constant_parameters,
+                                   predictor_dataset_manager=self.predictor_dataset_manager,
                                    **plotting_kwargs)
         return classifier
 
@@ -216,7 +226,7 @@ class ExpressionData(BaseData):
 
 
 class SpikeInData(ExpressionData):
-    """Class for Spikein data and associated functions
+    """Class for Spikein dataset and associated functions
     Attributes
     ----------
 
@@ -226,12 +236,12 @@ class SpikeInData(ExpressionData):
 
     """
 
-    def __init__(self, data, feature_data=None):
+    def __init__(self, data, feature_data=None, predictor_config_manager=None):
         """Constructor for
 
         Parameters
         ----------
-        data, experiment_design_data
+        dataset, experiment_design_data
 
         Returns
         -------
@@ -241,7 +251,7 @@ class SpikeInData(ExpressionData):
         ------
 
         """
-        super(SpikeInData, self).__init__(data, feature_data)
+        super(SpikeInData, self).__init__(data, feature_data, predictor_config_manager=predictor_config_manager)
 
         # def spikeins_violinplot(self):
         #     import matplotlib.pyplot as plt

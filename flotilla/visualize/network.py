@@ -39,9 +39,9 @@ class NetworkerViz(Networker, DecompositionViz):
         Parameters
         ----------
         feature_ids : list of str, or None
-            Feature ids to subset the data. If None, all features will be used.
+            Feature ids to subset the dataset. If None, all features will be used.
         sample_ids : list of str, or None
-            Sample ids to subset the data. If None, all features will be used.
+            Sample ids to subset the dataset. If None, all features will be used.
         x_pc : str
             x component for PCA, default "pc_1"
         y_pc :
@@ -57,7 +57,7 @@ class NetworkerViz(Networker, DecompositionViz):
             weight function (arctan (arctan cov), sq (sq cov), abs (abs cov),
             arctan_sq (sqared arctan of cov))
         gene_of_interest : str
-            map a gradient representing this gene's data onto nodes (ENSEMBL
+            map a gradient representing this gene's dataset onto nodes (ENSEMBL
             id or gene name???)
 
 
@@ -197,9 +197,9 @@ class NetworkerViz(Networker, DecompositionViz):
                 Parameters
         ----------
         feature_ids : list of str, or None
-            Feature ids to subset the data. If None, all features will be used.
+            Feature ids to subset the dataset. If None, all features will be used.
         sample_ids : list of str, or None
-            Sample ids to subset the data. If None, all features will be used.
+            Sample ids to subset the dataset. If None, all features will be used.
         x_pc : str
             x component for PCA, default "pc_1"
         y_pc :
@@ -215,7 +215,7 @@ class NetworkerViz(Networker, DecompositionViz):
             weight function (arctan (arctan cov), sq (sq cov), abs (abs cov),
             arctan_sq (sqared arctan of cov))
         gene_of_interest : str
-            map a gradient representing this gene's data onto nodes (ENSEMBL
+            map a gradient representing this gene's dataset onto nodes (ENSEMBL
             id or gene name???)
 
 
