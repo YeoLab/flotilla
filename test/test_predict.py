@@ -11,7 +11,7 @@ from sklearn.preprocessing import LabelEncoder
 def study(example_data):
     from flotilla.data_model import Study
 
-    return Study(sample_metadata=example_data.experiment_design_data,
+    return Study(sample_metadata=example_data.metadata,
                  expression_data=example_data.expression,
                  splicing_data=example_data.splicing)
 

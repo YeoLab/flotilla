@@ -8,13 +8,13 @@ import pandas.util.testing as pdt
 def test_study_init(example_data):
     from flotilla.data_model import ExpressionData, SplicingData, Study
 
-    study = Study(sample_metadata=example_data.experiment_design_data,
+    study = Study(sample_metadata=example_data.metadata,
                   expression_data=example_data.expression,
                   splicing_data=example_data.splicing)
     expression = ExpressionData(data=example_data.expression)
     splicing = SplicingData(data=example_data.splicing)
 
-    pdt.assert_frame_equal(study.experiment_design.data,
+    pdt.assert_frame_equal(study.metadata.data,
                            example_data.experiment_design_data)
     pdt.assert_frame_equal(study.expression.data, expression.data)
     pdt.assert_frame_equal(study.splicing.data, splicing.data)
