@@ -129,8 +129,8 @@
 <div class="highlight">
 <pre>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Data models for &quot;studies&quot; studies include attributes about the data and are</span>
-<span class="sd">heavier in terms of data load</span>
+<span class="sd">Data models for &quot;studies&quot; studies include attributes about the dataset and are</span>
+<span class="sd">heavier in terms of dataset load</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">collections</span> <span
@@ -229,7 +229,7 @@
             class="p">(</span><span class="bp">self</span><span
             class="p">,</span> <span class="n">tup</span><span
             class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;for making new packages, auto-loadable data!&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;for making new packages, auto-loadable dataset!&quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="nb">len</span><span
             class="p">(</span><span class="n">tup</span><span class="p">)</span>
     <span class="o">==</span> <span class="mi">2</span>
@@ -466,17 +466,17 @@
         class="p">(</span><span class="n">StudyFactory</span><span
         class="p">):</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    store essential data associated with a study. Users specify how to build the</span>
+<span class="sd">    store essential dataset associated with a study. Users specify how to build the</span>
 <span class="sd">    necessary components from project-specific getters (see barebones_project</span>
 <span class="sd">    for example getters)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 <span class="n">default_feature_set_ids</span> <span class="o">=</span> <span
         class="p">[]</span>
 
-<span class="c"># Data types with enough data that we&#39;d probably reduce them, and even</span>
+<span class="c"># Data types with enough dataset that we&#39;d probably reduce them, and even</span>
 <span class="c"># then we might want to take subsets. E.g. most variant genes for</span>
 <span class="c"># expresion. But we don&#39;t expect to do this for spikein or mapping_stats</span>
-<span class="c"># data</span>
+<span class="c"># dataset</span>
 <span class="n">_subsetable_data_types</span> <span class="o">=</span> <span
         class="p">[</span><span class="s">&#39;expression&#39;</span><span
         class="p">,</span> <span class="s">&#39;splicing&#39;</span><span
@@ -560,7 +560,7 @@
         class="bp">None</span><span class="p">):</span>
 <span class="sd">&quot;&quot;&quot;Construct a biological study</span>
 
-<span class="sd">        This class only accepts data, no filenames. All data must already</span>
+<span class="sd">        This class only accepts dataset, no filenames. All dataset must already</span>
 <span class="sd">        have been read in and exist as Python objects.</span>
 
 <span class="sd">        Parameters</span>
@@ -614,7 +614,7 @@
 <span class="sd">            concentration of particular spikein transcripts</span>
 <span class="sd">        drop_outliers : bool</span>
 <span class="sd">            Whether or not to drop samples indicated as outliers in the</span>
-<span class="sd">            experiment_design_data from the other data, i.e. with a column</span>
+<span class="sd">            experiment_design_data from the other dataset, i.e. with a column</span>
 <span class="sd">            named &#39;outlier&#39; in experiment_design_data, then remove those</span>
 <span class="sd">            samples from expression_data for further analysis</span>
 <span class="sd">        species : str</span>
@@ -655,11 +655,11 @@
 <span class="p">[</span><span class="n">col</span> <span class="k">for</span>
 <span class="n">col</span> <span class="ow">in</span> <span
         class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span
-        class="o">.</span><span class="n">data</span><span
+        class="o">.</span><span class="n">dataset</span><span
         class="o">.</span><span class="n">columns</span>
 <span class="k">if</span> <span class="bp">self</span><span
         class="o">.</span><span class="n">experiment_design</span><span
-        class="o">.</span><span class="n">data</span><span
+        class="o">.</span><span class="n">dataset</span><span
         class="p">[</span><span class="n">col</span><span
         class="p">]</span><span class="o">.</span><span class="n">dtype</span>
 <span class="o">==</span> <span class="nb">bool</span><span class="p">]</span>
@@ -671,21 +671,21 @@
 <span class="k">if</span> <span class="s">&#39;outlier&#39;</span> <span
         class="ow">in</span> <span class="bp">self</span><span
         class="o">.</span><span class="n">experiment_design</span><span
-        class="o">.</span><span class="n">data</span> <span
+        class="o">.</span><span class="n">dataset</span> <span
         class="ow">and</span> <span class="n">drop_outliers</span><span
         class="p">:</span>
 <span class="n">outliers</span> <span class="o">=</span> <span
         class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span
-        class="o">.</span><span class="n">data</span><span
+        class="o">.</span><span class="n">dataset</span><span
         class="o">.</span><span class="n">index</span><span class="p">[</span>
 <span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span
-        class="o">.</span><span class="n">data</span><span
+        class="o">.</span><span class="n">dataset</span><span
         class="o">.</span><span class="n">outlier</span><span class="p">]</span>
 <span class="k">else</span><span class="p">:</span>
 <span class="n">outliers</span> <span class="o">=</span> <span
         class="bp">None</span>
 <span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span
-        class="o">.</span><span class="n">data</span><span
+        class="o">.</span><span class="n">dataset</span><span
         class="p">[</span><span class="s">&#39;outlier&#39;</span><span
         class="p">]</span> <span class="o">=</span> <span
         class="bp">False</span>
@@ -794,7 +794,7 @@
     <span class="k">def</span> <span class="nf">sample_id_to_color</span><span
             class="p">(</span><span class="bp">self</span><span
             class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;If &quot;color&quot; is a column in the experiment_design data, return a</span>
+    <span class="sd">&quot;&quot;&quot;If &quot;color&quot; is a column in the experiment_design dataset, return a</span>
     <span class="sd">        dict of that {sample_id: color} mapping, else try to create it using</span>
     <span class="sd">        the &quot;celltype&quot; columns, else just return a dict mapping to a default</span>
     <span class="sd">        color (blue)</span>
@@ -802,22 +802,22 @@
     <span class="k">if</span> <span class="s">&#39;color&#39;</span> <span
             class="ow">in</span> <span class="bp">self</span><span
             class="o">.</span><span class="n">experiment_design</span><span
-            class="o">.</span><span class="n">data</span><span
+            class="o">.</span><span class="n">dataset</span><span
             class="p">:</span>
     <span class="k">return</span> <span class="bp">self</span><span
             class="o">.</span><span class="n">experiment_design</span><span
-            class="o">.</span><span class="n">data</span><span
+            class="o">.</span><span class="n">dataset</span><span
             class="o">.</span><span class="n">color</span><span
             class="o">.</span><span class="n">to_dict</span><span
             class="p">()</span>
     <span class="k">elif</span> <span class="s">&#39;celltype&#39;</span> <span
             class="ow">in</span> <span class="bp">self</span><span
             class="o">.</span><span class="n">experiment_design</span><span
-            class="o">.</span><span class="n">data</span><span
+            class="o">.</span><span class="n">dataset</span><span
             class="p">:</span>
     <span class="n">grouped</span> <span class="o">=</span> <span class="bp">self</span><span
             class="o">.</span><span class="n">experiment_design</span><span
-            class="o">.</span><span class="n">data</span><span
+            class="o">.</span><span class="n">dataset</span><span
             class="o">.</span><span class="n">groupby</span><span
             class="p">(</span><span class="s">&#39;celltype&#39;</span><span
             class="p">)</span>
@@ -839,10 +839,10 @@
     <span class="n">color</span><span class="o">.</span><span
             class="n">name</span> <span class="o">=</span> <span class="s">&#39;color&#39;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span
-            class="o">.</span><span class="n">data</span> <span
+            class="o">.</span><span class="n">dataset</span> <span
             class="o">=</span> <span class="bp">self</span><span
             class="o">.</span><span class="n">experiment_design</span><span
-            class="o">.</span><span class="n">data</span><span
+            class="o">.</span><span class="n">dataset</span><span
             class="o">.</span><span class="n">join</span><span
             class="p">(</span>
     <span class="n">color</span><span class="p">,</span> <span
@@ -851,7 +851,7 @@
 
     <span class="k">return</span> <span class="bp">self</span><span
             class="o">.</span><span class="n">experiment_design</span><span
-            class="o">.</span><span class="n">data</span><span
+            class="o">.</span><span class="n">dataset</span><span
             class="o">.</span><span class="n">color</span><span
             class="o">.</span><span class="n">to_dict</span><span
             class="p">()</span>
@@ -879,8 +879,8 @@
     <span class="sd">        ----------</span>
     <span class="sd">        data_package_url : str</span>
     <span class="sd">            HTTP url of a datapackage.json file, following the specification</span>
-    <span class="sd">            described here: http://dataprotocols.org/data-packages/ and</span>
-    <span class="sd">            requiring the following data resources: experiment_design,</span>
+    <span class="sd">            described here: http://dataprotocols.org/dataset-packages/ and</span>
+    <span class="sd">            requiring the following dataset resources: experiment_design,</span>
     <span class="sd">            expression, splicing</span>
     <span class="sd">        species_data_pacakge_base_url : str</span>
     <span class="sd">            Base URL to fetch species-specific gene and splicing event</span>
@@ -889,7 +889,7 @@
     <span class="sd">        Returns</span>
     <span class="sd">        -------</span>
     <span class="sd">        study : Study</span>
-    <span class="sd">            A &quot;study&quot; object containing the data described in the</span>
+    <span class="sd">            A &quot;study&quot; object containing the dataset described in the</span>
     <span class="sd">            data_package_url file</span>
 
     <span class="sd">        Raises</span>
@@ -1091,20 +1091,20 @@
         class="n">pd</span><span class="o">.</span><span class="n">concat</span><span
         class="p">([</span><span class="bp">self</span>
 <span class="o">.</span><span class="n">experiment_design</span><span class="o">.</span><span
-        class="n">data</span><span class="p">,</span>
+        class="n">dataset</span><span class="p">,</span>
 <span class="n">other</span><span class="o">.</span><span class="n">experiment_design</span><span
-        class="o">.</span><span class="n">data</span><span class="p">]))</span>
+        class="o">.</span><span class="n">dataset</span><span class="p">]))</span>
 <span class="bp">self</span><span class="o">.</span><span
         class="n">expression</span><span class="o">.</span><span
-        class="n">data</span> <span class="o">=</span> <span class="n">ExpressionData</span><span
+        class="n">dataset</span> <span class="o">=</span> <span class="n">ExpressionData</span><span
         class="p">(</span><span class="n">pd</span><span class="o">.</span><span
         class="n">concat</span><span class="p">([</span><span
         class="bp">self</span><span class="o">.</span><span
         class="n">expression</span><span class="o">.</span><span
-        class="n">data</span><span class="p">,</span>
+        class="n">dataset</span><span class="p">,</span>
 <span class="n">other</span><span class="o">.</span><span
         class="n">expression</span><span class="o">.</span><span
-        class="n">data</span><span class="p">]))</span>
+        class="n">dataset</span><span class="p">]))</span>
 
 <span class="k">def</span> <span class="nf">_set_plot_colors</span><span
         class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1320,9 +1320,9 @@
     <span class="sd">        Parameters</span>
     <span class="sd">        ----------</span>
     <span class="sd">        data_type : str</span>
-    <span class="sd">            A string describing the data type, e.g. &quot;expression&quot;</span>
+    <span class="sd">            A string describing the dataset type, e.g. &quot;expression&quot;</span>
     <span class="sd">        feature_subset : str</span>
-    <span class="sd">            A string describing the subset of data type (must be already</span>
+    <span class="sd">            A string describing the subset of dataset type (must be already</span>
     <span class="sd">            calculated)</span>
 
     <span class="sd">        Returns</span>
@@ -1344,7 +1344,7 @@
     <span class="c"># if feature_subset is not None:</span>
     <span class="c">#     feature_ids = self.expression.feature_sets[feature_subset]</span>
     <span class="c"># else:</span>
-    <span class="c">#     feature_ids = self.expression.data.columns</span>
+    <span class="c">#     feature_ids = self.expression.dataset.columns</span>
     <span class="c"># if rename:</span>
     <span class="c">#     feature_ids = feature_ids.map(self.expression.feature_renamer)</span>
     <span class="k">elif</span> <span class="s">&#39;splicing&#39;</span><span
@@ -1361,7 +1361,7 @@
     <span class="c"># if feature_subset is not None:</span>
     <span class="c">#     feature_ids = self.splicing.feature_sets[feature_subset]</span>
     <span class="c"># else:</span>
-    <span class="c">#     feature_ids = self.splicing.data.columns</span>
+    <span class="c">#     feature_ids = self.splicing.dataset.columns</span>
     <span class="c"># if rename:</span>
     <span class="c">#     feature_ids = feature_ids.map(self.expression.feature_renamer)</span>
     <span class="c"># return feature_ids</span>
@@ -1375,19 +1375,19 @@
             class="p">,</span> <span class="n">phenotype_subset</span><span
             class="o">=</span><span class="bp">None</span><span
             class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Convert a string naming a subset of phenotypes in the data in to </span>
+    <span class="sd">&quot;&quot;&quot;Convert a string naming a subset of phenotypes in the dataset in to </span>
     <span class="sd">        sample ids</span>
     <span class="sd">        </span>
     <span class="sd">        Parameters</span>
     <span class="sd">        ----------</span>
     <span class="sd">        phenotype_subset : str</span>
     <span class="sd">            A valid string describing a boolean phenotype described in the</span>
-    <span class="sd">            experiment_design data</span>
+    <span class="sd">            experiment_design dataset</span>
     <span class="sd">        </span>
     <span class="sd">        Returns</span>
     <span class="sd">        -------</span>
     <span class="sd">        sample_ids : list of strings</span>
-    <span class="sd">            List of sample ids in the data</span>
+    <span class="sd">            List of sample ids in the dataset</span>
     <span class="sd">            </span>
     <span class="sd">        Raises</span>
     <span class="sd">        ------</span>
@@ -1402,7 +1402,7 @@
             class="o">.</span><span class="n">ones</span><span
             class="p">(</span><span class="bp">self</span><span
             class="o">.</span><span class="n">experiment_design</span><span
-            class="o">.</span><span class="n">data</span><span
+            class="o">.</span><span class="n">dataset</span><span
             class="o">.</span><span class="n">shape</span><span
             class="p">[</span><span class="mi">0</span><span class="p">],</span>
     <span class="n">dtype</span><span class="o">=</span><span
@@ -1416,7 +1416,7 @@
             class="o">.</span><span class="n">Series</span><span
             class="p">(</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span
-            class="o">.</span><span class="n">data</span><span
+            class="o">.</span><span class="n">dataset</span><span
             class="p">[</span><span class="n">phenotype_subset</span><span
             class="o">.</span><span class="n">lstrip</span><span
             class="p">(</span><span class="s">&quot;~&quot;</span><span
@@ -1428,14 +1428,14 @@
             class="o">.</span><span class="n">Series</span><span
             class="p">(</span><span class="bp">self</span><span
             class="o">.</span><span class="n">experiment_design</span><span
-            class="o">.</span><span class="n">data</span><span
+            class="o">.</span><span class="n">dataset</span><span
             class="p">[</span>
     <span class="n">phenotype_subset</span><span class="p">],</span> <span
             class="n">dtype</span><span class="o">=</span><span class="s">&#39;bool&#39;</span><span
             class="p">)</span>
     <span class="n">sample_ids</span> <span class="o">=</span> <span class="bp">self</span><span
             class="o">.</span><span class="n">experiment_design</span><span
-            class="o">.</span><span class="n">data</span><span
+            class="o">.</span><span class="n">dataset</span><span
             class="o">.</span><span class="n">index</span><span
             class="p">[</span><span class="n">sample_ind</span><span
             class="p">]</span>
@@ -1468,18 +1468,18 @@
     <span class="sd">        Parameters</span>
     <span class="sd">        ----------</span>
     <span class="sd">        data_type : str</span>
-    <span class="sd">            One of the names of the data types, e.g. &quot;expression&quot; or &quot;splicing&quot;</span>
+    <span class="sd">            One of the names of the dataset types, e.g. &quot;expression&quot; or &quot;splicing&quot;</span>
     <span class="sd">        x_pc : int</span>
     <span class="sd">            Which principal component to plot on the x-axis</span>
     <span class="sd">        y_pc : int</span>
     <span class="sd">            Which principal component to plot on the y-axis</span>
     <span class="sd">        sample_subset : str or None</span>
     <span class="sd">            Which subset of the samples to use, based on some phenotype</span>
-    <span class="sd">            column in the experiment design data. If None, all samples are</span>
+    <span class="sd">            column in the experiment design dataset. If None, all samples are</span>
     <span class="sd">            used.</span>
     <span class="sd">        feature_subset : str or None</span>
     <span class="sd">            Which subset of the features to used, based on some feature type</span>
-    <span class="sd">            in the expression data (e.g. &quot;variant&quot;). If None, all features</span>
+    <span class="sd">            in the expression dataset (e.g. &quot;variant&quot;). If None, all features</span>
     <span class="sd">            are used.</span>
     <span class="sd">        title : str</span>
     <span class="sd">            The title of the plot</span>
@@ -1528,12 +1528,12 @@
     <span class="k">if</span> <span class="s">&#39;marker&#39;</span> <span
             class="ow">in</span> <span class="bp">self</span><span
             class="o">.</span><span class="n">experiment_design</span><span
-            class="o">.</span><span class="n">data</span><span
+            class="o">.</span><span class="n">dataset</span><span
             class="p">:</span>
     <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;markers_dict&#39;</span><span
             class="p">]</span> <span class="o">=</span> \
     <span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span
-            class="o">.</span><span class="n">data</span><span
+            class="o">.</span><span class="n">dataset</span><span
             class="o">.</span><span class="n">marker</span><span
             class="o">.</span><span class="n">to_dict</span><span
             class="p">()</span>
@@ -1569,19 +1569,19 @@
             class="bp">None</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span
             class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Plot the graph (network) of these data</span>
+    <span class="sd">&quot;&quot;&quot;Plot the graph (network) of these dataset</span>
 
     <span class="sd">        Parameters</span>
     <span class="sd">        ----------</span>
     <span class="sd">        data_type : str</span>
-    <span class="sd">            One of the names of the data types, e.g. &quot;expression&quot; or &quot;splicing&quot;</span>
+    <span class="sd">            One of the names of the dataset types, e.g. &quot;expression&quot; or &quot;splicing&quot;</span>
     <span class="sd">        sample_subset : str or None</span>
     <span class="sd">            Which subset of the samples to use, based on some phenotype</span>
-    <span class="sd">            column in the experiment design data. If None, all samples are</span>
+    <span class="sd">            column in the experiment design dataset. If None, all samples are</span>
     <span class="sd">            used.</span>
     <span class="sd">        feature_subset : str or None</span>
     <span class="sd">            Which subset of the features to used, based on some feature type</span>
-    <span class="sd">            in the expression data (e.g. &quot;variant&quot;). If None, all features</span>
+    <span class="sd">            in the expression dataset (e.g. &quot;variant&quot;). If None, all features</span>
     <span class="sd">            are used.</span>
     <span class="sd">        &quot;&quot;&quot;</span>
     <span class="n">sample_ids</span> <span class="o">=</span> <span class="bp">self</span><span
@@ -1638,14 +1638,14 @@
             class="bp">None</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span
             class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Plot a predictor for the specified data type and trait(s)</span>
+    <span class="sd">&quot;&quot;&quot;Plot a predictor for the specified dataset type and trait(s)</span>
 
     <span class="sd">        Parameters</span>
     <span class="sd">        ----------</span>
     <span class="sd">        data_type : str</span>
-    <span class="sd">            One of the names of the data types, e.g. &quot;expression&quot; or &quot;splicing&quot;</span>
+    <span class="sd">            One of the names of the dataset types, e.g. &quot;expression&quot; or &quot;splicing&quot;</span>
     <span class="sd">        trait : str</span>
-    <span class="sd">            Column name in the experiment_design data that you would like</span>
+    <span class="sd">            Column name in the experiment_design dataset that you would like</span>
     <span class="sd">            to classify on</span>
 
     <span class="sd">        Returns</span>
@@ -1655,7 +1655,7 @@
     <span class="sd">        &quot;&quot;&quot;</span>
     <span class="n">trait_data</span> <span class="o">=</span> <span class="bp">self</span><span
             class="o">.</span><span class="n">experiment_design</span><span
-            class="o">.</span><span class="n">data</span><span
+            class="o">.</span><span class="n">dataset</span><span
             class="p">[</span><span class="n">trait</span><span
             class="p">]</span>
     <span class="n">sample_ids</span> <span class="o">=</span> <span class="bp">self</span><span

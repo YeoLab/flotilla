@@ -23,7 +23,7 @@ from ..visualize.color import blue
 from ..visualize.ipython_interact import Interactive
 from ..visualize.network import NetworkerViz
 from ..external import data_package_url_to_dict, check_if_already_downloaded
-
+from ..compute.predict import PredictorConfigManager
 
 SPECIES_DATA_PACKAGE_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects'
 
@@ -187,7 +187,8 @@ class Study(StudyFactory):
                  drop_outliers=True, species=None,
                  gene_ontology_data=None,
                  expression_log_base=None,
-                 experiment_design_pooled_col=None):
+                 experiment_design_pooled_col=None,
+                 predictor_config_manager=None):
         """Construct a biological study
 
         This class only accepts data, no filenames. All data must already
@@ -266,6 +267,12 @@ class Study(StudyFactory):
         [1] http://stackoverflow.com/q/12513185/1628971
         """
         super(Study, self).__init__()
+
+        sys.stderr.write("initializing study\n")
+        self.predictor_config_manager = predictor_config_manager\
+            if predictor_config_manager is not None \
+                else PredictorConfigManager()
+
         # if params_dict is None:
         #     params_dict = {}
         # self.update(params_dict)
@@ -273,12 +280,16 @@ class Study(StudyFactory):
         # self.apply_getters()
         self.species = species
         self.gene_ontology_data = gene_ontology_data
-
-        self.experiment_design = MetaData(sample_metadata)
+        sys.stderr.write("loading metadata\n")
+        self.experiment_design = MetaData(sample_metadata,
+                                          predictor_config_manager=self.predictor_config_manager)
+        sys.stderr.write("done initializing metadata\n")
         self.default_sample_subsets = \
             [col for col in self.experiment_design.data.columns
              if self.experiment_design.data[col].dtype == bool]
         self.default_sample_subsets.insert(0, 'all_samples')
+
+        sys.stderr.write("checking for outliers\n")
 
         if 'outlier' in self.experiment_design.data and drop_outliers:
             outliers = self.experiment_design.data.index[
@@ -288,6 +299,9 @@ class Study(StudyFactory):
             self.experiment_design.data['outlier'] = False
 
         # Get pooled samples
+
+        sys.stderr.write("checking for pooled samples\n")
+
         if experiment_design_pooled_col is not None:
             if experiment_design_pooled_col in self.experiment_design.data:
                 try:
@@ -300,27 +314,35 @@ class Study(StudyFactory):
             pooled = None
 
         if expression_data is not None:
+            sys.stderr.write("loading expression data\n")
             self.expression = ExpressionData(
                 expression_data,
                 expression_feature_data,
                 feature_rename_col=expression_feature_rename_col,
                 outliers=outliers,
-                log_base=expression_log_base, pooled=pooled)
+                log_base=expression_log_base, pooled=pooled,
+                predictor_config_manager=self.predictor_config_manager)
             self.expression.networks = NetworkerViz(self.expression)
             self.default_feature_set_ids.extend(self.expression.feature_sets
                                                 .keys())
         if splicing_data is not None:
+            sys.stderr.write("loading splicing data\n")
             self.splicing = SplicingData(
                 splicing_data, splicing_feature_data,
                 feature_rename_col=splicing_feature_rename_col,
-                outliers=outliers, pooled=pooled)
+                outliers=outliers, pooled=pooled,
+                predictor_config_manager=self.predictor_config_manager)
             self.splicing.networks = NetworkerViz(self.splicing)
+
         if mapping_stats_data is not None:
             self.mapping_stats = MappingStatsData(
                 mapping_stats_data,
-                mapping_stats_number_mapped_col)
+                mapping_stats_number_mapped_col,
+                predictor_config_manager=self.predictor_config_manager)
+
         if spikein_data is not None:
-            self.spikein = SpikeInData(spikein_data, spikein_feature_data)
+            self.spikein = SpikeInData(spikein_data, spikein_feature_data,
+                                       predictor_config_manager=self.predictor_config_manager)
         sys.stderr.write("subclasses initialized\n")
         self.validate_params()
         sys.stderr.write("package validated\n")
@@ -328,6 +350,7 @@ class Study(StudyFactory):
             self.hack_lazy()
         except:
             print "hackery failed"
+
 
     @property
     def default_feature_subsets(self):
@@ -614,6 +637,7 @@ class Study(StudyFactory):
                 feature_subset, rename)
 
     def sample_subset_to_sample_ids(self, phenotype_subset=None):
+
         """Convert a string naming a subset of phenotypes in the data into
         sample ids
 
@@ -628,17 +652,22 @@ class Study(StudyFactory):
         sample_ids : list of strings
             List of sample ids in the data
         """
+
+        #TODO: check this, seems like a strange usage: 'all_samples'.startswith(phenotype_subset)
         if phenotype_subset is None or 'all_samples'.startswith(
                 phenotype_subset):
             sample_ind = np.ones(self.experiment_design.data.shape[0],
                                  dtype=bool)
+
         elif phenotype_subset.startswith("~"):
             sample_ind = ~pd.Series(
                 self.experiment_design.data[phenotype_subset.lstrip("~")],
                 dtype='bool')
+
         else:
             sample_ind = pd.Series(
                 self.experiment_design.data[phenotype_subset], dtype='bool')
+
         sample_ids = self.experiment_design.data.index[sample_ind]
         return sample_ids
 
@@ -751,9 +780,9 @@ class Study(StudyFactory):
         legend = ax.legend(title='cell type', fontsize=20,)
         return legend
 
-    def plot_classifier(self, trait, data_type='expression', title='',
-                        show_point_labels=False, sample_subset=None,
-                        feature_subset=None,
+    def plot_classifier(self, sample_subset, feature_subset, trait,
+                        data_type='expression', title='',
+                        show_point_labels=False,
                         **kwargs):
         """Plot a predictor for the specified data type and trait(s)
 
@@ -776,12 +805,14 @@ class Study(StudyFactory):
                                                          feature_subset,
                                                          rename=False)
 
+        kwargs['data_name'] = '_'.join([sample_subset, feature_subset])
         kwargs['trait'] = trait_data
         kwargs['title'] = title
         kwargs['show_point_labels'] = show_point_labels
         kwargs['colors_dict'] = self.sample_id_to_color
         kwargs['sample_ids'] = sample_ids
         kwargs['feature_ids'] = feature_ids
+        #kwargs['predictor_config_manager'] = self.predictor_config_manager
         # print(kwargs.keys())
 
         if data_type == "expression":

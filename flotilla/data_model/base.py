@@ -12,13 +12,12 @@ from sklearn.preprocessing import StandardScaler
 
 from ..compute.clustering import Cluster
 from ..visualize.decomposition import PCAViz
-from ..visualize.predict import ClassifierViz
 from ..external import link_to_list
+from ..compute.predict import PredictorConfigManager, DataSetManager
 
 
 MINIMUM_SAMPLES = 10
-
-
+default_predictor_name = "ExtraTreesClassifier"
 class BaseData(object):
     """Generic study_data model for both splicing and expression study_data
 
@@ -33,7 +32,8 @@ class BaseData(object):
 
     def __init__(self, data=None, metadata=None,
                  species=None, feature_rename_col=None, outliers=None,
-                 min_samples=MINIMUM_SAMPLES, pooled=None):
+                 min_samples=MINIMUM_SAMPLES, pooled=None,
+                 predictor_config_manager=None):
         """Base class for biological data measurements
 
         Parameters
@@ -89,6 +89,13 @@ class BaseData(object):
         self.all_features = 'all_genes'
         self.feature_sets[self.all_features] = data.columns
 
+        if predictor_config_manager is None:
+            self.predictor_config_manager = PredictorConfigManager()
+        else:
+            self.predictor_config_manager = predictor_config_manager
+
+        self.predictor_dataset_manager = DataSetManager(self.predictor_config_manager)
+
     def drop_outliers(self, df, outliers):
         # assert 'outlier' in self.experiment_design_data.columns
         outliers = set(outliers).intersection(df.index)
@@ -106,8 +113,9 @@ class BaseData(object):
                     feature_ids = link_to_list(feature_subset)
                     self.feature_sets[feature_subset] = feature_ids
                 except:
+
                     raise ValueError("There are no {} features in this data: {}"
-                                     .format(feature_subset, self))
+                                 .format(feature_subset, self))
             if rename:
                 feature_ids = feature_ids.map(self.feature_renamer)
         else:
@@ -166,43 +174,41 @@ class BaseData(object):
 
     # TODO.md: Specify dtypes in docstring
     def plot_classifier(self, trait, sample_ids=None, feature_ids=None,
-                        standardize=True, predictor=ClassifierViz,
-                        predictor_kwargs=None, predictor_scoring_fun=None,
-                        score_cutoff_fun=None, score_coefficient=None,
+                        predictor_name=None,
+                        standardize=True, score_coefficient=None,
+                        data_name=None,
                         **plotting_kwargs):
         """Principal component-like analysis of measurements
 
         Params
         -------
-        obj_id : str
-            key of the object getting plotted
-        sample_subset : str
-            ???
-        categorical_trait : str
-            predictor feature
-        feature_subset : str
-            subset of genes to use for building class
+        trait - a pandas series with categorical features, indexed like self.data
+        sample_ids - an iterable of row IDs to use
+        feature_ids - an iterable of column IDs to use
+        standardize - 0-center, 1-variance
+        score_coefficient - for calculating score cutoff, default == 2
+        data_name - a name (str) for this subset of the data
 
         Returns
         -------
         self
         """
         # print trait
-        predictor_kwargs = {} if predictor_kwargs is None else predictor_kwargs
         plotting_kwargs = {} if plotting_kwargs is None else plotting_kwargs
 
         # local_plotting_args = self.pca_plotting_args.copy()
         # local_plotting_args.update(plotting_kwargs)
+        if predictor_name is None:
+            predictor_name = default_predictor_name
 
         clf = self.classify(trait, sample_ids=sample_ids,
                             feature_ids=feature_ids,
-                            standardize=standardize, predictor=predictor,
-                            predictor_kwargs=predictor_kwargs,
-                            predictor_scoring_fun=predictor_scoring_fun,
-                            score_coefficient=score_coefficient,
-                            score_cutoff_fun=score_cutoff_fun)
+                            data_name=data_name,
+                            standardize=standardize,
+                            predictor_name=predictor_name,
+                            )
+        clf.score_coefficient = score_coefficient
         clf(**plotting_kwargs)
-        # clf()
         return self
 
     def plot_dimensionality_reduction(self, x_pc=1, y_pc=2,

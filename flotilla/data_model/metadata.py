@@ -6,8 +6,10 @@ from .base import BaseData
 # Any informational data goes here
 
 class MetaData(BaseData):
-    def __init__(self, data):
-        super(MetaData, self).__init__(data, outliers=None)
+    def __init__(self, data, predictor_config_manager=None):
+        sys.stderr.write("initializing metadata\n")
+        super(MetaData, self).__init__(data, outliers=None,
+                                       predictor_config_manager=predictor_config_manager)
 
     def _get(self, sample_metadata_filename=None, gene_metadata_filename=None,
              event_metadata_filename=None):
