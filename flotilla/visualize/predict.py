@@ -12,8 +12,8 @@ import seaborn as sns
 from ..compute.predict import Classifier, Regressor, PredictorBase
 from .color import green
 
-class PredictorBaseViz(PredictorBase):
 
+class PredictorBaseViz(PredictorBase):
     _reducer_plotting_args = {}
 
     def set_reducer_plotting_args(self, rpa):
@@ -105,7 +105,7 @@ class PredictorBaseViz(PredictorBase):
         pca(ax=ax)
         return pca
 
-    def plot_scores(self,  ax=None):
+    def plot_scores(self, ax=None):
 
         """
         plot kernel density of predictor scores and draw a vertical line where
@@ -119,9 +119,9 @@ class PredictorBaseViz(PredictorBase):
         # for trait in traits:
         sns.kdeplot(self.scores_, shade=True, ax=ax,
                     label="%s\n%d features\noob:%.2f"
-                    % (self.dataset.trait_name, self.n_good_features_, self.oob_score_))
+                          % (self.dataset.trait_name, self.n_good_features_,
+                             self.oob_score_))
         ax.axvline(x=self.score_cutoff_, color=green)
-
 
         for lab in ax.get_xticklabels():
             lab.set_rotation(90)
@@ -135,7 +135,8 @@ class PredictorBaseViz(PredictorBase):
         gs_x = 18
         gs_y = 12
 
-        ax = None if not 'ax' in pca_plotting_kwargs else pca_plotting_kwargs['ax']
+        ax = None if not 'ax' in pca_plotting_kwargs else pca_plotting_kwargs[
+            'ax']
 
         if ax is None:
             fig, ax = plt.subplots(1, 1, figsize=(18, 8))
@@ -161,8 +162,8 @@ class PredictorBaseViz(PredictorBase):
 
 
 class RegressorViz(Regressor, PredictorBaseViz):
-
     pass
+
 
 class ClassifierViz(Classifier, PredictorBaseViz):
     """

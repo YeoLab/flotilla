@@ -9,10 +9,10 @@ from ..visualize.color import str_to_color
 # Any informational data goes here
 
 class MetaData(BaseData):
-
     def __init__(self, data, phenotype_order=None, phenotype_to_color=None,
-                 phenotype_to_marker=None,predictor_config_manager=None,):
-        super(MetaData, self).__init__(data, outliers=None, predictor_config_manager=predictor_config_manager)
+                 phenotype_to_marker=None, predictor_config_manager=None, ):
+        super(MetaData, self).__init__(data, outliers=None,
+                                       predictor_config_manager=predictor_config_manager)
         self.phenotype_order = phenotype_order
         self.phenotype_to_color = phenotype_to_color
         for phenotype, color in self.phenotype_to_color.iteritems():

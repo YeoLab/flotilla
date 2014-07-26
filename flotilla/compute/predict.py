@@ -5,33 +5,39 @@ Compute predictors on data, i.e. regressors or classifiers
 import sys
 import warnings
 from collections import defaultdict
+import math
 
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import ExtraTreesClassifier, ExtraTreesRegressor, \
     GradientBoostingClassifier, GradientBoostingRegressor
 from sklearn.preprocessing import LabelEncoder
-import math
+
 from ..util import memoize
 from ..visualize.decomposition import PCAViz, NMFViz
+
 
 default_classifier = 'ExtraTreesClassifier'
 default_regressor = 'ExtraTreesRegressor'
 default_score_coefficient = 2
+
 
 def default_predictor_scoring_fun(cls):
     """most predictors score output coefficients in the variable cls.feature_importances_
     others may use another name for scores"""
     return cls.feature_importances_
 
+
 def default_score_cutoff_fun(arr, std_multiplier=default_score_coefficient):
     """a way of calculating which features have a high score in a predictor
     default - f(x) = mean(x) + 2 * np.std(x)"""
     return np.mean(arr) + std_multiplier * np.std(arr)
 
-from pandas.util.testing import assert_frame_equal, assert_series_equal
-class PredictorConfig(object):
 
+from pandas.util.testing import assert_frame_equal, assert_series_equal
+
+
+class PredictorConfig(object):
     """
     A configuration for a predictor, names and tracks/sets parameters for predictor
     Dynamically configures some args for predictor based on n_features (if this attribute exists)
@@ -80,10 +86,12 @@ class PredictorConfig(object):
         self.predictor_scoring_fun = predictor_scoring_fun
         self.score_cutoff_fun = score_cutoff_fun
         self.predictor_name = predictor_name
-        sys.stderr.write("predictor {} is of type {}\n".format(self.predictor_name, obj))
+        sys.stderr.write(
+            "predictor {} is of type {}\n".format(self.predictor_name, obj))
         self._parent = obj
         self.__doc__ = obj.__doc__
-        sys.stderr.write("added {} to default predictors\n".format(self.predictor_name))
+        sys.stderr.write(
+            "added {} to default predictors\n".format(self.predictor_name))
 
     @memoize
     def parameters(self, n_features):
@@ -111,7 +119,9 @@ class PredictorConfig(object):
             raise Exception
         parameters = self.parameters(n_features)
 
-        sys.stderr.write("configuring predictor type: {} with {} features".format(self.predictor_name, n_features))
+        sys.stderr.write(
+            "configuring predictor type: {} with {} features".format(
+                self.predictor_name, n_features))
 
         prd = self._parent(**parameters)
         prd.score_cutoff_fun = self.score_cutoff_fun
@@ -121,37 +131,35 @@ class PredictorConfig(object):
         prd._score_coefficient = default_score_coefficient
         return prd
 
-class PredictorConfigScalers(object):
 
+class PredictorConfigScalers(object):
     """because it's useful to have scaling parameters for predictors
     that adjust according to the dataset size"""
 
     _default_coef = 2.5
-    _default_nfeatures=500
+    _default_nfeatures = 500
 
     @staticmethod
     def max_feature_scaler(n_features=_default_nfeatures, coef=_default_coef):
         if n_features is None:
             raise Exception
-        return int(math.ceil(np.sqrt(np.sqrt(n_features)**(coef+.3))))
+        return int(math.ceil(np.sqrt(np.sqrt(n_features) ** (coef + .3))))
 
     @staticmethod
     def n_estimators_scaler(n_features=_default_nfeatures, coef=_default_coef):
         if n_features is None:
             raise Exception
-        return int(math.ceil((n_features/50.)*coef))
+        return int(math.ceil((n_features / 50.) * coef))
 
     @staticmethod
     def n_jobs_scaler(n_features=_default_nfeatures):
         if n_features is None:
             raise Exception
 
-        return int(min(4, math.ceil(n_features/2000.)))
-
+        return int(min(4, math.ceil(n_features / 2000.)))
 
 
 class ConfigOptimizer(object):
-
     """choose the coef that makes some result most likely at all n_features
     (or some other function of the dataset)"""
 
@@ -161,8 +169,8 @@ class ConfigOptimizer(object):
                                      coef=PredictorConfigScalers._default_coef,
                                      max_feature_scaler=PredictorConfigScalers.max_feature_scaler,
                                      n_estimators_scaler=PredictorConfigScalers.n_estimators_scaler):
-        return ((n_features/max_feature_scaler(n_features, coef))
-                * n_estimators_scaler(n_features, coef))/float(n_features)
+        return ((n_features / max_feature_scaler(n_features, coef))
+                * n_estimators_scaler(n_features, coef)) / float(n_features)
 
     @staticmethod
     def optimize_target(n_features, target, **kwargs):
@@ -173,9 +181,7 @@ class ConfigOptimizer(object):
         #scipy.optimize(.....)
 
 
-
 class PredictorConfigManager(object):
-
     """
     A container for predictor configurations, includes several built-ins
 
@@ -207,25 +213,28 @@ class PredictorConfigManager(object):
     def predictor_config(self, name, **kwargs):
 
         prd = self.new_predictor_config(name, **kwargs)
-        if name in self.predictor_configs and self.predictor_configs[name] != prd:
-            sys.stderr.write("WARNING: over-writing predictor named: {}".format(name))
+        if name in self.predictor_configs and self.predictor_configs[
+            name] != prd:
+            sys.stderr.write(
+                "WARNING: over-writing predictor named: {}".format(name))
         self.predictor_configs[name] = prd
         return prd
 
     @memoize
     def new_predictor_config(self, name, obj=None,
-                      predictor_scoring_fun=None,
-                      score_cutoff_fun=None,
-                      n_features_dependent_parameters=None,
-                      constant_parameters=None,
-                     ):
+                             predictor_scoring_fun=None,
+                             score_cutoff_fun=None,
+                             n_features_dependent_parameters=None,
+                             constant_parameters=None,
+    ):
 
         """add a predictor to self.predictors"""
 
         if obj is None:
 
             args = np.array([predictor_scoring_fun, score_cutoff_fun,
-                             n_features_dependent_parameters, constant_parameters])
+                             n_features_dependent_parameters,
+                             constant_parameters])
             if np.any([i is not None for i in args]):
                 #if obj is None, you'd better not be asking to set parameters on it.
                 raise Exception
@@ -263,48 +272,52 @@ class PredictorConfigManager(object):
     def __init__(self):
 
         constant_extratrees_params = {'bootstrap': True,
-                                     'random_state': 0,
-                                     'oob_score': True,
-                                     'verbose': True}
+                                      'random_state': 0,
+                                      'oob_score': True,
+                                      'verbose': True}
 
         self.predictor_config('ExtraTreesClassifier',
-                       obj=ExtraTreesClassifier,
-                       n_features_dependent_parameters={'max_features': PredictorConfigScalers.max_feature_scaler,
-                                                         'n_estimators': PredictorConfigScalers.n_estimators_scaler,
-                                                         'n_jobs': PredictorConfigScalers.n_jobs_scaler},
-                       constant_parameters=constant_extratrees_params)
+                              obj=ExtraTreesClassifier,
+                              n_features_dependent_parameters={
+                                  'max_features': PredictorConfigScalers.max_feature_scaler,
+                                  'n_estimators': PredictorConfigScalers.n_estimators_scaler,
+                                  'n_jobs': PredictorConfigScalers.n_jobs_scaler},
+                              constant_parameters=constant_extratrees_params)
 
         self.predictor_config('ExtraTreesRegressor',
-                       obj=ExtraTreesRegressor,
-                       n_features_dependent_parameters={'max_features': PredictorConfigScalers.max_feature_scaler,
-                                                         'n_estimators': PredictorConfigScalers.n_estimators_scaler,
-                                                         'n_jobs': PredictorConfigScalers.n_jobs_scaler},
-                       constant_parameters=constant_extratrees_params)
+                              obj=ExtraTreesRegressor,
+                              n_features_dependent_parameters={
+                                  'max_features': PredictorConfigScalers.max_feature_scaler,
+                                  'n_estimators': PredictorConfigScalers.n_estimators_scaler,
+                                  'n_jobs': PredictorConfigScalers.n_jobs_scaler},
+                              constant_parameters=constant_extratrees_params)
 
         constant_boosting_params = {'n_estimators': 80, 'max_features': 1000,
                                     'learning_rate': 0.2, 'subsample': 0.6, }
 
         self.predictor_config('GradientBoostingClassifier',
-                       obj=GradientBoostingClassifier,
-                       constant_parameters=constant_boosting_params)
+                              obj=GradientBoostingClassifier,
+                              constant_parameters=constant_boosting_params)
 
         self.predictor_config('GradientBoostingRegressor',
-                       obj=GradientBoostingRegressor,
-                       constant_parameters=constant_boosting_params)
+                              obj=GradientBoostingRegressor,
+                              constant_parameters=constant_boosting_params)
 
 
 class PredictorDataSet(object):
     """
     X and y dataset
     """
+
     @property
     def X(self):
         return self._data.align(self._y, axis=0,
-                                          join='inner')[0]
+                                join='inner')[0]
+
     @property
     def y(self):
         return self._data.align(self._y, axis=0,
-                                          join='inner')[1]
+                                join='inner')[1]
 
     @property
     def traitset(self):
@@ -398,7 +411,7 @@ class PredictorDataSetManager(object):
 
     def __init__(self, predictor_config_manager=None):
         self.predictor_config_manager = predictor_config_manager \
-            if predictor_config_manager is not None\
+            if predictor_config_manager is not None \
             else PredictorConfigManager()
 
     @property
@@ -406,7 +419,7 @@ class PredictorDataSetManager(object):
         if not hasattr(self, '_datasets'):
             # 3 layer deep (data, trait, categorical?)
             # will almost always be either categorical true or false, rarely both
-            self._datasets = defaultdict(lambda : defaultdict(dict))
+            self._datasets = defaultdict(lambda: defaultdict(dict))
         return self._datasets
 
     def dataset(self, data_name, trait_name, categorical_trait=False,
@@ -416,15 +429,22 @@ class PredictorDataSetManager(object):
 
         if data_name in self.datasets:
             if trait_name in self.datasets[data_name]:
-                if categorical_trait in self.datasets[data_name][trait_name] and self.datasets[data_name][trait_name][categorical_trait] != dataset:
-                    sys.stderr.write("WARNING: over-writing dataset named: {}".format((data_name,
-                                                                                       trait_name,
-                                                                                       categorical_trait)))
-                    self.datasets[data_name][trait_name][categorical_trait] = dataset
+                if categorical_trait in self.datasets[data_name][trait_name] and \
+                                self.datasets[data_name][trait_name][
+                                    categorical_trait] != dataset:
+                    sys.stderr.write(
+                        "WARNING: over-writing dataset named: {}".format(
+                            (data_name,
+                             trait_name,
+                             categorical_trait)))
+                    self.datasets[data_name][trait_name][
+                        categorical_trait] = dataset
                 else:
-                    self.datasets[data_name][trait_name][categorical_trait] = dataset
+                    self.datasets[data_name][trait_name][
+                        categorical_trait] = dataset
             else:
-                self.datasets[data_name][trait_name][categorical_trait] = dataset
+                self.datasets[data_name][trait_name][
+                    categorical_trait] = dataset
         else:
             self.datasets[data_name][trait_name][categorical_trait] = dataset
 
@@ -445,7 +465,8 @@ class PredictorDataSetManager(object):
             try:
                 return self.datasets[data_name][trait_name][categorical_trait]
             except KeyError:
-                raise KeyError("No such dataset: {}".format((data_name, trait_name, categorical_trait)))
+                raise KeyError("No such dataset: {}".format(
+                    (data_name, trait_name, categorical_trait)))
 
         if trait is None:
             raise Exception
@@ -460,13 +481,11 @@ class PredictorDataSetManager(object):
             else self.predictor_config_manager
 
         return PredictorDataSet(data, trait, data_name,
-                       categorical_trait=categorical_trait,
-                       predictor_config_manager=predictor_config_manager)
-
+                                categorical_trait=categorical_trait,
+                                predictor_config_manager=predictor_config_manager)
 
 
 class PredictorBase(object):
-
     """
 
     One datset, one predictor, from dataset manager.
@@ -522,7 +541,7 @@ class PredictorBase(object):
                  is_categorical_trait=None,
                  predictor_dataset_manager=None,
                  predictor_config_manager=None
-                 ):
+    ):
 
         self.predictor_name = predictor_name
         self.data_name = data_name
@@ -538,7 +557,8 @@ class PredictorBase(object):
             else:
                 self.predictor_config_manager = predictor_config_manager
 
-            self.predictor_data_manager = PredictorDataSetManager(self.predictor_config_manager)
+            self.predictor_data_manager = PredictorDataSetManager(
+                self.predictor_config_manager)
         else:
             self.predictor_data_manager = predictor_dataset_manager
 
@@ -553,14 +573,16 @@ class PredictorBase(object):
         self.n_features_dependent_parameters = n_features_dependent_parameters
         self.categorical_trait = is_categorical_trait if is_categorical_trait is not None else False
 
-        self.__doc__  = self.__doc__ + "\n\n" + self.dataset.__doc__ + "\n\n" + self.predictor.__doc__
+        self.__doc__ = self.__doc__ + "\n\n" + self.dataset.__doc__ + "\n\n" + self.predictor.__doc__
 
     #thin reference to self.dataset
 
     @property
     def dataset(self):
-        return self.predictor_data_manager.dataset(self.data_name, self.trait_name,
-                                                   data=self._data, trait=self.trait,
+        return self.predictor_data_manager.dataset(self.data_name,
+                                                   self.trait_name,
+                                                   data=self._data,
+                                                   trait=self.trait,
                                                    categorical_trait=self.categorical_trait)
 
     @property
@@ -587,10 +609,11 @@ class PredictorBase(object):
     def fit(self):
         """Fit predictor to the dataset
         """
-        sys.stdout.write("Fitting a predictor for X:{}, y:{}, method:{}... please wait.\n"
-                         .format(self.dataset.data_name,
-                                 self.dataset.trait_name,
-                                 self.predictor_name))
+        sys.stdout.write(
+            "Fitting a predictor for X:{}, y:{}, method:{}... please wait.\n"
+            .format(self.dataset.data_name,
+                    self.dataset.trait_name,
+                    self.predictor_name))
 
         self.predictor.fit(self.dataset.X, self.dataset.y)
         self.has_been_fit = True
@@ -606,9 +629,11 @@ class PredictorBase(object):
             raise TypeError("please predict on a DataFrame")
         other_aligned, _ = other.align(self.X, axis=1, join='right').fillna(0)
         sys.stderr.write("predicting value, there are \
-                         {} common and {} not-common features.".format(len(set(other.columns) and self.X.columns),
-                                                                       len(other.columns and not self.X.columns)))
-        return pd.Series(self.predictor.predict(other_aligned.values), index=other.index)
+                         {} common and {} not-common features.".format(
+            len(set(other.columns) and self.X.columns),
+            len(other.columns and not self.X.columns)))
+        return pd.Series(self.predictor.predict(other_aligned.values),
+                         index=other.index)
 
     @property
     def oob_score_(self):
@@ -648,14 +673,15 @@ class PredictorBase(object):
         if self.n_good_features_ <= 1:
             sys.stderr.write("cutoff: %.4f\n" % self.score_cutoff_)
             sys.stderr.write("WARNING: These classifier settings produced "
-            "<= 1 important feature, consider reducing score_coefficient. "
-            "PCA will fail with this error: \"ValueError: failed "
-            "to create intent(cache|hide)|optional array-- must have defined "
-            "dimensions but got (0,)\"\n")
+                             "<= 1 important feature, consider reducing score_coefficient. "
+                             "PCA will fail with this error: \"ValueError: failed "
+                             "to create intent(cache|hide)|optional array-- must have defined "
+                             "dimensions but got (0,)\"\n")
 
     @property
     def score_cutoff_(self):
-        return self.predictor.score_cutoff_fun(self.scores_, self.score_coefficient)
+        return self.predictor.score_cutoff_fun(self.scores_,
+                                               self.score_coefficient)
 
     @property
     def important_features_(self):
@@ -672,16 +698,15 @@ class PredictorBase(object):
     @memoize
     def pca(self, **plotting_kwargs):
         return PCAViz(self.subset_,
-                     **plotting_kwargs)
+                      **plotting_kwargs)
 
     @memoize
     def nmf(self, **plotting_kwargs):
         return NMFViz(self.subset_,
-                     **plotting_kwargs)
+                      **plotting_kwargs)
 
 
 class Regressor(PredictorBase):
-
     __doc__ = "Regressor for continuous response variables \n" + PredictorBase.__doc__
 
 
@@ -694,14 +719,13 @@ class Regressor(PredictorBase):
         super(Regressor, self).__init__(predictor_name, data_name, trait_name,
                                         *args, **kwargs)
 
-class Classifier(PredictorBase):
 
+class Classifier(PredictorBase):
     __doc__ = "Classifier for categorical response variables.\n" + PredictorBase.__doc__
 
     def __init__(self, data_name, trait_name,
                  predictor_name=None,
                  *args, **kwargs):
-
         if predictor_name is None:
             predictor_name = default_classifier
         kwargs['is_categorical_trait'] = True

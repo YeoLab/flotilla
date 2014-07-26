@@ -17,6 +17,8 @@ from ..compute.predict import PredictorConfigManager, PredictorDataSetManager
 
 MINIMUM_SAMPLES = 10
 default_predictor_name = "ExtraTreesClassifier"
+
+
 class BaseData(object):
     """Generic study_data model for both splicing and expression study_data
 
@@ -93,7 +95,8 @@ class BaseData(object):
         else:
             self.predictor_config_manager = predictor_config_manager
 
-        self.predictor_dataset_manager = PredictorDataSetManager(self.predictor_config_manager)
+        self.predictor_dataset_manager = PredictorDataSetManager(
+            self.predictor_config_manager)
 
     def drop_outliers(self, df, outliers):
         # assert 'outlier' in self.experiment_design_data.columns
@@ -213,7 +216,7 @@ class BaseData(object):
                             data_name=data_name,
                             standardize=standardize,
                             predictor_name=predictor_name,
-                            )
+        )
         clf.score_coefficient = score_coefficient
         clf(**plotting_kwargs)
         return self
