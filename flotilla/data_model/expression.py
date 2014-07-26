@@ -49,8 +49,8 @@ class ExpressionData(BaseData):
         rpkm_variant = pd.Index(
             [i for i, j in
              (self.data.var().dropna() > self._var_cut).iteritems() if j])
-        self.feature_sets['variant'] = pd.Series(rpkm_variant,
-                                                 index=rpkm_variant)
+        self.feature_subsets['variant'] = pd.Series(rpkm_variant,
+                                                    index=rpkm_variant)
 
         if log_base is not None:
             self.log_data = np.log(self.data + .1) / np.log(log_base)
@@ -58,10 +58,9 @@ class ExpressionData(BaseData):
             self.log_data = self.data
         self.feature_data = metadata
         self.sparse_data = self.log_data[self.log_data > expression_thresh]
-        self.default_feature_sets.extend(self.feature_sets.keys())
+        self.default_feature_sets.extend(self.feature_subsets.keys())
 
 
-    #@memoize
     def reduce(self, sample_ids=None, feature_ids=None,
                featurewise=False,
                reducer=PCAViz,
@@ -95,7 +94,6 @@ class ExpressionData(BaseData):
         reducer_object : flotilla.compute.reduce.ReducerViz
             A ready-to-plot object containing the reduced space
         """
-        import sys
 
         reducer_kwargs = {} if reducer_kwargs is None else reducer_kwargs
         reducer_kwargs['title'] = title
@@ -109,14 +107,7 @@ class ExpressionData(BaseData):
         if featurewise:
             subset = subset.T
         reducer_object = reducer(subset, **reducer_kwargs)
-        # always the mean of input features. i.e. featurewise doesn't change
-        # this.
         reducer_object.means = means
-
-        #TODO: make this work with memoization
-        #self._last_reducer_accessed = reducer_object
-
-        # add mean gene_expression
         return reducer_object
 
     @memoize
@@ -194,7 +185,7 @@ class ExpressionData(BaseData):
     #         species = self.species
     #         # self.cargo = cargo.get_species_cargo(self.species)
     #         self.go = self.cargo.get_go(species)
-    #         self.feature_sets.update(self.cargo.gene_lists)
+    #         self.feature_subsets.update(self.cargo.gene_lists)
     #
     #         if rename:
     #             self._set_feature_renamer(lambda x: self.go.geneNames(x))

@@ -2,7 +2,6 @@
 Base data class for all data types. All data types in flotilla inherit from
 this, or a child object (like ExpressionData).
 """
-from collections import defaultdict
 import sys
 
 import pandas as pd
@@ -49,9 +48,9 @@ class BaseData(object):
             self.pooled = self.data.ix[pooled]
 
         if outliers is not None:
-            self.data = self.drop_outliers(self.data, outliers)
+            self.data, self.outliers = self.drop_outliers(self.data,
+                                                          outliers)
 
-        # self.experiment_design_data = experiment_design_data
         self.feature_data = metadata
         self.feature_rename_col = feature_rename_col
         self.min_samples = min_samples
@@ -60,7 +59,7 @@ class BaseData(object):
         self.clusterer = Cluster()
 
         self.species = species
-        self.feature_sets = {}
+        self.feature_subsets = {}
         if self.feature_data is not None and self.feature_rename_col is not \
                 None:
             def feature_renamer(x):
@@ -85,9 +84,9 @@ class BaseData(object):
                     continue
                 feature_set = self.feature_data.index[self.feature_data[col]]
                 if len(feature_set) > 1:
-                    self.feature_sets[col] = feature_set
+                    self.feature_subsets[col] = feature_set
         self.all_features = 'all_genes'
-        self.feature_sets[self.all_features] = data.columns
+        self.feature_subsets[self.all_features] = data.columns
 
         if predictor_config_manager is None:
             self.predictor_config_manager = PredictorConfigManager()
@@ -99,23 +98,31 @@ class BaseData(object):
     def drop_outliers(self, df, outliers):
         # assert 'outlier' in self.experiment_design_data.columns
         outliers = set(outliers).intersection(df.index)
+        try:
+            # Remove pooled samples, if there are any
+            outliers = outliers.difference(self.pooled.index)
+        except AttributeError:
+            pass
         sys.stdout.write("dropping {}\n".format(outliers))
-        return df.drop(outliers)
+        data = df.drop(outliers)
+        outlier_data = df.ix[outliers]
+        return data, outlier_data
 
     def feature_subset_to_feature_ids(self, feature_subset, rename=True):
         if feature_subset is not None:
-            if feature_subset in self.feature_sets:
-                feature_ids = self.feature_sets[feature_subset]
+            if feature_subset in self.feature_subsets:
+                feature_ids = self.feature_subsets[feature_subset]
             elif feature_subset == self.all_features:
                 feature_ids = self.data.columns
             else:
                 try:
                     feature_ids = link_to_list(feature_subset)
-                    self.feature_sets[feature_subset] = feature_ids
+                    self.feature_subsets[feature_subset] = feature_ids
                 except:
 
-                    raise ValueError("There are no {} features in this data: {}"
-                                 .format(feature_subset, self))
+                    raise ValueError(
+                        "There are no {} features in this data: "
+                        "{}".format(feature_subset, self))
             if rename:
                 feature_ids = feature_ids.map(self.feature_renamer)
         else:
@@ -246,16 +253,14 @@ class BaseData(object):
         """
         pca = self.reduce(sample_ids, feature_ids,
                           featurewise=featurewise, reducer=reducer)
-        pca(markers_size_dict=defaultdict(lambda x: 400),
-            show_vectors=False,
-            title_size=10,
-            axis_label_size=10,
+        pca(show_vectors=True,
             x_pc="pc_" + str(x_pc),
-            # this only affects the plot, not the study_data.
             y_pc="pc_" + str(y_pc),
-            # this only affects the plot, not the study_data.
             **plotting_kwargs)
         return self
+
+    def plot_pca(self, **kwargs):
+        self.plot_dimensionality_reduction(reducer=PCAViz, **kwargs)
 
     @property
     def min_samples(self):
@@ -291,22 +296,42 @@ class BaseData(object):
         sample_ids = pd.Index(set(sample_ids).intersection(data.index))
         feature_ids = pd.Index(set(feature_ids).intersection(data.columns))
 
+        if len(sample_ids) == 1:
+            sample_ids = sample_ids[0]
+            single_sample = True
+        else:
+            single_sample = False
+
+        if len(feature_ids) == 1:
+            feature_ids = feature_ids[0]
+            single_feature = True
+        else:
+            single_feature = False
+
         subset = data.ix[sample_ids]
         subset = subset.T.ix[feature_ids].T
 
-        if require_min_samples:
+        if require_min_samples and not single_feature:
             subset = subset.ix[:, subset.count() > self.min_samples]
         return subset
 
-    def _subset_singles_and_pooled(self, singles, pooled, sample_ids,
+    def _subset_singles_and_pooled(self, singles, pooled, sample_ids=None,
                                    feature_ids=None):
-        singles_ids = self.data.index.intersection(sample_ids)
-        pooled_ids = self.pooled.index.intersection(sample_ids)
-        # import pdb; pdb.set_trace()
-        singles = self._subset(singles, singles_ids, feature_ids,
-                               require_min_samples=True).dropna(axis=1,
-                                                                how='all')
-        pooled = pooled.ix[pooled_ids, singles.columns]
+        # singles_ids = self.data.index.intersection(sample_ids)
+        # pooled_ids = self.pooled.index.intersection(sample_ids)
+        # # import pdb; pdb.set_trace()
+        singles = self._subset(singles, sample_ids, feature_ids,
+                               require_min_samples=True)
+        pooled = self._subset(pooled, sample_ids, feature_ids,
+                              require_min_samples=False)
+        if len(feature_ids) > 1:
+            # These are a DataFrame
+            singles, pooled = singles.align(pooled, axis=1, join='inner')
+        else:
+            # These are Series
+            singles = singles.dropna()
+            pooled = pooled.dropna()
+
         return singles, pooled
 
     def _subset_and_standardize(self, data, sample_ids=None,
