@@ -32,8 +32,6 @@ class MappingStatsData(BaseData):
                                                predictor_config_manager=predictor_config_manager)
         self.number_mapped_col = number_mapped_col
 
-        pass
-
     @property
     def mapped_reads(self):
         return self.data[self.number_mapped_col]

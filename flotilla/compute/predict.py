@@ -149,10 +149,12 @@ class PredictorConfigScalers(object):
         return int(min(4, math.ceil(n_features/2000.)))
 
 
+
 class ConfigOptimizer(object):
 
     """choose the coef that makes some result most likely at all n_features
     (or some other function of the dataset)"""
+
 
     @staticmethod
     def objective_average_times_seen(n_features,
@@ -310,7 +312,6 @@ class DataSet(object):
         """
          a set of all values that appear in self.trait
         """
-
         return self.trait.groupby(self.trait).describe().index.levels[0]
 
     @property
