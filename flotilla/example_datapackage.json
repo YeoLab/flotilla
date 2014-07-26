@@ -7,8 +7,8 @@
     "resources": [
         {
             "format": "tsv",
-            "name": "experiment_design",
-            "url": "http://sauron.ucsd.edu/flotilla_projects/neural_diff/experiment_design.tsv"
+            "name": "metadata",
+            "url": "http://sauron.ucsd.edu/flotilla_projects/neural_diff/metadata.tsv"
         },
         {
             "format": "tsv",

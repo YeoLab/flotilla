@@ -9,14 +9,16 @@ from .base import BaseData
 from ..visualize.decomposition import PCAViz
 from ..visualize.predict import ClassifierViz
 from ..util import memoize
-
+import sys
 
 class ExpressionData(BaseData):
+
     _expression_thresh = 0.1
 
     def __init__(self, data,
                  metadata=None, expression_thresh=_expression_thresh,
-                 feature_rename_col=None, outliers=None, log_base=None):
+                 feature_rename_col=None, outliers=None, log_base=None,
+                 pooled=None, predictor_config_manager=None):
         """
         Parameters
         ----------
@@ -31,18 +33,24 @@ class ExpressionData(BaseData):
 
 
         """
+        sys.stderr.write("initializing expression\n")
+
         super(ExpressionData, self).__init__(
             data, metadata,
             feature_rename_col=feature_rename_col,
-            outliers=outliers)
+            outliers=outliers, pooled=pooled,
+            predictor_config_manager=predictor_config_manager)
+
+        sys.stderr.write("done initializing expression\n")
+
 
         self._var_cut = data.var().dropna().mean() + 2 * data.var() \
             .dropna().std()
         rpkm_variant = pd.Index(
             [i for i, j in
              (self.data.var().dropna() > self._var_cut).iteritems() if j])
-        self.feature_sets['variant'] = pd.Series(rpkm_variant,
-                                                 index=rpkm_variant)
+        self.feature_subsets['variant'] = pd.Series(rpkm_variant,
+                                                    index=rpkm_variant)
 
         if log_base is not None:
             self.log_data = np.log(self.data + .1) / np.log(log_base)
@@ -50,9 +58,9 @@ class ExpressionData(BaseData):
             self.log_data = self.data
         self.feature_data = metadata
         self.sparse_data = self.log_data[self.log_data > expression_thresh]
-        self.default_feature_sets.extend(self.feature_sets.keys())
+        self.default_feature_sets.extend(self.feature_subsets.keys())
 
-    @memoize
+
     def reduce(self, sample_ids=None, feature_ids=None,
                featurewise=False,
                reducer=PCAViz,
@@ -86,29 +94,36 @@ class ExpressionData(BaseData):
         reducer_object : flotilla.compute.reduce.ReducerViz
             A ready-to-plot object containing the reduced space
         """
+
         reducer_kwargs = {} if reducer_kwargs is None else reducer_kwargs
         reducer_kwargs['title'] = title
 
         subset, means = self._subset_and_standardize(self.sparse_data,
                                                      sample_ids, feature_ids,
-                                                     standardize)
+                                                     standardize,
+                                                     return_means=True)
 
         # compute reduction
         if featurewise:
             subset = subset.T
         reducer_object = reducer(subset, **reducer_kwargs)
-        # always the mean of input features. i.e. featurewise doesn't change
-        # this.
         reducer_object.means = means
-
-        # add mean gene_expression
         return reducer_object
 
     @memoize
-    def classify(self, trait, sample_ids=None, feature_ids=None,
-                 standardize=True, predictor=ClassifierViz,
-                 predictor_kwargs=None, predictor_scoring_fun=None,
-                 score_cutoff_fun=None, plotting_kwargs=None):
+    def classify(self, trait, sample_ids, feature_ids,
+                 standardize=True,
+                 data_name='expression',
+                 predictor_name='ExtraTreesClassifier',
+                 predictor_obj=None,
+                 predictor_scoring_fun=None,
+                 score_cutoff_fun=None,
+                 n_features_dependent_parameters=None,
+                 constant_parameters=None,
+                 plotting_kwargs=None,
+                 ):
+        #Should all this be exposed to the user???
+
         """Make and memoize a predictor on a categorical trait (associated
         with samples) subset of genes
 
@@ -145,17 +160,24 @@ class ExpressionData(BaseData):
         predictor : flotilla.compute.predict.PredictorBaseViz
             A ready-to-plot object containing the predictions
         """
-        subset, means = self._subset_and_standardize(self.log_data,
-                                                     sample_ids,
-                                                     feature_ids,
-                                                     standardize)
+        subset = self._subset_and_standardize(self.log_data,
+                                              sample_ids,
+                                              feature_ids,
+                                              standardize)
+        if plotting_kwargs is None:
+            plotting_kwargs = {}
 
-        classifier = predictor(subset, trait=trait,
-                               predictor_kwargs=predictor_kwargs,
-                               predictor_scoring_fun=predictor_scoring_fun,
-                               score_cutoff_fun=score_cutoff_fun,
-                               **plotting_kwargs)
-        # classifier.set_reducer_plotting_args(classifier.reduction_kwargs)
+        classifier = ClassifierViz(data_name, trait.name,
+                                   predictor_name=predictor_name,
+                                   X_data=subset,
+                                   trait=trait,
+                                   predictor_obj=predictor_obj,
+                                   predictor_scoring_fun=predictor_scoring_fun,
+                                   score_cutoff_fun=score_cutoff_fun,
+                                   n_features_dependent_parameters=n_features_dependent_parameters,
+                                   constant_parameters=constant_parameters,
+                                   predictor_dataset_manager=self.predictor_dataset_manager,
+                                   **plotting_kwargs)
         return classifier
 
     # def load_cargo(self, rename=True, **kwargs):
@@ -163,7 +185,7 @@ class ExpressionData(BaseData):
     #         species = self.species
     #         # self.cargo = cargo.get_species_cargo(self.species)
     #         self.go = self.cargo.get_go(species)
-    #         self.feature_sets.update(self.cargo.gene_lists)
+    #         self.feature_subsets.update(self.cargo.gene_lists)
     #
     #         if rename:
     #             self._set_feature_renamer(lambda x: self.go.geneNames(x))
@@ -194,6 +216,14 @@ class ExpressionData(BaseData):
         vz()
         return vz
 
+    def _calculate_linkage(self, sample_ids, feature_ids, metric='euclidean',
+                           linkage_method='average', ):
+        subset = self._subset_and_standardize(self.log_data, sample_ids,
+                                              feature_ids)
+        row_linkage, col_linkage = self.clusterer(subset, metric,
+                                                  linkage_method)
+        return subset, row_linkage, col_linkage
+
 
 class SpikeInData(ExpressionData):
     """Class for Spikein data and associated functions
@@ -206,7 +236,7 @@ class SpikeInData(ExpressionData):
 
     """
 
-    def __init__(self, data, feature_data=None):
+    def __init__(self, data, feature_data=None, predictor_config_manager=None):
         """Constructor for
 
         Parameters
@@ -221,7 +251,7 @@ class SpikeInData(ExpressionData):
         ------
 
         """
-        super(SpikeInData, self).__init__(data, feature_data)
+        super(SpikeInData, self).__init__(data, feature_data, predictor_config_manager=predictor_config_manager)
 
         # def spikeins_violinplot(self):
         #     import matplotlib.pyplot as plt

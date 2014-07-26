@@ -2,19 +2,21 @@
 Base data class for all data types. All data types in flotilla inherit from
 this, or a child object (like ExpressionData).
 """
-from collections import defaultdict
 import sys
 
 import pandas as pd
 from scipy.spatial.distance import pdist, squareform
+import seaborn as sns
 from sklearn.preprocessing import StandardScaler
 
-from ..visualize.predict import ClassifierViz
+from ..compute.clustering import Cluster
+from ..visualize.decomposition import PCAViz
+from ..external import link_to_list
+from ..compute.predict import PredictorConfigManager, PredictorDataSetManager
 
 
 MINIMUM_SAMPLES = 10
-
-
+default_predictor_name = "ExtraTreesClassifier"
 class BaseData(object):
     """Generic study_data model for both splicing and expression study_data
 
@@ -29,7 +31,8 @@ class BaseData(object):
 
     def __init__(self, data=None, metadata=None,
                  species=None, feature_rename_col=None, outliers=None,
-                 min_samples=MINIMUM_SAMPLES, pooled=None):
+                 min_samples=MINIMUM_SAMPLES, pooled=None,
+                 predictor_config_manager=None):
         """Base class for biological data measurements
 
         Parameters
@@ -45,16 +48,18 @@ class BaseData(object):
             self.pooled = self.data.ix[pooled]
 
         if outliers is not None:
-            self.data = self.drop_outliers(self.data, outliers)
+            self.data, self.outliers = self.drop_outliers(self.data,
+                                                          outliers)
 
-        # self.experiment_design_data = experiment_design_data
         self.feature_data = metadata
         self.feature_rename_col = feature_rename_col
         self.min_samples = min_samples
         self.default_feature_sets = []
 
+        self.clusterer = Cluster()
+
         self.species = species
-        self.feature_sets = {}
+        self.feature_subsets = {}
         if self.feature_data is not None and self.feature_rename_col is not \
                 None:
             def feature_renamer(x):
@@ -79,25 +84,45 @@ class BaseData(object):
                     continue
                 feature_set = self.feature_data.index[self.feature_data[col]]
                 if len(feature_set) > 1:
-                    self.feature_sets[col] = feature_set
+                    self.feature_subsets[col] = feature_set
         self.all_features = 'all_genes'
-        self.feature_sets[self.all_features] = data.columns
+        self.feature_subsets[self.all_features] = data.columns
+
+        if predictor_config_manager is None:
+            self.predictor_config_manager = PredictorConfigManager()
+        else:
+            self.predictor_config_manager = predictor_config_manager
+
+        self.predictor_dataset_manager = PredictorDataSetManager(self.predictor_config_manager)
 
     def drop_outliers(self, df, outliers):
         # assert 'outlier' in self.experiment_design_data.columns
         outliers = set(outliers).intersection(df.index)
+        try:
+            # Remove pooled samples, if there are any
+            outliers = outliers.difference(self.pooled.index)
+        except AttributeError:
+            pass
         sys.stdout.write("dropping {}\n".format(outliers))
-        return df.drop(outliers)
+        data = df.drop(outliers)
+        outlier_data = df.ix[outliers]
+        return data, outlier_data
 
     def feature_subset_to_feature_ids(self, feature_subset, rename=True):
         if feature_subset is not None:
-            if feature_subset in self.feature_sets:
-                feature_ids = self.feature_sets[feature_subset]
+            if feature_subset in self.feature_subsets:
+                feature_ids = self.feature_subsets[feature_subset]
             elif feature_subset == self.all_features:
                 feature_ids = self.data.columns
             else:
-                raise ValueError("There are no {} features in this data: {}"
-                                 .format(feature_subset, self))
+                try:
+                    feature_ids = link_to_list(feature_subset)
+                    self.feature_subsets[feature_subset] = feature_ids
+                except:
+
+                    raise ValueError(
+                        "There are no {} features in this data: "
+                        "{}".format(feature_subset, self))
             if rename:
                 feature_ids = feature_ids.map(self.feature_renamer)
         else:
@@ -156,46 +181,46 @@ class BaseData(object):
 
     # TODO.md: Specify dtypes in docstring
     def plot_classifier(self, trait, sample_ids=None, feature_ids=None,
-                        standardize=True, predictor=ClassifierViz,
-                        predictor_kwargs=None, predictor_scoring_fun=None,
-                        score_cutoff_fun=None, **plotting_kwargs):
+                        predictor_name=None,
+                        standardize=True, score_coefficient=None,
+                        data_name=None,
+                        **plotting_kwargs):
         """Principal component-like analysis of measurements
 
         Params
         -------
-        obj_id : str
-            key of the object getting plotted
-        sample_subset : str
-            ???
-        categorical_trait : str
-            predictor feature
-        feature_subset : str
-            subset of genes to use for building class
+        trait - a pandas series with categorical features, indexed like self.data
+        sample_ids - an iterable of row IDs to use
+        feature_ids - an iterable of column IDs to use
+        standardize - 0-center, 1-variance
+        score_coefficient - for calculating score cutoff, default == 2
+        data_name - a name (str) for this subset of the data
 
         Returns
         -------
         self
         """
         # print trait
-        predictor_kwargs = {} if predictor_kwargs is None else predictor_kwargs
         plotting_kwargs = {} if plotting_kwargs is None else plotting_kwargs
 
         # local_plotting_args = self.pca_plotting_args.copy()
         # local_plotting_args.update(plotting_kwargs)
+        if predictor_name is None:
+            predictor_name = default_predictor_name
 
         clf = self.classify(trait, sample_ids=sample_ids,
                             feature_ids=feature_ids,
-                            standardize=standardize, predictor=predictor,
-                            predictor_kwargs=predictor_kwargs,
-                            predictor_scoring_fun=predictor_scoring_fun,
-                            score_cutoff_fun=score_cutoff_fun)
+                            data_name=data_name,
+                            standardize=standardize,
+                            predictor_name=predictor_name,
+                            )
+        clf.score_coefficient = score_coefficient
         clf(**plotting_kwargs)
-        # clf()
         return self
 
     def plot_dimensionality_reduction(self, x_pc=1, y_pc=2,
                                       sample_ids=None, feature_ids=None,
-                                      featurewise=False,
+                                      featurewise=False, reducer=PCAViz,
                                       **plotting_kwargs):
         """Principal component-like analysis of measurements
 
@@ -210,6 +235,12 @@ class BaseData(object):
             valid sample ids of the data
         feature_ids : None or list of strings
             If None, plot all the features. If a list of strings
+        featurewise : bool
+            Whether to keep the features and reduce on the samples (default
+            is to keep the samples and reduce the features)
+        reducer : flotilla.visualize.DecompositionViz
+            Which decomposition object to use. Must be a flotilla object,
+            as this has built-in compatibility with pandas.DataFrames.
 
 
         Returns
@@ -221,17 +252,15 @@ class BaseData(object):
 
         """
         pca = self.reduce(sample_ids, feature_ids,
-                          featurewise=featurewise)
-        pca(markers_size_dict=defaultdict(lambda x: 400),
-            show_vectors=False,
-            title_size=10,
-            axis_label_size=10,
+                          featurewise=featurewise, reducer=reducer)
+        pca(show_vectors=True,
             x_pc="pc_" + str(x_pc),
-            # this only affects the plot, not the study_data.
             y_pc="pc_" + str(y_pc),
-            # this only affects the plot, not the study_data.
             **plotting_kwargs)
         return self
+
+    def plot_pca(self, **kwargs):
+        self.plot_dimensionality_reduction(reducer=PCAViz, **kwargs)
 
     @property
     def min_samples(self):
@@ -241,7 +270,8 @@ class BaseData(object):
     def min_samples(self, values):
         self._min_samples = values
 
-    def _subset(self, data, sample_ids=None, feature_ids=None):
+    def _subset(self, data, sample_ids=None, feature_ids=None,
+                require_min_samples=True):
         """Take only a subset of the data, and require at least the minimum
         samples observed to be not NA for each feature.
 
@@ -259,18 +289,54 @@ class BaseData(object):
         subset : pandas.DataFrame
         """
         if feature_ids is None:
-            feature_ids = self.data.columns
+            feature_ids = data.columns
         if sample_ids is None:
-            sample_ids = self.data.index
+            sample_ids = data.index
+
+        sample_ids = pd.Index(set(sample_ids).intersection(data.index))
+        feature_ids = pd.Index(set(feature_ids).intersection(data.columns))
+
+        if len(sample_ids) == 1:
+            sample_ids = sample_ids[0]
+            single_sample = True
+        else:
+            single_sample = False
+
+        if len(feature_ids) == 1:
+            feature_ids = feature_ids[0]
+            single_feature = True
+        else:
+            single_feature = False
 
         subset = data.ix[sample_ids]
         subset = subset.T.ix[feature_ids].T
-        subset = subset.ix[:, subset.count() > self.min_samples]
+
+        if require_min_samples and not single_feature:
+            subset = subset.ix[:, subset.count() > self.min_samples]
         return subset
+
+    def _subset_singles_and_pooled(self, singles, pooled, sample_ids=None,
+                                   feature_ids=None):
+        # singles_ids = self.data.index.intersection(sample_ids)
+        # pooled_ids = self.pooled.index.intersection(sample_ids)
+        # # import pdb; pdb.set_trace()
+        singles = self._subset(singles, sample_ids, feature_ids,
+                               require_min_samples=True)
+        pooled = self._subset(pooled, sample_ids, feature_ids,
+                              require_min_samples=False)
+        if len(feature_ids) > 1:
+            # These are a DataFrame
+            singles, pooled = singles.align(pooled, axis=1, join='inner')
+        else:
+            # These are Series
+            singles = singles.dropna()
+            pooled = pooled.dropna()
+
+        return singles, pooled
 
     def _subset_and_standardize(self, data, sample_ids=None,
                                 feature_ids=None,
-                                standardize=True):
+                                standardize=True, return_means=False):
 
         """Take only the sample ids and feature ids from this data, require
         at least some minimum samples, and standardize data using
@@ -317,4 +383,20 @@ class BaseData(object):
         # dataframe
         subset = pd.DataFrame(data, index=subset.index,
                               columns=subset.columns)
-        return subset, means
+        if return_means:
+            return subset, means
+        else:
+            return subset
+
+    def plot_clusteredheatmap(self, sample_ids, feature_ids,
+                              metric='euclidean',
+                              linkage_method='average',
+                              sample_colors=None,
+                              feature_colors=None):
+        subset, row_linkage, col_linkage = self._calculate_linkage(
+            sample_ids, feature_ids, linkage_method=linkage_method,
+            metric=metric)
+
+        col_kws = dict(linkage_matrix=col_linkage, side_colors=feature_colors)
+        row_kws = dict(linkage_matrix=row_linkage, side_colors=sample_colors)
+        return sns.clusteredheatmap(subset, row_kws=row_kws, col_kws=col_kws)

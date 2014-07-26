@@ -13,7 +13,7 @@ class MappingStatsData(BaseData):
 
     """
 
-    def __init__(self, data, number_mapped_col):
+    def __init__(self, data, number_mapped_col, predictor_config_manager=None):
         """Constructor for MappingStatsData
 
         Parameters
@@ -28,10 +28,9 @@ class MappingStatsData(BaseData):
         ------
 
         """
-        super(MappingStatsData, self).__init__(data)
+        super(MappingStatsData, self).__init__(data,
+                                               predictor_config_manager=predictor_config_manager)
         self.number_mapped_col = number_mapped_col
-
-        pass
 
     @property
     def mapped_reads(self):

@@ -86,14 +86,14 @@
  /* ALERT CLASS DEFINITION
   * ====================== */
 
-  var dismiss = '[data-dismiss="alert"]'
+  var dismiss = '[dataset-dismiss="alert"]'
     , Alert = function (el) {
         $(el).on('click', dismiss, this.close)
       }
 
   Alert.prototype.close = function (e) {
     var $this = $(this)
-      , selector = $this.attr('data-target')
+      , selector = $this.attr('dataset-target')
       , $parent
 
     if (!selector) {
@@ -154,7 +154,7 @@
  /* ALERT DATA-API
   * ============== */
 
-  $(document).on('click.alert.data-api', dismiss, Alert.prototype.close)
+  $(document).on('click.alert.dataset-api', dismiss, Alert.prototype.close)
 
 }(window.$jqTheme || window.jQuery);
 /* ============================================================
@@ -210,7 +210,7 @@
   }
 
   Button.prototype.toggle = function () {
-    var $parent = this.$element.closest('[data-toggle="buttons-radio"]')
+    var $parent = this.$element.closest('[dataset-toggle="buttons-radio"]')
 
     $parent && $parent
       .find('.active')
@@ -255,7 +255,7 @@
  /* BUTTON DATA-API
   * =============== */
 
-  $(document).on('click.button.data-api', '[data-toggle^=button]', function (e) {
+  $(document).on('click.button.dataset-api', '[dataset-toggle^=button]', function (e) {
     var $btn = $(e.target)
     if (!$btn.hasClass('btn')) $btn = $btn.closest('.btn')
     $btn.button('toggle')
@@ -453,15 +453,15 @@
  /* CAROUSEL DATA-API
   * ================= */
 
-  $(document).on('click.carousel.data-api', '[data-slide], [data-slide-to]', function (e) {
+  $(document).on('click.carousel.dataset-api', '[dataset-slide], [dataset-slide-to]', function (e) {
     var $this = $(this), href
-      , $target = $($this.attr('data-target') || (href = $this.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '')) //strip for ie7
+      , $target = $($this.attr('dataset-target') || (href = $this.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '')) //strip for ie7
       , options = $.extend({}, $target.data(), $this.data())
       , slideIndex
 
     $target.carousel(options)
 
-    if (slideIndex = $this.attr('data-slide-to')) {
+    if (slideIndex = $this.attr('dataset-slide-to')) {
       $target.data('carousel').pause().to(slideIndex).cycle()
     }
 
@@ -625,9 +625,9 @@
  /* COLLAPSE DATA-API
   * ================= */
 
-  $(document).on('click.collapse.data-api', '[data-toggle=collapse]', function (e) {
+  $(document).on('click.collapse.dataset-api', '[dataset-toggle=collapse]', function (e) {
     var $this = $(this), href
-      , target = $this.attr('data-target')
+      , target = $this.attr('dataset-target')
         || e.preventDefault()
         || (href = $this.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '') //strip for ie7
       , option = $(target).data('collapse') ? 'toggle' : $this.data()
@@ -664,10 +664,10 @@
  /* DROPDOWN CLASS DEFINITION
   * ========================= */
 
-  var toggle = '[data-toggle=dropdown]'
+  var toggle = '[dataset-toggle=dropdown]'
     , Dropdown = function (element) {
-        var $el = $(element).on('click.dropdown.data-api', this.toggle)
-        $('html').on('click.dropdown.data-api', function () {
+        var $el = $(element).on('click.dropdown.dataset-api', this.toggle)
+        $('html').on('click.dropdown.dataset-api', function () {
           $el.parent().removeClass('open')
         })
       }
@@ -753,7 +753,7 @@
   }
 
   function getParent($this) {
-    var selector = $this.attr('data-target')
+    var selector = $this.attr('dataset-target')
       , $parent
 
     if (!selector) {
@@ -799,10 +799,10 @@
    * =================================== */
 
   $(document)
-    .on('click.dropdown.data-api', clearMenus)
-    .on('click.dropdown.data-api', '.dropdown form', function (e) { e.stopPropagation() })
-    .on('click.dropdown.data-api'  , toggle, Dropdown.prototype.toggle)
-    .on('keydown.dropdown.data-api', toggle + ', [role=menu]' , Dropdown.prototype.keydown)
+    .on('click.dropdown.dataset-api', clearMenus)
+    .on('click.dropdown.dataset-api', '.dropdown form', function (e) { e.stopPropagation() })
+    .on('click.dropdown.dataset-api'  , toggle, Dropdown.prototype.toggle)
+    .on('keydown.dropdown.dataset-api', toggle + ', [role=menu]' , Dropdown.prototype.keydown)
 
 }(window.$jqTheme || window.jQuery);
 /* =========================================================
@@ -836,7 +836,7 @@
   var Modal = function (element, options) {
     this.options = options
     this.$element = $(element)
-      .delegate('[data-dismiss="modal"]', 'click.dismiss.modal', $.proxy(this.hide, this))
+      .delegate('[dataset-dismiss="modal"]', 'click.dismiss.modal', $.proxy(this.hide, this))
     this.options.remote && this.$element.find('.modal-body').load(this.options.remote)
   }
 
@@ -1036,10 +1036,10 @@
  /* MODAL DATA-API
   * ============== */
 
-  $(document).on('click.modal.data-api', '[data-toggle="modal"]', function (e) {
+  $(document).on('click.modal.dataset-api', '[dataset-toggle="modal"]', function (e) {
     var $this = $(this)
       , href = $this.attr('href')
-      , $target = $($this.attr('data-target') || (href && href.replace(/.*(?=#[^\s]+$)/, ''))) //strip for ie7
+      , $target = $($this.attr('dataset-target') || (href && href.replace(/.*(?=#[^\s]+$)/, ''))) //strip for ie7
       , option = $target.data('modal') ? 'toggle' : $.extend({ remote:!/#/.test(href) && href }, $target.data(), $this.data())
 
     e.preventDefault()
@@ -1306,8 +1306,8 @@
 
   , fixTitle: function () {
       var $e = this.$element
-      if ($e.attr('title') || typeof($e.attr('data-original-title')) != 'string') {
-        $e.attr('data-original-title', $e.attr('title') || '').attr('title', '')
+      if ($e.attr('title') || typeof($e.attr('dataset-original-title')) != 'string') {
+        $e.attr('dataset-original-title', $e.attr('title') || '').attr('title', '')
       }
     }
 
@@ -1328,7 +1328,7 @@
         , $e = this.$element
         , o = this.options
 
-      title = $e.attr('data-original-title')
+      title = $e.attr('dataset-original-title')
         || (typeof o.title == 'function' ? o.title.call($e[0]) :  o.title)
 
       return title
@@ -1474,7 +1474,7 @@
         , o = this.options
 
       content = (typeof o.content == 'function' ? o.content.call($e[0]) :  o.content)
-        || $e.attr('data-content')
+        || $e.attr('dataset-content')
 
       return content
     }
@@ -1560,7 +1560,7 @@
       , $element = $(element).is('body') ? $(window) : $(element)
       , href
     this.options = $.extend({}, $.fn.scrollspy.defaults, options)
-    this.$scrollElement = $element.on('scroll.scroll-spy.data-api', process)
+    this.$scrollElement = $element.on('scroll.scroll-spy.dataset-api', process)
     this.selector = (this.options.target
       || ((href = $(element).attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '')) //strip for ie7
       || '') + ' .nav li > a'
@@ -1630,7 +1630,7 @@
           .removeClass('active')
 
         selector = this.selector
-          + '[data-target="' + target + '"],'
+          + '[dataset-target="' + target + '"],'
           + this.selector + '[href="' + target + '"]'
 
         active = $(selector)
@@ -1682,7 +1682,7 @@
   * ================== */
 
   $(window).on('load', function () {
-    $('[data-spy="scroll"]').each(function () {
+    $('[dataset-spy="scroll"]').each(function () {
       var $spy = $(this)
       $spy.scrollspy($spy.data())
     })
@@ -1728,7 +1728,7 @@
   , show: function () {
       var $this = this.element
         , $ul = $this.closest('ul:not(.dropdown-menu)')
-        , selector = $this.attr('data-target')
+        , selector = $this.attr('dataset-target')
         , previous
         , $target
         , e
@@ -1827,7 +1827,7 @@
  /* TAB DATA-API
   * ============ */
 
-  $(document).on('click.tab.data-api', '[data-toggle="tab"], [data-toggle="pill"]', function (e) {
+  $(document).on('click.tab.dataset-api', '[dataset-toggle="tab"], [dataset-toggle="pill"]', function (e) {
     e.preventDefault()
     $(this).tab('show')
   })
@@ -1879,7 +1879,7 @@
     constructor: Typeahead
 
   , select: function () {
-      var val = this.$menu.find('.active').attr('data-value')
+      var val = this.$menu.find('.active').attr('dataset-value')
       this.$element
         .val(this.updater(val))
         .change()
@@ -1973,7 +1973,7 @@
       var that = this
 
       items = $(items).map(function (i, item) {
-        i = $(that.options.item).attr('data-value', item)
+        i = $(that.options.item).attr('dataset-value', item)
         i.find('a').html(that.highlighter(item))
         return i[0]
       })
@@ -2161,7 +2161,7 @@
  /* TYPEAHEAD DATA-API
   * ================== */
 
-  $(document).on('focus.typeahead.data-api', '[data-provide="typeahead"]', function (e) {
+  $(document).on('focus.typeahead.dataset-api', '[dataset-provide="typeahead"]', function (e) {
     var $this = $(this)
     if ($this.data('typeahead')) return
     $this.typeahead($this.data())
@@ -2199,8 +2199,8 @@
   var Affix = function (element, options) {
     this.options = $.extend({}, $.fn.affix.defaults, options)
     this.$window = $(window)
-      .on('scroll.affix.data-api', $.proxy(this.checkPosition, this))
-      .on('click.affix.data-api',  $.proxy(function () { setTimeout($.proxy(this.checkPosition, this), 1) }, this))
+      .on('scroll.affix.dataset-api', $.proxy(this.checkPosition, this))
+      .on('click.affix.dataset-api',  $.proxy(function () { setTimeout($.proxy(this.checkPosition, this), 1) }, this))
     this.$element = $(element)
     this.checkPosition()
   }
@@ -2270,7 +2270,7 @@
   * ============== */
 
   $(window).on('load', function () {
-    $('[data-spy="affix"]').each(function () {
+    $('[dataset-spy="affix"]').each(function () {
       var $spy = $(this)
         , data = $spy.data()
 

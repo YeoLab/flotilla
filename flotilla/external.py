@@ -84,8 +84,8 @@ def GO_enrichment(geneList, ontology, expressedGenes=None, printIt=False,
             if v[0] > pCut:
                 continue
             if printIt:
-                print k, "|".join(ontology[k]['name']), "%.3e" % v[0], v[1], v[
-                    2], v[3], "|".join(v[3])
+                print k, "|".join(ontology[k]['name']), "%.3e" % v[0], v[1], \
+                    v[2], v[3], "|".join(v[3])
                 pass
             y.append([k, "|".join(ontology[k]['name']), v[0], v[1], v[2], v[3],
                       ",".join(v[4]), ",".join(v[5])])
@@ -236,7 +236,9 @@ def make_study_datapackage(name, experiment_design_data,
                            mapping_stats_data=None,
                            title='',
                            sources='', license=None, species=None,
-                           flotilla_dir=FLOTILLA_DOWNLOAD_DIR):
+                           flotilla_dir=FLOTILLA_DOWNLOAD_DIR,
+                           host="sauron.ucsd.edu",
+                           host_destination='/zfs/www/flotilla_packages/'):
     """Example code for making a datapackage for a Study
     """
     if ' ' in name:
@@ -245,6 +247,11 @@ def make_study_datapackage(name, experiment_design_data,
         raise ValueError("Datapackage can only contain lowercase letters")
 
     datapackage_dir = '{}/{}'.format(flotilla_dir, name)
+    try:
+        os.makedirs(datapackage_dir)
+    except OSError:
+        pass
+
     datapackage = {}
     datapackage['name'] = name
     datapackage['title'] = title
@@ -254,7 +261,7 @@ def make_study_datapackage(name, experiment_design_data,
     if species is not None:
         datapackage['species'] = species
 
-    resources = {'experiment_design': experiment_design_data,
+    resources = {'metadata': experiment_design_data,
                  'expression': expression_data,
                  'splicing': splicing_data,
                  'spikein': spikein_data,
@@ -271,6 +278,13 @@ def make_study_datapackage(name, experiment_design_data,
         data_filename = '{}/{}.csv.gz'.format(datapackage_dir, resource_name)
         with gzip.open(data_filename, 'wb') as f:
             resource_data.to_csv(f)
+        try:
+            # TODO: only transmit data if it has been updated
+            subprocess.call(
+                "scp {} {}:{}{}.".format(data_filename, host, host_destination,
+                                         name), shell=True)
+        except Exception as e:
+            sys.stderr.write("error sending data to host: {}".format(e))
 
         resource['path'] = data_filename
         resource['compression'] = 'gzip'
@@ -278,7 +292,7 @@ def make_study_datapackage(name, experiment_design_data,
 
     filename = '{}/datapackage.json'.format(datapackage_dir)
     with open(filename, 'w') as f:
-        json.dump(datapackage, f, indent='  ')
+        json.dump(datapackage, f, indent=2)
     sys.stdout.write('Wrote datapackage to {}'.format(filename))
 
 

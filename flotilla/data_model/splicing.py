@@ -3,23 +3,24 @@ import sys
 import itertools
 
 import pandas as pd
-
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.colors import rgb2hex
 import seaborn as sns
 
 from .base import BaseData
 from ..compute.infotheory import binify
 from ..compute.splicing import Modalities
-
 from ..visualize.decomposition import NMFViz, PCAViz
 from ..visualize.color import purples
 from ..visualize.predict import ClassifierViz
 from ..visualize.splicing import ModalitiesViz
 from ..util import cached_property, memoize
-from ..visualize.color import red, grey
-from ..visualize.splicing import lavalamp
+from ..visualize.color import red
+from ..visualize.splicing import lavalamp, hist_single_vs_pooled_diff, \
+    lavalamp_pooled_inconsistent, psi_violinplot
+
+
+FRACTION_DIFF_THRESH = 0.1
 
 
 class SplicingData(BaseData):
@@ -36,7 +37,7 @@ class SplicingData(BaseData):
                  metadata=None, binsize=0.1,
                  var_cut=_var_cut, outliers=None,
                  feature_rename_col=None, excluded_max=0.2, included_min=0.8,
-                 pooled=None):
+                 pooled=None, predictor_config_manager=None):
         """Instantiate a object for percent spliced in (PSI) scores
 
         Parameters
@@ -57,23 +58,34 @@ class SplicingData(BaseData):
         included_max : float
             Minimum value for the "included" bin of psi scores. Default 0.8.
         """
+        sys.stderr.write("initializing splicing\n")
         super(SplicingData, self).__init__(
             data, metadata,
             feature_rename_col=feature_rename_col,
-            outliers=outliers)
-
+            outliers=outliers, pooled=pooled,
+            predictor_config_manager=predictor_config_manager)
+        sys.stderr.write("done initializing splicing\n")
         self.binsize = binsize
         self.bins = np.arange(0, 1 + self.binsize, self.binsize)
         psi_variant = pd.Index(
             [i for i, j in (data.var().dropna() > var_cut).iteritems() if j])
-        self.feature_sets['variant'] = psi_variant
+        self.feature_subsets['variant'] = psi_variant
 
         self.modalities_calculator = Modalities(excluded_max=excluded_max,
                                                 included_min=included_min)
         self.modalities_visualizer = ModalitiesViz()
 
+        try:
+            for modality in set(self.modalities()):
+                self.feature_data[
+                    'modality_' + modality] = self.modalities() == modality
+        except TypeError:
+            # Unless there is no feature_data
+            pass
+
     @memoize
-    def modalities(self, sample_ids=None, feature_ids=None):
+    def modalities(self, sample_ids=None, feature_ids=None,
+                   bootstrapped=False, bootstrapped_kws=None):
         """Assigned modalities for these samples and features.
 
         Parameters
@@ -82,6 +94,12 @@ class SplicingData(BaseData):
             Which samples to use. If None, use all. Default None.
         feature_ids : list of str
             Which features to use. If None, use all. Default None.
+        bootstrapped : bool
+            Whether or not to use bootstrapping, i.e. resample each splicing
+            event several times to get a better estimate of its true modality.
+        bootstrappped_kws : dict
+            Valid arguments to _bootstrapped_fit_transform. If None, default is
+            dict(n_iter=100, thresh=0.6, min_samples=10)
 
         Returns
         -------
@@ -89,10 +107,12 @@ class SplicingData(BaseData):
             The modality assignments of each feature given these samples
         """
         data = self._subset(self.data, sample_ids, feature_ids)
-        return self.modalities_calculator.fit_transform(data)
+        return self.modalities_calculator.fit_transform(data, bootstrapped,
+                                                        bootstrapped_kws)
 
     @memoize
-    def modalities_counts(self, sample_ids=None, feature_ids=None):
+    def modalities_counts(self, sample_ids=None, feature_ids=None,
+                          bootstrapped=False, bootstrapped_kws=False):
         """Count the number of each modalities of these samples and features
 
         Parameters
@@ -101,6 +121,13 @@ class SplicingData(BaseData):
             Which samples to use. If None, use all. Default None.
         feature_ids : list of str
             Which features to use. If None, use all. Default None.
+        bootstrapped : bool
+            Whether or not to use bootstrapping, i.e. resample each splicing
+            event several times to get a better estimate of its true modality.
+            Default False.
+        bootstrappped_kws : dict
+            Valid arguments to _bootstrapped_fit_transform. If None, default is
+            dict(n_iter=100, thresh=0.6, min_samples=10)
 
         Returns
         -------
@@ -108,7 +135,8 @@ class SplicingData(BaseData):
             The number of events detected in each modality
         """
         data = self._subset(self.data, sample_ids, feature_ids)
-        return self.modalities_calculator.counts(data)
+        return self.modalities_calculator.counts(data, bootstrapped,
+                                                 bootstrapped_kws)
 
     def binify(self, data):
         return binify(data, self.bins)
@@ -125,19 +153,9 @@ class SplicingData(BaseData):
         """
         data = self._subset(self.data, sample_ids, feature_ids)
         binned = self.binify(data)
-        # redc = NMFViz(binned.T, n_components=2)
-
         reduced = self.nmf.transform(binned.T)
-
-        # # Make sure x-axis (component 0) is excluded, which is the first
-        # # element of a column in the binned dataframe
-        # x0 = reduced.ix[reduced.pc_1 == 0]
-        # if binned.ix[:, x0.index[0]][0] < 1:
-        #     reduced = pd.concat([reduced.pc_2, reduced.pc_1],
-        #                         keys=reduced.columns, axis=1)
         return reduced
 
-    @memoize
     def reduce(self, sample_ids=None, feature_ids=None,
                featurewise=False, reducer=PCAViz,
                standardize=True, title='',
@@ -155,7 +173,8 @@ class SplicingData(BaseData):
         reducer_kwargs['title'] = title
         subset, means = self._subset_and_standardize(data,
                                                      sample_ids, feature_ids,
-                                                     standardize)
+                                                     standardize,
+                                                     return_means=True)
 
         # compute reduction
         if featurewise:
@@ -165,15 +184,22 @@ class SplicingData(BaseData):
         # always the mean of input features. i.e. featurewise doesn't change
         # this.
         reducer_object.means = means
-
-        # add mean gene_expression
         return reducer_object
 
     @memoize
-    def classify(self, trait, sample_ids=None, feature_ids=None,
-                 standardize=True, predictor=ClassifierViz,
-                 predictor_kwargs=None, predictor_scoring_fun=None,
-                 score_cutoff_fun=None, plotting_kwargs=None):
+    def classify(self, trait, sample_ids, feature_ids,
+                 standardize=True,
+                 data_name='splicing',
+                 predictor_name='ExtraTreesClassifier',
+                 predictor_obj=None,
+                 predictor_scoring_fun=None,
+                 score_cutoff_fun=None,
+                 n_features_dependent_parameters=None,
+                 constant_parameters=None,
+                 plotting_kwargs=None,
+                 ):
+        #Should all this be exposed to the user???
+
         """Make and memoize a predictor on a categorical trait (associated
         with samples) subset of genes
 
@@ -210,31 +236,83 @@ class SplicingData(BaseData):
         predictor : flotilla.compute.predict.PredictorBaseViz
             A ready-to-plot object containing the predictions
         """
+
         subset, means = self._subset_and_standardize(self.data,
                                                      sample_ids,
                                                      feature_ids,
                                                      standardize)
+        if plotting_kwargs is None:
+            plotting_kwargs = {}
 
-        classifier = predictor(subset, trait=trait,
-                               predictor_kwargs=predictor_kwargs,
-                               predictor_scoring_fun=predictor_scoring_fun,
-                               score_cutoff_fun=score_cutoff_fun,
-                               **plotting_kwargs)
-        # classifier.set_reducer_plotting_args(classifier.reduction_kwargs)
+        classifier = ClassifierViz(data_name, trait.name,
+                                   predictor_name=predictor_name,
+                                   X_data=subset,
+                                   trait=trait,
+                                   predictor_obj=predictor_obj,
+                                   predictor_scoring_fun=predictor_scoring_fun,
+                                   score_cutoff_fun=score_cutoff_fun,
+                                   n_features_dependent_parameters=n_features_dependent_parameters,
+                                   constant_parameters=constant_parameters,
+                                   predictor_dataset_manager=self.predictor_dataset_manager,
+                                   **plotting_kwargs)
         return classifier
 
     def plot_modalities_reduced(self, sample_ids=None, feature_ids=None,
-                                ax=None, title=None):
+                                ax=None, title=None,
+                                bootstrapped=False, bootstrapped_kws=None):
         """Plot modality assignments in NMF space (option for lavalamp?)
+
+        Parameters
+        ----------
+        bootstrapped : bool
+            Whether or not to use bootstrapping, i.e. resample each splicing
+            event several times to get a better estimate of its true modality.
+            Default False.
+        bootstrappped_kws : dict
+            Valid arguments to _bootstrapped_fit_transform. If None, default is
+            dict(n_iter=100, thresh=0.6, min_samples=10)
+
+
+        Returns
+        -------
+
+
+        Raises
+        ------
         """
-        modalities_assignments = self.modalities(sample_ids, feature_ids)
+        modalities_assignments = self.modalities(
+            sample_ids, feature_ids, bootstrapped=bootstrapped,
+            bootstrapped_kws=bootstrapped_kws)
         self.modalities_visualizer.plot_reduced_space(
             self.binned_reduced(sample_ids, feature_ids),
             modalities_assignments, ax=ax, title=title)
 
     def plot_modalities_bar(self, sample_ids=None, feature_ids=None, ax=None,
-                            i=0, normed=True, legend=True):
-        modalities_counts = self.modalities_counts(sample_ids, feature_ids)
+                            i=0, normed=True, legend=True,
+                            bootstrapped=False, bootstrapped_kws=None):
+        """Plot stacked bar graph of each modality
+
+        Parameters
+        ----------
+        bootstrapped : bool
+            Whether or not to use bootstrapping, i.e. resample each splicing
+            event several times to get a better estimate of its true modality.
+            Default False.
+        bootstrappped_kws : dict
+            Valid arguments to _bootstrapped_fit_transform. If None, default is
+            dict(n_iter=100, thresh=0.6, min_samples=10)
+
+
+        Returns
+        -------
+
+
+        Raises
+        ------
+        """
+        modalities_counts = self.modalities_counts(
+            sample_ids, feature_ids, bootstrapped=bootstrapped,
+            bootstrapped_kws=bootstrapped_kws)
         self.modalities_visualizer.bar(modalities_counts, ax, i, normed,
                                        legend)
         modalities_fractions = \
@@ -242,35 +320,215 @@ class SplicingData(BaseData):
         sys.stdout.write(str(modalities_fractions) + '\n')
 
     def plot_modalities_lavalamps(self, sample_ids=None, feature_ids=None,
-                                  color=None, **kwargs):
-        """Plot modality assignments in NMF space (option for lavalamp?)
+                                  color=None, x_offset=0,
+                                  use_these_modalities=True,
+                                  bootstrapped=False, bootstrapped_kws=None,
+                                  ax=None):
+        """Plot "lavalamp" scatterplot of each event
+
+        Parameters
+        ----------
+        sample_ids : None or list of str
+            Which samples to use. If None, use all
+        feature_ids : None or list of str
+            Which features to use. If None, use all
+        color : None or matplotlib color
+            Which color to use for plotting the lavalamps of these features
+            and samples
+        x_offset : numeric
+            How much to offset the x-axis of each event. Useful if you want
+            to plot the same event, but in several iterations with different
+            celltypes or colors
+        axes : None or list of matplotlib.axes.Axes objects
+            Which axes to plot these on
+        use_these_modalities : bool
+            If True, then use these sample ids to calculate modalities.
+            Otherwise, use the modalities assigned using ALL samples and
+            features
+        bootstrapped : bool
+            Whether or not to use bootstrapping, i.e. resample each splicing
+            event several times to get a better estimate of its true modality.
+            Default False.
+        bootstrappped_kws : dict
+            Valid arguments to _bootstrapped_fit_transform. If None, default is
+            dict(n_iter=100, thresh=0.6, min_samples=10)
         """
-        modalities_assignments = self.modalities(sample_ids, feature_ids)
-        modalities_names = self.modalities_calculator.modalities_names
 
-        f, axes = plt.subplots(len(modalities_names), 1,
-                               figsize=(18, 3 * len(modalities_names)))
-        axes = itertools.chain(axes)
+        if use_these_modalities:
+            modalities_assignments = self.modalities(
+                sample_ids, feature_ids, bootstrapped=bootstrapped,
+                bootstrapped_kws=bootstrapped_kws)
+        else:
+            modalities_assignments = self.modalities(
+                bootstrapped=bootstrapped, bootstrapped_kws=bootstrapped_kws)
+        modalities_names = modalities_assignments.unique()
+        from matplotlib.gridspec import GridSpec, GridSpecFromSubplotSpec
+        import matplotlib.pyplot as plt
 
+        gs_x = len(modalities_names)
+        gs_y = 15
+
+        if ax is None:
+            fig, ax = plt.subplots(1, 1,
+                                   figsize=(18, 3 * len(modalities_names)))
+            gs = GridSpec(gs_x, gs_y)
+
+        else:
+            gs = GridSpecFromSubplotSpec(gs_x, gs_y, ax.get_subplotspec())
+            fig = plt.gcf()
+
+        lavalamp_axes = [plt.subplot(gs[i, :12]) for i in
+                         xrange(len(modalities_names))]
+        pie_axis = plt.subplot(gs[:, 12:])
+        pie_axis.set_aspect('equal')
+        pie_axis.axis('off')
         if color is None:
             color = pd.Series(red, index=modalities_assignments.index)
-        else:
-            color = color.ix[self.data.index]
-            color = color.fillna(rgb2hex(grey))
 
-        for modality in modalities_names:
-            ax = axes.next()
-            modal_psis = self.data[modalities_assignments[
-                modalities_assignments == modality].index]
-            lavalamp(modal_psis, color=color, ax=ax, **kwargs)
+        modalities_grouped = modalities_assignments.groupby(
+            modalities_assignments)
+        modality_count = {}
+        for ax, (modality, s) in itertools.izip(lavalamp_axes,
+                                                modalities_grouped):
+            modality_count[modality] = len(s)
+            psi = self.data[s.index]
+            lavalamp(psi, color=color, ax=ax, x_offset=x_offset)
             ax.set_title(modality)
+        pie_axis.pie(map(int, modality_count.values()),
+                     labels=modality_count.keys(), autopct='%1.1f%%')
 
-    def plot_event(self, feature_id, sample_groupby, sample_colors):
-        pass
+    def plot_event(self, feature_id, sample_ids=None, phenotype_groupby=None,
+                   phenotype_order=None, ax=None, color=None):
+        """
+        Plot the violinplot of a splicing event (should also show NMF movement)
+        """
+        if ax is None:
+            ax = plt.gca()
+
+        singles, pooled = self._subset_singles_and_pooled(
+            self.data, self.pooled, sample_ids, [feature_id])
+        title = self.feature_renamer(feature_id)
+        title = '{} {}'.format(title, ':'.join(feature_id.split(':')[:2]))
+
+        psi_violinplot(singles, groupby=phenotype_groupby, color=color,
+                       pooled_psi=pooled, order=phenotype_order,
+                       title=title)
+        # psi = self.data.ix[sample_ids, feature_id].dropna()
+
+        # import pdb; pdb.set_trace()
+
+        # Add a tiny amount of uniform random noise in case all the values
+        # are equal
+        # psi += np.random.uniform(0, 0.01, psi.shape)
+        # sns.violinplot(psi, groupby=phenotype_groupby, ax=ax, bw=0.2,
+        #                inner='points', order=phenotype_order)
+        # sns.despine()
+        # ax.set_ylim(0, 1)
+        # ax.set_yticks((0, 0.5, 1))
+        # ax.set_ylabel('PSI ($\Psi$) scores')
+        #
+        # pooled_grouped = self.pooled.groupby(phenotype_groupby, axis=0)
+        #
+        # for i, (celltype, df) in enumerate(pooled_grouped):
+        #     ys = df.ix[:, feature_id]
+        #     xs = np.ones(ys.shape) * i
+        #     for x, y in zip(xs, ys):
+        #         ax.scatter(x, y, marker='o', color='k', s=100)
+        #         ax.annotate('pooled', (x, y), textcoords='offset points',
+        #                     xytext=(10, 5), fontsize=14)
+
+    @memoize
+    def pooled_inconsistent(self, sample_ids, feature_ids=None,
+                            fraction_diff_thresh=FRACTION_DIFF_THRESH):
+        """Return splicing events which pooled samples are consistently
+        different from the single cells.
+
+        Parameters
+        ----------
+        singles_ids : list-like
+            List of sample ids of single cells (in the main ".data" DataFrame)
+        pooled_ids : list-like
+            List of sample ids of pooled cells (in the other ".pooled"
+            DataFrame)
+        feature_ids : None or list-like
+            List of feature ids. If None, use all
+        fraction_diff_thresh : float
+
+
+        Returns
+        -------
+        large_diff : pandas.DataFrame
+            All splicing events which have a scaled difference larger than
+            the fraction diff thresh
+        """
+        # singles = self._subset(self.data, singles_ids, feature_ids)
+        diff_from_singles = self._diff_from_singles(sample_ids,
+                                                    feature_ids, scaled=True)
+
+        large_diff = \
+            diff_from_singles[diff_from_singles.abs()
+                              >= fraction_diff_thresh].dropna(axis=1,
+                                                              how='all')
+        return large_diff
+
+    @memoize
+    def _diff_from_singles(self, sample_ids,
+                           feature_ids=None, scaled=True, dropna=True):
+        singles, pooled = self._subset_singles_and_pooled(
+            self.data, self.pooled, sample_ids, feature_ids)
+
+        diff_from_singles = pooled.apply(
+            lambda x: (singles - x.values).abs().sum(), axis=1)
+
+        if scaled:
+            diff_from_singles = \
+                diff_from_singles / singles.count().astype(float)
+        if dropna:
+            diff_from_singles = diff_from_singles.dropna(axis=1, how='all')
+        return diff_from_singles
+
+    def plot_lavalamp_pooled_inconsistent(
+            self, sample_ids, feature_ids=None,
+            fraction_diff_thresh=FRACTION_DIFF_THRESH, color=None):
+        pooled_inconsistent = self.pooled_inconsistent(sample_ids,
+                                                       feature_ids,
+                                                       fraction_diff_thresh)
+        singles, pooled = self._subset_singles_and_pooled(
+            self.data, self.pooled, sample_ids, feature_ids)
+        percent = self.percent_pooled_inconsistent(sample_ids, feature_ids,
+                                                   fraction_diff_thresh)
+        lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
+                                     color=color, percent=percent)
+
+    def plot_hist_single_vs_pooled_diff(self, sample_ids,
+                                        feature_ids=None,
+                                        color=None, title='', hist_kws=None):
+        diff_from_singles = self._diff_from_singles(sample_ids,
+                                                    feature_ids)
+        diff_from_singles_scaled = self._diff_from_singles(sample_ids,
+                                                           feature_ids,
+                                                           scaled=True)
+        hist_single_vs_pooled_diff(diff_from_singles,
+                                   diff_from_singles_scaled, color=color,
+                                   title=title, hist_kws=hist_kws)
+
+    @memoize
+    def percent_pooled_inconsistent(self, sample_ids,
+                                    feature_ids=None,
+                                    fraction_diff_thresh=FRACTION_DIFF_THRESH):
+        """The percent of splicing events which are
+
+        """
+        singles, pooled = self._subset_singles_and_pooled(
+            self.data, self.pooled, sample_ids, feature_ids)
+        large_diff = self.pooled_inconsistent(sample_ids, feature_ids,
+                                              fraction_diff_thresh)
+        return large_diff.shape[1] / float(pooled.shape[1]) * 100
 
 
 class SpliceJunctionData(SplicingData):
-    """Class to hold splice junction information from SJ.out.tab files from STAR
+    """Class to hold splice junction information from SJ.out.tab files from
+    STAR
 
     Attributes
     ----------
@@ -313,7 +571,7 @@ class DownsampledSplicingData(BaseData):
 
         Parameters
         ----------
-        data : pandas.DataFrame
+        df : pandas.DataFrame
             A "tall" dataframe of all miso summary events, with the usual
             MISO summary columns, and these are required: 'splice_type',
             'probability', 'iteration.' Where "probability" indicates the
@@ -366,8 +624,8 @@ class DownsampledSplicingData(BaseData):
             return self._shared_events
 
     def shared_events_barplot(self, figure_dir='./'):
-        """PLot a "histogram" via colored bars of the number of events shared by
-        different iterations at a particular sampling probability
+        """PLot a "histogram" via colored bars of the number of events shared
+        by different iterations at a particular sampling probability
 
         Parameters
         ----------
@@ -403,9 +661,10 @@ class DownsampledSplicingData(BaseData):
             ax.set_ylabel('number of events')
             sns.despine()
             fig.tight_layout()
-            fig.savefig('{}/downsampled_shared_events_{}.pdf'.format(
-                figure_dir, splice_type), bbox_extra_artists=(legend,),
-                bbox_inches='tight')
+            filename = '{}/downsampled_shared_events_{}.pdf'.format(
+                figure_dir, splice_type)
+            fig.savefig(filename, bbox_extra_artists=(legend,),
+                        bbox_inches='tight')
 
     def shared_events_percentage(self, min_iter_shared=5, figure_dir='./'):
         """Plot the percentage of all events detected at that iteration,

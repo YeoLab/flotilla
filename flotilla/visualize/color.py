@@ -18,3 +18,6 @@ grey = set1[8]
 almost_black = '#262626'
 
 purples = sns.color_palette('Purples', 9)
+
+str_to_color = {'red': red, 'blue': blue, 'green': green, 'purple': purple,
+                'orange': orange, 'brown': brown, 'pink': pink, 'grey': grey}

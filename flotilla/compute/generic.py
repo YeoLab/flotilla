@@ -8,7 +8,8 @@ from scipy import stats
 from ..util import timeout, TimeoutError
 
 
-def get_regressor(x, y, n_estimators=1500, n_tries=5, verbose=False):
+def get_regressor(x, y, n_estimators=1500, pCut=0.05, n_tries=5,
+                  verbose=False):
     if verbose:
         sys.stderr.write('getting regressor\n')
     clfs = []
@@ -55,6 +56,7 @@ def get_unstarted_events(mongodb):
     go_on = True
     while go_on:
         event = mongodb['list'].find_one({"started": False})
+
         if event is None:
             go_on = False
         else:
@@ -88,7 +90,7 @@ def do_r(s_1, s_2, method=stats.pearsonr, min_items=12):
     """
     s_1, s_2 = s_1.dropna().align(s_2.dropna(), join='inner')
     if len(s_1) <= min_items:
-        return (np.nan, np.nan)
+        return np.nan, np.nan
     return method(s_1, s_2)
 
 
@@ -107,9 +109,8 @@ def get_robust_values(x, y):
     """
     import statsmodels.api as sm
 
-    rlm_result = sm.RLM(y, sm.add_constant(x), missing='drop').fit()
-    results = rlm_result.params[0], rlm_result.params[1], \
-        rlm_result.tvalues[0], rlm_result.pvalues[0]
+    r = sm.RLM(y, sm.add_constant(x), missing='drop').fit()
+    results = r.params[0], r.params[1], r.tvalues[0], r.pvalues[0]
     return results
 
 
@@ -137,7 +138,8 @@ def get_dcor(x, y):
 
 @timeout(100)
 def apply_calc_rs(X, y, method=stats.pearsonr):
-    """apply R calculation method on each gene separately (for nan values)
+    """
+    apply R calculation method on each gene separately (for nan values)
 
     input:
     X - (cells X rpkms) pd.DataFrame
@@ -167,9 +169,8 @@ def apply_calc_rs(X, y, method=stats.pearsonr):
 @timeout(220)
 def apply_calc_robust(X, y, verbose=False):
     """X and y are dataframes, returns slope, t-value and p-value of robust
-    regression
-    """
-
+     regression
+     """
     if verbose:
         sys.stderr.write("getting robust regression\n")
     out_I = pd.Series(index=X.columns, name=y.name)  # intercept
@@ -195,7 +196,8 @@ def apply_calc_robust(X, y, verbose=False):
 @timeout(50)
 def apply_calc_slope(X, y, verbose=False):
     """X and y are dataframes, returns slope, t-value and p-value of robust
-    regression"""
+    regression
+    """
     if verbose:
         sys.stderr.write("getting slope\n")
 
@@ -230,8 +232,8 @@ def apply_dcor(X, y, verbose=False):
             dc, dr, dvx, dvy = get_dcor(*map(np.array, [x, y]))
 
         except TimeoutError:
-            sys.stderr.write(
-                "dcor timeout event:%s, gene:%s\n" % (y.name, x.name))
+            sys.stderr.write("dcor timeout event:%s, gene:%s\n" % (y.name,
+                                                                   x.name))
             dc, dr, dvx, dvy = [np.nan] * 4
         out_DC.ix[this_id] = dc
         out_DR.ix[this_id] = dr
@@ -239,8 +241,6 @@ def apply_dcor(X, y, verbose=False):
         out_DVY.ix[this_id] = dvy
     return out_DC, out_DR, out_DVX, out_DVY
 
-
-# <codecell>
 
 def dropna_mean(x):
     return x.dropna().mean()
