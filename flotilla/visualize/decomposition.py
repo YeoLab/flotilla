@@ -55,16 +55,23 @@ class DecompositionViz(object):
         variance
     @return: x, y, marker, distance of each vector in the study_data.
     """
-    _default_reduction_kwargs = {}
+
 
     def __init__(self, df, title='', n_components=None, whiten=False,
+                 reduction_args=None,
                  **kwargs):
+
         self.title = title
-        kwargs.update(self._default_reduction_kwargs)
+        self._default_reduction_kwargs = {}
+
+        if reduction_args is None:
+            reduction_args = self._default_reduction_kwargs
+        else:
+            reduction_args = self._default_reduction_kwargs.update(reduction_args)
 
         # This magically initializes the reducer like PCA or NMF
         super(DecompositionViz, self).__init__(n_components=n_components,
-                                               whiten=whiten, **kwargs)
+                                               whiten=whiten, **reduction_args)
 
         assert isinstance(df, pd.DataFrame)
         self.df = df
