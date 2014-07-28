@@ -8,6 +8,8 @@ from flotilla.visualize.splicing import plot_pooled_dot
 def violinplot(psi, groupby=None, color=None, ax=None, pooled_psi=None,
                order=None, violinplot_kws=None, title=None,
                label_pooled=True, data_type='splicing'):
+    splicing = 'splicing'.startswith(data_type)
+
     if ax is None:
         ax = plt.gca()
 
@@ -16,7 +18,9 @@ def violinplot(psi, groupby=None, color=None, ax=None, pooled_psi=None,
     # Add a tiny amount of random noise in case the values are all identical,
     # Otherwise we get a LinAlg error.
     psi += np.random.uniform(0, 0.001, psi.shape[0])
-    sns.violinplot(psi, groupby=groupby, bw=0.1, inner='points',
+
+    inner = 'points' if splicing else 'box'
+    sns.violinplot(psi, groupby=groupby, bw=0.1, inner=inner,
                    color=color, linewidth=0.5, order=order,
                    ax=ax, **violinplot_kws)
     if pooled_psi is not None:
@@ -31,7 +35,7 @@ def violinplot(psi, groupby=None, color=None, ax=None, pooled_psi=None,
         else:
             plot_pooled_dot(ax, pooled_psi)
 
-    if 'splicing'.startswith(data_type):
+    if splicing:
         ax.set_ylim(0, 1)
         ax.set_yticks([0, 0.5, 1])
         ax.set_ylabel('$\Psi$')
