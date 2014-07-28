@@ -12,10 +12,10 @@ CURRENT_DIR = os.path.dirname(__file__)
 
 
 class ExampleData(object):
-    __slots__ = ('experiment_design_data', 'expression', 'splicing', 'data')
+    __slots__ = ('metadata', 'expression', 'splicing', 'data')
 
     def __init__(self, metadata, expression, splicing):
-        self.experiment_design_data = metadata
+        self.metadata = metadata
         self.expression = expression
         self.splicing = splicing
         self.data = (metadata, expression, splicing)
@@ -35,7 +35,7 @@ def example_data():
 def example_study(example_data):
     from flotilla.data_model import Study
 
-    return Study(sample_metadata=example_data.experiment_design_data,
+    return Study(sample_metadata=example_data.metadata,
                  expression_data=example_data.expression,
                  splicing_data=example_data.splicing)
 
