@@ -15,19 +15,22 @@ class MetaData(BaseData):
                                        predictor_config_manager=predictor_config_manager)
         self.phenotype_order = phenotype_order
         self.phenotype_to_color = phenotype_to_color
-        for phenotype, color in self.phenotype_to_color.iteritems():
-            try:
-                color = str_to_color[color]
-                self.phenotype_to_color[phenotype] = color
-            except KeyError:
-                pass
+        if self.phenotype_to_color is not None:
+            for phenotype, color in self.phenotype_to_color.iteritems():
+                try:
+                    color = str_to_color[color]
+                    self.phenotype_to_color[phenotype] = color
+                except KeyError:
+                    pass
 
         self.phenotype_to_marker = phenotype_to_marker
-        for phenoytpe, marker in self.phenotype_to_marker.iteritems():
-            if marker not in mpl.markers.MarkerStyle.filled_markers:
-                sys.stderr.write('{} is not a valid matplotlib marker style, '
-                                 'falling back on "o" (circle)'.format(marker))
-                self.phenotype_to_marker[phenotype] = 'o'
+        if self.phenotype_to_marker is not None:
+            for phenoytpe, marker in self.phenotype_to_marker.iteritems():
+                if marker not in mpl.markers.MarkerStyle.filled_markers:
+                    sys.stderr.write(
+                        '{} is not a valid matplotlib marker style, '
+                        'falling back on "o" (circle)'.format(marker))
+                    self.phenotype_to_marker[phenotype] = 'o'
 
     def _get(self, sample_metadata_filename=None, gene_metadata_filename=None,
              event_metadata_filename=None):
