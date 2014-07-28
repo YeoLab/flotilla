@@ -730,31 +730,39 @@ class Study(StudyFactory):
         feature_ids = self.feature_subset_to_feature_ids(data_type,
                                                          feature_subset,
                                                          rename=False)
-        # TODO: move this kwarg stuff into visualize
-        kwargs['x_pc'] = x_pc
-        kwargs['y_pc'] = y_pc
-        kwargs['sample_ids'] = sample_ids
-        kwargs['feature_ids'] = feature_ids
-        kwargs['title'] = title
-        kwargs['featurewise'] = featurewise
-        kwargs['show_point_labels'] = show_point_labels
-        kwargs['groupby'] = None
+
         if not featurewise:
-            kwargs['label_to_color'] = self.phenotype_to_color
-            kwargs['label_to_marker'] = self.phenotype_to_marker
-            kwargs['groupby'] = self.sample_id_to_celltype
+            label_to_color = self.phenotype_to_color
+            label_to_marker = self.phenotype_to_marker
+            groupby = self.sample_id_to_celltype
+        else:
+            label_to_color = None
+            label_to_marker = None
+            groupby = None
 
         if "expression".startswith(data_type):
-            reducer = self.expression.plot_pca(**kwargs)
+            reducer = self.expression.plot_pca(
+                x_pc=x_pc, y_pc=y_pc, sample_ids=sample_ids,
+                feature_ids=feature_ids,
+                label_to_color=label_to_color,
+                label_to_marker=label_to_marker, groupby=groupby,
+                featurewise=featurewise, show_point_labels=show_point_labels,
+                title=title, **kwargs)
         elif "splicing".startswith(data_type):
-            reducer = self.splicing.plot_pca(**kwargs)
+            reducer = self.splicing.plot_pca(
+                x_pc=x_pc, y_pc=y_pc, sample_ids=sample_ids,
+                feature_ids=feature_ids,
+                label_to_color=label_to_color,
+                label_to_marker=label_to_marker, groupby=groupby,
+                featurewise=featurewise, show_point_labels=show_point_labels,
+                title=title, **kwargs)
         else:
             raise ValueError('The data type {} does not exist in this study'
                              .format(data_type))
         return reducer
 
     def plot_graph(self, data_type='expression', sample_subset=None,
-                   feature_subset=None,
+                   feature_subset=None, featurewise=False,
                    **kwargs):
         """Plot the graph (network) of these data
 
@@ -776,14 +784,31 @@ class Study(StudyFactory):
                                                          feature_subset,
                                                          rename=False)
 
-        kwargs['sample_id_to_color'] = self.sample_id_to_color
-        kwargs['sample_ids'] = sample_ids
-        kwargs['feature_ids'] = feature_ids
+        if not featurewise:
+            label_to_color = self.phenotype_to_color
+            label_to_marker = self.phenotype_to_marker
+            groupby = self.sample_id_to_celltype
+        else:
+            label_to_color = None
+            label_to_marker = None
+            groupby = None
 
         if data_type == "expression":
-            self.expression.networks.draw_graph(**kwargs)
+            self.expression.networks.draw_graph(
+                sample_ids=sample_ids, feature_ids=feature_ids,
+                sample_id_to_color=self.sample_id_to_color,
+                label_to_color=label_to_color,
+                label_to_marker=label_to_marker, groupby=groupby,
+                data_type=data_type,
+                **kwargs)
         elif data_type == "splicing":
-            self.splicing.networks.draw_graph(**kwargs)
+            self.splicing.networks.draw_graph(
+                sample_ids=sample_ids, feature_ids=feature_ids,
+                sample_id_to_color=self.sample_id_to_color,
+                label_to_color=label_to_color,
+                label_to_marker=label_to_marker, groupby=groupby,
+                data_type=data_type,
+                **kwargs)
 
     def plot_study_sample_legend(self):
         markers = self.metadata.data.color.groupby(
@@ -828,18 +853,20 @@ class Study(StudyFactory):
                                                          feature_subset,
                                                          rename=False)
 
-        kwargs['data_name'] = '_'.join([sample_subset, feature_subset])
-        kwargs['trait'] = trait_data
-        kwargs['title'] = title
-        kwargs['show_point_labels'] = show_point_labels
-        kwargs['colors_dict'] = self.sample_id_to_color
-        kwargs['sample_ids'] = sample_ids
-        kwargs['feature_ids'] = feature_ids
-        #kwargs['predictor_config_manager'] = self.predictor_config_manager
-        # print(kwargs.keys())
+        data_name = '_'.join([sample_subset, feature_subset])
+
+        label_to_color = self.phenotype_to_color
+        label_to_marker = self.phenotype_to_marker
+        groupby = self.sample_id_to_celltype
 
         if data_type == "expression":
-            self.expression.plot_classifier(**kwargs)
+            self.expression.plot_classifier(
+                data_name=data_name, trait=trait_data,
+                sample_ids=sample_ids, feature_ids=feature_ids,
+                label_to_color=label_to_color,
+                label_to_marker=label_to_marker, groupby=groupby,
+                show_point_labels=show_point_labels, title=title,
+                **kwargs)
         elif data_type == "splicing":
             self.splicing.plot_classifier(**kwargs)
 

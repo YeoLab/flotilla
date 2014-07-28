@@ -58,17 +58,32 @@ class DecompositionViz(object):
 
 
     def __init__(self, df, title='', n_components=None, whiten=False,
-                 reduction_args=None,
+                 reduction_args=None, feature_renamer=None, groupby=None,
+                 color=None, pooled=None, order=None, violinplot_kws=None,
+                 data_type=None,
                  **kwargs):
 
         self.title = title
         self._default_reduction_kwargs = {}
+
+        self.groupby = groupby
+        if self.groupby is None:
+            self.groupby = dict.fromkeys(self.df.index, 'all')
+        self.color = color
+        self.pooled = pooled
+        self.order = order
+        self.violinplot_kws = violinplot_kws
+        self.data_type = data_type
 
         if reduction_args is None:
             reduction_args = self._default_reduction_kwargs
         else:
             reduction_args = self._default_reduction_kwargs.update(
                 reduction_args)
+
+        self.feature_renamer = feature_renamer
+        if self.feature_renamer is None:
+            self.feature_renamer = lambda x: x
 
         # This magically initializes the reducer like PCA or NMF
         super(DecompositionViz, self).__init__(n_components=n_components,
@@ -79,7 +94,7 @@ class DecompositionViz(object):
         self.reduced_space = self.fit_transform(self.df)
 
     def __call__(self, ax=None,
-                 x_pc='pc_1', y_pc='pc_2',
+                 x_pc='pc_1', y_pc='pc_2', num_vectors=20,
                  **kwargs):
         gs_x = 14
         gs_y = 12
@@ -97,15 +112,16 @@ class DecompositionViz(object):
         ax_loading2 = plt.subplot(gs[:, 10:14])
 
         kwargs.update({'ax': ax_components})
+        self.num_vectors = num_vectors
 
-        self.plot_samples(**kwargs)
+        self.plot_samples(num_vectors=self.num_vectors, **kwargs)
         self.plot_loadings(pc=x_pc, ax=ax_loading1)
         self.plot_loadings(pc=y_pc, ax=ax_loading2)
         sns.despine()
         fig.tight_layout()
         return self
 
-    def plot_samples(self, groupby=None, x_pc='pc_1', y_pc='pc_2',
+    def plot_samples(self, x_pc='pc_1', y_pc='pc_2',
                      show_point_labels=True,
                      distance='L1', num_vectors=20, label_to_color=None,
                      label_to_marker=None,
@@ -184,11 +200,10 @@ class DecompositionViz(object):
 
             label_to_marker = defaultdict(marker_factory)
 
-        if groupby is None:
-            groupby = dict.fromkeys(self.reduced_space.index, 'all')
+
 
         # Plot the samples
-        grouped = self.reduced_space.groupby(groupby, axis=0)
+        grouped = self.reduced_space.groupby(self.groupby, axis=0)
         for name, df in grouped:
             color = label_to_color[name]
             marker = label_to_marker[name]
@@ -231,7 +246,8 @@ class DecompositionViz(object):
                     x_offset = math.copysign(5, x)
                     y_offset = math.copysign(5, y)
                     horizontalalignment = 'left' if x > 0 else 'right'
-                    ax.annotate(vector_label, (x, y),
+                    renamed = self.feature_renamer(vector_label)
+                    ax.annotate(renamed, (x, y),
                                 textcoords='offset points',
                                 xytext=(x_offset, y_offset),
                                 horizontalalignment=horizontalalignment)
@@ -254,12 +270,10 @@ class DecompositionViz(object):
         x.sort(ascending=True)
         half_features = int(n_features / 2)
         if len(x) > n_features:
-
             a = x[:half_features]
             b = x[-half_features:]
             dd = np.r_[a, b]
             labels = np.r_[a.index, b.index]
-
         else:
             dd = x
             labels = x.index
@@ -267,14 +281,19 @@ class DecompositionViz(object):
         if ax is None:
             ax = plt.gca()
 
-        ax.plot(dd, np.arange(len(dd)), 'o', label='hi')
+        ax.plot(dd, np.arange(len(dd)), 'o')
+
         ax.set_yticks(np.arange(max(len(dd), n_features)))
-        shorten = lambda x: '{}...'.format(x[:30]) if len(x) > 30 else x
-        ax.set_yticklabels(map(shorten, labels))
         ax.set_title("Component " + pc)
+
         x_offset = max(dd) * .05
         ax.set_xlim(left=min(dd) - x_offset, right=max(dd) + x_offset)
-        [lab.set_rotation(90) for lab in ax.get_xticklabels()]
+
+        labels = map(self.feature_renamer, labels)
+        shorten = lambda x: '{}...'.format(x[:30]) if len(x) > 30 else x
+        ax.set_yticklabels(map(shorten, labels))
+        for lab in ax.get_xticklabels():
+            lab.set_rotation(90)
         sns.despine(ax=ax)
 
     def plot_explained_variance(self, title="PCA"):
@@ -296,6 +315,26 @@ class DecompositionViz(object):
         ax.set_title(title)
         sns.despine()
         return fig
+
+    def plot_feature_violins(self):
+        """Make violinplots of each feature
+        """
+        ncols = 5
+        nrows = 1
+        while ncols * nrows < self.num_vectors:
+            nrows += 1
+        fig, axes = plt.subplots(nrows=nrows, ncols=ncols,
+                                 figsize=(3 * ncols, 2 * nrows))
+        vector_labels = self.magnitudes[:self.num_vectors].index
+        for vector_label, ax in zip(vector_labels, axes.flat):
+            # somehow need to access
+            renamed = self.feature_renamer(vector_label)
+            pass
+
+        # Clear any unused axes
+        for ax in axes.flat:
+            if len(ax.collections) == 0 or len(ax.lines) == 0:
+                ax.axis('off')
 
 
 class PCAViz(DecompositionViz, PCA):
