@@ -735,10 +735,14 @@ class Study(StudyFactory):
             label_to_color = self.phenotype_to_color
             label_to_marker = self.phenotype_to_marker
             groupby = self.sample_id_to_celltype
+            order = self.phenotype_order
+            color = self.phenotype_color_order
         else:
             label_to_color = None
             label_to_marker = None
             groupby = None
+            order = None
+            color = None
 
         if "expression".startswith(data_type):
             reducer = self.expression.plot_pca(
@@ -746,6 +750,7 @@ class Study(StudyFactory):
                 feature_ids=feature_ids,
                 label_to_color=label_to_color,
                 label_to_marker=label_to_marker, groupby=groupby,
+                order=order, color=color,
                 featurewise=featurewise, show_point_labels=show_point_labels,
                 title=title, **kwargs)
         elif "splicing".startswith(data_type):
@@ -754,6 +759,7 @@ class Study(StudyFactory):
                 feature_ids=feature_ids,
                 label_to_color=label_to_color,
                 label_to_marker=label_to_marker, groupby=groupby,
+                order=order, color=color,
                 featurewise=featurewise, show_point_labels=show_point_labels,
                 title=title, **kwargs)
         else:

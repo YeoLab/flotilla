@@ -33,7 +33,6 @@ class SplicingData(BaseData):
     _var_cut = 0.2
 
     _last_reducer_accessed = None
-
     def __init__(self, data,
                  metadata=None, binsize=0.1,
                  var_cut=_var_cut, outliers=None,
@@ -75,6 +74,8 @@ class SplicingData(BaseData):
         self.modalities_calculator = Modalities(excluded_max=excluded_max,
                                                 included_min=included_min)
         self.modalities_visualizer = ModalitiesViz()
+
+        self.data_type = 'splicing'
 
         try:
             for modality in set(self.modalities()):
@@ -159,38 +160,33 @@ class SplicingData(BaseData):
 
     def reduce(self, sample_ids=None, feature_ids=None,
                featurewise=False, reducer=PCAViz,
-               standardize=True, title='',
-               reducer_kwargs=None, bins=None):
+               standardize=False, title='',
+               reducer_kwargs=None, bins=None, groupby=None,
+               label_to_color=None, label_to_marker=None,
+               order=None, color=None):
         """make and cache a reduced dimensionality representation of data
 
-        Default is PCAViz because
+        Default is PCAViz because NMFviz only works for binned data
         """
         if bins is not None:
             data = self.binify(bins)
         else:
             data = self.data
-
-        reducer_kwargs = {} if reducer_kwargs is None else reducer_kwargs
-        reducer_kwargs['title'] = title
-        subset, means = self._subset_and_standardize(data,
-                                                     sample_ids, feature_ids,
-                                                     standardize,
-                                                     return_means=True)
-
-        # compute reduction
-        if featurewise:
-            subset = subset.T
-        reducer_object = reducer(subset, **reducer_kwargs)
-
-        # always the mean of input features. i.e. featurewise doesn't change
-        # this.
-        reducer_object.means = means
-        return reducer_object
+        return super(SplicingData, self).reduce(data, sample_ids=sample_ids,
+                                                feature_ids=feature_ids,
+                                                featurewise=featurewise,
+                                                reducer=reducer,
+                                                standardize=standardize,
+                                                title=title,
+                                                reducer_kwargs=reducer_kwargs,
+                                                groupby=groupby,
+                                                label_to_color=label_to_color,
+                                                label_to_marker=label_to_marker,
+                                                order=order, color=color)
 
     @memoize
     def classify(self, trait, sample_ids, feature_ids,
                  standardize=True,
-                 data_name='splicing',
                  predictor_name='ExtraTreesClassifier',
                  predictor_obj=None,
                  predictor_scoring_fun=None,
@@ -245,7 +241,7 @@ class SplicingData(BaseData):
         if plotting_kwargs is None:
             plotting_kwargs = {}
 
-        classifier = ClassifierViz(data_name, trait.name,
+        classifier = ClassifierViz(self.data_type, trait.name,
                                    predictor_name=predictor_name,
                                    X_data=subset,
                                    trait=trait,
