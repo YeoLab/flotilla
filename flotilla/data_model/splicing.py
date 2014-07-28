@@ -10,6 +10,7 @@ import seaborn as sns
 from .base import BaseData
 from ..compute.infotheory import binify
 from ..compute.splicing import Modalities
+from flotilla.visualize.generic import violinplot
 from ..visualize.decomposition import NMFViz, PCAViz
 from ..visualize.color import purples
 from ..visualize.predict import ClassifierViz
@@ -17,7 +18,7 @@ from ..visualize.splicing import ModalitiesViz
 from ..util import cached_property, memoize
 from ..visualize.color import red
 from ..visualize.splicing import lavalamp, hist_single_vs_pooled_diff, \
-    lavalamp_pooled_inconsistent, psi_violinplot
+    lavalamp_pooled_inconsistent
 
 
 FRACTION_DIFF_THRESH = 0.1
@@ -410,9 +411,9 @@ class SplicingData(BaseData):
         title = self.feature_renamer(feature_id)
         title = '{} {}'.format(title, ':'.join(feature_id.split(':')[:2]))
 
-        psi_violinplot(singles, groupby=phenotype_groupby, color=color,
-                       pooled_psi=pooled, order=phenotype_order,
-                       title=title)
+        violinplot(singles, groupby=phenotype_groupby, color=color,
+                   pooled_psi=pooled, order=phenotype_order,
+                   title=title)
         # psi = self.data.ix[sample_ids, feature_id].dropna()
 
         # import pdb; pdb.set_trace()
