@@ -13,7 +13,7 @@ from ..compute.clustering import Cluster
 from ..visualize.decomposition import PCAViz
 from ..external import link_to_list
 from ..compute.predict import PredictorConfigManager, PredictorDataSetManager
-
+from ..util import memoize
 
 MINIMUM_SAMPLES = 10
 default_predictor_name = "ExtraTreesClassifier"
@@ -52,11 +52,11 @@ class BaseData(object):
         if outliers is not None:
             self.data, self.outliers = self.drop_outliers(self.data,
                                                           outliers)
-
         self.feature_data = metadata
         self.feature_rename_col = feature_rename_col
         self.min_samples = min_samples
         self.default_feature_sets = []
+        self.data_type = None
 
         self.clusterer = Cluster()
 
@@ -219,7 +219,8 @@ class BaseData(object):
                             data_name=data_name,
                             standardize=standardize,
                             predictor_name=predictor_name,
-                            feature_renamer=self.feature_renamer)
+                            feature_renamer=self.feature_renamer,
+                            data_type=self.data_type)
         clf.score_coefficient = score_coefficient
         clf(**plotting_kwargs)
         return self
@@ -229,7 +230,7 @@ class BaseData(object):
                                       featurewise=False, reducer=PCAViz,
                                       label_to_color=None,
                                       label_to_marker=None,
-                                      groupby=None,
+                                      groupby=None, order=None, color=None,
                                       **plotting_kwargs):
         """Principal component-like analysis of measurements
 
@@ -262,13 +263,12 @@ class BaseData(object):
         """
         pca = self.reduce(sample_ids, feature_ids,
                           featurewise=featurewise, reducer=reducer,
-                          feature_renamer=self.feature_renamer)
+                          label_to_color=label_to_color,
+                          label_to_marker=label_to_marker,
+                          groupby=groupby, order=order, color=color)
         pca(show_vectors=True,
             x_pc="pc_" + str(x_pc),
             y_pc="pc_" + str(y_pc),
-            label_to_color=label_to_color,
-            label_to_marker=label_to_marker,
-            groupby=groupby,
             **plotting_kwargs)
         return self
 
@@ -349,7 +349,8 @@ class BaseData(object):
 
     def _subset_and_standardize(self, data, sample_ids=None,
                                 feature_ids=None,
-                                standardize=True, return_means=False):
+                                standardize=True, return_means=False,
+                                rename=False):
 
         """Take only the sample ids and feature ids from this data, require
         at least some minimum samples, and standardize data using
@@ -382,9 +383,12 @@ class BaseData(object):
 
         # fill na with mean for each event
         subset = self._subset(data, sample_ids, feature_ids)
-        means = subset.mean().rename_axis(self.feature_renamer)
+        means = subset.mean()
         subset = subset.fillna(means).fillna(0)
-        subset = subset.rename_axis(self.feature_renamer, 1)
+
+        if rename:
+            means = means.rename_axis(self.feature_renamer)
+            subset = subset.rename_axis(self.feature_renamer, 1)
 
         # whiten, mean-center
         if standardize:
@@ -413,3 +417,64 @@ class BaseData(object):
         col_kws = dict(linkage_matrix=col_linkage, side_colors=feature_colors)
         row_kws = dict(linkage_matrix=row_linkage, side_colors=sample_colors)
         return sns.clusteredheatmap(subset, row_kws=row_kws, col_kws=col_kws)
+
+    @memoize
+    def reduce(self, data, sample_ids, feature_ids,
+               featurewise=False,
+               reducer=PCAViz,
+               standardize=True,
+               title='',
+               reducer_kwargs=None,
+               color=None,
+               groupby=None, label_to_color=None, label_to_marker=None,
+               order=None):
+        """Make and memoize a reduced dimensionality representation of data
+
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            samples x features data to reduce
+        sample_ids : None or list of strings
+            If None, all sample ids will be used, else only the sample ids
+            specified
+        feature_ids : None or list of strings
+            If None, all features will be used, else only the features
+            specified
+        featurewise : bool
+            Whether or not to use the features as the "samples", e.g. if you
+            want to reduce the features in to "sample-space" instead of
+            reducing the samples into "feature-space"
+        standardize : bool
+            Whether or not to "whiten" (make all variables uncorrelated) and
+            mean-center via sklearn.preprocessing.StandardScaler
+        title : str
+            Title of the plot
+        reducer_kwargs : dict
+            Any additional arguments to send to the reducer
+
+        Returns
+        -------
+        reducer_object : flotilla.compute.reduce.ReducerViz
+            A ready-to-plot object containing the reduced space
+        """
+
+        reducer_kwargs = {} if reducer_kwargs is None else reducer_kwargs
+        reducer_kwargs['title'] = title
+
+        subset, means = self._subset_and_standardize(data,
+                                                     sample_ids, feature_ids,
+                                                     standardize,
+                                                     return_means=True)
+        # compute reduction
+        if featurewise:
+            subset = subset.T
+
+        reducer_object = reducer(subset,
+                                 feature_renamer=self.feature_renamer,
+                                 label_to_color=label_to_color,
+                                 label_to_marker=label_to_marker,
+                                 groupby=groupby, order=order,
+                                 data_type=self.data_type, color=color,
+                                 **reducer_kwargs)
+        reducer_object.means = means
+        return reducer_object

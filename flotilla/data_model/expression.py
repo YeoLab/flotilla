@@ -41,6 +41,7 @@ class ExpressionData(BaseData):
             feature_rename_col=feature_rename_col,
             outliers=outliers, pooled=pooled,
             predictor_config_manager=predictor_config_manager)
+        self.data_type = 'expression'
 
         sys.stderr.write("done initializing expression\n")
 
@@ -66,7 +67,10 @@ class ExpressionData(BaseData):
                reducer=PCAViz,
                standardize=True,
                title='',
-               reducer_kwargs=None):
+               reducer_kwargs=None,
+               color=None,
+               groupby=None, label_to_color=None, label_to_marker=None,
+               order=None):
         """Make and memoize a reduced dimensionality representation of data
 
         Parameters
@@ -94,21 +98,18 @@ class ExpressionData(BaseData):
         reducer_object : flotilla.compute.reduce.ReducerViz
             A ready-to-plot object containing the reduced space
         """
-
-        reducer_kwargs = {} if reducer_kwargs is None else reducer_kwargs
-        reducer_kwargs['title'] = title
-
-        subset, means = self._subset_and_standardize(self.sparse_data,
-                                                     sample_ids, feature_ids,
-                                                     standardize,
-                                                     return_means=True)
-
-        # compute reduction
-        if featurewise:
-            subset = subset.T
-        reducer_object = reducer(subset, **reducer_kwargs)
-        reducer_object.means = means
-        return reducer_object
+        return super(ExpressionData, self).reduce(self.sparse_data,
+                                                  sample_ids=sample_ids,
+                                                  feature_ids=feature_ids,
+                                                  featurewise=featurewise,
+                                                  reducer=reducer,
+                                                  standardize=standardize,
+                                                  title=title,
+                                                  reducer_kwargs=reducer_kwargs,
+                                                  groupby=groupby,
+                                                  label_to_color=label_to_color,
+                                                  label_to_marker=label_to_marker,
+                                                  order=order)
 
     @memoize
     def classify(self, trait, sample_ids, feature_ids,
@@ -120,8 +121,7 @@ class ExpressionData(BaseData):
                  score_cutoff_fun=None,
                  n_features_dependent_parameters=None,
                  constant_parameters=None,
-                 plotting_kwargs=None,
-    ):
+                 plotting_kwargs=None):
         #Should all this be exposed to the user???
 
         """Make and memoize a predictor on a categorical trait (associated

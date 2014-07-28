@@ -8,6 +8,8 @@ from flotilla.visualize.splicing import plot_pooled_dot
 def violinplot(data, groupby=None, color=None, ax=None, pooled_data=None,
                order=None, violinplot_kws=None, title=None,
                label_pooled=True, data_type='splicing'):
+    data_type = 'none' if data_type is None else data_type
+
     splicing = 'splicing'.startswith(data_type)
 
     if ax is None:

@@ -10,6 +10,7 @@ import seaborn as sns
 
 from ..compute.decomposition import NMF, PCA
 from .color import set1
+from .generic import violinplot
 
 
 def L1_distance(x, y):
@@ -60,20 +61,20 @@ class DecompositionViz(object):
     def __init__(self, df, title='', n_components=None, whiten=False,
                  reduction_args=None, feature_renamer=None, groupby=None,
                  color=None, pooled=None, order=None, violinplot_kws=None,
-                 data_type=None,
+                 data_type=None, label_to_color=None, label_to_marker=None,
                  **kwargs):
 
         self.title = title
         self._default_reduction_kwargs = {}
 
         self.groupby = groupby
-        if self.groupby is None:
-            self.groupby = dict.fromkeys(self.df.index, 'all')
         self.color = color
         self.pooled = pooled
         self.order = order
         self.violinplot_kws = violinplot_kws
         self.data_type = data_type
+        self.label_to_color = label_to_color
+        self.label_to_marker = label_to_marker
 
         if reduction_args is None:
             reduction_args = self._default_reduction_kwargs
@@ -91,6 +92,9 @@ class DecompositionViz(object):
 
         assert isinstance(df, pd.DataFrame)
         self.df = df
+        if self.groupby is None:
+            self.groupby = dict.fromkeys(self.df.index, 'all')
+
         self.reduced_space = self.fit_transform(self.df)
 
     def __call__(self, ax=None,
@@ -119,12 +123,13 @@ class DecompositionViz(object):
         self.plot_loadings(pc=y_pc, ax=ax_loading2)
         sns.despine()
         fig.tight_layout()
+
+        self.plot_feature_violins()
         return self
 
     def plot_samples(self, x_pc='pc_1', y_pc='pc_2',
                      show_point_labels=True,
-                     distance='L1', num_vectors=20, label_to_color=None,
-                     label_to_marker=None,
+                     distance='L1', num_vectors=20,
                      title='PCA', show_vectors=True,
                      show_vector_labels=True, markersize=10,
                      three_d=False, legend=True, ax=None,
@@ -184,7 +189,7 @@ class DecompositionViz(object):
         if ax is None:
             ax = plt.gca()
 
-        if label_to_color is None:
+        if self.label_to_color is None:
             colors = cycle(set1)
 
             def color_factory():
@@ -192,7 +197,7 @@ class DecompositionViz(object):
 
             label_to_color = defaultdict(color_factory)
 
-        if label_to_marker is None:
+        if self.label_to_marker is None:
             markers = cycle(['o', '^', 's', 'v', '*', 'D', 'h'])
 
             def marker_factory():
@@ -205,8 +210,8 @@ class DecompositionViz(object):
         # Plot the samples
         grouped = self.reduced_space.groupby(self.groupby, axis=0)
         for name, df in grouped:
-            color = label_to_color[name]
-            marker = label_to_marker[name]
+            color = self.label_to_color[name]
+            marker = self.label_to_marker[name]
             x = df[x_pc]
             y = df[y_pc]
             ax.plot(x, y, color=color, marker=marker, linestyle='None',
@@ -319,22 +324,35 @@ class DecompositionViz(object):
     def plot_feature_violins(self):
         """Make violinplots of each feature
         """
-        ncols = 5
+        ncols = 4
         nrows = 1
         while ncols * nrows < self.num_vectors:
             nrows += 1
         fig, axes = plt.subplots(nrows=nrows, ncols=ncols,
-                                 figsize=(3 * ncols, 2 * nrows))
+                                 figsize=(4 * ncols, 4 * nrows))
         vector_labels = self.magnitudes[:self.num_vectors].index
         for vector_label, ax in zip(vector_labels, axes.flat):
-            # somehow need to access
             renamed = self.feature_renamer(vector_label)
-            pass
+            data = self.df[vector_label]
+
+            if self.data_type == 'splicing':
+                original = ':'.join(vector_label.split(':')[:2])
+                # original = vector_label.replace('@chr', '\nchr')
+                data.name = original
+            else:
+                original = vector_label
+
+            title = '{}\n{}'.format(renamed, original)
+            violinplot(data=data, groupby=self.groupby, color=self.color,
+                       ax=ax, pooled_data=self.pooled, order=self.order,
+                       title=title, data_type=self.data_type)
 
         # Clear any unused axes
         for ax in axes.flat:
+            # Check if the plotting space is empty
             if len(ax.collections) == 0 or len(ax.lines) == 0:
                 ax.axis('off')
+        fig.tight_layout()
 
 
 class PCAViz(DecompositionViz, PCA):
