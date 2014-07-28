@@ -187,6 +187,9 @@ class BaseData(object):
                         predictor_name=None,
                         standardize=True, score_coefficient=None,
                         data_name=None,
+                        label_to_color=None,
+                        label_to_marker=None,
+                        groupby=None,
                         **plotting_kwargs):
         """Principal component-like analysis of measurements
 
@@ -216,7 +219,7 @@ class BaseData(object):
                             data_name=data_name,
                             standardize=standardize,
                             predictor_name=predictor_name,
-        )
+                            feature_renamer=self.feature_renamer)
         clf.score_coefficient = score_coefficient
         clf(**plotting_kwargs)
         return self
@@ -224,6 +227,9 @@ class BaseData(object):
     def plot_dimensionality_reduction(self, x_pc=1, y_pc=2,
                                       sample_ids=None, feature_ids=None,
                                       featurewise=False, reducer=PCAViz,
+                                      label_to_color=None,
+                                      label_to_marker=None,
+                                      groupby=None,
                                       **plotting_kwargs):
         """Principal component-like analysis of measurements
 
@@ -255,10 +261,14 @@ class BaseData(object):
 
         """
         pca = self.reduce(sample_ids, feature_ids,
-                          featurewise=featurewise, reducer=reducer)
+                          featurewise=featurewise, reducer=reducer,
+                          feature_renamer=self.feature_renamer)
         pca(show_vectors=True,
             x_pc="pc_" + str(x_pc),
             y_pc="pc_" + str(y_pc),
+            label_to_color=label_to_color,
+            label_to_marker=label_to_marker,
+            groupby=groupby,
             **plotting_kwargs)
         return self
 

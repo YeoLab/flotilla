@@ -412,31 +412,16 @@ class SplicingData(BaseData):
         title = '{} {}'.format(title, ':'.join(feature_id.split(':')[:2]))
 
         violinplot(singles, groupby=phenotype_groupby, color=color,
-                   pooled_psi=pooled, order=phenotype_order,
-                   title=title)
-        # psi = self.data.ix[sample_ids, feature_id].dropna()
+                   pooled_data=pooled, order=phenotype_order,
+                   title=title, data_type='splicing')
 
-        # import pdb; pdb.set_trace()
-
-        # Add a tiny amount of uniform random noise in case all the values
-        # are equal
-        # psi += np.random.uniform(0, 0.01, psi.shape)
-        # sns.violinplot(psi, groupby=phenotype_groupby, ax=ax, bw=0.2,
-        #                inner='points', order=phenotype_order)
-        # sns.despine()
-        # ax.set_ylim(0, 1)
-        # ax.set_yticks((0, 0.5, 1))
-        # ax.set_ylabel('PSI ($\Psi$) scores')
-        #
-        # pooled_grouped = self.pooled.groupby(phenotype_groupby, axis=0)
-        #
-        # for i, (celltype, df) in enumerate(pooled_grouped):
-        #     ys = df.ix[:, feature_id]
-        #     xs = np.ones(ys.shape) * i
-        #     for x, y in zip(xs, ys):
-        #         ax.scatter(x, y, marker='o', color='k', s=100)
-        #         ax.annotate('pooled', (x, y), textcoords='offset points',
-        #                     xytext=(10, 5), fontsize=14)
+    def _violinplot(self, feature_id, sample_ids=None, phenotype_groupby=None,
+                    phenotype_order=None, ax=None, color=None):
+        """For compatiblity across data types, can specify _violinplot
+        """
+        self.plot_event(feature_id, sample_ids=sample_ids,
+                        phenotype_groupby=phenotype_groupby,
+                        phenotype_order=phenotype_order, ax=ax, color=color)
 
     @memoize
     def pooled_inconsistent(self, sample_ids, feature_ids=None,
@@ -464,7 +449,8 @@ class SplicingData(BaseData):
         """
         # singles = self._subset(self.data, singles_ids, feature_ids)
         diff_from_singles = self._diff_from_singles(sample_ids,
-                                                    feature_ids, scaled=True)
+                                                    feature_ids,
+                                                    scaled=True)
 
         large_diff = \
             diff_from_singles[diff_from_singles.abs()
@@ -503,7 +489,8 @@ class SplicingData(BaseData):
 
     def plot_hist_single_vs_pooled_diff(self, sample_ids,
                                         feature_ids=None,
-                                        color=None, title='', hist_kws=None):
+                                        color=None, title='',
+                                        hist_kws=None):
         diff_from_singles = self._diff_from_singles(sample_ids,
                                                     feature_ids)
         diff_from_singles_scaled = self._diff_from_singles(sample_ids,
@@ -704,6 +691,7 @@ class DownsampledSplicingData(BaseData):
             ax.set_ylabel('Percent of events')
             sns.despine()
             fig.tight_layout()
-            fig.savefig('{}/downsampled_shared_events_{}_min_iter_shared{}.pdf'
-                        .format(figure_dir, splice_type, min_iter_shared),
-                        bbox_extra_artists=(legend,), bbox_inches='tight')
+            fig.savefig(
+                '{}/downsampled_shared_events_{}_min_iter_shared{}.pdf'
+                .format(figure_dir, splice_type, min_iter_shared),
+                bbox_extra_artists=(legend,), bbox_inches='tight')

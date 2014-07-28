@@ -51,7 +51,6 @@ class PredictorConfig(object):
                  score_cutoff_fun=default_score_cutoff_fun,
                  n_features_dependent_parameters=None,
                  constant_parameters=None):
-
         """
 
 
@@ -491,42 +490,42 @@ class PredictorBase(object):
     One datset, one predictor, from dataset manager.
 
 
-        Parameters
-        ----------
+    Parameters
+    ----------
 
-        predictor_name : str
-            Name for predictor
-        data_name : str
-            Name for this (subset of the) data
-        trait_name : str
-            Name for this trait
-        X_data : pandas.DataFrame
-            Samples-by-features (row x col) dataset to train the predictor on
-        trait : pandas.Series
-            A variable you want to predict using X_data. Indexed like X_data.
-        predictor_obj : scikit-learn object that implements fit and score on (X_data,trait)
-            Which classifier to use. Default ExtraTreesClassifier
-        predictor_scoring_fun : function
-            Function to get the feature scores for a scikit-learn classifier.
-            This can be different for different classifiers, e.g. for a
-            classifier named "x" it could be x.scores_, for other it's
-            x.feature_importances_. Default: lambda x: x.feature_importances_
-        score_cutoff_fun : function
-            Function to cut off insignificant scores
-            Default: lambda scores: np.mean(x) + 2 * np.std(x)
-        n_features_dependent_parameters : dict
-            kwargs to the predictor that depend on n_features
-            Default:
-            {}
-        constant_parameters : dict
-            kwargs to the predictor that are constant, i.e.:
-            {'n_estimators': 100,
-             'bootstrap': True,
-             'max_features': 'auto',
-             'random_state': 0,
-             'oob_score': True,
-             'n_jobs': 2,
-             'verbose': True}
+    predictor_name : str
+        Name for predictor
+    data_name : str
+        Name for this (subset of the) data
+    trait_name : str
+        Name for this trait
+    X_data : pandas.DataFrame
+        Samples-by-features (row x col) dataset to train the predictor on
+    trait : pandas.Series
+        A variable you want to predict using X_data. Indexed like X_data.
+    predictor_obj : scikit-learn object that implements fit and score on (X_data,trait)
+        Which classifier to use. Default ExtraTreesClassifier
+    predictor_scoring_fun : function
+        Function to get the feature scores for a scikit-learn classifier.
+        This can be different for different classifiers, e.g. for a
+        classifier named "x" it could be x.scores_, for other it's
+        x.feature_importances_. Default: lambda x: x.feature_importances_
+    score_cutoff_fun : function
+        Function to cut off insignificant scores
+        Default: lambda scores: np.mean(x) + 2 * np.std(x)
+    n_features_dependent_parameters : dict
+        kwargs to the predictor that depend on n_features
+        Default:
+        {}
+    constant_parameters : dict
+        kwargs to the predictor that are constant, i.e.:
+        {'n_estimators': 100,
+         'bootstrap': True,
+         'max_features': 'auto',
+         'random_state': 0,
+         'oob_score': True,
+         'n_jobs': 2,
+         'verbose': True}
 
     """
 
@@ -540,12 +539,22 @@ class PredictorBase(object):
                  constant_parameters=None,
                  is_categorical_trait=None,
                  predictor_dataset_manager=None,
-                 predictor_config_manager=None
-    ):
+                 predictor_config_manager=None,
+                 feature_renamer=None,
+                 groupby=None, color=None, pooled=None, order=None,
+                 violinplot_kws=None, data_type=None):
 
         self.predictor_name = predictor_name
         self.data_name = data_name
         self.trait_name = trait_name
+
+        self.feature_renamer = feature_renamer
+        self.groupby = groupby
+        self.color = color
+        self.pooled = pooled
+        self.order = order
+        self.violinplot_kws = violinplot_kws
+        self.data_type = data_type
 
         if trait is not None:
             trait = trait.copy()
@@ -571,19 +580,19 @@ class PredictorBase(object):
         self.score_cutoff_fun = score_cutoff_fun
         self.constant_parameters = constant_parameters
         self.n_features_dependent_parameters = n_features_dependent_parameters
-        self.categorical_trait = is_categorical_trait if is_categorical_trait is not None else False
+        self.categorical_trait = is_categorical_trait if \
+            is_categorical_trait is not None else False
 
-        self.__doc__ = self.__doc__ + "\n\n" + self.dataset.__doc__ + "\n\n" + self.predictor.__doc__
+        self.__doc__ = '{}\n\n{}\n\n{}\n\n{}'.format(self.__doc__,
+                                                     self.dataset.__doc__,
+                                                     self.predictor.__doc__)
 
     #thin reference to self.dataset
-
     @property
     def dataset(self):
-        return self.predictor_data_manager.dataset(self.data_name,
-                                                   self.trait_name,
-                                                   data=self._data,
-                                                   trait=self.trait,
-                                                   categorical_trait=self.categorical_trait)
+        return self.predictor_data_manager.dataset(
+            self.data_name, self.trait_name, data=self._data, trait=self.trait,
+            categorical_trait=self.categorical_trait)
 
     @property
     def X(self):
