@@ -33,6 +33,7 @@ class SplicingData(BaseData):
     _var_cut = 0.2
 
     _last_reducer_accessed = None
+
     def __init__(self, data,
                  metadata=None, binsize=0.1,
                  var_cut=_var_cut, outliers=None,
@@ -508,6 +509,18 @@ class SplicingData(BaseData):
         large_diff = self.pooled_inconsistent(sample_ids, feature_ids,
                                               fraction_diff_thresh)
         return large_diff.shape[1] / float(pooled.shape[1]) * 100
+
+    def _calculate_linkage(self, sample_ids, feature_ids,
+                           metric='euclidean', linkage_method='median',
+                           bins=None, standardize=False):
+        if bins is not None:
+            data = self.binify(bins)
+        else:
+            data = self.data
+        return super(SplicingData, self)._calculate_linkage(
+            data, sample_ids=sample_ids, feature_ids=feature_ids,
+            standardize=standardize, metric=metric,
+            linkage_method=linkage_method)
 
 
 class SpliceJunctionData(SplicingData):

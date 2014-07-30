@@ -217,12 +217,11 @@ class ExpressionData(BaseData):
         return vz
 
     def _calculate_linkage(self, sample_ids, feature_ids, metric='euclidean',
-                           linkage_method='average', ):
-        subset = self._subset_and_standardize(self.log_data, sample_ids,
-                                              feature_ids)
-        row_linkage, col_linkage = self.clusterer(subset, metric,
-                                                  linkage_method)
-        return subset, row_linkage, col_linkage
+                           linkage_method='average', standardize=True):
+        return super(ExpressionData, self)._calculate_linkage(
+            self.sparse_data, sample_ids=sample_ids, feature_ids=feature_ids,
+            standardize=standardize, metric=metric,
+            linkage_method=linkage_method)
 
 
 class SpikeInData(ExpressionData):
