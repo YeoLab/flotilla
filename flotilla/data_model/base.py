@@ -62,6 +62,16 @@ class BaseData(object):
 
         self.species = species
         self.feature_subsets = {}
+
+        def shortener(renamer, x):
+            renamed = renamer(x)
+            if isinstance(renamed, float):
+                return renamed
+            elif len(renamed) > 20:
+                return '{}...'.format(renamed[:20])
+            else:
+                return renamed
+
         if self.feature_data is not None and self.feature_rename_col is not \
                 None:
             def feature_renamer(x):
@@ -69,16 +79,16 @@ class BaseData(object):
                     rename = self.feature_data[feature_rename_col][x]
                     if isinstance(rename, pd.Series):
                         return rename.values[0]
-                    elif isinstance(rename, float):
+                    elif not isinstance(rename, float) and ':' in rename:
                         return ":".join(x.split("@")[1].split(":")[:2])
                     else:
                         return rename
                 else:
                     return x
 
-            self.feature_renamer = feature_renamer
+            self.feature_renamer = lambda x: shortener(feature_renamer, x)
         else:
-            self.feature_renamer = lambda x: x
+            self.feature_renamer = lambda x: shortener(lambda y: y, x)
 
         if self.feature_data is not None:
             for col in self.feature_data:
@@ -409,14 +419,22 @@ class BaseData(object):
                               metric='euclidean',
                               linkage_method='average',
                               sample_colors=None,
-                              feature_colors=None):
+                              feature_colors=None, figsize=None,
+                              require_min_samples=True):
         subset, row_linkage, col_linkage = self._calculate_linkage(
             sample_ids, feature_ids, linkage_method=linkage_method,
             metric=metric)
 
-        col_kws = dict(linkage_matrix=col_linkage, side_colors=feature_colors)
+        if figsize is None:
+            figsize = reversed(subset.shape)
+            figsize = map(lambda x: max(.25 * x, 1000), figsize)
+
+        col_kws = dict(linkage_matrix=col_linkage, side_colors=feature_colors,
+                       label=map(self.feature_renamer, subset.columns))
         row_kws = dict(linkage_matrix=row_linkage, side_colors=sample_colors)
-        return sns.clusteredheatmap(subset, row_kws=row_kws, col_kws=col_kws)
+        return sns.clusteredheatmap(subset, row_kws=row_kws, col_kws=col_kws,
+                                    pcolormesh_kws=dict(linewidth=0.01),
+                                    figsize=figsize)
 
     @memoize
     def reduce(self, data, sample_ids, feature_ids,
@@ -465,6 +483,8 @@ class BaseData(object):
                                                      sample_ids, feature_ids,
                                                      standardize,
                                                      return_means=True)
+        subset_original = self._subset(data, sample_ids, feature_ids,
+                                       require_min_samples=False)
         # compute reduction
         if featurewise:
             subset = subset.T
@@ -475,6 +495,19 @@ class BaseData(object):
                                  label_to_marker=label_to_marker,
                                  groupby=groupby, order=order,
                                  data_type=self.data_type, color=color,
+                                 original_df=subset_original,
                                  **reducer_kwargs)
         reducer_object.means = means
         return reducer_object
+
+    def _calculate_linkage(self, data, sample_ids, feature_ids,
+                           metric='euclidean',
+                           linkage_method='median', standardize=True,
+                           require_min_samples=True):
+
+        subset = self._subset_and_standardize(data, sample_ids,
+                                              feature_ids,
+                                              standardize=standardize)
+        row_linkage, col_linkage = self.clusterer(subset, metric,
+                                                  linkage_method)
+        return subset, row_linkage, col_linkage
