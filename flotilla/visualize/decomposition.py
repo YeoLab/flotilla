@@ -62,6 +62,7 @@ class DecompositionViz(object):
                  reduction_args=None, feature_renamer=None, groupby=None,
                  color=None, pooled=None, order=None, violinplot_kws=None,
                  data_type=None, label_to_color=None, label_to_marker=None,
+                 original_df=None,
                  **kwargs):
 
         self.title = title
@@ -75,6 +76,7 @@ class DecompositionViz(object):
         self.data_type = data_type
         self.label_to_color = label_to_color
         self.label_to_marker = label_to_marker
+        self.original_df = original_df
 
         if reduction_args is None:
             reduction_args = self._default_reduction_kwargs
@@ -295,8 +297,9 @@ class DecompositionViz(object):
         ax.set_xlim(left=min(dd) - x_offset, right=max(dd) + x_offset)
 
         labels = map(self.feature_renamer, labels)
-        shorten = lambda x: '{}...'.format(x[:30]) if len(x) > 30 else x
-        ax.set_yticklabels(map(shorten, labels))
+        # shorten = lambda x: '{}...'.format(x[:30]) if len(x) > 30 else x
+        # ax.set_yticklabels(map(shorten, labels))
+        ax.set_yticklabels(labels)
         for lab in ax.get_xticklabels():
             lab.set_rotation(90)
         sns.despine(ax=ax)
@@ -333,7 +336,12 @@ class DecompositionViz(object):
         vector_labels = self.magnitudes[:self.num_vectors].index
         for vector_label, ax in zip(vector_labels, axes.flat):
             renamed = self.feature_renamer(vector_label)
-            data = self.df[vector_label]
+            # if len(renamed) > 20:
+            #     renamed = '{}...'.format(renamed[:20])
+            data = self.original_df[vector_label].dropna()
+            counts = data.groupby(self.groupby).size()
+            xticklabels = ['{}\n(n = {})'.format(k, v)
+                           for k, v in counts.iteritems()]
 
             if self.data_type == 'splicing':
                 original = ':'.join(vector_label.split(':')[:2])
@@ -346,6 +354,7 @@ class DecompositionViz(object):
             violinplot(data=data, groupby=self.groupby, color=self.color,
                        ax=ax, pooled_data=self.pooled, order=self.order,
                        title=title, data_type=self.data_type)
+            ax.set_xticklabels(xticklabels)
 
         # Clear any unused axes
         for ax in axes.flat:
