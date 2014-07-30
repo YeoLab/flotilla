@@ -1068,7 +1068,7 @@ class Study(StudyFactory):
     def plot_clusteredheatmap(self, sample_subset=None,
                               feature_subset='variant',
                               data_type='expression', metric='euclidean',
-                              linkage_method='median'):
+                              linkage_method='median', figsize=None):
         if data_type == 'expression':
             data = self.expression.data
         elif data_type == 'splicing':
@@ -1094,11 +1094,11 @@ class Study(StudyFactory):
         if data_type == "expression":
             return self.expression.plot_clusteredheatmap(
                 sample_ids, feature_ids, linkage_method=linkage_method,
-                metric=metric, sample_colors=sample_colors)
+                metric=metric, sample_colors=sample_colors, figsize=figsize)
         elif data_type == "splicing":
             return self.splicing.plot_clusteredheatmap(
                 sample_ids, feature_ids, linkage_method=linkage_method,
-                metric=metric, sample_colors=sample_colors)
+                metric=metric, sample_colors=sample_colors, figsize=figsize)
 
     def plot_event(self, feature_id, sample_ids=None, ax=None):
         if ax is None:
