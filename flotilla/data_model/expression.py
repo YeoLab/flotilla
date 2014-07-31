@@ -57,8 +57,13 @@ class ExpressionData(BaseData):
             self.log_data = np.log(self.data + .1) / np.log(log_base)
         else:
             self.log_data = self.data
+
+        self.original_data = self.data
         self.feature_data = metadata
-        self.sparse_data = self.log_data[self.log_data > expression_thresh]
+
+        # This may not be totally kosher.... but original data is in
+        # self.original_data
+        self.data = self.log_data[self.log_data > expression_thresh]
         self.default_feature_sets.extend(self.feature_subsets.keys())
 
 
