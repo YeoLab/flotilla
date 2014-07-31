@@ -241,6 +241,7 @@ class BaseData(object):
                                       label_to_color=None,
                                       label_to_marker=None,
                                       groupby=None, order=None, color=None,
+                                      reduce_kwargs=None,
                                       **plotting_kwargs):
         """Principal component-like analysis of measurements
 
@@ -271,11 +272,14 @@ class BaseData(object):
         ------
 
         """
+        reduce_kwargs = {} if reduce_kwargs is None else reduce_kwargs
+
         pca = self.reduce(sample_ids, feature_ids,
                           featurewise=featurewise, reducer=reducer,
                           label_to_color=label_to_color,
                           label_to_marker=label_to_marker,
-                          groupby=groupby, order=order, color=color)
+                          groupby=groupby, order=order, color=color,
+                          **reduce_kwargs)
         pca(show_vectors=True,
             x_pc="pc_" + str(x_pc),
             y_pc="pc_" + str(y_pc),
