@@ -339,9 +339,9 @@ class DecompositionViz(object):
             # if len(renamed) > 20:
             #     renamed = '{}...'.format(renamed[:20])
             data = self.original_df[vector_label].dropna()
-            counts = data.groupby(self.groupby).size()
-            xticklabels = ['{}\n(n = {})'.format(k, v)
-                           for k, v in counts.iteritems()]
+            # counts = data.groupby(self.groupby).size()
+            # xticklabels = ['{}\n(n = {})'.format(k, v)
+            #                for k, v in counts.iteritems()]
 
             if self.data_type == 'splicing':
                 original = ':'.join(vector_label.split(':')[:2])
@@ -354,7 +354,7 @@ class DecompositionViz(object):
             violinplot(data=data, groupby=self.groupby, color=self.color,
                        ax=ax, pooled_data=self.pooled, order=self.order,
                        title=title, data_type=self.data_type)
-            ax.set_xticklabels(xticklabels)
+            # ax.set_xticklabels(xticklabels)
 
         # Clear any unused axes
         for ax in axes.flat:

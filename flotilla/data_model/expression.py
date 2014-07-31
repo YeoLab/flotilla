@@ -98,18 +98,15 @@ class ExpressionData(BaseData):
         reducer_object : flotilla.compute.reduce.ReducerViz
             A ready-to-plot object containing the reduced space
         """
-        return super(ExpressionData, self).reduce(self.sparse_data,
-                                                  sample_ids=sample_ids,
-                                                  feature_ids=feature_ids,
-                                                  featurewise=featurewise,
-                                                  reducer=reducer,
-                                                  standardize=standardize,
-                                                  title=title,
-                                                  reducer_kwargs=reducer_kwargs,
-                                                  groupby=groupby,
-                                                  label_to_color=label_to_color,
-                                                  label_to_marker=label_to_marker,
-                                                  order=order)
+        import pdb;
+
+        pdb.set_trace()
+        return super(ExpressionData, self).reduce(
+            self.sparse_data, sample_ids=sample_ids, feature_ids=feature_ids,
+            featurewise=featurewise, reducer=reducer, standardize=standardize,
+            title=title, reducer_kwargs=reducer_kwargs, groupby=groupby,
+            label_to_color=label_to_color, label_to_marker=label_to_marker,
+            order=order)
 
     @memoize
     def classify(self, trait, sample_ids, feature_ids,
