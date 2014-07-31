@@ -242,20 +242,7 @@ def lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
                  .format(title_suffix))
 
 
-def plot_pooled_dot(ax, pooled, x_offset=0, label=True):
-    try:
-        xs = np.ones(pooled.shape[0])
-    except AttributeError:
-        xs = np.ones(1)
-    xs += x_offset
-    ax.plot(xs, pooled, 'o', color='#262626')
 
-    if label:
-        for x, y in zip(xs, pooled):
-            if np.isnan(y):
-                continue
-            ax.annotate('pooled', (x, y), textcoords='offset points',
-                        xytext=(7, 0), fontsize=14)
 
 
 
