@@ -44,4 +44,8 @@ def violinplot(data, groupby=None, color=None, ax=None, pooled_data=None,
 
     if title is not None:
         ax.set_title(title)
+
+    if groupby is not None and order is not None:
+        sizes = data.groupby(groupby).size()
+        xlabels = [sizes[group] for group in order]
     sns.despine()

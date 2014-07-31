@@ -694,7 +694,7 @@ class Study(StudyFactory):
     def plot_pca(self, data_type='expression', x_pc=1, y_pc=2,
                  sample_subset=None, feature_subset=None,
                  title='', featurewise=False,
-                 show_point_labels=False,
+                 show_point_labels=False, reduce_kwargs=None,
                  **kwargs):
         """Performs PCA on both expression and splicing study_data
 
@@ -752,7 +752,7 @@ class Study(StudyFactory):
                 label_to_marker=label_to_marker, groupby=groupby,
                 order=order, color=color,
                 featurewise=featurewise, show_point_labels=show_point_labels,
-                title=title, **kwargs)
+                title=title, reduce_kwargs=reduce_kwargs, **kwargs)
         elif "splicing".startswith(data_type):
             reducer = self.splicing.plot_pca(
                 x_pc=x_pc, y_pc=y_pc, sample_ids=sample_ids,
@@ -761,7 +761,7 @@ class Study(StudyFactory):
                 label_to_marker=label_to_marker, groupby=groupby,
                 order=order, color=color,
                 featurewise=featurewise, show_point_labels=show_point_labels,
-                title=title, **kwargs)
+                title=title, reduce_kwargs=reduce_kwargs, **kwargs)
         else:
             raise ValueError('The data type {} does not exist in this study'
                              .format(data_type))
