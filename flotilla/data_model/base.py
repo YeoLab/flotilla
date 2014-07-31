@@ -10,6 +10,7 @@ import seaborn as sns
 from sklearn.preprocessing import StandardScaler
 
 from ..compute.clustering import Cluster
+from ..compute.infotheory import binify
 from ..visualize.decomposition import PCAViz
 from ..external import link_to_list
 from ..compute.predict import PredictorConfigManager, PredictorDataSetManager
@@ -449,7 +450,7 @@ class BaseData(object):
                reducer_kwargs=None,
                color=None,
                groupby=None, label_to_color=None, label_to_marker=None,
-               order=None):
+               order=None, bins=None):
         """Make and memoize a reduced dimensionality representation of data
 
         Parameters
@@ -487,7 +488,10 @@ class BaseData(object):
                                                      sample_ids, feature_ids,
                                                      standardize,
                                                      return_means=True)
-        subset_original = self._subset(data, sample_ids, feature_ids,
+        if bins is not None:
+            subset = self.binify(subset, bins)
+
+        subset_original = self._subset(self.data, sample_ids, feature_ids,
                                        require_min_samples=False)
         # compute reduction
         if featurewise:
@@ -515,3 +519,6 @@ class BaseData(object):
         row_linkage, col_linkage = self.clusterer(subset, metric,
                                                   linkage_method)
         return subset, row_linkage, col_linkage
+
+    def binify(self, data, bins=None):
+        return binify(data, bins)

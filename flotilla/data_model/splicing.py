@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 from .base import BaseData
-from ..compute.infotheory import binify
 from ..compute.splicing import Modalities
 from flotilla.visualize.generic import violinplot
 from ..visualize.decomposition import NMFViz, PCAViz
@@ -141,9 +140,6 @@ class SplicingData(BaseData):
         return self.modalities_calculator.counts(data, bootstrapped,
                                                  bootstrapped_kws)
 
-    def binify(self, data):
-        return binify(data, self.bins)
-
     @cached_property()
     def nmf(self):
         data = self._subset(self.data)
@@ -162,18 +158,16 @@ class SplicingData(BaseData):
     def reduce(self, sample_ids=None, feature_ids=None,
                featurewise=False, reducer=PCAViz,
                standardize=False, title='',
-               reducer_kwargs=None, bins=None, groupby=None,
+               reducer_kwargs=None, groupby=None,
                label_to_color=None, label_to_marker=None,
-               order=None, color=None):
+               order=None, color=None, binify=True):
         """make and cache a reduced dimensionality representation of data
 
         Default is PCAViz because NMFviz only works for binned data
         """
-        if bins is not None:
-            data = self.binify(bins)
-        else:
-            data = self.data
-        return super(SplicingData, self).reduce(data, sample_ids=sample_ids,
+        bins = self.bins if binify else None
+        return super(SplicingData, self).reduce(self.data,
+                                                sample_ids=sample_ids,
                                                 feature_ids=feature_ids,
                                                 featurewise=featurewise,
                                                 reducer=reducer,
@@ -183,7 +177,8 @@ class SplicingData(BaseData):
                                                 groupby=groupby,
                                                 label_to_color=label_to_color,
                                                 label_to_marker=label_to_marker,
-                                                order=order, color=color)
+                                                order=order, color=color,
+                                                bins=bins)
 
     @memoize
     def classify(self, trait, sample_ids, feature_ids,
