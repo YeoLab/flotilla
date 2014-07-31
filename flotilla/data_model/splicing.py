@@ -160,7 +160,7 @@ class SplicingData(BaseData):
                standardize=False, title='',
                reducer_kwargs=None, groupby=None,
                label_to_color=None, label_to_marker=None,
-               order=None, color=None, binify=True):
+               order=None, color=None, binify=False):
         """make and cache a reduced dimensionality representation of data
 
         Default is PCAViz because NMFviz only works for binned data
