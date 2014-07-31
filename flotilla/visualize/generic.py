@@ -2,8 +2,6 @@ from matplotlib import pyplot as plt
 import numpy as np
 import seaborn as sns
 
-from flotilla.visualize.splicing import plot_pooled_dot
-
 
 def violinplot(data, groupby=None, color=None, ax=None, pooled_data=None,
                order=None, violinplot_kws=None, title=None,
@@ -24,14 +22,17 @@ def violinplot(data, groupby=None, color=None, ax=None, pooled_data=None,
     # Check that all the groups are represented, if not, add some data out of
     # range to the missing group
     if groupby is not None and order is not None:
-        verified_order = set(data.groupby(groupby).size().keys()) & set(order)
+        validated_groups = data.groupby(groupby).size().keys()
+        verified_order = [x for x in order if x in validated_groups]
+        positions = [i for i, x in enumerate(order) if x in validated_groups]
     else:
         verified_order = order
+        positions = None
 
     inner = 'points' if splicing else 'box'
     sns.violinplot(data, groupby=groupby, bw=0.1, inner=inner,
                    color=color, linewidth=0.5, order=verified_order,
-                   ax=ax, **violinplot_kws)
+                   ax=ax, positions=positions, **violinplot_kws)
     if pooled_data is not None:
         grouped = pooled_data.groupby(groupby)
         if order is not None:
@@ -59,3 +60,19 @@ def violinplot(data, groupby=None, color=None, ax=None, pooled_data=None,
                        for group in order]
         ax.set_xticklabels(xticklabels)
     sns.despine()
+
+
+def plot_pooled_dot(ax, pooled, x_offset=0, label=True):
+    try:
+        xs = np.ones(pooled.shape[0])
+    except AttributeError:
+        xs = np.ones(1)
+    xs += x_offset
+    ax.plot(xs, pooled, 'o', color='#262626')
+
+    if label:
+        for x, y in zip(xs, pooled):
+            if np.isnan(y):
+                continue
+            ax.annotate('pooled', (x, y), textcoords='offset points',
+                        xytext=(7, 0), fontsize=14)
