@@ -21,9 +21,16 @@ def violinplot(data, groupby=None, color=None, ax=None, pooled_data=None,
     # Otherwise we get a LinAlg error.
     data += np.random.uniform(0, 0.001, data.shape[0])
 
+    # Check that all the groups are represented, if not, add some data out of
+    # range to the missing group
+    if groupby is not None and order is not None:
+        verified_order = set(data.groupby(groupby).size().keys()) & set(order)
+    else:
+        verified_order = order
+
     inner = 'points' if splicing else 'box'
     sns.violinplot(data, groupby=groupby, bw=0.1, inner=inner,
-                   color=color, linewidth=0.5, order=order,
+                   color=color, linewidth=0.5, order=verified_order,
                    ax=ax, **violinplot_kws)
     if pooled_data is not None:
         grouped = pooled_data.groupby(groupby)
@@ -47,5 +54,8 @@ def violinplot(data, groupby=None, color=None, ax=None, pooled_data=None,
 
     if groupby is not None and order is not None:
         sizes = data.groupby(groupby).size()
-        xlabels = [sizes[group] for group in order]
+        xticklabels = ['{}\nn={}'.format(group, sizes[group])
+                       if group in sizes else '{}\nn=0'.format(group)
+                       for group in order]
+        ax.set_xticklabels(xticklabels)
     sns.despine()
