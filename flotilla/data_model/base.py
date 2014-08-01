@@ -79,7 +79,9 @@ class BaseData(object):
                     rename = self.feature_data[feature_rename_col][x]
                     if isinstance(rename, pd.Series):
                         return rename.values[0]
-                    elif not isinstance(rename, float) and ':' in rename:
+                    elif not isinstance(rename, float) and ':' in x:
+                        # Check for NaN and ":" (then it's a splicing event
+                        # name)
                         return ":".join(x.split("@")[1].split(":")[:2])
                     else:
                         return rename
@@ -89,6 +91,13 @@ class BaseData(object):
             self.feature_renamer = lambda x: shortener(feature_renamer, x)
         else:
             self.feature_renamer = lambda x: shortener(lambda y: y, x)
+
+        self.renamed_to_feature_id = pd.Series(
+            self.data.columns,
+            index=self.data.columns.map(self.feature_renamer))
+        self.renamed_to_feature_id = self.renamed_to_feature_id.dropna()
+        self.renamed_to_feature_id = self.renamed_to_feature_id[~pd.isnull(
+            self.renamed_to_feature_id.index)]
 
         if predictor_config_manager is None:
             self.predictor_config_manager = PredictorConfigManager()
@@ -130,7 +139,7 @@ class BaseData(object):
                     continue
                 feature_set = self.feature_data.index[self.feature_data[col]]
                 if len(feature_set) > 1:
-                    self.feature_subsets[col] = feature_set
+                    feature_subsets[col] = feature_set
             categories = ['tag', 'gene_type', 'splice_type', 'gene_status']
             for category in categories:
                 if category in self.feature_data:
@@ -200,9 +209,6 @@ class BaseData(object):
         """
         raise NotImplementedError
 
-    # def _feature_renamer(self, x):
-    #     return x
-    #
     @property
     def feature_renamer(self):
         return self._feature_renamer
@@ -210,6 +216,15 @@ class BaseData(object):
     @feature_renamer.setter
     def feature_renamer(self, renamer):
         self._feature_renamer = renamer
+
+    def maybe_get_renamed(self, renamed):
+        try:
+            return self.renamed_to_feature_id[renamed]
+        except KeyError:
+            if renamed in self.data.columns:
+                return renamed
+            else:
+                raise
 
     # TODO.md: Specify dtypes in docstring
     def plot_classifier(self, trait, sample_ids=None, feature_ids=None,
