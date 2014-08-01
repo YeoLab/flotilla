@@ -126,7 +126,7 @@ class DecompositionViz(object):
         sns.despine()
         fig.tight_layout()
 
-        self.plot_feature_violins()
+        self.plot_violins()
         return self
 
     def plot_samples(self, x_pc='pc_1', y_pc='pc_2',
@@ -324,7 +324,7 @@ class DecompositionViz(object):
         sns.despine()
         return fig
 
-    def plot_feature_violins(self):
+    def plot_violins(self):
         """Make violinplots of each feature
         """
         ncols = 4
@@ -334,6 +334,7 @@ class DecompositionViz(object):
         fig, axes = plt.subplots(nrows=nrows, ncols=ncols,
                                  figsize=(4 * ncols, 4 * nrows))
         vector_labels = self.magnitudes[:self.num_vectors].index
+
         for vector_label, ax in zip(vector_labels, axes.flat):
             renamed = self.feature_renamer(vector_label)
             # if len(renamed) > 20:
