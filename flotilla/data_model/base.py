@@ -12,6 +12,7 @@ from sklearn.preprocessing import StandardScaler
 from ..compute.clustering import Cluster
 from ..compute.infotheory import binify
 from ..visualize.decomposition import PCAViz
+from ..visualize.generic import violinplot
 from ..external import link_to_list
 from ..compute.predict import PredictorConfigManager, PredictorDataSetManager
 from ..util import memoize
@@ -386,10 +387,10 @@ class BaseData(object):
         pooled = self._subset(pooled, sample_ids, feature_ids,
                               require_min_samples=False)
         if len(feature_ids) > 1:
-            # These are a DataFrame
+            # These are DataFrames
             singles, pooled = singles.align(pooled, axis=1, join='inner')
         else:
-            # These are Series
+            # These are Seriessssss
             singles = singles.dropna()
             pooled = pooled.dropna()
 
@@ -524,8 +525,11 @@ class BaseData(object):
         if bins is not None:
             subset = self.binify(subset, bins)
 
-        subset_original = self._subset(self.data, sample_ids, feature_ids,
-                                       require_min_samples=False)
+        subset_original, pooled = self._subset_singles_and_pooled(
+            self.data, self.pooled, sample_ids, feature_ids)
+
+        outliers = self._subset(self.outliers, feature_ids=feature_ids)
+
         # compute reduction
         if featurewise:
             subset = subset.T
@@ -537,6 +541,7 @@ class BaseData(object):
                                  groupby=groupby, order=order,
                                  data_type=self.data_type, color=color,
                                  original_df=subset_original,
+                                 pooled_df=pooled,
                                  **reducer_kwargs)
         reducer_object.means = means
         return reducer_object
@@ -555,3 +560,25 @@ class BaseData(object):
 
     def binify(self, data, bins=None):
         return binify(data, bins)
+
+    def _violinplot(self, feature_id, sample_ids=None,
+                    phenotype_groupby=None,
+                    phenotype_order=None, ax=None, color=None,
+                    label_pooled=True):
+
+        """For compatiblity across data types, can specify _violinplot
+        """
+        #
+
+        singles, pooled = self._subset_singles_and_pooled(
+            self.data, self.pooled, sample_ids, [feature_id])
+
+        outliers = self._subset(self.outliers, feature_ids=[feature_id])
+
+        renamed = self.feature_renamer(feature_id)
+        title = '{} {}'.format(renamed, ':'.join(feature_id.split(':')[:2]))
+
+        violinplot(singles, groupby=phenotype_groupby, color=color,
+                   pooled_data=pooled, order=phenotype_order,
+                   title=title, data_type=self.data_type, ax=ax,
+                   label_pooled=label_pooled, outliers=outliers)

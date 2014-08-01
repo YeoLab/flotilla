@@ -9,7 +9,6 @@ import seaborn as sns
 
 from .base import BaseData
 from ..compute.splicing import Modalities
-from flotilla.visualize.generic import violinplot
 from ..visualize.decomposition import NMFViz, PCAViz
 from ..visualize.color import purples
 from ..visualize.predict import ClassifierViz
@@ -58,8 +57,7 @@ class SplicingData(BaseData):
         """
         sys.stderr.write("initializing splicing\n")
         super(SplicingData, self).__init__(
-            data, metadata,
-            feature_rename_col=feature_rename_col,
+            data, metadata, feature_rename_col=feature_rename_col,
             outliers=outliers, pooled=pooled,
             predictor_config_manager=predictor_config_manager)
         sys.stderr.write("done initializing splicing\n")
@@ -390,25 +388,10 @@ class SplicingData(BaseData):
         """
         Plot the violinplot of a splicing event (should also show NMF movement)
         """
-        if ax is None:
-            ax = plt.gca()
-
-        singles, pooled = self._subset_singles_and_pooled(
-            self.data, self.pooled, sample_ids, [feature_id])
-        title = self.feature_renamer(feature_id)
-        title = '{} {}'.format(title, ':'.join(feature_id.split(':')[:2]))
-
-        violinplot(singles, groupby=phenotype_groupby, color=color,
-                   pooled_data=pooled, order=phenotype_order,
-                   title=title, data_type='splicing')
-
-    def _violinplot(self, feature_id, sample_ids=None, phenotype_groupby=None,
-                    phenotype_order=None, ax=None, color=None):
-        """For compatiblity across data types, can specify _violinplot
-        """
-        self.plot_event(feature_id, sample_ids=sample_ids,
-                        phenotype_groupby=phenotype_groupby,
-                        phenotype_order=phenotype_order, ax=ax, color=color)
+        return self._violinplot(feature_id, sample_ids=sample_ids,
+                                phenotype_groupby=phenotype_groupby,
+                                phenotype_order=phenotype_order, ax=ax,
+                                color=color, )
 
     @memoize
     def pooled_inconsistent(self, sample_ids, feature_ids=None,
