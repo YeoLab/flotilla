@@ -5,7 +5,19 @@ import seaborn as sns
 
 def violinplot(data, groupby=None, color=None, ax=None, pooled_data=None,
                order=None, violinplot_kws=None, title=None,
-               label_pooled=True, data_type='splicing'):
+               label_pooled=True, outliers=None, data_type='splicing'):
+    """
+    Parameters
+    ----------
+
+
+    Returns
+    -------
+
+
+    Raises
+    ------
+    """
     data_type = 'none' if data_type is None else data_type
 
     splicing = 'splicing'.startswith(data_type)
@@ -44,6 +56,17 @@ def violinplot(data, groupby=None, color=None, ax=None, pooled_data=None,
                     pass
         else:
             plot_pooled_dot(ax, pooled_data)
+
+    if outliers is not None:
+        if groupby is not None and order is not None:
+            outlier_groups = outliers.groupby(groupby).size().keys()
+            outlier_order = [x for x in order if x in outlier_groups]
+            outlier_positions = [i for i, x in enumerate(order) if
+                                 x in outlier_groups]
+        sns.violinplot(outliers, groupby=groupby, bw=0.1, inner=inner,
+                       color='lightgrey', linewidth=0.5, order=outlier_order,
+                       ax=ax, positions=outlier_positions,
+                       **violinplot_kws)
 
     if splicing:
         ax.set_ylim(0, 1)
