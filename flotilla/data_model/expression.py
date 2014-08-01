@@ -5,7 +5,6 @@ Included SpikeIn data.
 import sys
 
 import numpy as np
-import pandas as pd
 
 from .base import BaseData
 from ..visualize.decomposition import PCAViz
@@ -45,14 +44,6 @@ class ExpressionData(BaseData):
 
         sys.stderr.write("done initializing expression\n")
 
-        self._var_cut = data.var().dropna().mean() + 2 * data.var() \
-            .dropna().std()
-        rpkm_variant = pd.Index(
-            [i for i, j in
-             (self.data.var().dropna() > self._var_cut).iteritems() if j])
-        self.feature_subsets['variant'] = pd.Series(rpkm_variant,
-                                                    index=rpkm_variant)
-
         if log_base is not None:
             self.log_data = np.log(self.data + .1) / np.log(log_base)
         else:
@@ -65,7 +56,6 @@ class ExpressionData(BaseData):
         # self.original_data
         self.data = self.log_data[self.log_data > expression_thresh]
         self.default_feature_sets.extend(self.feature_subsets.keys())
-
 
     def reduce(self, sample_ids=None, feature_ids=None,
                featurewise=False,
@@ -103,15 +93,12 @@ class ExpressionData(BaseData):
         reducer_object : flotilla.compute.reduce.ReducerViz
             A ready-to-plot object containing the reduced space
         """
-        import pdb;
-
-        pdb.set_trace()
         return super(ExpressionData, self).reduce(
-            self.sparse_data, sample_ids=sample_ids, feature_ids=feature_ids,
+            self.data, sample_ids=sample_ids, feature_ids=feature_ids,
             featurewise=featurewise, reducer=reducer, standardize=standardize,
             title=title, reducer_kwargs=reducer_kwargs, groupby=groupby,
             label_to_color=label_to_color, label_to_marker=label_to_marker,
-            order=order)
+            order=order, color=color)
 
     @memoize
     def classify(self, trait, sample_ids, feature_ids,
@@ -221,7 +208,7 @@ class ExpressionData(BaseData):
     def _calculate_linkage(self, sample_ids, feature_ids, metric='euclidean',
                            linkage_method='average', standardize=True):
         return super(ExpressionData, self)._calculate_linkage(
-            self.sparse_data, sample_ids=sample_ids, feature_ids=feature_ids,
+            self.data, sample_ids=sample_ids, feature_ids=feature_ids,
             standardize=standardize, metric=metric,
             linkage_method=linkage_method)
 

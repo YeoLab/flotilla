@@ -62,7 +62,6 @@ class BaseData(object):
         self.clusterer = Cluster()
 
         self.species = species
-        self.feature_subsets = {}
 
         def shortener(renamer, x):
             renamed = renamer(x)
@@ -91,16 +90,6 @@ class BaseData(object):
         else:
             self.feature_renamer = lambda x: shortener(lambda y: y, x)
 
-        if self.feature_data is not None:
-            for col in self.feature_data:
-                if self.feature_data[col].dtype != bool:
-                    continue
-                feature_set = self.feature_data.index[self.feature_data[col]]
-                if len(feature_set) > 1:
-                    self.feature_subsets[col] = feature_set
-        self.all_features = 'all_genes'
-        self.feature_subsets[self.all_features] = data.columns
-
         if predictor_config_manager is None:
             self.predictor_config_manager = PredictorConfigManager()
         else:
@@ -108,6 +97,16 @@ class BaseData(object):
 
         self.predictor_dataset_manager = PredictorDataSetManager(
             self.predictor_config_manager)
+
+    @property
+    def _var_cut(self):
+        return self.data.var().dropna().mean() + 2 * self.data.var() \
+            .dropna().std()
+
+    @property
+    def variant(self):
+        return pd.Index([i for i, j in (self.data.var().dropna()
+                                        > self._var_cut).iteritems() if j])
 
     def drop_outliers(self, df, outliers):
         # assert 'outlier' in self.experiment_design_data.columns
@@ -121,6 +120,25 @@ class BaseData(object):
         data = df.drop(outliers)
         outlier_data = df.ix[outliers]
         return data, outlier_data
+
+    @property
+    def feature_subsets(self):
+        feature_subsets = {}
+        if self.feature_data is not None:
+            for col in self.feature_data:
+                if self.feature_data[col].dtype != bool:
+                    continue
+                feature_set = self.feature_data.index[self.feature_data[col]]
+                if len(feature_set) > 1:
+                    self.feature_subsets[col] = feature_set
+            categories = ['tag', 'gene_type', 'splice_type', 'gene_status']
+            for category in categories:
+                if category in self.feature_data:
+                    feature_subsets.update(
+                        self.feature_data.groupby(category).groups)
+        feature_subsets['all_genes'] = self.data.columns
+        feature_subsets['variant'] = self.variant
+        return feature_subsets
 
     def feature_subset_to_feature_ids(self, feature_subset, rename=True):
         if feature_subset is not None:

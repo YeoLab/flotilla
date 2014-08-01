@@ -29,13 +29,11 @@ class SplicingData(BaseData):
 
     n_components = 2
     _binsize = 0.1
-    _var_cut = 0.2
 
     _last_reducer_accessed = None
 
     def __init__(self, data,
-                 metadata=None, binsize=0.1,
-                 var_cut=_var_cut, outliers=None,
+                 metadata=None, binsize=0.1, outliers=None,
                  feature_rename_col=None, excluded_max=0.2, included_min=0.8,
                  pooled=None, predictor_config_manager=None):
         """Instantiate a object for percent spliced in (PSI) scores
@@ -67,9 +65,6 @@ class SplicingData(BaseData):
         sys.stderr.write("done initializing splicing\n")
         self.binsize = binsize
         self.bins = np.arange(0, 1 + self.binsize, self.binsize)
-        psi_variant = pd.Index(
-            [i for i, j in (data.var().dropna() > var_cut).iteritems() if j])
-        self.feature_subsets['variant'] = psi_variant
 
         self.modalities_calculator = Modalities(excluded_max=excluded_max,
                                                 included_min=included_min)
