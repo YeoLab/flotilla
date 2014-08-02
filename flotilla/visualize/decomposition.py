@@ -10,7 +10,6 @@ import seaborn as sns
 
 from ..compute.decomposition import NMF, PCA
 from .color import set1
-from .generic import violinplot
 
 
 def L1_distance(x, y):
@@ -62,8 +61,10 @@ class DecompositionViz(object):
                  reduction_args=None, feature_renamer=None, groupby=None,
                  color=None, pooled=None, order=None, violinplot_kws=None,
                  data_type=None, label_to_color=None, label_to_marker=None,
-                 original_df=None,
+                 original_df=None, DataModel=None,
                  **kwargs):
+
+        self.DataModel = DataModel
 
         self.title = title
         self._default_reduction_kwargs = {}
@@ -296,6 +297,8 @@ class DecompositionViz(object):
         x_offset = max(dd) * .05
         ax.set_xlim(left=min(dd) - x_offset, right=max(dd) + x_offset)
 
+        self.top_features = labels
+
         labels = map(self.feature_renamer, labels)
         # shorten = lambda x: '{}...'.format(x[:30]) if len(x) > 30 else x
         # ax.set_yticklabels(map(shorten, labels))
@@ -329,33 +332,25 @@ class DecompositionViz(object):
         """
         ncols = 4
         nrows = 1
-        while ncols * nrows < self.num_vectors:
+
+        vector_labels = set(self.magnitudes[:self.num_vectors].index.union(
+            self.top_features))
+
+        while ncols * nrows < len(vector_labels):
             nrows += 1
+
         fig, axes = plt.subplots(nrows=nrows, ncols=ncols,
                                  figsize=(4 * ncols, 4 * nrows))
-        vector_labels = self.magnitudes[:self.num_vectors].index
 
         for vector_label, ax in zip(vector_labels, axes.flat):
-            renamed = self.feature_renamer(vector_label)
-            # if len(renamed) > 20:
-            #     renamed = '{}...'.format(renamed[:20])
-            data = self.original_df[vector_label].dropna()
-            # counts = data.groupby(self.groupby).size()
-            # xticklabels = ['{}\n(n = {})'.format(k, v)
-            #                for k, v in counts.iteritems()]
+            # renamed = self.feature_renamer(vector_label)
 
-            if self.data_type == 'splicing':
-                original = ':'.join(vector_label.split(':')[:2])
-                # original = vector_label.replace('@chr', '\nchr')
-                data.name = original
-            else:
-                original = vector_label
-
-            title = '{}\n{}'.format(renamed, original)
-            violinplot(data=data, groupby=self.groupby, color=self.color,
-                       ax=ax, pooled_data=self.pooled, order=self.order,
-                       title=title, data_type=self.data_type)
-            # ax.set_xticklabels(xticklabels)
+            self.DataModel._violinplot(feature_id=vector_label,
+                                       sample_ids=self.df.index,
+                                       phenotype_groupby=self.groupby,
+                                       phenotype_order=self.order,
+                                       ax=ax, color=self.color,
+                                       label_pooled=True)
 
         # Clear any unused axes
         for ax in axes.flat:
