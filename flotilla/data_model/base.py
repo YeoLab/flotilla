@@ -384,7 +384,14 @@ class BaseData(object):
         # # import pdb; pdb.set_trace()
         singles = self._subset(singles, sample_ids, feature_ids,
                                require_min_samples=True)
-        pooled = self._subset(pooled, sample_ids, feature_ids,
+
+        # If the sample ids don't overlap with the pooled sample, assume you
+        # want all the pooled samples
+        if sample_ids is not None and sum(pooled.index.isin(sample_ids)) > 0:
+            pooled_sample_ids = sample_ids
+        else:
+            pooled_sample_ids = None
+        pooled = self._subset(pooled, pooled_sample_ids, feature_ids,
                               require_min_samples=False)
         if len(feature_ids) > 1:
             # These are DataFrames
@@ -541,7 +548,7 @@ class BaseData(object):
                                  groupby=groupby, order=order,
                                  data_type=self.data_type, color=color,
                                  original_df=subset_original,
-                                 pooled_df=pooled,
+                                 pooled_df=pooled, DataModel=self,
                                  **reducer_kwargs)
         reducer_object.means = means
         return reducer_object
@@ -568,15 +575,13 @@ class BaseData(object):
 
         """For compatiblity across data types, can specify _violinplot
         """
-        #
-
         singles, pooled = self._subset_singles_and_pooled(
             self.data, self.pooled, sample_ids, [feature_id])
 
         outliers = self._subset(self.outliers, feature_ids=[feature_id])
 
         renamed = self.feature_renamer(feature_id)
-        title = '{} {}'.format(renamed, ':'.join(feature_id.split(':')[:2]))
+        title = '{}\n{}'.format(renamed, ':'.join(feature_id.split(':')[:2]))
 
         violinplot(singles, groupby=phenotype_groupby, color=color,
                    pooled_data=pooled, order=phenotype_order,
