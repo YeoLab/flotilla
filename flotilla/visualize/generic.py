@@ -31,12 +31,9 @@ def violinplot(data, groupby=None, color=None, ax=None, pooled_data=None,
     if ax is None:
         ax = plt.gca()
 
-    _violinplot_group(data, groupby=groupby, color=color, ax=ax, order=order,
-                      violinplot_kws=violinplot_kws, splicing=splicing)
-    import pdb;
-
-    pdb.set_trace()
-    if pooled_data is not None:
+    _violinplot_data(data, groupby=groupby, color=color, ax=ax, order=order,
+                     violinplot_kws=violinplot_kws, splicing=splicing)
+    if pooled_data is not None and groupby is not None:
         grouped = pooled_data.groupby(groupby)
         if order is not None:
             for i, name in enumerate(order):
@@ -53,8 +50,8 @@ def violinplot(data, groupby=None, color=None, ax=None, pooled_data=None,
 
         # make sure this is behind the non outlier data
         outlier_violinplot_kws['zorder'] = -1
-        _violinplot_group(outliers, groupby=groupby, color='lightgrey', ax=ax,
-                          order=order, violinplot_kws=outlier_violinplot_kws,
+        _violinplot_data(outliers, groupby=groupby, color='lightgrey', ax=ax,
+                         order=order, violinplot_kws=outlier_violinplot_kws,
                           splicing=splicing)
 
     if splicing:
@@ -66,7 +63,7 @@ def violinplot(data, groupby=None, color=None, ax=None, pooled_data=None,
         ax.set_title(title)
 
     if order is not None:
-        ax.set_xlim(-.5, len(order) + .5)
+        ax.set_xlim(-.5, len(order) - .5)
 
     if groupby is not None and order is not None:
         sizes = data.groupby(groupby).size()
@@ -79,8 +76,8 @@ def violinplot(data, groupby=None, color=None, ax=None, pooled_data=None,
     sns.despine()
 
 
-def _violinplot_group(data, groupby=None, order=None, violinplot_kws=None,
-                      color=None, ax=None, splicing=False):
+def _violinplot_data(data, groupby=None, order=None, violinplot_kws=None,
+                     color=None, ax=None, splicing=False):
     """Plot a single groups violinplot.
 
     Separated out so real data plotting and outlier plotting works the same
@@ -115,7 +112,6 @@ def _violinplot_group(data, groupby=None, order=None, violinplot_kws=None,
     # Otherwise we get a LinAlg error.
     data += np.random.uniform(0, 0.001, data.shape[0])
 
-    print 'positions', positions
     inner = 'points' if splicing else 'box'
     sns.violinplot(data, groupby=groupby, bw=0.1, inner=inner,
                    color=color, linewidth=0.5, order=verified_order,
@@ -148,9 +144,9 @@ def plot_pooled_dot(ax, pooled, x_offset=0, label=True):
     """
     pooled = pooled.dropna()
     try:
-        xs = np.ones(pooled.shape[0])
+        xs = np.zeros(pooled.shape[0])
     except AttributeError:
-        xs = np.ones(1)
+        xs = np.zeros(1)
     xs += x_offset
     ax.plot(xs, pooled, 'o', color='#262626')
 
