@@ -532,11 +532,6 @@ class BaseData(object):
         if bins is not None:
             subset = self.binify(subset, bins)
 
-        subset_original, pooled = self._subset_singles_and_pooled(
-            self.data, self.pooled, sample_ids, feature_ids)
-
-        outliers = self._subset(self.outliers, feature_ids=feature_ids)
-
         # compute reduction
         if featurewise:
             subset = subset.T
@@ -547,8 +542,7 @@ class BaseData(object):
                                  label_to_marker=label_to_marker,
                                  groupby=groupby, order=order,
                                  data_type=self.data_type, color=color,
-                                 original_df=subset_original,
-                                 pooled_df=pooled, DataModel=self,
+                                 DataModel=self,
                                  **reducer_kwargs)
         reducer_object.means = means
         return reducer_object
