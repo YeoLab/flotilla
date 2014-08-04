@@ -110,16 +110,20 @@ class Interactive(object):
 
                               "features.".format(feature_subset, data_type))
 
-            self.plot_pca(sample_subset=sample_subset, data_type=data_type,
-                          featurewise=featurewise,
-                          x_pc=x_pc, y_pc=y_pc,
-                          show_point_labels=show_point_labels,
-                          feature_subset=feature_subset)
+            pca = self.plot_pca(sample_subset=sample_subset,
+                                data_type=data_type,
+                                featurewise=featurewise,
+                                x_pc=x_pc, y_pc=y_pc,
+                                show_point_labels=show_point_labels,
+                                feature_subset=feature_subset)
             if savefile != '':
                 # Make the directory if it's not already there
                 self.maybe_make_directory(savefile)
-                f = plt.gcf()
-                f.savefig(savefile)
+                # f = plt.gcf()
+                pca.reduced_fig.savefig(savefile)
+                vioilns_file = savefile.split('.')[:-1] + '_violins' + \
+                               savefile.split('.')[-1]
+                pca.violins_fig.savefig(vioilns_file)
 
             feature_subsets = list(
                 set(itertools.chain(*self.default_feature_subsets
