@@ -59,9 +59,9 @@ class DecompositionViz(object):
 
     def __init__(self, df, title='', n_components=None, whiten=False,
                  reduction_args=None, feature_renamer=None, groupby=None,
-                 color=None, pooled=None, order=None, violinplot_kws=None,
+                 color=None, order=None, violinplot_kws=None,
                  data_type=None, label_to_color=None, label_to_marker=None,
-                 original_df=None, DataModel=None,
+                 DataModel=None,
                  **kwargs):
 
         self.DataModel = DataModel
@@ -71,13 +71,11 @@ class DecompositionViz(object):
 
         self.groupby = groupby
         self.color = color
-        self.pooled = pooled
         self.order = order
         self.violinplot_kws = violinplot_kws
         self.data_type = data_type
         self.label_to_color = label_to_color
         self.label_to_marker = label_to_marker
-        self.original_df = original_df
 
         if reduction_args is None:
             reduction_args = self._default_reduction_kwargs
@@ -107,12 +105,12 @@ class DecompositionViz(object):
         gs_y = 12
 
         if ax is None:
-            fig, ax = plt.subplots(1, 1, figsize=(25, 12))
+            self.reduced_fig, ax = plt.subplots(1, 1, figsize=(25, 12))
             gs = GridSpec(gs_x, gs_y)
 
         else:
             gs = GridSpecFromSubplotSpec(gs_x, gs_y, ax.get_subplotspec())
-            fig = plt.gcf()
+            self.reduced_fig = plt.gcf()
 
         ax_components = plt.subplot(gs[:, :5])
         ax_loading1 = plt.subplot(gs[:, 6:8])
@@ -125,7 +123,7 @@ class DecompositionViz(object):
         self.plot_loadings(pc=x_pc, ax=ax_loading1)
         self.plot_loadings(pc=y_pc, ax=ax_loading2)
         sns.despine()
-        fig.tight_layout()
+        self.reduced_fig.tight_layout()
 
         self.plot_violins()
         return self
@@ -339,8 +337,8 @@ class DecompositionViz(object):
         while ncols * nrows < len(vector_labels):
             nrows += 1
 
-        fig, axes = plt.subplots(nrows=nrows, ncols=ncols,
-                                 figsize=(4 * ncols, 4 * nrows))
+        self.violins_fig, axes = plt.subplots(nrows=nrows, ncols=ncols,
+                                              figsize=(4 * ncols, 4 * nrows))
 
         for vector_label, ax in zip(vector_labels, axes.flat):
             # renamed = self.feature_renamer(vector_label)
@@ -357,7 +355,7 @@ class DecompositionViz(object):
             # Check if the plotting space is empty
             if len(ax.collections) == 0 or len(ax.lines) == 0:
                 ax.axis('off')
-        fig.tight_layout()
+        self.violins_fig.tight_layout()
 
 
 class PCAViz(DecompositionViz, PCA):
