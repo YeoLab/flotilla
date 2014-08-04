@@ -86,9 +86,8 @@ class PredictorBaseViz(PredictorBase):
 
 
     def do_pca(self, **plotting_kwargs):
+        """Plot PCA decomposition of data
 
-        """plot kernel density of predictor scores and draw a vertical line
-        where the cutoff was selected
         ax : matplotlib.axes.Axes
             ax to plot on. if None: plt.gca()
         """
