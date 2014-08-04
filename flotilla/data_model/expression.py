@@ -54,7 +54,8 @@ class ExpressionData(BaseData):
 
         # This may not be totally kosher.... but original data is in
         # self.original_data
-        self.data = self.log_data[self.log_data > expression_thresh]
+        self.expression_thresh = expression_thresh
+        self.data = self.log_data[self.log_data > self.expression_thresh]
         self.default_feature_sets.extend(self.feature_subsets.keys())
 
     def reduce(self, sample_ids=None, feature_ids=None,
