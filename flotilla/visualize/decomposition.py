@@ -327,12 +327,15 @@ class DecompositionViz(object):
 
     def plot_violins(self):
         """Make violinplots of each feature
+
+        Must be called after plot_samples because it depends on the existence
+        of the "self.magnitudes" attribute.
         """
         ncols = 4
         nrows = 1
 
         vector_labels = set(self.magnitudes[:self.num_vectors].index.union(
-            self.top_features))
+            pd.Index(self.top_features)))
 
         while ncols * nrows < len(vector_labels):
             nrows += 1
