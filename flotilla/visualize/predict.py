@@ -16,8 +16,42 @@ from .color import green
 class PredictorBaseViz(PredictorBase):
     _reducer_plotting_args = {}
 
+    def __call__(self, **pca_plotting_kwargs):
+
+        if not self.has_been_fit:
+            self.fit()
+
+        gs_x = 18
+        gs_y = 12
+
+        ax = None if not 'ax' in pca_plotting_kwargs else pca_plotting_kwargs[
+            'ax']
+
+        if ax is None:
+            fig, ax = plt.subplots(1, 1, figsize=(18, 8))
+            gs = GridSpec(gs_x, gs_y)
+        else:
+            gs = GridSpecFromSubplotSpec(gs_x, gs_y, ax.get_subplotspec())
+
+        ax_scores = plt.subplot(gs[5:10, :2])
+        ax_scores.set_xlabel("Feature Importance")
+        ax_scores.set_ylabel("Density Estimate")
+
+        if not 'show_vectors' in pca_plotting_kwargs:
+            pca_plotting_kwargs['show_vectors'] = True
+
+        ax_pca = plt.subplot(gs[:, 2:])
+        pca_plotting_kwargs['ax'] = ax_pca
+
+        self.plot_scores(ax=ax_scores)
+        pca = self.do_pca(**pca_plotting_kwargs)
+        plt.tight_layout()
+
+        return pca
+
     def set_reducer_plotting_args(self, rpa):
         self._reducer_plotting_args.update(rpa)
+
 
     def generate_scatter_table(self,
                                excel_out=None, external_xref=[]):
@@ -84,10 +118,9 @@ class PredictorBaseViz(PredictorBase):
 
         return zz
 
-
     def do_pca(self, **plotting_kwargs):
-        """Plot PCA decomposition of data
 
+        """Plot PCA decomposition of data
         ax : matplotlib.axes.Axes
             ax to plot on. if None: plt.gca()
         """
@@ -130,39 +163,6 @@ class PredictorBaseViz(PredictorBase):
         for lab in ax.get_xticklabels():
             lab.set_rotation(90)
         sns.despine(ax=ax)
-
-    def __call__(self, **pca_plotting_kwargs):
-
-        if not self.has_been_fit:
-            self.fit()
-
-        gs_x = 18
-        gs_y = 12
-
-        ax = None if not 'ax' in pca_plotting_kwargs else pca_plotting_kwargs[
-            'ax']
-
-        if ax is None:
-            fig, ax = plt.subplots(1, 1, figsize=(18, 8))
-            gs = GridSpec(gs_x, gs_y)
-        else:
-            gs = GridSpecFromSubplotSpec(gs_x, gs_y, ax.get_subplotspec())
-
-        ax_scores = plt.subplot(gs[5:10, :2])
-        ax_scores.set_xlabel("Feature Importance")
-        ax_scores.set_ylabel("Density Estimate")
-
-        if not 'show_vectors' in pca_plotting_kwargs:
-            pca_plotting_kwargs['show_vectors'] = True
-
-        ax_pca = plt.subplot(gs[:, 2:])
-        pca_plotting_kwargs['ax'] = ax_pca
-
-        self.plot_scores(ax=ax_scores)
-        pca = self.do_pca(**pca_plotting_kwargs)
-        plt.tight_layout()
-
-        return pca
 
 
 class RegressorViz(Regressor, PredictorBaseViz):
