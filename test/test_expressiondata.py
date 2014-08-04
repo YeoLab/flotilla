@@ -9,11 +9,12 @@ class TestExpressionData:
     def test_init(self, example_data):
         #TODO: parameterize and test with dropping outliers
         expression = ExpressionData(example_data.expression)
-        pdt.assert_frame_equal(expression.data, example_data.expression)
+        pdt.assert_frame_equal(expression.original_data, example_data
+                               .expression)
 
-        sparse_data = expression.data[
-            expression.data > ExpressionData._expression_thresh]
-        pdt.assert_frame_equal(expression.sparse_data, sparse_data)
+        filtered_data = example_data.expression[
+            example_data.expression > expression.expression_thresh]
+        pdt.assert_almost_equal(expression.data, filtered_data)
 
     def test_reduce(self, example_data):
         #TODO: parameterize and test with featurewise and subsets
@@ -21,7 +22,7 @@ class TestExpressionData:
         expression.reduced = expression.reduce()
 
         subset, means = expression._subset_and_standardize(
-            expression.sparse_data, return_means=True)
+            expression.data, return_means=True)
         reducer_kwargs = {'title': ""}
         reduced = PCAViz(subset, **reducer_kwargs)
         reduced.means = means
