@@ -355,7 +355,6 @@ class Study(StudyFactory):
     def phenotype_color_order(self):
         return [self.phenotype_to_color[p] for p in self.phenotype_order]
 
-
     @property
     def default_feature_subsets(self):
         feature_subsets = {}
@@ -805,7 +804,6 @@ class Study(StudyFactory):
                 sample_id_to_color=self.sample_id_to_color,
                 label_to_color=label_to_color,
                 label_to_marker=label_to_marker, groupby=groupby,
-                data_type=data_type,
                 **kwargs)
         elif data_type == "splicing":
             self.splicing.networks.draw_graph(
@@ -813,7 +811,6 @@ class Study(StudyFactory):
                 sample_id_to_color=self.sample_id_to_color,
                 label_to_color=label_to_color,
                 label_to_marker=label_to_marker, groupby=groupby,
-                data_type=data_type,
                 **kwargs)
 
     def plot_study_sample_legend(self):
@@ -834,7 +831,8 @@ class Study(StudyFactory):
         legend = ax.legend(title='cell type', fontsize=20, )
         return legend
 
-    def plot_classifier(self, sample_subset, feature_subset, trait,
+    def plot_classifier(self, trait, sample_subset=None,
+                        feature_subset='all_genes',
                         data_type='expression', title='',
                         show_point_labels=False,
                         **kwargs):
@@ -858,7 +856,8 @@ class Study(StudyFactory):
         feature_ids = self.feature_subset_to_feature_ids(data_type,
                                                          feature_subset,
                                                          rename=False)
-
+        feature_subset = 'none' if feature_subset is None else feature_subset
+        sample_subset = 'none' if sample_subset is None else sample_subset
         data_name = '_'.join([sample_subset, feature_subset])
 
         label_to_color = self.phenotype_to_color
