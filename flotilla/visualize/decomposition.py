@@ -61,8 +61,21 @@ class DecompositionViz(object):
                  reduction_args=None, feature_renamer=None, groupby=None,
                  color=None, order=None, violinplot_kws=None,
                  data_type=None, label_to_color=None, label_to_marker=None,
-                 DataModel=None,
-                 **kwargs):
+                 DataModel=None, scale_by_variance=True, x_pc='pc_1',
+                 y_pc='pc_2', n_vectors=20, distance='L1',
+                 n_top_pc_features=50, **kwargs):
+        """
+
+        x_pc : str
+            which Principal Component to plot on the x-axis
+        y_pc : str
+            Which Principal Component to plot on the y-axis
+        distance : str
+            either 'L1' or 'L2' distance to plot the vectors
+        n_vectors : int
+            Number of vectors to plot of the principal components
+
+        """
 
         self.DataModel = DataModel
 
@@ -76,6 +89,12 @@ class DecompositionViz(object):
         self.data_type = data_type
         self.label_to_color = label_to_color
         self.label_to_marker = label_to_marker
+        self.n_vectors = n_vectors
+        self.x_pc = x_pc
+        self.y_pc = y_pc
+        self.pcs = [self.x_pc, self.y_pc]
+        self.distance = distance
+        self.n_top_pc_features = n_top_pc_features
 
         if reduction_args is None:
             reduction_args = self._default_reduction_kwargs
@@ -97,9 +116,41 @@ class DecompositionViz(object):
             self.groupby = dict.fromkeys(self.df.index, 'all')
 
         self.reduced_space = self.fit_transform(self.df)
+        self.loadings = self.components_.ix[[self.x_pc, self.y_pc]]
+
+        # Get the explained variance
+        try:
+            self.vars = self.explained_variance_ratio_[[self.x_pc, self.y_pc]]
+        except AttributeError:
+            self.vars = pd.Series([1., 1.], index=[self.x_pc, self.y_pc])
+        if scale_by_variance:
+            self.loadings = self.loadings.multiply(self.vars, axis=0)
+
+        # sort features by magnitude/contribution to transformation
+        reduced_space = self.reduced_space[[self.x_pc, self.y_pc]]
+        farthest_sample = reduced_space.apply(np.linalg.norm, axis=0).max()
+        whole_space = self.loadings.apply(np.linalg.norm).max()
+        scale = .25 * farthest_sample / whole_space
+        self.loadings *= scale
+
+        ord = 2 if self.distance == 'L2' else 1
+        self.magnitudes = self.loadings.apply(np.linalg.norm, ord=ord)
+        self.magnitudes.sort(ascending=False)
+
+        self.top_features = set([])
+        for pc in self.pcs:
+            x = self.components_.ix[pc].copy()
+            x.sort(ascending=True)
+            half_features = int(self.n_top_pc_features / 2)
+            if len(x) > self.n_top_pc_features:
+                a = x[:half_features]
+                b = x[-half_features:]
+                labels = np.r_[a.index, b.index]
+            else:
+                labels = x.index
+            self.top_features.update(labels)
 
     def __call__(self, ax=None,
-                 x_pc='pc_1', y_pc='pc_2', num_vectors=20,
                  **kwargs):
         gs_x = 14
         gs_y = 12
@@ -117,24 +168,20 @@ class DecompositionViz(object):
         ax_loading2 = plt.subplot(gs[:, 10:14])
 
         kwargs.update({'ax': ax_components})
-        self.num_vectors = num_vectors
 
-        self.plot_samples(num_vectors=self.num_vectors, **kwargs)
-        self.plot_loadings(pc=x_pc, ax=ax_loading1)
-        self.plot_loadings(pc=y_pc, ax=ax_loading2)
+        self.plot_samples(**kwargs)
+        self.plot_loadings(pc=self.x_pc, ax=ax_loading1)
+        self.plot_loadings(pc=self.y_pc, ax=ax_loading2)
         sns.despine()
         self.reduced_fig.tight_layout()
 
         self.plot_violins()
         return self
 
-    def plot_samples(self, x_pc='pc_1', y_pc='pc_2',
-                     show_point_labels=True,
-                     distance='L1', num_vectors=20,
+    def plot_samples(self, show_point_labels=True,
                      title='PCA', show_vectors=True,
                      show_vector_labels=True, markersize=10,
-                     three_d=False, legend=True, ax=None,
-                     scale_by_variance=True):
+                     three_d=False, legend=True, ax=None):
 
         """
         Given a pandas dataframe, performs PCA and plots the results in a
@@ -144,14 +191,6 @@ class DecompositionViz(object):
         ----------
         groupby : groupby
             How to group the samples by color/label
-        x_pc : str
-            which Principal Component to plot on the x-axis
-        y_pc : str
-            Which Principal Component to plot on the y-axis
-        distance : str
-            either 'L1' or 'L2' distance to plot the vectors
-        num_vectors : int
-            Number of vectors to plot of the principal components
         label_to_color : dict
             Group labels to a matplotlib color E.g. if you've already chosen
             specific colors to indicate a particular group. Otherwise will
@@ -213,40 +252,21 @@ class DecompositionViz(object):
         for name, df in grouped:
             color = self.label_to_color[name]
             marker = self.label_to_marker[name]
-            x = df[x_pc]
-            y = df[y_pc]
+            x = df[self.x_pc]
+            y = df[self.y_pc]
             ax.plot(x, y, color=color, marker=marker, linestyle='None',
                     label=name, markersize=markersize, alpha=0.75)
             if show_point_labels:
                 for args in zip(x, y, df.index):
                     ax.text(*args)
 
-        # Get the explained variance
-        try:
-            vars = self.explained_variance_ratio_[[x_pc, y_pc]]
-        except AttributeError:
-            vars = pd.Series([1., 1.], index=[x_pc, y_pc])
+
 
         # Plot vectors, if asked
         if show_vectors:
-            loadings = self.components_.ix[[x_pc, y_pc]]
 
-            if scale_by_variance:
-                loadings = loadings.multiply(vars, axis=0)
-
-            # sort features by magnitude/contribution to transformation
-            reduced_space = self.reduced_space[[x_pc, y_pc]]
-            farthest_sample = reduced_space.apply(np.linalg.norm, axis=0).max()
-            whole_space = loadings.apply(np.linalg.norm).max()
-            scale = .25 * farthest_sample / whole_space
-            loadings *= scale
-
-            ord = 2 if distance == 'L2' else 1
-            self.magnitudes = loadings.apply(np.linalg.norm, ord=ord)
-            self.magnitudes.sort(ascending=False)
-
-            for vector_label in self.magnitudes[:num_vectors].index:
-                x, y = loadings[vector_label]
+            for vector_label in self.magnitudes[:self.n_vectors].index:
+                x, y = self.loadings[vector_label]
                 ax.plot([0, x], [0, y], color='k', linewidth=1)
                 if show_vector_labels:
                     x_offset = math.copysign(5, x)
@@ -261,10 +281,10 @@ class DecompositionViz(object):
         # Label x and y axes
         ax.set_xlabel(
             'Principal Component {} (Explains {:.2f}% Of Variance)'.format(
-                str(x_pc), vars[x_pc]))
+                str(self.x_pc), vars[self.x_pc]))
         ax.set_ylabel(
             'Principal Component {} (Explains {:.2f}% Of Variance)'.format(
-                str(y_pc), vars[y_pc]))
+                str(self.y_pc), vars[self.y_pc]))
         ax.set_title(title)
 
         if legend:
@@ -333,13 +353,10 @@ class DecompositionViz(object):
         """
         ncols = 4
         nrows = 1
-
-        vector_labels = set(self.magnitudes[:self.num_vectors].index.union(
+        vector_labels = set(self.magnitudes[:self.n_vectors].index.union(
             pd.Index(self.top_features)))
-
         while ncols * nrows < len(vector_labels):
             nrows += 1
-
         self.violins_fig, axes = plt.subplots(nrows=nrows, ncols=ncols,
                                               figsize=(4 * ncols, 4 * nrows))
 
