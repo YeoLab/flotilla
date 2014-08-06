@@ -153,7 +153,8 @@ class SplicingData(BaseData):
                standardize=False, title='',
                reducer_kwargs=None, groupby=None,
                label_to_color=None, label_to_marker=None,
-               order=None, color=None, binify=False):
+               order=None, color=None, binify=False,
+               x_pc='pc_1', y_pc='pc_1'):
         """make and cache a reduced dimensionality representation of data
 
         Default is PCAViz because NMFviz only works for binned data
@@ -171,7 +172,8 @@ class SplicingData(BaseData):
                                                 label_to_color=label_to_color,
                                                 label_to_marker=label_to_marker,
                                                 order=order, color=color,
-                                                bins=bins)
+                                                bins=bins, x_pc=x_pc,
+                                                y_pc=y_pc)
 
     @memoize
     def classify(self, trait, sample_ids, feature_ids,

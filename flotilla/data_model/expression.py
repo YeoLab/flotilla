@@ -66,7 +66,7 @@ class ExpressionData(BaseData):
                reducer_kwargs=None,
                color=None,
                groupby=None, label_to_color=None, label_to_marker=None,
-               order=None):
+               order=None, x_pc='pc_1', y_pc='pc_1'):
         """Make and memoize a reduced dimensionality representation of data
 
         Parameters
@@ -99,7 +99,7 @@ class ExpressionData(BaseData):
             featurewise=featurewise, reducer=reducer, standardize=standardize,
             title=title, reducer_kwargs=reducer_kwargs, groupby=groupby,
             label_to_color=label_to_color, label_to_marker=label_to_marker,
-            order=order, color=color)
+            order=order, color=color, x_pc=x_pc, y_pc=y_pc)
 
     @memoize
     def classify(self, trait, sample_ids, feature_ids,

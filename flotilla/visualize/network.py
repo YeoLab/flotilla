@@ -1,8 +1,9 @@
+import sys
+
 import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn
-import sys
 
 from .color import green
 from ..compute.network import Networker
@@ -32,7 +33,10 @@ class NetworkerViz(Networker, DecompositionViz):
                    sample_ids=None,
                    graph_file='',
                    compare="",
-                   sample_id_to_color=None):
+                   sample_id_to_color=None,
+                   label_to_color=None,
+                   label_to_marker=None, groupby=None,
+                   data_type=None):
 
         """Draw the graph (network) of these events
 
@@ -92,7 +96,10 @@ class NetworkerViz(Networker, DecompositionViz):
         ax_cov = plt.axes([0.1, 0.1, .2, .15])
         ax_degree = plt.axes([0.9, .8, .2, .15])
 
-        pca = self.data_obj.reduce(**pca_settings)
+        pca = self.data_obj.reduce(label_to_color=label_to_color,
+                                   label_to_marker=label_to_marker,
+                                   groupby=groupby,
+                                   **pca_settings)
 
         if featurewise:
             node_color_mapper = lambda x: 'r' \
