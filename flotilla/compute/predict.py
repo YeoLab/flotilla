@@ -583,7 +583,7 @@ class PredictorBase(object):
         self.categorical_trait = is_categorical_trait if \
             is_categorical_trait is not None else False
 
-        self.__doc__ = '{}\n\n{}\n\n{}\n\n{}'.format(self.__doc__,
+        self.__doc__ = '{}\n\n{}\n\n{}\n\n'.format(self.__doc__,
                                                      self.dataset.__doc__,
                                                      self.predictor.__doc__)
 
