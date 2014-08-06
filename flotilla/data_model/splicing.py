@@ -185,6 +185,7 @@ class SplicingData(BaseData):
                  n_features_dependent_parameters=None,
                  constant_parameters=None,
                  plotting_kwargs=None,
+                 feature_renamer=lambda x: x
     ):
         #Should all this be exposed to the user???
 
@@ -229,6 +230,8 @@ class SplicingData(BaseData):
                                                      sample_ids,
                                                      feature_ids,
                                                      standardize)
+        subset.rename_axis(feature_renamer, 1, inplace=True)
+
         if plotting_kwargs is None:
             plotting_kwargs = {}
 
