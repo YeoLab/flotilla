@@ -120,9 +120,10 @@ class Interactive(object):
                 # Make the directory if it's not already there
                 self.maybe_make_directory(savefile)
                 # f = plt.gcf()
-                pca.violins_filefig.savefig(savefile)
-                violins_file = savefile.split('.')[:-1] + '_violins' + \
-                               savefile.split('.')[-1]
+                pca.reduced_fig.savefig(savefile)
+                violins_file = "_".join([".".join(savefile.split('.')[:-1]),
+                                         'violins']) + "." + \
+                                         savefile.split('.')[-1]
                 pca.violins_fig.savefig(violins_file)
 
             feature_subsets = list(
@@ -205,7 +206,7 @@ class Interactive(object):
                 plt.gcf().savefig(savefile)
 
         if feature_subsets is None:
-            feature_subsets = self.get_feature_subsets(self, data_types)
+            feature_subsets = Interactive.get_feature_subsets(self, data_types)
 
         if sample_subsets is None:
             sample_subsets = self.default_sample_subsets
