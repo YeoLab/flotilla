@@ -281,10 +281,10 @@ class DecompositionViz(object):
         # Label x and y axes
         ax.set_xlabel(
             'Principal Component {} (Explains {:.2f}% Of Variance)'.format(
-                str(self.x_pc), vars[self.x_pc]))
+                str(self.x_pc), self.vars[self.x_pc]))
         ax.set_ylabel(
             'Principal Component {} (Explains {:.2f}% Of Variance)'.format(
-                str(self.y_pc), vars[self.y_pc]))
+                str(self.y_pc), self.vars[self.y_pc]))
         ax.set_title(title)
 
         if legend:
