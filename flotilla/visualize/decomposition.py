@@ -235,7 +235,7 @@ class DecompositionViz(object):
             def color_factory():
                 return colors.next()
 
-            label_to_color = defaultdict(color_factory)
+            self.label_to_color = defaultdict(color_factory)
 
         if self.label_to_marker is None:
             markers = cycle(['o', '^', 's', 'v', '*', 'D', 'h'])
@@ -243,7 +243,7 @@ class DecompositionViz(object):
             def marker_factory():
                 return markers.next()
 
-            label_to_marker = defaultdict(marker_factory)
+            self.label_to_marker = defaultdict(marker_factory)
 
 
 
