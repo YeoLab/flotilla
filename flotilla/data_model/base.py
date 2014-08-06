@@ -265,7 +265,7 @@ class BaseData(object):
                             standardize=standardize,
                             predictor_name=predictor_name,
                             feature_renamer=self.feature_renamer,
-                            data_type=self.data_type)
+                            )
         clf.score_coefficient = score_coefficient
         clf(**plotting_kwargs)
         return self
@@ -319,10 +319,10 @@ class BaseData(object):
                           **reduce_kwargs)
         pca(show_vectors=True,
             **plotting_kwargs)
-        return self
+        return pca
 
     def plot_pca(self, **kwargs):
-        self.plot_dimensionality_reduction(reducer=PCAViz, **kwargs)
+        return self.plot_dimensionality_reduction(reducer=PCAViz, **kwargs)
 
     @property
     def min_samples(self):
