@@ -418,3 +418,4 @@ def plot_pca(df, **kwargs):
     """ for backwards-compatibility """
     pca = PCAViz(df, **kwargs)
     pca.plot_samples()
+    return pca
