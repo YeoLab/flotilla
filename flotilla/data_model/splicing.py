@@ -70,13 +70,13 @@ class SplicingData(BaseData):
 
         self.data_type = 'splicing'
 
-        try:
-            for modality in set(self.modalities()):
-                self.feature_data[
-                    'modality_' + modality] = self.modalities() == modality
-        except TypeError:
-            # Unless there is no feature_data
-            pass
+        #try:
+        #    for modality in set(self.modalities()):
+        #        self.feature_data[
+        #            'modality_' + modality] = self.modalities() == modality
+        #except TypeError:
+        #    # Unless there is no feature_data
+        #    pass
 
     @memoize
     def modalities(self, sample_ids=None, feature_ids=None,
