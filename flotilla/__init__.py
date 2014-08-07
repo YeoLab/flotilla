@@ -29,8 +29,12 @@ def embark(study_name):
 
     """
     try:
+        try:
+            return Study.from_datapackage_file(study_name)
+        except IOError:
+            pass
         filename = os.path.abspath(os.path.expanduser(
             '~/flotilla_projects/{}/datapackage.json'.format(study_name)))
-        return Study.from_data_package_file(filename)
+        return Study.from_datapackage_file(filename)
     except IOError:
-        return Study.from_data_package_url(study_name)
+        return Study.from_datapackage_url(study_name)
