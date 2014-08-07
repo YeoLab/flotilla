@@ -41,9 +41,9 @@ def example_study(example_data):
 
 
 @pytest.fixture(scope='module')
-def example_url():
-    return 'http://sauron.ucsd' \
-           '.edu/flotilla_projects/neural_diff_chr22/datapackage.json'
+def example_datapackage_path():
+    this_dir = os.path.abspath(os.path.dirname(__file__))
+    return os.path.join(this_dir, 'data/datapackage.json')
 
 
 @pytest.fixture(scope='module')
@@ -51,3 +51,10 @@ def expression(example_data):
     from flotilla.data_model import ExpressionData
 
     return ExpressionData(example_data.expression)
+
+
+@pytest.fixture
+def study(example_datapackage_path):
+    import flotilla
+
+    return flotilla.embark(example_datapackage_path)

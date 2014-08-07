@@ -15,12 +15,6 @@ class TestStudy(object):
                      expression_data=example_data.expression,
                      splicing_data=example_data.splicing)
 
-    @pytest.fixture
-    def study(self, example_url):
-        import flotilla
-
-        return flotilla.embark(example_url)
-
     def test_toy_init(self, toy_study, example_data):
         from flotilla.data_model import ExpressionData, SplicingData
 
@@ -45,15 +39,6 @@ class TestStudy(object):
 
     def test_plot_classifier(self, study):
         study.plot_classifier('P_cell')
-
-        # def test_plot_pca(self, study):
-        #     study.interactive_pca()
-        #
-        # def test_plot_graph(self, study):
-        #     study.interactive_graph()
-        #
-        # def test_plot_classifier(self, study):
-        #     study.interactive_classifier()
 
 
 # def test_write_package(tmpdir):
