@@ -76,14 +76,14 @@ class BaseData(object):
         if self.feature_data is not None and self.feature_rename_col is not \
                 None:
             def feature_renamer(x):
-                if x in self.feature_data[feature_rename_col].index:
+                if x in self.feature_data[feature_rename_col].dropna().index:
                     rename = self.feature_data[feature_rename_col][x]
                     if isinstance(rename, pd.Series):
                         return rename.values[0]
-                    elif not isinstance(rename, float) and ':' in x:
-                        # Check for NaN and ":" (then it's a splicing event
-                        # name)
-                        return ":".join(x.split("@")[1].split(":")[:2])
+                    # elif not isinstance(rename, float) and ':' in x:
+                    #     # Check for NaN and ":" (then it's a splicing event
+                    #     # name)
+                    #     return ":".join(x.split("@")[1].split(":")[:2])
                     else:
                         return rename
                 else:
