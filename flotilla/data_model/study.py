@@ -399,14 +399,14 @@ class Study(StudyFactory):
                              index=self.metadata.data.index)
 
     @classmethod
-    def from_data_package_url(
-            cls, data_package_url,
+    def from_datapackage_url(
+            cls, datapackage_url,
             species_data_package_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
         """Create a study from a url of a datapackage.json file
 
         Parameters
         ----------
-        data_package_url : str
+        datapackage_url : str
             HTTP url of a datapackage.json file, following the specification
             described here: http://dataprotocols.org/data-packages/ and
             requiring the following data resources: metadata,
@@ -419,7 +419,7 @@ class Study(StudyFactory):
         -------
         study : Study
             A "study" object containing the data described in the
-            data_package_url file
+            datapackage_url file
 
         Raises
         ------
@@ -427,24 +427,38 @@ class Study(StudyFactory):
             If the datapackage.json file does not contain the required
             resources of metadata, expression, and splicing.
         """
-        data_package = data_package_url_to_dict(data_package_url)
-        return cls.from_data_package(
+        data_package = data_package_url_to_dict(datapackage_url)
+        return cls.from_datapackage(
             data_package,
-            species_data_package_base_url=species_data_package_base_url)
+            species_datapackage_base_url=species_data_package_base_url)
 
     @classmethod
-    def from_data_package_file(
-            cls, data_package_filename,
-            species_data_package_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
-        with open(data_package_filename) as f:
-            data_package = json.load(f)
-        return cls.from_data_package(data_package,
-                                     species_data_package_base_url)
+    def from_datapackage_file(
+            cls, datapackage_filename,
+            species_datapackage_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
+        with open(datapackage_filename) as f:
+            datapackage = json.load(f)
+        datapackage_dir = os.path.dirname(datapackage_filename)
+        return cls.from_datapackage(
+            datapackage, datapackage_dir=datapackage_dir,
+            species_datapackage_base_url=species_datapackage_base_url)
 
     @classmethod
-    def from_data_package(
-            cls, data_package,
-            species_data_package_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
+    def from_datapackage(
+            cls, datapackage, datapackage_dir='./',
+            species_datapackage_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
+        """Create a study object from a datapackage dictionary
+
+        Parameters
+        ----------
+        datapackage : dict
+
+
+        Returns
+        -------
+        study : flotilla.Study
+            Study object
+        """
         dfs = {}
         log_base = None
         metadata_pooled_col = None
@@ -452,12 +466,19 @@ class Study(StudyFactory):
         phenotype_to_color = None
         phenotype_to_marker = None
 
-        for resource in data_package['resources']:
+        for resource in datapackage['resources']:
             if 'url' in resource:
                 resource_url = resource['url']
                 filename = check_if_already_downloaded(resource_url)
             else:
                 filename = resource['path']
+                # Test if the file exists, if not, then add the datapackage
+                # file
+                try:
+                    with open(filename) as f:
+                        pass
+                except IOError:
+                    filename = os.path.join(datapackage_dir, filename)
 
             name = resource['name']
 
@@ -480,9 +501,9 @@ class Study(StudyFactory):
                 if 'phenotype_to_marker' in resource:
                     phenotype_to_marker = resource['phenotype_to_marker']
 
-        if 'species' in data_package:
+        if 'species' in datapackage:
             species_data_url = '{}/{}/datapackage.json'.format(
-                species_data_package_base_url, data_package['species'])
+                species_datapackage_base_url, datapackage['species'])
             species_data_package = data_package_url_to_dict(species_data_url)
             species_dfs = {}
 
