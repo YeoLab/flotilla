@@ -3,17 +3,14 @@ Data models for "studies" studies include attributes about the data and are
 heavier in terms of data load
 """
 
-from collections import defaultdict
 import json
 import os
 import sys
 import warnings
 
-import matplotlib.colors as mplcolors
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import seaborn as sns
 
 from .metadata import MetaData
 from .expression import ExpressionData, SpikeInData
@@ -190,6 +187,7 @@ class Study(StudyFactory):
                  expression_log_base=None,
                  predictor_config_manager=None,
                  metadata_pooled_col=None,
+                 metadata_phenotype_col='phenotype',
                  phenotype_order=None,
                  phenotype_to_color=None,
                  phenotype_to_marker=None):
@@ -285,12 +283,16 @@ class Study(StudyFactory):
         self.species = species
         self.gene_ontology_data = gene_ontology_data
 
-        self.metadata = MetaData(sample_metadata, phenotype_order,
-                                 phenotype_to_color, phenotype_to_marker,
-                                 predictor_config_manager=self.predictor_config_manager)
+        self.metadata = MetaData(
+            sample_metadata, phenotype_order, phenotype_to_color,
+            phenotype_to_marker, phenotype_col=metadata_phenotype_col,
+            predictor_config_manager=self.predictor_config_manager)
+        self.phenotype_col = self.metadata.phenotype_col
         self.phenotype_order = self.metadata.phenotype_order
         self.phenotype_to_color = self.metadata.phenotype_to_color
         self.phenotype_to_marker = self.metadata.phenotype_to_marker
+        self.phenotype_color_order = self.metadata.phenotype_color_order
+        self.sample_id_to_phenotype = self.metadata.sample_id_to_phenotype
 
         self.default_sample_subsets = \
             [col for col in self.metadata.data.columns
@@ -351,9 +353,6 @@ class Study(StudyFactory):
         self.validate_params()
         sys.stderr.write("package validated\n")
 
-    @property
-    def phenotype_color_order(self):
-        return [self.phenotype_to_color[p] for p in self.phenotype_order]
 
     @property
     def default_feature_subsets(self):
@@ -366,37 +365,33 @@ class Study(StudyFactory):
             feature_subsets[name] = data_type.feature_subsets
         return feature_subsets
 
-    @property
-    def sample_id_to_color(self):
-        """If "color" is a column in the metadata data, return a
-        dict of that {sample_id: color} mapping, else try to create it using
-        the "celltype" columns, else just return a dict mapping to a default
-        color (blue)
-        """
-        if 'color' in self.metadata.data:
-            return self.metadata.data.color.to_dict()
-        elif 'celltype' in self.metadata.data:
-            grouped = self.metadata.data.groupby('celltype')
-            palette = iter(sns.color_palette(n_colors=grouped.ngroups + 1))
-            color = grouped.apply(lambda x: mplcolors.rgb2hex(palette.next()))
-            color.name = 'color'
-            self.metadata.data = self.metadata.data.join(
-                color, on='celltype')
+    # @property
+    # def sample_id_to_color(self):
+    #     """If "color" is a column in the metadata data, return a
+    #     dict of that {sample_id: color} mapping, else try to create it using
+    #     the "celltype" columns, else just return a dict mapping to a default
+    #     color (blue)
+    #     """
+    #     if 'color' in self.metadata.data:
+    #         return self.metadata.data.color.to_dict()
+    #     elif 'celltype' in self.metadata.data:
+    #         grouped = self.metadata.data.groupby('celltype')
+    #         palette = iter(sns.color_palette(n_colors=grouped.ngroups + 1))
+    #         color = grouped.apply(lambda x: mplcolors.rgb2hex(palette.next()))
+    #         color.name = 'color'
+    #         self.metadata.data = self.metadata.data.join(
+    #             color, on='celltype')
+    #
+    #         return self.metadata.data.color.to_dict()
+    #     else:
+    #         return defaultdict(lambda x: blue)
 
-            return self.metadata.data.color.to_dict()
-        else:
-            return defaultdict(lambda x: blue)
-
-    @property
-    def sample_id_to_celltype(self):
-        """If "celltype" is a column in the metadata data, return a
-        dict of that {sample_id: celltype} mapping.
-        """
-        if 'celltype' in self.metadata.data:
-            return self.metadata.data.celltype
-        else:
-            return pd.Series(['celltype'],
-                             index=self.metadata.data.index)
+    # @property
+    # def sample_id_to_phenotype(self):
+    #     """If "celltype" is a column in the metadata data, return a
+    #     dict of that {sample_id: celltype} mapping.
+    #     """
+    #     return self.metadata.sample_id_to_phenotype
 
     @classmethod
     def from_datapackage_url(
@@ -573,38 +568,38 @@ class Study(StudyFactory):
             pd.concat([self.expression.data,
                        other.expression.data]))
 
-    def _set_plot_colors(self):
-        """If there is a column 'color' in the sample metadata, specify this
-        as the plotting color
-        """
-        try:
-            self._default_reducer_kwargs.update(
-                {'colors_dict': self.metadata_data.color})
-            self._default_plot_kwargs.update(
-                {'color': self.metadata_data.color.tolist()})
-        except AttributeError:
-            sys.stderr.write("There is no column named 'color' in the "
-                             "metadata, defaulting to blue for all samples\n")
-            self._default_reducer_kwargs.update(
-                {'colors_dict': defaultdict(lambda: blue)})
+    # def _set_plot_colors(self):
+    #     """If there is a column 'color' in the sample metadata, specify this
+    #     as the plotting color
+    #     """
+    #     try:
+    #         self._default_reducer_kwargs.update(
+    #             {'colors_dict': self.metadata_data.color})
+    #         self._default_plot_kwargs.update(
+    #             {'color': self.metadata_data.color.tolist()})
+    #     except AttributeError:
+    #         sys.stderr.write("There is no column named 'color' in the "
+    #                          "metadata, defaulting to blue for all samples\n")
+    #         self._default_reducer_kwargs.update(
+    #             {'colors_dict': defaultdict(lambda: blue)})
 
-    def _set_plot_markers(self):
-        """If there is a column 'marker' in the sample metadata, specify this
-        as the plotting marker (aka the plotting shape). Only valid matplotlib
-        symbols are allowed. See http://matplotlib.org/api/markers_api.html
-        for a more complete description.
-        """
-        try:
-            self._default_reducer_kwargs.update(
-                {'markers_dict': self.metadata_data.marker})
-            self._default_plot_kwargs.update(
-                {'marker': self.metadata_data.marker.tolist()})
-        except AttributeError:
-            sys.stderr.write("There is no column named 'marker' in the sample "
-                             "metadata, defaulting to a circle for all "
-                             "samples\n")
-            self._default_reducer_kwargs.update(
-                {'markers_dict': defaultdict(lambda: 'o')})
+    # def _set_plot_markers(self):
+    #     """If there is a column 'marker' in the sample metadata, specify this
+    #     as the plotting marker (aka the plotting shape). Only valid matplotlib
+    #     symbols are allowed. See http://matplotlib.org/api/markers_api.html
+    #     for a more complete description.
+    #     """
+    #     try:
+    #         self._default_reducer_kwargs.update(
+    #             {'markers_dict': self.metadata_data.marker})
+    #         self._default_plot_kwargs.update(
+    #             {'marker': self.metadata_data.marker.tolist()})
+    #     except AttributeError:
+    #         sys.stderr.write("There is no column named 'marker' in the sample "
+    #                          "metadata, defaulting to a circle for all "
+    #                          "samples\n")
+    #         self._default_reducer_kwargs.update(
+    #             {'markers_dict': defaultdict(lambda: 'o')})
 
     def detect_outliers(self):
         """Detects outlier cells from expression, mapping, and splicing
@@ -754,7 +749,7 @@ class Study(StudyFactory):
         if not featurewise:
             label_to_color = self.phenotype_to_color
             label_to_marker = self.phenotype_to_marker
-            groupby = self.sample_id_to_celltype
+            groupby = self.sample_id_to_phenotype
             order = self.phenotype_order
             color = self.phenotype_color_order
         else:
@@ -813,7 +808,7 @@ class Study(StudyFactory):
         if not featurewise:
             label_to_color = self.phenotype_to_color
             label_to_marker = self.phenotype_to_marker
-            groupby = self.sample_id_to_celltype
+            groupby = self.sample_id_to_phenotype
         else:
             label_to_color = None
             label_to_marker = None
@@ -883,7 +878,7 @@ class Study(StudyFactory):
 
         label_to_color = self.phenotype_to_color
         label_to_marker = self.phenotype_to_marker
-        groupby = self.sample_id_to_celltype
+        groupby = self.sample_id_to_phenotype
 
         if data_type == "expression":
             self.expression.plot_classifier(
@@ -923,8 +918,8 @@ class Study(StudyFactory):
                                                          feature_subset,
                                                          rename=False)
 
-        grouped = self.sample_id_to_celltype.groupby(
-            self.sample_id_to_celltype)
+        grouped = self.sample_id_to_phenotype.groupby(
+            self.sample_id_to_phenotype)
 
         # Account for bar plot and plot of the reduced space of ALL samples
         n = grouped.ngroups + 2
@@ -958,10 +953,10 @@ class Study(StudyFactory):
 
     def celltype_sizes(self, data_type='splicing'):
         if data_type == 'expression':
-            self.expression.data.groupby(self.sample_id_to_celltype,
+            self.expression.data.groupby(self.sample_id_to_phenotype,
                                          axis=0).size()
         if data_type == 'splicing':
-            self.splicing.data.groupby(self.sample_id_to_celltype,
+            self.splicing.data.groupby(self.sample_id_to_phenotype,
                                        axis=0).size()
 
     @property
@@ -969,7 +964,7 @@ class Study(StudyFactory):
         """Number of cells that detected this event in that celltype
         """
         return self.splicing.data.groupby(
-            self.sample_id_to_celltype, axis=0).apply(
+            self.sample_id_to_phenotype, axis=0).apply(
             lambda x: x.groupby(level=0, axis=0).transform(
                 lambda x: x.count()).sum()).replace(0, np.nan)
 
@@ -987,14 +982,14 @@ class Study(StudyFactory):
         """Return modality assignments of each celltype
         """
         return self.splicing.data.groupby(
-            self.sample_id_to_celltype, axis=0).apply(
+            self.sample_id_to_phenotype, axis=0).apply(
             lambda x: self.splicing.modalities(x.index))
 
     def plot_modalities_lavalamps(self, sample_subset=None, bootstrapped=False,
                                   bootstrapped_kws=None):
         grouped = self.splicing.data.groupby(self.sample_id_to_color, axis=0)
         celltype_groups = self.splicing.data.groupby(
-            self.sample_id_to_celltype, axis=0)
+            self.sample_id_to_phenotype, axis=0)
 
         if sample_subset is not None:
             # Only plotting one sample_subset, use the modality assignments
@@ -1026,29 +1021,30 @@ class Study(StudyFactory):
         """
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
         self.splicing.plot_event(feature_id, sample_ids,
-                                 phenotype_groupby=self.sample_id_to_celltype,
+                                 phenotype_groupby=self.sample_id_to_phenotype,
                                  ax=ax)
 
     def plot_lavalamp_pooled_inconsistent(
-            self, celltype=None, feature_ids=None,
+            self, sample_subset=None, feature_ids=None,
             fraction_diff_thresh=FRACTION_DIFF_THRESH):
         # grouped_ids = self.splicing.data.groupby(self.sample_id_to_color,
         #                                          axis=0)
         celltype_groups = self.metadata.data.groupby(
-            self.sample_id_to_celltype, axis=0)
+            self.sample_id_to_phenotype, axis=0)
 
-        if celltype is not None:
-            # Only plotting one celltype
-            celltype_samples = set(celltype_groups.groups[celltype])
+        if sample_subset is not None:
+            # Only plotting one sample_subset
+            celltype_samples = set(celltype_groups.groups[sample_subset])
         else:
             # Plotting all the celltypes
             celltype_samples = self.metadata.data.index
 
         celltype_and_sample_ids = celltype_groups.groups.iteritems()
-        for i, (celltype, sample_ids) in enumerate(celltype_and_sample_ids):
+        for i, (sample_subset, sample_ids) in enumerate(
+                celltype_and_sample_ids):
             # import pdb; pdb.set_trace()
 
-            # Assumes all samples of a celltype have the same color...
+            # Assumes all samples of a sample_subset have the same color...
             # probably wrong
             color = self.sample_id_to_color[sample_ids[0]]
             sample_ids = celltype_samples.intersection(sample_ids)
@@ -1059,24 +1055,25 @@ class Study(StudyFactory):
                 color=color)
 
     def percent_pooled_inconsistent(self,
-                                    celltype=None, feature_ids=None,
+                                    sample_subset=None, feature_ids=None,
                                     fraction_diff_thresh=FRACTION_DIFF_THRESH):
 
         celltype_groups = self.metadata.data.groupby(
-            self.sample_id_to_celltype, axis=0)
+            self.sample_id_to_phenotype, axis=0)
 
-        if celltype is not None:
-            # Only plotting one celltype
-            celltype_samples = set(celltype_groups.groups[celltype])
+        if sample_subset is not None:
+            # Only plotting one sample_subset
+            celltype_samples = set(celltype_groups.groups[sample_subset])
         else:
             # Plotting all the celltypes
             celltype_samples = self.metadata.data.index
 
         celltype_and_sample_ids = celltype_groups.groups.iteritems()
-        for i, (celltype, sample_ids) in enumerate(celltype_and_sample_ids):
+        for i, (sample_subset, sample_ids) in enumerate(
+                celltype_and_sample_ids):
             # import pdb; pdb.set_trace()
 
-            # Assumes all samples of a celltype have the same color...
+            # Assumes all samples of a sample_subset have the same color...
             # probably wrong
             color = self.sample_id_to_color[sample_ids[0]]
             sample_ids = celltype_samples.intersection(sample_ids)
@@ -1094,7 +1091,7 @@ class Study(StudyFactory):
         elif data_type == 'splicing':
             data = self.splicing.data
         celltype_groups = data.groupby(
-            self.sample_id_to_celltype, axis=0)
+            self.sample_id_to_phenotype, axis=0)
 
         if sample_subset is not None:
             # Only plotting one sample_subset
@@ -1124,7 +1121,7 @@ class Study(StudyFactory):
         if ax is None:
             fig, ax = plt.subplots()
         self.splicing.plot_event(feature_id, sample_ids,
-                                 phenotype_groupby=self.sample_id_to_celltype,
+                                 phenotype_groupby=self.sample_id_to_phenotype,
                                  phenotype_order=self.metadata.phenotype_order,
                                  color=self.phenotype_color_order, ax=ax)
 
