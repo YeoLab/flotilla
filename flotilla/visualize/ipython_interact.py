@@ -268,9 +268,7 @@ class Interactive(object):
                 plt.gcf().savefig(savefile)
 
         if feature_subsets is None:
-            feature_subsets = list(set(itertools.chain(
-                *self.default_feature_subsets.values())))
-            feature_subsets.pop(feature_subsets.index('variant'))
+            feature_subsets = Interactive.get_feature_subsets(self, data_types)
             feature_subsets.insert(0, 'variant')
         if sample_subsets is None:
             sample_subsets = self.default_sample_subsets
@@ -399,7 +397,8 @@ class Interactive(object):
                 plt.gcf().savefig(savefile)
 
         if feature_subsets is None:
-            feature_subsets = self.splicing.feature_subsets.keys()
+            feature_subsets = Interactive.get_feature_subsets(self,
+                                                              ['splicing'])
 
         if sample_subsets is None:
             sample_subsets = self.default_sample_subsets
@@ -468,10 +467,7 @@ class Interactive(object):
                 plt.gcf().savefig(savefile)
 
         if feature_subsets is None:
-            feature_subsets = self.splicing.feature_subsets.keys()
-            feature_subsets.pop(feature_subsets.index('variant'))
-            feature_subsets.insert(0, 'variant')
-            feature_subsets = feature_subsets + ['custom']
+            feature_subsets = Interactive.get_feature_subsets(self, data_types)
 
         if sample_subsets is None:
             sample_subsets = self.default_sample_subsets
@@ -525,16 +521,15 @@ class Interactive(object):
                 f = plt.gcf()
                 f.savefig(savefile)
 
-        feature_subsets = list(set(itertools.chain(
-            *self.default_feature_subsets.values())))
-        feature_subsets.pop(feature_subsets.index('variant'))
-        feature_subsets.insert(0, 'variant')
+        feature_subsets = Interactive.get_feature_subsets(self,
+                                                          ['expression',
+                                                           'splicing'])
 
         linkage_method = ('single', 'median', 'centroid')
         metric = ('euclidean', 'seuclidean')
         interact(do_interact,
                  data_type=('expression', 'splicing'),
                  sample_subset=self.default_sample_subsets,
-                 feature_subset=feature_subsets + ['custom'],
+                 feature_subset=feature_subsets,
                  metric=metric,
                  linkage_method=linkage_method)
