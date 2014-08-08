@@ -57,7 +57,7 @@ class DecompositionViz(object):
     """
 
 
-    def __init__(self, df, title='', n_components=None, whiten=False,
+    def __init__(self, df, title='', n_components=None,
                  reduction_args=None, feature_renamer=None, groupby=None,
                  color=None, order=None, violinplot_kws=None,
                  data_type=None, label_to_color=None, label_to_marker=None,
@@ -108,7 +108,7 @@ class DecompositionViz(object):
 
         # This magically initializes the reducer like PCA or NMF
         super(DecompositionViz, self).__init__(n_components=n_components,
-                                               whiten=whiten, **reduction_args)
+                                               **reduction_args)
 
         assert isinstance(df, pd.DataFrame)
         self.df = df
@@ -369,7 +369,7 @@ class DecompositionViz(object):
                                        phenotype_groupby=self.groupby,
                                        phenotype_order=self.order,
                                        ax=ax, color=self.color,
-                                       label_pooled=True)
+                                       label_pooled=False)
 
         # Clear any unused axes
         for ax in axes.flat:
@@ -380,6 +380,7 @@ class DecompositionViz(object):
 
 
 class PCAViz(DecompositionViz, PCA):
+    _default_reduction_kwargs = dict(whiten=False)
     pass
 
 
@@ -388,31 +389,34 @@ class NMFViz(DecompositionViz, NMF):
         {'n_components': 2, 'max_iter': 20000, 'nls_max_iter': 40000}
 
     def __call__(self, ax=None, **kwargs):
-        gs_x = 14
-        gs_y = 12
+        pass
+        # gs_x = 14
+        # gs_y = 12
+        #
+        # if ax is None:
+        #     fig, ax = plt.subplots(1, 1, figsize=(25, 12))
+        #     gs = GridSpec(gs_x, gs_y)
+        #
+        # else:
+        #     gs = GridSpecFromSubplotSpec(gs_x, gs_y, ax.get_subplotspec())
+        #     fig = plt.gcf()
+        #
+        # ax_components = plt.subplot(gs[:, :5])
+        # ax_loading1 = plt.subplot(gs[:, 6:8])
+        # ax_loading2 = plt.subplot(gs[:, 10:14])
+        #
+        # passed_kwargs = kwargs
+        # local_kwargs = self.plotting_kwargs.copy()
+        # local_kwargs.update(passed_kwargs)
+        # local_kwargs.update({'ax': ax_components})
+        # self.plot_samples(**local_kwargs)
+        # self.plot_loadings(pc=local_kwargs['x_pc'], ax=ax_loading1)
+        # self.plot_loadings(pc=local_kwargs['y_pc'], ax=ax_loading2)
+        # sns.despine()
+        # fig.tight_layout()
+        # return self
 
-        if ax is None:
-            fig, ax = plt.subplots(1, 1, figsize=(25, 12))
-            gs = GridSpec(gs_x, gs_y)
-
-        else:
-            gs = GridSpecFromSubplotSpec(gs_x, gs_y, ax.get_subplotspec())
-            fig = plt.gcf()
-
-        ax_components = plt.subplot(gs[:, :5])
-        ax_loading1 = plt.subplot(gs[:, 6:8])
-        ax_loading2 = plt.subplot(gs[:, 10:14])
-
-        passed_kwargs = kwargs
-        local_kwargs = self.plotting_kwargs.copy()
-        local_kwargs.update(passed_kwargs)
-        local_kwargs.update({'ax': ax_components})
-        self.plot_samples(**local_kwargs)
-        self.plot_loadings(pc=local_kwargs['x_pc'], ax=ax_loading1)
-        self.plot_loadings(pc=local_kwargs['y_pc'], ax=ax_loading2)
-        sns.despine()
-        fig.tight_layout()
-        return self
+        # def splicing_movies(self):
 
 
 def plot_pca(df, **kwargs):

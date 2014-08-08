@@ -6,7 +6,7 @@ import seaborn as sns
 
 def violinplot(data, groupby=None, color=None, ax=None, pooled_data=None,
                order=None, violinplot_kws=None, title=None,
-               label_pooled=True, outliers=None, data_type=None):
+               label_pooled=False, outliers=None, data_type=None):
     """
     Parameters
     ----------
@@ -137,7 +137,7 @@ def _violinplot_data(data, groupby=None, order=None, violinplot_kws=None,
                         xytext=(7, 0), fontsize=14)
 
 
-def plot_pooled_dot(ax, pooled, x_offset=0, label=True):
+def plot_pooled_dot(ax, pooled, x_offset=0, label=False):
     """
     Parameters
     ----------
@@ -167,3 +167,36 @@ def plot_pooled_dot(ax, pooled, x_offset=0, label=True):
                 continue
             ax.annotate('pooled', (x, y), textcoords='offset points',
                         xytext=(7, 0), fontsize=14)
+
+
+def nmf_space_transitions(nmf_space_positions, feature_id,
+                          phenotype_to_color, phenotype_to_marker, order,
+                          ax=None, xlabel=None, ylabel=None):
+    df = nmf_space_positions.ix[feature_id]
+
+    if ax is None:
+        ax = plt.gcf()
+
+    for color, s in df.groupby(phenotype_to_color, axis=0):
+        phenotype = s.index[0]
+        marker = phenotype_to_marker[phenotype]
+        ax.plot(s.pc_1, s.pc_2, color=color, marker=marker, markersize=14,
+                alpha=0.75, label=phenotype, linestyle='none')
+
+    # ax.scatter(df.ix[:, 0], df.ix[:, 1], color=color, s=100, alpha=0.75)
+    # ax.legend(points, df.index.tolist())
+    ax.set_xlim(0, nmf_space_positions.ix[:, 0].max() * 1.05)
+    ax.set_ylim(0, nmf_space_positions.ix[:, 1].max() * 1.05)
+
+    x = [df.ix[phenotype, 0] for phenotype in order]
+    y = [df.ix[phenotype, 1] for phenotype in order]
+
+    ax.plot(x, y, zorder=-1, color='#262626')
+    ax.legend()
+
+    if xlabel is not None:
+        ax.set_xlabel(xlabel)
+        ax.set_xticks([])
+    if ylabel is not None:
+        ax.set_ylabel(ylabel)
+        ax.set_yticks([])

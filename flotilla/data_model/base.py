@@ -4,6 +4,7 @@ this, or a child object (like ExpressionData).
 """
 import sys
 
+import matplotlib.pyplot as plt
 import pandas as pd
 from scipy.spatial.distance import pdist, squareform
 import seaborn as sns
@@ -11,12 +12,12 @@ from sklearn.preprocessing import StandardScaler
 
 from ..compute.clustering import Cluster
 from ..compute.infotheory import binify
-from ..visualize.decomposition import PCAViz
-from ..visualize.generic import violinplot
+from ..visualize.decomposition import PCAViz, NMFViz
+from ..visualize.generic import violinplot, nmf_space_transitions
 from ..visualize.predict import ClassifierViz
 from ..external import link_to_list
 from ..compute.predict import PredictorConfigManager, PredictorDataSetManager
-from ..util import memoize
+from ..util import memoize, cached_property
 
 MINIMUM_SAMPLES = 10
 default_predictor_name = "ExtraTreesClassifier"
@@ -396,7 +397,7 @@ class BaseData(object):
             pooled_sample_ids = None
         pooled = self._subset(pooled, pooled_sample_ids, feature_ids,
                               require_min_samples=False)
-        if len(feature_ids) > 1:
+        if feature_ids is not None and len(feature_ids) > 1:
             # These are DataFrames
             singles, pooled = singles.align(pooled, axis=1, join='inner')
         else:
@@ -640,7 +641,7 @@ class BaseData(object):
     def _violinplot(self, feature_id, sample_ids=None,
                     phenotype_groupby=None,
                     phenotype_order=None, ax=None, color=None,
-                    label_pooled=True):
+                    label_pooled=False):
         """For compatiblity across data types, can specify _violinplot
         """
         singles, pooled = self._subset_singles_and_pooled(
@@ -655,3 +656,56 @@ class BaseData(object):
                    pooled_data=pooled, order=phenotype_order,
                    title=title, data_type=self.data_type, ax=ax,
                    label_pooled=label_pooled, outliers=outliers)
+
+    @cached_property()
+    def nmf(self):
+        data = self._subset(self.data)
+        return NMFViz(self.binify(data).T, n_components=2)
+
+    @memoize
+    def binned_nmf_reduced(self, sample_ids=None, feature_ids=None):
+        """
+
+        """
+        data = self._subset(self.data, sample_ids, feature_ids)
+        binned = self.binify(data)
+        reduced = self.nmf.transform(binned.T)
+        return reduced
+
+    def plot_feature(self, feature_id, sample_ids=None,
+                     phenotype_groupby=None,
+                     phenotype_order=None, color=None,
+                     phenotype_to_color=None,
+                     phenotype_to_marker=None):
+
+        """
+        Plot the violinplot of a splicing event (should also show NMF movement)
+        """
+        fig, axes = plt.subplots(ncols=2, figsize=(8, 4))
+        self._violinplot(feature_id, sample_ids=sample_ids,
+                         phenotype_groupby=phenotype_groupby,
+                         phenotype_order=phenotype_order, ax=axes[0],
+                         color=color)
+        self.plot_nmf_space_transitions(feature_id, groupby=phenotype_groupby,
+                                        phenotype_to_color=phenotype_to_color,
+                                        phenotype_to_marker=phenotype_to_marker,
+                                        order=phenotype_order, ax=axes[1])
+        sns.despine()
+
+    def nmf_space_positions(self, groupby):
+        df = self.data.groupby(groupby).apply(
+            lambda x: self.binned_nmf_reduced(sample_ids=x.index))
+        df = df.swaplevel(0, 1)
+        df = df.sort_index()
+        return df
+
+    def plot_nmf_space_transitions(self, feature_id, groupby,
+                                   phenotype_to_color,
+                                   phenotype_to_marker, order, ax=None,
+                                   xlabel=None, ylabel=None):
+        nmf_space_positions = self.nmf_space_positions(groupby)
+
+        nmf_space_transitions(nmf_space_positions, feature_id,
+                              phenotype_to_color,
+                              phenotype_to_marker, order,
+                              ax, xlabel, ylabel)
