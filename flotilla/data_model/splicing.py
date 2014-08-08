@@ -9,10 +9,10 @@ import seaborn as sns
 
 from .base import BaseData
 from ..compute.splicing import Modalities
-from ..visualize.decomposition import NMFViz, PCAViz
+from ..visualize.decomposition import PCAViz
 from ..visualize.color import purples
 from ..visualize.splicing import ModalitiesViz
-from ..util import cached_property, memoize
+from ..util import memoize
 from ..visualize.color import red
 from ..visualize.splicing import lavalamp, hist_single_vs_pooled_diff, \
     lavalamp_pooled_inconsistent
@@ -69,14 +69,6 @@ class SplicingData(BaseData):
 
         self.data_type = 'splicing'
 
-        #try:
-        #    for modality in set(self.modalities()):
-        #        self.feature_data[
-        #            'modality_' + modality] = self.modalities() == modality
-        #except TypeError:
-        #    # Unless there is no feature_data
-        #    pass
-
     @memoize
     def modalities(self, sample_ids=None, feature_ids=None,
                    bootstrapped=False, bootstrapped_kws=None):
@@ -132,20 +124,10 @@ class SplicingData(BaseData):
         return self.modalities_calculator.counts(data, bootstrapped,
                                                  bootstrapped_kws)
 
-    @cached_property()
-    def nmf(self):
-        data = self._subset(self.data)
-        return NMFViz(self.binify(data).T, n_components=2)
 
-    @memoize
-    def binned_reduced(self, sample_ids=None, feature_ids=None):
-        """
+    def binify(self, data):
+        return super(SplicingData, self).binify(data, self.bins)
 
-        """
-        data = self._subset(self.data, sample_ids, feature_ids)
-        binned = self.binify(data)
-        reduced = self.nmf.transform(binned.T)
-        return reduced
 
     def reduce(self, sample_ids=None, feature_ids=None,
                featurewise=False, reducer=PCAViz,
@@ -174,77 +156,6 @@ class SplicingData(BaseData):
                                                 bins=bins, x_pc=x_pc,
                                                 y_pc=y_pc)
 
-    # @memoize
-    # def classify(self, trait, sample_ids, feature_ids,
-    #              standardize=True,
-    #              predictor_name='ExtraTreesClassifier',
-    #              predictor_obj=None,
-    #              predictor_scoring_fun=None,
-    #              score_cutoff_fun=None,
-    #              n_features_dependent_parameters=None,
-    #              constant_parameters=None,
-    #              plotting_kwargs=None,
-    #              feature_renamer=lambda x: x):
-    #     #Should all this be exposed to the user???
-    #
-    #     """Make and memoize a predictor on a categorical trait (associated
-    #     with samples) subset of genes
-    #
-    #     Parameters
-    #     ----------
-    #     trait : pandas.Series
-    #         samples x categorical feature
-    #     sample_ids : None or list of strings
-    #         If None, all sample ids will be used, else only the sample ids
-    #         specified
-    #     feature_ids : None or list of strings
-    #         If None, all features will be used, else only the features
-    #         specified
-    #     standardize : bool
-    #         Whether or not to "whiten" (make all variables uncorrelated) and
-    #         mean-center and make unit-variance all the data via sklearn
-    #         .preprocessing.StandardScaler
-    #     predictor : flotilla.visualize.predict classifier
-    #         Must inherit from flotilla.visualize.PredictorBaseViz. Default is
-    #         flotilla.visualize.predict.ClassifierViz
-    #     predictor_kwargs : dict or None
-    #         Additional 'keyword arguments' to supply to the predictor class
-    #     predictor_scoring_fun : function
-    #         Function to get the feature scores for a scikit-learn classifier.
-    #         This can be different for different classifiers, e.g. for a
-    #         classifier named "x" it could be x.scores_, for other it's
-    #         x.feature_importances_. Default: lambda x: x.feature_importances_
-    #     score_cutoff_fun : function
-    #         Function to cut off insignificant scores
-    #         Default: lambda scores: np.mean(x) + 2 * np.std(x)
-    #
-    #     Returns
-    #     -------
-    #     predictor : flotilla.compute.predict.PredictorBaseViz
-    #         A ready-to-plot object containing the predictions
-    #     """
-    #
-    #     subset, means = self._subset_and_standardize(self.data,
-    #                                                  sample_ids,
-    #                                                  feature_ids,
-    #                                                  standardize)
-    #     subset.rename_axis(feature_renamer, 1, inplace=True)
-    #
-    #     if plotting_kwargs is None:
-    #         plotting_kwargs = {}
-    #
-    #     classifier = ClassifierViz(self.data_type, trait.name,
-    #                                predictor_name=predictor_name,
-    #                                X_data=subset,
-    #                                trait=trait,
-    #                                predictor_obj=predictor_obj,
-    #                                predictor_scoring_fun=predictor_scoring_fun,
-    #                                score_cutoff_fun=score_cutoff_fun,
-    #                                n_features_dependent_parameters=n_features_dependent_parameters,
-    #                                constant_parameters=constant_parameters,
-    #                                predictor_dataset_manager=self.predictor_dataset_manager,
-    #                                **plotting_kwargs)
-    #     return classifier
 
     def plot_modalities_reduced(self, sample_ids=None, feature_ids=None,
                                 ax=None, title=None,
@@ -273,7 +184,7 @@ class SplicingData(BaseData):
             sample_ids, feature_ids, bootstrapped=bootstrapped,
             bootstrapped_kws=bootstrapped_kws)
         self.modalities_visualizer.plot_reduced_space(
-            self.binned_reduced(sample_ids, feature_ids),
+            self.binned_nmf_reduced(sample_ids, feature_ids),
             modalities_assignments, ax=ax, title=title)
 
     def plot_modalities_bar(self, sample_ids=None, feature_ids=None, ax=None,
@@ -386,15 +297,32 @@ class SplicingData(BaseData):
         pie_axis.pie(map(int, modality_count.values()),
                      labels=modality_count.keys(), autopct='%1.1f%%')
 
-    def plot_event(self, feature_id, sample_ids=None, phenotype_groupby=None,
-                   phenotype_order=None, ax=None, color=None):
-        """
-        Plot the violinplot of a splicing event (should also show NMF movement)
-        """
-        return self._violinplot(feature_id, sample_ids=sample_ids,
-                                phenotype_groupby=phenotype_groupby,
-                                phenotype_order=phenotype_order, ax=ax,
-                                color=color, )
+    def plot_event(self, feature_id, sample_ids=None,
+                   phenotype_groupby=None,
+                   phenotype_order=None, color=None,
+                   phenotype_to_color=None,
+                   phenotype_to_marker=None):
+        nmf_space_positions = self.nmf_space_positions(phenotype_groupby)
+
+        # Get the correct included/excluded labeling for the x and y axes
+        event, phenotype = nmf_space_positions.pc_1.argmax()
+        top_pc1_samples = self.data.groupby(phenotype_groupby).groups[
+            phenotype]
+
+        data = self._subset(self.data, sample_ids=top_pc1_samples)
+        binned = self.binify(data)
+
+        x_axis_excluded = bool(binned[event][0])
+        included_label = 'included >>'
+        excluded_label = 'excluded >>'
+        xlabel = excluded_label if x_axis_excluded else included_label
+        ylabel = included_label if x_axis_excluded else excluded_label
+        super(SplicingData, self).plot_feature(feature_id, sample_ids,
+                                               phenotype_groupby,
+                                               phenotype_order, color,
+                                               phenotype_to_color,
+                                               phenotype_to_marker, xlabel,
+                                               ylabel)
 
     @memoize
     def pooled_inconsistent(self, sample_ids, feature_ids=None,

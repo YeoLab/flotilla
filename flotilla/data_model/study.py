@@ -291,9 +291,10 @@ class Study(StudyFactory):
         self.phenotype_order = self.metadata.phenotype_order
         self.phenotype_to_color = self.metadata.phenotype_to_color
         self.phenotype_to_marker = self.metadata.phenotype_to_marker
-        self.phenotype_color_order = self.metadata.phenotype_color_order
+        self.phenotype_color_ordered = self.metadata.phenotype_color_order
         self.sample_id_to_phenotype = self.metadata.sample_id_to_phenotype
         self.sample_id_to_color = self.metadata.sample_id_to_color
+        self.phenotype_transitions = self.metadata.phenotype_transitions
 
         self.default_sample_subsets = \
             [col for col in self.metadata.data.columns
@@ -756,7 +757,7 @@ class Study(StudyFactory):
             label_to_marker = self.phenotype_to_marker
             groupby = self.sample_id_to_phenotype
             order = self.phenotype_order
-            color = self.phenotype_color_order
+            color = self.phenotype_color_ordered
         else:
             label_to_color = None
             label_to_marker = None
@@ -886,7 +887,7 @@ class Study(StudyFactory):
         groupby = self.sample_id_to_phenotype
 
         order = self.phenotype_order
-        color = self.phenotype_color_order
+        color = self.phenotype_color_ordered
 
         if data_type == "expression":
             self.expression.plot_classifier(
@@ -1031,14 +1032,25 @@ class Study(StudyFactory):
                     bootstrapped=bootstrapped,
                     bootstrapped_kws=bootstrapped_kws)
 
-    def plot_event(self, feature_id, sample_subset=None, ax=None):
-        """Plot the violinplot of an event
-
+    def plot_event(self, feature_id, sample_subset=None):
+        """Plot the violinplot and NMF transitions of a splicing event
         """
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
         self.splicing.plot_event(feature_id, sample_ids,
                                  phenotype_groupby=self.sample_id_to_phenotype,
-                                 ax=ax)
+                                 phenotype_order=self.phenotype_order,
+                                 color=self.phenotype_color_ordered,
+                                 phenotype_to_color=self.phenotype_to_color,
+                                 phenotype_to_marker=self.phenotype_to_marker)
+
+    def plot_gene(self, feature_id, sample_subset=None):
+        sample_ids = self.sample_subset_to_sample_ids(sample_subset)
+        self.expression.plot_feature(feature_id, sample_ids,
+                                     phenotype_groupby=self.sample_id_to_phenotype,
+                                     phenotype_order=self.phenotype_order,
+                                     color=self.phenotype_color_ordered,
+                                     phenotype_to_color=self.phenotype_to_color,
+                                     phenotype_to_marker=self.phenotype_to_marker)
 
     def plot_lavalamp_pooled_inconsistent(
             self, sample_subset=None, feature_ids=None,
@@ -1133,13 +1145,13 @@ class Study(StudyFactory):
                 sample_ids, feature_ids, linkage_method=linkage_method,
                 metric=metric, sample_colors=sample_colors, figsize=figsize)
 
-    def plot_event(self, feature_id, sample_ids=None, ax=None):
-        if ax is None:
-            fig, ax = plt.subplots()
-        self.splicing.plot_event(feature_id, sample_ids,
-                                 phenotype_groupby=self.sample_id_to_phenotype,
-                                 phenotype_order=self.metadata.phenotype_order,
-                                 color=self.phenotype_color_order, ax=ax)
+            # def plot_event(self, feature_id, sample_ids=None, ax=None):
+            #     if ax is None:
+            #         fig, ax = plt.subplots()
+            #     self.splicing.plot_event(feature_id, sample_ids,
+            #                              phenotype_groupby=self.sample_id_to_phenotype,
+            #                              phenotype_order=self.metadata.phenotype_order,
+            #                              color=self.phenotype_color_ordered, ax=ax)
 
 
 # Add interactive visualizations

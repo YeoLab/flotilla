@@ -57,13 +57,9 @@ class ExpressionData(BaseData):
         self.default_feature_sets.extend(self.feature_subsets.keys())
 
     def reduce(self, sample_ids=None, feature_ids=None,
-               featurewise=False,
-               reducer=PCAViz,
-               standardize=True,
-               title='',
-               reducer_kwargs=None,
-               color=None,
-               groupby=None, label_to_color=None, label_to_marker=None,
+               featurewise=False, reducer=PCAViz, standardize=True,
+               title='', reducer_kwargs=None, color=None, groupby=None,
+               label_to_color=None, label_to_marker=None,
                order=None, x_pc='pc_1', y_pc='pc_1'):
         """Make and memoize a reduced dimensionality representation of data
 
@@ -98,93 +94,6 @@ class ExpressionData(BaseData):
             title=title, reducer_kwargs=reducer_kwargs, groupby=groupby,
             label_to_color=label_to_color, label_to_marker=label_to_marker,
             order=order, color=color, x_pc=x_pc, y_pc=y_pc)
-
-    # @memoize
-    # def classify(self, trait, sample_ids, feature_ids,
-    #              standardize=True,
-    #              data_name='expression',
-    #              predictor_name='ExtraTreesClassifier',
-    #              predictor_obj=None,
-    #              predictor_scoring_fun=None,
-    #              score_cutoff_fun=None,
-    #              n_features_dependent_parameters=None,
-    #              constant_parameters=None,
-    #              plotting_kwargs=None,
-    #              feature_renamer=lambda x: x):
-    #     #Should all this be exposed to the user???
-    #
-    #     """Make and memoize a predictor on a categorical trait (associated
-    #     with samples) subset of genes
-    #
-    #     Parameters
-    #     ----------
-    #     trait : pandas.Series
-    #         samples x categorical feature
-    #     sample_ids : None or list of strings
-    #         If None, all sample ids will be used, else only the sample ids
-    #         specified
-    #     feature_ids : None or list of strings
-    #         If None, all features will be used, else only the features
-    #         specified
-    #     standardize : bool
-    #         Whether or not to "whiten" (make all variables uncorrelated) and
-    #         mean-center and make unit-variance all the data via sklearn
-    #         .preprocessing.StandardScaler
-    #     predictor : flotilla.visualize.predict classifier
-    #         Must inherit from flotilla.visualize.PredictorBaseViz. Default is
-    #         flotilla.visualize.predict.ClassifierViz
-    #     predictor_kwargs : dict or None
-    #         Additional 'keyword arguments' to supply to the predictor class
-    #     predictor_scoring_fun : function
-    #         Function to get the feature scores for a scikit-learn classifier.
-    #         This can be different for different classifiers, e.g. for a
-    #         classifier named "x" it could be x.scores_, for other it's
-    #         x.feature_importances_. Default: lambda x: x.feature_importances_
-    #     score_cutoff_fun : function
-    #         Function to cut off insignificant scores
-    #         Default: lambda scores: np.mean(x) + 2 * np.std(x)
-    #
-    #     Returns
-    #     -------
-    #     predictor : flotilla.compute.predict.PredictorBaseViz
-    #         A ready-to-plot object containing the predictions
-    #     """
-    #     subset = self._subset_and_standardize(self.log_data,
-    #                                           sample_ids,
-    #                                           feature_ids,
-    #                                           standardize)
-    #     subset.rename_axis(feature_renamer, 1, inplace=True)
-    #     if plotting_kwargs is None:
-    #         plotting_kwargs = {}
-    #
-    #     classifier = ClassifierViz(data_name, trait.name,
-    #                                predictor_name=predictor_name,
-    #                                X_data=subset,
-    #                                trait=trait,
-    #                                predictor_obj=predictor_obj,
-    #                                predictor_scoring_fun=predictor_scoring_fun,
-    #                                score_cutoff_fun=score_cutoff_fun,
-    #                                n_features_dependent_parameters=n_features_dependent_parameters,
-    #                                constant_parameters=constant_parameters,
-    #                                predictor_dataset_manager=self.predictor_dataset_manager,
-    #                                **plotting_kwargs)
-    #     return classifier
-
-    # def load_cargo(self, rename=True, **kwargs):
-    #     try:
-    #         species = self.species
-    #         # self.cargo = cargo.get_species_cargo(self.species)
-    #         self.go = self.cargo.get_go(species)
-    #         self.feature_subsets.update(self.cargo.gene_lists)
-    #
-    #         if rename:
-    #             self._set_feature_renamer(lambda x: self.go.geneNames(x))
-    #     except:
-    #         raise
-
-    #
-    # def _get(self, expression_data_filename):
-    #     return {'expression_df': self.load(*expression_data_filename)}
 
     def twoway(self, sample1, sample2, **kwargs):
         from ..visualize.expression import TwoWayScatterViz
