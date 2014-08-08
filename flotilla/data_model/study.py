@@ -457,6 +457,7 @@ class Study(StudyFactory):
         dfs = {}
         log_base = None
         metadata_pooled_col = None
+        metadata_phenotype_col = None
         phenotype_order = None
         phenotype_to_color = None
         phenotype_to_marker = None
@@ -489,6 +490,8 @@ class Study(StudyFactory):
             if name == 'metadata':
                 if 'pooled_col' in resource:
                     metadata_pooled_col = resource['pooled_col']
+                if 'phenotype_col' in resource:
+                    metadata_phenotype_col = resource['phenotype_col']
                 if 'phenotype_order' in resource:
                     phenotype_order = resource['phenotype_order']
                 if 'phenotype_to_color' in resource:
@@ -554,6 +557,7 @@ class Study(StudyFactory):
             phenotype_order=phenotype_order,
             phenotype_to_color=phenotype_to_color,
             phenotype_to_marker=phenotype_to_marker,
+            metadata_phenotype_col=metadata_phenotype_col,
             **species_dfs)
         return study
 
@@ -880,6 +884,9 @@ class Study(StudyFactory):
         label_to_marker = self.phenotype_to_marker
         groupby = self.sample_id_to_phenotype
 
+        order = self.phenotype_order
+        color = self.phenotype_color_order
+
         if data_type == "expression":
             self.expression.plot_classifier(
                 data_name=data_name, trait=trait_data,
@@ -887,9 +894,17 @@ class Study(StudyFactory):
                 label_to_color=label_to_color,
                 label_to_marker=label_to_marker, groupby=groupby,
                 show_point_labels=show_point_labels, title=title,
+                order=order, color=color,
                 **kwargs)
         elif data_type == "splicing":
-            self.splicing.plot_classifier(**kwargs)
+            self.splicing.plot_classifier(
+                data_name=data_name, trait=trait_data,
+                sample_ids=sample_ids, feature_ids=feature_ids,
+                label_to_color=label_to_color,
+                label_to_marker=label_to_marker, groupby=groupby,
+                show_point_labels=show_point_labels, title=title,
+                order=order, color=color,
+                **kwargs)
 
     def plot_regressor(self, data_type='expression', **kwargs):
         """

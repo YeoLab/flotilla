@@ -133,12 +133,13 @@ class PredictorBaseViz(PredictorBase):
         del plotting_kwargs['ax']
         local_plotting_kwargs = self._reducer_plotting_args
         local_plotting_kwargs.update(plotting_kwargs)
-        pca = self.pca(groupby=self.groupby,
-                       feature_renamer=self.feature_renamer, color=self.color,
-                       pooled=self.pooled, order=self.order,
-                       violinplot_kws=self.violinplot_kws,
-                       data_type=self.data_type,
-                       **local_plotting_kwargs)
+        pca = self.pca(
+            # groupby=self.groupby,
+            #            feature_renamer=self.feature_renamer, color=self.color,
+            #            pooled=self.pooled, order=self.order,
+            #            violinplot_kws=self.violinplot_kws,
+            #            data_type=self.data_type,
+            **local_plotting_kwargs)
         pca(ax=ax)
         return pca
 

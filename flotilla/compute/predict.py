@@ -12,6 +12,7 @@ import pandas as pd
 from sklearn.ensemble import ExtraTreesClassifier, ExtraTreesRegressor, \
     GradientBoostingClassifier, GradientBoostingRegressor
 from sklearn.preprocessing import LabelEncoder
+from pandas.util.testing import assert_frame_equal, assert_series_equal
 
 from ..util import memoize
 from ..visualize.decomposition import PCAViz, NMFViz
@@ -32,9 +33,6 @@ def default_score_cutoff_fun(arr, std_multiplier=default_score_coefficient):
     """a way of calculating which features have a high score in a predictor
     default - f(x) = mean(x) + 2 * np.std(x)"""
     return np.mean(arr) + std_multiplier * np.std(arr)
-
-
-from pandas.util.testing import assert_frame_equal, assert_series_equal
 
 
 class PredictorConfig(object):
@@ -542,7 +540,8 @@ class PredictorBase(object):
                  predictor_config_manager=None,
                  feature_renamer=None,
                  groupby=None, color=None, pooled=None, order=None,
-                 violinplot_kws=None, data_type=None):
+                 violinplot_kws=None, data_type=None, DataModel=None,
+                 label_to_color=None, label_to_marker=None):
 
         self.predictor_name = predictor_name
         self.data_name = data_name
@@ -555,6 +554,9 @@ class PredictorBase(object):
         self.order = order
         self.violinplot_kws = violinplot_kws
         self.data_type = data_type
+        self.DataModel = DataModel
+        self.label_to_color = label_to_color
+        self.label_to_marker = label_to_marker
 
         if trait is not None:
             trait = trait.copy()
@@ -584,8 +586,8 @@ class PredictorBase(object):
             is_categorical_trait is not None else False
 
         self.__doc__ = '{}\n\n{}\n\n{}\n\n'.format(self.__doc__,
-                                                     self.dataset.__doc__,
-                                                     self.predictor.__doc__)
+                                                   self.dataset.__doc__,
+                                                   self.predictor.__doc__)
 
     #thin reference to self.dataset
     @property
@@ -627,7 +629,8 @@ class PredictorBase(object):
         self.predictor.fit(self.dataset.X, self.dataset.y)
         self.has_been_fit = True
         sys.stdout.write("\tFinished.\n")
-        #Collect scores from predictor, rename innate scores variable to self.scores_
+        # Collect scores from predictor, rename innate scores variable to
+        # self.scores_
         scores = self.predictor.predictor_scoring_fun(self.predictor)
         self.scores_ = pd.Series(index=self.X.columns, data=scores)
         self.has_been_scored = True
@@ -681,11 +684,12 @@ class PredictorBase(object):
         self.predictor.scores_ = value
         if self.n_good_features_ <= 1:
             sys.stderr.write("cutoff: %.4f\n" % self.score_cutoff_)
-            sys.stderr.write("WARNING: These classifier settings produced "
-                             "<= 1 important feature, consider reducing score_coefficient. "
-                             "PCA will fail with this error: \"ValueError: failed "
-                             "to create intent(cache|hide)|optional array-- must have defined "
-                             "dimensions but got (0,)\"\n")
+            sys.stderr.write(
+                "WARNING: These classifier settings produced <= 1 important "
+                "feature, consider reducing score_coefficient. PCA will fail "
+                "with this error: \"ValueError: failed to create intent("
+                "cache|hide)|optional array-- must have defined dimensions "
+                "but got (0,)\"\n")
 
     @property
     def score_cutoff_(self):
@@ -706,12 +710,26 @@ class PredictorBase(object):
 
     @memoize
     def pca(self, **plotting_kwargs):
-        return PCAViz(self.subset_,
+        return PCAViz(self.subset_, DataModel=self.DataModel,
+                      feature_renamer=self.feature_renamer,
+                      groupby=self.groupby, color=self.color,
+                      pooled=self.pooled, order=self.order,
+                      violinplot_kws=self.violinplot_kws,
+                      data_type=self.data_type,
+                      label_to_color=self.label_to_color,
+                      label_to_marker=self.label_to_marker,
                       **plotting_kwargs)
 
     @memoize
     def nmf(self, **plotting_kwargs):
-        return NMFViz(self.subset_,
+        return NMFViz(self.subset_, DataModel=self.DataModel,
+                      feature_renamer=self.feature_renamer,
+                      groupby=self.groupby, color=self.color,
+                      pooled=self.pooled, order=self.order,
+                      violinplot_kws=self.violinplot_kws,
+                      data_type=self.data_type,
+                      label_to_color=self.label_to_color,
+                      label_to_marker=self.label_to_marker,
                       **plotting_kwargs)
 
 

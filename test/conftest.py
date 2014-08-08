@@ -8,7 +8,7 @@ import pytest
 import pandas as pd
 
 
-CURRENT_DIR = os.path.dirname(__file__)
+CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
 
 
 class ExampleData(object):
@@ -27,7 +27,7 @@ def example_data():
     expression = pd.read_table('{}/expression.tsv'.format(data_dir),
                                index_col=0)
     splicing = pd.read_table('{}/splicing.tsv'.format(data_dir), index_col=0)
-    metadata = pd.read_table('{}/metadata.tsv'.format(data_dir), index_col=0)
+    metadata = pd.read_csv('{}/metadata.csv'.format(data_dir), index_col=0)
     return ExampleData(metadata, expression, splicing)
 
 
@@ -42,8 +42,7 @@ def example_study(example_data):
 
 @pytest.fixture(scope='module')
 def example_datapackage_path():
-    this_dir = os.path.abspath(os.path.dirname(__file__))
-    return os.path.join(this_dir, 'data/datapackage.json')
+    return os.path.join(CURRENT_DIR, 'data/datapackage.json')
 
 
 @pytest.fixture(scope='module')
