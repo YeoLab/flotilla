@@ -175,7 +175,8 @@ class DecompositionViz(object):
         sns.despine()
         self.reduced_fig.tight_layout()
 
-        self.plot_violins()
+        if self.DataModel is not None:
+            self.plot_violins()
         return self
 
     def plot_samples(self, show_point_labels=True,
