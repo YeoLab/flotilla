@@ -293,6 +293,7 @@ class Study(StudyFactory):
         self.phenotype_to_marker = self.metadata.phenotype_to_marker
         self.phenotype_color_order = self.metadata.phenotype_color_order
         self.sample_id_to_phenotype = self.metadata.sample_id_to_phenotype
+        self.sample_id_to_color = self.metadata.sample_id_to_color
 
         self.default_sample_subsets = \
             [col for col in self.metadata.data.columns
