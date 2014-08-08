@@ -467,14 +467,16 @@ class Interactive(object):
                 plt.gcf().savefig(savefile)
 
         if feature_subsets is None:
-            feature_subsets = Interactive.get_feature_subsets(self, data_types)
+            feature_subsets = Interactive.get_feature_subsets(self,
+                                                              ['splicing',
+                                                               'expression'])
 
         if sample_subsets is None:
             sample_subsets = self.default_sample_subsets
 
         interact(do_interact,
                  sample_subset=sample_subsets,
-                 feature_subset=feature_subsets + ['custom'],
+                 feature_subset=feature_subsets,
                  difference_threshold=difference_threshold,
                  color=colors,
                  savefile=''
