@@ -22,7 +22,7 @@ def bin_range_strings(bins):
 
 
 def binify(df, bins):
-    """Makes a histogram of each row the provided binsize
+    """Makes a histogram of each column the provided binsize
 
     Parameters
     ----------
