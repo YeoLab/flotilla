@@ -18,18 +18,24 @@ class TestStudy(object):
     def test_toy_init(self, toy_study, example_data):
         from flotilla.data_model import ExpressionData, SplicingData
 
-        expression = ExpressionData(data=example_data.expression)
-        splicing = SplicingData(data=example_data.splicing)
+        outliers = example_data.metadata.index[
+            example_data.metadata.outlier.astype(bool)]
+        expression = ExpressionData(data=example_data.expression,
+                                    outliers=outliers)
+        splicing = SplicingData(data=example_data.splicing, outliers=outliers)
 
         pdt.assert_frame_equal(toy_study.metadata.data,
                                example_data.metadata)
-        pdt.assert_frame_equal(toy_study.expression.data, expression.data)
+        pdt.assert_frame_equal(toy_study.expression.data,
+                               expression.data)
         pdt.assert_frame_equal(toy_study.splicing.data, splicing.data)
         # There's more to test for correct initialization but this is barebones
         # for now
 
-    def test_real_init(self, study):
-        pass
+    def test_real_init(self, example_datapackage_path):
+        import flotilla
+
+        flotilla.embark(example_datapackage_path)
 
     def test_plot_pca(self, study):
         study.plot_pca()
