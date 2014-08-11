@@ -302,6 +302,16 @@ class SplicingData(BaseData):
                    phenotype_order=None, color=None,
                    phenotype_to_color=None,
                    phenotype_to_marker=None):
+        self.plot_feature(feature_id, sample_ids,
+                          phenotype_groupby, phenotype_order,
+                          color, phenotype_to_color, phenotype_to_marker)
+
+
+    def plot_feature(self, feature_id, sample_ids=None,
+                     phenotype_groupby=None,
+                     phenotype_order=None, color=None,
+                     phenotype_to_color=None,
+                     phenotype_to_marker=None, xlabel=None, ylabel=None):
         nmf_space_positions = self.nmf_space_positions(phenotype_groupby)
 
         # Get the correct included/excluded labeling for the x and y axes
@@ -315,8 +325,11 @@ class SplicingData(BaseData):
         x_axis_excluded = bool(binned[event][0])
         included_label = 'included >>'
         excluded_label = 'excluded >>'
-        xlabel = excluded_label if x_axis_excluded else included_label
-        ylabel = included_label if x_axis_excluded else excluded_label
+        if xlabel is None:
+            xlabel = excluded_label if x_axis_excluded else included_label
+        if ylabel is None:
+            ylabel = included_label if x_axis_excluded else excluded_label
+
         super(SplicingData, self).plot_feature(feature_id, sample_ids,
                                                phenotype_groupby,
                                                phenotype_order, color,
