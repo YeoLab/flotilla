@@ -15,9 +15,9 @@ from ..compute.clustering import Cluster
 from ..compute.infotheory import binify
 from ..visualize.decomposition import PCAViz, NMFViz
 from ..visualize.generic import violinplot, nmf_space_transitions
+from ..visualize.network import NetworkerViz
 from ..visualize.predict import ClassifierViz
 from ..external import link_to_list
-from ..compute.predict import PredictorConfigManager, PredictorDataSetManager
 from ..util import memoize, cached_property
 
 MINIMUM_SAMPLES = 5
@@ -96,20 +96,27 @@ class BaseData(object):
         else:
             self.feature_renamer = lambda x: shortener(lambda y: y, x)
 
-        self.renamed_to_feature_id = pd.Series(
+
+
+        # if predictor_config_manager is None:
+        #     self.predictor_config_manager = PredictorConfigManager()
+        # else:
+        #     self.predictor_config_manager = predictor_config_manager
+        #
+        # self.predictor_dataset_manager = PredictorDataSetManager(
+        #     self.predictor_config_manager)
+
+        self.networks = NetworkerViz(self)
+
+    @property
+    def renamed_to_feature_id(self):
+        renamed_to_feature_id = pd.Series(
             self.data.columns,
             index=self.data.columns.map(self.feature_renamer))
-        self.renamed_to_feature_id = self.renamed_to_feature_id.dropna()
-        self.renamed_to_feature_id = self.renamed_to_feature_id[~pd.isnull(
+        renamed_to_feature_id = self.renamed_to_feature_id.dropna()
+        renamed_to_feature_id = self.renamed_to_feature_id[~pd.isnull(
             self.renamed_to_feature_id.index)]
-
-        if predictor_config_manager is None:
-            self.predictor_config_manager = PredictorConfigManager()
-        else:
-            self.predictor_config_manager = predictor_config_manager
-
-        self.predictor_dataset_manager = PredictorDataSetManager(
-            self.predictor_config_manager)
+        return renamed_to_feature_id
 
     @property
     def _var_cut(self):
