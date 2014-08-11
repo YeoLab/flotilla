@@ -16,8 +16,8 @@ class NetworkerViz(Networker, DecompositionViz):
     # TODO.md: needs to be decontaminated, as it requires methods from
     # data_object;
     # maybe this class should move to data_model.BaseData
-    def __init__(self, data_obj):
-        self.data_obj = data_obj
+    def __init__(self, DataModel):
+        self.DataModel = DataModel
         Networker.__init__(self)
 
     def draw_graph(self,
@@ -96,8 +96,8 @@ class NetworkerViz(Networker, DecompositionViz):
         ax_cov = plt.axes([0.1, 0.1, .2, .15])
         ax_degree = plt.axes([0.9, .8, .2, .15])
 
-        pca = self.data_obj.reduce(label_to_color=label_to_color,
-                                   label_to_marker=label_to_marker,
+        pca = self.DataModel.reduce(label_to_color=label_to_color,
+                                    label_to_marker=label_to_marker,
                                    groupby=groupby,
                                    **pca_settings)
 
@@ -160,7 +160,10 @@ class NetworkerViz(Networker, DecompositionViz):
         except:
             pass
 
-        namer = lambda x: x
+        if featurewise:
+            namer = self.DataModel.feature_renamer
+        else:
+            namer = lambda x: x
         labels = dict([(name, namer(name)) for name in graph.nodes()])
         if draw_labels:
             nx.draw_networkx_labels(graph, pos, labels=labels, ax=main_ax)
@@ -246,7 +249,7 @@ class NetworkerViz(Networker, DecompositionViz):
         ax_cov = plt.axes([0.1, 0.1, .2, .15])
         ax_degree = plt.axes([0.9, .8, .2, .15])
 
-        data = self.data_obj.df
+        data = self.DataModel.df
 
         if featurewise:
             node_color_mapper = lambda x: 'r' \
@@ -254,7 +257,7 @@ class NetworkerViz(Networker, DecompositionViz):
             node_size_mapper = lambda x: (data.mean().ix[x] ** 2) + 10
         else:
             node_color_mapper = lambda x: \
-                self.data_obj.sample_metadata.color[x]
+                self.DataModel.sample_metadata.color[x]
             node_size_mapper = lambda x: 75
 
         adjacency_name = "_".join([dict_to_str(adjacency_settings)])
