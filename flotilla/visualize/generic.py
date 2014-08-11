@@ -124,9 +124,11 @@ def _violinplot_data(data, groupby=None, order=None, violinplot_kws=None,
     data += np.random.uniform(0, 0.001, data.shape[0])
 
     inner = 'points' if splicing else 'box'
-    sns.violinplot(data, groupby=groupby, bw=0.1, inner=inner,
-                   color=verified_color, linewidth=0.5, order=verified_order,
-                   ax=ax, positions=positions, **violinplot_kws)
+    if len(data) > 0:
+        sns.violinplot(data, groupby=groupby, bw=0.1, inner=inner,
+                       color=verified_color, linewidth=0.5,
+                       order=verified_order,
+                       ax=ax, positions=positions, **violinplot_kws)
 
     if single_points is not None:
         for group, y in single_points.groupby(groupby):
@@ -188,10 +190,10 @@ def nmf_space_transitions(nmf_space_positions, feature_id,
     ax.set_xlim(0, nmf_space_positions.ix[:, 0].max() * 1.05)
     ax.set_ylim(0, nmf_space_positions.ix[:, 1].max() * 1.05)
 
-    x = [df.ix[phenotype, 0] for phenotype in order]
-    y = [df.ix[phenotype, 1] for phenotype in order]
+    x = [df.ix[phenotype, 0] for phenotype in order if phenotype in df.index]
+    y = [df.ix[phenotype, 1] for phenotype in order if phenotype in df.index]
 
-    ax.plot(x, y, zorder=-1, color='#262626')
+    ax.plot(x, y, zorder=-1, color='#262626', alpha=0.5, linewidth=1)
     ax.legend()
 
     if xlabel is not None:
