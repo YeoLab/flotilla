@@ -1145,14 +1145,17 @@ class Study(StudyFactory):
                 sample_ids, feature_ids, linkage_method=linkage_method,
                 metric=metric, sample_colors=sample_colors, figsize=figsize)
 
-            # def plot_event(self, feature_id, sample_ids=None, ax=None):
-            #     if ax is None:
-            #         fig, ax = plt.subplots()
-            #     self.splicing.plot_event(feature_id, sample_ids,
-            #                              phenotype_groupby=self.sample_id_to_phenotype,
-            #                              phenotype_order=self.metadata.phenotype_order,
-            #                              color=self.phenotype_color_ordered, ax=ax)
-
+    def plot_big_nmf_space_transitions(self, data_type='expression'):
+        if data_type == 'expression':
+            self.expression.plot_big_nmf_space_transitions(
+                self.sample_id_to_phenotype, self.phenotype_transitions,
+                self.phenotype_order, self.phenotype_color_ordered,
+                self.phenotype_to_color, self.phenotype_to_marker)
+        if data_type == 'splicing':
+            self.splicing.plot_big_nmf_space_transitions(
+                self.sample_id_to_phenotype, self.phenotype_transitions,
+                self.phenotype_order, self.phenotype_color_ordered,
+                self.phenotype_to_color, self.phenotype_to_marker)
 
 # Add interactive visualizations
 Study.interactive_classifier = Interactive.interactive_classifier
