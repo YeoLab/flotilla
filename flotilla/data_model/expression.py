@@ -122,6 +122,15 @@ class ExpressionData(BaseData):
             standardize=standardize, metric=metric,
             linkage_method=linkage_method)
 
+    def binify(self, data):
+        data = self._subset_and_standardize(data)
+        data = (data - data.min()) / (data.max() - data.min())
+
+        vmax = data.abs().max().max()
+        vmin = -vmax
+        bins = np.linspace(vmin, vmax, 10)
+        return super(ExpressionData, self).binify(data, bins)
+
 
 class SpikeInData(ExpressionData):
     """Class for Spikein data and associated functions
