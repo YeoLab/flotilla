@@ -18,9 +18,7 @@ from .quality_control import MappingStatsData
 from .splicing import SplicingData, FRACTION_DIFF_THRESH
 from ..visualize.color import blue
 from ..visualize.ipython_interact import Interactive
-from ..visualize.network import NetworkerViz
 from ..external import data_package_url_to_dict, check_if_already_downloaded
-from ..compute.predict import PredictorConfigManager
 
 
 SPECIES_DATA_PACKAGE_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects'
@@ -271,15 +269,11 @@ class Study(StudyFactory):
         super(Study, self).__init__()
 
         sys.stderr.write("initializing study\n")
-        self.predictor_config_manager = predictor_config_manager \
-            if predictor_config_manager is not None \
-            else PredictorConfigManager()
+        # self.predictor_config_manager = predictor_config_manager \
+        #     if predictor_config_manager is not None \
+        #     else PredictorConfigManager()
+        self.predictor_config_manager = None
 
-        # if params_dict is None:
-        #     params_dict = {}
-        # self.update(params_dict)
-        # self.initialize_required_getters()
-        # self.apply_getters()
         self.species = species
         self.gene_ontology_data = gene_ontology_data
 
@@ -295,11 +289,6 @@ class Study(StudyFactory):
         self.sample_id_to_phenotype = self.metadata.sample_id_to_phenotype
         self.sample_id_to_color = self.metadata.sample_id_to_color
         self.phenotype_transitions = self.metadata.phenotype_transitions
-
-        self.default_sample_subsets = \
-            [col for col in self.metadata.data.columns
-             if self.metadata.data[col].dtype == bool]
-        self.default_sample_subsets.insert(0, 'all_samples')
 
         if 'outlier' in self.metadata.data and drop_outliers:
             outliers = self.metadata.data.index[
@@ -330,7 +319,7 @@ class Study(StudyFactory):
                 outliers=outliers,
                 log_base=expression_log_base, pooled=pooled,
                 predictor_config_manager=self.predictor_config_manager)
-            self.expression.networks = NetworkerViz(self.expression)
+            # self.expression.networks = NetworkerViz(self.expression)
             self.default_feature_set_ids.extend(self.expression.feature_subsets
                                                 .keys())
         if splicing_data is not None:
@@ -340,7 +329,7 @@ class Study(StudyFactory):
                 feature_rename_col=splicing_feature_rename_col,
                 outliers=outliers, pooled=pooled,
                 predictor_config_manager=self.predictor_config_manager)
-            self.splicing.networks = NetworkerViz(self.splicing)
+            # self.splicing.networks = NetworkerViz(self.splicing)
 
         if mapping_stats_data is not None:
             self.mapping_stats = MappingStatsData(
@@ -355,6 +344,16 @@ class Study(StudyFactory):
         self.validate_params()
         sys.stderr.write("package validated\n")
 
+    @property
+    def default_sample_subsets(self):
+        default_sample_subsets = [col for col in self.metadata.data.columns
+                                  if self.metadata.data[col].dtype == bool]
+        default_sample_subsets.extend(['~{}'.format(col)
+                                       for col in self.metadata.data.columns
+                                       if
+                                       self.metadata.data[col].dtype == bool])
+        default_sample_subsets.insert(0, 'all_samples')
+        return default_sample_subsets
 
     @property
     def default_feature_subsets(self):
@@ -695,6 +694,10 @@ class Study(StudyFactory):
             List of sample ids in the data
         """
 
+        # IF this is a list of IDs
+        if not isinstance(phenotype_subset, str):
+            return phenotype_subset
+
         #TODO: check this, seems like a strange usage: 'all_samples'.startswith(phenotype_subset)
         if phenotype_subset is None or 'all_samples'.startswith(
                 phenotype_subset):
@@ -821,18 +824,20 @@ class Study(StudyFactory):
             groupby = None
 
         if data_type == "expression":
-            self.expression.networks.draw_graph(
+            return self.expression.networks.draw_graph(
                 sample_ids=sample_ids, feature_ids=feature_ids,
                 sample_id_to_color=self.sample_id_to_color,
                 label_to_color=label_to_color,
                 label_to_marker=label_to_marker, groupby=groupby,
+                featurewise=featurewise,
                 **kwargs)
         elif data_type == "splicing":
-            self.splicing.networks.draw_graph(
+            return self.splicing.networks.draw_graph(
                 sample_ids=sample_ids, feature_ids=feature_ids,
                 sample_id_to_color=self.sample_id_to_color,
                 label_to_color=label_to_color,
                 label_to_marker=label_to_marker, groupby=groupby,
+                featurewise=featurewise,
                 **kwargs)
 
     def plot_study_sample_legend(self):
