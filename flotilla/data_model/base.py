@@ -5,6 +5,7 @@ this, or a child object (like ExpressionData).
 import sys
 
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 from scipy.spatial.distance import pdist, squareform
 import seaborn as sns
@@ -19,7 +20,7 @@ from ..external import link_to_list
 from ..compute.predict import PredictorConfigManager, PredictorDataSetManager
 from ..util import memoize, cached_property
 
-MINIMUM_SAMPLES = 10
+MINIMUM_SAMPLES = 5
 default_predictor_name = "ExtraTreesClassifier"
 
 
@@ -144,6 +145,8 @@ class BaseData(object):
                 if len(feature_set) > 1:
                     feature_subsets[col] = feature_set
             categories = ['tag', 'gene_type', 'splice_type', 'gene_status']
+            filtered = self.feature_data.groupby('gene_type').filter(
+                lambda x: len(x) > 10)
             for category in categories:
                 if category in self.feature_data:
                     feature_subsets.update(
@@ -636,7 +639,9 @@ class BaseData(object):
         return subset, row_linkage, col_linkage
 
     def binify(self, data, bins=None):
-        return binify(data, bins)
+        return binify(data, bins).dropna(how='all', axis=0).dropna(how='all',
+                                                                   axis=1)
+
 
     def _violinplot(self, feature_id, sample_ids=None,
                     phenotype_groupby=None,
@@ -676,7 +681,7 @@ class BaseData(object):
                      phenotype_groupby=None,
                      phenotype_order=None, color=None,
                      phenotype_to_color=None,
-                     phenotype_to_marker=None):
+                     phenotype_to_marker=None, xlabel=None, ylabel=None):
 
         """
         Plot the violinplot of a splicing event (should also show NMF movement)
@@ -689,7 +694,8 @@ class BaseData(object):
         self.plot_nmf_space_transitions(feature_id, groupby=phenotype_groupby,
                                         phenotype_to_color=phenotype_to_color,
                                         phenotype_to_marker=phenotype_to_marker,
-                                        order=phenotype_order, ax=axes[1])
+                                        order=phenotype_order, ax=axes[1],
+                                        xlabel=xlabel, ylabel=ylabel)
         sns.despine()
 
     def nmf_space_positions(self, groupby):
@@ -709,3 +715,43 @@ class BaseData(object):
                               phenotype_to_color,
                               phenotype_to_marker, order,
                               ax, xlabel, ylabel)
+
+    @staticmethod
+    def transition_distances(df, transitions):
+        df.index = df.index.droplevel(0)
+        distances = pd.Series(index=transitions)
+        for transition in transitions:
+            try:
+                phenotype1, phenotype2 = transition
+                norm = np.linalg.norm(df.ix[phenotype2] - df.ix[phenotype1])
+                #             print phenotype1, phenotype2, norm
+                distances[transition] = norm
+            except KeyError:
+                pass
+        return distances
+
+    def big_nmf_space_transitions(self, groupby, phenotype_transitions):
+        nmf_space_positions = self.nmf_space_positions(groupby)
+        nmf_space_transitions = nmf_space_positions.groupby(
+            level=0, axis=0, as_index=False, group_keys=False).apply(
+            self.transition_distances,
+            transitions=phenotype_transitions)
+
+        mean = nmf_space_transitions.mean()
+        std = nmf_space_transitions.std()
+        big_transitions = nmf_space_transitions[
+            nmf_space_transitions > (mean + 2 * std)].dropna(how='all')
+        return big_transitions
+
+    def plot_big_nmf_space_transitions(self, phenotype_groupby,
+                                       phenotype_transitions,
+                                       phenotype_order, color,
+                                       phenotype_to_color,
+                                       phenotype_to_marker):
+        big_transitions = self.big_nmf_space_transitions(phenotype_groupby,
+                                                         phenotype_transitions)
+        for feature_id in big_transitions.index:
+            self.plot_feature(feature_id, phenotype_groupby=phenotype_groupby,
+                              phenotype_order=phenotype_order, color=color,
+                              phenotype_to_color=phenotype_to_color,
+                              phenotype_to_marker=phenotype_to_marker)
