@@ -13,7 +13,8 @@ class MappingStatsData(BaseData):
 
     """
 
-    def __init__(self, data, number_mapped_col, predictor_config_manager=None):
+    def __init__(self, data, number_mapped_col, min_reads=1e6,
+                 predictor_config_manager=None):
         """Constructor for MappingStatsData
 
         Parameters
@@ -31,6 +32,11 @@ class MappingStatsData(BaseData):
         super(MappingStatsData, self).__init__(data,
                                                predictor_config_manager=predictor_config_manager)
         self.number_mapped_col = number_mapped_col
+        self.min_reads = min_reads
+
+    @property
+    def too_few_mapped(self):
+        return self.mapped_reads[self.mapped_reads < self.min_reads]
 
     @property
     def mapped_reads(self):
