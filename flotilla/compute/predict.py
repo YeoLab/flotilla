@@ -15,7 +15,8 @@ from sklearn.preprocessing import LabelEncoder
 from pandas.util.testing import assert_frame_equal, assert_series_equal
 
 from ..util import memoize
-from ..visualize.decomposition import PCAViz, NMFViz
+
+# from ..visualize.decomposition import PCAViz, NMFViz
 
 
 default_classifier = 'ExtraTreesClassifier'
@@ -734,7 +735,8 @@ class PredictorBase(object):
 
 
 class Regressor(PredictorBase):
-    __doc__ = "Regressor for continuous response variables \n" + PredictorBase.__doc__
+    __doc__ = "Regressor for continuous response variables \n" + \
+              PredictorBase.__doc__
 
 
     def __init__(self, data_name, trait_name,
