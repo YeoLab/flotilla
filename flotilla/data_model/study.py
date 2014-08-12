@@ -678,25 +678,25 @@ class Study(StudyFactory):
         """
 
         # IF this is a list of IDs
-        if not isinstance(phenotype_subset, str):
+
+        try:
+            #TODO: check this, seems like a strange usage: 'all_samples'.startswith(phenotype_subset)
+            if phenotype_subset is None or 'all_samples'.startswith(
+                    phenotype_subset):
+                sample_ind = np.ones(self.metadata.data.shape[0],
+                                     dtype=bool)
+            elif phenotype_subset.startswith("~"):
+                sample_ind = ~pd.Series(
+                    self.metadata.data[phenotype_subset.lstrip("~")],
+                    dtype='bool')
+
+            else:
+                sample_ind = pd.Series(
+                    self.metadata.data[phenotype_subset], dtype='bool')
+            sample_ids = self.metadata.data.index[sample_ind]
+            return sample_ids
+        except AttributeError:
             return phenotype_subset
-
-        #TODO: check this, seems like a strange usage: 'all_samples'.startswith(phenotype_subset)
-        if phenotype_subset is None or 'all_samples'.startswith(
-                phenotype_subset):
-            sample_ind = np.ones(self.metadata.data.shape[0],
-                                 dtype=bool)
-
-        elif phenotype_subset.startswith("~"):
-            sample_ind = ~pd.Series(
-                self.metadata.data[phenotype_subset.lstrip("~")],
-                dtype='bool')
-
-        else:
-            sample_ind = pd.Series(
-                self.metadata.data[phenotype_subset], dtype='bool')
-        sample_ids = self.metadata.data.index[sample_ind]
-        return sample_ids
 
     def plot_pca(self, data_type='expression', x_pc=1, y_pc=2,
                  sample_subset=None, feature_subset=None,
