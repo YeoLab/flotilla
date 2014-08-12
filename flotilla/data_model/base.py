@@ -13,6 +13,7 @@ from sklearn.preprocessing import StandardScaler
 
 from ..compute.clustering import Cluster
 from ..compute.infotheory import binify
+# from ..compute.predict import PredictorConfigManager, PredictorDataSetManager
 from ..visualize.decomposition import PCAViz, NMFViz
 from ..visualize.generic import violinplot, nmf_space_transitions
 from ..visualize.network import NetworkerViz
@@ -102,13 +103,13 @@ class BaseData(object):
         else:
             self.feature_renamer = lambda x: shortener(lambda y: y, x)
 
-        if predictor_config_manager is None:
-            self.predictor_config_manager = PredictorConfigManager()
-        else:
-            self.predictor_config_manager = predictor_config_manager
-
-        self.predictor_dataset_manager = PredictorDataSetManager(
-            self.predictor_config_manager)
+        # if predictor_config_manager is None:
+        #     self.predictor_config_manager = PredictorConfigManager()
+        # else:
+        #     self.predictor_config_manager = predictor_config_manager
+        #
+        # self.predictor_dataset_manager = PredictorDataSetManager(
+        #     self.predictor_config_manager)
 
         self.networks = NetworkerViz(self)
 
@@ -155,9 +156,10 @@ class BaseData(object):
                 feature_set = self.feature_data.index[self.feature_data[col]]
                 if len(feature_set) > 1:
                     feature_subsets[col] = feature_set
-            categories = ['tag', 'gene_type', 'splice_type', 'gene_status']
+            categories = [  # 'tag',
+                            'gene_type', 'splice_type']  #, 'gene_status']
             filtered = self.feature_data.groupby('gene_type').filter(
-                lambda x: len(x) > 10)
+                lambda x: len(x) > 20)
             for category in categories:
                 if category in self.feature_data:
                     feature_subsets.update(

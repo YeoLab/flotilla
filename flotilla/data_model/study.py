@@ -16,6 +16,7 @@ from .metadata import MetaData
 from .expression import ExpressionData, SpikeInData
 from .quality_control import MappingStatsData
 from .splicing import SplicingData, FRACTION_DIFF_THRESH
+from ..compute.predict import PredictorConfigManager
 from ..visualize.color import blue
 from ..visualize.ipython_interact import Interactive
 from ..external import data_package_url_to_dict, check_if_already_downloaded, \

@@ -33,7 +33,8 @@ class SplicingData(BaseData):
     def __init__(self, data,
                  metadata=None, binsize=0.1, outliers=None,
                  feature_rename_col=None, excluded_max=0.2, included_min=0.8,
-                 pooled=None, predictor_config_manager=None):
+                 pooled=None, predictor_config_manager=None,
+                 technical_outliers=None):
         """Instantiate a object for percent spliced in (PSI) scores
 
         Parameters
@@ -58,6 +59,7 @@ class SplicingData(BaseData):
         super(SplicingData, self).__init__(
             data, metadata, feature_rename_col=feature_rename_col,
             outliers=outliers, pooled=pooled,
+            technical_outliers=technical_outliers,
             predictor_config_manager=predictor_config_manager)
         sys.stderr.write("done initializing splicing\n")
         self.binsize = binsize
