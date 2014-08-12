@@ -7,6 +7,7 @@ general utilities
 from functools import wraps
 import errno
 import os
+import re
 import signal
 import sys
 import subprocess
@@ -169,3 +170,13 @@ def as_numpy(x):
     except AttributeError:
         # Numpy array
         return x
+
+
+def natural_sort(l):
+    """
+    From
+    http://stackoverflow.com/a/4836734
+    """
+    convert = lambda text: int(text) if text.isdigit() else text.lower()
+    alphanum_key = lambda key: [convert(c) for c in re.split('([0-9]+)', key)]
+    return sorted(l, key=alphanum_key)
