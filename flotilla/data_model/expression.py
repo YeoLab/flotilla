@@ -16,7 +16,8 @@ class ExpressionData(BaseData):
     def __init__(self, data,
                  metadata=None, expression_thresh=_expression_thresh,
                  feature_rename_col=None, outliers=None, log_base=None,
-                 pooled=None, predictor_config_manager=None):
+                 pooled=None,
+                 technical_outliers=None, predictor_config_manager=None):
         """
         Parameters
         ----------
@@ -37,7 +38,8 @@ class ExpressionData(BaseData):
             data, metadata,
             feature_rename_col=feature_rename_col,
             outliers=outliers, pooled=pooled,
-            predictor_config_manager=predictor_config_manager)
+            predictor_config_manager=predictor_config_manager,
+            technical_outliers=technical_outliers)
         self.data_type = 'expression'
 
         sys.stderr.write("done initializing expression\n")
