@@ -230,7 +230,7 @@ def check_if_already_downloaded(url, download_dir=FLOTILLA_DOWNLOAD_DIR):
     return filename
 
 
-def make_study_datapackage(name, experiment_design_data,
+def make_study_datapackage(name, metadata,
                            expression_data=None, splicing_data=None,
                            spikein_data=None,
                            mapping_stats_data=None,
@@ -261,7 +261,7 @@ def make_study_datapackage(name, experiment_design_data,
     if species is not None:
         datapackage['species'] = species
 
-    resources = {'metadata': experiment_design_data,
+    resources = {'metadata': metadata,
                  'expression': expression_data,
                  'splicing': splicing_data,
                  'spikein': spikein_data,
