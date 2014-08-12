@@ -318,9 +318,9 @@ class Study(StudyFactory):
                 mapping_stats_number_mapped_col,
                 predictor_config_manager=self.predictor_config_manager,
                 min_reads=mapping_stats_min_reads)
-            technical_outliers = self.mapping_stats.too_few_mapped
+            self.technical_outliers = self.mapping_stats.too_few_mapped
         else:
-            technical_outliers = None
+            self.technical_outliers = None
 
         if expression_data is not None:
             sys.stderr.write("loading expression data\n")
@@ -331,7 +331,7 @@ class Study(StudyFactory):
                 outliers=outliers,
                 log_base=expression_log_base, pooled=pooled,
                 predictor_config_manager=self.predictor_config_manager,
-                technical_outliers=technical_outliers)
+                technical_outliers=self.technical_outliers)
             # self.expression.networks = NetworkerViz(self.expression)
             self.default_feature_set_ids.extend(self.expression.feature_subsets
                                                 .keys())
@@ -342,13 +342,13 @@ class Study(StudyFactory):
                 feature_rename_col=splicing_feature_rename_col,
                 outliers=outliers, pooled=pooled,
                 predictor_config_manager=self.predictor_config_manager,
-                technical_outliers=technical_outliers)
+                technical_outliers=self.technical_outliers)
             # self.splicing.networks = NetworkerViz(self.splicing)
 
         if spikein_data is not None:
             self.spikein = SpikeInData(
                 spikein_data, spikein_feature_data,
-                technical_outliers=technical_outliers,
+                technical_outliers=self.technical_outliers,
                 predictor_config_manager=self.predictor_config_manager)
         sys.stderr.write("subclasses initialized\n")
         self.validate_params()
@@ -375,34 +375,6 @@ class Study(StudyFactory):
                 continue
             feature_subsets[name] = data_type.feature_subsets
         return feature_subsets
-
-    # @property
-    # def sample_id_to_color(self):
-    #     """If "color" is a column in the metadata data, return a
-    #     dict of that {sample_id: color} mapping, else try to create it using
-    #     the "celltype" columns, else just return a dict mapping to a default
-    #     color (blue)
-    #     """
-    #     if 'color' in self.metadata.data:
-    #         return self.metadata.data.color.to_dict()
-    #     elif 'celltype' in self.metadata.data:
-    #         grouped = self.metadata.data.groupby('celltype')
-    #         palette = iter(sns.color_palette(n_colors=grouped.ngroups + 1))
-    #         color = grouped.apply(lambda x: mplcolors.rgb2hex(palette.next()))
-    #         color.name = 'color'
-    #         self.metadata.data = self.metadata.data.join(
-    #             color, on='celltype')
-    #
-    #         return self.metadata.data.color.to_dict()
-    #     else:
-    #         return defaultdict(lambda x: blue)
-
-    # @property
-    # def sample_id_to_phenotype(self):
-    #     """If "celltype" is a column in the metadata data, return a
-    #     dict of that {sample_id: celltype} mapping.
-    #     """
-    #     return self.metadata.sample_id_to_phenotype
 
     @classmethod
     def from_datapackage_url(
