@@ -86,8 +86,8 @@ class BaseData(object):
         if self.feature_data is not None and self.feature_rename_col is not \
                 None:
             def feature_renamer(x):
-                if x in self.feature_data[feature_rename_col].dropna().index:
-                    rename = self.feature_data[feature_rename_col][x]
+                if x in self.feature_renamer_series.index:
+                    rename = self.feature_renamer_series[x]
                     if isinstance(rename, pd.Series):
                         return rename.values[0]
                     # elif not isinstance(rename, float) and ':' in x:
@@ -114,14 +114,35 @@ class BaseData(object):
         self.networks = NetworkerViz(self)
 
     @property
-    def renamed_to_feature_id(self):
-        renamed_to_feature_id = pd.Series(
-            self.data.columns,
-            index=self.data.columns.map(self.feature_renamer))
-        renamed_to_feature_id = self.renamed_to_feature_id.dropna()
-        renamed_to_feature_id = self.renamed_to_feature_id[~pd.isnull(
-            self.renamed_to_feature_id.index)]
-        return renamed_to_feature_id
+    def feature_renamer_series(self):
+        return self.feature_data[self.feature_rename_col].dropna()
+
+    def maybe_renamed_to_feature_id(self, feature_id):
+        """To be able to give a simple gene name, e.g. "RBFOX2" and get the
+        official ENSG ids or MISO
+
+        Parameters
+        ----------
+        feature_id : str
+            The
+
+        Returns
+        -------
+        feature_id : str or list-like
+            Valid Feature ID(s) that can be used to subset self.data
+        """
+        if feature_id in self.feature_renamer_series.values:
+            feature_ids = self.feature_renamer_series[
+                self.feature_renamer_series ==
+                feature_id].index
+            return self.data.columns.intersection(feature_ids)
+        elif feature_id in self.data.columns:
+            return feature_id
+        else:
+            raise ValueError('{} is not a valid feature identifier (it may '
+                             'not have been measured in this dataset!)'
+                             .format(
+                feature_id))
 
     @property
     def _var_cut(self):
@@ -161,7 +182,7 @@ class BaseData(object):
             filtered = self.feature_data.groupby('gene_type').filter(
                 lambda x: len(x) > 20)
             for category in categories:
-                if category in self.feature_data:
+                if category in filtered:
                     feature_subsets.update(
                         self.feature_data.groupby(category).groups)
         feature_subsets['all_genes'] = self.data.columns
@@ -226,24 +247,7 @@ class BaseData(object):
         """Jensen-Shannon divergence showing most varying measurements within a
         celltype and between celltypes
         """
-        raise NotImplementedError
-
-    @property
-    def feature_renamer(self):
-        return self._feature_renamer
-
-    @feature_renamer.setter
-    def feature_renamer(self, renamer):
-        self._feature_renamer = renamer
-
-    def maybe_get_renamed(self, renamed):
-        try:
-            return self.renamed_to_feature_id[renamed]
-        except KeyError:
-            if renamed in self.data.columns:
-                return renamed
-            else:
-                raise
+        raise NotImplementedErro
 
     # TODO.md: Specify dtypes in docstring
     def plot_classifier(self, trait, sample_ids=None, feature_ids=None,
@@ -663,7 +667,7 @@ class BaseData(object):
         """For compatiblity across data types, can specify _violinplot
         """
         singles, pooled = self._subset_singles_and_pooled(
-            self.data, self.pooled, sample_ids, [feature_id])
+            self.data, self.pooled, sample_ids, feature_ids=[feature_id])
 
         outliers = self._subset(self.outliers, feature_ids=[feature_id])
 
@@ -699,17 +703,24 @@ class BaseData(object):
         """
         Plot the violinplot of a splicing event (should also show NMF movement)
         """
-        fig, axes = plt.subplots(ncols=2, figsize=(8, 4))
-        self._violinplot(feature_id, sample_ids=sample_ids,
-                         phenotype_groupby=phenotype_groupby,
-                         phenotype_order=phenotype_order, ax=axes[0],
-                         color=color)
-        self.plot_nmf_space_transitions(feature_id, groupby=phenotype_groupby,
-                                        phenotype_to_color=phenotype_to_color,
-                                        phenotype_to_marker=phenotype_to_marker,
-                                        order=phenotype_order, ax=axes[1],
-                                        xlabel=xlabel, ylabel=ylabel)
-        sns.despine()
+        feature_ids = self.maybe_renamed_to_feature_id(feature_id)
+
+        if not isinstance(feature_ids, pd.Index):
+            feature_ids = [feature_id]
+
+        for feature_id in feature_ids:
+            fig, axes = plt.subplots(ncols=2, figsize=(8, 4))
+            self._violinplot(feature_id, sample_ids=sample_ids,
+                             phenotype_groupby=phenotype_groupby,
+                             phenotype_order=phenotype_order, ax=axes[0],
+                             color=color)
+            self.plot_nmf_space_transitions(feature_id,
+                                            groupby=phenotype_groupby,
+                                            phenotype_to_color=phenotype_to_color,
+                                            phenotype_to_marker=phenotype_to_marker,
+                                            order=phenotype_order, ax=axes[1],
+                                            xlabel=xlabel, ylabel=ylabel)
+            sns.despine()
 
     def nmf_space_positions(self, groupby):
         df = self.data.groupby(groupby).apply(

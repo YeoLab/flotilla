@@ -145,7 +145,9 @@ class SpikeInData(ExpressionData):
 
     """
 
-    def __init__(self, data, feature_data=None, predictor_config_manager=None):
+    def __init__(self, data, feature_data=None,
+                 predictor_config_manager=None,
+                 technical_outliers=None):
         """Constructor for
 
         Parameters
@@ -161,6 +163,7 @@ class SpikeInData(ExpressionData):
 
         """
         super(SpikeInData, self).__init__(data, feature_data,
+                                          technical_outliers=technical_outliers,
                                           predictor_config_manager=predictor_config_manager)
 
         # def spikeins_violinplot(self):
