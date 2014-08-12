@@ -271,9 +271,9 @@ class Study(StudyFactory):
         super(Study, self).__init__()
 
         sys.stderr.write("initializing study\n")
-        # self.predictor_config_manager = predictor_config_manager \
-        #     if predictor_config_manager is not None \
-        #     else PredictorConfigManager()
+        self.predictor_config_manager = predictor_config_manager \
+            if predictor_config_manager is not None \
+            else PredictorConfigManager()
         self.predictor_config_manager = None
 
         self.species = species

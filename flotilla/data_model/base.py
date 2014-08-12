@@ -102,15 +102,13 @@ class BaseData(object):
         else:
             self.feature_renamer = lambda x: shortener(lambda y: y, x)
 
+        if predictor_config_manager is None:
+            self.predictor_config_manager = PredictorConfigManager()
+        else:
+            self.predictor_config_manager = predictor_config_manager
 
-
-        # if predictor_config_manager is None:
-        #     self.predictor_config_manager = PredictorConfigManager()
-        # else:
-        #     self.predictor_config_manager = predictor_config_manager
-        #
-        # self.predictor_dataset_manager = PredictorDataSetManager(
-        #     self.predictor_config_manager)
+        self.predictor_dataset_manager = PredictorDataSetManager(
+            self.predictor_config_manager)
 
         self.networks = NetworkerViz(self)
 
