@@ -18,7 +18,8 @@ from .quality_control import MappingStatsData
 from .splicing import SplicingData, FRACTION_DIFF_THRESH
 from ..visualize.color import blue
 from ..visualize.ipython_interact import Interactive
-from ..external import data_package_url_to_dict, check_if_already_downloaded
+from ..external import data_package_url_to_dict, check_if_already_downloaded, \
+    make_study_datapackage
 
 
 SPECIES_DATA_PACKAGE_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects'
@@ -178,6 +179,7 @@ class Study(StudyFactory):
                  mapping_stats_data=None,
                  mapping_stats_number_mapped_col="Uniquely mapped reads "
                                                  "number",
+                 mapping_stats_min_reads=1e6,
                  spikein_data=None,
                  spikein_feature_data=None,
                  drop_outliers=True, species=None,
@@ -310,6 +312,16 @@ class Study(StudyFactory):
         else:
             pooled = None
 
+        if mapping_stats_data is not None:
+            self.mapping_stats = MappingStatsData(
+                mapping_stats_data,
+                mapping_stats_number_mapped_col,
+                predictor_config_manager=self.predictor_config_manager,
+                min_reads=mapping_stats_min_reads)
+            technical_outliers = self.mapping_stats.too_few_mapped
+        else:
+            technical_outliers = None
+
         if expression_data is not None:
             sys.stderr.write("loading expression data\n")
             self.expression = ExpressionData(
@@ -318,7 +330,8 @@ class Study(StudyFactory):
                 feature_rename_col=expression_feature_rename_col,
                 outliers=outliers,
                 log_base=expression_log_base, pooled=pooled,
-                predictor_config_manager=self.predictor_config_manager)
+                predictor_config_manager=self.predictor_config_manager,
+                technical_outliers=technical_outliers)
             # self.expression.networks = NetworkerViz(self.expression)
             self.default_feature_set_ids.extend(self.expression.feature_subsets
                                                 .keys())
@@ -328,18 +341,15 @@ class Study(StudyFactory):
                 splicing_data, splicing_feature_data,
                 feature_rename_col=splicing_feature_rename_col,
                 outliers=outliers, pooled=pooled,
-                predictor_config_manager=self.predictor_config_manager)
+                predictor_config_manager=self.predictor_config_manager,
+                technical_outliers=technical_outliers)
             # self.splicing.networks = NetworkerViz(self.splicing)
 
-        if mapping_stats_data is not None:
-            self.mapping_stats = MappingStatsData(
-                mapping_stats_data,
-                mapping_stats_number_mapped_col,
-                predictor_config_manager=self.predictor_config_manager)
-
         if spikein_data is not None:
-            self.spikein = SpikeInData(spikein_data, spikein_feature_data,
-                                       predictor_config_manager=self.predictor_config_manager)
+            self.spikein = SpikeInData(
+                spikein_data, spikein_feature_data,
+                technical_outliers=technical_outliers,
+                predictor_config_manager=self.predictor_config_manager)
         sys.stderr.write("subclasses initialized\n")
         self.validate_params()
         sys.stderr.write("package validated\n")
@@ -1161,6 +1171,15 @@ class Study(StudyFactory):
                 self.sample_id_to_phenotype, self.phenotype_transitions,
                 self.phenotype_order, self.phenotype_color_ordered,
                 self.phenotype_to_color, self.phenotype_to_marker)
+
+
+    def save(self, name):
+        return make_study_datapackage(name, self.metadata.data,
+                                      self.expression.data,
+                                      self.splicing.data,
+                                      self.spikein.data,
+                                      self.mapping_stats.data)
+
 
 # Add interactive visualizations
 Study.interactive_classifier = Interactive.interactive_classifier

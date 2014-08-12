@@ -39,6 +39,7 @@ class BaseData(object):
     def __init__(self, data=None, metadata=None,
                  species=None, feature_rename_col=None, outliers=None,
                  min_samples=MINIMUM_SAMPLES, pooled=None,
+                 technical_outliers=None,
                  predictor_config_manager=None):
         """Base class for biological data measurements
 
@@ -51,6 +52,11 @@ class BaseData(object):
             splicing "Percent-spliced-in" (PSI) values, or RNA editing scores.
         """
         self.data = data
+
+        if technical_outliers is not None:
+            good_samples = ~self.data.index.isin(technical_outliers)
+            self.data = self.data.ix[good_samples]
+
         if pooled is not None:
             self.pooled = self.data.ix[pooled]
 
