@@ -9,10 +9,11 @@ import warnings
 from IPython.html.widgets import interact
 import matplotlib.pyplot as plt
 
+from ..compute.predict import default_classifier
 from ..visualize.color import red
 from .network import NetworkerViz
 from .color import str_to_color
-from ..compute.predict import default_classifier
+from ..util import natural_sort
 
 
 class Interactive(object):
@@ -64,8 +65,10 @@ class Interactive(object):
             except AttributeError:
                 pass
 
-        # Cast to "set" to get rid of duplicates, then back to list
-        feature_subsets = list(sorted(list(set(feature_subsets))))
+        # Cast to "set" to get rid of duplicates, then back to list because you
+        # can't sort a set, then back to list after sorting because you get
+        # an iterator... yeah ....
+        feature_subsets = list(natural_sort(list(set(feature_subsets))))
 
         # Make sure "variant" is first because all datasets have that
         feature_subsets.pop(feature_subsets.index('variant'))
