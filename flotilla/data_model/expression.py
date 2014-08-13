@@ -56,6 +56,11 @@ class ExpressionData(BaseData):
         # self.original_data
         self.expression_thresh = expression_thresh
         self.data = self.log_data[self.log_data > self.expression_thresh]
+        if outliers is not None:
+            self.outliers = self.outliers[
+                self.outliers > self.expression_thresh]
+        if pooled is not None:
+            self.pooled = self.pooled[self.pooled > self.expression_thresh]
         self.default_feature_sets.extend(self.feature_subsets.keys())
 
     def reduce(self, sample_ids=None, feature_ids=None,
