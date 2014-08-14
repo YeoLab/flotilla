@@ -9,7 +9,6 @@ import seaborn as sns
 
 from .base import BaseData
 from ..compute.splicing import Modalities
-from ..visualize.decomposition import PCAViz
 from ..visualize.color import purples
 from ..visualize.splicing import ModalitiesViz
 from ..util import memoize
@@ -131,38 +130,38 @@ class SplicingData(BaseData):
         return super(SplicingData, self).binify(data, self.bins)
 
 
-    def reduce(self, sample_ids=None, feature_ids=None,
-               featurewise=False, reducer=PCAViz,
-               standardize=False, title='',
-               reducer_kwargs=None, groupby=None,
-               label_to_color=None, label_to_marker=None,
-               order=None, color=None, binify=False,
-               x_pc='pc_1', y_pc='pc_1'):
-        """make and cache a reduced dimensionality representation of data
-
-        Default is PCAViz because NMFviz only works for binned data
-        """
-        bins = self.bins if binify else None
-        return super(SplicingData, self).reduce(self.data,
-                                                sample_ids=sample_ids,
-                                                feature_ids=feature_ids,
-                                                featurewise=featurewise,
-                                                reducer=reducer,
-                                                standardize=standardize,
-                                                title=title,
-                                                reducer_kwargs=reducer_kwargs,
-                                                groupby=groupby,
-                                                label_to_color=label_to_color,
-                                                label_to_marker=label_to_marker,
-                                                order=order, color=color,
-                                                bins=bins, x_pc=x_pc,
-                                                y_pc=y_pc)
+    # def reduce(self, sample_ids=None, feature_ids=None,
+    #            featurewise=False, reducer=PCAViz,
+    #            standardize=False, title='',
+    #            reducer_kwargs=None, groupby=None,
+    #            label_to_color=None, label_to_marker=None,
+    #            order=None, color=None, binify=False,
+    #            x_pc='pc_1', y_pc='pc_1'):
+    #     """make and cache a reduced dimensionality representation of data
+    #
+    #     Default is PCAViz because NMFviz only works for binned data
+    #     """
+    #     bins = self.bins if binify else None
+    #     return super(SplicingData, self).reduce(self.data,
+    #                                             sample_ids=sample_ids,
+    #                                             feature_ids=feature_ids,
+    #                                             featurewise=featurewise,
+    #                                             reducer=reducer,
+    #                                             standardize=standardize,
+    #                                             title=title,
+    #                                             reducer_kwargs=reducer_kwargs,
+    #                                             groupby=groupby,
+    #                                             label_to_color=label_to_color,
+    #                                             label_to_marker=label_to_marker,
+    #                                             order=order, color=color,
+    #                                             bins=bins, x_pc=x_pc,
+    #                                             y_pc=y_pc)
 
 
     def plot_modalities_reduced(self, sample_ids=None, feature_ids=None,
                                 ax=None, title=None,
                                 bootstrapped=False, bootstrapped_kws=None):
-        """Plot modality assignments in NMF space (option for lavalamp?)
+        """Plot modality assignments in DataFrameNMF space (option for lavalamp?)
 
         Parameters
         ----------

@@ -7,7 +7,6 @@ import sys
 import numpy as np
 
 from .base import BaseData
-from ..visualize.decomposition import PCAViz
 
 
 class ExpressionData(BaseData):
@@ -63,44 +62,44 @@ class ExpressionData(BaseData):
             self.pooled = self.pooled[self.pooled > self.expression_thresh]
         self.default_feature_sets.extend(self.feature_subsets.keys())
 
-    def reduce(self, sample_ids=None, feature_ids=None,
-               featurewise=False, reducer=PCAViz, standardize=True,
-               title='', reducer_kwargs=None, color=None, groupby=None,
-               label_to_color=None, label_to_marker=None,
-               order=None, x_pc='pc_1', y_pc='pc_1'):
-        """Make and memoize a reduced dimensionality representation of data
-
-        Parameters
-        ----------
-        sample_ids : None or list of strings
-            If None, all sample ids will be used, else only the sample ids
-            specified
-        feature_ids : None or list of strings
-            If None, all features will be used, else only the features
-            specified
-        featurewise : bool
-            Whether or not to use the features as the "samples", e.g. if you
-            want to reduce the features in to "sample-space" instead of
-            reducing the samples into "feature-space"
-        standardize : bool
-            Whether or not to "whiten" (make all variables uncorrelated) and
-            mean-center via sklearn.preprocessing.StandardScaler
-        title : str
-            Title of the plot
-        reducer_kwargs : dict
-            Any additional arguments to send to the reducer
-
-        Returns
-        -------
-        reducer_object : flotilla.compute.reduce.ReducerViz
-            A ready-to-plot object containing the reduced space
-        """
-        return super(ExpressionData, self).reduce(
-            self.data, sample_ids=sample_ids, feature_ids=feature_ids,
-            featurewise=featurewise, reducer=reducer, standardize=standardize,
-            title=title, reducer_kwargs=reducer_kwargs, groupby=groupby,
-            label_to_color=label_to_color, label_to_marker=label_to_marker,
-            order=order, color=color, x_pc=x_pc, y_pc=y_pc)
+    # def reduce(self, sample_ids=None, feature_ids=None,
+    #            featurewise=False, reducer=PCAViz, standardize=True,
+    #            title='', reducer_kwargs=None, color=None, groupby=None,
+    #            label_to_color=None, label_to_marker=None,
+    #            order=None, x_pc='pc_1', y_pc='pc_1'):
+    #     """Make and memoize a reduced dimensionality representation of data
+    #
+    #     Parameters
+    #     ----------
+    #     sample_ids : None or list of strings
+    #         If None, all sample ids will be used, else only the sample ids
+    #         specified
+    #     feature_ids : None or list of strings
+    #         If None, all features will be used, else only the features
+    #         specified
+    #     featurewise : bool
+    #         Whether or not to use the features as the "samples", e.g. if you
+    #         want to reduce the features in to "sample-space" instead of
+    #         reducing the samples into "feature-space"
+    #     standardize : bool
+    #         Whether or not to "whiten" (make all variables uncorrelated) and
+    #         mean-center via sklearn.preprocessing.StandardScaler
+    #     title : str
+    #         Title of the plot
+    #     reducer_kwargs : dict
+    #         Any additional arguments to send to the reducer
+    #
+    #     Returns
+    #     -------
+    #     reducer_object : flotilla.compute.reduce.ReducerViz
+    #         A ready-to-plot object containing the reduced space
+    #     """
+    #     return super(ExpressionData, self).reduce(
+    #         self.data, sample_ids=sample_ids, feature_ids=feature_ids,
+    #         featurewise=featurewise, reducer=reducer, standardize=standardize,
+    #         title=title, reducer_kwargs=reducer_kwargs, groupby=groupby,
+    #         label_to_color=label_to_color, label_to_marker=label_to_marker,
+    #         order=order, color=color, x_pc=x_pc, y_pc=y_pc)
 
     def twoway(self, sample1, sample2, **kwargs):
         from ..visualize.expression import TwoWayScatterViz

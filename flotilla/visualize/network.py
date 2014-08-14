@@ -47,9 +47,9 @@ class NetworkerViz(Networker, DecompositionViz):
         sample_ids : list of str, or None
             Sample ids to subset the data. If None, all features will be used.
         x_pc : str
-            x component for PCA, default "pc_1"
+            x component for DataFramePCA, default "pc_1"
         y_pc :
-            y component for PCA, default "pc_2"
+            y component for DataFramePCA, default "pc_2"
         n_pcs : int???
             n components to use for cells' covariance calculation
         cov_std_cut : float??
@@ -211,9 +211,9 @@ class NetworkerViz(Networker, DecompositionViz):
         sample_ids : list of str, or None
             Sample ids to subset the data. If None, all features will be used.
         x_pc : str
-            x component for PCA, default "pc_1"
+            x component for DataFramePCA, default "pc_1"
         y_pc :
-            y component for PCA, default "pc_2"
+            y component for DataFramePCA, default "pc_2"
         n_pcs : int???
             n components to use for cells' covariance calculation
         cov_std_cut : float??

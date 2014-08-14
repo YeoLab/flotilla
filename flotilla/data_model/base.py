@@ -11,10 +11,11 @@ from scipy.spatial.distance import pdist, squareform
 import seaborn as sns
 from sklearn.preprocessing import StandardScaler
 
+from ..compute.decomposition import DataFramePCA, DataFrameNMF
 from ..compute.clustering import Cluster
 from ..compute.infotheory import binify
-from ..compute.predict import PredictorConfigManager, PredictorDataSetManager
-from ..visualize.decomposition import PCAViz, NMFViz
+# from ..compute.predict import PredictorConfigManager, PredictorDataSetManager
+from ..visualize.decomposition import DecompositionViz
 from ..visualize.generic import violinplot, nmf_space_transitions
 from ..visualize.network import NetworkerViz
 from ..visualize.predict import ClassifierViz
@@ -103,13 +104,13 @@ class BaseData(object):
         else:
             self.feature_renamer = lambda x: shortener(lambda y: y, x)
 
-        if predictor_config_manager is None:
-            self.predictor_config_manager = PredictorConfigManager()
-        else:
-            self.predictor_config_manager = predictor_config_manager
-
-        self.predictor_dataset_manager = PredictorDataSetManager(
-            self.predictor_config_manager)
+        # if predictor_config_manager is None:
+        #     self.predictor_config_manager = PredictorConfigManager()
+        # else:
+        #     self.predictor_config_manager = predictor_config_manager
+        #
+        # self.predictor_dataset_manager = PredictorDataSetManager(
+        #     self.predictor_config_manager)
 
         self.networks = NetworkerViz(self)
 
@@ -247,7 +248,7 @@ class BaseData(object):
         """Jensen-Shannon divergence showing most varying measurements within a
         celltype and between celltypes
         """
-        raise NotImplementedErro
+        raise NotImplementedError
 
     # TODO.md: Specify dtypes in docstring
     def plot_classifier(self, trait, sample_ids=None, feature_ids=None,
@@ -296,11 +297,12 @@ class BaseData(object):
 
     def plot_dimensionality_reduction(self, x_pc=1, y_pc=2,
                                       sample_ids=None, feature_ids=None,
-                                      featurewise=False, reducer=PCAViz,
+                                      featurewise=False, reducer=DataFramePCA,
                                       label_to_color=None,
                                       label_to_marker=None,
                                       groupby=None, order=None, color=None,
                                       reduce_kwargs=None,
+                                      title='',
                                       **plotting_kwargs):
         """Principal component-like analysis of measurements
 
@@ -333,20 +335,24 @@ class BaseData(object):
         """
         reduce_kwargs = {} if reduce_kwargs is None else reduce_kwargs
 
-        pca = self.reduce(sample_ids, feature_ids,
-                          featurewise=featurewise, reducer=reducer,
-                          label_to_color=label_to_color,
-                          label_to_marker=label_to_marker,
-                          groupby=groupby, order=order, color=color,
-                          x_pc="pc_" + str(x_pc),
-                          y_pc="pc_" + str(y_pc),
-                          **reduce_kwargs)
-        pca(show_vectors=True,
-            **plotting_kwargs)
-        return pca
+        reduced = self.reduce(sample_ids, feature_ids,
+                              featurewise=featurewise,
+                              reducer=reducer, **reduce_kwargs)
+        visualized = DecompositionViz(reduced.reduced_space,
+                                      reduced.components_,
+                                      self,
+                                      label_to_color=label_to_color,
+                                      label_to_marker=label_to_marker,
+                                      groupby=groupby, order=order, color=color,
+                                      x_pc="pc_" + str(x_pc),
+                                      y_pc="pc_" + str(y_pc))
+        # pca(show_vectors=True,
+        #     **plotting_kwargs)
+        return visualized(title=title, **plotting_kwargs)
 
     def plot_pca(self, **kwargs):
-        return self.plot_dimensionality_reduction(reducer=PCAViz, **kwargs)
+        return self.plot_dimensionality_reduction(reducer=DataFramePCA,
+                                                  **kwargs)
 
     @property
     def min_samples(self):
@@ -507,15 +513,11 @@ class BaseData(object):
                                     figsize=figsize)
 
     @memoize
-    def reduce(self, data, sample_ids, feature_ids,
+    def reduce(self, sample_ids, feature_ids,
                featurewise=False,
-               reducer=PCAViz,
+               reducer=DataFramePCA,
                standardize=True,
-               title='',
-               reducer_kwargs=None,
-               color=None,
-               groupby=None, label_to_color=None, label_to_marker=None,
-               order=None, bins=None, x_pc='pc_1', y_pc='y_pc'):
+               reducer_kwargs=None, bins=None):
         """Make and memoize a reduced dimensionality representation of data
 
         Parameters
@@ -547,9 +549,8 @@ class BaseData(object):
         """
 
         reducer_kwargs = {} if reducer_kwargs is None else reducer_kwargs
-        reducer_kwargs['title'] = title
 
-        subset, means = self._subset_and_standardize(data,
+        subset, means = self._subset_and_standardize(self.data,
                                                      sample_ids, feature_ids,
                                                      standardize,
                                                      return_means=True)
@@ -560,14 +561,7 @@ class BaseData(object):
         if featurewise:
             subset = subset.T
 
-        reducer_object = reducer(subset,
-                                 feature_renamer=self.feature_renamer,
-                                 label_to_color=label_to_color,
-                                 label_to_marker=label_to_marker,
-                                 groupby=groupby, order=order,
-                                 data_type=self.data_type, color=color,
-                                 DataModel=self,
-                                 **reducer_kwargs)
+        reducer_object = reducer(subset, **reducer_kwargs)
         reducer_object.means = means
         return reducer_object
 
@@ -682,7 +676,7 @@ class BaseData(object):
     @cached_property()
     def nmf(self):
         data = self._subset(self.data)
-        return NMFViz(self.binify(data).T, n_components=2)
+        return DataFrameNMF(self.binify(data).T, n_components=2)
 
     @memoize
     def binned_nmf_reduced(self, sample_ids=None, feature_ids=None):
@@ -701,25 +695,28 @@ class BaseData(object):
                      phenotype_to_marker=None, xlabel=None, ylabel=None):
 
         """
-        Plot the violinplot of a splicing event (should also show NMF movement)
+        Plot the violinplot of a splicing event (should also show DataFrameNMF movement)
         """
         feature_ids = self.maybe_renamed_to_feature_id(feature_id)
 
         if not isinstance(feature_ids, pd.Index):
             feature_ids = [feature_id]
 
+        ncols = 2 if self.data_type == 'splicing' else 1
+
         for feature_id in feature_ids:
-            fig, axes = plt.subplots(ncols=2, figsize=(8, 4))
+            fig, axes = plt.subplots(ncols=ncols, figsize=(4 * ncols, 4))
             self._violinplot(feature_id, sample_ids=sample_ids,
                              phenotype_groupby=phenotype_groupby,
                              phenotype_order=phenotype_order, ax=axes[0],
                              color=color)
-            self.plot_nmf_space_transitions(feature_id,
-                                            groupby=phenotype_groupby,
-                                            phenotype_to_color=phenotype_to_color,
-                                            phenotype_to_marker=phenotype_to_marker,
-                                            order=phenotype_order, ax=axes[1],
-                                            xlabel=xlabel, ylabel=ylabel)
+            if self.data_type == 'splicing':
+                self.plot_nmf_space_transitions(
+                    feature_id, groupby=phenotype_groupby,
+                    phenotype_to_color=phenotype_to_color,
+                    phenotype_to_marker=phenotype_to_marker,
+                    order=phenotype_order, ax=axes[1],
+                    xlabel=xlabel, ylabel=ylabel)
             sns.despine()
 
     def nmf_space_positions(self, groupby):

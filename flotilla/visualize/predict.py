@@ -119,12 +119,6 @@ class PredictorBaseViz(PredictorBase):
         return zz
 
     def do_pca(self, **plotting_kwargs):
-
-        """Plot PCA decomposition of data
-        ax : matplotlib.axes.Axes
-            ax to plot on. if None: plt.gca()
-        """
-
         # assert trait in self.traits
         assert self.has_been_fit
         assert self.has_been_scored

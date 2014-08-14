@@ -203,7 +203,7 @@ class Study(StudyFactory):
         sample_metadata : pandas.DataFrame
             Only required parameter. Samples as the index, with features as
             columns. If there is a column named "color", this will be used as
-            the color for that sample in PCA and other plots. If there is no
+            the color for that sample in DataFramePCA and other plots. If there is no
             color but there is a column named "celltype", then colors for
             each of the different celltypes will be auto-created.
         expression_data : pandas.DataFrame
@@ -703,7 +703,7 @@ class Study(StudyFactory):
                  title='', featurewise=False,
                  show_point_labels=False, reduce_kwargs=None,
                  **kwargs):
-        """Performs PCA on both expression and splicing study_data
+        """Performs DataFramePCA on both expression and splicing study_data
 
         Parameters
         ----------
@@ -1021,7 +1021,7 @@ class Study(StudyFactory):
                     bootstrapped_kws=bootstrapped_kws)
 
     def plot_event(self, feature_id, sample_subset=None):
-        """Plot the violinplot and NMF transitions of a splicing event
+        """Plot the violinplot and DataFrameNMF transitions of a splicing event
         """
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
         self.splicing.plot_event(feature_id, sample_ids,
