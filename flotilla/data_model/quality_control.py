@@ -1,6 +1,9 @@
 from .base import BaseData
 
 
+MIN_READS = 2e6
+
+
 class MappingStatsData(BaseData):
     """Constructor for mapping statistics data from STAR
 
@@ -13,7 +16,7 @@ class MappingStatsData(BaseData):
 
     """
 
-    def __init__(self, data, number_mapped_col, min_reads=1e6,
+    def __init__(self, data, number_mapped_col, min_reads=MIN_READS,
                  predictor_config_manager=None):
         """Constructor for MappingStatsData
 
@@ -36,7 +39,7 @@ class MappingStatsData(BaseData):
 
     @property
     def too_few_mapped(self):
-        return self.mapped_reads[self.mapped_reads < self.min_reads]
+        return self.mapped_reads.index[self.mapped_reads < self.min_reads]
 
     @property
     def mapped_reads(self):
