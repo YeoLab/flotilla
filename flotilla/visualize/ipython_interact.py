@@ -9,11 +9,16 @@ import warnings
 from IPython.html.widgets import interact
 import matplotlib.pyplot as plt
 
-from ..compute.predict import default_classifier
+
+# from ..compute.predict import default_classifier
 from ..visualize.color import red
 from .network import NetworkerViz
 from .color import str_to_color
 from ..util import natural_sort
+
+default_classifier = 'ExtraTreesClassifier'
+default_regressor = 'ExtraTreesRegressor'
+default_score_coefficient = 2
 
 
 class Interactive(object):
