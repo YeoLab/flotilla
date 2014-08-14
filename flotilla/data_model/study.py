@@ -14,7 +14,7 @@ import pandas as pd
 
 from .metadata import MetaData
 from .expression import ExpressionData, SpikeInData
-from .quality_control import MappingStatsData
+from .quality_control import MappingStatsData, MIN_READS
 from .splicing import SplicingData, FRACTION_DIFF_THRESH
 from ..compute.predict import PredictorConfigManager
 from ..visualize.color import blue
@@ -180,7 +180,7 @@ class Study(StudyFactory):
                  mapping_stats_data=None,
                  mapping_stats_number_mapped_col="Uniquely mapped reads "
                                                  "number",
-                 mapping_stats_min_reads=1e6,
+                 mapping_stats_min_reads=MIN_READS,
                  spikein_data=None,
                  spikein_feature_data=None,
                  drop_outliers=True, species=None,
@@ -275,7 +275,7 @@ class Study(StudyFactory):
         self.predictor_config_manager = predictor_config_manager \
             if predictor_config_manager is not None \
             else PredictorConfigManager()
-        self.predictor_config_manager = None
+        # self.predictor_config_manager = None
 
         self.species = species
         self.gene_ontology_data = gene_ontology_data

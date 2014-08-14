@@ -13,7 +13,7 @@ from sklearn.preprocessing import StandardScaler
 
 from ..compute.clustering import Cluster
 from ..compute.infotheory import binify
-# from ..compute.predict import PredictorConfigManager, PredictorDataSetManager
+from ..compute.predict import PredictorConfigManager, PredictorDataSetManager
 from ..visualize.decomposition import PCAViz, NMFViz
 from ..visualize.generic import violinplot, nmf_space_transitions
 from ..visualize.network import NetworkerViz
@@ -103,13 +103,13 @@ class BaseData(object):
         else:
             self.feature_renamer = lambda x: shortener(lambda y: y, x)
 
-        # if predictor_config_manager is None:
-        #     self.predictor_config_manager = PredictorConfigManager()
-        # else:
-        #     self.predictor_config_manager = predictor_config_manager
-        #
-        # self.predictor_dataset_manager = PredictorDataSetManager(
-        #     self.predictor_config_manager)
+        if predictor_config_manager is None:
+            self.predictor_config_manager = PredictorConfigManager()
+        else:
+            self.predictor_config_manager = predictor_config_manager
+
+        self.predictor_dataset_manager = PredictorDataSetManager(
+            self.predictor_config_manager)
 
         self.networks = NetworkerViz(self)
 
@@ -193,7 +193,7 @@ class BaseData(object):
         if feature_subset is not None:
             if feature_subset in self.feature_subsets:
                 feature_ids = self.feature_subsets[feature_subset]
-            elif feature_subset == self.all_features:
+            elif feature_subset == 'all_genes':
                 feature_ids = self.data.columns
             else:
                 try:
