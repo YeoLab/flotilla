@@ -89,7 +89,7 @@ class ModalitiesViz(object):
 
     def event(self, feature_id, sample_groupby, group_colors, group_order,
               ax=None):
-        """Plot a single splicing event's changes in NMF space, and its
+        """Plot a single splicing event's changes in DataFrameNMF space, and its
         violin plots
 
         """

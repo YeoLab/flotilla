@@ -687,7 +687,7 @@ class PredictorBase(object):
             sys.stderr.write("cutoff: %.4f\n" % self.score_cutoff_)
             sys.stderr.write(
                 "WARNING: These classifier settings produced <= 1 important "
-                "feature, consider reducing score_coefficient. PCA will fail "
+                "feature, consider reducing score_coefficient. DataFramePCA will fail "
                 "with this error: \"ValueError: failed to create intent("
                 "cache|hide)|optional array-- must have defined dimensions "
                 "but got (0,)\"\n")
