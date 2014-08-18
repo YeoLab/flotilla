@@ -116,7 +116,11 @@ class BaseData(object):
 
     @property
     def feature_renamer_series(self):
-        return self.feature_data[self.feature_rename_col].dropna()
+        try:
+            return self.feature_data[self.feature_rename_col].dropna()
+        except TypeError:
+            return pd.Series(self.feature_data.index,
+                             index=self.feature_data.index)
 
     def maybe_renamed_to_feature_id(self, feature_id):
         """To be able to give a simple gene name, e.g. "RBFOX2" and get the
