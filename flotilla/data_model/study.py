@@ -1053,16 +1053,16 @@ class Study(StudyFactory):
             celltype_samples = set(celltype_groups.groups[sample_subset])
         else:
             # Plotting all the celltypes
-            celltype_samples = self.metadata.data.index
+            celltype_samples = self.sample_subset_to_sample_ids(sample_subset)
 
         celltype_and_sample_ids = celltype_groups.groups.iteritems()
-        for i, (sample_subset, sample_ids) in enumerate(
+        for i, (phenotype, sample_ids) in enumerate(
                 celltype_and_sample_ids):
             # import pdb; pdb.set_trace()
 
             # Assumes all samples of a sample_subset have the same color...
             # probably wrong
-            color = self.sample_id_to_color[sample_ids[0]]
+            color = self.phenotype_to_color[phenotype]
             sample_ids = celltype_samples.intersection(sample_ids)
             if len(sample_ids) == 0:
                 continue
