@@ -3,3 +3,6 @@
 
 Sphinx
 fabric
+sphinx_bootstrap_theme
+runipy
+pandoc
