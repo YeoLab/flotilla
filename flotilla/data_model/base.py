@@ -175,9 +175,9 @@ class BaseData(object):
             for col in self.feature_data:
                 if self.feature_data[col].dtype != bool:
                     continue
-                feature_set = self.feature_data.index[self.feature_data[col]]
-                if len(feature_set) > 1:
-                    feature_subsets[col] = feature_set
+                feature_subset = self.feature_data.index[self.feature_data[col]]
+                if len(feature_subset) > 1:
+                    feature_subsets[col] = feature_subset
             categories = [  # 'tag',
                             'gene_type', 'splice_type']  #, 'gene_status']
             try:
@@ -189,6 +189,16 @@ class BaseData(object):
                 if category in filtered:
                     feature_subsets.update(
                         self.feature_data.groupby(category).groups)
+
+        for feature_subset in feature_subsets:
+            not_feature_subset = 'not {}'.format(feature_subset)
+            if not_feature_subset not in feature_subsets:
+                in_features = self.feature_data.index.isin(feature_subsets[
+                    feature_subset])
+
+                feature_subsets[not_feature_subset] = \
+                    self.feature_data.index[~in_features]
+
         feature_subsets['all_genes'] = self.data.columns
         feature_subsets['variant'] = self.variant
         return feature_subsets
