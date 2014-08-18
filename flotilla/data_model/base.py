@@ -428,22 +428,26 @@ class BaseData(object):
         singles = self._subset(self.data, sample_ids, feature_ids,
                                require_min_samples=True)
 
-        # If the sample ids don't overlap with the pooled sample, assume you
-        # want all the pooled samples
-        if sample_ids is not None and sum(self.pooled.index.isin(sample_ids)) \
-                > 0:
-            pooled_sample_ids = sample_ids
-        else:
-            pooled_sample_ids = None
-        pooled = self._subset(self.pooled, pooled_sample_ids, feature_ids,
-                              require_min_samples=False)
-        if feature_ids is None or len(feature_ids) > 1:
-            # These are DataFrames
-            singles, pooled = singles.align(pooled, axis=1, join='inner')
-        else:
-            # These are Seriessssss
-            singles = singles.dropna()
-            pooled = pooled.dropna()
+        try:
+            # If the sample ids don't overlap with the pooled sample, assume you
+            # want all the pooled samples
+            if sample_ids is not None and sum(
+                    self.pooled.index.isin(sample_ids)) \
+                    > 0:
+                pooled_sample_ids = sample_ids
+            else:
+                pooled_sample_ids = None
+            pooled = self._subset(self.pooled, pooled_sample_ids, feature_ids,
+                                  require_min_samples=False)
+            if feature_ids is None or len(feature_ids) > 1:
+                # These are DataFrames
+                singles, pooled = singles.align(pooled, axis=1, join='inner')
+            else:
+                # These are Seriessssss
+                singles = singles.dropna()
+                pooled = pooled.dropna()
+        except AttributeError:
+            pooled = None
 
         return singles, pooled
 

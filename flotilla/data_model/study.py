@@ -1150,11 +1150,31 @@ class Study(StudyFactory):
 
 
     def save(self, name):
-        return make_study_datapackage(name, self.metadata.data,
-                                      self.expression.data,
-                                      self.splicing.data,
-                                      self.spikein.data,
-                                      self.mapping_stats.data)
+
+        metadata = self.metadata.data
+
+        try:
+            expression = self.expression.data
+        except AttributeError:
+            expression = None
+
+        try:
+            splicing = self.splicing.data
+        except AttributeError:
+            splicing = None
+
+        try:
+            spikein = self.spikein.data
+        except AttributeError:
+            spikein = None
+
+        try:
+            mapping_stats = self.mapping_stats.data
+        except AttributeError:
+            mapping_stats = None
+
+        return make_study_datapackage(name, metadata, expression, splicing,
+                                      spikein, mapping_stats)
 
 
 # Add interactive visualizations
