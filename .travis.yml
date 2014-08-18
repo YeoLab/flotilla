@@ -42,6 +42,8 @@ script: make coverage
 
 after_script:
   - sudo pip install -r doc/requirements.txt --use-mirrors # change this to the right project path
+  # Make sure README.rst is always synced with README.md
+  - pandoc -f markdown README.md -t rst > README.rst
   - cd doc
   - make setup_gh_pages
   - make generate
