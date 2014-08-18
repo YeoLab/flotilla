@@ -6,29 +6,44 @@
     "datapackage_version": "0.1.0",
     "resources": [
         {
-            "format": "tsv",
+            "format": "csv",
             "name": "metadata",
-            "url": "http://sauron.ucsd.edu/flotilla_projects/neural_diff/metadata.tsv"
+            "path": "metadata.csv",
+            "pooled_col": "is_pooled",
+            "phenotype_col": "celltype",
+            "phenotype_order": ["P", "N", "M", "S"],
+            "phenotype_to_color": {
+                "P": "blue",
+                "N": "green",
+                "M": "red",
+                "S": "orange"
+            },
+            "phenotype_to_marker": {
+                "P": "o",
+                "N": "s",
+                "M": "D",
+                "S": "p"
+            }
         },
         {
             "format": "tsv",
             "name": "expression",
-            "url": "http://sauron.ucsd.edu/flotilla_projects/neural_diff/tpm.tsv"
+            "path": "expression.tsv"
         },
         {
             "format": "tsv",
             "name": "splicing",
-            "url": "http://sauron.ucsd.edu/flotilla_projects/neural_diff/psi.tsv"
+            "path": "splicing.tsv"
         },
         {
             "format": "tsv",
             "name": "spikein",
-            "url": "http://sauron.ucsd.edu/flotilla_projects/neural_diff/spikein.tsv"
+            "path": "spikein.tsv"
         },
         {
             "format": "tsv",
             "name": "mapping_stats",
-            "url": "http://sauron.ucsd.edu/flotilla_projects/neural_diff/mapping_stats.tsv"
+            "path": "mapping_stats.tsv"
         }
     ],
     "species": "hg19"

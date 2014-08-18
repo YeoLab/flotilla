@@ -1,3 +1,4 @@
+import matplotlib as mpl
 from matplotlib import pyplot as plt
 import numpy as np
 import seaborn as sns
@@ -5,7 +6,7 @@ import seaborn as sns
 
 def violinplot(data, groupby=None, color=None, ax=None, pooled_data=None,
                order=None, violinplot_kws=None, title=None,
-               label_pooled=True, outliers=None, data_type=None):
+               label_pooled=False, outliers=None, data_type=None):
     """
     Parameters
     ----------
@@ -52,7 +53,7 @@ def violinplot(data, groupby=None, color=None, ax=None, pooled_data=None,
         outlier_violinplot_kws['zorder'] = -1
         _violinplot_data(outliers, groupby=groupby, color='lightgrey', ax=ax,
                          order=order, violinplot_kws=outlier_violinplot_kws,
-                          splicing=splicing)
+                         splicing=splicing)
 
     if splicing:
         ax.set_ylim(0, 1)
@@ -82,23 +83,33 @@ def _violinplot_data(data, groupby=None, order=None, violinplot_kws=None,
 
     Separated out so real data plotting and outlier plotting works the same
     """
-    single_points = data.groupby(groupby).filter(lambda x: len(x) < 2)
+    data = data.dropna()
 
+    single_points = data.groupby(groupby).filter(lambda x: len(x) < 2)
     data = data.groupby(groupby).filter(lambda x: len(x) > 1)
 
     # Check that all the groups are represented, if not, add some data out of
     # range to the missing group
+    verified_color = color
     if groupby is not None and order is not None:
-        validated_groups = data.groupby(groupby).size().keys()
-        verified_order = [x for x in order if x in validated_groups]
-        positions = [i for i, x in enumerate(order) if x in validated_groups]
+        verified_groups = data.groupby(groupby).size().keys()
+        verified_order = [x for x in order if x in verified_groups]
+
+        positions = [i for i, x in enumerate(order) if x in verified_groups]
 
         single_groups = single_points.groupby(groupby).size().keys()
         single_positions = dict((x, i) for i, x in enumerate(order) if
                                 x in single_groups)
-        single_color = dict((group, color) for i, (color, group) in
-                            enumerate(zip(color, single_groups))
-                            if group in single_groups)
+
+        if not mpl.colors.is_color_like(color):
+            verified_color = [x for i, x in enumerate(color)
+                              if order[i] in verified_groups]
+            single_color = dict((group, c) for i, (c, group) in
+                                enumerate(zip(color, single_groups))
+                                if group in single_groups)
+        else:
+            single_color = dict((group, color) for group in single_groups if
+                                group in single_groups)
     else:
         verified_order = order
         positions = None
@@ -113,20 +124,22 @@ def _violinplot_data(data, groupby=None, order=None, violinplot_kws=None,
     data += np.random.uniform(0, 0.001, data.shape[0])
 
     inner = 'points' if splicing else 'box'
-    sns.violinplot(data, groupby=groupby, bw=0.1, inner=inner,
-                   color=color, linewidth=0.5, order=verified_order,
-                   ax=ax, positions=positions, **violinplot_kws)
+    if len(data) > 0:
+        sns.violinplot(data, groupby=groupby, bw=0.1, inner=inner,
+                       color=verified_color, linewidth=0.5,
+                       order=verified_order,
+                       ax=ax, positions=positions, **violinplot_kws)
 
-    # if single_points is not None:
-    #     for group, y in single_points.groupby(groupby):
-    #         x = single_positions[group]
-    #         c = single_color[group]
-    #         ax.plot([x], [y], 'o', color=c)
-    #         ax.annotate(y.index[0], (x, y), textcoords='offset points',
-    #                     xytext=(7, 0), fontsize=14)
+    if single_points is not None:
+        for group, y in single_points.groupby(groupby):
+            x = single_positions[group]
+            c = single_color[group]
+            ax.scatter([x], [y], color=c, s=50)
+            ax.annotate(y.index[0], (x, y), textcoords='offset points',
+                        xytext=(7, 0), fontsize=14)
 
 
-def plot_pooled_dot(ax, pooled, x_offset=0, label=True):
+def plot_pooled_dot(ax, pooled, x_offset=0, label=False):
     """
     Parameters
     ----------
@@ -156,3 +169,36 @@ def plot_pooled_dot(ax, pooled, x_offset=0, label=True):
                 continue
             ax.annotate('pooled', (x, y), textcoords='offset points',
                         xytext=(7, 0), fontsize=14)
+
+
+def nmf_space_transitions(nmf_space_positions, feature_id,
+                          phenotype_to_color, phenotype_to_marker, order,
+                          ax=None, xlabel=None, ylabel=None):
+    df = nmf_space_positions.ix[feature_id]
+
+    if ax is None:
+        ax = plt.gcf()
+
+    for color, s in df.groupby(phenotype_to_color, axis=0):
+        phenotype = s.index[0]
+        marker = phenotype_to_marker[phenotype]
+        ax.plot(s.pc_1, s.pc_2, color=color, marker=marker, markersize=14,
+                alpha=0.75, label=phenotype, linestyle='none')
+
+    # ax.scatter(df.ix[:, 0], df.ix[:, 1], color=color, s=100, alpha=0.75)
+    # ax.legend(points, df.index.tolist())
+    ax.set_xlim(0, nmf_space_positions.ix[:, 0].max() * 1.05)
+    ax.set_ylim(0, nmf_space_positions.ix[:, 1].max() * 1.05)
+
+    x = [df.ix[phenotype, 0] for phenotype in order if phenotype in df.index]
+    y = [df.ix[phenotype, 1] for phenotype in order if phenotype in df.index]
+
+    ax.plot(x, y, zorder=-1, color='#262626', alpha=0.5, linewidth=1)
+    ax.legend()
+
+    if xlabel is not None:
+        ax.set_xlabel(xlabel)
+        ax.set_xticks([])
+    if ylabel is not None:
+        ax.set_ylabel(ylabel)
+        ax.set_yticks([])

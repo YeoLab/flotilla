@@ -8,62 +8,25 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
-from ..compute.decomposition import NMF, PCA
+
+# from ..compute.decomposition import DataFrameNMF, DataFramePCA
 from .color import set1
-
-
-def L1_distance(x, y):
-    """Really should just be using TODO:scipy.linalg.norm with order=1"""
-    return abs(y) + abs(x)
-
-
-def L2_distance(x, y):
-    """Really should just be using TODO:scipy.linalg.norm with order=2"""
-    return math.sqrt((y ** 2) + (x ** 2))
 
 
 class DecompositionViz(object):
     """
-    Given a pandas dataframe, performs PCA and plots the results in a
-    convenient single function.
-
-
-    @param c_scale: Component scaling of the plot, e.g. for making the
-    plotted vectors larger or smaller.
-    @param x_pc: Integer, which principal component to use for the x-axis
-    (usually 1)
-    @param y_pc: Integer, which principal component to use for the y-axis
-    (usually 2)
-    @param distance:
-    @param colors_dict: A dictionary of index (samples) to matplotlib colors
-    @param markers_dict: A dictionary of index (samples) to matplotlib markers
-    @param markers_size_dict: A dictionary of index (samples) to matplotlib
-        marker sizes
-    @param title: A string, the title of the plot
-    @param show_vectors: Boolean, whether or not to show vectors
-    @param show_point_labels: Boolean, whether or not to show the index,
-    e.g. the sample name, on the plot
-    @param column_ids_dict: A dictionary of column names to another
-    value, e.g. if the columns are splicing events with a strange ID,
-    this could be a dictionary that matches the ID to a gene name.
-    @param index_ids_dict: A dictionary of index names to another
-    value, e.g. if the indexes are samples with a strange ID, this could be a
-     dictionary that matches the ID to a more readable sample name.
-    @param show_vector_labels: Boolean. Can be helpful if the vector labels
-    are gene names.
-    @param scale_by_variance: Boolean. Scale vector components by explained
-        variance
-    @return: x, y, marker, distance of each vector in the study_data.
+    Plots the reduced space from a decomposed dataset. Does not perform any
+    reductions of its own
     """
 
-
-    def __init__(self, df, title='', n_components=None, whiten=False,
-                 reduction_args=None, feature_renamer=None, groupby=None,
+    def __init__(self, reduced_space, components_, DataModel=None,
+                 feature_renamer=None, groupby=None,
                  color=None, order=None, violinplot_kws=None,
                  data_type=None, label_to_color=None, label_to_marker=None,
-                 DataModel=None, scale_by_variance=True, x_pc='pc_1',
+                 # violinplot=None,
+                 scale_by_variance=True, x_pc='pc_1',
                  y_pc='pc_2', n_vectors=20, distance='L1',
-                 n_top_pc_features=50, **kwargs):
+                 n_top_pc_features=50):
         """
 
         x_pc : str
@@ -78,8 +41,6 @@ class DecompositionViz(object):
         """
 
         self.DataModel = DataModel
-
-        self.title = title
         self._default_reduction_kwargs = {}
 
         self.groupby = groupby
@@ -96,26 +57,26 @@ class DecompositionViz(object):
         self.distance = distance
         self.n_top_pc_features = n_top_pc_features
 
-        if reduction_args is None:
-            reduction_args = self._default_reduction_kwargs
-        else:
-            reduction_args = self._default_reduction_kwargs.update(
-                reduction_args)
+        self.reduced_space = reduced_space
+        self.components_ = components_
 
-        self.feature_renamer = feature_renamer
-        if self.feature_renamer is None:
-            self.feature_renamer = lambda x: x
 
-        # This magically initializes the reducer like PCA or NMF
-        super(DecompositionViz, self).__init__(n_components=n_components,
-                                               whiten=whiten, **reduction_args)
+        # if decomposer_kwargs is None:
+        #     decomposer_kwargs = self._default_reduction_kwargs
+        # else:
+        #     decomposer_kwargs = self._default_reduction_kwargs.update(
+        #         decomposer_kwargs)
 
-        assert isinstance(df, pd.DataFrame)
-        self.df = df
+        # This magically initializes the reducer like DataFramePCA or DataFrameNMF
+        # self.decomposer = decomposer(n_components=n_components,
+        #                              **decomposer_kwargs)
+        # super(DecompositionViz, self).__init__(n_components=n_components,
+        #                                        **decomposer_kwargs)
+
         if self.groupby is None:
-            self.groupby = dict.fromkeys(self.df.index, 'all')
+            self.groupby = dict.fromkeys(self.reduced_space.index, 'all')
 
-        self.reduced_space = self.fit_transform(self.df)
+        # self.reduced_space = self.fit_transform(self.df)
         self.loadings = self.components_.ix[[self.x_pc, self.y_pc]]
 
         # Get the explained variance
@@ -123,6 +84,7 @@ class DecompositionViz(object):
             self.vars = self.explained_variance_ratio_[[self.x_pc, self.y_pc]]
         except AttributeError:
             self.vars = pd.Series([1., 1.], index=[self.x_pc, self.y_pc])
+
         if scale_by_variance:
             self.loadings = self.loadings.multiply(self.vars, axis=0)
 
@@ -150,8 +112,11 @@ class DecompositionViz(object):
                 labels = x.index
             self.top_features.update(labels)
 
-    def __call__(self, ax=None,
-                 **kwargs):
+    def __call__(self, ax=None, title='',
+                 show_point_labels=False,
+                 show_vectors=True,
+                 show_vector_labels=True,
+                 markersize=10, legend=True):
         gs_x = 14
         gs_y = 12
 
@@ -167,24 +132,29 @@ class DecompositionViz(object):
         ax_loading1 = plt.subplot(gs[:, 6:8])
         ax_loading2 = plt.subplot(gs[:, 10:14])
 
-        kwargs.update({'ax': ax_components})
+        # kwargs.update({'ax': ax_components})
 
-        self.plot_samples(**kwargs)
+        self.plot_samples(show_point_labels=show_point_labels,
+                          title=title, show_vectors=show_vectors,
+                          show_vector_labels=show_vector_labels,
+                          markersize=markersize, legend=legend,
+                          ax=ax_components)
         self.plot_loadings(pc=self.x_pc, ax=ax_loading1)
         self.plot_loadings(pc=self.y_pc, ax=ax_loading2)
         sns.despine()
         self.reduced_fig.tight_layout()
 
-        self.plot_violins()
+        if self.DataModel is not None:
+            self.plot_violins()
         return self
 
     def plot_samples(self, show_point_labels=True,
-                     title='PCA', show_vectors=True,
+                     title='DataFramePCA', show_vectors=True,
                      show_vector_labels=True, markersize=10,
                      three_d=False, legend=True, ax=None):
 
         """
-        Given a pandas dataframe, performs PCA and plots the results in a
+        Given a pandas dataframe, performs DataFramePCA and plots the results in a
         convenient single function.
 
         Parameters
@@ -239,13 +209,9 @@ class DecompositionViz(object):
 
         if self.label_to_marker is None:
             markers = cycle(['o', '^', 's', 'v', '*', 'D', 'h'])
-
             def marker_factory():
                 return markers.next()
-
             self.label_to_marker = defaultdict(marker_factory)
-
-
 
         # Plot the samples
         grouped = self.reduced_space.groupby(self.groupby, axis=0)
@@ -260,11 +226,8 @@ class DecompositionViz(object):
                 for args in zip(x, y, df.index):
                     ax.text(*args)
 
-
-
         # Plot vectors, if asked
         if show_vectors:
-
             for vector_label in self.magnitudes[:self.n_vectors].index:
                 x, y = self.loadings[vector_label]
                 ax.plot([0, x], [0, y], color='k', linewidth=1)
@@ -272,7 +235,7 @@ class DecompositionViz(object):
                     x_offset = math.copysign(5, x)
                     y_offset = math.copysign(5, y)
                     horizontalalignment = 'left' if x > 0 else 'right'
-                    renamed = self.feature_renamer(vector_label)
+                    renamed = self.DataModel.feature_renamer(vector_label)
                     ax.annotate(renamed, (x, y),
                                 textcoords='offset points',
                                 xytext=(x_offset, y_offset),
@@ -317,7 +280,7 @@ class DecompositionViz(object):
 
         self.top_features = labels
 
-        labels = map(self.feature_renamer, labels)
+        labels = map(self.DataModel.feature_renamer, labels)
         # shorten = lambda x: '{}...'.format(x[:30]) if len(x) > 30 else x
         # ax.set_yticklabels(map(shorten, labels))
         ax.set_yticklabels(labels)
@@ -325,25 +288,25 @@ class DecompositionViz(object):
             lab.set_rotation(90)
         sns.despine(ax=ax)
 
-    def plot_explained_variance(self, title="PCA"):
-        """If the reducer is a form of PCA, then plot the explained variance
-        ratio by the components.
-        """
-        # Plot the explained variance ratio
-        assert hasattr(self, 'explained_variance_ratio_')
-        import matplotlib.pyplot as plt
-        import seaborn as sns
-
-        fig, ax = plt.subplots()
-        ax.plot(self.explained_variance_ratio_, 'o-')
-
-        ax.set_xticks(range(self.n_components))
-        ax.set_xticklabels(map(str, np.arange(self.n_components) + 1))
-        ax.set_xlabel('Principal component')
-        ax.set_ylabel('Fraction explained variance')
-        ax.set_title(title)
-        sns.despine()
-        return fig
+    # def plot_explained_variance(self, title="DataFramePCA"):
+    #     """If the reducer is a form of DataFramePCA, then plot the explained variance
+    #     ratio by the components.
+    #     """
+    #     # Plot the explained variance ratio
+    #     assert hasattr(self, 'explained_variance_ratio_')
+    #     import matplotlib.pyplot as plt
+    #     import seaborn as sns
+    #
+    #     fig, ax = plt.subplots()
+    #     ax.plot(self.explained_variance_ratio_, 'o-')
+    #
+    #     ax.set_xticks(range(self.n_components))
+    #     ax.set_xticklabels(map(str, np.arange(self.n_components) + 1))
+    #     ax.set_xlabel('Principal component')
+    #     ax.set_ylabel('Fraction explained variance')
+    #     ax.set_title(title)
+    #     sns.despine()
+    #     return fig
 
     def plot_violins(self):
         """Make violinplots of each feature
@@ -364,11 +327,10 @@ class DecompositionViz(object):
             # renamed = self.feature_renamer(vector_label)
 
             self.DataModel._violinplot(feature_id=vector_label,
-                                       sample_ids=self.df.index,
+                                       sample_ids=self.reduced_space.index,
                                        phenotype_groupby=self.groupby,
                                        phenotype_order=self.order,
-                                       ax=ax, color=self.color,
-                                       label_pooled=True)
+                                       ax=ax, color=self.color)
 
         # Clear any unused axes
         for ax in axes.flat:
@@ -378,44 +340,48 @@ class DecompositionViz(object):
         self.violins_fig.tight_layout()
 
 
-class PCAViz(DecompositionViz, PCA):
-    pass
+    # class PCAViz(DecompositionViz, DataFramePCA):
+    #     _default_reduction_kwargs = dict(whiten=False)
+    #     pass
+    #
+    #
+    # class NMFViz(DecompositionViz, DataFrameNMF):
+    #     _default_reduction_kwargs = \
+    #         {'n_components': 2, 'max_iter': 20000, 'nls_max_iter': 40000}
+    #
+    #     def __call__(self, ax=None, **kwargs):
+    #         pass
+    # gs_x = 14
+        # gs_y = 12
+        #
+        # if ax is None:
+        #     fig, ax = plt.subplots(1, 1, figsize=(25, 12))
+        #     gs = GridSpec(gs_x, gs_y)
+        #
+        # else:
+        #     gs = GridSpecFromSubplotSpec(gs_x, gs_y, ax.get_subplotspec())
+        #     fig = plt.gcf()
+        #
+        # ax_components = plt.subplot(gs[:, :5])
+        # ax_loading1 = plt.subplot(gs[:, 6:8])
+        # ax_loading2 = plt.subplot(gs[:, 10:14])
+        #
+        # passed_kwargs = kwargs
+        # local_kwargs = self.plotting_kwargs.copy()
+        # local_kwargs.update(passed_kwargs)
+        # local_kwargs.update({'ax': ax_components})
+        # self.plot_samples(**local_kwargs)
+        # self.plot_loadings(pc=local_kwargs['x_pc'], ax=ax_loading1)
+        # self.plot_loadings(pc=local_kwargs['y_pc'], ax=ax_loading2)
+        # sns.despine()
+        # fig.tight_layout()
+        # return self
+
+        # def splicing_movies(self):
 
 
-class NMFViz(DecompositionViz, NMF):
-    _default_reduction_kwargs = \
-        {'n_components': 2, 'max_iter': 20000, 'nls_max_iter': 40000}
-
-    def __call__(self, ax=None, **kwargs):
-        gs_x = 14
-        gs_y = 12
-
-        if ax is None:
-            fig, ax = plt.subplots(1, 1, figsize=(25, 12))
-            gs = GridSpec(gs_x, gs_y)
-
-        else:
-            gs = GridSpecFromSubplotSpec(gs_x, gs_y, ax.get_subplotspec())
-            fig = plt.gcf()
-
-        ax_components = plt.subplot(gs[:, :5])
-        ax_loading1 = plt.subplot(gs[:, 6:8])
-        ax_loading2 = plt.subplot(gs[:, 10:14])
-
-        passed_kwargs = kwargs
-        local_kwargs = self.plotting_kwargs.copy()
-        local_kwargs.update(passed_kwargs)
-        local_kwargs.update({'ax': ax_components})
-        self.plot_samples(**local_kwargs)
-        self.plot_loadings(pc=local_kwargs['x_pc'], ax=ax_loading1)
-        self.plot_loadings(pc=local_kwargs['y_pc'], ax=ax_loading2)
-        sns.despine()
-        fig.tight_layout()
-        return self
-
-
-def plot_pca(df, **kwargs):
-    """ for backwards-compatibility """
-    pca = PCAViz(df, **kwargs)
-    pca.plot_samples()
-    return pca
+# def plot_pca(df, **kwargs):
+#     """ for backwards-compatibility """
+#     pca = PCAViz(df, **kwargs)
+#     pca.plot_samples()
+#     return pca

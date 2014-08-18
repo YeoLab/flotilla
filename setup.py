@@ -10,5 +10,5 @@ setup(
     author_email='obotvinn@ucsd.edu',
     description='Embark on a journey of data exploration.',
     install_requires=open('requirements.txt').readlines(),
-    version="0.0.4"
+    version="0.1.0"
 )

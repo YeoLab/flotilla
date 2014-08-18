@@ -9,11 +9,9 @@ import seaborn as sns
 
 from .base import BaseData
 from ..compute.splicing import Modalities
-from ..visualize.decomposition import NMFViz, PCAViz
 from ..visualize.color import purples
-from ..visualize.predict import ClassifierViz
 from ..visualize.splicing import ModalitiesViz
-from ..util import cached_property, memoize
+from ..util import memoize
 from ..visualize.color import red
 from ..visualize.splicing import lavalamp, hist_single_vs_pooled_diff, \
     lavalamp_pooled_inconsistent
@@ -34,7 +32,8 @@ class SplicingData(BaseData):
     def __init__(self, data,
                  metadata=None, binsize=0.1, outliers=None,
                  feature_rename_col=None, excluded_max=0.2, included_min=0.8,
-                 pooled=None, predictor_config_manager=None):
+                 pooled=None, predictor_config_manager=None,
+                 technical_outliers=None):
         """Instantiate a object for percent spliced in (PSI) scores
 
         Parameters
@@ -59,6 +58,7 @@ class SplicingData(BaseData):
         super(SplicingData, self).__init__(
             data, metadata, feature_rename_col=feature_rename_col,
             outliers=outliers, pooled=pooled,
+            technical_outliers=technical_outliers,
             predictor_config_manager=predictor_config_manager)
         sys.stderr.write("done initializing splicing\n")
         self.binsize = binsize
@@ -69,14 +69,6 @@ class SplicingData(BaseData):
         self.modalities_visualizer = ModalitiesViz()
 
         self.data_type = 'splicing'
-
-        #try:
-        #    for modality in set(self.modalities()):
-        #        self.feature_data[
-        #            'modality_' + modality] = self.modalities() == modality
-        #except TypeError:
-        #    # Unless there is no feature_data
-        #    pass
 
     @memoize
     def modalities(self, sample_ids=None, feature_ids=None,
@@ -133,125 +125,43 @@ class SplicingData(BaseData):
         return self.modalities_calculator.counts(data, bootstrapped,
                                                  bootstrapped_kws)
 
-    @cached_property()
-    def nmf(self):
-        data = self._subset(self.data)
-        return NMFViz(self.binify(data).T, n_components=2)
 
-    @memoize
-    def binned_reduced(self, sample_ids=None, feature_ids=None):
-        """
+    def binify(self, data):
+        return super(SplicingData, self).binify(data, self.bins)
 
-        """
-        data = self._subset(self.data, sample_ids, feature_ids)
-        binned = self.binify(data)
-        reduced = self.nmf.transform(binned.T)
-        return reduced
 
-    def reduce(self, sample_ids=None, feature_ids=None,
-               featurewise=False, reducer=PCAViz,
-               standardize=False, title='',
-               reducer_kwargs=None, groupby=None,
-               label_to_color=None, label_to_marker=None,
-               order=None, color=None, binify=False,
-               x_pc='pc_1', y_pc='pc_1'):
-        """make and cache a reduced dimensionality representation of data
+    # def reduce(self, sample_ids=None, feature_ids=None,
+    #            featurewise=False, reducer=PCAViz,
+    #            standardize=False, title='',
+    #            reducer_kwargs=None, groupby=None,
+    #            label_to_color=None, label_to_marker=None,
+    #            order=None, color=None, binify=False,
+    #            x_pc='pc_1', y_pc='pc_1'):
+    #     """make and cache a reduced dimensionality representation of data
+    #
+    #     Default is PCAViz because NMFviz only works for binned data
+    #     """
+    #     bins = self.bins if binify else None
+    #     return super(SplicingData, self).reduce(self.data,
+    #                                             sample_ids=sample_ids,
+    #                                             feature_ids=feature_ids,
+    #                                             featurewise=featurewise,
+    #                                             reducer=reducer,
+    #                                             standardize=standardize,
+    #                                             title=title,
+    #                                             reducer_kwargs=reducer_kwargs,
+    #                                             groupby=groupby,
+    #                                             label_to_color=label_to_color,
+    #                                             label_to_marker=label_to_marker,
+    #                                             order=order, color=color,
+    #                                             bins=bins, x_pc=x_pc,
+    #                                             y_pc=y_pc)
 
-        Default is PCAViz because NMFviz only works for binned data
-        """
-        bins = self.bins if binify else None
-        return super(SplicingData, self).reduce(self.data,
-                                                sample_ids=sample_ids,
-                                                feature_ids=feature_ids,
-                                                featurewise=featurewise,
-                                                reducer=reducer,
-                                                standardize=standardize,
-                                                title=title,
-                                                reducer_kwargs=reducer_kwargs,
-                                                groupby=groupby,
-                                                label_to_color=label_to_color,
-                                                label_to_marker=label_to_marker,
-                                                order=order, color=color,
-                                                bins=bins, x_pc=x_pc,
-                                                y_pc=y_pc)
-
-    @memoize
-    def classify(self, trait, sample_ids, feature_ids,
-                 standardize=True,
-                 predictor_name='ExtraTreesClassifier',
-                 predictor_obj=None,
-                 predictor_scoring_fun=None,
-                 score_cutoff_fun=None,
-                 n_features_dependent_parameters=None,
-                 constant_parameters=None,
-                 plotting_kwargs=None,
-                 feature_renamer=lambda x: x
-    ):
-        #Should all this be exposed to the user???
-
-        """Make and memoize a predictor on a categorical trait (associated
-        with samples) subset of genes
-
-        Parameters
-        ----------
-        trait : pandas.Series
-            samples x categorical feature
-        sample_ids : None or list of strings
-            If None, all sample ids will be used, else only the sample ids
-            specified
-        feature_ids : None or list of strings
-            If None, all features will be used, else only the features
-            specified
-        standardize : bool
-            Whether or not to "whiten" (make all variables uncorrelated) and
-            mean-center and make unit-variance all the data via sklearn
-            .preprocessing.StandardScaler
-        predictor : flotilla.visualize.predict classifier
-            Must inherit from flotilla.visualize.PredictorBaseViz. Default is
-            flotilla.visualize.predict.ClassifierViz
-        predictor_kwargs : dict or None
-            Additional 'keyword arguments' to supply to the predictor class
-        predictor_scoring_fun : function
-            Function to get the feature scores for a scikit-learn classifier.
-            This can be different for different classifiers, e.g. for a
-            classifier named "x" it could be x.scores_, for other it's
-            x.feature_importances_. Default: lambda x: x.feature_importances_
-        score_cutoff_fun : function
-            Function to cut off insignificant scores
-            Default: lambda scores: np.mean(x) + 2 * np.std(x)
-
-        Returns
-        -------
-        predictor : flotilla.compute.predict.PredictorBaseViz
-            A ready-to-plot object containing the predictions
-        """
-
-        subset, means = self._subset_and_standardize(self.data,
-                                                     sample_ids,
-                                                     feature_ids,
-                                                     standardize)
-        subset.rename_axis(feature_renamer, 1, inplace=True)
-
-        if plotting_kwargs is None:
-            plotting_kwargs = {}
-
-        classifier = ClassifierViz(self.data_type, trait.name,
-                                   predictor_name=predictor_name,
-                                   X_data=subset,
-                                   trait=trait,
-                                   predictor_obj=predictor_obj,
-                                   predictor_scoring_fun=predictor_scoring_fun,
-                                   score_cutoff_fun=score_cutoff_fun,
-                                   n_features_dependent_parameters=n_features_dependent_parameters,
-                                   constant_parameters=constant_parameters,
-                                   predictor_dataset_manager=self.predictor_dataset_manager,
-                                   **plotting_kwargs)
-        return classifier
 
     def plot_modalities_reduced(self, sample_ids=None, feature_ids=None,
                                 ax=None, title=None,
                                 bootstrapped=False, bootstrapped_kws=None):
-        """Plot modality assignments in NMF space (option for lavalamp?)
+        """Plot modality assignments in DataFrameNMF space (option for lavalamp?)
 
         Parameters
         ----------
@@ -275,7 +185,7 @@ class SplicingData(BaseData):
             sample_ids, feature_ids, bootstrapped=bootstrapped,
             bootstrapped_kws=bootstrapped_kws)
         self.modalities_visualizer.plot_reduced_space(
-            self.binned_reduced(sample_ids, feature_ids),
+            self.binned_nmf_reduced(sample_ids, feature_ids),
             modalities_assignments, ax=ax, title=title)
 
     def plot_modalities_bar(self, sample_ids=None, feature_ids=None, ax=None,
@@ -388,15 +298,45 @@ class SplicingData(BaseData):
         pie_axis.pie(map(int, modality_count.values()),
                      labels=modality_count.keys(), autopct='%1.1f%%')
 
-    def plot_event(self, feature_id, sample_ids=None, phenotype_groupby=None,
-                   phenotype_order=None, ax=None, color=None):
-        """
-        Plot the violinplot of a splicing event (should also show NMF movement)
-        """
-        return self._violinplot(feature_id, sample_ids=sample_ids,
-                                phenotype_groupby=phenotype_groupby,
-                                phenotype_order=phenotype_order, ax=ax,
-                                color=color, )
+    def plot_event(self, feature_id, sample_ids=None,
+                   phenotype_groupby=None,
+                   phenotype_order=None, color=None,
+                   phenotype_to_color=None,
+                   phenotype_to_marker=None):
+        self.plot_feature(feature_id, sample_ids,
+                          phenotype_groupby, phenotype_order,
+                          color, phenotype_to_color, phenotype_to_marker)
+
+
+    def plot_feature(self, feature_id, sample_ids=None,
+                     phenotype_groupby=None,
+                     phenotype_order=None, color=None,
+                     phenotype_to_color=None,
+                     phenotype_to_marker=None, xlabel=None, ylabel=None):
+        nmf_space_positions = self.nmf_space_positions(phenotype_groupby)
+
+        # Get the correct included/excluded labeling for the x and y axes
+        event, phenotype = nmf_space_positions.pc_1.argmax()
+        top_pc1_samples = self.data.groupby(phenotype_groupby).groups[
+            phenotype]
+
+        data = self._subset(self.data, sample_ids=top_pc1_samples)
+        binned = self.binify(data)
+
+        x_axis_excluded = bool(binned[event][0])
+        included_label = 'included >>'
+        excluded_label = 'excluded >>'
+        if xlabel is None:
+            xlabel = excluded_label if x_axis_excluded else included_label
+        if ylabel is None:
+            ylabel = included_label if x_axis_excluded else excluded_label
+
+        super(SplicingData, self).plot_feature(feature_id, sample_ids,
+                                               phenotype_groupby,
+                                               phenotype_order, color,
+                                               phenotype_to_color,
+                                               phenotype_to_marker, xlabel,
+                                               ylabel)
 
     @memoize
     def pooled_inconsistent(self, sample_ids, feature_ids=None,
@@ -423,21 +363,34 @@ class SplicingData(BaseData):
             the fraction diff thresh
         """
         # singles = self._subset(self.data, singles_ids, feature_ids)
-        diff_from_singles = self._diff_from_singles(sample_ids,
-                                                    feature_ids,
-                                                    scaled=True)
+        singles, pooled, not_measured_in_pooled, diff_from_singles = \
+            self._diff_from_singles(sample_ids, feature_ids, scaled=True)
 
         large_diff = \
             diff_from_singles[diff_from_singles.abs()
                               >= fraction_diff_thresh].dropna(axis=1,
                                                               how='all')
-        return large_diff
+        return singles, pooled, not_measured_in_pooled, large_diff
 
     @memoize
     def _diff_from_singles(self, sample_ids,
                            feature_ids=None, scaled=True, dropna=True):
-        singles, pooled = self._subset_singles_and_pooled(
-            self.data, self.pooled, sample_ids, feature_ids)
+        """
+        Parameters
+        ----------
+
+
+        Returns
+        -------
+
+
+        """
+        singles, pooled = self._subset_singles_and_pooled(sample_ids,
+                                                          feature_ids)
+        pooled = pooled.dropna(how='all', axis=1)
+        not_measured_in_pooled = singles.columns.diff(pooled.columns)
+        singles, pooled = singles.align(pooled, axis=1, join='inner')
+        # import pdb; pdb.set_trace()
 
         diff_from_singles = pooled.apply(
             lambda x: (singles - x.values).abs().sum(), axis=1)
@@ -447,17 +400,19 @@ class SplicingData(BaseData):
                 diff_from_singles / singles.count().astype(float)
         if dropna:
             diff_from_singles = diff_from_singles.dropna(axis=1, how='all')
-        return diff_from_singles
+        return singles, pooled, not_measured_in_pooled, diff_from_singles
 
     def plot_lavalamp_pooled_inconsistent(
             self, sample_ids, feature_ids=None,
             fraction_diff_thresh=FRACTION_DIFF_THRESH, color=None):
-        pooled_inconsistent = self.pooled_inconsistent(sample_ids,
-                                                       feature_ids,
-                                                       fraction_diff_thresh)
-        singles, pooled = self._subset_singles_and_pooled(
-            self.data, self.pooled, sample_ids, feature_ids)
-        percent = self.percent_pooled_inconsistent(sample_ids, feature_ids,
+        singles, pooled, not_measured_in_pooled, pooled_inconsistent = \
+            self.pooled_inconsistent(sample_ids, feature_ids,
+                                     fraction_diff_thresh)
+        print "not_measured_in_pooled.shape", not_measured_in_pooled.shape
+        # singles, pooled = self._subset_singles_and_pooled(sample_ids,
+        #                                                   feature_ids)
+        sample_ids = singles.index.union(pooled.index)
+        percent = self.percent_pooled_inconsistent(sample_ids, singles.columns,
                                                    fraction_diff_thresh)
         lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
                                      color=color, percent=percent)
@@ -466,27 +421,32 @@ class SplicingData(BaseData):
                                         feature_ids=None,
                                         color=None, title='',
                                         hist_kws=None):
-        diff_from_singles = self._diff_from_singles(sample_ids,
-                                                    feature_ids)
-        diff_from_singles_scaled = self._diff_from_singles(sample_ids,
-                                                           feature_ids,
-                                                           scaled=True)
+        singles, pooled, not_measured_in_pooled, diff_from_singles = \
+            self._diff_from_singles(sample_ids, feature_ids)
+        singles, pooled, not_measured_in_pooled, diff_from_singles_scaled = \
+            self._diff_from_singles(sample_ids, feature_ids, scaled=True)
         hist_single_vs_pooled_diff(diff_from_singles,
                                    diff_from_singles_scaled, color=color,
                                    title=title, hist_kws=hist_kws)
 
     @memoize
     def percent_pooled_inconsistent(self, sample_ids,
-                                    feature_ids=None,
+                                    feature_ids,
                                     fraction_diff_thresh=FRACTION_DIFF_THRESH):
         """The percent of splicing events which are
 
         """
-        singles, pooled = self._subset_singles_and_pooled(
-            self.data, self.pooled, sample_ids, feature_ids)
-        large_diff = self.pooled_inconsistent(sample_ids, feature_ids,
-                                              fraction_diff_thresh)
-        return large_diff.shape[1] / float(pooled.shape[1]) * 100
+        # singles, pooled = self._subset_singles_and_pooled(sample_ids, feature_ids)
+        singles, pooled, not_measured_in_pooled, large_diff = \
+            self.pooled_inconsistent(sample_ids, feature_ids,
+                                     fraction_diff_thresh)
+        import pdb;
+
+        pdb.set_trace()
+        try:
+            return large_diff.shape[1] / float(pooled.shape[1]) * 100
+        except ZeroDivisionError:
+            return 100
 
     def _calculate_linkage(self, sample_ids, feature_ids,
                            metric='euclidean', linkage_method='median',
