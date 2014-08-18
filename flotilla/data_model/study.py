@@ -1101,40 +1101,40 @@ class Study(StudyFactory):
             self.splicing.percent_pooled_inconsistent(sample_ids, feature_ids,
                                                       fraction_diff_thresh)
 
-    def plot_clusteredheatmap(self, sample_subset=None,
-                              feature_subset='variant',
-                              data_type='expression', metric='euclidean',
-                              linkage_method='median', figsize=None):
-        if data_type == 'expression':
-            data = self.expression.data
-        elif data_type == 'splicing':
-            data = self.splicing.data
-        celltype_groups = data.groupby(
-            self.sample_id_to_phenotype, axis=0)
-
-        if sample_subset is not None:
-            # Only plotting one sample_subset
-            try:
-                sample_ids = set(celltype_groups.groups[sample_subset])
-            except KeyError:
-                sample_ids = self.sample_subset_to_sample_ids(sample_subset)
-        else:
-            # Plotting all the celltypes
-            sample_ids = data.index
-
-        sample_colors = [self.sample_id_to_color[x] for x in sample_ids]
-        feature_ids = self.feature_subset_to_feature_ids(data_type,
-                                                         feature_subset,
-                                                         rename=False)
-
-        if data_type == "expression":
-            return self.expression.plot_clusteredheatmap(
-                sample_ids, feature_ids, linkage_method=linkage_method,
-                metric=metric, sample_colors=sample_colors, figsize=figsize)
-        elif data_type == "splicing":
-            return self.splicing.plot_clusteredheatmap(
-                sample_ids, feature_ids, linkage_method=linkage_method,
-                metric=metric, sample_colors=sample_colors, figsize=figsize)
+    # def plot_clusteredheatmap(self, sample_subset=None,
+    #                           feature_subset='variant',
+    #                           data_type='expression', metric='euclidean',
+    #                           linkage_method='median', figsize=None):
+    #     if data_type == 'expression':
+    #         data = self.expression.data
+    #     elif data_type == 'splicing':
+    #         data = self.splicing.data
+    #     celltype_groups = data.groupby(
+    #         self.sample_id_to_phenotype, axis=0)
+    #
+    #     if sample_subset is not None:
+    #         # Only plotting one sample_subset
+    #         try:
+    #             sample_ids = set(celltype_groups.groups[sample_subset])
+    #         except KeyError:
+    #             sample_ids = self.sample_subset_to_sample_ids(sample_subset)
+    #     else:
+    #         # Plotting all the celltypes
+    #         sample_ids = data.index
+    #
+    #     sample_colors = [self.sample_id_to_color[x] for x in sample_ids]
+    #     feature_ids = self.feature_subset_to_feature_ids(data_type,
+    #                                                      feature_subset,
+    #                                                      rename=False)
+    #
+    #     if data_type == "expression":
+    #         return self.expression.plot_clusteredheatmap(
+    #             sample_ids, feature_ids, linkage_method=linkage_method,
+    #             metric=metric, sample_colors=sample_colors, figsize=figsize)
+    #     elif data_type == "splicing":
+    #         return self.splicing.plot_clusteredheatmap(
+    #             sample_ids, feature_ids, linkage_method=linkage_method,
+    #             metric=metric, sample_colors=sample_colors, figsize=figsize)
 
     def plot_big_nmf_space_transitions(self, data_type='expression'):
         if data_type == 'expression':
@@ -1164,4 +1164,4 @@ Study.interactive_pca = Interactive.interactive_pca
 Study.interactive_localZ = Interactive.interactive_localZ
 Study.interactive_lavalamp_pooled_inconsistent = \
     Interactive.interactive_lavalamp_pooled_inconsistent
-Study.interactive_clusteredheatmap = Interactive.interactive_clusteredheatmap
+# Study.interactive_clusteredheatmap = Interactive.interactive_clusteredheatmap
