@@ -4,9 +4,12 @@ these objects and functions across test files.
 """
 import os
 
+import matplotlib as mpl
 import pytest
 import pandas as pd
 
+# Tell matplotlib to not make any window popups
+mpl.use('Agg')
 
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
 
