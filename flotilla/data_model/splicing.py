@@ -363,21 +363,34 @@ class SplicingData(BaseData):
             the fraction diff thresh
         """
         # singles = self._subset(self.data, singles_ids, feature_ids)
-        diff_from_singles = self._diff_from_singles(sample_ids,
-                                                    feature_ids,
-                                                    scaled=True)
+        singles, pooled, not_measured_in_pooled, diff_from_singles = \
+            self._diff_from_singles(sample_ids, feature_ids, scaled=True)
 
         large_diff = \
             diff_from_singles[diff_from_singles.abs()
                               >= fraction_diff_thresh].dropna(axis=1,
                                                               how='all')
-        return large_diff
+        return singles, pooled, not_measured_in_pooled, large_diff
 
     @memoize
     def _diff_from_singles(self, sample_ids,
                            feature_ids=None, scaled=True, dropna=True):
-        singles, pooled = self._subset_singles_and_pooled(
-            self.data, self.pooled, sample_ids, feature_ids)
+        """
+        Parameters
+        ----------
+
+
+        Returns
+        -------
+
+
+        """
+        singles, pooled = self._subset_singles_and_pooled(sample_ids,
+                                                          feature_ids)
+        pooled = pooled.dropna(how='all', axis=1)
+        not_measured_in_pooled = singles.columns.diff(pooled.columns)
+        singles, pooled = singles.align(pooled, axis=1, join='inner')
+        # import pdb; pdb.set_trace()
 
         diff_from_singles = pooled.apply(
             lambda x: (singles - x.values).abs().sum(), axis=1)
@@ -387,17 +400,19 @@ class SplicingData(BaseData):
                 diff_from_singles / singles.count().astype(float)
         if dropna:
             diff_from_singles = diff_from_singles.dropna(axis=1, how='all')
-        return diff_from_singles
+        return singles, pooled, not_measured_in_pooled, diff_from_singles
 
     def plot_lavalamp_pooled_inconsistent(
             self, sample_ids, feature_ids=None,
             fraction_diff_thresh=FRACTION_DIFF_THRESH, color=None):
-        pooled_inconsistent = self.pooled_inconsistent(sample_ids,
-                                                       feature_ids,
-                                                       fraction_diff_thresh)
-        singles, pooled = self._subset_singles_and_pooled(
-            self.data, self.pooled, sample_ids, feature_ids)
-        percent = self.percent_pooled_inconsistent(sample_ids, feature_ids,
+        singles, pooled, not_measured_in_pooled, pooled_inconsistent = \
+            self.pooled_inconsistent(sample_ids, feature_ids,
+                                     fraction_diff_thresh)
+        print "not_measured_in_pooled.shape", not_measured_in_pooled.shape
+        # singles, pooled = self._subset_singles_and_pooled(sample_ids,
+        #                                                   feature_ids)
+        sample_ids = singles.index.union(pooled.index)
+        percent = self.percent_pooled_inconsistent(sample_ids, singles.columns,
                                                    fraction_diff_thresh)
         lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
                                      color=color, percent=percent)
@@ -406,27 +421,32 @@ class SplicingData(BaseData):
                                         feature_ids=None,
                                         color=None, title='',
                                         hist_kws=None):
-        diff_from_singles = self._diff_from_singles(sample_ids,
-                                                    feature_ids)
-        diff_from_singles_scaled = self._diff_from_singles(sample_ids,
-                                                           feature_ids,
-                                                           scaled=True)
+        singles, pooled, not_measured_in_pooled, diff_from_singles = \
+            self._diff_from_singles(sample_ids, feature_ids)
+        singles, pooled, not_measured_in_pooled, diff_from_singles_scaled = \
+            self._diff_from_singles(sample_ids, feature_ids, scaled=True)
         hist_single_vs_pooled_diff(diff_from_singles,
                                    diff_from_singles_scaled, color=color,
                                    title=title, hist_kws=hist_kws)
 
     @memoize
     def percent_pooled_inconsistent(self, sample_ids,
-                                    feature_ids=None,
+                                    feature_ids,
                                     fraction_diff_thresh=FRACTION_DIFF_THRESH):
         """The percent of splicing events which are
 
         """
-        singles, pooled = self._subset_singles_and_pooled(
-            self.data, self.pooled, sample_ids, feature_ids)
-        large_diff = self.pooled_inconsistent(sample_ids, feature_ids,
-                                              fraction_diff_thresh)
-        return large_diff.shape[1] / float(pooled.shape[1]) * 100
+        # singles, pooled = self._subset_singles_and_pooled(sample_ids, feature_ids)
+        singles, pooled, not_measured_in_pooled, large_diff = \
+            self.pooled_inconsistent(sample_ids, feature_ids,
+                                     fraction_diff_thresh)
+        import pdb;
+
+        pdb.set_trace()
+        try:
+            return large_diff.shape[1] / float(pooled.shape[1]) * 100
+        except ZeroDivisionError:
+            return 100
 
     def _calculate_linkage(self, sample_ids, feature_ids,
                            metric='euclidean', linkage_method='median',
