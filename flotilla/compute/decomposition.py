@@ -15,6 +15,9 @@ class DataFrameReducerBase(object):
     def __init__(self, df, n_components=None, **decomposer_kwargs):
 
         # This magically initializes the reducer like DataFramePCA or DataFrameNMF
+        if df.shape[1] <= 3:
+            raise ValueError(
+                "Too few features (n={}) to reduce".format(df.shape[1]))
         super(DataFrameReducerBase, self).__init__(n_components=n_components,
                                                    **decomposer_kwargs)
         self.reduced_space = self.fit_transform(df)
