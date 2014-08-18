@@ -1,4 +1,15 @@
+We use the [`gitflow`](https://github.com/nvie/gitflow) model of branching
+and features. The "production release" repo is `master` and the "development"
+repo is `dev`. Everything else is default:
 
+```
+How to name your supporting branch prefixes?
+Feature branches? [feature/]
+Release branches? [release/]
+Hotfix branches? [hotfix/]
+Support branches? [support/]
+Version tag prefix? []
+```
 
 For developers
 ==============

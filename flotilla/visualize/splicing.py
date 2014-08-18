@@ -89,7 +89,7 @@ class ModalitiesViz(object):
 
     def event(self, feature_id, sample_groupby, group_colors, group_order,
               ax=None):
-        """Plot a single splicing event's changes in NMF space, and its
+        """Plot a single splicing event's changes in DataFrameNMF space, and its
         violin plots
 
         """
@@ -131,6 +131,8 @@ def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
     fig : matplotlib.Figure
         A figure object for saving.
     """
+    if psi.shape[1] == 0:
+        return
 
     if ax is None:
         fig, ax = plt.subplots(figsize=(16, 4))
@@ -240,9 +242,5 @@ def lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
         100 - percent, suffix)
     ax.set_title('Pooled splicing events consistent with singles{}'
                  .format(title_suffix))
-
-
-
-
 
 

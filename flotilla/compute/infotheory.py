@@ -22,7 +22,7 @@ def bin_range_strings(bins):
 
 
 def binify(df, bins):
-    """Makes a histogram of each row the provided binsize
+    """Makes a histogram of each column the provided binsize
 
     Parameters
     ----------
@@ -39,6 +39,8 @@ def binify(df, bins):
     binned : pandas.DataFrame
         An nbins x features DataFrame of each column binned across rows
     """
+    if bins is None:
+        raise ValueError('Must specify "bins"')
     binned = df.apply(lambda x: pd.Series(np.histogram(x, bins=bins)[0]))
     binned.index = bin_range_strings(bins)
 

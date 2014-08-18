@@ -9,10 +9,17 @@ import warnings
 from IPython.html.widgets import interact
 import matplotlib.pyplot as plt
 
+
+
+# from ..compute.predict import default_classifier
 from ..visualize.color import red
 from .network import NetworkerViz
 from .color import str_to_color
-from ..compute.predict import default_classifier
+from ..util import natural_sort
+
+default_classifier = 'ExtraTreesClassifier'
+default_regressor = 'ExtraTreesRegressor'
+default_score_coefficient = 2
 
 
 class Interactive(object):
@@ -64,11 +71,16 @@ class Interactive(object):
             except AttributeError:
                 pass
 
-        # Cast to "set" to get rid of duplicates, then back to list
-        feature_subsets = list(sorted(list(set(feature_subsets))))
+        # Cast to "set" to get rid of duplicates, then back to list because you
+        # can't sort a set, then back to list after sorting because you get
+        # an iterator... yeah ....
+        feature_subsets = list(natural_sort(list(set(feature_subsets))))
 
         # Make sure "variant" is first because all datasets have that
-        feature_subsets.pop(feature_subsets.index('variant'))
+        try:
+            feature_subsets.pop(feature_subsets.index('variant'))
+        except ValueError:
+            pass
         feature_subsets.insert(0, 'variant')
         return feature_subsets
 
@@ -268,9 +280,7 @@ class Interactive(object):
                 plt.gcf().savefig(savefile)
 
         if feature_subsets is None:
-            feature_subsets = list(set(itertools.chain(
-                *self.default_feature_subsets.values())))
-            feature_subsets.pop(feature_subsets.index('variant'))
+            feature_subsets = Interactive.get_feature_subsets(self, data_types)
             feature_subsets.insert(0, 'variant')
         if sample_subsets is None:
             sample_subsets = self.default_sample_subsets
@@ -399,7 +409,8 @@ class Interactive(object):
                 plt.gcf().savefig(savefile)
 
         if feature_subsets is None:
-            feature_subsets = self.splicing.feature_subsets.keys()
+            feature_subsets = Interactive.get_feature_subsets(self,
+                                                              ['splicing'])
 
         if sample_subsets is None:
             sample_subsets = self.default_sample_subsets
@@ -468,17 +479,16 @@ class Interactive(object):
                 plt.gcf().savefig(savefile)
 
         if feature_subsets is None:
-            feature_subsets = self.splicing.feature_subsets.keys()
-            feature_subsets.pop(feature_subsets.index('variant'))
-            feature_subsets.insert(0, 'variant')
-            feature_subsets = feature_subsets + ['custom']
+            feature_subsets = Interactive.get_feature_subsets(self,
+                                                              ['splicing',
+                                                               'expression'])
 
         if sample_subsets is None:
             sample_subsets = self.default_sample_subsets
 
         interact(do_interact,
                  sample_subset=sample_subsets,
-                 feature_subset=feature_subsets + ['custom'],
+                 feature_subset=feature_subsets,
                  difference_threshold=difference_threshold,
                  color=colors,
                  savefile=''
@@ -525,16 +535,15 @@ class Interactive(object):
                 f = plt.gcf()
                 f.savefig(savefile)
 
-        feature_subsets = list(set(itertools.chain(
-            *self.default_feature_subsets.values())))
-        feature_subsets.pop(feature_subsets.index('variant'))
-        feature_subsets.insert(0, 'variant')
+        feature_subsets = Interactive.get_feature_subsets(self,
+                                                          ['expression',
+                                                           'splicing'])
 
         linkage_method = ('single', 'median', 'centroid')
         metric = ('euclidean', 'seuclidean')
         interact(do_interact,
                  data_type=('expression', 'splicing'),
                  sample_subset=self.default_sample_subsets,
-                 feature_subset=feature_subsets + ['custom'],
+                 feature_subset=feature_subsets,
                  metric=metric,
                  linkage_method=linkage_method)

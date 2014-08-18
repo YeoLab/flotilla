@@ -15,7 +15,6 @@ patsy >= 0.2.1
 pandas >= 0.13.1
 statsmodels >= 0.5.0
 seaborn >= 0.3
-#seaborn == 0.4.clustering
 networkx
 tornado >= 3.2.1
 pyzmq
@@ -23,6 +22,5 @@ pyzmq
 six
 pytest-cov
 python-coveralls
-sphinx_bootstrap_theme
 jinja2
 fastcluster
