@@ -16,8 +16,9 @@ from pandas.util.testing import assert_frame_equal, assert_series_equal
 
 from ..util import memoize
 
-# from ..visualize.decomposition import PCAViz, NMFViz
 
+# from ..visualize.decomposition import PCAViz, NMFViz
+from .decomposition import DataFramePCA, DataFrameNMF
 
 default_classifier = 'ExtraTreesClassifier'
 default_regressor = 'ExtraTreesRegressor'
@@ -710,28 +711,12 @@ class PredictorBase(object):
         return np.sum(self.important_features_)
 
     @memoize
-    def pca(self, **plotting_kwargs):
-        return PCAViz(self.subset_, DataModel=self.DataModel,
-                      feature_renamer=self.feature_renamer,
-                      groupby=self.groupby, color=self.color,
-                      pooled=self.pooled, order=self.order,
-                      violinplot_kws=self.violinplot_kws,
-                      data_type=self.data_type,
-                      label_to_color=self.label_to_color,
-                      label_to_marker=self.label_to_marker,
-                      **plotting_kwargs)
+    def pca(self):
+        return DataFramePCA(self.subset_)
 
     @memoize
-    def nmf(self, **plotting_kwargs):
-        return NMFViz(self.subset_, DataModel=self.DataModel,
-                      feature_renamer=self.feature_renamer,
-                      groupby=self.groupby, color=self.color,
-                      pooled=self.pooled, order=self.order,
-                      violinplot_kws=self.violinplot_kws,
-                      data_type=self.data_type,
-                      label_to_color=self.label_to_color,
-                      label_to_marker=self.label_to_marker,
-                      **plotting_kwargs)
+    def nmf(self):
+        return DataFrameNMF(self.subset_)
 
 
 class Regressor(PredictorBase):
