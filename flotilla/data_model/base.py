@@ -514,7 +514,7 @@ class BaseData(object):
                                     figsize=figsize)
 
     @memoize
-    def reduce(self, sample_ids, feature_ids,
+    def reduce(self, sample_ids=None, feature_ids=None,
                featurewise=False,
                reducer=DataFramePCA,
                standardize=True,
