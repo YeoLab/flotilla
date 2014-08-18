@@ -2,6 +2,7 @@ import sys
 
 import networkx as nx
 import numpy as np
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import seaborn
 
@@ -9,10 +10,9 @@ from .color import green
 from ..compute.network import Networker
 from ..util import dict_to_str
 from ..visualize.color import blue
-from ..visualize.decomposition import DecompositionViz
 
 
-class NetworkerViz(Networker, DecompositionViz):
+class NetworkerViz(Networker):
     # TODO.md: needs to be decontaminated, as it requires methods from
     # data_object;
     # maybe this class should move to data_model.BaseData
@@ -96,10 +96,11 @@ class NetworkerViz(Networker, DecompositionViz):
         ax_cov = plt.axes([0.1, 0.1, .2, .15])
         ax_degree = plt.axes([0.9, .8, .2, .15])
 
-        pca = self.DataModel.reduce(label_to_color=label_to_color,
-                                    label_to_marker=label_to_marker,
-                                   groupby=groupby,
-                                   **pca_settings)
+        pca = self.DataModel.reduce(
+            # label_to_color=label_to_color,
+            # label_to_marker=label_to_marker,
+            # groupby=groupby,
+            **pca_settings)
 
         if featurewise:
             node_color_mapper = lambda x: 'r' \
@@ -149,15 +150,17 @@ class NetworkerViz(Networker, DecompositionViz):
             ax=main_ax, alpha=0.5)
 
         try:
-            node_color = map(
-                lambda x: pca.X[feature_of_interest].ix[x], graph.nodes())
+
+            feature_id = self.DataModel.maybe_renamed_to_feature_id(
+                feature_of_interest)[0]
+            node_color = map(lambda x: pca.X[feature_id].ix[x], graph.nodes())
 
             nx.draw_networkx_nodes(graph, pos, node_color=node_color,
-                                   cmap=plt.cm.Greys,
+                                   cmap=mpl.cm.Greys,
                                    node_size=map(
                                        lambda x: node_size_mapper(x) * .5,
                                        graph.nodes()), ax=main_ax, alpha=1)
-        except:
+        except KeyError:
             pass
 
         if featurewise:
@@ -324,4 +327,4 @@ class NetworkerViz(Networker, DecompositionViz):
                 sys.stdout.write("error writing graph file:"
                                  "\n{}".format(str(e)))
 
-        return(g, pos)
+        return (g, pos)

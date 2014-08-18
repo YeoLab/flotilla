@@ -10,6 +10,7 @@ from IPython.html.widgets import interact
 import matplotlib.pyplot as plt
 
 
+
 # from ..compute.predict import default_classifier
 from ..visualize.color import red
 from .network import NetworkerViz
@@ -76,7 +77,10 @@ class Interactive(object):
         feature_subsets = list(natural_sort(list(set(feature_subsets))))
 
         # Make sure "variant" is first because all datasets have that
-        feature_subsets.pop(feature_subsets.index('variant'))
+        try:
+            feature_subsets.pop(feature_subsets.index('variant'))
+        except ValueError:
+            pass
         feature_subsets.insert(0, 'variant')
         return feature_subsets
 

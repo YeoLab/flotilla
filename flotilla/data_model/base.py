@@ -14,7 +14,7 @@ from sklearn.preprocessing import StandardScaler
 from ..compute.decomposition import DataFramePCA, DataFrameNMF
 from ..compute.clustering import Cluster
 from ..compute.infotheory import binify
-# from ..compute.predict import PredictorConfigManager, PredictorDataSetManager
+from ..compute.predict import PredictorConfigManager, PredictorDataSetManager
 from ..visualize.decomposition import DecompositionViz
 from ..visualize.generic import violinplot, nmf_space_transitions
 from ..visualize.network import NetworkerViz
@@ -104,13 +104,13 @@ class BaseData(object):
         else:
             self.feature_renamer = lambda x: shortener(lambda y: y, x)
 
-        # if predictor_config_manager is None:
-        #     self.predictor_config_manager = PredictorConfigManager()
-        # else:
-        #     self.predictor_config_manager = predictor_config_manager
-        #
-        # self.predictor_dataset_manager = PredictorDataSetManager(
-        #     self.predictor_config_manager)
+        if predictor_config_manager is None:
+            self.predictor_config_manager = PredictorConfigManager()
+        else:
+            self.predictor_config_manager = predictor_config_manager
+
+        self.predictor_dataset_manager = PredictorDataSetManager(
+            self.predictor_config_manager)
 
         self.networks = NetworkerViz(self)
 
@@ -404,26 +404,27 @@ class BaseData(object):
         subset = subset.T.ix[feature_ids].T
 
         if require_min_samples and not single_feature:
-            subset = subset.ix[:, subset.count() > self.min_samples]
+            subset = subset.ix[:, subset.count() >= self.min_samples]
         return subset
 
-    def _subset_singles_and_pooled(self, singles, pooled, sample_ids=None,
+    def _subset_singles_and_pooled(self, sample_ids=None,
                                    feature_ids=None):
         # singles_ids = self.data.index.intersection(sample_ids)
         # pooled_ids = self.pooled.index.intersection(sample_ids)
-        # # import pdb; pdb.set_trace()
-        singles = self._subset(singles, sample_ids, feature_ids,
+        # import pdb; pdb.set_trace()
+        singles = self._subset(self.data, sample_ids, feature_ids,
                                require_min_samples=True)
 
         # If the sample ids don't overlap with the pooled sample, assume you
         # want all the pooled samples
-        if sample_ids is not None and sum(pooled.index.isin(sample_ids)) > 0:
+        if sample_ids is not None and sum(self.pooled.index.isin(sample_ids)) \
+                > 0:
             pooled_sample_ids = sample_ids
         else:
             pooled_sample_ids = None
-        pooled = self._subset(pooled, pooled_sample_ids, feature_ids,
+        pooled = self._subset(self.pooled, pooled_sample_ids, feature_ids,
                               require_min_samples=False)
-        if feature_ids is not None and len(feature_ids) > 1:
+        if feature_ids is None or len(feature_ids) > 1:
             # These are DataFrames
             singles, pooled = singles.align(pooled, axis=1, join='inner')
         else:
@@ -660,8 +661,9 @@ class BaseData(object):
                     label_pooled=False):
         """For compatiblity across data types, can specify _violinplot
         """
-        singles, pooled = self._subset_singles_and_pooled(
-            self.data, self.pooled, sample_ids, feature_ids=[feature_id])
+        singles, pooled = self._subset_singles_and_pooled(sample_ids,
+                                                          feature_ids=[
+                                                              feature_id])
 
         outliers = self._subset(self.outliers, feature_ids=[feature_id])
 
@@ -702,21 +704,27 @@ class BaseData(object):
         if not isinstance(feature_ids, pd.Index):
             feature_ids = [feature_id]
 
-        ncols = 2 if self.data_type == 'splicing' else 1
+        ncols = 2  #if self.data_type == 'splicing' else 1
 
         for feature_id in feature_ids:
             fig, axes = plt.subplots(ncols=ncols, figsize=(4 * ncols, 4))
+            # if self.data_type == 'expression':
+            #     axes = [axes]
+
             self._violinplot(feature_id, sample_ids=sample_ids,
                              phenotype_groupby=phenotype_groupby,
                              phenotype_order=phenotype_order, ax=axes[0],
                              color=color)
-            if self.data_type == 'splicing':
+            # if self.data_type == 'splicing':
+            try:
                 self.plot_nmf_space_transitions(
                     feature_id, groupby=phenotype_groupby,
                     phenotype_to_color=phenotype_to_color,
                     phenotype_to_marker=phenotype_to_marker,
                     order=phenotype_order, ax=axes[1],
                     xlabel=xlabel, ylabel=ylabel)
+            except KeyError:
+                continue
             sns.despine()
 
     def nmf_space_positions(self, groupby):

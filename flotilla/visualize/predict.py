@@ -11,6 +11,7 @@ import seaborn as sns
 
 from ..compute.predict import Classifier, Regressor, PredictorBase
 from .color import green
+from .decomposition import DecompositionViz
 
 
 class PredictorBaseViz(PredictorBase):
@@ -44,10 +45,10 @@ class PredictorBaseViz(PredictorBase):
         pca_plotting_kwargs['ax'] = ax_pca
 
         self.plot_scores(ax=ax_scores)
-        pca = self.do_pca(**pca_plotting_kwargs)
+        pcaviz = self.do_pca(**pca_plotting_kwargs)
         plt.tight_layout()
 
-        return pca
+        return pcaviz
 
     def set_reducer_plotting_args(self, rpa):
         self._reducer_plotting_args.update(rpa)
@@ -124,18 +125,19 @@ class PredictorBaseViz(PredictorBase):
         assert self.has_been_scored
 
         ax = plt.gca() if not 'ax' in plotting_kwargs else plotting_kwargs['ax']
-        del plotting_kwargs['ax']
+        # del plotting_kwargs['ax']
         local_plotting_kwargs = self._reducer_plotting_args
         local_plotting_kwargs.update(plotting_kwargs)
-        pca = self.pca(
-            # groupby=self.groupby,
-            #            feature_renamer=self.feature_renamer, color=self.color,
-            #            pooled=self.pooled, order=self.order,
-            #            violinplot_kws=self.violinplot_kws,
-            #            data_type=self.data_type,
-            **local_plotting_kwargs)
-        pca(ax=ax)
-        return pca
+        pca = self.pca()
+        pcaviz = DecompositionViz(pca.reduced_space, pca.components_,
+                                  self.DataModel,
+                                  label_to_color=self.label_to_color,
+                                  label_to_marker=self.label_to_marker,
+                                  groupby=self.groupby,
+                                  color=self.color,
+                                  order=self.order)
+        pcaviz(**local_plotting_kwargs)
+        return pcaviz
 
     def plot_scores(self, ax=None):
 

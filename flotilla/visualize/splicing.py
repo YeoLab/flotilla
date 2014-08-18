@@ -131,6 +131,8 @@ def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
     fig : matplotlib.Figure
         A figure object for saving.
     """
+    if psi.shape[1] == 0:
+        return
 
     if ax is None:
         fig, ax = plt.subplots(figsize=(16, 4))
