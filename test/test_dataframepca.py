@@ -2,7 +2,7 @@ import numpy.testing as npt
 import pandas.util.testing as pdt
 
 from flotilla.data_model import ExpressionData
-from flotilla.visualize.decomposition import PCAViz
+from flotilla.compute.decomposition import DataFramePCA
 
 
 class TestDecompositionViz():
@@ -13,7 +13,7 @@ class TestDecompositionViz():
 
         subset, means = expression._subset_and_standardize(
             expression.data, return_means=True)
-        true_reduced = PCAViz(subset)
+        true_reduced = DataFramePCA(subset)
         true_reduced.means = means
 
         pdt.assert_frame_equal(test_reduced.df, subset)
