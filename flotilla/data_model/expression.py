@@ -7,6 +7,7 @@ import sys
 import numpy as np
 
 from .base import BaseData
+from ..util import memoize
 
 
 class ExpressionData(BaseData):
@@ -128,13 +129,15 @@ class ExpressionData(BaseData):
             standardize=standardize, metric=metric,
             linkage_method=linkage_method)
 
+    @memoize
     def binify(self, data):
         data = self._subset_and_standardize(data)
         data = (data - data.min()) / (data.max() - data.min())
-
-        vmax = data.abs().max().max()
-        vmin = -vmax
-        bins = np.linspace(vmin, vmax, 10)
+        # vmax = data.abs().max().max()
+        # vmin = -vmax
+        # bins = np.linspace(vmin, vmax, 10)
+        bins = np.arange(0, 1.1, .1)
+        # print 'bins:', bins
         return super(ExpressionData, self).binify(data, bins)
 
 
