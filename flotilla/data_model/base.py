@@ -190,7 +190,7 @@ class BaseData(object):
                     feature_subsets.update(
                         self.feature_data.groupby(category).groups)
 
-        for feature_subset in feature_subsets:
+        for feature_subset in feature_subsets.keys():
             not_feature_subset = 'not {}'.format(feature_subset)
             if not_feature_subset not in feature_subsets:
                 in_features = self.feature_data.index.isin(feature_subsets[
