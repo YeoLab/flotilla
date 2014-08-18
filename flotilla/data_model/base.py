@@ -180,8 +180,11 @@ class BaseData(object):
                     feature_subsets[col] = feature_set
             categories = [  # 'tag',
                             'gene_type', 'splice_type']  #, 'gene_status']
-            filtered = self.feature_data.groupby('gene_type').filter(
-                lambda x: len(x) > 20)
+            try:
+                filtered = self.feature_data.groupby('gene_type').filter(
+                    lambda x: len(x) > 20)
+            except KeyError:
+                filtered = self.feature_data
             for category in categories:
                 if category in filtered:
                     feature_subsets.update(
