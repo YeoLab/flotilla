@@ -9,6 +9,7 @@ import pandas as pd
 import seaborn as sns
 
 
+
 # from ..compute.decomposition import DataFrameNMF, DataFramePCA
 from .color import set1
 
@@ -209,8 +210,10 @@ class DecompositionViz(object):
 
         if self.label_to_marker is None:
             markers = cycle(['o', '^', 's', 'v', '*', 'D', 'h'])
+
             def marker_factory():
                 return markers.next()
+
             self.label_to_marker = defaultdict(marker_factory)
 
         # Plot the samples
@@ -316,12 +319,17 @@ class DecompositionViz(object):
         """
         ncols = 4
         nrows = 1
-        vector_labels = set(self.magnitudes[:self.n_vectors].index.union(
-            pd.Index(self.top_features)))
+        vector_labels = list(set(self.magnitudes[:self.n_vectors].index.union(
+            pd.Index(self.top_features))))
         while ncols * nrows < len(vector_labels):
             nrows += 1
         self.violins_fig, axes = plt.subplots(nrows=nrows, ncols=ncols,
                                               figsize=(4 * ncols, 4 * nrows))
+        renamed_vectors = map(self.DataModel.feature_renamer, vector_labels)
+        vector_labels = [x for (y, x) in sorted(zip(renamed_vectors,
+                                                    vector_labels))]
+
+        # import pdb; pdb.set_trace()
 
         for vector_label, ax in zip(vector_labels, axes.flat):
             # renamed = self.feature_renamer(vector_label)
@@ -340,18 +348,18 @@ class DecompositionViz(object):
         self.violins_fig.tight_layout()
 
 
-    # class PCAViz(DecompositionViz, DataFramePCA):
-    #     _default_reduction_kwargs = dict(whiten=False)
-    #     pass
-    #
-    #
-    # class NMFViz(DecompositionViz, DataFrameNMF):
-    #     _default_reduction_kwargs = \
-    #         {'n_components': 2, 'max_iter': 20000, 'nls_max_iter': 40000}
-    #
-    #     def __call__(self, ax=None, **kwargs):
-    #         pass
-    # gs_x = 14
+        # class PCAViz(DecompositionViz, DataFramePCA):
+        #     _default_reduction_kwargs = dict(whiten=False)
+        #     pass
+        #
+        #
+        # class NMFViz(DecompositionViz, DataFrameNMF):
+        #     _default_reduction_kwargs = \
+        #         {'n_components': 2, 'max_iter': 20000, 'nls_max_iter': 40000}
+        #
+        #     def __call__(self, ax=None, **kwargs):
+        #         pass
+        # gs_x = 14
         # gs_y = 12
         #
         # if ax is None:

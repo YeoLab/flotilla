@@ -150,7 +150,9 @@ class NetworkerViz(Networker):
             ax=main_ax, alpha=0.5)
 
         try:
+            import pdb;
 
+            pdb.set_trace()
             feature_id = self.DataModel.maybe_renamed_to_feature_id(
                 feature_of_interest)[0]
             node_color = map(lambda x: pca.X[feature_id].ix[x], graph.nodes())

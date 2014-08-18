@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 
 
 
+
 # from ..compute.predict import default_classifier
 from ..visualize.color import red
 from .network import NetworkerViz
@@ -450,26 +451,6 @@ class Interactive(object):
             sample_ids = self.sample_subset_to_sample_ids(sample_subset)
 
             color = str_to_color[color]
-            from sklearn.preprocessing import LabelEncoder
-
-            le = LabelEncoder()
-            n_in_this_class = len(set(
-                le.fit_transform(self.experiment_design.data[sample_subset])))
-            try:
-                assert n_in_this_class
-            except:
-                raise RuntimeError("this sample designator is not binary")
-
-            sample_series = self.experiment_design.data[sample_subset]
-            #TODO: cast non-boolean binary ids to boolean
-            try:
-                assert self.experiment_design.data[
-                           sample_subset].dtype == 'bool'
-            except:
-                raise RuntimeError("this sample designator is not boolean")
-
-            sample_ids = self.experiment_design.data[sample_subset].index[
-                self.experiment_design.data[sample_subset]]
 
             self.splicing.plot_lavalamp_pooled_inconsistent(
                 sample_ids, feature_ids, difference_threshold, color=color)

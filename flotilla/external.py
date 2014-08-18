@@ -278,13 +278,13 @@ def make_study_datapackage(name, metadata,
         data_filename = '{}/{}.csv.gz'.format(datapackage_dir, resource_name)
         with gzip.open(data_filename, 'wb') as f:
             resource_data.to_csv(f)
-        try:
-            # TODO: only transmit data if it has been updated
-            subprocess.call(
-                "scp {} {}:{}{}.".format(data_filename, host, host_destination,
-                                         name), shell=True)
-        except Exception as e:
-            sys.stderr.write("error sending data to host: {}".format(e))
+        # try:
+        #     # TODO: only transmit data if it has been updated
+        #     subprocess.call(
+        #         "scp {} {}:{}{}.".format(data_filename, host, host_destination,
+        #                                  name), shell=True)
+        # except Exception as e:
+        #     sys.stderr.write("error sending data to host: {}".format(e))
 
         resource['path'] = data_filename
         resource['compression'] = 'gzip'
