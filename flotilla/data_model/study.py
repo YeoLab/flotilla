@@ -483,33 +483,36 @@ class Study(StudyFactory):
                 if 'phenotype_to_marker' in resource:
                     phenotype_to_marker = resource['phenotype_to_marker']
 
-        if 'species' in datapackage:
-            species_data_url = '{}/{}/datapackage.json'.format(
-                species_datapackage_base_url, datapackage['species'])
-            species_data_package = data_package_url_to_dict(species_data_url)
-            species_dfs = {}
+        species_dfs = {}
+        try:
+            if 'species' in datapackage:
+                species_data_url = '{}/{}/datapackage.json'.format(
+                    species_datapackage_base_url, datapackage['species'])
+                species_data_package = data_package_url_to_dict(
+                    species_data_url)
+                # species_dfs = {}
 
-            for resource in species_data_package['resources']:
-                if 'url' in resource:
-                    resource_url = resource['url']
-                    filename = check_if_already_downloaded(resource_url)
-                else:
-                    filename = resource['path']
+                for resource in species_data_package['resources']:
+                    if 'url' in resource:
+                        resource_url = resource['url']
+                        filename = check_if_already_downloaded(resource_url)
+                    else:
+                        filename = resource['path']
 
-                # reader = getattr(cls, '_load_' + resource['format'])
-                reader = cls.readers[resource['format']]
+                    # reader = getattr(cls, '_load_' + resource['format'])
+                    reader = cls.readers[resource['format']]
 
-                compression = None if 'compression' not in resource else \
-                    resource['compression']
-                name = resource['name']
-                species_dfs[name] = reader(filename,
-                                           compression=compression)
-                if 'feature_rename_col' in resource:
-                    key = '{}_feature_rename_col'.format(
-                        name.split('_feature_data')[0])
-                    species_dfs[key] = resource['feature_rename_col']
-        else:
-            species_dfs = {}
+                    compression = None if 'compression' not in resource else \
+                        resource['compression']
+                    name = resource['name']
+                    species_dfs[name] = reader(filename,
+                                               compression=compression)
+                    if 'feature_rename_col' in resource:
+                        key = '{}_feature_rename_col'.format(
+                            name.split('_feature_data')[0])
+                        species_dfs[key] = resource['feature_rename_col']
+        except (IOError, ValueError) as e:
+            pass
 
         try:
             sample_metadata = dfs['metadata']
