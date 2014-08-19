@@ -5,8 +5,8 @@ contain the root `toctree` directive.
 
 Welcome to flotilla's documentation!
 ====================================
-.. include:: ../README.rst
 .. include:: ../flotilla.png
+.. include:: ../README.rst
 
 Contents:
 
