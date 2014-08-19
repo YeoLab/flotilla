@@ -41,7 +41,7 @@ class TestStudy(object):
         study.plot_pca()
 
     def test_plot_graph(self, study):
-        study.plot_graph()
+        study.plot_graph(feature_of_interest=None)
 
     def test_plot_classifier(self, study):
         study.plot_classifier('P_cell')
