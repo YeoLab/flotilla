@@ -150,8 +150,10 @@ class NetworkerViz(Networker):
             ax=main_ax, alpha=0.5)
 
         try:
+
             feature_id = self.DataModel.maybe_renamed_to_feature_id(
                 feature_of_interest)[0]
+
             node_color = map(lambda x: pca.X[feature_id].ix[x], graph.nodes())
 
             nx.draw_networkx_nodes(graph, pos, node_color=node_color,
@@ -159,7 +161,7 @@ class NetworkerViz(Networker):
                                    node_size=map(
                                        lambda x: node_size_mapper(x) * .5,
                                        graph.nodes()), ax=main_ax, alpha=1)
-        except KeyError:
+        except (KeyError, ValueError):
             pass
 
         if featurewise:
