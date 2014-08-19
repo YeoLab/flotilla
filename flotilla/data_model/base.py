@@ -119,8 +119,8 @@ class BaseData(object):
         try:
             return self.feature_data[self.feature_rename_col].dropna()
         except TypeError:
-            return pd.Series(self.feature_data.index,
-                             index=self.feature_data.index)
+            return pd.Series(self.data.columns,
+                             index=self.data.columns)
 
     def maybe_renamed_to_feature_id(self, feature_id):
         """To be able to give a simple gene name, e.g. "RBFOX2" and get the
