@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>flotilla.visualize.generic &mdash; flotilla 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-3.1.0/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-3.1.0/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="flotilla 0.1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="flotilla" href="../../flotilla.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html">
+          flotilla</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="simple">
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <h1>Source code for flotilla.visualize.generic</h1><div class="highlight"><pre>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s">&#39;olga&#39;</span>
+
+<span class="kn">import</span> <span class="nn">scipy</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">cluster</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib.gridspec</span> <span class="kn">as</span> <span class="nn">gridspec</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="kn">as</span> <span class="nn">mpl</span>
+
+<div class="viewcode-block" id="clusterGram"><a class="viewcode-back" href="../../../flotilla.visualize.html#flotilla.visualize.generic.clusterGram">[docs]</a><span class="k">def</span> <span class="nf">clusterGram</span><span class="p">(</span><span class="n">dataFrame</span><span class="p">,</span> <span class="n">distance_metric</span><span class="o">=</span><span class="s">&#39;euclidean&#39;</span><span class="p">,</span>
+                <span class="n">linkage_method</span><span class="o">=</span><span class="s">&#39;average&#39;</span><span class="p">,</span>
+                <span class="n">outfile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">clusterRows</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">clusterCols</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                <span class="n">timeSeries</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">doCovar</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">row_label_color_fun</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s">&#39;k&#39;</span><span class="p">,</span>
+                <span class="n">col_label_color_fun</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s">&#39;k&#39;</span><span class="p">,</span>
+                <span class="n">link_color_func</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s">&#39;k&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Run hierarchical clustering on dataset. Creates a heatmap of cluster-ordered dataset</span>
+<span class="sd">    heavy-lifting is done by:</span>
+
+<span class="sd">    gets distances between rows/columns</span>
+
+<span class="sd">    y_events = scipy.spatial.distance.pdist(dataset, distance_metric)</span>
+
+<span class="sd">    calculates the closest rows/columns</span>
+
+<span class="sd">    Z_events = scipy.cluster.hierarchy.linkage(y_events, linkage_method)</span>
+
+<span class="sd">    genereates dendrogram (tree)</span>
+
+<span class="sd">    d_events = scipy.cluster.hierarchy.dendrogram(Z_events, no_labels=True)</span>
+
+<span class="sd">    set outfile == &quot;None&quot; to inibit saving an eps file (only show it, don&#39;t save it)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dataFrame</span><span class="p">)</span>
+    <span class="n">colLabels</span> <span class="o">=</span> <span class="n">dataFrame</span><span class="o">.</span><span class="n">columns</span>
+    <span class="n">rowLabels</span> <span class="o">=</span> <span class="n">dataFrame</span><span class="o">.</span><span class="n">index</span>
+    <span class="n">nRow</span><span class="p">,</span> <span class="n">nCol</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="k">if</span> <span class="n">clusterRows</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&quot;getting row distance matrix&quot;</span>
+        <span class="n">y_events</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">distance</span><span class="o">.</span><span class="n">pdist</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">distance_metric</span><span class="p">)</span>
+        <span class="k">print</span> <span class="s">&quot;calculating linkages&quot;</span>
+        <span class="n">Z_events</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">hierarchy</span><span class="o">.</span><span class="n">linkage</span><span class="p">(</span><span class="n">y_events</span><span class="p">,</span> <span class="n">linkage_method</span><span class="p">,</span>
+                                                   <span class="n">metric</span><span class="o">=</span><span class="n">distance_metric</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">clusterCols</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&quot;getting column distance matrix&quot;</span>
+        <span class="n">y_samples</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">distance</span><span class="o">.</span><span class="n">pdist</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">dataset</span><span class="p">),</span>
+                                                 <span class="n">distance_metric</span><span class="p">)</span>
+        <span class="k">print</span> <span class="s">&quot;calculating linkages&quot;</span>
+        <span class="n">Z_samples</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">hierarchy</span><span class="o">.</span><span class="n">linkage</span><span class="p">(</span><span class="n">y_samples</span><span class="p">,</span> <span class="n">linkage_method</span><span class="p">,</span>
+                                                    <span class="n">metric</span><span class="o">=</span><span class="n">distance_metric</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">doCovar</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span>
+
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)</span>
+
+    <span class="n">gs</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+
+    <span class="n">ax1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span>  <span class="c">#row dendrogram</span>
+
+    <span class="n">ax1</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">([])</span>
+    <span class="n">ax1</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([])</span>
+    <span class="n">ax1</span><span class="o">.</span><span class="n">set_frame_on</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+
+    <span class="n">reordered</span> <span class="o">=</span> <span class="n">dataset</span>
+    <span class="n">event_order</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">nRow</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">clusterRows</span><span class="p">:</span>
+        <span class="n">d_events</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">hierarchy</span><span class="o">.</span><span class="n">dendrogram</span><span class="p">(</span><span class="n">Z_events</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s">&#39;right&#39;</span><span class="p">,</span>
+                                                      <span class="n">link_color_func</span><span class="o">=</span><span class="n">link_color_func</span><span class="p">,</span>
+                                                      <span class="n">labels</span><span class="o">=</span><span class="n">rowLabels</span><span class="p">)</span>
+        <span class="n">event_order</span> <span class="o">=</span> <span class="n">d_events</span><span class="p">[</span><span class="s">&#39;leaves&#39;</span><span class="p">]</span>
+        <span class="n">reordered</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="n">event_order</span><span class="p">,</span> <span class="p">:]</span>
+
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">get_yticklabels</span><span class="p">()</span>
+
+    <span class="n">ax2</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="mi">9</span><span class="p">])</span>  <span class="c">#column dendrogram</span>
+
+    <span class="n">ax2</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">([])</span>
+    <span class="n">ax2</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([])</span>
+    <span class="n">ax2</span><span class="o">.</span><span class="n">set_frame_on</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+
+    <span class="n">sample_order</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">nCol</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">clusterCols</span><span class="p">:</span>
+        <span class="n">d_samples</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">hierarchy</span><span class="o">.</span><span class="n">dendrogram</span><span class="p">(</span><span class="n">Z_samples</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">colLabels</span><span class="p">,</span>
+                                                       <span class="n">leaf_rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span>
+                                                       <span class="n">link_color_func</span><span class="o">=</span><span class="n">link_color_func</span><span class="p">)</span>
+        <span class="n">sample_order</span> <span class="o">=</span> <span class="n">d_samples</span><span class="p">[</span><span class="s">&#39;leaves&#39;</span><span class="p">]</span>
+        <span class="n">reordered</span> <span class="o">=</span> <span class="n">reordered</span><span class="p">[:,</span> <span class="n">sample_order</span><span class="p">]</span>
+
+    <span class="n">axmatrix</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="mi">2</span><span class="p">:</span><span class="mi">9</span><span class="p">])</span>
+    <span class="n">bds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">reordered</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">timeSeries</span><span class="p">:</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">Normalize</span><span class="p">(</span><span class="n">vmin</span><span class="o">=-</span><span class="n">bds</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">bds</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">reordered</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">reordered</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Reds</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">RdBu_r</span>
+
+    <span class="n">im</span> <span class="o">=</span> <span class="n">axmatrix</span><span class="o">.</span><span class="n">matshow</span><span class="p">(</span><span class="n">reordered</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="s">&#39;auto&#39;</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s">&#39;lower&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span>
+                          <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">)</span>
+    <span class="n">axmatrix</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([])</span>
+    <span class="n">axmatrix</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([])</span>
+    <span class="n">axcolor</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">6</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="n">cbTicks</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">dataset</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dataset</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">dataset</span><span class="p">)]</span>
+    <span class="n">cb</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="n">axcolor</span><span class="p">,</span> <span class="n">ticks</span><span class="o">=</span><span class="n">cbTicks</span><span class="p">,</span> <span class="n">use_gridspec</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+    <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="n">row_label_color_fun</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">get_text</span><span class="p">()))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ax1</span><span class="o">.</span><span class="n">get_yticklabels</span><span class="p">()]</span>
+    <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="n">col_label_color_fun</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">get_text</span><span class="p">()))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ax2</span><span class="o">.</span><span class="n">get_xticklabels</span><span class="p">()]</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">outfile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">outfile</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">event_order</span><span class="p">,</span> <span class="n">sample_order</span>
+</pre></div></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2014, Olga Botvinnik, Michael Lovci, Patrick Liu, Yan Song.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>flotilla.data_model.base &mdash; flotilla 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-3.1.0/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-3.1.0/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="flotilla 0.1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="flotilla" href="../../flotilla.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html">
+          flotilla</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="simple">
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <h1>Source code for flotilla.data_model.base</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Base dataset class for all dataset types. All dataset types in flotilla inherit from</span>
+<span class="sd">this, or a child object (like ExpressionData).</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial.distance</span> <span class="kn">import</span> <span class="n">pdist</span><span class="p">,</span> <span class="n">squareform</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">StandardScaler</span>
+
+<span class="kn">from</span> <span class="nn">..visualize.predict</span> <span class="kn">import</span> <span class="n">ClassifierViz</span>
+
+
+<span class="n">MINIMUM_SAMPLES</span> <span class="o">=</span> <span class="mi">12</span>
+
+
+<div class="viewcode-block" id="BaseData"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.base.BaseData">[docs]</a><span class="k">class</span> <span class="nc">BaseData</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generic study_data model for both splicing and expression study_data</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+
+
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">feature_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">species</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">feature_rename_col</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">outliers</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">min_samples</span><span class="o">=</span><span class="n">MINIMUM_SAMPLES</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Base class for biological dataset measurements</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        experiment_design_data : pandas.DataFrame</span>
+<span class="sd">            Metadata on the samples, with sample names as rows and columns as</span>
+<span class="sd">            attributes. Any boolean column will be added as an option to</span>
+<span class="sd">            interactive_pca</span>
+<span class="sd">        dataset : pandas.DataFrame</span>
+<span class="sd">            A dataframe of samples x features (samples on rows, features on</span>
+<span class="sd">            columns) with some kind of measurements of cells,</span>
+<span class="sd">            e.g. gene expression values such as TPM, RPKM or FPKM, alternative</span>
+<span class="sd">            splicing &quot;Percent-spliced-in&quot; (PSI) values, or RNA editing scores.</span>
+<span class="sd">        species : str, optional</span>
+<span class="sd">            The species in which this was measured</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span>
+        <span class="k">if</span> <span class="n">outliers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">drop_outliers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">,</span> <span class="n">outliers</span><span class="p">)</span>
+
+        <span class="c"># self.experiment_design_data = experiment_design_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feature_data</span> <span class="o">=</span> <span class="n">feature_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feature_rename_col</span> <span class="o">=</span> <span class="n">feature_rename_col</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_samples</span> <span class="o">=</span> <span class="n">min_samples</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_feature_sets</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">species</span> <span class="o">=</span> <span class="n">species</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feature_sets</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_rename_col</span> <span class="ow">is</span> <span class="ow">not</span> \
+                <span class="bp">None</span><span class="p">:</span>
+            <span class="k">def</span> <span class="nf">feature_renamer</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_data</span><span class="p">[</span><span class="n">feature_rename_col</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+                    <span class="n">rename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_data</span><span class="p">[</span><span class="n">feature_rename_col</span><span class="p">][</span><span class="n">x</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rename</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+                        <span class="k">return</span> <span class="n">rename</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rename</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+                        <span class="k">return</span> <span class="s">&quot;:&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;@&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;:&quot;</span><span class="p">)[:</span><span class="mi">2</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">rename</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">x</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">feature_renamer</span> <span class="o">=</span> <span class="n">feature_renamer</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">feature_renamer</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_data</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_data</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="nb">bool</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">feature_set</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_data</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_data</span><span class="p">[</span><span class="n">col</span><span class="p">]]</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">feature_set</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">feature_sets</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">feature_set</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">all_features</span> <span class="o">=</span> <span class="s">&#39;all_genes&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feature_sets</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">all_features</span><span class="p">]</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">columns</span>
+
+<div class="viewcode-block" id="BaseData.drop_outliers"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.base.BaseData.drop_outliers">[docs]</a>    <span class="k">def</span> <span class="nf">drop_outliers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">outliers</span><span class="p">):</span>
+        <span class="c"># assert &#39;outlier&#39; in self.experiment_design_data.columns</span>
+        <span class="n">outliers</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">outliers</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;dropping {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">outliers</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">outliers</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="BaseData.feature_subset_to_feature_ids"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.base.BaseData.feature_subset_to_feature_ids">[docs]</a>    <span class="k">def</span> <span class="nf">feature_subset_to_feature_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_subset</span><span class="p">,</span> <span class="n">rename</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">feature_subset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">feature_subset</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_sets</span><span class="p">:</span>
+                <span class="n">feature_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_sets</span><span class="p">[</span><span class="n">feature_subset</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">feature_subset</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_features</span><span class="p">:</span>
+                <span class="n">feature_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">columns</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;There are no {} features in this dataset: {}&quot;</span>
+                                 <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">feature_subset</span><span class="p">,</span> <span class="bp">self</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">rename</span><span class="p">:</span>
+                <span class="n">feature_ids</span> <span class="o">=</span> <span class="n">feature_ids</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_renamer</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">feature_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">columns</span>
+        <span class="k">return</span> <span class="n">feature_ids</span>
+
+</div>
+<div class="viewcode-block" id="BaseData.calculate_distances"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.base.BaseData.calculate_distances">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_distances</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s">&#39;euclidean&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a squareform distance matrix for clustering fun</span>
+
+<span class="sd">        Needed for some clustering algorithms</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        metric : str, optional</span>
+<span class="sd">            One of any valid scipy.distance metric strings. Default &#39;euclidean&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pdist</span> <span class="o">=</span> <span class="n">squareform</span><span class="p">(</span><span class="n">pdist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">binned</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">metric</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span>
+</div>
+<div class="viewcode-block" id="BaseData.correlate"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.base.BaseData.correlate">[docs]</a>    <span class="k">def</span> <span class="nf">correlate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s">&#39;spearman&#39;</span><span class="p">,</span> <span class="n">between</span><span class="o">=</span><span class="s">&#39;features&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Find correlations between either splicing/expression measurements</span>
+<span class="sd">        or cells</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        method : str</span>
+<span class="sd">            Specify to calculate either &#39;spearman&#39; (rank-based) or &#39;pearson&#39;</span>
+<span class="sd">            (linear) correlation. Default &#39;spearman&#39;</span>
+<span class="sd">        between : str</span>
+<span class="sd">            Either &#39;features&#39; or &#39;samples&#39;. Default &#39;features&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="c"># Stub for choosing between features or samples</span>
+        <span class="k">if</span> <span class="s">&#39;features&#39;</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">between</span><span class="p">):</span>
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="s">&#39;samples&#39;</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">between</span><span class="p">):</span>
+            <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="BaseData.jsd"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.base.BaseData.jsd">[docs]</a>    <span class="k">def</span> <span class="nf">jsd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Jensen-Shannon divergence showing most varying measurements within a</span>
+<span class="sd">        celltype and between celltypes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="c"># def _feature_renamer(self, x):</span>
+    <span class="c">#     return x</span>
+    <span class="c">#</span></div>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">feature_renamer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feature_renamer</span>
+
+    <span class="nd">@feature_renamer.setter</span>
+<div class="viewcode-block" id="BaseData.feature_renamer"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.base.BaseData.feature_renamer">[docs]</a>    <span class="k">def</span> <span class="nf">feature_renamer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renamer</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_feature_renamer</span> <span class="o">=</span> <span class="n">renamer</span>
+
+    <span class="c"># TODO.md: Specify dtypes in docstring</span></div>
+<div class="viewcode-block" id="BaseData.plot_classifier"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.base.BaseData.plot_classifier">[docs]</a>    <span class="k">def</span> <span class="nf">plot_classifier</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">sample_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">feature_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                        <span class="n">standardize</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">predictor</span><span class="o">=</span><span class="n">ClassifierViz</span><span class="p">,</span>
+                        <span class="n">predictor_kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">predictor_scoring_fun</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                        <span class="n">score_cutoff_fun</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">plotting_kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Principal component-like analysis of measurements</span>
+
+<span class="sd">        Params</span>
+<span class="sd">        -------</span>
+<span class="sd">        obj_id : str</span>
+<span class="sd">            key of the object getting plotted</span>
+<span class="sd">        sample_subset : str</span>
+<span class="sd">            ???</span>
+<span class="sd">        categorical_trait : str</span>
+<span class="sd">            predictor feature</span>
+<span class="sd">        feature_subset : str</span>
+<span class="sd">            subset of genes to use for building class</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># print trait</span>
+        <span class="n">predictor_kwargs</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">predictor_kwargs</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">predictor_kwargs</span>
+        <span class="n">plotting_kwargs</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">plotting_kwargs</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">plotting_kwargs</span>
+
+        <span class="c"># local_plotting_args = self.pca_plotting_args.copy()</span>
+        <span class="c"># local_plotting_args.update(plotting_kwargs)</span>
+
+        <span class="n">clf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">classify</span><span class="p">(</span><span class="n">trait</span><span class="p">,</span> <span class="n">sample_ids</span><span class="o">=</span><span class="n">sample_ids</span><span class="p">,</span>
+                            <span class="n">feature_ids</span><span class="o">=</span><span class="n">feature_ids</span><span class="p">,</span>
+                            <span class="n">standardize</span><span class="o">=</span><span class="n">standardize</span><span class="p">,</span> <span class="n">predictor</span><span class="o">=</span><span class="n">predictor</span><span class="p">,</span>
+                            <span class="n">predictor_kwargs</span><span class="o">=</span><span class="n">predictor_kwargs</span><span class="p">,</span>
+                            <span class="n">predictor_scoring_fun</span><span class="o">=</span><span class="n">predictor_scoring_fun</span><span class="p">,</span>
+                            <span class="n">score_cutoff_fun</span><span class="o">=</span><span class="n">score_cutoff_fun</span><span class="p">)</span>
+        <span class="n">clf</span><span class="p">(</span><span class="o">**</span><span class="n">plotting_kwargs</span><span class="p">)</span>
+        <span class="c"># clf()</span>
+        <span class="k">return</span> <span class="bp">self</span>
+</div>
+<div class="viewcode-block" id="BaseData.plot_dimensionality_reduction"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.base.BaseData.plot_dimensionality_reduction">[docs]</a>    <span class="k">def</span> <span class="nf">plot_dimensionality_reduction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_pc</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y_pc</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>  <span class="c">#obj_id=None,</span>
+                                      <span class="n">sample_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">feature_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                                      <span class="n">featurewise</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                                      <span class="o">**</span><span class="n">plotting_kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Principal component-like analysis of measurements</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x_pc : int</span>
+<span class="sd">            Which principal component to plot on the x-axis</span>
+<span class="sd">        y_pc : int</span>
+<span class="sd">            Which principal component to plot on the y-axis</span>
+<span class="sd">        sample_ids : None or list of strings</span>
+<span class="sd">            If None, plot all the samples. If a list of strings, must be</span>
+<span class="sd">            valid sample ids of the dataset</span>
+<span class="sd">        feature_ids : None or list of strings</span>
+<span class="sd">            If None, plot all the features. If a list of strings</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pca</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">sample_ids</span><span class="p">,</span> <span class="n">feature_ids</span><span class="p">,</span>
+                          <span class="n">featurewise</span><span class="o">=</span><span class="n">featurewise</span><span class="p">)</span>
+        <span class="n">pca</span><span class="p">(</span><span class="n">markers_size_dict</span><span class="o">=</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">400</span><span class="p">),</span>
+            <span class="n">show_vectors</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">title_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+            <span class="n">axis_label_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+            <span class="n">x_pc</span><span class="o">=</span><span class="s">&quot;pc_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">x_pc</span><span class="p">),</span>
+            <span class="c">#this only affects the plot, not the study_data.</span>
+            <span class="n">y_pc</span><span class="o">=</span><span class="s">&quot;pc_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">y_pc</span><span class="p">),</span>
+            <span class="c">#this only affects the plot, not the study_data.</span>
+            <span class="o">**</span><span class="n">plotting_kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span>
+</div>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">min_samples</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_samples</span>
+
+    <span class="nd">@min_samples.setter</span>
+<div class="viewcode-block" id="BaseData.min_samples"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.base.BaseData.min_samples">[docs]</a>    <span class="k">def</span> <span class="nf">min_samples</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_min_samples</span> <span class="o">=</span> <span class="n">values</span>
+</div>
+    <span class="k">def</span> <span class="nf">_subset_and_standardize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">sample_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                                <span class="n">feature_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                                <span class="n">standardize</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Take only the sample ids and feature ids from this dataset, require</span>
+<span class="sd">    at least some minimum samples, and standardize dataset using</span>
+<span class="sd">    scikit-learn. Will also fill na values with the mean of the feature</span>
+<span class="sd">    (column)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dataset : pandas.DataFrame</span>
+<span class="sd">        The dataset you want to standardize</span>
+<span class="sd">    sample_ids : None or list of strings</span>
+<span class="sd">        If None, all sample ids will be used, else only the sample ids</span>
+<span class="sd">        specified</span>
+<span class="sd">    feature_ids : None or list of strings</span>
+<span class="sd">        If None, all features will be used, else only the features</span>
+<span class="sd">        specified</span>
+<span class="sd">    standardize : bool</span>
+<span class="sd">        Whether or not to &quot;whiten&quot; (make all variables uncorrelated) and</span>
+<span class="sd">        mean-center via sklearn.preprocessing.StandardScaler</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    subset : pandas.DataFrame</span>
+<span class="sd">        Subset of the dataframe with the requested samples and features,</span>
+<span class="sd">        and standardized as described</span>
+<span class="sd">    means : pandas.DataFrame</span>
+<span class="sd">        Mean values of the features (columns). Ignores NAs.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">feature_ids</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">feature_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">columns</span>
+        <span class="k">if</span> <span class="n">sample_ids</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">sample_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">index</span>
+
+        <span class="n">subset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">sample_ids</span><span class="p">]</span>
+        <span class="n">subset</span> <span class="o">=</span> <span class="n">subset</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">feature_ids</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">subset</span> <span class="o">=</span> <span class="n">subset</span><span class="o">.</span><span class="n">ix</span><span class="p">[:,</span> <span class="n">subset</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_samples</span><span class="p">]</span>
+        <span class="c">#fill na with mean for each event</span>
+        <span class="n">means</span> <span class="o">=</span> <span class="n">subset</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">rename_axis</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_renamer</span><span class="p">)</span>
+        <span class="n">subset</span> <span class="o">=</span> <span class="n">subset</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">means</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">subset</span> <span class="o">=</span> <span class="n">subset</span><span class="o">.</span><span class="n">rename_axis</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_renamer</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c"># whiten, mean-center</span>
+        <span class="k">if</span> <span class="n">standardize</span><span class="p">:</span>
+            <span class="n">dataset</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">subset</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dataset</span> <span class="o">=</span> <span class="n">subset</span>
+
+        <span class="c"># &quot;dataset&quot; is a matrix so need to transform it back into a convenient</span>
+        <span class="c"># dataframe</span>
+        <span class="n">subset</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">subset</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+                              <span class="n">columns</span><span class="o">=</span><span class="n">subset</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">subset</span><span class="p">,</span> <span class="n">means</span></div>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2014, Olga Botvinnik, Michael Lovci, Patrick Liu, Yan Song.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
