@@ -440,11 +440,16 @@ class Study(StudyFactory):
         """
         dfs = {}
         log_base = None
-        metadata_pooled_col = None
-        metadata_phenotype_col = None
-        phenotype_order = None
-        phenotype_to_color = None
-        phenotype_to_marker = None
+        # metadata_pooled_col = None
+        # metadata_phenotype_col = None
+        # phenotype_order = None
+        # phenotype_to_color = None
+        # phenotype_to_marker = None
+
+        metadata_kws = dict.fromkeys(['metadata_pooled_col',
+                                      'metadata_pooled_col', 'phenotype_order',
+                                      'phenotype_to_color',
+                                      'phenotype_to_marker'], None)
 
         for resource in datapackage['resources']:
             if 'url' in resource:
@@ -473,15 +478,20 @@ class Study(StudyFactory):
                     log_base = 2
             if name == 'metadata':
                 if 'pooled_col' in resource:
-                    metadata_pooled_col = resource['pooled_col']
+                    metadata_kws['metadata_pooled_col'] = resource[
+                        'pooled_col']
                 if 'phenotype_col' in resource:
-                    metadata_phenotype_col = resource['phenotype_col']
+                    metadata_kws['metadata_phenotype_col'] = resource[
+                        'phenotype_col']
                 if 'phenotype_order' in resource:
-                    phenotype_order = resource['phenotype_order']
+                    metadata_kws['phenotype_order'] = resource[
+                        'phenotype_order']
                 if 'phenotype_to_color' in resource:
-                    phenotype_to_color = resource['phenotype_to_color']
+                    metadata_kws['phenotype_to_color'] = resource[
+                        'phenotype_to_color']
                 if 'phenotype_to_marker' in resource:
-                    phenotype_to_marker = resource['phenotype_to_marker']
+                    metadata_kws['phenotype_to_marker'] = resource[
+                        'phenotype_to_marker']
 
         species_dfs = {}
         try:
@@ -531,6 +541,13 @@ class Study(StudyFactory):
         except KeyError:
             spikein_data = None
 
+        nones = [k for k, v in metadata_kws.iteritems() if v is None]
+        for key in nones:
+            metadata_kws.pop(key)
+
+        kwargs = species_dfs
+        kwargs.update(metadata_kws)
+
         study = Study(
             sample_metadata=sample_metadata,
             expression_data=expression_data,
@@ -540,12 +557,7 @@ class Study(StudyFactory):
             # expression_feature_rename_col='gene_name',
             # splicing_feature_rename_col='gene_name',
             expression_log_base=log_base,
-            metadata_pooled_col=metadata_pooled_col,
-            phenotype_order=phenotype_order,
-            phenotype_to_color=phenotype_to_color,
-            phenotype_to_marker=phenotype_to_marker,
-            metadata_phenotype_col=metadata_phenotype_col,
-            **species_dfs)
+            **kwargs)
         return study
 
     def __add__(self, other):
