@@ -101,7 +101,7 @@ understand what's required and what's not.
 .fluidigm.com/singular-analysis-toolset.html), including:
     * Outlier analysis
     * ANOVA
-    * PCA
+    * DataFramePCA
     * Hierarchical Clustering and heatmaps
 
 After this release, we will add:

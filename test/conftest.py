@@ -4,21 +4,24 @@ these objects and functions across test files.
 """
 import os
 
+import matplotlib as mpl
 import pytest
 import pandas as pd
 
+# Tell matplotlib to not make any window popups
+mpl.use('Agg')
 
-CURRENT_DIR = os.path.dirname(__file__)
+CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
 
 
 class ExampleData(object):
-    __slots__ = ('experiment_design_data', 'expression', 'splicing', 'data')
+    __slots__ = ('metadata', 'expression', 'splicing', 'data')
 
-    def __init__(self, experiment_design_data, expression, splicing):
-        self.experiment_design_data = experiment_design_data
+    def __init__(self, metadata, expression, splicing):
+        self.metadata = metadata
         self.expression = expression
         self.splicing = splicing
-        self.data = (experiment_design_data, expression, splicing)
+        self.data = (metadata, expression, splicing)
 
 
 @pytest.fixture(scope='module')
@@ -27,7 +30,7 @@ def example_data():
     expression = pd.read_table('{}/expression.tsv'.format(data_dir),
                                index_col=0)
     splicing = pd.read_table('{}/splicing.tsv'.format(data_dir), index_col=0)
-    metadata = pd.read_table('{}/metadata.tsv'.format(data_dir), index_col=0)
+    metadata = pd.read_csv('{}/metadata.csv'.format(data_dir), index_col=0)
     return ExampleData(metadata, expression, splicing)
 
 
@@ -35,15 +38,14 @@ def example_data():
 def example_study(example_data):
     from flotilla.data_model import Study
 
-    return Study(sample_metadata=example_data.experiment_design_data,
+    return Study(sample_metadata=example_data.metadata,
                  expression_data=example_data.expression,
                  splicing_data=example_data.splicing)
 
 
 @pytest.fixture(scope='module')
-def example_url():
-    return 'http://sauron.ucsd' \
-           '.edu/flotilla_projects/neural_diff_chr22/datapackage.json'
+def example_datapackage_path():
+    return os.path.join(CURRENT_DIR, 'data/datapackage.json')
 
 
 @pytest.fixture(scope='module')
@@ -51,3 +53,10 @@ def expression(example_data):
     from flotilla.data_model import ExpressionData
 
     return ExpressionData(example_data.expression)
+
+
+@pytest.fixture
+def study(example_datapackage_path):
+    import flotilla
+
+    return flotilla.embark(example_datapackage_path)

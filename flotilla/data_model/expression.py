@@ -2,12 +2,11 @@
 Data types related to gene expression, e.g. from RNA-Seq or microarrays.
 Included SpikeIn data.
 """
+import sys
+
 import numpy as np
-import pandas as pd
 
 from .base import BaseData
-from ..visualize.decomposition import PCAViz
-from ..visualize.predict import ClassifierViz
 from ..util import memoize
 
 
@@ -17,7 +16,8 @@ class ExpressionData(BaseData):
     def __init__(self, data,
                  metadata=None, expression_thresh=_expression_thresh,
                  feature_rename_col=None, outliers=None, log_base=None,
-                 pooled=None):
+                 pooled=None,
+                 technical_outliers=None, predictor_config_manager=None):
         """
         Parameters
         ----------
@@ -32,158 +32,75 @@ class ExpressionData(BaseData):
 
 
         """
+        sys.stderr.write("initializing expression\n")
+
         super(ExpressionData, self).__init__(
             data, metadata,
             feature_rename_col=feature_rename_col,
-            outliers=outliers, pooled=pooled)
+            outliers=outliers, pooled=pooled,
+            predictor_config_manager=predictor_config_manager,
+            technical_outliers=technical_outliers)
+        self.data_type = 'expression'
 
-        self._var_cut = data.var().dropna().mean() + 2 * data.var() \
-            .dropna().std()
-        rpkm_variant = pd.Index(
-            [i for i, j in
-             (self.data.var().dropna() > self._var_cut).iteritems() if j])
-        self.feature_sets['variant'] = pd.Series(rpkm_variant,
-                                                 index=rpkm_variant)
+        sys.stderr.write("done initializing expression\n")
 
         if log_base is not None:
             self.log_data = np.log(self.data + .1) / np.log(log_base)
         else:
             self.log_data = self.data
+
+        self.original_data = self.data
         self.feature_data = metadata
-        self.sparse_data = self.log_data[self.log_data > expression_thresh]
-        self.default_feature_sets.extend(self.feature_sets.keys())
 
-    #@memoize
-    def reduce(self, sample_ids=None, feature_ids=None,
-               featurewise=False,
-               reducer=PCAViz,
-               standardize=True,
-               title='',
-               reducer_kwargs=None):
-        """Make and memoize a reduced dimensionality representation of data
+        # This may not be totally kosher.... but original data is in
+        # self.original_data
+        self.expression_thresh = expression_thresh
+        self.data = self.log_data[self.log_data > self.expression_thresh]
+        if outliers is not None:
+            self.outliers = self.outliers[
+                self.outliers > self.expression_thresh]
+        if pooled is not None:
+            self.pooled = self.pooled[self.pooled > self.expression_thresh]
+        self.default_feature_sets.extend(self.feature_subsets.keys())
 
-        Parameters
-        ----------
-        sample_ids : None or list of strings
-            If None, all sample ids will be used, else only the sample ids
-            specified
-        feature_ids : None or list of strings
-            If None, all features will be used, else only the features
-            specified
-        featurewise : bool
-            Whether or not to use the features as the "samples", e.g. if you
-            want to reduce the features in to "sample-space" instead of
-            reducing the samples into "feature-space"
-        standardize : bool
-            Whether or not to "whiten" (make all variables uncorrelated) and
-            mean-center via sklearn.preprocessing.StandardScaler
-        title : str
-            Title of the plot
-        reducer_kwargs : dict
-            Any additional arguments to send to the reducer
-
-        Returns
-        -------
-        reducer_object : flotilla.compute.reduce.ReducerViz
-            A ready-to-plot object containing the reduced space
-        """
-        import sys
-
-        reducer_kwargs = {} if reducer_kwargs is None else reducer_kwargs
-        reducer_kwargs['title'] = title
-
-        subset, means = self._subset_and_standardize(self.sparse_data,
-                                                     sample_ids, feature_ids,
-                                                     standardize,
-                                                     return_means=True)
-
-        # compute reduction
-        if featurewise:
-            subset = subset.T
-        reducer_object = reducer(subset, **reducer_kwargs)
-        # always the mean of input features. i.e. featurewise doesn't change
-        # this.
-        reducer_object.means = means
-
-        #TODO: make this work with memoization
-        #self._last_reducer_accessed = reducer_object
-
-        # add mean gene_expression
-        return reducer_object
-
-    @memoize
-    def classify(self, trait, sample_ids=None, feature_ids=None,
-                 standardize=True, predictor=ClassifierViz,
-                 predictor_kwargs=None, predictor_scoring_fun=None,
-                 score_coefficient=None,
-                 score_cutoff_fun=None, plotting_kwargs=None):
-        """Make and memoize a predictor on a categorical trait (associated
-        with samples) subset of genes
-
-        Parameters
-        ----------
-        trait : pandas.Series
-            samples x categorical feature
-        sample_ids : None or list of strings
-            If None, all sample ids will be used, else only the sample ids
-            specified
-        feature_ids : None or list of strings
-            If None, all features will be used, else only the features
-            specified
-        standardize : bool
-            Whether or not to "whiten" (make all variables uncorrelated) and
-            mean-center and make unit-variance all the data via sklearn
-            .preprocessing.StandardScaler
-        predictor : flotilla.visualize.predict classifier
-            Must inherit from flotilla.visualize.PredictorBaseViz. Default is
-            flotilla.visualize.predict.ClassifierViz
-        predictor_kwargs : dict or None
-            Additional 'keyword arguments' to supply to the predictor class
-        predictor_scoring_fun : function
-            Function to get the feature scores for a scikit-learn classifier.
-            This can be different for different classifiers, e.g. for a
-            classifier named "x" it could be x.scores_, for other it's
-            x.feature_importances_. Default: lambda x: x.feature_importances_
-        score_cutoff_fun : function
-            Function to cut off insignificant scores
-            Default: lambda scores: np.mean(x) + 2 * np.std(x)
-
-        Returns
-        -------
-        predictor : flotilla.compute.predict.PredictorBaseViz
-            A ready-to-plot object containing the predictions
-        """
-        subset = self._subset_and_standardize(self.log_data,
-                                              sample_ids,
-                                              feature_ids,
-                                              standardize)
-        if plotting_kwargs is None:
-            plotting_kwargs = {}
-
-        classifier = predictor(subset, trait=trait,
-                               predictor_kwargs=predictor_kwargs,
-                               predictor_scoring_fun=predictor_scoring_fun,
-                               score_cutoff_fun=score_cutoff_fun,
-                               score_coefficient=score_coefficient,
-                               **plotting_kwargs)
-        # classifier.set_reducer_plotting_args(classifier.reduction_kwargs)
-        return classifier
-
-    # def load_cargo(self, rename=True, **kwargs):
-    #     try:
-    #         species = self.species
-    #         # self.cargo = cargo.get_species_cargo(self.species)
-    #         self.go = self.cargo.get_go(species)
-    #         self.feature_sets.update(self.cargo.gene_lists)
+    # def reduce(self, sample_ids=None, feature_ids=None,
+    #            featurewise=False, reducer=PCAViz, standardize=True,
+    #            title='', reducer_kwargs=None, color=None, groupby=None,
+    #            label_to_color=None, label_to_marker=None,
+    #            order=None, x_pc='pc_1', y_pc='pc_1'):
+    #     """Make and memoize a reduced dimensionality representation of data
     #
-    #         if rename:
-    #             self._set_feature_renamer(lambda x: self.go.geneNames(x))
-    #     except:
-    #         raise
-
+    #     Parameters
+    #     ----------
+    #     sample_ids : None or list of strings
+    #         If None, all sample ids will be used, else only the sample ids
+    #         specified
+    #     feature_ids : None or list of strings
+    #         If None, all features will be used, else only the features
+    #         specified
+    #     featurewise : bool
+    #         Whether or not to use the features as the "samples", e.g. if you
+    #         want to reduce the features in to "sample-space" instead of
+    #         reducing the samples into "feature-space"
+    #     standardize : bool
+    #         Whether or not to "whiten" (make all variables uncorrelated) and
+    #         mean-center via sklearn.preprocessing.StandardScaler
+    #     title : str
+    #         Title of the plot
+    #     reducer_kwargs : dict
+    #         Any additional arguments to send to the reducer
     #
-    # def _get(self, expression_data_filename):
-    #     return {'expression_df': self.load(*expression_data_filename)}
+    #     Returns
+    #     -------
+    #     reducer_object : flotilla.compute.reduce.ReducerViz
+    #         A ready-to-plot object containing the reduced space
+    #     """
+    #     return super(ExpressionData, self).reduce(
+    #         self.data, sample_ids=sample_ids, feature_ids=feature_ids,
+    #         featurewise=featurewise, reducer=reducer, standardize=standardize,
+    #         title=title, reducer_kwargs=reducer_kwargs, groupby=groupby,
+    #         label_to_color=label_to_color, label_to_marker=label_to_marker,
+    #         order=order, color=color, x_pc=x_pc, y_pc=y_pc)
 
     def twoway(self, sample1, sample2, **kwargs):
         from ..visualize.expression import TwoWayScatterViz
@@ -206,12 +123,22 @@ class ExpressionData(BaseData):
         return vz
 
     def _calculate_linkage(self, sample_ids, feature_ids, metric='euclidean',
-                           linkage_method='average', ):
-        subset = self._subset_and_standardize(self.log_data, sample_ids,
-                                              feature_ids)
-        row_linkage, col_linkage = self.clusterer(subset, metric,
-                                                  linkage_method)
-        return subset, row_linkage, col_linkage
+                           linkage_method='average', standardize=True):
+        return super(ExpressionData, self)._calculate_linkage(
+            self.data, sample_ids=sample_ids, feature_ids=feature_ids,
+            standardize=standardize, metric=metric,
+            linkage_method=linkage_method)
+
+    @memoize
+    def binify(self, data):
+        data = self._subset_and_standardize(data)
+        data = (data - data.min()) / (data.max() - data.min())
+        # vmax = data.abs().max().max()
+        # vmin = -vmax
+        # bins = np.linspace(vmin, vmax, 10)
+        bins = np.arange(0, 1.1, .1)
+        # print 'bins:', bins
+        return super(ExpressionData, self).binify(data, bins)
 
 
 class SpikeInData(ExpressionData):
@@ -225,7 +152,9 @@ class SpikeInData(ExpressionData):
 
     """
 
-    def __init__(self, data, feature_data=None):
+    def __init__(self, data, feature_data=None,
+                 predictor_config_manager=None,
+                 technical_outliers=None):
         """Constructor for
 
         Parameters
@@ -240,7 +169,9 @@ class SpikeInData(ExpressionData):
         ------
 
         """
-        super(SpikeInData, self).__init__(data, feature_data)
+        super(SpikeInData, self).__init__(data, feature_data,
+                                          technical_outliers=technical_outliers,
+                                          predictor_config_manager=predictor_config_manager)
 
         # def spikeins_violinplot(self):
         #     import matplotlib.pyplot as plt

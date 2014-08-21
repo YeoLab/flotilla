@@ -3,26 +3,24 @@ Data models for "studies" studies include attributes about the data and are
 heavier in terms of data load
 """
 
-from collections import defaultdict
 import json
 import os
 import sys
 import warnings
 
-import matplotlib.colors as mplcolors
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import seaborn as sns
 
 from .metadata import MetaData
 from .expression import ExpressionData, SpikeInData
-from .quality_control import MappingStatsData
+from .quality_control import MappingStatsData, MIN_READS
 from .splicing import SplicingData, FRACTION_DIFF_THRESH
+from ..compute.predict import PredictorConfigManager
 from ..visualize.color import blue
 from ..visualize.ipython_interact import Interactive
-from ..visualize.network import NetworkerViz
-from ..external import data_package_url_to_dict, check_if_already_downloaded
+from ..external import data_package_url_to_dict, check_if_already_downloaded, \
+    make_study_datapackage
 
 
 SPECIES_DATA_PACKAGE_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects'
@@ -155,7 +153,7 @@ class Study(StudyFactory):
     # data
     _subsetable_data_types = ['expression', 'splicing']
 
-    initializers = {'experiment_design_data': MetaData,
+    initializers = {'metadata_data': MetaData,
                     'expression_data': ExpressionData,
                     'splicing_data': SplicingData,
                     'mapping_stats_data': MappingStatsData,
@@ -182,13 +180,18 @@ class Study(StudyFactory):
                  mapping_stats_data=None,
                  mapping_stats_number_mapped_col="Uniquely mapped reads "
                                                  "number",
+                 mapping_stats_min_reads=MIN_READS,
                  spikein_data=None,
                  spikein_feature_data=None,
                  drop_outliers=True, species=None,
                  gene_ontology_data=None,
                  expression_log_base=None,
-                 experiment_design_pooled_col=None,
-                 celltype_order=None):
+                 predictor_config_manager=None,
+                 metadata_pooled_col=None,
+                 metadata_phenotype_col='phenotype',
+                 phenotype_order=None,
+                 phenotype_to_color=None,
+                 phenotype_to_marker=None):
         """Construct a biological study
 
         This class only accepts data, no filenames. All data must already
@@ -200,7 +203,7 @@ class Study(StudyFactory):
         sample_metadata : pandas.DataFrame
             Only required parameter. Samples as the index, with features as
             columns. If there is a column named "color", this will be used as
-            the color for that sample in PCA and other plots. If there is no
+            the color for that sample in DataFramePCA and other plots. If there is no
             color but there is a column named "celltype", then colors for
             each of the different celltypes will be auto-created.
         expression_data : pandas.DataFrame
@@ -252,8 +255,8 @@ class Study(StudyFactory):
             Name of the species and genome version, e.g. 'hg19' or 'mm10'.
         gene_ontology_data : pandas.DataFrame
             Gene ids x ontology categories dataframe used for GO analysis.
-        experiment_design_pooled_col : str
-            Column in experiment_design_data which specifies as a boolean
+        metadata_pooled_col : str
+            Column in metadata_data which specifies as a boolean
             whether or not this sample was pooled.
 
         Note
@@ -267,124 +270,125 @@ class Study(StudyFactory):
         [1] http://stackoverflow.com/q/12513185/1628971
         """
         super(Study, self).__init__()
-        # if params_dict is None:
-        #     params_dict = {}
-        # self.update(params_dict)
-        # self.initialize_required_getters()
-        # self.apply_getters()
+
+        sys.stderr.write("initializing study\n")
+        self.predictor_config_manager = predictor_config_manager \
+            if predictor_config_manager is not None \
+            else PredictorConfigManager()
+        # self.predictor_config_manager = None
+
         self.species = species
         self.gene_ontology_data = gene_ontology_data
 
-        self.experiment_design = MetaData(sample_metadata, celltype_order)
-        self.default_sample_subsets = \
-            [col for col in self.experiment_design.data.columns
-             if self.experiment_design.data[col].dtype == bool]
-        self.default_sample_subsets.insert(0, 'all_samples')
+        self.metadata = MetaData(
+            sample_metadata, phenotype_order, phenotype_to_color,
+            phenotype_to_marker, phenotype_col=metadata_phenotype_col,
+            predictor_config_manager=self.predictor_config_manager)
+        self.phenotype_col = self.metadata.phenotype_col
+        self.phenotype_order = self.metadata.phenotype_order
+        self.phenotype_to_color = self.metadata.phenotype_to_color
+        self.phenotype_to_marker = self.metadata.phenotype_to_marker
+        self.phenotype_color_ordered = self.metadata.phenotype_color_order
+        self.sample_id_to_phenotype = self.metadata.sample_id_to_phenotype
+        self.sample_id_to_color = self.metadata.sample_id_to_color
+        self.phenotype_transitions = self.metadata.phenotype_transitions
 
-        if 'outlier' in self.experiment_design.data and drop_outliers:
-            outliers = self.experiment_design.data.index[
-                self.experiment_design.data.outlier.astype(bool)]
+        if 'outlier' in self.metadata.data and drop_outliers:
+            outliers = self.metadata.data.index[
+                self.metadata.data.outlier.astype(bool)]
         else:
             outliers = None
-            self.experiment_design.data['outlier'] = False
+            self.metadata.data['outlier'] = False
 
         # Get pooled samples
-        if experiment_design_pooled_col is not None:
-            if experiment_design_pooled_col in self.experiment_design.data:
+
+        if metadata_pooled_col is not None:
+            if metadata_pooled_col in self.metadata.data:
                 try:
-                    pooled = self.experiment_design.data.index[
-                        self.experiment_design.data[
-                            experiment_design_pooled_col].astype(bool)]
+                    pooled = self.metadata.data.index[
+                        self.metadata.data[
+                            metadata_pooled_col].astype(bool)]
                 except:
                     pooled = None
         else:
             pooled = None
 
+        if mapping_stats_data is not None:
+            self.mapping_stats = MappingStatsData(
+                mapping_stats_data,
+                mapping_stats_number_mapped_col,
+                predictor_config_manager=self.predictor_config_manager,
+                min_reads=mapping_stats_min_reads)
+            self.technical_outliers = self.mapping_stats.too_few_mapped
+        else:
+            self.technical_outliers = None
+
         if expression_data is not None:
+            sys.stderr.write("loading expression data\n")
             self.expression = ExpressionData(
                 expression_data,
                 expression_feature_data,
                 feature_rename_col=expression_feature_rename_col,
                 outliers=outliers,
-                log_base=expression_log_base, pooled=pooled)
-            self.expression.networks = NetworkerViz(self.expression)
-            self.default_feature_set_ids.extend(self.expression.feature_sets
+                log_base=expression_log_base, pooled=pooled,
+                predictor_config_manager=self.predictor_config_manager,
+                technical_outliers=self.technical_outliers)
+            # self.expression.networks = NetworkerViz(self.expression)
+            self.default_feature_set_ids.extend(self.expression.feature_subsets
                                                 .keys())
         if splicing_data is not None:
+            sys.stderr.write("loading splicing data\n")
             self.splicing = SplicingData(
                 splicing_data, splicing_feature_data,
                 feature_rename_col=splicing_feature_rename_col,
-                outliers=outliers, pooled=pooled)
-            self.splicing.networks = NetworkerViz(self.splicing)
-        if mapping_stats_data is not None:
-            self.mapping_stats = MappingStatsData(
-                mapping_stats_data,
-                mapping_stats_number_mapped_col)
+                outliers=outliers, pooled=pooled,
+                predictor_config_manager=self.predictor_config_manager,
+                technical_outliers=self.technical_outliers)
+            # self.splicing.networks = NetworkerViz(self.splicing)
+
         if spikein_data is not None:
-            self.spikein = SpikeInData(spikein_data, spikein_feature_data)
+            self.spikein = SpikeInData(
+                spikein_data, spikein_feature_data,
+                technical_outliers=self.technical_outliers,
+                predictor_config_manager=self.predictor_config_manager)
         sys.stderr.write("subclasses initialized\n")
         self.validate_params()
         sys.stderr.write("package validated\n")
-        try:
-            self.hack_lazy()
-        except:
-            print "hackery failed"
+
+    @property
+    def default_sample_subsets(self):
+        default_sample_subsets = [col for col in self.metadata.data.columns
+                                  if self.metadata.data[col].dtype == bool]
+        default_sample_subsets.extend(['~{}'.format(col)
+                                       for col in self.metadata.data.columns
+                                       if
+                                       self.metadata.data[col].dtype == bool])
+        default_sample_subsets.insert(0, 'all_samples')
+        return default_sample_subsets
 
     @property
     def default_feature_subsets(self):
-        feature_sets = {}
+        feature_subsets = {}
         for name in self._subsetable_data_types:
             try:
                 data_type = getattr(self, name)
             except AttributeError:
                 continue
-            feature_sets[name] = data_type.feature_sets
-        return feature_sets
-
-    @property
-    def sample_id_to_color(self):
-        """If "color" is a column in the experiment_design data, return a
-        dict of that {sample_id: color} mapping, else try to create it using
-        the "celltype" columns, else just return a dict mapping to a default
-        color (blue)
-        """
-        if 'color' in self.experiment_design.data:
-            return self.experiment_design.data.color.to_dict()
-        elif 'celltype' in self.experiment_design.data:
-            grouped = self.experiment_design.data.groupby('celltype')
-            palette = iter(sns.color_palette(n_colors=grouped.ngroups + 1))
-            color = grouped.apply(lambda x: mplcolors.rgb2hex(palette.next()))
-            color.name = 'color'
-            self.experiment_design.data = self.experiment_design.data.join(
-                color, on='celltype')
-
-            return self.experiment_design.data.color.to_dict()
-        else:
-            return defaultdict(lambda x: blue)
-
-    @property
-    def sample_id_to_celltype(self):
-        """If "celltype" is a column in the experiment_design data, return a
-        dict of that {sample_id: celltype} mapping.
-        """
-        if 'celltype' in self.experiment_design.data:
-            return self.experiment_design.data.celltype
-        else:
-            return pd.Series(['celltype'],
-                             index=self.experiment_design.data.index)
+            feature_subsets[name] = data_type.feature_subsets
+        return feature_subsets
 
     @classmethod
-    def from_data_package_url(
-            cls, data_package_url,
+    def from_datapackage_url(
+            cls, datapackage_url,
             species_data_package_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
         """Create a study from a url of a datapackage.json file
 
         Parameters
         ----------
-        data_package_url : str
+        datapackage_url : str
             HTTP url of a datapackage.json file, following the specification
             described here: http://dataprotocols.org/data-packages/ and
-            requiring the following data resources: experiment_design,
+            requiring the following data resources: metadata,
             expression, splicing
         species_data_pacakge_base_url : str
             Base URL to fetch species-specific gene and splicing event
@@ -394,43 +398,67 @@ class Study(StudyFactory):
         -------
         study : Study
             A "study" object containing the data described in the
-            data_package_url file
+            datapackage_url file
 
         Raises
         ------
         AttributeError
             If the datapackage.json file does not contain the required
-            resources of experiment_design, expression, and splicing.
+            resources of metadata, expression, and splicing.
         """
-        data_package = data_package_url_to_dict(data_package_url)
-        return cls.from_data_package(
+        data_package = data_package_url_to_dict(datapackage_url)
+        return cls.from_datapackage(
             data_package,
-            species_data_package_base_url=species_data_package_base_url)
+            species_datapackage_base_url=species_data_package_base_url)
 
     @classmethod
-    def from_data_package_file(
-            cls, data_package_filename,
-            species_data_package_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
-        with open(data_package_filename) as f:
-            data_package = json.load(f)
-        return cls.from_data_package(data_package,
-                                     species_data_package_base_url)
+    def from_datapackage_file(
+            cls, datapackage_filename,
+            species_datapackage_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
+        with open(datapackage_filename) as f:
+            datapackage = json.load(f)
+        datapackage_dir = os.path.dirname(datapackage_filename)
+        return cls.from_datapackage(
+            datapackage, datapackage_dir=datapackage_dir,
+            species_datapackage_base_url=species_datapackage_base_url)
 
     @classmethod
-    def from_data_package(
-            cls, data_package,
-            species_data_package_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
+    def from_datapackage(
+            cls, datapackage, datapackage_dir='./',
+            species_datapackage_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
+        """Create a study object from a datapackage dictionary
+
+        Parameters
+        ----------
+        datapackage : dict
+
+
+        Returns
+        -------
+        study : flotilla.Study
+            Study object
+        """
         dfs = {}
         log_base = None
-        experiment_design_pooled_col = None
-        celltype_order = None
+        metadata_pooled_col = None
+        metadata_phenotype_col = None
+        phenotype_order = None
+        phenotype_to_color = None
+        phenotype_to_marker = None
 
-        for resource in data_package['resources']:
+        for resource in datapackage['resources']:
             if 'url' in resource:
                 resource_url = resource['url']
                 filename = check_if_already_downloaded(resource_url)
             else:
                 filename = resource['path']
+                # Test if the file exists, if not, then add the datapackage
+                # file
+                try:
+                    with open(filename) as f:
+                        pass
+                except IOError:
+                    filename = os.path.join(datapackage_dir, filename)
 
             name = resource['name']
 
@@ -443,43 +471,57 @@ class Study(StudyFactory):
             if name == 'expression':
                 if 'log_transformed' in resource:
                     log_base = 2
-            if name == 'experiment_design':
+            if name == 'metadata':
                 if 'pooled_col' in resource:
-                    experiment_design_pooled_col = resource['pooled_col']
-                if 'celltype_order' in resource:
-                    celltype_order = resource['celltype_order']
+                    metadata_pooled_col = resource['pooled_col']
+                if 'phenotype_col' in resource:
+                    metadata_phenotype_col = resource['phenotype_col']
+                if 'phenotype_order' in resource:
+                    phenotype_order = resource['phenotype_order']
+                if 'phenotype_to_color' in resource:
+                    phenotype_to_color = resource['phenotype_to_color']
+                if 'phenotype_to_marker' in resource:
+                    phenotype_to_marker = resource['phenotype_to_marker']
 
-        if 'species' in data_package:
-            species_data_url = '{}/{}/datapackage.json'.format(
-                species_data_package_base_url, data_package['species'])
-            species_data_package = data_package_url_to_dict(species_data_url)
-            species_dfs = {}
+        species_dfs = {}
+        try:
+            if 'species' in datapackage:
+                species_data_url = '{}/{}/datapackage.json'.format(
+                    species_datapackage_base_url, datapackage['species'])
+                species_data_package = data_package_url_to_dict(
+                    species_data_url)
+                # species_dfs = {}
 
-            for resource in species_data_package['resources']:
-                if 'url' in resource:
-                    resource_url = resource['url']
-                    filename = check_if_already_downloaded(resource_url)
-                else:
-                    filename = resource['path']
+                for resource in species_data_package['resources']:
+                    if 'url' in resource:
+                        resource_url = resource['url']
+                        filename = check_if_already_downloaded(resource_url)
+                    else:
+                        filename = resource['path']
 
-                # reader = getattr(cls, '_load_' + resource['format'])
-                reader = cls.readers[resource['format']]
+                    # reader = getattr(cls, '_load_' + resource['format'])
+                    reader = cls.readers[resource['format']]
 
-                compression = None if 'compression' not in resource else \
-                    resource['compression']
-                species_dfs[resource['name']] = reader(filename,
-                                                       compression=compression)
-        else:
-            species_dfs = {}
+                    compression = None if 'compression' not in resource else \
+                        resource['compression']
+                    name = resource['name']
+                    species_dfs[name] = reader(filename,
+                                               compression=compression)
+                    if 'feature_rename_col' in resource:
+                        key = '{}_feature_rename_col'.format(
+                            name.split('_feature_data')[0])
+                        species_dfs[key] = resource['feature_rename_col']
+        except (IOError, ValueError) as e:
+            pass
 
         try:
-            experiment_design_data = dfs['experiment_design']
+            sample_metadata = dfs['metadata']
             expression_data = None if 'expression' not in dfs else dfs[
                 'expression']
             splicing_data = None if 'splicing' not in dfs else dfs['splicing']
         except KeyError:
             raise AttributeError('The datapackage.json file is required to '
-                                 'have the "experiment_design" resource')
+                                 'have the "metadata" resource')
         try:
             mapping_stats_data = dfs['mapping_stats']
         except KeyError:
@@ -490,15 +532,19 @@ class Study(StudyFactory):
             spikein_data = None
 
         study = Study(
-            sample_metadata=experiment_design_data,
+            sample_metadata=sample_metadata,
             expression_data=expression_data,
             splicing_data=splicing_data,
             mapping_stats_data=mapping_stats_data,
             spikein_data=spikein_data,
-            expression_feature_rename_col='gene_name',
-            splicing_feature_rename_col='gene_name',
+            # expression_feature_rename_col='gene_name',
+            # splicing_feature_rename_col='gene_name',
             expression_log_base=log_base,
-            experiment_design_pooled_col=experiment_design_pooled_col,
+            metadata_pooled_col=metadata_pooled_col,
+            phenotype_order=phenotype_order,
+            phenotype_to_color=phenotype_to_color,
+            phenotype_to_marker=phenotype_to_marker,
+            metadata_phenotype_col=metadata_phenotype_col,
             **species_dfs)
         return study
 
@@ -506,45 +552,45 @@ class Study(StudyFactory):
         """Sanely concatenate one or more Study objects
         """
         raise NotImplementedError
-        self.experiment_design = MetaData(
-            pd.concat([self.experiment_design.data,
-                       other.experiment_design.data]))
+        self.metadata = MetaData(
+            pd.concat([self.metadata.data,
+                       other.metadata.data]))
         self.expression.data = ExpressionData(
             pd.concat([self.expression.data,
                        other.expression.data]))
 
-    def _set_plot_colors(self):
-        """If there is a column 'color' in the sample metadata, specify this
-        as the plotting color
-        """
-        try:
-            self._default_reducer_kwargs.update(
-                {'colors_dict': self.experiment_design_data.color})
-            self._default_plot_kwargs.update(
-                {'color': self.experiment_design_data.color.tolist()})
-        except AttributeError:
-            sys.stderr.write("There is no column named 'color' in the "
-                             "metadata, defaulting to blue for all samples\n")
-            self._default_reducer_kwargs.update(
-                {'colors_dict': defaultdict(lambda: blue)})
+    # def _set_plot_colors(self):
+    #     """If there is a column 'color' in the sample metadata, specify this
+    #     as the plotting color
+    #     """
+    #     try:
+    #         self._default_reducer_kwargs.update(
+    #             {'colors_dict': self.metadata_data.color})
+    #         self._default_plot_kwargs.update(
+    #             {'color': self.metadata_data.color.tolist()})
+    #     except AttributeError:
+    #         sys.stderr.write("There is no column named 'color' in the "
+    #                          "metadata, defaulting to blue for all samples\n")
+    #         self._default_reducer_kwargs.update(
+    #             {'colors_dict': defaultdict(lambda: blue)})
 
-    def _set_plot_markers(self):
-        """If there is a column 'marker' in the sample metadata, specify this
-        as the plotting marker (aka the plotting shape). Only valid matplotlib
-        symbols are allowed. See http://matplotlib.org/api/markers_api.html
-        for a more complete description.
-        """
-        try:
-            self._default_reducer_kwargs.update(
-                {'markers_dict': self.experiment_design_data.marker})
-            self._default_plot_kwargs.update(
-                {'marker': self.experiment_design_data.marker.tolist()})
-        except AttributeError:
-            sys.stderr.write("There is no column named 'marker' in the sample "
-                             "metadata, defaulting to a circle for all "
-                             "samples\n")
-            self._default_reducer_kwargs.update(
-                {'markers_dict': defaultdict(lambda: 'o')})
+    # def _set_plot_markers(self):
+    #     """If there is a column 'marker' in the sample metadata, specify this
+    #     as the plotting marker (aka the plotting shape). Only valid matplotlib
+    #     symbols are allowed. See http://matplotlib.org/api/markers_api.html
+    #     for a more complete description.
+    #     """
+    #     try:
+    #         self._default_reducer_kwargs.update(
+    #             {'markers_dict': self.metadata_data.marker})
+    #         self._default_plot_kwargs.update(
+    #             {'marker': self.metadata_data.marker.tolist()})
+    #     except AttributeError:
+    #         sys.stderr.write("There is no column named 'marker' in the sample "
+    #                          "metadata, defaulting to a circle for all "
+    #                          "samples\n")
+    #         self._default_reducer_kwargs.update(
+    #             {'markers_dict': defaultdict(lambda: 'o')})
 
     def detect_outliers(self):
         """Detects outlier cells from expression, mapping, and splicing
@@ -618,6 +664,7 @@ class Study(StudyFactory):
                 feature_subset, rename)
 
     def sample_subset_to_sample_ids(self, phenotype_subset=None):
+
         """Convert a string naming a subset of phenotypes in the data into
         sample ids
 
@@ -625,33 +672,41 @@ class Study(StudyFactory):
         ----------
         phenotype_subset : str
             A valid string describing a boolean phenotype described in the
-            experiment_design data
+            metadata data
 
         Returns
         -------
         sample_ids : list of strings
             List of sample ids in the data
         """
-        if phenotype_subset is None or 'all_samples'.startswith(
-                phenotype_subset):
-            sample_ind = np.ones(self.experiment_design.data.shape[0],
-                                 dtype=bool)
-        elif phenotype_subset.startswith("~"):
-            sample_ind = ~pd.Series(
-                self.experiment_design.data[phenotype_subset.lstrip("~")],
-                dtype='bool')
-        else:
-            sample_ind = pd.Series(
-                self.experiment_design.data[phenotype_subset], dtype='bool')
-        sample_ids = self.experiment_design.data.index[sample_ind]
-        return sample_ids
+
+        # IF this is a list of IDs
+
+        try:
+            #TODO: check this, seems like a strange usage: 'all_samples'.startswith(phenotype_subset)
+            if phenotype_subset is None or 'all_samples'.startswith(
+                    phenotype_subset):
+                sample_ind = np.ones(self.metadata.data.shape[0],
+                                     dtype=bool)
+            elif phenotype_subset.startswith("~"):
+                sample_ind = ~pd.Series(
+                    self.metadata.data[phenotype_subset.lstrip("~")],
+                    dtype='bool')
+
+            else:
+                sample_ind = pd.Series(
+                    self.metadata.data[phenotype_subset], dtype='bool')
+            sample_ids = self.metadata.data.index[sample_ind]
+            return sample_ids
+        except AttributeError:
+            return phenotype_subset
 
     def plot_pca(self, data_type='expression', x_pc=1, y_pc=2,
                  sample_subset=None, feature_subset=None,
                  title='', featurewise=False,
-                 show_point_labels=False,
+                 show_point_labels=False, reduce_kwargs=None,
                  **kwargs):
-        """Performs PCA on both expression and splicing study_data
+        """Performs DataFramePCA on both expression and splicing study_data
 
         Parameters
         ----------
@@ -685,29 +740,45 @@ class Study(StudyFactory):
         feature_ids = self.feature_subset_to_feature_ids(data_type,
                                                          feature_subset,
                                                          rename=False)
-        # TODO: move this kwarg stuff into visualize
-        kwargs['x_pc'] = x_pc
-        kwargs['y_pc'] = y_pc
-        kwargs['sample_ids'] = sample_ids
-        kwargs['feature_ids'] = feature_ids
-        kwargs['title'] = title
-        kwargs['featurewise'] = featurewise
-        kwargs['show_point_labels'] = show_point_labels
-        kwargs['colors_dict'] = self.sample_id_to_color
 
-        if 'marker' in self.experiment_design.data:
-            kwargs['markers_dict'] = \
-                self.experiment_design.data.marker.to_dict()
+        if not featurewise:
+            label_to_color = self.phenotype_to_color
+            label_to_marker = self.phenotype_to_marker
+            groupby = self.sample_id_to_phenotype
+            order = self.phenotype_order
+            color = self.phenotype_color_ordered
+        else:
+            label_to_color = None
+            label_to_marker = None
+            groupby = None
+            order = None
+            color = None
 
         if "expression".startswith(data_type):
-            reducer = self.expression.plot_dimensionality_reduction(**kwargs)
+            reducer = self.expression.plot_pca(
+                x_pc=x_pc, y_pc=y_pc, sample_ids=sample_ids,
+                feature_ids=feature_ids,
+                label_to_color=label_to_color,
+                label_to_marker=label_to_marker, groupby=groupby,
+                order=order, color=color,
+                featurewise=featurewise, show_point_labels=show_point_labels,
+                title=title, reduce_kwargs=reduce_kwargs, **kwargs)
         elif "splicing".startswith(data_type):
-            reducer = self.splicing.plot_dimensionality_reduction(**kwargs)
-
+            reducer = self.splicing.plot_pca(
+                x_pc=x_pc, y_pc=y_pc, sample_ids=sample_ids,
+                feature_ids=feature_ids,
+                label_to_color=label_to_color,
+                label_to_marker=label_to_marker, groupby=groupby,
+                order=order, color=color,
+                featurewise=featurewise, show_point_labels=show_point_labels,
+                title=title, reduce_kwargs=reduce_kwargs, **kwargs)
+        else:
+            raise ValueError('The data type {} does not exist in this study'
+                             .format(data_type))
         return reducer
 
     def plot_graph(self, data_type='expression', sample_subset=None,
-                   feature_subset=None,
+                   feature_subset=None, featurewise=False,
                    **kwargs):
         """Plot the graph (network) of these data
 
@@ -729,35 +800,54 @@ class Study(StudyFactory):
                                                          feature_subset,
                                                          rename=False)
 
-        kwargs['sample_id_to_color'] = self.sample_id_to_color
-        kwargs['sample_ids'] = sample_ids
-        kwargs['feature_ids'] = feature_ids
+        if not featurewise:
+            label_to_color = self.phenotype_to_color
+            label_to_marker = self.phenotype_to_marker
+            groupby = self.sample_id_to_phenotype
+        else:
+            label_to_color = None
+            label_to_marker = None
+            groupby = None
 
         if data_type == "expression":
-            self.expression.networks.draw_graph(**kwargs)
+            return self.expression.networks.draw_graph(
+                sample_ids=sample_ids, feature_ids=feature_ids,
+                sample_id_to_color=self.sample_id_to_color,
+                label_to_color=label_to_color,
+                label_to_marker=label_to_marker, groupby=groupby,
+                featurewise=featurewise,
+                **kwargs)
         elif data_type == "splicing":
-            self.splicing.networks.draw_graph(**kwargs)
+            return self.splicing.networks.draw_graph(
+                sample_ids=sample_ids, feature_ids=feature_ids,
+                sample_id_to_color=self.sample_id_to_color,
+                label_to_color=label_to_color,
+                label_to_marker=label_to_marker, groupby=groupby,
+                featurewise=featurewise,
+                **kwargs)
 
     def plot_study_sample_legend(self):
-        markers = self.experiment_design.data.color.groupby(self.experiment_design.data.marker \
-                                                         + "." + self.experiment_design.data.celltype).last()
+        markers = self.metadata.data.color.groupby(
+            self.metadata.data.marker
+            + "." + self.metadata.data.celltype).last()
 
-        f, ax = plt.subplots(1,1, figsize=(3, len(markers)))
+        f, ax = plt.subplots(1, 1, figsize=(3, len(markers)))
 
-        for i, point_type in enumerate(markers.iteritems(),):
+        for i, point_type in enumerate(markers.iteritems(), ):
             mrk, celltype = point_type[0].split('.')
             ax.scatter(0, 0, marker=mrk, c=point_type[1],
                        edgecolor='none', label=celltype,
                        s=160)
-        ax.set_xlim(1,2)
-        ax.set_ylim(1,2)
+        ax.set_xlim(1, 2)
+        ax.set_ylim(1, 2)
         ax.axis('off')
-        legend = ax.legend(title='cell type', fontsize=20,)
+        legend = ax.legend(title='cell type', fontsize=20, )
         return legend
 
-    def plot_classifier(self, trait, data_type='expression', title='',
-                        show_point_labels=False, sample_subset=None,
-                        feature_subset=None,
+    def plot_classifier(self, trait, sample_subset=None,
+                        feature_subset='all_genes',
+                        data_type='expression', title='',
+                        show_point_labels=False,
                         **kwargs):
         """Plot a predictor for the specified data type and trait(s)
 
@@ -766,7 +856,7 @@ class Study(StudyFactory):
         data_type : str
             One of the names of the data types, e.g. "expression" or "splicing"
         trait : str
-            Column name in the experiment_design data that you would like
+            Column name in the metadata data that you would like
             to classify on
 
         Returns
@@ -774,24 +864,40 @@ class Study(StudyFactory):
 
 
         """
-        trait_data = self.experiment_design.data[trait]
+        trait_data = self.metadata.data[trait]
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
         feature_ids = self.feature_subset_to_feature_ids(data_type,
                                                          feature_subset,
                                                          rename=False)
+        feature_subset = 'none' if feature_subset is None else feature_subset
+        sample_subset = 'none' if sample_subset is None else sample_subset
+        data_name = '_'.join([sample_subset, feature_subset])
 
-        kwargs['trait'] = trait_data
-        kwargs['title'] = title
-        kwargs['show_point_labels'] = show_point_labels
-        kwargs['colors_dict'] = self.sample_id_to_color
-        kwargs['sample_ids'] = sample_ids
-        kwargs['feature_ids'] = feature_ids
-        # print(kwargs.keys())
+        label_to_color = self.phenotype_to_color
+        label_to_marker = self.phenotype_to_marker
+        groupby = self.sample_id_to_phenotype
+
+        order = self.phenotype_order
+        color = self.phenotype_color_ordered
 
         if data_type == "expression":
-            self.expression.plot_classifier(**kwargs)
+            self.expression.plot_classifier(
+                data_name=data_name, trait=trait_data,
+                sample_ids=sample_ids, feature_ids=feature_ids,
+                label_to_color=label_to_color,
+                label_to_marker=label_to_marker, groupby=groupby,
+                show_point_labels=show_point_labels, title=title,
+                order=order, color=color,
+                **kwargs)
         elif data_type == "splicing":
-            self.splicing.plot_classifier(**kwargs)
+            self.splicing.plot_classifier(
+                data_name=data_name, trait=trait_data,
+                sample_ids=sample_ids, feature_ids=feature_ids,
+                label_to_color=label_to_color,
+                label_to_marker=label_to_marker, groupby=groupby,
+                show_point_labels=show_point_labels, title=title,
+                order=order, color=color,
+                **kwargs)
 
     def plot_regressor(self, data_type='expression', **kwargs):
         """
@@ -820,8 +926,8 @@ class Study(StudyFactory):
                                                          feature_subset,
                                                          rename=False)
 
-        grouped = self.sample_id_to_celltype.groupby(
-            self.sample_id_to_celltype)
+        grouped = self.sample_id_to_phenotype.groupby(
+            self.sample_id_to_phenotype)
 
         # Account for bar plot and plot of the reduced space of ALL samples
         n = grouped.ngroups + 2
@@ -855,10 +961,10 @@ class Study(StudyFactory):
 
     def celltype_sizes(self, data_type='splicing'):
         if data_type == 'expression':
-            self.expression.data.groupby(self.sample_id_to_celltype,
+            self.expression.data.groupby(self.sample_id_to_phenotype,
                                          axis=0).size()
         if data_type == 'splicing':
-            self.splicing.data.groupby(self.sample_id_to_celltype,
+            self.splicing.data.groupby(self.sample_id_to_phenotype,
                                        axis=0).size()
 
     @property
@@ -866,7 +972,7 @@ class Study(StudyFactory):
         """Number of cells that detected this event in that celltype
         """
         return self.splicing.data.groupby(
-            self.sample_id_to_celltype, axis=0).apply(
+            self.sample_id_to_phenotype, axis=0).apply(
             lambda x: x.groupby(level=0, axis=0).transform(
                 lambda x: x.count()).sum()).replace(0, np.nan)
 
@@ -884,18 +990,18 @@ class Study(StudyFactory):
         """Return modality assignments of each celltype
         """
         return self.splicing.data.groupby(
-            self.sample_id_to_celltype, axis=0).apply(
+            self.sample_id_to_phenotype, axis=0).apply(
             lambda x: self.splicing.modalities(x.index))
 
     def plot_modalities_lavalamps(self, sample_subset=None, bootstrapped=False,
                                   bootstrapped_kws=None):
         grouped = self.splicing.data.groupby(self.sample_id_to_color, axis=0)
         celltype_groups = self.splicing.data.groupby(
-            self.sample_id_to_celltype, axis=0)
+            self.sample_id_to_phenotype, axis=0)
 
         if sample_subset is not None:
-            # Only plotting one sample_subset, use the modality assignments from
-            # just the samples from this sample_subset
+            # Only plotting one sample_subset, use the modality assignments
+            # from just the samples from this sample_subset
             celltype_samples = celltype_groups.groups[sample_subset]
             celltype_samples = set(celltype_groups.groups[sample_subset])
             use_these_modalities = True
@@ -917,37 +1023,49 @@ class Study(StudyFactory):
                     bootstrapped=bootstrapped,
                     bootstrapped_kws=bootstrapped_kws)
 
-    def plot_event(self, feature_id, sample_subset=None, ax=None):
-        """Plot the violinplot of an event
-
+    def plot_event(self, feature_id, sample_subset=None):
+        """Plot the violinplot and DataFrameNMF transitions of a splicing event
         """
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
         self.splicing.plot_event(feature_id, sample_ids,
-                                 sample_groupby=self.sample_id_to_celltype,
-                                 ax=ax)
+                                 phenotype_groupby=self.sample_id_to_phenotype,
+                                 phenotype_order=self.phenotype_order,
+                                 color=self.phenotype_color_ordered,
+                                 phenotype_to_color=self.phenotype_to_color,
+                                 phenotype_to_marker=self.phenotype_to_marker)
+
+    def plot_gene(self, feature_id, sample_subset=None):
+        sample_ids = self.sample_subset_to_sample_ids(sample_subset)
+        self.expression.plot_feature(feature_id, sample_ids,
+                                     phenotype_groupby=self.sample_id_to_phenotype,
+                                     phenotype_order=self.phenotype_order,
+                                     color=self.phenotype_color_ordered,
+                                     phenotype_to_color=self.phenotype_to_color,
+                                     phenotype_to_marker=self.phenotype_to_marker)
 
     def plot_lavalamp_pooled_inconsistent(
-            self, celltype=None, feature_ids=None,
+            self, sample_subset=None, feature_ids=None,
             fraction_diff_thresh=FRACTION_DIFF_THRESH):
         # grouped_ids = self.splicing.data.groupby(self.sample_id_to_color,
         #                                          axis=0)
-        celltype_groups = self.experiment_design.data.groupby(
-            self.sample_id_to_celltype, axis=0)
+        celltype_groups = self.metadata.data.groupby(
+            self.sample_id_to_phenotype, axis=0)
 
-        if celltype is not None:
-            # Only plotting one celltype
-            celltype_samples = set(celltype_groups.groups[celltype])
+        if sample_subset is not None:
+            # Only plotting one sample_subset
+            celltype_samples = set(celltype_groups.groups[sample_subset])
         else:
             # Plotting all the celltypes
-            celltype_samples = self.experiment_design.data.index
+            celltype_samples = self.sample_subset_to_sample_ids(sample_subset)
 
         celltype_and_sample_ids = celltype_groups.groups.iteritems()
-        for i, (celltype, sample_ids) in enumerate(celltype_and_sample_ids):
+        for i, (phenotype, sample_ids) in enumerate(
+                celltype_and_sample_ids):
             # import pdb; pdb.set_trace()
 
-            # Assumes all samples of a celltype have the same color...
+            # Assumes all samples of a sample_subset have the same color...
             # probably wrong
-            color = self.sample_id_to_color[sample_ids[0]]
+            color = self.phenotype_to_color[phenotype]
             sample_ids = celltype_samples.intersection(sample_ids)
             if len(sample_ids) == 0:
                 continue
@@ -956,24 +1074,25 @@ class Study(StudyFactory):
                 color=color)
 
     def percent_pooled_inconsistent(self,
-                                    celltype=None, feature_ids=None,
+                                    sample_subset=None, feature_ids=None,
                                     fraction_diff_thresh=FRACTION_DIFF_THRESH):
 
-        celltype_groups = self.experiment_design.data.groupby(
-            self.sample_id_to_celltype, axis=0)
+        celltype_groups = self.metadata.data.groupby(
+            self.sample_id_to_phenotype, axis=0)
 
-        if celltype is not None:
-            # Only plotting one celltype
-            celltype_samples = set(celltype_groups.groups[celltype])
+        if sample_subset is not None:
+            # Only plotting one sample_subset
+            celltype_samples = set(celltype_groups.groups[sample_subset])
         else:
             # Plotting all the celltypes
-            celltype_samples = self.experiment_design.data.index
+            celltype_samples = self.metadata.data.index
 
         celltype_and_sample_ids = celltype_groups.groups.iteritems()
-        for i, (celltype, sample_ids) in enumerate(celltype_and_sample_ids):
+        for i, (sample_subset, sample_ids) in enumerate(
+                celltype_and_sample_ids):
             # import pdb; pdb.set_trace()
 
-            # Assumes all samples of a celltype have the same color...
+            # Assumes all samples of a sample_subset have the same color...
             # probably wrong
             color = self.sample_id_to_color[sample_ids[0]]
             sample_ids = celltype_samples.intersection(sample_ids)
@@ -982,95 +1101,87 @@ class Study(StudyFactory):
             self.splicing.percent_pooled_inconsistent(sample_ids, feature_ids,
                                                       fraction_diff_thresh)
 
-    def plot_clusteredheatmap(self, sample_subset=None,
-                              feature_subset='variant',
-                              data_type='expression', metric='euclidean',
-                              linkage_method='median'):
+    # def plot_clusteredheatmap(self, sample_subset=None,
+    #                           feature_subset='variant',
+    #                           data_type='expression', metric='euclidean',
+    #                           linkage_method='median', figsize=None):
+    #     if data_type == 'expression':
+    #         data = self.expression.data
+    #     elif data_type == 'splicing':
+    #         data = self.splicing.data
+    #     celltype_groups = data.groupby(
+    #         self.sample_id_to_phenotype, axis=0)
+    #
+    #     if sample_subset is not None:
+    #         # Only plotting one sample_subset
+    #         try:
+    #             sample_ids = set(celltype_groups.groups[sample_subset])
+    #         except KeyError:
+    #             sample_ids = self.sample_subset_to_sample_ids(sample_subset)
+    #     else:
+    #         # Plotting all the celltypes
+    #         sample_ids = data.index
+    #
+    #     sample_colors = [self.sample_id_to_color[x] for x in sample_ids]
+    #     feature_ids = self.feature_subset_to_feature_ids(data_type,
+    #                                                      feature_subset,
+    #                                                      rename=False)
+    #
+    #     if data_type == "expression":
+    #         return self.expression.plot_clusteredheatmap(
+    #             sample_ids, feature_ids, linkage_method=linkage_method,
+    #             metric=metric, sample_colors=sample_colors, figsize=figsize)
+    #     elif data_type == "splicing":
+    #         return self.splicing.plot_clusteredheatmap(
+    #             sample_ids, feature_ids, linkage_method=linkage_method,
+    #             metric=metric, sample_colors=sample_colors, figsize=figsize)
+
+    def plot_big_nmf_space_transitions(self, data_type='expression'):
         if data_type == 'expression':
-            data = self.expression.data
-        elif data_type == 'splicing':
-            data = self.splicing.data
-        celltype_groups = data.groupby(
-            self.sample_id_to_celltype, axis=0)
-    
-        if sample_subset is not None:
-            # Only plotting one sample_subset
-            try:
-                sample_ids = set(celltype_groups.groups[sample_subset])
-            except KeyError:
-                sample_ids = self.sample_subset_to_sample_ids(sample_subset)
-        else:
-            # Plotting all the celltypes
-            sample_ids = data.index
-    
-        sample_colors = [self.sample_id_to_color[x] for x in sample_ids]
-        feature_ids = self.feature_subset_to_feature_ids(data_type,
-                                                         feature_subset,
-                                                         rename=False)
-    
-        if data_type == "expression":
-            return self.expression.plot_clusteredheatmap(
-                sample_ids, feature_ids, linkage_method=linkage_method,
-                metric=metric, sample_colors=sample_colors)
-        elif data_type == "splicing":
-            return self.splicing.plot_clusteredheatmap(
-                sample_ids, feature_ids, linkage_method=linkage_method,
-                metric=metric, sample_colors=sample_colors)
+            self.expression.plot_big_nmf_space_transitions(
+                self.sample_id_to_phenotype, self.phenotype_transitions,
+                self.phenotype_order, self.phenotype_color_ordered,
+                self.phenotype_to_color, self.phenotype_to_marker)
+        if data_type == 'splicing':
+            self.splicing.plot_big_nmf_space_transitions(
+                self.sample_id_to_phenotype, self.phenotype_transitions,
+                self.phenotype_order, self.phenotype_color_ordered,
+                self.phenotype_to_color, self.phenotype_to_marker)
 
-    def plot_event(self, feature_id, sample_ids):
-        self.splicing.plot_event(feature_id, sample_ids,
-                                 sample_groupby=self.sample_id_to_celltype,
-                                 celltype_order=self.experiment_design.celltype_order)
 
-    def hack_lazy(self):
+    def save(self, name):
 
-        """
-         called by __init__ these things haven't been worked out, so it's probably ok if they fail.
-        """
+        metadata = self.metadata.data
 
-        #cast outlier column to bool
-        x = self.experiment_design.data['outlier']
-        x = x.astype('bool')
-        self.experiment_design.data['outlier'] = x
+        try:
+            expression = self.expression.data
+        except AttributeError:
+            expression = None
 
-        #add splicing gene type
-        splicing_genes = pd.Index(set(self.gene_ontology_data[
-            self.gene_ontology_data['GO Term Name'].apply(
-                lambda x: "splicing" in str(x))]['Ensembl Gene ID']))
-        self.expression.feature_sets['splicing'] = splicing_genes
-        self.expression.default_feature_sets.append('splicing')
+        try:
+            splicing = self.splicing.data
+        except AttributeError:
+            splicing = None
 
-        #drop cells with too few mapped reads
-        read_cut = 2000000  # 2 million
-        test = self.mapping_stats.data[
-                   'Uniquely mapped reads number'] < read_cut
-        samples_w_lt_million_reads = self.mapping_stats.data.index[test]
-        self.experiment_design.data['outlier'].ix[
-            samples_w_lt_million_reads] = True
-        outliers = self.experiment_design.data['outlier'].ix[
-            self.experiment_design.data['outlier']].index
-        self.expression.data = self.expression.drop_outliers(
-            self.expression.data, outliers)
-        self.splicing.data = self.splicing.drop_outliers(
-            self.splicing.data, outliers)
-        self.expression.sparse_data = self.expression.drop_outliers(
-            self.expression.sparse_data, outliers)
+        try:
+            spikein = self.spikein.data
+        except AttributeError:
+            spikein = None
 
-        #add logical inverse of boolean columns in experiment_design
-        for column in self.experiment_design.data.columns:
-            if self.experiment_design.data[column].dtype == 'bool':
-                if column.startswith("~"):
-                    continue
-                self.experiment_design.data['~' + column] = ~ \
-                    self.experiment_design.data[column]
-                self.default_sample_subsets.append('~' + column)
+        try:
+            mapping_stats = self.mapping_stats.data
+        except AttributeError:
+            mapping_stats = None
+
+        return make_study_datapackage(name, metadata, expression, splicing,
+                                      spikein, mapping_stats)
 
 
 # Add interactive visualizations
 Study.interactive_classifier = Interactive.interactive_classifier
 Study.interactive_graph = Interactive.interactive_graph
 Study.interactive_pca = Interactive.interactive_pca
-Study.interactive_localZ = Interactive.interactive_localZ
+# Study.interactive_localZ = Interactive.interactive_localZ
 Study.interactive_lavalamp_pooled_inconsistent = \
     Interactive.interactive_lavalamp_pooled_inconsistent
-Study.interactive_clusteredheatmap = Interactive.interactive_clusteredheatmap
+# Study.interactive_clusteredheatmap = Interactive.interactive_clusteredheatmap

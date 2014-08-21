@@ -12,6 +12,7 @@ before_install:
   - ./miniconda.sh -b
   - if [ ${TRAVIS_PYTHON_VERSION:0:1} == "2" ]; then export PATH=~/miniconda/bin:$PATH; else export PATH=~/miniconda3/bin/:$PATH; fi
   - conda update --yes conda
+# Set up coveralls
   - export COVERALLS_SERVICE_NAME=travis-ci
   - export COVERALLS_REPO_TOKEN=Pk8rldcpUmf4b8ITeoa7XBYHiAc3LNXlc
 
@@ -23,46 +24,42 @@ install:
   - conda install --yes pip numpy scipy cython matplotlib nose six scikit-learn ipython networkx pandas tornado statsmodels setuptools pytest pyzmq jinja2 pyyaml
   # Install the rest via pip (brewer2mpl, gspread, seaborn, etc)
   - pip install -r requirements.txt
+
+before_script:
+  - git config --global user.email "olga.botvinnik@gmail.com"
+  - git config --global user.name "olgabot"
+  - export REPO_URL_GITHUB="https://$GH_TOKEN@github.com/$GH_REPO.git"
+  - . ./.travis/setup.sh # make any change needed for setup.sh
+  - echo $DEPLOY_HTML_DIR
+
+# command to run tests
+script: make coverage
+
+after_script:
   # For building the docs
   - pip install sphinx numpydoc sphinx_bootstrap_theme runipy
   - sudo apt-get install pandoc
   - pip install pep8
   - pip install https://github.com/dcramer/pyflakes/tarball/master
   - pip install .
-
-# Build documentation
-#before_script:
-#  - if [ ${TRAVIS_PYTHON_VERSION:0:1} == "2" ]; then
-#    make lint;
-#    fi
-
-# command to run tests
-script: make coverage
-
-# After the build is successful, run coveralls and push docs
-after_success:
-  # Push to coveralls.io for test coverage stats
-  - coveralls
-  # Push to github pages for documentation
-  - git config credential.helper "store --file=.git/credentials"
-  - git remote set-url origin https://github.com/YeoLab/flotilla.git
-  - git config --global credential.helper "store --file=.git/credentials"
-  - git config --global user.email "olga.botvinnik@gmail.com"
-  - git config --global user.name "Olga Botvinnik"
-  - echo "https://${GH_TOKEN}:@github.com" > .git/credentials
-  - if [ ${TRAVIS_PYTHON_VERSION:0:1} == "2" ]; then
-    cd doc;
-    make html;
-    cd ../gh-pages;
-    git add . ; git commit -m "Update from Travis-CI on $(date)";
-    git push -u origin gh-pages;
-    fi
+  - sudo pip install -r doc/requirements.txt --use-mirrors # change this to the right project path
+  # Make sure README.rst is always synced with README.md
+  - pandoc -f markdown README.md -t rst > README.rst
+  - cd doc
+  - make setup_gh_pages
+  - make generate
+  - make deploy
 
 # For slack notifications
 notifications:
   slack:
     rooms:
     - yeolab:HxLwrd5FGhZQ8SyBD9Fvh3dn#flotilla
+
 env:
   global:
-    secure: N8LIn+ZtvaL+j9uHJFRtTWHbJtLk47r+7PUaSPapmpRPkqD4zClwC1+xVrfRXYiTWLVmCMfbcOAjQmZR8OjL8TKD4yGPzXAS5yb9QUhlMBf2is7CECIZQcQ/kht4KGKF72QoRY4r/Eh4NKhayBUWwZmHXd5zIKn8C/irvr+6LBI=
+    - GH_REPO="YeoLab/flotilla" #change this to your right project
+    - secure: N8LIn+ZtvaL+j9uHJFRtTWHbJtLk47r+7PUaSPapmpRPkqD4zClwC1+xVrfRXYiTWLVmCMfbcOAjQmZR8OjL8TKD4yGPzXAS5yb9QUhlMBf2is7CECIZQcQ/kht4KGKF72QoRY4r/Eh4NKhayBUWwZmHXd5zIKn8C/irvr+6LBI=
+
+  # configure the right travis-ci secure key, see sphinx-deployment/README for more details
+  #- secure: im3gWbsEF135C0jKlOIRJUa1tgtsCAaqwGDSpzwe/fnTosqystNE+mhvFfERmy1K4qRg0cbRYGd8L6pP/V7RR3GMqFX4h5wexZeKsCN895S0d7QIWUmw2yJ3+mvk/g+E6q56tORzhKzKVRef5VWkk84EOKrZ/KIeoVpKVAlVR1s=

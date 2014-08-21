@@ -1,7 +1,7 @@
 """plotting tools"""
 
-
 import seaborn
+
 seaborn.set_style({'axes.axisbelow': True,
                    'axes.edgecolor': '.15',
                    'axes.facecolor': 'white',

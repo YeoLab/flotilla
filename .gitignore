@@ -11,3 +11,4 @@ virtualenv
 # emacs
 *~
 .coverage
+.ipynb_checkpoints

@@ -115,7 +115,7 @@
     <div class="col-md-12">
       
   <h1>Source code for flotilla.external</h1><div class="highlight"><pre>
-<span class="sd">&quot;&quot;&quot; interface with external data sources i.e. GO files, web&quot;&quot;&quot;</span>
+<span class="sd">&quot;&quot;&quot; interface with external dataset sources i.e. GO files, web&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s">&#39;lovci, yan_song, &#39;</span>
@@ -240,7 +240,7 @@
 <span class="sd">    &gt;&gt;&gt; go = hg19GO()</span>
 <span class="sd">    &gt;&gt;&gt; go.geneXref[&#39;ENSG00000100320&#39;]</span>
 <span class="sd">    &#39;RBFOX2&#39;</span>
-<span class="sd">    &gt;&gt;&gt; data = go.enrichment(list, background)</span>
+<span class="sd">    &gt;&gt;&gt; dataset = go.enrichment(list, background)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -326,7 +326,7 @@
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">package_dir</span><span class="p">)</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;Creating a directory for saving the data for this &#39;</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;Creating a directory for saving the dataset for this &#39;</span>
                          <span class="s">&#39;project: {}</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">package_dir</span><span class="p">))</span>
     <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
         <span class="k">pass</span>

@@ -7,6 +7,7 @@ general utilities
 from functools import wraps
 import errno
 import os
+import re
 import signal
 import sys
 import subprocess
@@ -61,8 +62,8 @@ def serve_ipython():
 
 
 def dict_to_str(dic):
-        """join dictionary study_data into a string with that study_data"""
-        return "_".join([k + ":" + str(v) for (k, v) in dic.items()])
+    """join dictionary study_data into a string with that study_data"""
+    return "_".join([k + ":" + str(v) for (k, v) in dic.items()])
 
 
 def install_development_package(package_location):
@@ -94,6 +95,7 @@ def memoize(obj):
         if key not in cache:
             cache[key] = obj(*args, **kwargs)
         return cache[key]
+
     return memoizer
 
 
@@ -131,6 +133,7 @@ class cached_property(object):
     https://wiki.python.org/moin/PythonDecoratorLibrary#Cached_Properties
 
     '''
+
     def __init__(self, ttl=0):
         self.ttl = ttl
 
@@ -167,3 +170,13 @@ def as_numpy(x):
     except AttributeError:
         # Numpy array
         return x
+
+
+def natural_sort(l):
+    """
+    From
+    http://stackoverflow.com/a/4836734
+    """
+    convert = lambda text: int(text) if text.isdigit() else text.lower()
+    alphanum_key = lambda key: [convert(c) for c in re.split('([0-9]+)', key)]
+    return sorted(l, key=alphanum_key)
