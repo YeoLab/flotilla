@@ -138,7 +138,7 @@
 
     <span class="n">_last_reducer_accessed</span> <span class="o">=</span> <span class="bp">None</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span>
                  <span class="n">feature_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">binsize</span><span class="o">=</span><span class="n">_binsize</span><span class="p">,</span>
                  <span class="n">var_cut</span><span class="o">=</span><span class="n">_var_cut</span><span class="p">,</span> <span class="n">outliers</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">feature_rename_col</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
@@ -146,8 +146,8 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        data : pandas.DataFrame</span>
-<span class="sd">            A [n_events, n_samples] dataframe of data events</span>
+<span class="sd">        dataset : pandas.DataFrame</span>
+<span class="sd">            A [n_events, n_samples] dataframe of dataset events</span>
 <span class="sd">        n_components : int</span>
 <span class="sd">            Number of components to use in the reducer</span>
 <span class="sd">        binsize : float</span>
@@ -158,15 +158,15 @@
 <span class="sd">            functions fit, transform, and have the attribute components_</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">SplicingData</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">feature_data</span><span class="p">,</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SplicingData</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">feature_data</span><span class="p">,</span>
                                            <span class="n">feature_rename_col</span><span class="o">=</span><span class="n">feature_rename_col</span><span class="p">,</span>
                                            <span class="n">outliers</span><span class="o">=</span><span class="n">outliers</span><span class="p">)</span>
-        <span class="c"># self.experiment_design_data, data = self.experiment_design_data.align(data, join=&#39;inner&#39;, axis=0)</span>
+        <span class="c"># self.experiment_design_data, dataset = self.experiment_design_data.align(dataset, join=&#39;inner&#39;, axis=0)</span>
 
-        <span class="c"># self.data = data</span>
+        <span class="c"># self.dataset = dataset</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">binsize</span> <span class="o">=</span> <span class="n">binsize</span>
         <span class="n">psi_variant</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">var</span><span class="p">()</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">var_cut</span><span class="p">)</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()</span> <span class="k">if</span> <span class="n">j</span><span class="p">])</span>
+            <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">var</span><span class="p">()</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">var_cut</span><span class="p">)</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()</span> <span class="k">if</span> <span class="n">j</span><span class="p">])</span>
         <span class="c"># self._set_naming_fun(self.feature_rename)</span>
 
         <span class="c"># self.all_features = &#39;all_events&#39;</span>
@@ -174,7 +174,7 @@
 
     <span class="nd">@memoize</span>
 <div class="viewcode-block" id="SplicingData.binify"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.splicing.SplicingData.binify">[docs]</a>    <span class="k">def</span> <span class="nf">binify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bins</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">binify</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">bins</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">binify</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">,</span> <span class="n">bins</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="SplicingData.get_binned_reduced"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.splicing.SplicingData.get_binned_reduced">[docs]</a>    <span class="k">def</span> <span class="nf">get_binned_reduced</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reducer</span><span class="o">=</span><span class="n">NMFViz</span><span class="p">):</span>
         <span class="n">binned</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_binned_data</span><span class="p">()</span>
@@ -188,20 +188,20 @@
                <span class="n">featurewise</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">reducer</span><span class="o">=</span><span class="n">PCAViz</span><span class="p">,</span>
                <span class="n">standardize</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span>
                <span class="n">reducer_kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;make and cache a reduced dimensionality representation of data</span>
+        <span class="sd">&quot;&quot;&quot;make and cache a reduced dimensionality representation of dataset</span>
 
 <span class="sd">        Default is PCAViz because</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">bins</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">binify</span><span class="p">(</span><span class="n">bins</span><span class="p">)</span>
+            <span class="n">dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">binify</span><span class="p">(</span><span class="n">bins</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
+            <span class="n">dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span>
 
         <span class="n">reducer_kwargs</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">reducer_kwargs</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">reducer_kwargs</span>
         <span class="n">reducer_kwargs</span><span class="p">[</span><span class="s">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">title</span>
         <span class="c"># feature_renamer = self.feature_renamer()</span>
 
-        <span class="n">subset</span><span class="p">,</span> <span class="n">means</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subset_and_standardize</span><span class="p">(</span><span class="n">data</span><span class="p">,</span>
+        <span class="n">subset</span><span class="p">,</span> <span class="n">means</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subset_and_standardize</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span>
                                                      <span class="n">sample_ids</span><span class="p">,</span> <span class="n">feature_ids</span><span class="p">,</span>
                                                      <span class="n">standardize</span><span class="p">)</span>
 
@@ -236,7 +236,7 @@
 <span class="sd">            specified</span>
 <span class="sd">        standardize : bool</span>
 <span class="sd">            Whether or not to &quot;whiten&quot; (make all variables uncorrelated) and</span>
-<span class="sd">            mean-center and make unit-variance all the data via sklearn</span>
+<span class="sd">            mean-center and make unit-variance all the dataset via sklearn</span>
 <span class="sd">            .preprocessing.StandardScaler</span>
 <span class="sd">        predictor : flotilla.visualize.predict classifier</span>
 <span class="sd">            Must inherit from flotilla.visualize.PredictorBaseViz. Default is</span>
@@ -257,7 +257,7 @@
 <span class="sd">        predictor : flotilla.compute.predict.PredictorBaseViz</span>
 <span class="sd">            A ready-to-plot object containing the predictions</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">subset</span><span class="p">,</span> <span class="n">means</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subset_and_standardize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+        <span class="n">subset</span><span class="p">,</span> <span class="n">means</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subset_and_standardize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">,</span>
                                                      <span class="n">sample_ids</span><span class="p">,</span>
                                                      <span class="n">feature_ids</span><span class="p">,</span>
                                                      <span class="n">standardize</span><span class="p">)</span>
@@ -289,7 +289,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        data, experiment_design_data</span>
+<span class="sd">        dataset, experiment_design_data</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -313,11 +313,11 @@
 
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">sample_descriptors</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Instantiate an object of downsampled splicing data</span>
+        <span class="sd">&quot;&quot;&quot;Instantiate an object of downsampled splicing dataset</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        data : pandas.DataFrame</span>
+<span class="sd">        dataset : pandas.DataFrame</span>
 <span class="sd">            A &quot;tall&quot; dataframe of all miso summary events, with the usual</span>
 <span class="sd">            MISO summary columns, and these are required: &#39;splice_type&#39;,</span>
 <span class="sd">            &#39;probability&#39;, &#39;iteration.&#39; Where &quot;probability&quot; indicates the</span>
@@ -328,7 +328,7 @@
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
-<span class="sd">        Warning: this data is usually HUGE (we&#39;re taking like 10GB raw .tsv</span>
+<span class="sd">        Warning: this dataset is usually HUGE (we&#39;re taking like 10GB raw .tsv</span>
 <span class="sd">        files) so make sure you have the available memory for dealing with</span>
 <span class="sd">        these.</span>
 
@@ -359,9 +359,9 @@
 
             <span class="k">for</span> <span class="p">(</span><span class="n">splice_type</span><span class="p">,</span> <span class="n">probability</span><span class="p">),</span> <span class="n">df</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span>
                     <span class="p">[</span><span class="s">&#39;splice_type&#39;</span><span class="p">,</span> <span class="s">&#39;probability&#39;</span><span class="p">]):</span>
-                <span class="c"># print splice_type, probability, data.shape, \</span>
-                <span class="c">#     data.event_name.unique().shape[0],</span>
-                <span class="c"># n_iter = data.iteration.unique().shape[0]</span>
+                <span class="c"># print splice_type, probability, dataset.shape, \</span>
+                <span class="c">#     dataset.event_name.unique().shape[0],</span>
+                <span class="c"># n_iter = dataset.iteration.unique().shape[0]</span>
                 <span class="n">event_count</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">Counter</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">event_name</span><span class="p">)</span>
                 <span class="c"># print sum(1 for k, v in event_count.iteritems() if v == n_iter)</span>
                 <span class="n">shared_events</span><span class="p">[(</span><span class="n">splice_type</span><span class="p">,</span> <span class="n">probability</span><span class="p">)]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>

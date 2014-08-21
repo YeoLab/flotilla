@@ -70,14 +70,14 @@ if (typeof jQuery === 'undefined') { throw new Error('Bootstrap requires jQuery'
   // ALERT CLASS DEFINITION
   // ======================
 
-  var dismiss = '[data-dismiss="alert"]'
+  var dismiss = '[dataset-dismiss="alert"]'
   var Alert   = function (el) {
     $(el).on('click', dismiss, this.close)
   }
 
   Alert.prototype.close = function (e) {
     var $this    = $(this)
-    var selector = $this.attr('data-target')
+    var selector = $this.attr('dataset-target')
 
     if (!selector) {
       selector = $this.attr('href')
@@ -140,7 +140,7 @@ if (typeof jQuery === 'undefined') { throw new Error('Bootstrap requires jQuery'
   // ALERT DATA-API
   // ==============
 
-  $(document).on('click.bs.alert.data-api', dismiss, Alert.prototype.close)
+  $(document).on('click.bs.alert.dataset-api', dismiss, Alert.prototype.close)
 
 }(window.$jqTheme||window.jQuery);
 
@@ -195,7 +195,7 @@ if (typeof jQuery === 'undefined') { throw new Error('Bootstrap requires jQuery'
 
   Button.prototype.toggle = function () {
     var changed = true
-    var $parent = this.$element.closest('[data-toggle="buttons"]')
+    var $parent = this.$element.closest('[dataset-toggle="buttons"]')
 
     if ($parent.length) {
       var $input = this.$element.find('input')
@@ -243,7 +243,7 @@ if (typeof jQuery === 'undefined') { throw new Error('Bootstrap requires jQuery'
   // BUTTON DATA-API
   // ===============
 
-  $(document).on('click.bs.button.data-api', '[data-toggle^=button]', function (e) {
+  $(document).on('click.bs.button.dataset-api', '[dataset-toggle^=button]', function (e) {
     var $btn = $(e.target)
     if (!$btn.hasClass('btn')) $btn = $btn.closest('.btn')
     $btn.button('toggle')
@@ -433,16 +433,16 @@ if (typeof jQuery === 'undefined') { throw new Error('Bootstrap requires jQuery'
   // CAROUSEL DATA-API
   // =================
 
-  $(document).on('click.bs.carousel.data-api', '[data-slide], [data-slide-to]', function (e) {
+  $(document).on('click.bs.carousel.dataset-api', '[dataset-slide], [dataset-slide-to]', function (e) {
     var $this   = $(this), href
-    var $target = $($this.attr('data-target') || (href = $this.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '')) //strip for ie7
+    var $target = $($this.attr('dataset-target') || (href = $this.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '')) //strip for ie7
     var options = $.extend({}, $target.data(), $this.data())
-    var slideIndex = $this.attr('data-slide-to')
+    var slideIndex = $this.attr('dataset-slide-to')
     if (slideIndex) options.interval = false
 
     $target.carousel(options)
 
-    if (slideIndex = $this.attr('data-slide-to')) {
+    if (slideIndex = $this.attr('dataset-slide-to')) {
       $target.data('bs.carousel').to(slideIndex)
     }
 
@@ -450,7 +450,7 @@ if (typeof jQuery === 'undefined') { throw new Error('Bootstrap requires jQuery'
   })
 
   $(window).on('load', function () {
-    $('[data-ride="carousel"]').each(function () {
+    $('[dataset-ride="carousel"]').each(function () {
       var $carousel = $(this)
       $carousel.carousel($carousel.data())
     })
@@ -608,19 +608,19 @@ if (typeof jQuery === 'undefined') { throw new Error('Bootstrap requires jQuery'
   // COLLAPSE DATA-API
   // =================
 
-  $(document).on('click.bs.collapse.data-api', '[data-toggle=collapse]', function (e) {
+  $(document).on('click.bs.collapse.dataset-api', '[dataset-toggle=collapse]', function (e) {
     var $this   = $(this), href
-    var target  = $this.attr('data-target')
+    var target  = $this.attr('dataset-target')
         || e.preventDefault()
         || (href = $this.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '') //strip for ie7
     var $target = $(target)
     var data    = $target.data('bs.collapse')
     var option  = data ? 'toggle' : $this.data()
-    var parent  = $this.attr('data-parent')
+    var parent  = $this.attr('dataset-parent')
     var $parent = parent && $(parent)
 
     if (!data || !data.transitioning) {
-      if ($parent) $parent.find('[data-toggle=collapse][data-parent="' + parent + '"]').not($this).addClass('collapsed')
+      if ($parent) $parent.find('[dataset-toggle=collapse][dataset-parent="' + parent + '"]').not($this).addClass('collapsed')
       $this[$target.hasClass('in') ? 'addClass' : 'removeClass']('collapsed')
     }
 
@@ -645,7 +645,7 @@ if (typeof jQuery === 'undefined') { throw new Error('Bootstrap requires jQuery'
   // =========================
 
   var backdrop = '.dropdown-backdrop'
-  var toggle   = '[data-toggle=dropdown]'
+  var toggle   = '[dataset-toggle=dropdown]'
   var Dropdown = function (element) {
     $(element).on('click.bs.dropdown', this.toggle)
   }
@@ -726,7 +726,7 @@ if (typeof jQuery === 'undefined') { throw new Error('Bootstrap requires jQuery'
   }
 
   function getParent($this) {
-    var selector = $this.attr('data-target')
+    var selector = $this.attr('dataset-target')
 
     if (!selector) {
       selector = $this.attr('href')
@@ -770,10 +770,10 @@ if (typeof jQuery === 'undefined') { throw new Error('Bootstrap requires jQuery'
   // ===================================
 
   $(document)
-    .on('click.bs.dropdown.data-api', clearMenus)
-    .on('click.bs.dropdown.data-api', '.dropdown form', function (e) { e.stopPropagation() })
-    .on('click.bs.dropdown.data-api', toggle, Dropdown.prototype.toggle)
-    .on('keydown.bs.dropdown.data-api', toggle + ', [role=menu], [role=listbox]', Dropdown.prototype.keydown)
+    .on('click.bs.dropdown.dataset-api', clearMenus)
+    .on('click.bs.dropdown.dataset-api', '.dropdown form', function (e) { e.stopPropagation() })
+    .on('click.bs.dropdown.dataset-api', toggle, Dropdown.prototype.toggle)
+    .on('keydown.bs.dropdown.dataset-api', toggle + ', [role=menu], [role=listbox]', Dropdown.prototype.keydown)
 
 }(window.$jqTheme||window.jQuery);
 
@@ -829,7 +829,7 @@ if (typeof jQuery === 'undefined') { throw new Error('Bootstrap requires jQuery'
 
     this.escape()
 
-    this.$element.on('click.dismiss.bs.modal', '[data-dismiss="modal"]', $.proxy(this.hide, this))
+    this.$element.on('click.dismiss.bs.modal', '[dataset-dismiss="modal"]', $.proxy(this.hide, this))
 
     this.backdrop(function () {
       var transition = $.support.transition && that.$element.hasClass('fade')
@@ -1000,10 +1000,10 @@ if (typeof jQuery === 'undefined') { throw new Error('Bootstrap requires jQuery'
   // MODAL DATA-API
   // ==============
 
-  $(document).on('click.bs.modal.data-api', '[data-toggle="modal"]', function (e) {
+  $(document).on('click.bs.modal.dataset-api', '[dataset-toggle="modal"]', function (e) {
     var $this   = $(this)
     var href    = $this.attr('href')
-    var $target = $($this.attr('data-target') || (href && href.replace(/.*(?=#[^\s]+$)/, ''))) //strip for ie7
+    var $target = $($this.attr('dataset-target') || (href && href.replace(/.*(?=#[^\s]+$)/, ''))) //strip for ie7
     var option  = $target.data('bs.modal') ? 'toggle' : $.extend({ remote: !/#/.test(href) && href }, $target.data(), $this.data())
 
     if ($this.is('a')) e.preventDefault()
@@ -1317,8 +1317,8 @@ if (typeof jQuery === 'undefined') { throw new Error('Bootstrap requires jQuery'
 
   Tooltip.prototype.fixTitle = function () {
     var $e = this.$element
-    if ($e.attr('title') || typeof($e.attr('data-original-title')) != 'string') {
-      $e.attr('data-original-title', $e.attr('title') || '').attr('title', '')
+    if ($e.attr('title') || typeof($e.attr('dataset-original-title')) != 'string') {
+      $e.attr('dataset-original-title', $e.attr('title') || '').attr('title', '')
     }
   }
 
@@ -1346,7 +1346,7 @@ if (typeof jQuery === 'undefined') { throw new Error('Bootstrap requires jQuery'
     var $e = this.$element
     var o  = this.options
 
-    title = $e.attr('data-original-title')
+    title = $e.attr('dataset-original-title')
       || (typeof o.title == 'function' ? o.title.call($e[0]) :  o.title)
 
     return title
@@ -1486,7 +1486,7 @@ if (typeof jQuery === 'undefined') { throw new Error('Bootstrap requires jQuery'
     var $e = this.$element
     var o  = this.options
 
-    return $e.attr('data-content')
+    return $e.attr('dataset-content')
       || (typeof o.content == 'function' ?
             o.content.call($e[0]) :
             o.content)
@@ -1553,7 +1553,7 @@ if (typeof jQuery === 'undefined') { throw new Error('Bootstrap requires jQuery'
 
     this.$element       = $(element).is('body') ? $(window) : $(element)
     this.$body          = $('body')
-    this.$scrollElement = this.$element.on('scroll.bs.scroll-spy.data-api', process)
+    this.$scrollElement = this.$element.on('scroll.bs.scroll-spy.dataset-api', process)
     this.options        = $.extend({}, ScrollSpy.DEFAULTS, options)
     this.selector       = (this.options.target
       || ((href = $(element).attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '')) //strip for ie7
@@ -1629,7 +1629,7 @@ if (typeof jQuery === 'undefined') { throw new Error('Bootstrap requires jQuery'
       .removeClass('active')
 
     var selector = this.selector +
-        '[data-target="' + target + '"],' +
+        '[dataset-target="' + target + '"],' +
         this.selector + '[href="' + target + '"]'
 
     var active = $(selector)
@@ -1678,7 +1678,7 @@ if (typeof jQuery === 'undefined') { throw new Error('Bootstrap requires jQuery'
   // ==================
 
   $(window).on('load', function () {
-    $('[data-spy="scroll"]').each(function () {
+    $('[dataset-spy="scroll"]').each(function () {
       var $spy = $(this)
       $spy.scrollspy($spy.data())
     })
@@ -1805,7 +1805,7 @@ if (typeof jQuery === 'undefined') { throw new Error('Bootstrap requires jQuery'
   // TAB DATA-API
   // ============
 
-  $(document).on('click.bs.tab.data-api', '[data-toggle="tab"], [data-toggle="pill"]', function (e) {
+  $(document).on('click.bs.tab.dataset-api', '[dataset-toggle="tab"], [dataset-toggle="pill"]', function (e) {
     e.preventDefault()
     $(this).tab('show')
   })
@@ -1830,8 +1830,8 @@ if (typeof jQuery === 'undefined') { throw new Error('Bootstrap requires jQuery'
   var Affix = function (element, options) {
     this.options = $.extend({}, Affix.DEFAULTS, options)
     this.$window = $(window)
-      .on('scroll.bs.affix.data-api', $.proxy(this.checkPosition, this))
-      .on('click.bs.affix.data-api',  $.proxy(this.checkPositionWithEventLoop, this))
+      .on('scroll.bs.affix.dataset-api', $.proxy(this.checkPosition, this))
+      .on('click.bs.affix.dataset-api',  $.proxy(this.checkPositionWithEventLoop, this))
 
     this.$element     = $(element)
     this.affixed      =
@@ -1935,7 +1935,7 @@ if (typeof jQuery === 'undefined') { throw new Error('Bootstrap requires jQuery'
   // ==============
 
   $(window).on('load', function () {
-    $('[data-spy="affix"]').each(function () {
+    $('[dataset-spy="affix"]').each(function () {
       var $spy = $(this)
       var data = $spy.data()
 

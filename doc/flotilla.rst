@@ -17,31 +17,31 @@ flotilla.external module
 ------------------------
 
 .. automodule:: flotilla.external
-    :members:
-    :undoc-members:
-    :show-inheritance:
+:members:
+        :undoc-members:
+            :show-inheritance:
 
 flotilla.setup module
 ---------------------
 
 .. automodule:: flotilla.setup
-    :members:
-    :undoc-members:
-    :show-inheritance:
+:members:
+        :undoc-members:
+            :show-inheritance:
 
 flotilla.util module
 --------------------
 
 .. automodule:: flotilla.util
-    :members:
-    :undoc-members:
-    :show-inheritance:
+:members:
+        :undoc-members:
+            :show-inheritance:
 
 
 Module contents
 ---------------
 
 .. automodule:: flotilla
-    :members:
-    :undoc-members:
-    :show-inheritance:
+:members:
+        :undoc-members:
+            :show-inheritance:

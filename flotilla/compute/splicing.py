@@ -94,8 +94,8 @@ class Modalities(object):
             A samples x features dataframe, where you want to find the
             splicing modality of each column (feature)
         do_not_memoize : bool
-            Whether or not to memoize the results of the _single_fit_transform on this
-            data (used by @memoize decorator)
+            Whether or not to memoize the results of the _single_fit_transform
+            on this data (used by @memoize decorator)
 
         Returns
         -------

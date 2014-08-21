@@ -89,7 +89,7 @@ class ModalitiesViz(object):
 
     def event(self, feature_id, sample_groupby, group_colors, group_order,
               ax=None):
-        """Plot a single splicing event's changes in NMF space, and its
+        """Plot a single splicing event's changes in DataFrameNMF space, and its
         violin plots
 
         """
@@ -105,7 +105,7 @@ def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
     Parameters
     ----------
     TODO.md: (n_events, n_samples).transpose()
-    data : array
+    psi : array
         A (n_events, n_samples) matrix either as a numpy array or as a pandas
         DataFrame
     color : matplotlib color
@@ -131,6 +131,8 @@ def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
     fig : matplotlib.Figure
         A figure object for saving.
     """
+    if psi.shape[1] == 0:
+        return
 
     if ax is None:
         fig, ax = plt.subplots(figsize=(16, 4))
@@ -242,31 +244,3 @@ def lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
                  .format(title_suffix))
 
 
-def violinplot(psi, color=None, ax=None, pooled_psi=None,
-               violinplot_kws=None):
-    if ax is None:
-        ax = plt.gca()
-
-    violinplot_kws = {} if violinplot_kws is None else violinplot_kws
-
-    # Add a tiny amount of random noise in case the values are all identical,
-    # Otherwise we get a LinAlg error.
-    psi += np.random.uniform(0, 0.001, psi.shape[0])
-    sns.violinplot(psi, bw=0.1, inner='points', color=color, linewidth=0.5,
-                   ax=ax, **violinplot_kws)
-    if pooled_psi is not None:
-        # if 'positions' not in violinplot_kws:
-        # TODO: Deal with positions kwargs
-        try:
-            xs = np.ones(pooled_psi.shape[0])
-        except AttributeError:
-            xs = np.ones(1)
-        for x, y in zip(xs, pooled_psi):
-            if np.isnan(y):
-                continue
-            ax.annotate('pooled', (x, y), textcoords='offset points',
-                        xytext=(5, 5))
-    ax.set_ylim(0, 1)
-    ax.set_yticks([0, 0.5, 1])
-    ax.set_ylabel('$\Psi$')
-    sns.despine()
