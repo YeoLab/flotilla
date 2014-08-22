@@ -10,6 +10,7 @@ import seaborn as sns
 
 
 
+
 # from ..compute.decomposition import DataFrameNMF, DataFramePCA
 from .color import set1
 
@@ -101,6 +102,7 @@ class DecompositionViz(object):
         self.magnitudes.sort(ascending=False)
 
         self.top_features = set([])
+        self.loadings = {}
         for pc in self.pcs:
             x = self.components_.ix[pc].copy()
             x.sort(ascending=True)
@@ -111,6 +113,7 @@ class DecompositionViz(object):
                 labels = np.r_[a.index, b.index]
             else:
                 labels = x.index
+            self.loadings[pc] = labels
             self.top_features.update(labels)
 
     def __call__(self, ax=None, title='',

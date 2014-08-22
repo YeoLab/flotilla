@@ -282,7 +282,8 @@ class Study(StudyFactory):
 
         self.metadata = MetaData(
             sample_metadata, phenotype_order, phenotype_to_color,
-            phenotype_to_marker, phenotype_col=metadata_phenotype_col,
+            phenotype_to_marker, pooled_col=metadata_pooled_col,
+            phenotype_col=metadata_phenotype_col,
             predictor_config_manager=self.predictor_config_manager)
         self.phenotype_col = self.metadata.phenotype_col
         self.phenotype_order = self.metadata.phenotype_order
@@ -302,12 +303,12 @@ class Study(StudyFactory):
 
         # Get pooled samples
 
-        if metadata_pooled_col is not None:
-            if metadata_pooled_col in self.metadata.data:
+        if self.metadata.pooled_col is not None:
+            if self.metadata.pooled_col in self.metadata.data:
                 try:
                     pooled = self.metadata.data.index[
                         self.metadata.data[
-                            metadata_pooled_col].astype(bool)]
+                            self.metadata.pooled_col].astype(bool)]
                 except:
                     pooled = None
         else:
@@ -446,8 +447,7 @@ class Study(StudyFactory):
         # phenotype_to_color = None
         # phenotype_to_marker = None
 
-        metadata_kws = dict.fromkeys(['metadata_pooled_col',
-                                      'metadata_pooled_col', 'phenotype_order',
+        metadata_kws = dict.fromkeys(['metadata_pooled_col', 'phenotype_order',
                                       'phenotype_to_color',
                                       'phenotype_to_marker'], None)
 
@@ -544,6 +544,8 @@ class Study(StudyFactory):
         nones = [k for k, v in metadata_kws.iteritems() if v is None]
         for key in nones:
             metadata_kws.pop(key)
+
+        # import pdb; pdb.set_trace()
 
         kwargs = species_dfs
         kwargs.update(metadata_kws)
