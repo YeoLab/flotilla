@@ -16,7 +16,8 @@ class TestStudy(object):
 
         return Study(sample_metadata=example_data.metadata,
                      expression_data=example_data.expression,
-                     splicing_data=example_data.splicing)
+                     splicing_data=example_data.splicing,
+                     metadata_phenotype_col='celltype')
 
     def test_toy_init(self, toy_study, example_data):
         from flotilla.data_model import ExpressionData, SplicingData
