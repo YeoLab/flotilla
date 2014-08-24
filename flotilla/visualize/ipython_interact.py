@@ -8,8 +8,7 @@ import warnings
 
 from IPython.html.widgets import interact
 import matplotlib.pyplot as plt
-
-
+import pandas as pd
 
 
 # from ..compute.predict import default_classifier
@@ -17,6 +16,7 @@ from ..visualize.color import red
 from .network import NetworkerViz
 from .color import str_to_color
 from ..util import natural_sort
+from ..external import link_to_list
 
 default_classifier = 'ExtraTreesClassifier'
 default_regressor = 'ExtraTreesRegressor'
@@ -116,7 +116,7 @@ class Interactive(object):
                 raise ValueError("use a custom list name please")
 
             if feature_subset == 'custom':
-                feature_subset = list_link
+                feature_subset = pd.read_table(list_link, header=None, squeeze=True)
             elif feature_subset not in self.default_feature_subsets[data_type]:
                 warnings.warn("This feature_subset ('{}') is not available in "
                               "this data type ('{}'). Falling back on all "
