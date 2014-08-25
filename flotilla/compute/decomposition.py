@@ -68,7 +68,7 @@ class DataFrameReducerBase(object):
         return self.transform(X)
 
 
-class DataFramePCA(DataFrameReducerBase, decomposition.PCA):
+class DataFramePCA(DataFrameReducerBase, decomposition.RandomizedPCA):
     pass
 
 
@@ -99,6 +99,10 @@ class DataFrameNMF(DataFrameReducerBase, decomposition.NMF):
                                         columns=self.X.columns).rename_axis(
             self.relabel_pcs, 0)
         return self
+
+
+class DataFrameICA(DataFrameReducerBase, decomposition.FastICA):
+    pass
 
 
 # def L1_distance(x, y):
