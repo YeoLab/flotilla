@@ -11,6 +11,7 @@ import seaborn as sns
 
 
 
+
 # from ..compute.decomposition import DataFrameNMF, DataFramePCA
 from .color import set1
 
@@ -102,7 +103,8 @@ class DecompositionViz(object):
         self.magnitudes.sort(ascending=False)
 
         self.top_features = set([])
-        self.loadings = {}
+        self.pc_loadings_labels = {}
+        self.pc_loadings = {}
         for pc in self.pcs:
             x = self.components_.ix[pc].copy()
             x.sort(ascending=True)
@@ -111,9 +113,11 @@ class DecompositionViz(object):
                 a = x[:half_features]
                 b = x[-half_features:]
                 labels = np.r_[a.index, b.index]
+                self.pc_loadings[pc] = np.r_[a, b]
             else:
                 labels = x.index
-            self.loadings[pc] = labels
+                self.pc_loadings[pc] = x
+            self.pc_loadings_labels[pc] = labels
             self.top_features.update(labels)
 
     def __call__(self, ax=None, title='',
@@ -261,30 +265,34 @@ class DecompositionViz(object):
         sns.despine()
 
     def plot_loadings(self, pc='pc_1', n_features=50, ax=None):
-        x = self.components_.ix[pc].copy()
-        x.sort(ascending=True)
-        half_features = int(n_features / 2)
-        if len(x) > n_features:
-            a = x[:half_features]
-            b = x[-half_features:]
-            dd = np.r_[a, b]
-            labels = np.r_[a.index, b.index]
-        else:
-            dd = x
-            labels = x.index
+        # x = self.components_.ix[pc].copy()
+        # x.sort(ascending=True)
+        # half_features = int(n_features / 2)
+        # if len(x) > n_features:
+        #     a = x[:half_features]
+        #     b = x[-half_features:]
+        #     dd = np.r_[a, b]
+        #     labels = np.r_[a.index, b.index]
+        # else:
+        #     dd = x
+        #     labels = x.index
+
+        loadings = self.pc_loadings[pc]
+        labels = self.pc_loadings_labels[pc]
 
         if ax is None:
             ax = plt.gca()
 
-        ax.plot(dd, np.arange(len(dd)), 'o')
+        ax.plot(loadings, np.arange(loadings.shape[0]), 'o')
 
-        ax.set_yticks(np.arange(max(len(dd), n_features)))
+        ax.set_yticks(np.arange(max(loadings.shape[0], n_features)))
         ax.set_title("Component " + pc)
 
-        x_offset = max(dd) * .05
-        ax.set_xlim(left=min(dd) - x_offset, right=max(dd) + x_offset)
+        x_offset = max(loadings) * .05
+        ax.set_xlim(left=min(loadings) - x_offset,
+                    right=max(loadings) + x_offset)
 
-        self.top_features = labels
+        # self.top_features.extend(labels)
 
         labels = map(self.DataModel.feature_renamer, labels)
         # shorten = lambda x: '{}...'.format(x[:30]) if len(x) > 30 else x
