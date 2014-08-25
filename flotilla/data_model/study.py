@@ -1167,6 +1167,22 @@ class Study(StudyFactory):
 
         metadata = self.metadata.data
 
+        metadata_kws = {'pooled_col': self.metadata.pooled_col,
+                        'phenotype_col': self.metadata.phenotype_col,
+                        'phenotype_order': self.metadata.phenotype_order,
+                        'phenotype_to_color':
+                            self.metadata.phenotype_to_color,
+                        'phenotype_to_marker':
+                            self.metadata.phenotype_to_marker}
+
+        expression_kws = {'feature_rename_col':
+                              self.expression.feature_rename_col,
+                          'log_base': self.expression.log_base}
+        splicing_kws = {'feature_rename_col':
+                            self.splicing.feature_rename_col}
+        mapping_stats_kws = {'number_mapped_col':
+                                 self.mapping_stats.number_mapped_col}
+
         try:
             expression = self.expression.data
         except AttributeError:
@@ -1188,7 +1204,11 @@ class Study(StudyFactory):
             mapping_stats = None
 
         return make_study_datapackage(name, metadata, expression, splicing,
-                                      spikein, mapping_stats)
+                                      spikein, mapping_stats,
+                                      metadata_kws=metadata_kws,
+                                      expression_kws=expression_kws,
+                                      splicing_kws=splicing_kws,
+                                      mapping_stats_kws=mapping_stats_kws)
 
 
 # Add interactive visualizations
