@@ -117,7 +117,7 @@ class Interactive(object):
                 raise ValueError("use a custom list name please")
 
             if feature_subset == 'custom':
-                feature_subset = link_to_list(list_link)
+                feature_subset = pd.read_table(list_link, squeeze=True, header=None).values.tolist()
                 #this section should return a list of features that are in the data's columns
             elif feature_subset not in self.default_feature_subsets[data_type]:
                 warnings.warn("This feature_subset ('{}') is not available in "
