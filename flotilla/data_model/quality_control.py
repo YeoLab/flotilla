@@ -1,7 +1,7 @@
 from .base import BaseData
 
 
-MIN_READS = 2e6
+MIN_READS = 5e5
 
 
 class MappingStatsData(BaseData):

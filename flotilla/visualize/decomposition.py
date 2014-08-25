@@ -12,6 +12,7 @@ import seaborn as sns
 
 
 
+
 # from ..compute.decomposition import DataFrameNMF, DataFramePCA
 from .color import set1
 
@@ -71,7 +72,8 @@ class DecompositionViz(object):
         #         decomposer_kwargs)
 
         # This magically initializes the reducer like DataFramePCA or DataFrameNMF
-        # self.decomposer = decomposer(n_components=n_components,
+        # self.decomposer = deco
+        # mposer(n_components=n_components,
         #                              **decomposer_kwargs)
         # super(DecompositionViz, self).__init__(n_components=n_components,
         #                                        **decomposer_kwargs)
@@ -116,7 +118,8 @@ class DecompositionViz(object):
                 self.pc_loadings[pc] = np.r_[a, b]
             else:
                 labels = x.index
-                self.pc_loadings[pc] = x
+
+            self.pc_loadings[pc] = x
             self.pc_loadings_labels[pc] = labels
             self.top_features.update(labels)
 
