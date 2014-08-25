@@ -19,7 +19,6 @@ from ..visualize.decomposition import DecompositionViz
 from ..visualize.generic import violinplot, nmf_space_transitions
 from ..visualize.network import NetworkerViz
 from ..visualize.predict import ClassifierViz
-from ..external import link_to_list
 from ..util import memoize, cached_property
 
 MINIMUM_SAMPLES = 5
@@ -209,16 +208,15 @@ class BaseData(object):
 
     def feature_subset_to_feature_ids(self, feature_subset, rename=True):
         if feature_subset is not None:
-            if feature_subset in self.feature_subsets:
-                feature_ids = self.feature_subsets[feature_subset]
-            elif feature_subset == 'all_genes':
-                feature_ids = self.data.columns
-            else:
-                try:
-                    feature_ids = link_to_list(feature_subset)
-                    self.feature_subsets[feature_subset] = feature_ids
-                except:
-
+            try:
+                if feature_subset in self.feature_subsets:
+                    feature_ids = self.feature_subsets[feature_subset]
+                elif feature_subset == 'all_genes':
+                    feature_ids = self.data.columns
+            except TypeError:
+                if not isinstance(feature_subset, str):
+                    feature_ids = feature_subset
+                else:
                     raise ValueError(
                         "There are no {} features in this data: "
                         "{}".format(feature_subset, self))
