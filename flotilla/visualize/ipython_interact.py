@@ -92,6 +92,7 @@ class Interactive(object):
                         featurewise=False,
                         x_pc=(1, 10), y_pc=(1, 10),
                         show_point_labels=False,
+                        list_link = '',
                         savefile='data/last.pca.pdf'):
 
         def do_interact(data_type='expression',
@@ -158,6 +159,7 @@ class Interactive(object):
                  featurewise=featurewise,
                  x_pc=x_pc, y_pc=y_pc,
                  show_point_labels=show_point_labels,
+                 list_link=list_link,
                  savefile=savefile)
 
     @staticmethod
