@@ -118,6 +118,7 @@ class Interactive(object):
 
             if feature_subset == 'custom':
                 feature_subset = link_to_list(list_link)
+                #this section should return a list of features that are in the data's columns
             elif feature_subset not in self.default_feature_subsets[data_type]:
                 warnings.warn("This feature_subset ('{}') is not available in "
                               "this data type ('{}'). Falling back on all "
