@@ -39,7 +39,7 @@ class MappingStatsData(BaseData):
 
     @property
     def too_few_mapped(self):
-        return self.mapped_reads.index[self.mapped_reads < self.min_reads]
+        return self.number_mapped.index[self.number_mapped < self.min_reads]
 
     @property
     def number_mapped(self):
