@@ -440,9 +440,6 @@ class SplicingData(BaseData):
         singles, pooled, not_measured_in_pooled, large_diff = \
             self.pooled_inconsistent(sample_ids, feature_ids,
                                      fraction_diff_thresh)
-        import pdb;
-
-        pdb.set_trace()
         try:
             return large_diff.shape[1] / float(pooled.shape[1]) * 100
         except ZeroDivisionError:
