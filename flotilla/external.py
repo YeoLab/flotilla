@@ -243,6 +243,7 @@ def make_study_datapackage(name, metadata,
                            splicing_kws=None,
                            spikein_kws=None,
                            mapping_stats_kws=None,
+                           version=None,
                            host="sauron.ucsd.edu",
                            host_destination='/zfs/www/flotilla_packages/'):
     """Example code for making a datapackage for a Study
@@ -263,6 +264,7 @@ def make_study_datapackage(name, metadata,
     datapackage['title'] = title
     datapackage['sources'] = sources
     datapackage['license'] = license
+    datapackage['version'] = version
 
     if species is not None:
         datapackage['species'] = species
@@ -296,7 +298,7 @@ def make_study_datapackage(name, metadata,
         resource['compression'] = 'gzip'
         resource['format'] = 'csv'
         if kws is not None:
-            for key, value in kws:
+            for key, value in kws.iteritems():
                 resource[key] = value
 
     filename = '{}/datapackage.json'.format(datapackage_dir)
@@ -331,3 +333,9 @@ def make_feature_datapackage():
                            'ens_to_go.json'
                 }
             ]}
+
+
+def get_resource_from_name(datapackage, name):
+    for resource in datapackage['resources']:
+        if resource['name'] == name:
+            return resource
