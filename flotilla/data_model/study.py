@@ -20,7 +20,7 @@ from ..compute.predict import PredictorConfigManager
 from ..visualize.color import blue
 from ..visualize.ipython_interact import Interactive
 from ..external import data_package_url_to_dict, check_if_already_downloaded, \
-    make_study_datapackage
+    make_study_datapackage, FLOTILLA_DOWNLOAD_DIR
 
 
 SPECIES_DATA_PACKAGE_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects'
@@ -191,7 +191,9 @@ class Study(StudyFactory):
                  metadata_phenotype_col='phenotype',
                  phenotype_order=None,
                  phenotype_to_color=None,
-                 phenotype_to_marker=None):
+                 phenotype_to_marker=None,
+                 license=None, title=None, sources=None,
+                 version=None):
         """Construct a biological study
 
         This class only accepts data, no filenames. All data must already
@@ -279,6 +281,11 @@ class Study(StudyFactory):
 
         self.species = species
         self.gene_ontology_data = gene_ontology_data
+
+        self.license = license
+        self.title = title
+        self.sources = sources
+        self.version = version
 
         self.metadata = MetaData(
             sample_metadata, phenotype_order, phenotype_to_color,
@@ -381,6 +388,7 @@ class Study(StudyFactory):
     @classmethod
     def from_datapackage_url(
             cls, datapackage_url,
+            load_species_data=True,
             species_data_package_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
         """Create a study from a url of a datapackage.json file
 
@@ -409,23 +417,26 @@ class Study(StudyFactory):
         """
         data_package = data_package_url_to_dict(datapackage_url)
         return cls.from_datapackage(
-            data_package,
+            data_package, load_species_data=load_species_data,
             species_datapackage_base_url=species_data_package_base_url)
 
     @classmethod
     def from_datapackage_file(
             cls, datapackage_filename,
+            load_species_data=True,
             species_datapackage_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
         with open(datapackage_filename) as f:
             datapackage = json.load(f)
         datapackage_dir = os.path.dirname(datapackage_filename)
         return cls.from_datapackage(
             datapackage, datapackage_dir=datapackage_dir,
+            load_species_data=load_species_data,
             species_datapackage_base_url=species_datapackage_base_url)
 
     @classmethod
     def from_datapackage(
             cls, datapackage, datapackage_dir='./',
+            load_species_data=True,
             species_datapackage_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
         """Create a study object from a datapackage dictionary
 
@@ -494,35 +505,38 @@ class Study(StudyFactory):
                         'phenotype_to_marker']
 
         species_dfs = {}
-        try:
-            if 'species' in datapackage:
-                species_data_url = '{}/{}/datapackage.json'.format(
-                    species_datapackage_base_url, datapackage['species'])
-                species_data_package = data_package_url_to_dict(
-                    species_data_url)
-                # species_dfs = {}
+        species = None
+        if load_species_data:
+            try:
+                if 'species' in datapackage:
+                    species = datapackage['species']
+                    species_data_url = '{}/{}/datapackage.json'.format(
+                        species_datapackage_base_url, species)
+                    species_data_package = data_package_url_to_dict(
+                        species_data_url)
+                    # species_dfs = {}
 
-                for resource in species_data_package['resources']:
-                    if 'url' in resource:
-                        resource_url = resource['url']
-                        filename = check_if_already_downloaded(resource_url)
-                    else:
-                        filename = resource['path']
+                    for resource in species_data_package['resources']:
+                        if 'url' in resource:
+                            resource_url = resource['url']
+                            filename = check_if_already_downloaded(resource_url)
+                        else:
+                            filename = resource['path']
 
-                    # reader = getattr(cls, '_load_' + resource['format'])
-                    reader = cls.readers[resource['format']]
+                        # reader = getattr(cls, '_load_' + resource['format'])
+                        reader = cls.readers[resource['format']]
 
-                    compression = None if 'compression' not in resource else \
-                        resource['compression']
-                    name = resource['name']
-                    species_dfs[name] = reader(filename,
-                                               compression=compression)
-                    if 'feature_rename_col' in resource:
-                        key = '{}_feature_rename_col'.format(
-                            name.split('_feature_data')[0])
-                        species_dfs[key] = resource['feature_rename_col']
-        except (IOError, ValueError) as e:
-            pass
+                        compression = None if 'compression' not in resource else \
+                            resource['compression']
+                        name = resource['name']
+                        species_dfs[name] = reader(filename,
+                                                   compression=compression)
+                        if 'feature_rename_col' in resource:
+                            key = '{}_feature_rename_col'.format(
+                                name.split('_feature_data')[0])
+                            species_dfs[key] = resource['feature_rename_col']
+            except (IOError, ValueError) as e:
+                pass
 
         try:
             sample_metadata = dfs['metadata']
@@ -550,6 +564,15 @@ class Study(StudyFactory):
         kwargs = species_dfs
         kwargs.update(metadata_kws)
 
+        license = None if 'license' not in datapackage else datapackage[
+            'license']
+        title = None if 'title' not in datapackage else datapackage[
+            'title']
+        sources = None if 'sources' not in datapackage else datapackage[
+            'sources']
+        version = None if 'version' not in datapackage else datapackage[
+            'version']
+
         study = Study(
             sample_metadata=sample_metadata,
             expression_data=expression_data,
@@ -559,6 +582,11 @@ class Study(StudyFactory):
             # expression_feature_rename_col='gene_name',
             # splicing_feature_rename_col='gene_name',
             expression_log_base=log_base,
+            species=species,
+            license=license,
+            title=title,
+            sources=sources,
+            version=version,
             **kwargs)
         return study
 
@@ -1163,7 +1191,7 @@ class Study(StudyFactory):
                 self.phenotype_to_color, self.phenotype_to_marker)
 
 
-    def save(self, name):
+    def save(self, name, flotilla_dir=FLOTILLA_DOWNLOAD_DIR):
 
         metadata = self.metadata.data
 
@@ -1175,23 +1203,23 @@ class Study(StudyFactory):
                         'phenotype_to_marker':
                             self.metadata.phenotype_to_marker}
 
-        expression_kws = {'feature_rename_col':
-                              self.expression.feature_rename_col,
-                          'log_base': self.expression.log_base}
-        splicing_kws = {'feature_rename_col':
-                            self.splicing.feature_rename_col}
-        mapping_stats_kws = {'number_mapped_col':
-                                 self.mapping_stats.number_mapped_col}
-
         try:
             expression = self.expression.data
+            expression_kws = {'feature_rename_col':
+                                  self.expression.feature_rename_col,
+                              'log_base': self.expression.log_base}
         except AttributeError:
             expression = None
+            expression_kws = None
 
         try:
             splicing = self.splicing.data
+            splicing_kws = {'feature_rename_col':
+                                self.splicing.feature_rename_col}
+
         except AttributeError:
             splicing = None
+            splicing_kws = None
 
         try:
             spikein = self.spikein.data
@@ -1200,15 +1228,25 @@ class Study(StudyFactory):
 
         try:
             mapping_stats = self.mapping_stats.data
+            mapping_stats_kws = {'number_mapped_col':
+                                     self.mapping_stats.number_mapped_col}
+
         except AttributeError:
             mapping_stats = None
+            mapping_stats_kws = None
 
         return make_study_datapackage(name, metadata, expression, splicing,
                                       spikein, mapping_stats,
                                       metadata_kws=metadata_kws,
                                       expression_kws=expression_kws,
                                       splicing_kws=splicing_kws,
-                                      mapping_stats_kws=mapping_stats_kws)
+                                      mapping_stats_kws=mapping_stats_kws,
+                                      species=self.species,
+                                      license=self.license,
+                                      title=self.title,
+                                      sources=self.sources,
+                                      version=self.version,
+                                      flotilla_dir=flotilla_dir)
 
 
 # Add interactive visualizations
