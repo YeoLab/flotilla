@@ -263,8 +263,8 @@ def make_study_datapackage(name, metadata,
     datapackage['name'] = name
     datapackage['title'] = title
     datapackage['sources'] = sources
-    datapackage['license'] = license
-    datapackage['version'] = version
+    datapackage['licenses'] = license
+    datapackage['datapackage_version'] = version
 
     if species is not None:
         datapackage['species'] = species

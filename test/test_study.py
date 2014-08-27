@@ -7,6 +7,7 @@ import os
 
 import pandas.util.testing as pdt
 import pytest
+import semantic_version
 
 
 class TestStudy(object):
@@ -119,8 +120,8 @@ class TestStudy(object):
 
         study = flotilla.embark(example_datapackage_path,
                                 load_species_data=False)
-        name = 'test_save'
-        study.save('test_save', flotilla_dir=tmpdir)
+        study_name = 'test_save'
+        study.save(study_name, flotilla_dir=tmpdir)
 
         assert len(tmpdir.listdir()) == 1
         save_dir = tmpdir.listdir()[0]
@@ -130,30 +131,49 @@ class TestStudy(object):
         with open(example_datapackage_path) as f:
             true_datapackage = json.load(f)
 
-        assert name == save_dir.purebasename
+        assert study_name == save_dir.purebasename
 
-        monkeypatch.setitem(test_datapackage, 'name',
-                            true_datapackage['name'])
-        monkeypatch.setitem(get_resource_from_name(test_datapackage,
-                                                   'metadata'), 'path',
-                            get_resource_from_name(true_datapackage,
-                                                   'metadata')['path'])
-        monkeypatch.setitem(get_resource_from_name(test_datapackage,
-                                                   'expression'), 'path',
-                            get_resource_from_name(true_datapackage,
-                                                   'expression')['path'])
-        monkeypatch.setitem(get_resource_from_name(test_datapackage,
-                                                   'splicing'), 'path',
-                            get_resource_from_name(true_datapackage,
-                                                   'splicing')['path'])
-        monkeypatch.setitem(get_resource_from_name(test_datapackage,
-                                                   'mapping_stats'), 'path',
-                            get_resource_from_name(true_datapackage,
-                                                   'mapping_stats')['path'])
-        monkeypatch.setitem(get_resource_from_name(test_datapackage,
-                                                   'spikein'), 'path',
-                            get_resource_from_name(true_datapackage,
-                                                   'spikein')['path'])
+        resource_keys_to_ignore = ('compression', 'format', 'path')
+        keys_from_study = {'splicing': ['feature_rename_col'],
+                           'expression': ['feature_rename_col',
+                                          'log_base'],
+                           'metadata': ['phenotype_order',
+                                        'phenotype_to_color',
+                                        'phenotype_col'],
+                           'mapping_stats': [u'number_mapped_col']}
+        resource_names = ('metadata', 'expression', 'splicing',
+                          'mapping_stats', 'spikein')
+
+        # Add auto-generated attributes into the true datapackage
+        for name, keys in keys_from_study.iteritems():
+            resource = get_resource_from_name(true_datapackage, name)
+            for key in keys:
+                monkeypatch.setitem(resource, key,
+                                    eval('study.{}.{}'.format(name, key)))
+
+        version = semantic_version.Version(study.version)
+        version.patch += 1
+        assert str(version) == test_datapackage['datapackage_version']
+        assert study_name == test_datapackage['name']
+
+        datapackage_keys_to_ignore = ['name', 'datapackage_version',
+                                      'resources']
+        datapackages = (true_datapackage, test_datapackage)
+
+        for name in resource_names:
+            for datapackage in datapackages:
+                resource = get_resource_from_name(datapackage, name)
+                for key in resource_keys_to_ignore:
+                    monkeypatch.delitem(resource, key, raising=False)
+
+        # Have to check for resources separately because they could be in any
+        # order, it just matters that the contents are equal
+        assert sorted(true_datapackage['resources']) == sorted(
+            test_datapackage['resources'])
+
+        for key in datapackage_keys_to_ignore:
+            for datapackage in datapackages:
+                monkeypatch.delitem(datapackage, key)
 
         pdt.assert_dict_equal(test_datapackage,
                               true_datapackage)
