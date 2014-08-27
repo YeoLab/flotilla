@@ -691,8 +691,10 @@ class BaseData(object):
         singles, pooled = self._subset_singles_and_pooled(sample_ids,
                                                           feature_ids=[
                                                               feature_id])
-
-        outliers = self._subset(self.outliers, feature_ids=[feature_id])
+        if not self.outliers.empty:
+            outliers = self._subset(self.outliers, feature_ids=[feature_id])
+        else:
+            outliers = None
 
         renamed = self.feature_renamer(feature_id)
         title = '{}\n{}'.format(renamed, ':'.join(feature_id.split('@')[0].split(':')[:2]))
