@@ -32,7 +32,7 @@ def violinplot(data, groupby=None, color=None, ax=None, pooled_data=None,
     if ax is None:
         ax = plt.gca()
 
-    _violinplot_data(data, groupby=groupby, color=color, ax=ax, order=order,
+    _violinplot_single_dataset(data, groupby=groupby, color=color, ax=ax, order=order,
                      violinplot_kws=violinplot_kws, splicing=splicing)
     if pooled_data is not None and groupby is not None:
         grouped = pooled_data.groupby(groupby)
@@ -51,7 +51,7 @@ def violinplot(data, groupby=None, color=None, ax=None, pooled_data=None,
 
         # make sure this is behind the non outlier data
         outlier_violinplot_kws['zorder'] = -1
-        _violinplot_data(outliers, groupby=groupby, color='lightgrey', ax=ax,
+        _violinplot_single_dataset(outliers, groupby=groupby, color='lightgrey', ax=ax,
                          order=order, violinplot_kws=outlier_violinplot_kws,
                          splicing=splicing)
 
@@ -67,7 +67,8 @@ def violinplot(data, groupby=None, color=None, ax=None, pooled_data=None,
         ax.set_xlim(-.5, len(order) - .5)
 
     if groupby is not None and order is not None:
-        sizes = data.groupby(groupby).size()
+        import pdb; pdb.set_trace()
+        sizes = data.dropna().groupby(groupby).size()
         xticks = range(len(order))
         xticklabels = ['{}\nn={}'.format(group, sizes[group])
                        if group in sizes else '{}\nn=0'.format(group)
@@ -77,9 +78,10 @@ def violinplot(data, groupby=None, color=None, ax=None, pooled_data=None,
     sns.despine()
 
 
-def _violinplot_data(data, groupby=None, order=None, violinplot_kws=None,
-                     color=None, ax=None, splicing=False):
-    """Plot a single groups violinplot.
+def _violinplot_single_dataset(data, groupby=None, order=None,
+                               violinplot_kws=None, color=None, ax=None,
+                               splicing=False):
+    """Plot a single set of violinplot.
 
     Separated out so real data plotting and outlier plotting works the same
     """
