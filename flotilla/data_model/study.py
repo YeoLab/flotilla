@@ -11,6 +11,7 @@ import warnings
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import semantic_version
 
 from .metadata import MetaData
 from .expression import ExpressionData, SpikeInData
@@ -505,11 +506,11 @@ class Study(StudyFactory):
                         'phenotype_to_marker']
 
         species_dfs = {}
-        species = None
+        species = None if 'species' not in datapackage else datapackage[
+            'species']
         if load_species_data:
             try:
                 if 'species' in datapackage:
-                    species = datapackage['species']
                     species_data_url = '{}/{}/datapackage.json'.format(
                         species_datapackage_base_url, species)
                     species_data_package = data_package_url_to_dict(
@@ -570,8 +571,13 @@ class Study(StudyFactory):
             'title']
         sources = None if 'sources' not in datapackage else datapackage[
             'sources']
-        version = None if 'version' not in datapackage else datapackage[
-            'version']
+        version = None if 'datapackage_version' not in datapackage else \
+            datapackage['datapackage_version']
+        if not semantic_version.validate(version):
+            raise ValueError('{} is not a valid version string. Please use '
+                             'semantic versioning, with major.minor.patch, '
+                             'e.g. 0.1.2 is a valid version string'.format(
+                version))
 
         study = Study(
             sample_metadata=sample_metadata,
@@ -1235,6 +1241,11 @@ class Study(StudyFactory):
             mapping_stats = None
             mapping_stats_kws = None
 
+        # Increase the version number
+        version = semantic_version.Version(self.version)
+        version.patch = version.patch + 1
+        version = str(version)
+
         return make_study_datapackage(name, metadata, expression, splicing,
                                       spikein, mapping_stats,
                                       metadata_kws=metadata_kws,
@@ -1245,7 +1256,7 @@ class Study(StudyFactory):
                                       license=self.license,
                                       title=self.title,
                                       sources=self.sources,
-                                      version=self.version,
+                                      version=version,
                                       flotilla_dir=flotilla_dir)
 
 

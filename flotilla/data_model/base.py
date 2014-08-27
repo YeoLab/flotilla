@@ -12,7 +12,7 @@ import seaborn as sns
 from sklearn.preprocessing import StandardScaler
 
 from ..compute.decomposition import DataFramePCA, DataFrameNMF
-from ..compute.clustering import Cluster
+# from ..compute.clustering import Cluster
 from ..compute.infotheory import binify
 from ..compute.predict import PredictorConfigManager, PredictorDataSetManager
 from ..visualize.decomposition import DecompositionViz
@@ -71,7 +71,7 @@ class BaseData(object):
         self.default_feature_sets = []
         self.data_type = None
 
-        self.clusterer = Cluster()
+        # self.clusterer = Cluster()
 
         self.species = species
 
