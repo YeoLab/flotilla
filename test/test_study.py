@@ -62,7 +62,7 @@ class TestStudy(object):
 
     @pytest.fixture(params=[None, 'feature_rename_col'])
     def splicing_key(self, request):
-        return request.fparam
+        return request.param
 
     @pytest.fixture
     def datapackage(self, example_datapackage_path, metadata_key,
