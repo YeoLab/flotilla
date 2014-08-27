@@ -44,8 +44,10 @@ class ExpressionData(BaseData):
 
         sys.stderr.write("done initializing expression\n")
 
-        if log_base is not None:
-            self.log_data = np.log(self.data + .1) / np.log(log_base)
+        self.log_base = log_base
+
+        if self.log_base is not None:
+            self.log_data = np.log(self.data + .1) / np.log(self.log_base)
         else:
             self.log_data = self.data
 
