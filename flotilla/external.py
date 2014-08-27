@@ -231,12 +231,19 @@ def check_if_already_downloaded(url, download_dir=FLOTILLA_DOWNLOAD_DIR):
 
 
 def make_study_datapackage(name, metadata,
-                           expression_data=None, splicing_data=None,
+                           expression_data=None,
+                           splicing_data=None,
                            spikein_data=None,
                            mapping_stats_data=None,
                            title='',
                            sources='', license=None, species=None,
                            flotilla_dir=FLOTILLA_DOWNLOAD_DIR,
+                           metadata_kws=None,
+                           expression_kws=None,
+                           splicing_kws=None,
+                           spikein_kws=None,
+                           mapping_stats_kws=None,
+                           version=None,
                            host="sauron.ucsd.edu",
                            host_destination='/zfs/www/flotilla_packages/'):
     """Example code for making a datapackage for a Study
@@ -256,20 +263,21 @@ def make_study_datapackage(name, metadata,
     datapackage['name'] = name
     datapackage['title'] = title
     datapackage['sources'] = sources
-    datapackage['license'] = license
+    datapackage['licenses'] = license
+    datapackage['datapackage_version'] = version
 
     if species is not None:
         datapackage['species'] = species
 
-    resources = {'metadata': metadata,
-                 'expression': expression_data,
-                 'splicing': splicing_data,
-                 'spikein': spikein_data,
-                 'mapping_stats': mapping_stats_data}
+    resources = {'metadata': (metadata, metadata_kws),
+                 'expression': (expression_data, expression_kws),
+                 'splicing': (splicing_data, splicing_kws),
+                 'spikein': (spikein_data, spikein_kws),
+                 'mapping_stats': (mapping_stats_data, mapping_stats_kws)}
 
     datapackage['resources'] = []
-    for resource_name, resource_data in resources.items():
-        if resource_data is None:
+    for resource_name, (data, kws) in resources.items():
+        if data is None:
             continue
 
         datapackage['resources'].append({'name': resource_name})
@@ -277,7 +285,7 @@ def make_study_datapackage(name, metadata,
 
         data_filename = '{}/{}.csv.gz'.format(datapackage_dir, resource_name)
         with gzip.open(data_filename, 'wb') as f:
-            resource_data.to_csv(f)
+            data.to_csv(f)
         # try:
         #     # TODO: only transmit data if it has been updated
         #     subprocess.call(
@@ -289,6 +297,9 @@ def make_study_datapackage(name, metadata,
         resource['path'] = data_filename
         resource['compression'] = 'gzip'
         resource['format'] = 'csv'
+        if kws is not None:
+            for key, value in kws.iteritems():
+                resource[key] = value
 
     filename = '{}/datapackage.json'.format(datapackage_dir)
     with open(filename, 'w') as f:
@@ -322,3 +333,9 @@ def make_feature_datapackage():
                            'ens_to_go.json'
                 }
             ]}
+
+
+def get_resource_from_name(datapackage, name):
+    for resource in datapackage['resources']:
+        if resource['name'] == name:
+            return resource

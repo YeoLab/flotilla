@@ -12,7 +12,7 @@ import seaborn as sns
 from sklearn.preprocessing import StandardScaler
 
 from ..compute.decomposition import DataFramePCA, DataFrameNMF
-from ..compute.clustering import Cluster
+# from ..compute.clustering import Cluster
 from ..compute.infotheory import binify
 from ..compute.predict import PredictorConfigManager, PredictorDataSetManager
 from ..visualize.decomposition import DecompositionViz
@@ -21,7 +21,7 @@ from ..visualize.network import NetworkerViz
 from ..visualize.predict import ClassifierViz
 from ..util import memoize, cached_property
 
-MINIMUM_SAMPLES = 5
+MINIMUM_SAMPLES = 10
 default_predictor_name = "ExtraTreesClassifier"
 
 
@@ -60,6 +60,7 @@ class BaseData(object):
 
         if pooled is not None:
             self.pooled = self.data.ix[pooled]
+            self.data = self.data.ix[~self.data.index.isin(pooled)]
 
         if outliers is not None:
             self.data, self.outliers = self.drop_outliers(self.data,
@@ -70,7 +71,7 @@ class BaseData(object):
         self.default_feature_sets = []
         self.data_type = None
 
-        self.clusterer = Cluster()
+        # self.clusterer = Cluster()
 
         self.species = species
 
