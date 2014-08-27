@@ -424,7 +424,7 @@ class BaseData(object):
         if require_min_samples and not single_feature:
             subset = subset.ix[:, subset.count() >= self.min_samples]
 
-        if subset.shape[1] == 0:
+        if subset.empty:
             raise ValueError('This data subset is empty. Please double-check '
                              'that the gene ids are for the correct species!')
         return subset
