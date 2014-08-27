@@ -67,7 +67,6 @@ def violinplot(data, groupby=None, color=None, ax=None, pooled_data=None,
         ax.set_xlim(-.5, len(order) - .5)
 
     if groupby is not None and order is not None:
-        import pdb; pdb.set_trace()
         sizes = data.dropna().groupby(groupby).size()
         xticks = range(len(order))
         xticklabels = ['{}\nn={}'.format(group, sizes[group])
