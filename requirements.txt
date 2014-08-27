@@ -23,4 +23,5 @@ six
 pytest-cov
 python-coveralls
 jinja2
-fastcluster
+#fastcluster
+semantic_version
