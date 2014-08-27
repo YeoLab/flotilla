@@ -2,6 +2,9 @@
 This tests whether the IPython interactive modules are being created correctly
 """
 
+lists = ['https://www.dropbox.com/s/qddybszcses6pi6/DE_genes' \
+         '.male%20adult%20%2019.txt?dl=0']
+
 #
 # class TestIPythonInteract(object):
 #
