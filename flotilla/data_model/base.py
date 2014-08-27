@@ -216,6 +216,9 @@ class BaseData(object):
             except TypeError:
                 if not isinstance(feature_subset, str):
                     feature_ids = feature_subset
+                    n_custom = self.feature_data.columns.map(lambda x: x.startswith('custom')).sum()
+                    self.feature_data['custom_{}'.format(n_custom+1)] = \
+                        self.feature_data.index.isin(feature_ids)
                 else:
                     raise ValueError(
                         "There are no {} features in this data: "
@@ -420,6 +423,10 @@ class BaseData(object):
 
         if require_min_samples and not single_feature:
             subset = subset.ix[:, subset.count() >= self.min_samples]
+
+        if subset.shape[1] == 0:
+            raise ValueError('This data subset is empty. Please double-check '
+                             'that the gene ids are for the correct species!')
         return subset
 
     def _subset_singles_and_pooled(self, sample_ids=None,
@@ -687,7 +694,7 @@ class BaseData(object):
         outliers = self._subset(self.outliers, feature_ids=[feature_id])
 
         renamed = self.feature_renamer(feature_id)
-        title = '{}\n{}'.format(renamed, ':'.join(feature_id.split(':')[:2]))
+        title = '{}\n{}'.format(renamed, ':'.join(feature_id.split('@')[0].split(':')[:2]))
 
         violinplot(singles, groupby=phenotype_groupby, color=color,
                    pooled_data=pooled, order=phenotype_order,
