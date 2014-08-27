@@ -12,7 +12,7 @@ except:
     pass
 
 
-def embark(study_name):
+def embark(study_name, load_species_data=True):
     """
     Begin your journey of data exploration.
 
@@ -30,11 +30,14 @@ def embark(study_name):
     """
     try:
         try:
-            return Study.from_datapackage_file(study_name)
+            return Study.from_datapackage_file(study_name,
+                                               load_species_data=load_species_data)
         except IOError:
             pass
         filename = os.path.abspath(os.path.expanduser(
             '~/flotilla_projects/{}/datapackage.json'.format(study_name)))
-        return Study.from_datapackage_file(filename)
+        return Study.from_datapackage_file(filename,
+                                           load_species_data=load_species_data)
     except IOError:
-        return Study.from_datapackage_url(study_name)
+        return Study.from_datapackage_url(study_name,
+                                          load_species_data=load_species_data)
