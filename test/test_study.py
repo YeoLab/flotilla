@@ -39,7 +39,7 @@ class TestStudy(object):
     def test_real_init(self, example_datapackage_path):
         import flotilla
 
-        flotilla.embark(example_datapackage_path)
+        flotilla.embark(example_datapackage_path, load_species_data=False)
 
     def test_plot_pca(self, study):
         study.plot_pca()
@@ -61,7 +61,7 @@ class TestStudy(object):
 
     @pytest.fixture(params=[None, 'feature_rename_col'])
     def splicing_key(self, request):
-        return request.param
+        return request.fparam
 
     @pytest.fixture
     def datapackage(self, example_datapackage_path, metadata_key,
@@ -86,15 +86,15 @@ class TestStudy(object):
 
     def test_from_datapackage(self, datapackage, datapackage_dir):
         import flotilla
+        from flotilla.external import get_resource_from_name
 
-        study = flotilla.Study.from_datapackage(datapackage, datapackage_dir)
+        study = flotilla.Study.from_datapackage(datapackage, datapackage_dir,
+                                                load_species_data=False)
 
-        metadata_resource = [r for r in datapackage['resources']
-                             if r['name'] == 'metadata'][0]
-        expression_resource = [r for r in datapackage['resources']
-                               if r['name'] == 'expression'][0]
-        splicing_resource = [r for r in datapackage['resources']
-                             if r['name'] == 'splicing'][0]
+        metadata_resource = get_resource_from_name(datapackage, 'metadata')
+        expression_resource = get_resource_from_name(datapackage,
+                                                     'expression')
+        splicing_resource = get_resource_from_name(datapackage, 'splicing')
 
         phenotype_col = 'phenotype' if 'phenotype_col' \
             not in metadata_resource else metadata_resource['phenotype_col']
@@ -112,6 +112,51 @@ class TestStudy(object):
         assert study.expression.feature_rename_col \
                == expression_feature_rename_col
         assert study.splicing.feature_rename_col == splicing_feature_rename_col
+
+    def test_save(self, example_datapackage_path, tmpdir, monkeypatch):
+        import flotilla
+        from flotilla.external import get_resource_from_name
+
+        study = flotilla.embark(example_datapackage_path,
+                                load_species_data=False)
+        name = 'test_save'
+        study.save('test_save', flotilla_dir=tmpdir)
+
+        assert len(tmpdir.listdir()) == 1
+        save_dir = tmpdir.listdir()[0]
+
+        with open('{}/datapackage.json'.format(save_dir)) as f:
+            test_datapackage = json.load(f)
+        with open(example_datapackage_path) as f:
+            true_datapackage = json.load(f)
+
+        assert name == save_dir.purebasename
+
+        monkeypatch.setitem(test_datapackage, 'name',
+                            true_datapackage['name'])
+        monkeypatch.setitem(get_resource_from_name(test_datapackage,
+                                                   'metadata'), 'path',
+                            get_resource_from_name(true_datapackage,
+                                                   'metadata')['path'])
+        monkeypatch.setitem(get_resource_from_name(test_datapackage,
+                                                   'expression'), 'path',
+                            get_resource_from_name(true_datapackage,
+                                                   'expression')['path'])
+        monkeypatch.setitem(get_resource_from_name(test_datapackage,
+                                                   'splicing'), 'path',
+                            get_resource_from_name(true_datapackage,
+                                                   'splicing')['path'])
+        monkeypatch.setitem(get_resource_from_name(test_datapackage,
+                                                   'mapping_stats'), 'path',
+                            get_resource_from_name(true_datapackage,
+                                                   'mapping_stats')['path'])
+        monkeypatch.setitem(get_resource_from_name(test_datapackage,
+                                                   'spikein'), 'path',
+                            get_resource_from_name(true_datapackage,
+                                                   'spikein')['path'])
+
+        pdt.assert_dict_equal(test_datapackage,
+                              true_datapackage)
 
 
 # def test_write_package(tmpdir):
