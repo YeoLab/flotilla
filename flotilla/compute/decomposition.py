@@ -89,7 +89,7 @@ class DataFrameNMF(DataFrameReducerBase, decomposition.NMF):
             assert type(X) == pd.DataFrame
         except:
             sys.stdout.write("Try again as a pandas DataFrame")
-            raise ValueError('Input X was not a panads DataFrame, '
+            raise ValueError('Input X was not a pandas DataFrame, '
                              'was of type {} instead'.format(str(type(X))))
 
         self.X = X
