@@ -118,8 +118,9 @@ class DecompositionViz(object):
                 self.pc_loadings[pc] = np.r_[a, b]
             else:
                 labels = x.index
+                self.pc_loadings[pc] = x
 
-            self.pc_loadings[pc] = x
+
             self.pc_loadings_labels[pc] = labels
             self.top_features.update(labels)
 
@@ -279,7 +280,10 @@ class DecompositionViz(object):
         # else:
         #     dd = x
         #     labels = x.index
-
+        # import pdb; pdb.set_trace()
+        # half_features = n_features/2
+        # top_loadings = self.pc_loadings[pc][:half_features]
+        # bottom_loadings = self.pc_loadings[pc][-half_features:]
         loadings = self.pc_loadings[pc]
         labels = self.pc_loadings_labels[pc]
 
@@ -292,8 +296,8 @@ class DecompositionViz(object):
         ax.set_title("Component " + pc)
 
         x_offset = max(loadings) * .05
-        ax.set_xlim(left=min(loadings) - x_offset,
-                    right=max(loadings) + x_offset)
+        ax.set_xlim(left=loadings.min() - x_offset,
+                    right=loadings.max() + x_offset)
 
         # self.top_features.extend(labels)
 
