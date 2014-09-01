@@ -13,6 +13,7 @@ import seaborn as sns
 
 
 
+
 # from ..compute.decomposition import DataFrameNMF, DataFramePCA
 from .color import set1
 
@@ -64,6 +65,21 @@ class DecompositionViz(object):
         self.reduced_space = reduced_space
         self.components_ = components_
 
+        if self.label_to_color is None:
+            colors = cycle(set1)
+
+            def color_factory():
+                return colors.next()
+
+            self.label_to_color = defaultdict(color_factory)
+
+        if self.label_to_marker is None:
+            markers = cycle(['o', '^', 's', 'v', '*', 'D', 'h'])
+
+            def marker_factory():
+                return markers.next()
+
+            self.label_to_marker = defaultdict(marker_factory)
 
         # if decomposer_kwargs is None:
         #     decomposer_kwargs = self._default_reduction_kwargs
@@ -211,21 +227,7 @@ class DecompositionViz(object):
         if ax is None:
             ax = plt.gca()
 
-        if self.label_to_color is None:
-            colors = cycle(set1)
 
-            def color_factory():
-                return colors.next()
-
-            self.label_to_color = defaultdict(color_factory)
-
-        if self.label_to_marker is None:
-            markers = cycle(['o', '^', 's', 'v', '*', 'D', 'h'])
-
-            def marker_factory():
-                return markers.next()
-
-            self.label_to_marker = defaultdict(marker_factory)
 
         # Plot the samples
         grouped = self.reduced_space.groupby(self.groupby, axis=0)
@@ -258,10 +260,10 @@ class DecompositionViz(object):
         # Label x and y axes
         ax.set_xlabel(
             'Principal Component {} (Explains {:.2f}% Of Variance)'.format(
-                str(self.x_pc), self.vars[self.x_pc]))
+                str(self.x_pc), 100 * self.vars[self.x_pc]))
         ax.set_ylabel(
             'Principal Component {} (Explains {:.2f}% Of Variance)'.format(
-                str(self.y_pc), self.vars[self.y_pc]))
+                str(self.y_pc), 100 * self.vars[self.y_pc]))
         ax.set_title(title)
 
         if legend:
