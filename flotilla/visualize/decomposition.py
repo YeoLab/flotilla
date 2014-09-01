@@ -14,6 +14,7 @@ import seaborn as sns
 
 
 
+
 # from ..compute.decomposition import DataFrameNMF, DataFramePCA
 from .color import set1
 
@@ -24,7 +25,8 @@ class DecompositionViz(object):
     reductions of its own
     """
 
-    def __init__(self, reduced_space, components_, DataModel=None,
+    def __init__(self, reduced_space, components_,
+                 explained_variance_ratio_, DataModel=None,
                  feature_renamer=None, groupby=None,
                  color=None, order=None, violinplot_kws=None,
                  data_type=None, label_to_color=None, label_to_marker=None,
@@ -101,9 +103,9 @@ class DecompositionViz(object):
         self.loadings = self.components_.ix[[self.x_pc, self.y_pc]]
 
         # Get the explained variance
-        try:
-            self.vars = self.explained_variance_ratio_[[self.x_pc, self.y_pc]]
-        except AttributeError:
+        if explained_variance_ratio_ is not None:
+            self.vars = explained_variance_ratio_[[self.x_pc, self.y_pc]]
+        else:
             self.vars = pd.Series([1., 1.], index=[self.x_pc, self.y_pc])
 
         if scale_by_variance:
@@ -258,6 +260,9 @@ class DecompositionViz(object):
                                 horizontalalignment=horizontalalignment)
 
         # Label x and y axes
+        import pdb;
+
+        pdb.set_trace()
         ax.set_xlabel(
             'Principal Component {} (Explains {:.2f}% Of Variance)'.format(
                 str(self.x_pc), 100 * self.vars[self.x_pc]))
