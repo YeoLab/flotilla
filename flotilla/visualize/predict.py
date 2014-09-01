@@ -129,13 +129,22 @@ class PredictorBaseViz(PredictorBase):
         local_plotting_kwargs = self._reducer_plotting_args
         local_plotting_kwargs.update(plotting_kwargs)
         pca = self.pca()
+
+        if self.categorical:
+            groupby = self.y.map(lambda x: self.dataset.traitset[x])
+        else:
+            groupby = self.y
+
         pcaviz = DecompositionViz(pca.reduced_space, pca.components_,
+                                  pca.explained_variance_ratio_,
                                   self.DataModel,
-                                  label_to_color=self.label_to_color,
-                                  label_to_marker=self.label_to_marker,
-                                  groupby=self.groupby,
-                                  color=self.color,
-                                  order=self.order)
+                                  groupby=groupby,
+                                  # label_to_color=self.label_to_color,
+                                  # label_to_marker=self.label_to_marker,
+                                  # groupby=self.groupby,
+                                  # color=self.color,
+                                  # order=self.order
+        )
         pcaviz(**local_plotting_kwargs)
         return pcaviz
 
