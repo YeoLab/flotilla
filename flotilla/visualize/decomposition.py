@@ -15,6 +15,7 @@ import seaborn as sns
 
 
 
+
 # from ..compute.decomposition import DataFrameNMF, DataFramePCA
 from .color import set1
 
@@ -260,9 +261,6 @@ class DecompositionViz(object):
                                 horizontalalignment=horizontalalignment)
 
         # Label x and y axes
-        import pdb;
-
-        pdb.set_trace()
         ax.set_xlabel(
             'Principal Component {} (Explains {:.2f}% Of Variance)'.format(
                 str(self.x_pc), 100 * self.vars[self.x_pc]))
