@@ -712,7 +712,7 @@ class BaseData(object):
         """
 
         """
-        data = self._subset(self.data, sample_ids, feature_ids)
+        data = self._subset(self.data, sample_ids, feature_ids, require_min_samples=False)
         binned = self.binify(data)
         reduced = self.nmf.transform(binned.T)
         return reduced
@@ -754,9 +754,9 @@ class BaseData(object):
                 continue
             sns.despine()
 
-    def nmf_space_positions(self, groupby):
-        df = self.data.groupby(groupby).apply(
-            lambda x: self.binned_nmf_reduced(sample_ids=x.index))
+    def nmf_space_positions(self, groupby, min_samples_per_group=5):
+        data = self.data.groupby(groupby).filter(lambda x: len(x) >= min_samples_per_group)
+        df = data.groupby(groupby).apply(lambda x: self.binned_nmf_reduced(sample_ids=x.index))
         df = df.swaplevel(0, 1)
         df = df.sort_index()
         return df
