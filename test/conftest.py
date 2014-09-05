@@ -12,6 +12,7 @@ import pandas as pd
 
 
 
+
 # Tell matplotlib to not make any window popups
 mpl.use('Agg')
 
@@ -89,21 +90,23 @@ def genelist_link(request, genelist_path, genelist_dropbox_link):
 
 
 @pytest.fixture(params=[None, 'transcription_factor',
-                        genelist_dropbox_link,
-                        genelist_path], scope='module')
-def feature_subset(request):
+                        'link',
+                        'path'], scope='module')
+def feature_subset(request, genelist_dropbox_link, genelist_path):
+    name_to_location = {'link': genelist_dropbox_link,
+                        'path': genelist_path}
+
     if request.param is None:
         return request.param
-    elif isinstance(request.param, str):
-        # If this is a name of a feature subset
-        return request.param
-    else:
-        # Otherwise, this is a link to a list
+    elif request.param in ('link', 'path'):
         from flotilla.external import link_to_list
 
         try:
-            link_to_list(request.param)
+            return link_to_list(name_to_location[request.param])
         except subprocess.CalledProcessError:
             # Downloading the dropbox link failed, aka not connected to the
             # internet, so just test "None" again
             return None
+    else:
+        # Otherwise, this is a name of a subset
+        return request.param
