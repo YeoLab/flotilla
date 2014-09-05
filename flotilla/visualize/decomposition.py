@@ -10,11 +10,6 @@ import seaborn as sns
 
 
 
-
-
-
-
-
 # from ..compute.decomposition import DataFrameNMF, DataFramePCA
 from .color import set1
 
@@ -28,6 +23,7 @@ class DecompositionViz(object):
     def __init__(self, reduced_space, components_,
                  explained_variance_ratio_, DataModel=None,
                  feature_renamer=None, groupby=None,
+                 featurewise=False,
                  color=None, order=None, violinplot_kws=None,
                  data_type=None, label_to_color=None, label_to_marker=None,
                  # violinplot=None,
@@ -63,6 +59,7 @@ class DecompositionViz(object):
         self.pcs = [self.x_pc, self.y_pc]
         self.distance = distance
         self.n_top_pc_features = n_top_pc_features
+        self.featurewise = featurewise
 
         self.reduced_space = reduced_space
         self.components_ = components_
@@ -174,7 +171,7 @@ class DecompositionViz(object):
         sns.despine()
         self.reduced_fig.tight_layout()
 
-        if self.DataModel is not None:
+        if self.DataModel is not None and not self.featurewise:
             self.plot_violins()
         return self
 
@@ -260,9 +257,6 @@ class DecompositionViz(object):
                                 horizontalalignment=horizontalalignment)
 
         # Label x and y axes
-        import pdb;
-
-        pdb.set_trace()
         ax.set_xlabel(
             'Principal Component {} (Explains {:.2f}% Of Variance)'.format(
                 str(self.x_pc), 100 * self.vars[self.x_pc]))

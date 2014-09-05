@@ -8,7 +8,7 @@ import warnings
 
 from IPython.html.widgets import interact
 import matplotlib.pyplot as plt
-import pandas as pd
+
 
 
 # from ..compute.predict import default_classifier
@@ -111,14 +111,14 @@ class Interactive(object):
 
             if feature_subset != "custom" and list_link != "":
                 raise ValueError(
-                    "set feature_subset to \"custom\" to use list_link")
+                    "Set feature_subset to \"custom\" to use list_link")
 
             if feature_subset == "custom" and list_link == "":
-                raise ValueError("use a custom list name please")
+                raise ValueError("Use a custom list name please")
 
             if feature_subset == 'custom':
-                feature_subset = pd.read_table(list_link, squeeze=True, header=None).values.tolist()
-                #this section should return a list of features that are in the data's columns
+                feature_subset = link_to_list(list_link)
+
             elif feature_subset not in self.default_feature_subsets[data_type]:
                 warnings.warn("This feature_subset ('{}') is not available in "
                               "this data type ('{}'). Falling back on all "
