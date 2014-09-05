@@ -11,6 +11,7 @@ import pandas as pd
 
 
 
+
 # Tell matplotlib to not make any window popups
 mpl.use('Agg')
 
@@ -69,12 +70,12 @@ def study(example_datapackage_path):
     return flotilla.embark(example_datapackage_path)
 
 
-@pytest.fixture
-def genelist_path():
-    return '{}/test_gene_list.txt'.format(data_dir())
+@pytest.fixture(scope='module')
+def genelist_path(data_dir):
+    return '{}/test_gene_list.txt'.format(data_dir)
 
 
-@pytest.fixture
+@pytest.fixture(scope='module')
 def genelist_dropbox_link():
     return 'https://www.dropbox.com/s/qddybszcses6pi6/DE_genes.male%20adult%20%2019.txt?dl=0'
 
@@ -82,9 +83,9 @@ def genelist_dropbox_link():
 @pytest.fixture(params=['local', 'dropbox'])
 def genelist_link(request, genelist_path, genelist_dropbox_link):
     if request.param == 'local':
-        return genelist_path()
+        return genelist_path
     elif request.param == 'dropbox':
-        return genelist_dropbox_link()
+        return genelist_dropbox_link
 
 
 @pytest.fixture(params=[None, 'transcription_factor',
@@ -101,7 +102,7 @@ def feature_subset(request):
         from flotilla.external import link_to_list
 
         try:
-            link_to_list(request.param())
+            link_to_list(request.param)
         except subprocess.CalledProcessError:
             # Downloading the dropbox link failed, aka not connected to the
             # internet, so just test "None" again
