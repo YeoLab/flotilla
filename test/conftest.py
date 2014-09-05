@@ -10,6 +10,7 @@ import pytest
 import pandas as pd
 
 
+
 # Tell matplotlib to not make any window popups
 mpl.use('Agg')
 
@@ -26,7 +27,7 @@ class ExampleData(object):
         self.data = (metadata, expression, splicing)
 
 
-@pytest.fixture
+@pytest.fixture(scope='module')
 def data_dir():
     return '{}/data'.format(CURRENT_DIR.rstrip('/'))
 
