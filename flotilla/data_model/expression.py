@@ -41,6 +41,7 @@ class ExpressionData(BaseData):
             predictor_config_manager=predictor_config_manager,
             technical_outliers=technical_outliers)
         self.data_type = 'expression'
+        self.expression_thresh = expression_thresh
         self.data = self.data[self.data >= self.expression_thresh]
 
         sys.stderr.write("done initializing expression\n")
@@ -57,7 +58,6 @@ class ExpressionData(BaseData):
 
         # This may not be totally kosher.... but original data is in
         # self.original_data
-        self.expression_thresh = expression_thresh
         if outliers is not None:
             self.outliers = self.outliers[
                 self.outliers > self.expression_thresh]
