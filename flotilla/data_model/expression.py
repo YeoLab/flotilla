@@ -42,6 +42,7 @@ class ExpressionData(BaseData):
             technical_outliers=technical_outliers)
         self.data_type = 'expression'
         self.expression_thresh = expression_thresh
+        self.original_data = self.data
         self.data = self.data[self.data >= self.expression_thresh]
 
         sys.stderr.write("done initializing expression\n")
@@ -53,7 +54,7 @@ class ExpressionData(BaseData):
         else:
             self.log_data = self.data
 
-        self.original_data = self.data
+        self.data = self.log_data
         self.feature_data = metadata
 
         # This may not be totally kosher.... but original data is in
