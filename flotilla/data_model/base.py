@@ -727,7 +727,8 @@ class BaseData(object):
                      phenotype_groupby=None,
                      phenotype_order=None, color=None,
                      phenotype_to_color=None,
-                     phenotype_to_marker=None, xlabel=None, ylabel=None):
+                     phenotype_to_marker=None, xlabel=None, ylabel=None,
+                     nmf_space=False):
 
         """
         Plot the violinplot of a splicing event (should also show DataFrameNMF movement)
@@ -737,10 +738,12 @@ class BaseData(object):
         if not isinstance(feature_ids, pd.Index):
             feature_ids = [feature_id]
 
-        ncols = 2  #if self.data_type == 'splicing' else 1
+        ncols = 2 if nmf_space else 1
 
         for feature_id in feature_ids:
             fig, axes = plt.subplots(ncols=ncols, figsize=(4 * ncols, 4))
+            if not nmf_space:
+                axes = [axes]
             # if self.data_type == 'expression':
             #     axes = [axes]
 
@@ -749,15 +752,16 @@ class BaseData(object):
                              phenotype_order=phenotype_order, ax=axes[0],
                              color=color)
             # if self.data_type == 'splicing':
-            try:
-                self.plot_nmf_space_transitions(
-                    feature_id, groupby=phenotype_groupby,
-                    phenotype_to_color=phenotype_to_color,
-                    phenotype_to_marker=phenotype_to_marker,
-                    order=phenotype_order, ax=axes[1],
-                    xlabel=xlabel, ylabel=ylabel)
-            except KeyError:
-                continue
+            if nmf_space:
+                try:
+                    self.plot_nmf_space_transitions(
+                        feature_id, groupby=phenotype_groupby,
+                        phenotype_to_color=phenotype_to_color,
+                        phenotype_to_marker=phenotype_to_marker,
+                        order=phenotype_order, ax=axes[1],
+                        xlabel=xlabel, ylabel=ylabel)
+                except KeyError:
+                    continue
             sns.despine()
 
     def nmf_space_positions(self, groupby):
@@ -816,4 +820,5 @@ class BaseData(object):
             self.plot_feature(feature_id, phenotype_groupby=phenotype_groupby,
                               phenotype_order=phenotype_order, color=color,
                               phenotype_to_color=phenotype_to_color,
-                              phenotype_to_marker=phenotype_to_marker)
+                              phenotype_to_marker=phenotype_to_marker,
+                              nmf_space=True)
