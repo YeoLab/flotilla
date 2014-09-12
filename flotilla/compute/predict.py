@@ -17,6 +17,7 @@ from pandas.util.testing import assert_frame_equal, assert_series_equal
 from ..util import memoize
 
 
+
 # from ..visualize.decomposition import PCAViz, NMFViz
 from .decomposition import DataFramePCA, DataFrameNMF
 
@@ -723,6 +724,7 @@ class Regressor(PredictorBase):
     __doc__ = "Regressor for continuous response variables \n" + \
               PredictorBase.__doc__
 
+    categorical = False
 
     def __init__(self, data_name, trait_name,
                  predictor_name=None,
@@ -736,6 +738,8 @@ class Regressor(PredictorBase):
 
 class Classifier(PredictorBase):
     __doc__ = "Classifier for categorical response variables.\n" + PredictorBase.__doc__
+
+    categorical = True
 
     def __init__(self, data_name, trait_name,
                  predictor_name=None,

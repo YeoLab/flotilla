@@ -8,6 +8,7 @@ import os
 import string
 import subprocess
 import sys
+import tempfile
 import urllib2
 
 import numpy as np
@@ -160,22 +161,26 @@ class GO(object):
 
 
 def link_to_list(link):
+    print 'link', link
     try:
         assert link.startswith("http") or os.path.exists(os.path.abspath(link))
-    except:
+    except AssertionError:
         raise ValueError("use a link that starts with http or a file path")
 
     if link.startswith("http"):
         sys.stderr.write(
             "WARNING, downloading things from the internet, potential danger "
             "from untrusted sources\n")
-        xx = subprocess.check_output(
-            ["curl", "-k", '--location-trusted', link]).split("\n")
+        filename = tempfile.NamedTemporaryFile(mode='w+')
+        filename.write(subprocess.check_output(
+            ["curl", "-k", '--location-trusted', link]))
+        filename.seek(0)
     elif link.startswith("/"):
         assert os.path.exists(os.path.abspath(link))
-        with open(os.path.abspath(link), 'r') as f:
-            xx = map(str.strip, f.readlines())
-    return xx
+        filename = os.path.abspath(link)
+    gene_list = pd.read_table(filename, squeeze=True, header=None).values \
+        .tolist()
+    return gene_list
 
 
 def data_package_url_to_dict(data_package_url):

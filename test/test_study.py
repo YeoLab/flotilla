@@ -42,8 +42,8 @@ class TestStudy(object):
 
         flotilla.embark(example_datapackage_path, load_species_data=False)
 
-    def test_plot_pca(self, study):
-        study.plot_pca()
+    def test_plot_pca(self, study, feature_subset):
+        study.plot_pca(feature_subset=feature_subset)
 
     def test_plot_graph(self, study):
         study.plot_graph(feature_of_interest=None)

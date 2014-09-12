@@ -217,8 +217,9 @@ class BaseData(object):
             except TypeError:
                 if not isinstance(feature_subset, str):
                     feature_ids = feature_subset
-                    n_custom = self.feature_data.columns.map(lambda x: x.startswith('custom')).sum()
-                    self.feature_data['custom_{}'.format(n_custom+1)] = \
+                    n_custom = self.feature_data.columns.map(
+                        lambda x: x.startswith('custom')).sum()
+                    self.feature_data['custom_{}'.format(n_custom + 1)] = \
                         self.feature_data.index.isin(feature_ids)
                 else:
                     raise ValueError(
@@ -359,7 +360,9 @@ class BaseData(object):
                               reducer=reducer, **reduce_kwargs)
         visualized = DecompositionViz(reduced.reduced_space,
                                       reduced.components_,
-                                      self,
+                                      reduced.explained_variance_ratio_,
+                                      featurewise=featurewise,
+                                      DataModel=self,
                                       label_to_color=label_to_color,
                                       label_to_marker=label_to_marker,
                                       groupby=groupby, order=order, color=color,
@@ -697,7 +700,8 @@ class BaseData(object):
             outliers = None
 
         renamed = self.feature_renamer(feature_id)
-        title = '{}\n{}'.format(renamed, ':'.join(feature_id.split('@')[0].split(':')[:2]))
+        title = '{}\n{}'.format(renamed, ':'.join(
+            feature_id.split('@')[0].split(':')[:2]))
 
         violinplot(singles, groupby=phenotype_groupby, color=color,
                    pooled_data=pooled, order=phenotype_order,
@@ -723,7 +727,8 @@ class BaseData(object):
                      phenotype_groupby=None,
                      phenotype_order=None, color=None,
                      phenotype_to_color=None,
-                     phenotype_to_marker=None, xlabel=None, ylabel=None):
+                     phenotype_to_marker=None, xlabel=None, ylabel=None,
+                     nmf_space=False):
 
         """
         Plot the violinplot of a splicing event (should also show DataFrameNMF movement)
@@ -733,10 +738,12 @@ class BaseData(object):
         if not isinstance(feature_ids, pd.Index):
             feature_ids = [feature_id]
 
-        ncols = 2  #if self.data_type == 'splicing' else 1
+        ncols = 2 if nmf_space else 1
 
         for feature_id in feature_ids:
             fig, axes = plt.subplots(ncols=ncols, figsize=(4 * ncols, 4))
+            if not nmf_space:
+                axes = [axes]
             # if self.data_type == 'expression':
             #     axes = [axes]
 
@@ -745,15 +752,16 @@ class BaseData(object):
                              phenotype_order=phenotype_order, ax=axes[0],
                              color=color)
             # if self.data_type == 'splicing':
-            try:
-                self.plot_nmf_space_transitions(
-                    feature_id, groupby=phenotype_groupby,
-                    phenotype_to_color=phenotype_to_color,
-                    phenotype_to_marker=phenotype_to_marker,
-                    order=phenotype_order, ax=axes[1],
-                    xlabel=xlabel, ylabel=ylabel)
-            except KeyError:
-                continue
+            if nmf_space:
+                try:
+                    self.plot_nmf_space_transitions(
+                        feature_id, groupby=phenotype_groupby,
+                        phenotype_to_color=phenotype_to_color,
+                        phenotype_to_marker=phenotype_to_marker,
+                        order=phenotype_order, ax=axes[1],
+                        xlabel=xlabel, ylabel=ylabel)
+                except KeyError:
+                    continue
             sns.despine()
 
     def nmf_space_positions(self, groupby, min_samples_per_group=5):
@@ -812,4 +820,5 @@ class BaseData(object):
             self.plot_feature(feature_id, phenotype_groupby=phenotype_groupby,
                               phenotype_order=phenotype_order, color=color,
                               phenotype_to_color=phenotype_to_color,
-                              phenotype_to_marker=phenotype_to_marker)
+                              phenotype_to_marker=phenotype_to_marker,
+                              nmf_space=True)
