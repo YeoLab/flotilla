@@ -5,16 +5,16 @@ import brewer2mpl
 sns.set_palette('deep')
 deep = sns.color_palette('deep')
 
-set1 = brewer2mpl.get_map('Set1', 'qualitative', 9).mpl_colors
-red = mpl.colors.rgb2hex(set1[0])
-blue = mpl.colors.rgb2hex(set1[1])
-green = mpl.colors.rgb2hex(set1[2])
-purple = mpl.colors.rgb2hex(set1[3])
-orange = mpl.colors.rgb2hex(set1[4])
-yellow = mpl.colors.rgb2hex(set1[5])
-brown = mpl.colors.rgb2hex(set1[6])
-pink = mpl.colors.rgb2hex(set1[7])
-grey = mpl.colors.rgb2hex(set1[8])
+set1 = map(mpl.colors.rgb2hex, brewer2mpl.get_map('Set1', 'qualitative', 9).mpl_colors)
+red = set1[0]
+blue = set1[1]
+green = set1[2]
+purple = set1[3]
+orange = set1[4]
+yellow = set1[5]
+brown = set1[6]
+pink = set1[7]
+grey = set1[8]
 
 almost_black = '#262626'
 

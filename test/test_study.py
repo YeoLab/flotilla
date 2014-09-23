@@ -16,6 +16,7 @@ class TestStudy(object):
         from flotilla import Study
 
         return Study(sample_metadata=example_data.metadata,
+                     version='0.1.0',
                      expression_data=example_data.expression,
                      splicing_data=example_data.splicing,
                      metadata_phenotype_col='celltype')
