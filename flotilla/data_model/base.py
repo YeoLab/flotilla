@@ -66,6 +66,8 @@ class BaseData(object):
             self.data, self.outliers = self.drop_outliers(self.data,
                                                           outliers)
         self.feature_data = metadata
+        if self.feature_data is None:
+            self.feature_data = pd.DataFrame(index=self.data.columns)
         self.feature_rename_col = feature_rename_col
         self.min_samples = min_samples
         self.default_feature_sets = []
