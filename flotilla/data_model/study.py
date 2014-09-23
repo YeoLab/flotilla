@@ -1071,25 +1071,27 @@ class Study(StudyFactory):
                     bootstrapped=bootstrapped,
                     bootstrapped_kws=bootstrapped_kws)
 
-    def plot_event(self, feature_id, sample_subset=None):
+    def plot_event(self, feature_id, sample_subset=None, nmf_space=False):
         """Plot the violinplot and DataFrameNMF transitions of a splicing event
         """
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
-        self.splicing.plot_event(feature_id, sample_ids,
-                                 phenotype_groupby=self.sample_id_to_phenotype,
+        self.splicing.plot_feature(feature_id, sample_ids,
+                                   phenotype_groupby=self.sample_id_to_phenotype,
                                  phenotype_order=self.phenotype_order,
                                  color=self.phenotype_color_ordered,
                                  phenotype_to_color=self.phenotype_to_color,
-                                 phenotype_to_marker=self.phenotype_to_marker)
+                                 phenotype_to_marker=self.phenotype_to_marker,
+                                 nmf_space=nmf_space)
 
-    def plot_gene(self, feature_id, sample_subset=None):
+    def plot_gene(self, feature_id, sample_subset=None, nmf_space=False):
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
-        self.expression.plot_feature(feature_id, sample_ids,
-                                     phenotype_groupby=self.sample_id_to_phenotype,
-                                     phenotype_order=self.phenotype_order,
-                                     color=self.phenotype_color_ordered,
-                                     phenotype_to_color=self.phenotype_to_color,
-                                     phenotype_to_marker=self.phenotype_to_marker)
+        self.expression.plot_feature(
+            feature_id, sample_ids,
+            phenotype_groupby=self.sample_id_to_phenotype,
+            phenotype_order=self.phenotype_order,
+            color=self.phenotype_color_ordered,
+            phenotype_to_color=self.phenotype_to_color,
+            phenotype_to_marker=self.phenotype_to_marker, nmf_space=nmf_space)
 
     def plot_lavalamp_pooled_inconsistent(
             self, sample_subset=None, feature_ids=None,
