@@ -9,6 +9,7 @@ import seaborn as sns
 
 from .base import BaseData
 from ..compute.splicing import Modalities
+from ..compute.decomposition import DataFramePCA
 from ..visualize.color import purples
 from ..visualize.splicing import ModalitiesViz
 from ..util import memoize
@@ -428,6 +429,17 @@ class SplicingData(BaseData):
             data, sample_ids=sample_ids, feature_ids=feature_ids,
             standardize=standardize, metric=metric,
             linkage_method=linkage_method)
+
+    def reduce(self, sample_ids=None, feature_ids=None,
+               featurewise=False,
+               reducer=DataFramePCA,
+               standardize=True,
+               reducer_kwargs=None, bins=None):
+        return super(SplicingData, self).reduce(sample_ids, feature_ids,
+                                                featurewise, reducer,
+                                                standardize=False,
+                                                reducer_kwargs=reducer_kwargs,
+                                                bins=bins)
 
 
 class SpliceJunctionData(SplicingData):
