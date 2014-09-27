@@ -3,10 +3,15 @@ This file will be auto-imported for every testing session, so you can use
 these objects and functions across test files.
 """
 import os
+import subprocess
 
 import matplotlib as mpl
 import pytest
 import pandas as pd
+
+
+
+
 
 # Tell matplotlib to not make any window popups
 mpl.use('Agg')
@@ -25,8 +30,12 @@ class ExampleData(object):
 
 
 @pytest.fixture(scope='module')
-def example_data():
-    data_dir = '{}/data'.format(CURRENT_DIR.rstrip('/'))
+def data_dir():
+    return '{}/data'.format(CURRENT_DIR.rstrip('/'))
+
+
+@pytest.fixture(scope='module')
+def example_data(data_dir):
     expression = pd.read_table('{}/expression.tsv'.format(data_dir),
                                index_col=0)
     splicing = pd.read_table('{}/splicing.tsv'.format(data_dir), index_col=0)
@@ -55,8 +64,49 @@ def expression(example_data):
     return ExpressionData(example_data.expression)
 
 
-@pytest.fixture
+@pytest.fixture(scope='module')
 def study(example_datapackage_path):
     import flotilla
 
     return flotilla.embark(example_datapackage_path)
+
+
+@pytest.fixture(scope='module')
+def genelist_path(data_dir):
+    return '{}/test_gene_list.txt'.format(data_dir)
+
+
+@pytest.fixture(scope='module')
+def genelist_dropbox_link():
+    return 'https://www.dropbox.com/s/qddybszcses6pi6/DE_genes.male%20adult%20%2019.txt?dl=0'
+
+
+@pytest.fixture(params=['local', 'dropbox'])
+def genelist_link(request, genelist_path, genelist_dropbox_link):
+    if request.param == 'local':
+        return genelist_path
+    elif request.param == 'dropbox':
+        return genelist_dropbox_link
+
+
+@pytest.fixture(params=[None, 'transcription_factor',
+                        'link',
+                        'path'], scope='module')
+def feature_subset(request, genelist_dropbox_link, genelist_path):
+    name_to_location = {'link': genelist_dropbox_link,
+                        'path': genelist_path}
+
+    if request.param is None:
+        return request.param
+    elif request.param in ('link', 'path'):
+        from flotilla.external import link_to_list
+
+        try:
+            return link_to_list(name_to_location[request.param])
+        except subprocess.CalledProcessError:
+            # Downloading the dropbox link failed, aka not connected to the
+            # internet, so just test "None" again
+            return None
+    else:
+        # Otherwise, this is a name of a subset
+        return request.param

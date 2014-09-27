@@ -9,6 +9,7 @@ import seaborn as sns
 
 from .base import BaseData
 from ..compute.splicing import Modalities
+from ..compute.decomposition import DataFramePCA
 from ..visualize.color import purples
 from ..visualize.splicing import ModalitiesViz
 from ..util import memoize
@@ -128,34 +129,6 @@ class SplicingData(BaseData):
 
     def binify(self, data):
         return super(SplicingData, self).binify(data, self.bins)
-
-
-    # def reduce(self, sample_ids=None, feature_ids=None,
-    #            featurewise=False, reducer=PCAViz,
-    #            standardize=False, title='',
-    #            reducer_kwargs=None, groupby=None,
-    #            label_to_color=None, label_to_marker=None,
-    #            order=None, color=None, binify=False,
-    #            x_pc='pc_1', y_pc='pc_1'):
-    #     """make and cache a reduced dimensionality representation of data
-    #
-    #     Default is PCAViz because NMFviz only works for binned data
-    #     """
-    #     bins = self.bins if binify else None
-    #     return super(SplicingData, self).reduce(self.data,
-    #                                             sample_ids=sample_ids,
-    #                                             feature_ids=feature_ids,
-    #                                             featurewise=featurewise,
-    #                                             reducer=reducer,
-    #                                             standardize=standardize,
-    #                                             title=title,
-    #                                             reducer_kwargs=reducer_kwargs,
-    #                                             groupby=groupby,
-    #                                             label_to_color=label_to_color,
-    #                                             label_to_marker=label_to_marker,
-    #                                             order=order, color=color,
-    #                                             bins=bins, x_pc=x_pc,
-    #                                             y_pc=y_pc)
 
 
     def plot_modalities_reduced(self, sample_ids=None, feature_ids=None,
@@ -456,6 +429,17 @@ class SplicingData(BaseData):
             data, sample_ids=sample_ids, feature_ids=feature_ids,
             standardize=standardize, metric=metric,
             linkage_method=linkage_method)
+
+    def reduce(self, sample_ids=None, feature_ids=None,
+               featurewise=False,
+               reducer=DataFramePCA,
+               standardize=True,
+               reducer_kwargs=None, bins=None):
+        return super(SplicingData, self).reduce(sample_ids, feature_ids,
+                                                featurewise, reducer,
+                                                standardize=False,
+                                                reducer_kwargs=reducer_kwargs,
+                                                bins=bins)
 
 
 class SpliceJunctionData(SplicingData):
