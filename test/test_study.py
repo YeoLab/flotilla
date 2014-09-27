@@ -16,6 +16,7 @@ class TestStudy(object):
         from flotilla import Study
 
         return Study(sample_metadata=example_data.metadata,
+                     version='0.1.0',
                      expression_data=example_data.expression,
                      splicing_data=example_data.splicing,
                      metadata_phenotype_col='celltype')
@@ -42,8 +43,8 @@ class TestStudy(object):
 
         flotilla.embark(example_datapackage_path, load_species_data=False)
 
-    def test_plot_pca(self, study):
-        study.plot_pca()
+    def test_plot_pca(self, study, feature_subset):
+        study.plot_pca(feature_subset=feature_subset)
 
     def test_plot_graph(self, study):
         study.plot_graph(feature_of_interest=None)

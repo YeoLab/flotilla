@@ -34,7 +34,7 @@ class MetaData(BaseData):
                              'the sample metadata. All samples will be '
                              'treated as the same phenotype. You may also '
                              'specify "phenotype_col" in the metadata section '
-                             'of the datapackge.'.format(self.phenotype_col))
+                             'of the datapackage.\n'.format(self.phenotype_col))
             self.data[self.phenotype_col] = 'phenotype'
             self.phenotype_order = None
             self.phenotype_to_color = None
@@ -49,11 +49,11 @@ class MetaData(BaseData):
                     pass
         else:
             sys.stderr.write('No phenotype to color mapping was provided, '
-                             'so coming up with reasonable defaults')
+                             'so coming up with reasonable defaults\n')
             self.phenotype_to_color = {}
-            colors = sns.color_palette(n_colors=self.n_phenotypes)
+            colors = sns.color_palette('Set1', n_colors=self.n_phenotypes)
             for phenotype, color in zip(self.unique_phenotypes, colors):
-                self.phenotype_to_color[phenotype] = color
+                self.phenotype_to_color[phenotype] = mpl.colors.rgb2hex(color)
 
         self.phenotype_to_marker = phenotype_to_marker
         if self.phenotype_to_marker is not None:
@@ -61,18 +61,18 @@ class MetaData(BaseData):
                 if marker not in mpl.markers.MarkerStyle.filled_markers:
                     sys.stderr.write(
                         '{} is not a valid matplotlib marker style, '
-                        'falling back on "o" (circle)'.format(marker))
+                        'falling back on "o" (circle)\n'.format(marker))
                     self.phenotype_to_marker[phenotype] = 'o'
         else:
             sys.stderr.write('No phenotype to marker (matplotlib plotting '
                              'symbol) was provided, so each phenotype will be '
-                             'plotted as a circle in the PCA visualizations.')
+                             'plotted as a circle in the PCA visualizations.\n')
             self.phenotype_to_marker = dict.fromkeys(
                 self.sample_id_to_phenotype.unique(), 'o')
 
     @property
     def n_phenotypes(self):
-        return len(self.self.unique_phenotypes)
+        return len(self.unique_phenotypes)
 
     @property
     def unique_phenotypes(self):
@@ -88,18 +88,6 @@ class MetaData(BaseData):
             self._phenotype_order = value
         else:
             self._phenotype_order = list(sorted(self.unique_phenotypes))
-
-    @property
-    def phenotype_to_color(self):
-        return self._phenotype_to_color
-
-    @phenotype_to_color.setter
-    def phenotype_to_color(self, value):
-        if value is not None:
-            self._phenotype_to_color = value
-        else:
-            self._phenotype_to_color = dict(zip(self.phenotype_order,
-                                                itertools.cycle(set1)))
 
     @property
     def phenotype_color_order(self):

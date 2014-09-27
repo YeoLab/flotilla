@@ -172,7 +172,7 @@ class Study(StudyFactory):
 
     _default_plot_kwargs = {'marker': 'o', 'color': blue}
 
-    def __init__(self, sample_metadata, expression_data=None,
+    def __init__(self, sample_metadata, version, expression_data=None,
                  splicing_data=None,
                  expression_feature_data=None,
                  expression_feature_rename_col='gene_name',
@@ -193,8 +193,7 @@ class Study(StudyFactory):
                  phenotype_order=None,
                  phenotype_to_color=None,
                  phenotype_to_marker=None,
-                 license=None, title=None, sources=None,
-                 version=None):
+                 license=None, title=None, sources=None):
         """Construct a biological study
 
         This class only accepts data, no filenames. All data must already

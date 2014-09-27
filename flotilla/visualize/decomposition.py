@@ -10,9 +10,6 @@ import seaborn as sns
 
 
 
-
-
-
 # from ..compute.decomposition import DataFrameNMF, DataFramePCA
 from .color import set1
 
@@ -23,8 +20,10 @@ class DecompositionViz(object):
     reductions of its own
     """
 
-    def __init__(self, reduced_space, components_, DataModel=None,
+    def __init__(self, reduced_space, components_,
+                 explained_variance_ratio_, DataModel=None,
                  feature_renamer=None, groupby=None,
+                 featurewise=False,
                  color=None, order=None, violinplot_kws=None,
                  data_type=None, label_to_color=None, label_to_marker=None,
                  # violinplot=None,
@@ -60,10 +59,26 @@ class DecompositionViz(object):
         self.pcs = [self.x_pc, self.y_pc]
         self.distance = distance
         self.n_top_pc_features = n_top_pc_features
+        self.featurewise = featurewise
 
         self.reduced_space = reduced_space
         self.components_ = components_
 
+        if self.label_to_color is None:
+            colors = cycle(set1)
+
+            def color_factory():
+                return colors.next()
+
+            self.label_to_color = defaultdict(color_factory)
+
+        if self.label_to_marker is None:
+            markers = cycle(['o', '^', 's', 'v', '*', 'D', 'h'])
+
+            def marker_factory():
+                return markers.next()
+
+            self.label_to_marker = defaultdict(marker_factory)
 
         # if decomposer_kwargs is None:
         #     decomposer_kwargs = self._default_reduction_kwargs
@@ -85,9 +100,9 @@ class DecompositionViz(object):
         self.loadings = self.components_.ix[[self.x_pc, self.y_pc]]
 
         # Get the explained variance
-        try:
-            self.vars = self.explained_variance_ratio_[[self.x_pc, self.y_pc]]
-        except AttributeError:
+        if explained_variance_ratio_ is not None:
+            self.vars = explained_variance_ratio_[[self.x_pc, self.y_pc]]
+        else:
             self.vars = pd.Series([1., 1.], index=[self.x_pc, self.y_pc])
 
         if scale_by_variance:
@@ -118,8 +133,9 @@ class DecompositionViz(object):
                 self.pc_loadings[pc] = np.r_[a, b]
             else:
                 labels = x.index
+                self.pc_loadings[pc] = x
 
-            self.pc_loadings[pc] = x
+
             self.pc_loadings_labels[pc] = labels
             self.top_features.update(labels)
 
@@ -155,7 +171,7 @@ class DecompositionViz(object):
         sns.despine()
         self.reduced_fig.tight_layout()
 
-        if self.DataModel is not None:
+        if self.DataModel is not None and not self.featurewise:
             self.plot_violins()
         return self
 
@@ -210,21 +226,7 @@ class DecompositionViz(object):
         if ax is None:
             ax = plt.gca()
 
-        if self.label_to_color is None:
-            colors = cycle(set1)
 
-            def color_factory():
-                return colors.next()
-
-            self.label_to_color = defaultdict(color_factory)
-
-        if self.label_to_marker is None:
-            markers = cycle(['o', '^', 's', 'v', '*', 'D', 'h'])
-
-            def marker_factory():
-                return markers.next()
-
-            self.label_to_marker = defaultdict(marker_factory)
 
         # Plot the samples
         grouped = self.reduced_space.groupby(self.groupby, axis=0)
@@ -257,10 +259,10 @@ class DecompositionViz(object):
         # Label x and y axes
         ax.set_xlabel(
             'Principal Component {} (Explains {:.2f}% Of Variance)'.format(
-                str(self.x_pc), self.vars[self.x_pc]))
+                str(self.x_pc), 100 * self.vars[self.x_pc]))
         ax.set_ylabel(
             'Principal Component {} (Explains {:.2f}% Of Variance)'.format(
-                str(self.y_pc), self.vars[self.y_pc]))
+                str(self.y_pc), 100 * self.vars[self.y_pc]))
         ax.set_title(title)
 
         if legend:
@@ -279,7 +281,10 @@ class DecompositionViz(object):
         # else:
         #     dd = x
         #     labels = x.index
-
+        # import pdb; pdb.set_trace()
+        # half_features = n_features/2
+        # top_loadings = self.pc_loadings[pc][:half_features]
+        # bottom_loadings = self.pc_loadings[pc][-half_features:]
         loadings = self.pc_loadings[pc]
         labels = self.pc_loadings_labels[pc]
 
@@ -292,8 +297,8 @@ class DecompositionViz(object):
         ax.set_title("Component " + pc)
 
         x_offset = max(loadings) * .05
-        ax.set_xlim(left=min(loadings) - x_offset,
-                    right=max(loadings) + x_offset)
+        ax.set_xlim(left=loadings.min() - x_offset,
+                    right=loadings.max() + x_offset)
 
         # self.top_features.extend(labels)
 

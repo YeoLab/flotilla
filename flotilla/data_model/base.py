@@ -66,6 +66,8 @@ class BaseData(object):
             self.data, self.outliers = self.drop_outliers(self.data,
                                                           outliers)
         self.feature_data = metadata
+        if self.feature_data is None:
+            self.feature_data = pd.DataFrame(index=self.data.columns)
         self.feature_rename_col = feature_rename_col
         self.min_samples = min_samples
         self.default_feature_sets = []
@@ -217,8 +219,9 @@ class BaseData(object):
             except TypeError:
                 if not isinstance(feature_subset, str):
                     feature_ids = feature_subset
-                    n_custom = self.feature_data.columns.map(lambda x: x.startswith('custom')).sum()
-                    self.feature_data['custom_{}'.format(n_custom+1)] = \
+                    n_custom = self.feature_data.columns.map(
+                        lambda x: x.startswith('custom')).sum()
+                    self.feature_data['custom_{}'.format(n_custom + 1)] = \
                         self.feature_data.index.isin(feature_ids)
                 else:
                     raise ValueError(
@@ -359,7 +362,9 @@ class BaseData(object):
                               reducer=reducer, **reduce_kwargs)
         visualized = DecompositionViz(reduced.reduced_space,
                                       reduced.components_,
-                                      self,
+                                      reduced.explained_variance_ratio_,
+                                      featurewise=featurewise,
+                                      DataModel=self,
                                       label_to_color=label_to_color,
                                       label_to_marker=label_to_marker,
                                       groupby=groupby, order=order, color=color,
@@ -691,13 +696,16 @@ class BaseData(object):
         singles, pooled = self._subset_singles_and_pooled(sample_ids,
                                                           feature_ids=[
                                                               feature_id])
-        if not self.outliers.empty:
-            outliers = self._subset(self.outliers, feature_ids=[feature_id])
-        else:
-            outliers = None
+        outliers = None
+        try:
+            if not self.outliers.empty:
+                outliers = self._subset(self.outliers, feature_ids=[feature_id])
+        except AttributeError:
+            pass
 
         renamed = self.feature_renamer(feature_id)
-        title = '{}\n{}'.format(renamed, ':'.join(feature_id.split('@')[0].split(':')[:2]))
+        title = '{}\n{}'.format(renamed, ':'.join(
+            feature_id.split('@')[0].split(':')[:2]))
 
         violinplot(singles, groupby=phenotype_groupby, color=color,
                    pooled_data=pooled, order=phenotype_order,
