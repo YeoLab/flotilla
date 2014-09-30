@@ -6,7 +6,7 @@ import data_model
 from .external import make_study_datapackage
 import visualize
 
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 
 try:
     get_ipython().magic(u'matplotlib inline')
