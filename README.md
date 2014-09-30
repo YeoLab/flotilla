@@ -1,9 +1,14 @@
-[![Build Status](https://travis-ci.org/YeoLab/flotilla.svg?branch=master)](https://travis-ci.org/YeoLab/flotilla)[![Coverage Status](https://img.shields.io/coveralls/YeoLab/flotilla.svg)](https://coveralls.io/r/YeoLab/flotilla?branch=master)
+[![Build Status](https://travis-ci.org/YeoLab/flotilla.svg?branch=master)](https://travis-ci.org/YeoLab/flotilla)[![Coverage Status](https://img.shields.io/coveralls/YeoLab/flotilla.svg)](https://coveralls.io/r/YeoLab/flotilla?branch=master)[![License](https://pypip.in/license/flotilla/badge.svg)](https://pypi.python.org/pypi/flotilla/)[![Downloads](https://pypip.in/download/flotilla/badge.svg)](https://pypi.python.org/pypi/flotilla/)[![Latest Version](https://pypip.in/version/flotilla/badge.svg)](https://pypi.python.org/pypi/flotilla/)
 
 flotilla
 ========
 
 ![flotilla Logo](flotilla.png)
+
+![NumFOCUS logo](http://numfocus.org/theme/img/numfocus_logo.png)
+
+Proudly sponsored by a NumFOCUS John Hunter Technical Fellowship to Olga
+Botvinnik.
 
 Installation instructions
 =========================
