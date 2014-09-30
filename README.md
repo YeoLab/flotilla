@@ -5,6 +5,11 @@ flotilla
 
 ![flotilla Logo](flotilla.png)
 
+![NumFOCUS logo](http://numfocus.org/theme/img/numfocus_logo.png)
+
+Proudly sponsored by a NumFOCUS John Hunter Technical Fellowship to Olga
+Botvinnik.
+
 Installation instructions
 =========================
 
