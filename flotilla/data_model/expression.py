@@ -134,7 +134,7 @@ class ExpressionData(BaseData):
 
     @memoize
     def binify(self, data):
-        data = self._subset_and_standardize(data)
+        data = self._subset(data, require_min_samples=False)
         data = (data - data.min()) / (data.max() - data.min())
         # vmax = data.abs().max().max()
         # vmin = -vmax
