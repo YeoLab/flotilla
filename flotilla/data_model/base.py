@@ -66,6 +66,8 @@ class BaseData(object):
             self.data, self.outliers = self.drop_outliers(self.data,
                                                           outliers)
         self.feature_data = metadata
+        if self.feature_data is None:
+            self.feature_data = pd.DataFrame(index=self.data.columns)
         self.feature_rename_col = feature_rename_col
         self.min_samples = min_samples
         self.default_feature_sets = []
@@ -694,10 +696,12 @@ class BaseData(object):
         singles, pooled = self._subset_singles_and_pooled(sample_ids,
                                                           feature_ids=[
                                                               feature_id])
-        if not self.outliers.empty:
-            outliers = self._subset(self.outliers, feature_ids=[feature_id])
-        else:
-            outliers = None
+        outliers = None
+        try:
+            if not self.outliers.empty:
+                outliers = self._subset(self.outliers, feature_ids=[feature_id])
+        except AttributeError:
+            pass
 
         renamed = self.feature_renamer(feature_id)
         title = '{}\n{}'.format(renamed, ':'.join(
