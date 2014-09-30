@@ -66,6 +66,8 @@ class BaseData(object):
             self.data, self.outliers = self.drop_outliers(self.data,
                                                           outliers)
         self.feature_data = metadata
+        if self.feature_data is None:
+            self.feature_data = pd.DataFrame(index=self.data.columns)
         self.feature_rename_col = feature_rename_col
         self.min_samples = min_samples
         self.default_feature_sets = []
@@ -322,7 +324,7 @@ class BaseData(object):
                                       label_to_marker=None,
                                       groupby=None, order=None, color=None,
                                       reduce_kwargs=None,
-                                      title='',
+                                      title='', plot_violins=True,
                                       **plotting_kwargs):
         """Principal component-like analysis of measurements
 
@@ -343,6 +345,10 @@ class BaseData(object):
         reducer : flotilla.visualize.DecompositionViz
             Which decomposition object to use. Must be a flotilla object,
             as this has built-in compatibility with pandas.DataFrames.
+        plot_violins : bool
+            Whether or not to make the violinplots of the top features. This
+            can take a long time, so to save time you can turn it off if you
+            just want a quick look at the PCA.
 
 
         Returns
@@ -370,7 +376,8 @@ class BaseData(object):
                                       y_pc="pc_" + str(y_pc))
         # pca(show_vectors=True,
         #     **plotting_kwargs)
-        return visualized(title=title, **plotting_kwargs)
+        return visualized(title=title,
+                          plot_violins=plot_violins, **plotting_kwargs)
 
     def plot_pca(self, **kwargs):
         return self.plot_dimensionality_reduction(reducer=DataFramePCA,
@@ -720,7 +727,7 @@ class BaseData(object):
         """
 
         """
-        data = self._subset(self.data, sample_ids, feature_ids)
+        data = self._subset(self.data, sample_ids, feature_ids, require_min_samples=False)
         binned = self.binify(data)
         reduced = self.nmf.transform(binned.T)
         return reduced
@@ -766,9 +773,9 @@ class BaseData(object):
                     continue
             sns.despine()
 
-    def nmf_space_positions(self, groupby):
-        df = self.data.groupby(groupby).apply(
-            lambda x: self.binned_nmf_reduced(sample_ids=x.index))
+    def nmf_space_positions(self, groupby, min_samples_per_group=5):
+        data = self.data.groupby(groupby).filter(lambda x: len(x) >= min_samples_per_group)
+        df = data.groupby(groupby).apply(lambda x: self.binned_nmf_reduced(sample_ids=x.index))
         df = df.swaplevel(0, 1)
         df = df.sort_index()
         return df

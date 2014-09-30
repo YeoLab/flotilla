@@ -750,7 +750,7 @@ class Study(StudyFactory):
 
     def plot_pca(self, data_type='expression', x_pc=1, y_pc=2,
                  sample_subset=None, feature_subset=None,
-                 title='', featurewise=False,
+                 title='', featurewise=False, plot_violins=True,
                  show_point_labels=False, reduce_kwargs=None,
                  **kwargs):
         """Performs DataFramePCA on both expression and splicing study_data
@@ -774,14 +774,14 @@ class Study(StudyFactory):
             are used.
         title : str
             The title of the plot
+        plot_violins : bool
+            Whether or not to make the violinplots of the top features. This
+            can take a long time, so to save time you can turn it off if you
+            just want a quick look at the PCA.
         show_point_labels : bool
             Whether or not to show the labels of the points. If this is
             samplewise (default), then this labels the samples. If this is
             featurewise, then this labels the features.
-
-        Raises
-        ------
-
         """
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
         feature_ids = self.feature_subset_to_feature_ids(data_type,
@@ -809,7 +809,8 @@ class Study(StudyFactory):
                 label_to_marker=label_to_marker, groupby=groupby,
                 order=order, color=color,
                 featurewise=featurewise, show_point_labels=show_point_labels,
-                title=title, reduce_kwargs=reduce_kwargs, **kwargs)
+                title=title, reduce_kwargs=reduce_kwargs,
+                plot_violins=plot_violins, **kwargs)
         elif "splicing".startswith(data_type):
             reducer = self.splicing.plot_pca(
                 x_pc=x_pc, y_pc=y_pc, sample_ids=sample_ids,
@@ -818,7 +819,8 @@ class Study(StudyFactory):
                 label_to_marker=label_to_marker, groupby=groupby,
                 order=order, color=color,
                 featurewise=featurewise, show_point_labels=show_point_labels,
-                title=title, reduce_kwargs=reduce_kwargs, **kwargs)
+                title=title, reduce_kwargs=reduce_kwargs,
+                plot_violins=plot_violins, **kwargs)
         else:
             raise ValueError('The data type {} does not exist in this study'
                              .format(data_type))

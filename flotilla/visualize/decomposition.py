@@ -10,6 +10,7 @@ import seaborn as sns
 
 
 
+
 # from ..compute.decomposition import DataFrameNMF, DataFramePCA
 from .color import set1
 
@@ -139,7 +140,7 @@ class DecompositionViz(object):
             self.pc_loadings_labels[pc] = labels
             self.top_features.update(labels)
 
-    def __call__(self, ax=None, title='',
+    def __call__(self, ax=None, title='', plot_violins=True,
                  show_point_labels=False,
                  show_vectors=True,
                  show_vector_labels=True,
@@ -171,7 +172,8 @@ class DecompositionViz(object):
         sns.despine()
         self.reduced_fig.tight_layout()
 
-        if self.DataModel is not None and not self.featurewise:
+        if plot_violins and self.DataModel is not None and not self \
+                .featurewise:
             self.plot_violins()
         return self
 

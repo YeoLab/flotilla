@@ -29,6 +29,11 @@ class MetaData(BaseData):
         self.phenotype_to_color = phenotype_to_color
         self.pooled_col = pooled_col
 
+        phenotypes_not_in_order = set(self.unique_phenotypes).difference(set(self.phenotype_order))
+
+        if len(phenotypes_not_in_order) > 0:
+            self.phenotype_order.extend(phenotypes_not_in_order)
+
         if self.phenotype_col not in self.data:
             sys.stderr.write('The required column name "{}" does not exist in '
                              'the sample metadata. All samples will be '
@@ -41,12 +46,19 @@ class MetaData(BaseData):
 
         # Convert color strings to non-default matplotlib colors
         if self.phenotype_to_color is not None:
-            for phenotype, color in self.phenotype_to_color.iteritems():
+            colors = iter(sns.color_palette('Dark2', n_colors=self.n_phenotypes))
+            for phenotype in self.unique_phenotypes:
+                try:
+                    color = self.phenotype_to_color[phenotype]
+                except KeyError:
+                    sys.stderr.write('No color was assigned to the phenotype {}, '
+                                  'assigning a random color'.format(phenotype))
+                    color = mpl.colors.rgb2hex(colors.next())
                 try:
                     color = str_to_color[color]
-                    self.phenotype_to_color[phenotype] = color
                 except KeyError:
                     pass
+                self.phenotype_to_color[phenotype] = color
         else:
             sys.stderr.write('No phenotype to color mapping was provided, '
                              'so coming up with reasonable defaults\n')
@@ -57,12 +69,21 @@ class MetaData(BaseData):
 
         self.phenotype_to_marker = phenotype_to_marker
         if self.phenotype_to_marker is not None:
-            for phenoytpe, marker in self.phenotype_to_marker.iteritems():
+            for phenotype in self.unique_phenotypes:
+                try:
+                    marker = self.phenotype_to_marker[phenotype]
+                except KeyError:
+                    sys.stderr.write(
+                        '{} does not have marker style, '
+                        'falling back on "o" (circle)'.format(phenotype))
+                    marker = 'o'
                 if marker not in mpl.markers.MarkerStyle.filled_markers:
                     sys.stderr.write(
                         '{} is not a valid matplotlib marker style, '
-                        'falling back on "o" (circle)\n'.format(marker))
-                    self.phenotype_to_marker[phenotype] = 'o'
+                        'falling back on "o" (circle)'.format(marker))
+                    marker = 'o'
+                self.phenotype_to_marker[phenotype] = marker
+
         else:
             sys.stderr.write('No phenotype to marker (matplotlib plotting '
                              'symbol) was provided, so each phenotype will be '
