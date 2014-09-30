@@ -13,7 +13,18 @@ setup(
     license='',
     author='mlovci,olgabot',
     author_email='obotvinn@ucsd.edu',
-    description='Embark on a journey of data exploration.',
+    description='Embark on a journey of single-cell data exploration.',
     install_requires=open('requirements.txt').readlines(),
-    version=version
+    version=version,
+    classifiers=['License :: OSI Approved :: MIT License',
+                 'Topic :: Scientific/Engineering :: Bio-Informatics',
+                 'Topic :: Scientific/Engineering :: Visualization',
+                 'Topic :: Scientific/Engineering :: Medical Science Apps.,'
+                 'Programming Language :: Python :: 2.7',
+                 'Topic :: Multimedia :: Graphics',
+                 'Operating System :: POSIX',
+                 'Operating System :: Unix',
+                 'Operating System :: MacOS',
+                 'Operating System :: Microsoft :: Windows'
+    ]
 )
