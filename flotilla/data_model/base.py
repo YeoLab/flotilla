@@ -324,7 +324,7 @@ class BaseData(object):
                                       label_to_marker=None,
                                       groupby=None, order=None, color=None,
                                       reduce_kwargs=None,
-                                      title='',
+                                      title='', plot_violins=True,
                                       **plotting_kwargs):
         """Principal component-like analysis of measurements
 
@@ -345,6 +345,10 @@ class BaseData(object):
         reducer : flotilla.visualize.DecompositionViz
             Which decomposition object to use. Must be a flotilla object,
             as this has built-in compatibility with pandas.DataFrames.
+        plot_violins : bool
+            Whether or not to make the violinplots of the top features. This
+            can take a long time, so to save time you can turn it off if you
+            just want a quick look at the PCA.
 
 
         Returns
@@ -372,7 +376,8 @@ class BaseData(object):
                                       y_pc="pc_" + str(y_pc))
         # pca(show_vectors=True,
         #     **plotting_kwargs)
-        return visualized(title=title, **plotting_kwargs)
+        return visualized(title=title,
+                          plot_violins=plot_violins, **plotting_kwargs)
 
     def plot_pca(self, **kwargs):
         return self.plot_dimensionality_reduction(reducer=DataFramePCA,

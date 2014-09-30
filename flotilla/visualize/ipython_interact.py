@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 
 
 
+
 # from ..compute.predict import default_classifier
 from ..visualize.color import red
 from .network import NetworkerViz
@@ -92,7 +93,7 @@ class Interactive(object):
                         featurewise=False,
                         x_pc=(1, 10), y_pc=(1, 10),
                         show_point_labels=False,
-                        list_link = '',
+                        list_link='', plot_violins=True,
                         savefile='data/last.pca.pdf'):
 
         def do_interact(data_type='expression',
@@ -101,6 +102,7 @@ class Interactive(object):
                         featurewise=False,
                         list_link='',
                         x_pc=1, y_pc=2,
+                        plot_violins=True,
                         show_point_labels=False,
                         savefile='data/last.pca.pdf'):
 
@@ -130,16 +132,21 @@ class Interactive(object):
                                 featurewise=featurewise,
                                 x_pc=x_pc, y_pc=y_pc,
                                 show_point_labels=show_point_labels,
-                                feature_subset=feature_subset)
+                                feature_subset=feature_subset,
+                                plot_violins=plot_violins)
             if savefile != '':
                 # Make the directory if it's not already there
                 self.maybe_make_directory(savefile)
                 # f = plt.gcf()
                 pca.reduced_fig.savefig(savefile)
+
+                # add "violins" after the provided filename, but before the
+                # extension
                 violins_file = "_".join([".".join(savefile.split('.')[:-1]),
                                          'violins']) + "." + \
                                          savefile.split('.')[-1]
-                pca.violins_fig.savefig(violins_file)
+                if plot_violins:
+                    pca.violins_fig.savefig(violins_file)
 
             feature_subsets = list(
                 set(itertools.chain(*self.default_feature_subsets
@@ -160,7 +167,7 @@ class Interactive(object):
                  featurewise=featurewise,
                  x_pc=x_pc, y_pc=y_pc,
                  show_point_labels=show_point_labels,
-                 list_link=list_link,
+                 list_link=list_link, plot_violins=plot_violins,
                  savefile=savefile)
 
     @staticmethod
