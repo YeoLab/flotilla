@@ -23,12 +23,10 @@ def embark(study_name, load_species_data=True):
     data_package_url : str
         A URL to a datapackage.json file
 
-
     Returns
     -------
     study : flotilla.Study
         A biological study created from the data package specified
-
     """
     try:
         try:
