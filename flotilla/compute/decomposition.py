@@ -68,7 +68,7 @@ class DataFrameReducerBase(object):
         return self.transform(X)
 
 
-class DataFramePCA(DataFrameReducerBase, decomposition.RandomizedPCA):
+class DataFramePCA(DataFrameReducerBase, decomposition.PCA):
     pass
 
 
