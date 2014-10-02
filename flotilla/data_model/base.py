@@ -431,6 +431,7 @@ class BaseData(object):
 
         subset = data.ix[sample_ids]
         subset = subset.T.ix[feature_ids].T
+        subset = subset[subset >= threshold]
 
         if require_min_samples and not single_feature:
             subset = subset.ix[:, subset.count() >= self.min_samples]
