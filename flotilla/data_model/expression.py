@@ -9,14 +9,14 @@ import numpy as np
 from .base import BaseData
 from ..util import memoize
 
+EXPRESSION_THRESH = .1
 
 class ExpressionData(BaseData):
-    _expression_thresh = 0.1
 
     def __init__(self, data,
-                 metadata=None, expression_thresh=_expression_thresh,
+                 metadata=None, expression_thresh=EXPRESSION_THRESH,
                  feature_rename_col=None, outliers=None, log_base=None,
-                 pooled=None,
+                 pooled=None, plus_one=False,
                  technical_outliers=None, predictor_config_manager=None):
         """
         Parameters
@@ -42,6 +42,11 @@ class ExpressionData(BaseData):
             technical_outliers=technical_outliers)
         self.data_type = 'expression'
         self.expression_thresh = expression_thresh
+
+        if plus_one:
+            self.data += 1
+            self.expression_thresh += 1
+
         self.original_data = self.data
         self.data = self.data[self.data >= self.expression_thresh]
 
@@ -50,80 +55,12 @@ class ExpressionData(BaseData):
         self.log_base = log_base
 
         if self.log_base is not None:
-            self.log_data = np.log(self.data + .1) / np.log(self.log_base)
+            self.log_data = np.log(self.data) / np.log(self.log_base)
         else:
             self.log_data = self.data
 
         self.data = self.log_data
         self.feature_data = metadata
-
-        # This may not be totally kosher.... but original data is in
-        # self.original_data
-        if outliers is not None:
-            self.outliers = self.outliers[
-                self.outliers > self.expression_thresh]
-        if pooled is not None:
-            self.pooled = self.pooled[self.pooled > self.expression_thresh]
-        self.default_feature_sets.extend(self.feature_subsets.keys())
-
-    # def reduce(self, sample_ids=None, feature_ids=None,
-    #            featurewise=False, reducer=PCAViz, standardize=True,
-    #            title='', reducer_kwargs=None, color=None, groupby=None,
-    #            label_to_color=None, label_to_marker=None,
-    #            order=None, x_pc='pc_1', y_pc='pc_1'):
-    #     """Make and memoize a reduced dimensionality representation of data
-    #
-    #     Parameters
-    #     ----------
-    #     sample_ids : None or list of strings
-    #         If None, all sample ids will be used, else only the sample ids
-    #         specified
-    #     feature_ids : None or list of strings
-    #         If None, all features will be used, else only the features
-    #         specified
-    #     featurewise : bool
-    #         Whether or not to use the features as the "samples", e.g. if you
-    #         want to reduce the features in to "sample-space" instead of
-    #         reducing the samples into "feature-space"
-    #     standardize : bool
-    #         Whether or not to "whiten" (make all variables uncorrelated) and
-    #         mean-center via sklearn.preprocessing.StandardScaler
-    #     title : str
-    #         Title of the plot
-    #     reducer_kwargs : dict
-    #         Any additional arguments to send to the reducer
-    #
-    #     Returns
-    #     -------
-    #     reducer_object : flotilla.compute.reduce.ReducerViz
-    #         A ready-to-plot object containing the reduced space
-    #     """
-    #     return super(ExpressionData, self).reduce(
-    #         self.data, sample_ids=sample_ids, feature_ids=feature_ids,
-    #         featurewise=featurewise, reducer=reducer, standardize=standardize,
-    #         title=title, reducer_kwargs=reducer_kwargs, groupby=groupby,
-    #         label_to_color=label_to_color, label_to_marker=label_to_marker,
-    #         order=order, color=color, x_pc=x_pc, y_pc=y_pc)
-
-    def twoway(self, sample1, sample2, **kwargs):
-        from ..visualize.expression import TwoWayScatterViz
-
-        pCut = kwargs['p_value_cutoff']
-        this_name = "_".join([sample1, sample2, str(pCut)])
-        if this_name in self.localZ_dict:
-            vz = self.localZ_dict[this_name]
-        else:
-            df = self.data
-            df.rename_axis(self.feature_renamer(), 1)
-            vz = TwoWayScatterViz(sample1, sample2, df, **kwargs)
-            self.localZ_dict[this_name] = vz
-
-        return vz
-
-    def plot_twoway(self, sample1, sample2, **kwargs):
-        vz = self.twoway(sample1, sample2, **kwargs)
-        vz()
-        return vz
 
     def _calculate_linkage(self, sample_ids, feature_ids, metric='euclidean',
                            linkage_method='average', standardize=True):
