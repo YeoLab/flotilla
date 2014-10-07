@@ -203,3 +203,31 @@ def nmf_space_transitions(nmf_space_positions, feature_id,
     if ylabel is not None:
         ax.set_ylabel(ylabel)
         ax.set_yticks([])
+
+
+def simple_twoway_scatter(sample1, sample2, **kwargs):
+    """Plot a two-dimensional scatterplot between two samples
+
+    Parameters
+    ----------
+    sample1 : pandas.Series
+        Data to plot on the x-axis
+    sample2 : pandas.Series
+        Data to plot on the y-axis
+    Any other keyword arguments valid for seaborn.jointplot
+
+    Returns
+    -------
+    jointgrid : seaborn.axisgrid.JointGrid
+        Returns a JointGrid instance
+
+    See Also
+    -------
+    seaborn.jointplot
+
+    """
+    joint_kws = {} if 'joint_kws' not in kwargs else kwargs[
+        'joint_kws']
+    joint_kws.setdefault('alpha', 0.5)
+
+    return sns.jointplot(sample1, sample2, **kwargs)

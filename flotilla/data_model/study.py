@@ -13,8 +13,9 @@ import numpy as np
 import pandas as pd
 import semantic_version
 
-from .metadata import MetaData
-from .expression import ExpressionData, SpikeInData
+from .base import MINIMUM_SAMPLES
+from .metadata import MetaData, PHENOTYPE_COL, POOLED_COL
+from .expression import ExpressionData, SpikeInData, EXPRESSION_THRESH
 from .quality_control import MappingStatsData, MIN_READS
 from .splicing import SplicingData, FRACTION_DIFF_THRESH
 from ..compute.predict import PredictorConfigManager
@@ -176,6 +177,9 @@ class Study(StudyFactory):
                  splicing_data=None,
                  expression_feature_data=None,
                  expression_feature_rename_col='gene_name',
+                 expression_log_base=None,
+                 expression_thresh=EXPRESSION_THRESH,
+                 expression_plus_one=False,
                  splicing_feature_data=None,
                  splicing_feature_rename_col='gene_name',
                  mapping_stats_data=None,
@@ -186,14 +190,14 @@ class Study(StudyFactory):
                  spikein_feature_data=None,
                  drop_outliers=True, species=None,
                  gene_ontology_data=None,
-                 expression_log_base=None,
                  predictor_config_manager=None,
-                 metadata_pooled_col=None,
-                 metadata_phenotype_col='phenotype',
+                 metadata_pooled_col=POOLED_COL,
+                 metadata_phenotype_col=PHENOTYPE_COL,
                  phenotype_order=None,
                  phenotype_to_color=None,
                  phenotype_to_marker=None,
-                 license=None, title=None, sources=None):
+                 license=None, title=None, sources=None,
+                 minimum_samples=MINIMUM_SAMPLES):
         """Construct a biological study
 
         This class only accepts data, no filenames. All data must already
@@ -320,6 +324,7 @@ class Study(StudyFactory):
                     pooled = None
         else:
             pooled = None
+        self.pooled = pooled
 
         if mapping_stats_data is not None:
             self.mapping_stats = MappingStatsData(
@@ -336,8 +341,9 @@ class Study(StudyFactory):
             self.expression = ExpressionData(
                 expression_data,
                 expression_feature_data,
+                expression_thresh=expression_thresh,
                 feature_rename_col=expression_feature_rename_col,
-                outliers=outliers,
+                outliers=outliers, plus_one=expression_plus_one,
                 log_base=expression_log_base, pooled=pooled,
                 predictor_config_manager=self.predictor_config_manager,
                 technical_outliers=self.technical_outliers)
@@ -1198,6 +1204,35 @@ class Study(StudyFactory):
                 self.sample_id_to_phenotype, self.phenotype_transitions,
                 self.phenotype_order, self.phenotype_color_ordered,
                 self.phenotype_to_color, self.phenotype_to_marker)
+
+
+    def plot_twoway(self, sample1, sample2, data_type='expression', **kwargs):
+        """Plot a scatterplot of two samples' data
+
+        Parameters
+        ----------
+        sample1 : str
+            Name of the sample to plot on the x-axis
+        sample2 : str
+            Name of the sample to plot on the y-axis
+        data_type : "expression" | "splicing"
+            Type of data to plot. Default "expression"
+        Any other keyword arguments valid for seaborn.jointplot
+
+        Returns
+        -------
+        jointgrid : seaborn.axisgrid.JointGrid
+            Returns a JointGrid instance
+
+        See Also
+        -------
+        seaborn.jointplot
+
+        """
+        if data_type == 'expression':
+            return self.expression.plot_twoway(sample1, sample2, **kwargs)
+        elif data_type == 'splicing':
+            return self.splicing.plot_twoway(sample1, sample2, **kwargs)
 
 
     def save(self, name, flotilla_dir=FLOTILLA_DOWNLOAD_DIR):

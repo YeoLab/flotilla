@@ -16,7 +16,8 @@ from ..compute.decomposition import DataFramePCA, DataFrameNMF
 from ..compute.infotheory import binify
 from ..compute.predict import PredictorConfigManager, PredictorDataSetManager
 from ..visualize.decomposition import DecompositionViz
-from ..visualize.generic import violinplot, nmf_space_transitions
+from ..visualize.generic import violinplot, nmf_space_transitions, \
+    simple_twoway_scatter
 from ..visualize.network import NetworkerViz
 from ..visualize.predict import ClassifierViz
 from ..util import memoize, cached_property
@@ -58,13 +59,11 @@ class BaseData(object):
             good_samples = ~self.data.index.isin(technical_outliers)
             self.data = self.data.ix[good_samples]
 
-        if pooled is not None:
-            self.pooled = self.data.ix[pooled]
-            self.data = self.data.ix[~self.data.index.isin(pooled)]
+        self.pooled_samples = pooled if pooled is not None else []
+        self.outlier_samples = outliers if outliers is not None else []
+        self.single_samples = self.data.index[~self.data.index.isin(
+            self.pooled_samples)]
 
-        if outliers is not None:
-            self.data, self.outliers = self.drop_outliers(self.data,
-                                                          outliers)
         self.feature_data = metadata
         if self.feature_data is None:
             self.feature_data = pd.DataFrame(index=self.data.columns)
@@ -73,38 +72,14 @@ class BaseData(object):
         self.default_feature_sets = []
         self.data_type = None
 
-        # self.clusterer = Cluster()
-
         self.species = species
-
-        def shortener(renamer, x):
-            renamed = renamer(x)
-            if isinstance(renamed, float):
-                return renamed
-            elif len(renamed) > 20:
-                return '{}...'.format(renamed[:20])
-            else:
-                return renamed
 
         if self.feature_data is not None and self.feature_rename_col is not \
                 None:
-            def feature_renamer(x):
-                if x in self.feature_renamer_series.index:
-                    rename = self.feature_renamer_series[x]
-                    if isinstance(rename, pd.Series):
-                        return rename.values[0]
-                    # elif not isinstance(rename, float) and ':' in x:
-                    #     # Check for NaN and ":" (then it's a splicing event
-                    #     # name)
-                    #     return ":".join(x.split("@")[1].split(":")[:2])
-                    else:
-                        return rename
-                else:
-                    return x
-
-            self.feature_renamer = lambda x: shortener(feature_renamer, x)
+            self.feature_renamer = \
+                lambda x: self._shortener(x, renamer=self._feature_renamer)
         else:
-            self.feature_renamer = lambda x: shortener(lambda y: y, x)
+            self.feature_renamer = self._shortener
 
         if predictor_config_manager is None:
             self.predictor_config_manager = PredictorConfigManager()
@@ -115,6 +90,43 @@ class BaseData(object):
             self.predictor_config_manager)
 
         self.networks = NetworkerViz(self)
+
+    def _feature_renamer(self, x):
+        if x in self.feature_renamer_series.index:
+            rename = self.feature_renamer_series[x]
+            if isinstance(rename, pd.Series):
+                return rename.values[0]
+            else:
+                return rename
+        else:
+            return x
+
+    @staticmethod
+    def _shortener(x, renamer=None):
+        if renamer is not None:
+            renamed = renamer(x)
+        else:
+            renamed = x
+
+        if isinstance(renamed, float):
+            return renamed
+        elif len(renamed) > 20:
+            return '{}...'.format(renamed[:20])
+        else:
+            return renamed
+
+    @property
+    def singles(self):
+        return self.data.ix[self.single_samples]
+
+    @property
+    def pooled(self):
+        return self.data.ix[self.pooled_samples]
+
+    @property
+    def outliers(self):
+        return self.data.ix[self.outlier_samples]
+
 
     @property
     def feature_renamer_series(self):
@@ -831,3 +843,29 @@ class BaseData(object):
                               phenotype_to_color=phenotype_to_color,
                               phenotype_to_marker=phenotype_to_marker,
                               nmf_space=True)
+
+
+    def plot_twoway(self, sample1, sample2, **kwargs):
+        """
+
+        Parameters
+        ----------
+        sample1 : str
+            Name of the sample to plot on the x-axis
+        sample2 : str
+            Name of the sample to plot on the y-axis
+        Any other keyword arguments valid for seaborn.jointplot
+
+        Returns
+        -------
+        jointgrid : seaborn.axisgrid.JointGrid
+            Returns a JointGrid instance
+
+        See Also
+        -------
+        seaborn.jointplot
+
+        """
+        x = self.data.ix[sample1]
+        y = self.data.ix[sample2]
+        return simple_twoway_scatter(x, y, **kwargs)

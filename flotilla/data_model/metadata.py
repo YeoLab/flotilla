@@ -1,24 +1,23 @@
-import itertools
 import sys
 
 import matplotlib as mpl
 import seaborn as sns
 
 from .base import BaseData
-from ..visualize.color import str_to_color, set1
+from ..visualize.color import str_to_color
 
 
+POOLED_COL = 'pooled'
+PHENOTYPE_COL = 'phenotype'
 
 # Any informational data goes here
 
 class MetaData(BaseData):
-    _default_phenotype_col = 'phenotype'
-    _default_pooled_col = 'pooled'
 
     def __init__(self, data, phenotype_order=None, phenotype_to_color=None,
                  phenotype_to_marker=None,
-                 phenotype_col=_default_phenotype_col,
-                 pooled_col=None,
+                 phenotype_col=PHENOTYPE_COL,
+                 pooled_col=POOLED_COL,
                  predictor_config_manager=None):
         super(MetaData, self).__init__(data, outliers=None,
                                        predictor_config_manager=predictor_config_manager)
