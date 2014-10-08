@@ -52,7 +52,7 @@ endif
 
 # Copy contents from $(BUILDDIR) to $(DEPLOY_DIR)/$(DEPLOY_HTML_DIR) directory
 ifndef DEPLOY_HTML_DIR
-DEPLOY_HTML_DIR = doc
+DEPLOY_HTML_DIR =
 endif
 
 
@@ -90,7 +90,7 @@ endif
 #if REPO_URL_GITHUB was NOT defined by travis-ci
 ifndef REPO_URL_GITHUB
 # Configure your right github project repo
-# REPO_URL       = git@github.com:teracy-official/sphinx-deployment.git
+REPO_URL       = git@github.com:YeoLab/flotilla.git
 endif
 
 ## -- Heroku Deployment Config -- ##
@@ -176,7 +176,7 @@ prepare_gh_pages_deployment:
 deploy_gh_pages: prepare_gh_pages_deployment
 	@echo "Deploying on github pages now..."
 	@cd $(DEPLOY_DIR); git add -A; git commit -m "docs updated at `date -u`";\
-		git push origin $(DEPLOY_BRANCH) --quiet
+		git push --set-upstream origin $(DEPLOY_BRANCH) --quiet
 	@echo "Github Pages deploy was completed at `date -u`"
 
 prepare_heroku_deployment:
