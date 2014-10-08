@@ -1206,7 +1206,8 @@ class Study(StudyFactory):
                 self.phenotype_to_color, self.phenotype_to_marker)
 
 
-    def plot_twoway(self, sample1, sample2, data_type='expression', **kwargs):
+    def plot_two_samples(self, sample1, sample2, data_type='expression',
+                         **kwargs):
         """Plot a scatterplot of two samples' data
 
         Parameters
@@ -1230,10 +1231,34 @@ class Study(StudyFactory):
 
         """
         if data_type == 'expression':
-            return self.expression.plot_twoway(sample1, sample2, **kwargs)
+            return self.expression.plot_two_samples(sample1, sample2, **kwargs)
         elif data_type == 'splicing':
-            return self.splicing.plot_twoway(sample1, sample2, **kwargs)
+            return self.splicing.plot_two_samples(sample1, sample2, **kwargs)
 
+    def plot_two_features(self, feature1, feature2, data_type='expression',
+                          **kwargs):
+        """Make a scatterplot of two features' data
+
+        Parameters
+        ----------
+        feature1 : str
+            Name of the feature to plot on the x-axis. If you have a
+            feature_data dataframe for this data type, will attempt to map
+            the common name, e.g. "RBFOX2" back to the crazy name,
+            e.g. "ENSG00000100320"
+        feature2 : str
+            Name of the feature to plot on the y-axis. If you have a
+            feature_data dataframe for this data type, will attempt to map
+            the common name, e.g. "RBFOX2" back to the crazy name,
+            e.g. "ENSG00000100320"
+
+        Returns
+        -------
+
+
+        Raises
+        ------
+        """
 
     def save(self, name, flotilla_dir=FLOTILLA_DOWNLOAD_DIR):
 

@@ -226,8 +226,20 @@ def simple_twoway_scatter(sample1, sample2, **kwargs):
     seaborn.jointplot
 
     """
-    joint_kws = {} if 'joint_kws' not in kwargs else kwargs[
-        'joint_kws']
+    joint_kws = kwargs.pop('joint_kws', {})
     joint_kws.setdefault('alpha', 0.5)
 
-    return sns.jointplot(sample1, sample2, **kwargs)
+    marginal_kws = kwargs.pop('marginal_kws', {})
+    vmin = min(sample1.min(), sample2.min())
+    vmax = max(sample1.max(), sample2.max())
+    bins = np.linspace(vmin, vmax, 50)
+    marginal_kws.setdefault('bins', bins)
+
+    jointgrid = sns.jointplot(sample1, sample2, joint_kws=joint_kws,
+                              marginal_kws=marginal_kws, **kwargs)
+    xmin, xmax, ymin, ymax = jointgrid.ax_joint.axis()
+
+    xmin = max(xmin, sample1.min() - .1)
+    ymin = max(ymin, sample2.min() - .1)
+    jointgrid.ax_joint.set_xlim(xmin, xmax)
+    jointgrid.ax_joint.set_ylim(ymin, ymax)

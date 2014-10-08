@@ -6,17 +6,16 @@ import sys
 
 import numpy as np
 
-from .base import BaseData
+from .base import BaseData, MINIMUM_SAMPLES
 from ..util import memoize
 
 EXPRESSION_THRESH = .1
 
 class ExpressionData(BaseData):
-
     def __init__(self, data,
                  metadata=None, expression_thresh=EXPRESSION_THRESH,
                  feature_rename_col=None, outliers=None, log_base=None,
-                 pooled=None, plus_one=False,
+                 pooled=None, plus_one=False, min_samples=MINIMUM_SAMPLES,
                  technical_outliers=None, predictor_config_manager=None):
         """
         Parameters
@@ -37,7 +36,7 @@ class ExpressionData(BaseData):
         super(ExpressionData, self).__init__(
             data, metadata,
             feature_rename_col=feature_rename_col,
-            outliers=outliers, pooled=pooled,
+            outliers=outliers, pooled=pooled, min_samples=min_samples,
             predictor_config_manager=predictor_config_manager,
             technical_outliers=technical_outliers)
         self.data_type = 'expression'
@@ -46,21 +45,38 @@ class ExpressionData(BaseData):
         if plus_one:
             self.data += 1
             self.expression_thresh += 1
-
-        self.original_data = self.data
-        self.data = self.data[self.data >= self.expression_thresh]
+        # self.original_data = self.data
+        # import pdb; pdb.set_trace()
+        # self.data = self._threshold(data, expression_thresh)
 
         sys.stderr.write("done initializing expression\n")
 
         self.log_base = log_base
 
         if self.log_base is not None:
-            self.log_data = np.log(self.data) / np.log(self.log_base)
-        else:
-            self.log_data = self.data
+            self.data = np.log(self.data) / np.log(self.log_base)
 
-        self.data = self.log_data
         self.feature_data = metadata
+
+    @staticmethod
+    def _threshold(data, thresh, min_samples=None):
+        data = data[data >= thresh]
+        data = data.dropna(how='all', axis=1).dropna(how='all', axis=0)
+        if min_samples is not None:
+            data = data.dropna(thresh=min_samples, axis=1)
+        return data
+
+    @property
+    def data_thresholded(self):
+        return self._threshold(self.data)
+
+    @property
+    def singles_thresholded(self):
+        return self._threshold(self.singles)
+
+    @property
+    def pooled_thresholded(self):
+        return self._threshold(self.pooled)
 
     def _calculate_linkage(self, sample_ids, feature_ids, metric='euclidean',
                            linkage_method='average', standardize=True):
@@ -79,6 +95,12 @@ class ExpressionData(BaseData):
         bins = np.arange(0, 1.1, .1)
         # print 'bins:', bins
         return super(ExpressionData, self).binify(data, bins)
+
+        # def plot_two_samples(self, sample1, sample2, **kwargs):
+        # thresholded = kwargs.pop('thresholded', True)
+        #     super(ExpressionData, self).plot_two_samples(sample1, sample2,
+        #                                                  thresholded=thresholded,
+        #                                                  **kwargs)
 
 
 class SpikeInData(ExpressionData):

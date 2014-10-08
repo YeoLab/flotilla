@@ -53,11 +53,13 @@ class BaseData(object):
             e.g. gene expression values such as TPM, RPKM or FPKM, alternative
             splicing "Percent-spliced-in" (PSI) values, or RNA editing scores.
         """
+        self.original_data = data
         self.data = data
 
         if technical_outliers is not None:
             good_samples = ~self.data.index.isin(technical_outliers)
             self.data = self.data.ix[good_samples]
+        self.data = self.data.dropna(thresh=min_samples, axis=1)
 
         self.pooled_samples = pooled if pooled is not None else []
         self.outlier_samples = outliers if outliers is not None else []
@@ -845,7 +847,7 @@ class BaseData(object):
                               nmf_space=True)
 
 
-    def plot_twoway(self, sample1, sample2, **kwargs):
+    def plot_two_samples(self, sample1, sample2, **kwargs):
         """
 
         Parameters
