@@ -109,10 +109,11 @@ RSYNC_DELETE_OPT = --delete
 endif
 
 init_gh_pages:
+    echo "DEPLOY_DIR is" $(DEPLOY_DIR)
 	rm -rf $(DEPLOY_DIR)
 	mkdir -p $(DEPLOY_DIR)
 	cd $(DEPLOY_DIR); git init;\
-		echo 'sphinx docs comming soon...' > index.html;\
+		echo 'sphinx docs coming soon...' > index.html;\
 		touch .nojekyll;\
 		git add .; git commit -m "sphinx docs init";\
 		git branch -m $(DEPLOY_BRANCH_GITHUB);\
@@ -128,7 +129,7 @@ setup_gh_pages: init_gh_pages
 	cd $(DEPLOY_DIR);\
 		git fetch origin;\
 		git reset --hard origin/$(DEPLOY_BRANCH_GITHUB);\
-		git branch --track $(DEPLOY_BRANCH_GITHUB) origin/$(DEPLOY_BRANCH_GITHUB)
+		git branch --set-upstream-to origin/$(DEPLOY_BRANCH_GITHUB)
 	echo "Now you can deploy to Github Pages with 'make generate' and then 'make deploy_gh_pages'"
 
 init_heroku:
@@ -159,7 +160,7 @@ prepare_rsync_deployment:
 	@echo "Preparing rsync deployment..."
 	@mkdir -p $(DEPLOY_DIR)/$(DEPLOY_HTML_DIR)
 	@echo "Copying files from '$(BUILDDIR)/html/.' to '$(DEPLOY_DIR)/$(DEPLOY_HTML_DIR)'"
-	@cp -r $(BUILDDIR)/html/. $(DEPLOY_DIR)/$(DEPLOY_HTML_DIR)
+	@cp -r $(BUILDDIR)/html/. $(DEPLOY_DIR)/
 
 deploy_rsync: prepare_rsync_deployment
 	@echo "Deploying on rsync now..."
@@ -169,9 +170,9 @@ prepare_gh_pages_deployment:
 	echo "Preparing gh_pages deployment..."
 	echo "Pulling any updates from Github Pages..."
 	cd $(DEPLOY_DIR); git pull;
-	mkdir -p $(DEPLOY_DIR)/$(DEPLOY_HTML_DIR)
-	echo "Copying files from '$(BUILDDIR)/html/.' to '$(DEPLOY_DIR)/$(DEPLOY_HTML_DIR)'"
-	cp -r $(BUILDDIR)/html/. $(DEPLOY_DIR)/$(DEPLOY_HTML_DIR)
+	mkdir -p $(DEPLOY_DIR)/
+	echo "Copying files from '$(BUILDDIR)/html/.' to '$(DEPLOY_DIR)/'"
+	cp -r $(BUILDDIR)/html/. $(DEPLOY_DIR)/
 
 deploy_gh_pages: prepare_gh_pages_deployment
 	echo "Deploying on github pages now..."
