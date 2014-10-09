@@ -49,9 +49,9 @@ after_script:
   # Make sure README.rst is always synced with README.md
   - pandoc -f markdown README.md -t rst > README.rst
   - cd doc
-  - make -d setup_gh_pages
-  - make -d generate
-  - make -d deploy
+  - make setup_gh_pages
+  - make generate
+  - make deploy
 
 after_success:
   coveralls
