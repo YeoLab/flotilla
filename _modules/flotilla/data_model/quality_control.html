@@ -9,7 +9,7 @@
     
     <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../../_static/bootswatch-3.1.0/flatly/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootswatch-3.2.0/flatly/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     
     <script type="text/javascript">
@@ -27,7 +27,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../../../_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
     <link rel="top" title="flotilla 0.1.0 documentation" href="../../../index.html" />
     <link rel="up" title="flotilla" href="../../flotilla.html" />
@@ -69,16 +69,7 @@
      href="../../../index.html">Site <b class="caret"></b></a>
   <ul class="dropdown-menu globaltoc"
       role="menu"
-      aria-labelledby="dLabelGlobalToc"><ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../flotilla.html">flotilla package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#subpackages">Subpackages</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#module-flotilla.external">flotilla.external module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#flotilla-setup-module">flotilla.setup module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#module-flotilla.util">flotilla.util module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#module-flotilla">Module contents</a></li>
-</ul>
-</li>
+      aria-labelledby="dLabelGlobalToc"><ul class="simple">
 </ul>
 </ul>
 </li>
@@ -129,7 +120,10 @@
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseData</span>
 
 
-<div class="viewcode-block" id="MappingStatsData"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.quality_control.MappingStatsData">[docs]</a><span class="k">class</span> <span class="nc">MappingStatsData</span><span class="p">(</span><span class="n">BaseData</span><span class="p">):</span>
+<span class="n">MIN_READS</span> <span class="o">=</span> <span class="mf">5e5</span>
+
+
+<div class="viewcode-block" id="MappingStatsData"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.quality_control.MappingStatsData">[docs]</a><span class="k">class</span> <span class="nc">MappingStatsData</span><span class="p">(</span><span class="n">BaseData</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Constructor for mapping statistics data from STAR</span>
 
 <span class="sd">    Attributes</span>
@@ -141,7 +135,8 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">number_mapped_col</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">number_mapped_col</span><span class="p">,</span> <span class="n">min_reads</span><span class="o">=</span><span class="n">MIN_READS</span><span class="p">,</span>
+                 <span class="n">predictor_config_manager</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Constructor for MappingStatsData</span>
 
 <span class="sd">        Parameters</span>
@@ -156,21 +151,26 @@
 <span class="sd">        ------</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">MappingStatsData</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MappingStatsData</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">,</span>
+                                               <span class="n">predictor_config_manager</span><span class="o">=</span><span class="n">predictor_config_manager</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">number_mapped_col</span> <span class="o">=</span> <span class="n">number_mapped_col</span>
-
-        <span class="k">pass</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_reads</span> <span class="o">=</span> <span class="n">min_reads</span>
 
     <span class="nd">@property</span>
-<div class="viewcode-block" id="MappingStatsData.mapped_reads"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.quality_control.MappingStatsData.mapped_reads">[docs]</a>    <span class="k">def</span> <span class="nf">mapped_reads</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MappingStatsData.too_few_mapped"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.quality_control.MappingStatsData.too_few_mapped">[docs]</a>    <span class="k">def</span> <span class="nf">too_few_mapped</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_mapped</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">number_mapped</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_reads</span><span class="p">]</span>
+</div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="MappingStatsData.number_mapped"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.quality_control.MappingStatsData.number_mapped">[docs]</a>    <span class="k">def</span> <span class="nf">number_mapped</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">number_mapped_col</span><span class="p">]</span></div></div>
 </pre></div>
 
     </div>
       
   </div>
-</div>  <div class="container">
-	
+</div>
+<div class="container">
+    
 <footer class="footer">
   <div class="container">
     <p class="pull-right">
@@ -179,13 +179,19 @@
     </p>
     <p>
         &copy; Copyright 2014, Olga Botvinnik, Michael Lovci, Patrick Liu, Yan Song.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
     </p>
   </div>
 </footer>
-	Funded by <a href="http://numfocus.org/">NumFOCUS</a> <a href="http://numfocus.org/pages/john_hunter_fellowship_2014.html">John Hunter Technology Fellowship</a> to <a href="http://olgabotvinnik.com/">Olga Botvinnik</a>.<br/>
-	Partially funded by <a href="http://www.nih.gov/">NIH</a> grants NS075449 and HG004659 and <a href="http://www.cirm.ca.gov/">CIRM</a> grants RB4-06045 and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene Yeo</a>. <br/>
+    Funded by <a href="http://numfocus.org/">NumFOCUS</a> <a
+        href="http://numfocus.org/pages/john_hunter_fellowship_2014.html">John
+    Hunter Technology Fellowship</a> to <a href="http://olgabotvinnik.com/">Olga
+    Botvinnik</a>.<br/>
+    Partially funded by <a href="http://www.nih.gov/">NIH</a> grants NS075449
+    and HG004659 and <a href="http://www.cirm.ca.gov/">CIRM</a> grants RB4-06045
+    and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene
+    Yeo</a>. <br/>
 
-
+    
   </body>
 </html>

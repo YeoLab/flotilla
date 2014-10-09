@@ -9,7 +9,7 @@
     
     <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/bootswatch-3.1.0/flatly/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootswatch-3.2.0/flatly/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     
     <script type="text/javascript">
@@ -27,7 +27,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../../_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
     <link rel="top" title="flotilla 0.1.0 documentation" href="../../index.html" />
     <link rel="up" title="flotilla" href="../flotilla.html" />
@@ -69,16 +69,7 @@
      href="../../index.html">Site <b class="caret"></b></a>
   <ul class="dropdown-menu globaltoc"
       role="menu"
-      aria-labelledby="dLabelGlobalToc"><ul>
-<li class="toctree-l1"><a class="reference internal" href="../../flotilla.html">flotilla package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../flotilla.html#subpackages">Subpackages</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../flotilla.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../flotilla.html#module-flotilla.external">flotilla.external module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../flotilla.html#flotilla-setup-module">flotilla.setup module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../flotilla.html#module-flotilla.util">flotilla.util module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../flotilla.html#module-flotilla">Module contents</a></li>
-</ul>
-</li>
+      aria-labelledby="dLabelGlobalToc"><ul class="simple">
 </ul>
 </ul>
 </li>
@@ -134,10 +125,11 @@
 
 <span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">from</span> <span class="nn">.compute.generic</span> <span class="kn">import</span> <span class="n">get_boosting_regressor</span><span class="p">,</span> <span class="n">get_regressor</span><span class="p">,</span> <span class="n">get_dcor</span><span class="p">,</span> \
-    <span class="n">get_robust_values</span><span class="p">,</span> <span class="n">get_slope</span><span class="p">,</span> <span class="n">apply_dcor</span><span class="p">,</span> <span class="n">apply_calc_robust</span><span class="p">,</span> \
-    <span class="n">apply_calc_slope</span><span class="p">,</span> <span class="n">apply_calc_rs</span><span class="p">,</span> <span class="n">np</span><span class="p">,</span> <span class="n">stats</span><span class="p">,</span> <span class="n">TimeoutError</span><span class="p">,</span> <span class="n">pd</span>
-<span class="kn">import</span> <span class="nn">pymongo</span>
+
+<span class="kn">from</span> <span class="nn">.compute.generic</span> <span class="kn">import</span> <span class="n">get_boosting_regressor</span><span class="p">,</span> <span class="n">get_regressor</span><span class="p">,</span> \
+    <span class="n">apply_dcor</span><span class="p">,</span> <span class="n">apply_calc_robust</span><span class="p">,</span> <span class="n">apply_calc_slope</span><span class="p">,</span> <span class="n">apply_calc_rs</span><span class="p">,</span> <span class="n">np</span><span class="p">,</span> \
+    <span class="n">stats</span><span class="p">,</span> <span class="n">TimeoutError</span><span class="p">,</span> <span class="n">pd</span>
+
 
 <span class="n">mongoHost</span> <span class="o">=</span> <span class="s">&quot;sauron.ucsd.edu&quot;</span>
 <span class="n">mongoPort</span> <span class="o">=</span> <span class="mi">8838</span>
@@ -150,8 +142,7 @@
 <span class="sd">    generator sets started to True before returning an event</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">go_on</span> <span class="o">=</span> <span class="bp">True</span>
-    <span class="k">while</span> <span class="n">go_on</span> <span class="o">==</span> <span class="bp">True</span><span class="p">:</span>
-
+    <span class="k">while</span> <span class="n">go_on</span><span class="p">:</span>
         <span class="n">event</span> <span class="o">=</span> <span class="n">mongodb</span><span class="p">[</span><span class="s">&#39;list&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s">&quot;started&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">})</span>
 
         <span class="k">if</span> <span class="n">event</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -188,7 +179,6 @@
         <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">join</span><span class="o">=</span><span class="s">&#39;inner&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">basic</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;eventId&#39;</span><span class="p">:</span> <span class="n">E</span><span class="p">,</span> <span class="s">&#39;_id&#39;</span><span class="p">:</span> <span class="n">splice_event</span><span class="p">[</span><span class="s">&#39;_id&#39;</span><span class="p">]}</span>
 
-        <span class="c">#objects = basic.copy()</span>
         <span class="n">series</span> <span class="o">=</span> <span class="n">basic</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">lists</span> <span class="o">=</span> <span class="n">basic</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">values</span> <span class="o">=</span> <span class="n">basic</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -202,9 +192,9 @@
                           <span class="ow">in</span> <span class="p">[</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">]]</span>
 
             <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">let</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-                <span class="n">XX</span><span class="p">,</span> <span class="n">yy</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">ix</span><span class="p">[[</span><span class="n">j</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">i</span><span class="o">.</span><span class="n">index</span> <span class="k">if</span> <span class="n">j</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">let</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">or</span> \
-                                                      <span class="n">j</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">let</span><span class="p">[</span><span class="mi">1</span><span class="p">])]]</span> <span class="k">for</span>
-                          <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">]]</span>
+                <span class="n">XX</span><span class="p">,</span> <span class="n">yy</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">ix</span><span class="p">[[</span><span class="n">j</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">i</span><span class="o">.</span><span class="n">index</span> <span class="k">if</span>
+                                <span class="n">j</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">let</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">or</span>
+                                <span class="n">j</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">let</span><span class="p">[</span><span class="mi">1</span><span class="p">])]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">]]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">assert</span> <span class="n">let</span> <span class="o">==</span> <span class="s">&quot;all&quot;</span>
                 <span class="n">XX</span><span class="p">,</span> <span class="n">yy</span> <span class="o">=</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span>
@@ -217,16 +207,18 @@
 
             <span class="n">series</span><span class="p">[</span><span class="s">&#39;yy_&#39;</span> <span class="o">+</span> <span class="n">let</span><span class="p">]</span> <span class="o">=</span> <span class="n">yy</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
 
-            <span class="n">regressor</span><span class="p">,</span> <span class="n">oob_score_dist</span> <span class="o">=</span> <span class="n">get_regressor</span><span class="p">(</span><span class="n">XX</span><span class="p">,</span> <span class="n">yy</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
-            <span class="n">series</span><span class="p">[</span>
-                <span class="s">&#39;importances_&#39;</span> <span class="o">+</span> <span class="n">let</span><span class="p">]</span> <span class="o">=</span> <span class="n">regressor</span><span class="o">.</span><span class="n">feature_importances</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
+            <span class="n">regressor</span><span class="p">,</span> <span class="n">oob_score_dist</span> <span class="o">=</span> <span class="n">get_regressor</span><span class="p">(</span><span class="n">XX</span><span class="p">,</span> <span class="n">yy</span><span class="p">,</span>
+                                                      <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+            <span class="n">series</span><span class="p">[</span><span class="s">&#39;importances_&#39;</span> <span class="o">+</span> <span class="n">let</span><span class="p">]</span> <span class="o">=</span> \
+                <span class="n">regressor</span><span class="o">.</span><span class="n">feature_importances</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
             <span class="n">values</span><span class="p">[</span><span class="s">&#39;clf_randomstate_&#39;</span> <span class="o">+</span> <span class="n">let</span><span class="p">]</span> <span class="o">=</span> <span class="n">regressor</span><span class="o">.</span><span class="n">random_state</span>
 
-            <span class="n">boosting_regressor</span> <span class="o">=</span> <span class="n">get_boosting_regressor</span><span class="p">(</span><span class="n">XX</span><span class="p">,</span> <span class="n">yy</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
-            <span class="n">values</span><span class="p">[</span>
-                <span class="s">&#39;boosting_clf_randomstate_&#39;</span> <span class="o">+</span> <span class="n">let</span><span class="p">]</span> <span class="o">=</span> <span class="n">boosting_regressor</span><span class="o">.</span><span class="n">random_state</span>
-            <span class="n">series</span><span class="p">[</span>
-                <span class="s">&#39;boosting_importances_&#39;</span> <span class="o">+</span> <span class="n">let</span><span class="p">]</span> <span class="o">=</span> <span class="n">regressor</span><span class="o">.</span><span class="n">feature_importances</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
+            <span class="n">boosting_regressor</span> <span class="o">=</span> <span class="n">get_boosting_regressor</span><span class="p">(</span><span class="n">XX</span><span class="p">,</span> <span class="n">yy</span><span class="p">,</span>
+                                                        <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+            <span class="n">values</span><span class="p">[</span><span class="s">&#39;boosting_clf_randomstate_&#39;</span> <span class="o">+</span> <span class="n">let</span><span class="p">]</span> <span class="o">=</span> \
+                <span class="n">boosting_regressor</span><span class="o">.</span><span class="n">random_state</span>
+            <span class="n">series</span><span class="p">[</span><span class="s">&#39;boosting_importances_&#39;</span> <span class="o">+</span> <span class="n">let</span><span class="p">]</span> <span class="o">=</span> \
+                <span class="n">regressor</span><span class="o">.</span><span class="n">feature_importances</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
 
             <span class="n">dcor_DC</span><span class="p">,</span> <span class="n">dcor_DR</span><span class="p">,</span> <span class="n">dcor_DVX</span><span class="p">,</span> <span class="n">dcor_DVY</span> <span class="o">=</span> <span class="n">apply_dcor</span><span class="p">(</span><span class="n">XX</span><span class="p">,</span> <span class="n">yy</span><span class="p">)</span>
             <span class="n">series</span><span class="p">[</span><span class="s">&#39;dcor_DC_&#39;</span> <span class="o">+</span> <span class="n">let</span><span class="p">]</span> <span class="o">=</span> <span class="n">dcor_DC</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
@@ -238,9 +230,10 @@
 
             <span class="n">values</span><span class="p">[</span><span class="s">&#39;score_&#39;</span> <span class="o">+</span> <span class="n">let</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">regressor</span><span class="o">.</span><span class="n">oob_score_</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-                    <span class="n">oob_score_dist</span><span class="p">))</span> <span class="o">&gt;</span> <span class="o">.</span><span class="mo">05</span><span class="p">:</span>  <span class="c">#arbitrary... this is actually a pretty bad score.</span>
-                <span class="c">#don&#39;t waste time on random calculation if the real calcuations are crappy</span>
+            <span class="c"># arbitrary... this is actually a pretty bad score.</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">oob_score_dist</span><span class="p">))</span> <span class="o">&gt;</span> <span class="o">.</span><span class="mo">05</span><span class="p">:</span>
+                <span class="c"># don&#39;t waste time on random calculation if the real</span>
+                <span class="c"># calcuations are crappy</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nRand</span><span class="p">):</span>
                     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
                         <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;shuffle</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
@@ -259,8 +252,8 @@
                     <span class="n">r</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">apply_calc_rs</span><span class="p">(</span><span class="n">XX</span><span class="p">,</span> <span class="n">yy</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
                 <span class="k">except</span> <span class="n">TimeoutError</span><span class="p">:</span>
                     <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
-                        <span class="s">&quot;r caculation with method </span><span class="si">%s</span><span class="s"> timed out on event </span><span class="si">%s</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span>
-                        <span class="n">method_name</span><span class="p">,</span> <span class="n">E</span><span class="p">))</span>
+                        <span class="s">&quot;r caculation with method {} timed out on &quot;</span>
+                        <span class="s">&quot;event {}</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">method_name</span><span class="p">,</span> <span class="n">E</span><span class="p">))</span>
                     <span class="k">continue</span>
 
                 <span class="n">series</span><span class="p">[</span><span class="n">method_name</span> <span class="o">+</span> <span class="s">&quot;_corr_r_&quot;</span> <span class="o">+</span> <span class="n">let</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
@@ -270,8 +263,8 @@
                 <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> finished</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">let</span><span class="p">)</span>
 
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">robust_intercept</span><span class="p">,</span> <span class="n">robust_slope</span><span class="p">,</span> <span class="n">robust_t</span><span class="p">,</span> <span class="n">robust_p</span> <span class="o">=</span> <span class="n">apply_calc_robust</span><span class="p">(</span>
-                    <span class="n">XX</span><span class="p">,</span> <span class="n">yy</span><span class="p">)</span>
+                <span class="n">robust_intercept</span><span class="p">,</span> <span class="n">robust_slope</span><span class="p">,</span> <span class="n">robust_t</span><span class="p">,</span> <span class="n">robust_p</span> <span class="o">=</span> \
+                    <span class="n">apply_calc_robust</span><span class="p">(</span><span class="n">XX</span><span class="p">,</span> <span class="n">yy</span><span class="p">)</span>
                 <span class="n">series</span><span class="p">[</span><span class="s">&quot;robust_intercept_&quot;</span> <span class="o">+</span> <span class="n">let</span><span class="p">]</span> <span class="o">=</span> <span class="n">robust_intercept</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
                 <span class="n">series</span><span class="p">[</span><span class="s">&quot;robust_slope_&quot;</span> <span class="o">+</span> <span class="n">let</span><span class="p">]</span> <span class="o">=</span> <span class="n">robust_slope</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
                 <span class="n">series</span><span class="p">[</span><span class="s">&quot;robust_t_&quot;</span> <span class="o">+</span> <span class="n">let</span><span class="p">]</span> <span class="o">=</span> <span class="n">robust_t</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
@@ -301,7 +294,7 @@
 </div>
 <div class="viewcode-block" id="get_mongo_db"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.database.get_mongo_db">[docs]</a><span class="k">def</span> <span class="nf">get_mongo_db</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">mongoHost</span><span class="o">=</span><span class="n">mongoHost</span><span class="p">,</span> <span class="n">mongoPort</span><span class="o">=</span><span class="n">mongoPort</span><span class="p">):</span>
     <span class="kn">from</span> <span class="nn">pymongo</span> <span class="kn">import</span> <span class="n">MongoClient</span>
-    <span class="c">#ssh = subprocess.Popen([&quot;ssh&quot;, &quot;-L&quot;, (&quot;%s:localhost:%s&quot; %(mongoPort, mongoPort)), mongoHost, &quot;-N&quot;])</span>
+
     <span class="n">c</span> <span class="o">=</span> <span class="n">MongoClient</span><span class="p">(</span><span class="n">mongoHost</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">mongoPort</span><span class="p">)</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
         <span class="s">&#39;connected to database on </span><span class="si">%s</span><span class="s">:</span><span class="si">%d</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">mongoHost</span><span class="p">,</span> <span class="n">mongoPort</span><span class="p">))</span>
@@ -310,14 +303,15 @@
 </div>
 <div class="viewcode-block" id="load_event_list"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.database.load_event_list">[docs]</a><span class="k">def</span> <span class="nf">load_event_list</span><span class="p">(</span><span class="n">mongo</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">target_type</span><span class="o">=</span><span class="s">&quot;SE&quot;</span><span class="p">):</span>
     <span class="n">mongo</span><span class="p">[</span><span class="s">&#39;list&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">drop</span><span class="p">()</span>
-    <span class="n">_</span> <span class="o">=</span> <span class="p">[</span><span class="n">mongo</span><span class="p">[</span><span class="s">&#39;list&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">save</span><span class="p">({</span><span class="s">&quot;eventId&quot;</span><span class="p">:</span> <span class="n">ev</span><span class="p">,</span> <span class="s">&quot;started&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span> <span class="s">&quot;finished&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
-                             <span class="s">&#39;splice_type&#39;</span><span class="p">:</span> <span class="n">target_type</span><span class="p">})</span> <span class="k">for</span> <span class="n">ev</span> <span class="ow">in</span>
-         <span class="n">target</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">ev</span> <span class="ow">in</span> <span class="n">target</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+        <span class="n">mongo</span><span class="p">[</span><span class="s">&#39;list&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">save</span><span class="p">({</span><span class="s">&quot;eventId&quot;</span><span class="p">:</span> <span class="n">ev</span><span class="p">,</span>
+                            <span class="s">&quot;started&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+                            <span class="s">&quot;finished&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span> <span class="s">&#39;splice_type&#39;</span><span class="p">:</span> <span class="n">target_type</span><span class="p">})</span>
 
 </div>
 <div class="viewcode-block" id="reset_event_list"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.database.reset_event_list">[docs]</a><span class="k">def</span> <span class="nf">reset_event_list</span><span class="p">(</span><span class="n">mongodb</span><span class="p">):</span>
-    <span class="n">mongodb</span><span class="p">[</span><span class="s">&#39;list&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({},</span> <span class="p">{</span><span class="s">&#39;$set&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;started&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span> <span class="s">&#39;finished&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">}},</span>
-                             <span class="n">multi</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;$set&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;started&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span> <span class="s">&#39;finished&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">}}</span>
+    <span class="n">mongodb</span><span class="p">[</span><span class="s">&#39;list&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({},</span> <span class="n">value</span><span class="p">,</span> <span class="n">multi</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
 </div>
 <div class="viewcode-block" id="reset_event_data"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.database.reset_event_data">[docs]</a><span class="k">def</span> <span class="nf">reset_event_data</span><span class="p">(</span><span class="n">mongodb</span><span class="p">):</span>
@@ -327,42 +321,23 @@
 
 </div>
 <div class="viewcode-block" id="poll"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.database.poll">[docs]</a><span class="k">def</span> <span class="nf">poll</span><span class="p">(</span><span class="n">mongodb</span><span class="p">):</span>
-    <span class="c">#must be refactored for new &quot;letters&quot;, i.e. celltypes</span>
-
     <span class="n">list_size</span> <span class="o">=</span> <span class="n">mongodb</span><span class="p">[</span><span class="s">&#39;list&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
     <span class="n">started_size</span> <span class="o">=</span> <span class="n">mongodb</span><span class="p">[</span><span class="s">&#39;list&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s">&#39;started&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">})</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
     <span class="n">finished_size</span> <span class="o">=</span> <span class="n">mongodb</span><span class="p">[</span><span class="s">&#39;list&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s">&#39;finished&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">})</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
 
     <span class="n">total_count</span> <span class="o">=</span> <span class="n">mongodb</span><span class="p">[</span><span class="s">&#39;values&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
-    <span class="c">#     all_regressor_count = mongodb[&#39;values&#39;].find({&#39;score_all&#39;:{&#39;$exists&#39;:True}}).count()</span>
-    <span class="c">#     N_regressor_count = mongodb[&#39;values&#39;].find({&#39;score_N&#39;:{&#39;$exists&#39;:True}}).count()</span>
-    <span class="c">#     M_regressor_count = mongodb[&#39;values&#39;].find({&#39;score_M&#39;:{&#39;$exists&#39;:True}}).count()</span>
-    <span class="c">#     P_regressor_count = mongodb[&#39;values&#39;].find({&#39;score_P&#39;:{&#39;$exists&#39;:True}}).count()</span>
-    <span class="c">#     S_regressor_count = mongodb[&#39;values&#39;].find({&#39;score_S&#39;:{&#39;$exists&#39;:True}}).count()</span>
-    <span class="c">#     PN_regressor_count = mongodb[&#39;values&#39;].find({&#39;score_PN&#39;:{&#39;$exists&#39;:True}}).count()</span>
-    <span class="c">#     NM_regressor_count = mongodb[&#39;values&#39;].find({&#39;score_NM&#39;:{&#39;$exists&#39;:True}}).count()</span>
-    <span class="c">#     MS_regressor_count = mongodb[&#39;values&#39;].find({&#39;score_MS&#39;:{&#39;$exists&#39;:True}}).count()</span>
 
     <span class="k">print</span> <span class="s">&quot;</span><span class="si">%d</span><span class="s"> events in whole transcriptome&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">list_size</span><span class="p">)</span>
     <span class="k">print</span> <span class="s">&quot;</span><span class="si">%d</span><span class="s"> (</span><span class="si">%.2f</span><span class="s"> </span><span class="si">%%</span><span class="s">) events started&quot;</span> <span class="o">%</span> <span class="p">(</span>
-    <span class="n">started_size</span><span class="p">,</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">started_size</span> <span class="o">/</span> <span class="n">list_size</span><span class="p">)</span>
+        <span class="n">started_size</span><span class="p">,</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">started_size</span> <span class="o">/</span> <span class="n">list_size</span><span class="p">)</span>
     <span class="k">print</span> <span class="s">&quot;</span><span class="si">%d</span><span class="s"> (</span><span class="si">%.2f</span><span class="s"> </span><span class="si">%%</span><span class="s">) events finished&quot;</span> <span class="o">%</span> <span class="p">(</span>
-    <span class="n">finished_size</span><span class="p">,</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">finished_size</span> <span class="o">/</span> <span class="n">list_size</span><span class="p">)</span>
+        <span class="n">finished_size</span><span class="p">,</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">finished_size</span> <span class="o">/</span> <span class="n">list_size</span><span class="p">)</span>
     <span class="k">print</span> <span class="s">&quot;</span><span class="si">%d</span><span class="s"> events examined&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">total_count</span><span class="p">)</span>
-
-
-<span class="c">#     print &quot;%d (%.2f%%) with P regressors&quot; %(P_regressor_count, 100*P_regressor_count/total_count)</span>
-<span class="c">#     print &quot;%d (%.2f%%) with N regressors&quot; %(N_regressor_count, 100*N_regressor_count/total_count)</span>
-<span class="c">#     print &quot;%d (%.2f%%) with M regressors&quot; %(M_regressor_count, 100*M_regressor_count/total_count)</span>
-<span class="c">#     print &quot;%d (%.2f%%) with S regressors&quot; %(S_regressor_count, 100*S_regressor_count/total_count)</span>
-<span class="c">#     print &quot;%d (%.2f%%) with PN regressors&quot; %(PN_regressor_count, 100*PN_regressor_count/total_count)</span>
-<span class="c">#     print &quot;%d (%.2f%%) with NM regressors&quot; %(NM_regressor_count, 100*NM_regressor_count/total_count)</span>
-<span class="c">#     print &quot;%d (%.2f%%) with MS regressors&quot; %(MS_regressor_count, 100*MS_regressor_count/total_count)</span>
-<span class="c">#     print &quot;%d (%.2f%%) with combined regressors&quot; %(all_regressor_count, 100*all_regressor_count/total_count)</span>
 
 </div>
 <div class="viewcode-block" id="begin"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.database.begin">[docs]</a><span class="k">def</span> <span class="nf">begin</span><span class="p">(</span>
-        <span class="n">flotilla_project</span><span class="o">=</span><span class="s">&quot;http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22&quot;</span><span class="p">):</span>
+        <span class="n">flotilla_project</span><span class="o">=</span><span class="s">&quot;http://sauron.ucsd.edu/flotilla_projects/&quot;</span>
+                         <span class="s">&quot;neural_diff_chr22&quot;</span><span class="p">):</span>
     <span class="kn">import</span> <span class="nn">flotilla</span>
 
     <span class="n">study</span> <span class="o">=</span> <span class="n">flotilla</span><span class="o">.</span><span class="n">embark</span><span class="p">(</span><span class="n">flotilla_project</span><span class="p">)</span>
@@ -385,8 +360,9 @@
     </div>
       
   </div>
-</div>  <div class="container">
-	
+</div>
+<div class="container">
+    
 <footer class="footer">
   <div class="container">
     <p class="pull-right">
@@ -395,13 +371,19 @@
     </p>
     <p>
         &copy; Copyright 2014, Olga Botvinnik, Michael Lovci, Patrick Liu, Yan Song.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
     </p>
   </div>
 </footer>
-	Funded by <a href="http://numfocus.org/">NumFOCUS</a> <a href="http://numfocus.org/pages/john_hunter_fellowship_2014.html">John Hunter Technology Fellowship</a> to <a href="http://olgabotvinnik.com/">Olga Botvinnik</a>.<br/>
-	Partially funded by <a href="http://www.nih.gov/">NIH</a> grants NS075449 and HG004659 and <a href="http://www.cirm.ca.gov/">CIRM</a> grants RB4-06045 and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene Yeo</a>. <br/>
+    Funded by <a href="http://numfocus.org/">NumFOCUS</a> <a
+        href="http://numfocus.org/pages/john_hunter_fellowship_2014.html">John
+    Hunter Technology Fellowship</a> to <a href="http://olgabotvinnik.com/">Olga
+    Botvinnik</a>.<br/>
+    Partially funded by <a href="http://www.nih.gov/">NIH</a> grants NS075449
+    and HG004659 and <a href="http://www.cirm.ca.gov/">CIRM</a> grants RB4-06045
+    and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene
+    Yeo</a>. <br/>
 
-
+    
   </body>
 </html>

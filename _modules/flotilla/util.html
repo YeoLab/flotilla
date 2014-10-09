@@ -9,7 +9,7 @@
     
     <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/bootswatch-3.1.0/flatly/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootswatch-3.2.0/flatly/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     
     <script type="text/javascript">
@@ -27,7 +27,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../../_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
     <link rel="top" title="flotilla 0.1.0 documentation" href="../../index.html" />
     <link rel="up" title="flotilla" href="../flotilla.html" />
@@ -69,16 +69,7 @@
      href="../../index.html">Site <b class="caret"></b></a>
   <ul class="dropdown-menu globaltoc"
       role="menu"
-      aria-labelledby="dLabelGlobalToc"><ul>
-<li class="toctree-l1"><a class="reference internal" href="../../flotilla.html">flotilla package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../flotilla.html#subpackages">Subpackages</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../flotilla.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../flotilla.html#module-flotilla.external">flotilla.external module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../flotilla.html#flotilla-setup-module">flotilla.setup module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../flotilla.html#module-flotilla.util">flotilla.util module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../flotilla.html#module-flotilla">Module contents</a></li>
-</ul>
-</li>
+      aria-labelledby="dLabelGlobalToc"><ul class="simple">
 </ul>
 </ul>
 </li>
@@ -135,6 +126,7 @@
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
 <span class="kn">import</span> <span class="nn">errno</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">signal</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>
@@ -142,7 +134,7 @@
 <span class="kn">import</span> <span class="nn">time</span>
 
 
-<div class="viewcode-block" id="TimeoutError"><a class="viewcode-back" href="../../flotilla.html#flotilla.util.TimeoutError">[docs]</a><span class="k">class</span> <span class="nc">TimeoutError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<div class="viewcode-block" id="TimeoutError"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.util.TimeoutError">[docs]</a><span class="k">class</span> <span class="nc">TimeoutError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    From:</span>
 <span class="sd">    http://stackoverflow.com/questions/2281850/timeout-function-if-it-takes-too-long-to-finish</span>
@@ -150,7 +142,7 @@
     <span class="k">pass</span>
 
 </div>
-<div class="viewcode-block" id="timeout"><a class="viewcode-back" href="../../flotilla.html#flotilla.util.timeout">[docs]</a><span class="k">def</span> <span class="nf">timeout</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">error_message</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">strerror</span><span class="p">(</span><span class="n">errno</span><span class="o">.</span><span class="n">ETIME</span><span class="p">)):</span>
+<div class="viewcode-block" id="timeout"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.util.timeout">[docs]</a><span class="k">def</span> <span class="nf">timeout</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">error_message</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">strerror</span><span class="p">(</span><span class="n">errno</span><span class="o">.</span><span class="n">ETIME</span><span class="p">)):</span>
     <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
         <span class="k">def</span> <span class="nf">_handle_timeout</span><span class="p">(</span><span class="n">signum</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">TimeoutError</span><span class="p">(</span><span class="n">error_message</span><span class="p">)</span>
@@ -169,7 +161,7 @@
     <span class="k">return</span> <span class="n">decorator</span>
 
 </div>
-<div class="viewcode-block" id="serve_ipython"><a class="viewcode-back" href="../../flotilla.html#flotilla.util.serve_ipython">[docs]</a><span class="k">def</span> <span class="nf">serve_ipython</span><span class="p">():</span>
+<div class="viewcode-block" id="serve_ipython"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.util.serve_ipython">[docs]</a><span class="k">def</span> <span class="nf">serve_ipython</span><span class="p">():</span>
     <span class="k">try</span><span class="p">:</span>
 
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
@@ -188,19 +180,19 @@
         <span class="n">c</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
 
 </div>
-<div class="viewcode-block" id="dict_to_str"><a class="viewcode-back" href="../../flotilla.html#flotilla.util.dict_to_str">[docs]</a><span class="k">def</span> <span class="nf">dict_to_str</span><span class="p">(</span><span class="n">dic</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;join dictionary study_data into a string with that study_data&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="s">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">k</span> <span class="o">+</span> <span class="s">&quot;:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="n">dic</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+<div class="viewcode-block" id="dict_to_str"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.util.dict_to_str">[docs]</a><span class="k">def</span> <span class="nf">dict_to_str</span><span class="p">(</span><span class="n">dic</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;join dictionary study_data into a string with that study_data&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">k</span> <span class="o">+</span> <span class="s">&quot;:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="n">dic</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
 
 </div>
-<div class="viewcode-block" id="install_development_package"><a class="viewcode-back" href="../../flotilla.html#flotilla.util.install_development_package">[docs]</a><span class="k">def</span> <span class="nf">install_development_package</span><span class="p">(</span><span class="n">package_location</span><span class="p">):</span>
+<div class="viewcode-block" id="install_development_package"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.util.install_development_package">[docs]</a><span class="k">def</span> <span class="nf">install_development_package</span><span class="p">(</span><span class="n">package_location</span><span class="p">):</span>
     <span class="n">original_location</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
     <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">package_location</span><span class="p">)</span>
     <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="s">&#39;pip install -e </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">package_location</span><span class="p">],</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">original_location</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="memoize"><a class="viewcode-back" href="../../flotilla.html#flotilla.util.memoize">[docs]</a><span class="k">def</span> <span class="nf">memoize</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+<div class="viewcode-block" id="memoize"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.util.memoize">[docs]</a><span class="k">def</span> <span class="nf">memoize</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    &#39;memoize&#39; aka remember the output from a function and return that,</span>
 <span class="sd">    rather than recalculating</span>
@@ -222,10 +214,11 @@
         <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cache</span><span class="p">:</span>
             <span class="n">cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
     <span class="k">return</span> <span class="n">memoizer</span>
 
 </div>
-<div class="viewcode-block" id="cached_property"><a class="viewcode-back" href="../../flotilla.html#flotilla.util.cached_property">[docs]</a><span class="k">class</span> <span class="nc">cached_property</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="cached_property"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.util.cached_property">[docs]</a><span class="k">class</span> <span class="nc">cached_property</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Decorator for read-only properties evaluated only once within TTL period.</span>
 
 <span class="sd">    It can be used to created a cached property like this::</span>
@@ -259,6 +252,7 @@
 <span class="sd">    https://wiki.python.org/moin/PythonDecoratorLibrary#Cached_Properties</span>
 
 <span class="sd">    &#39;&#39;&#39;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ttl</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ttl</span> <span class="o">=</span> <span class="n">ttl</span>
 
@@ -285,7 +279,7 @@
         <span class="k">return</span> <span class="n">value</span>
 
 </div>
-<div class="viewcode-block" id="as_numpy"><a class="viewcode-back" href="../../flotilla.html#flotilla.util.as_numpy">[docs]</a><span class="k">def</span> <span class="nf">as_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="as_numpy"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.util.as_numpy">[docs]</a><span class="k">def</span> <span class="nf">as_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Given either a pandas dataframe or a numpy array, always return a</span>
 <span class="sd">    numpy array.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -294,14 +288,25 @@
         <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">values</span>
     <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
         <span class="c"># Numpy array</span>
-        <span class="k">return</span> <span class="n">x</span></div>
+        <span class="k">return</span> <span class="n">x</span>
+
+</div>
+<div class="viewcode-block" id="natural_sort"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.util.natural_sort">[docs]</a><span class="k">def</span> <span class="nf">natural_sort</span><span class="p">(</span><span class="n">l</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    From</span>
+<span class="sd">    http://stackoverflow.com/a/4836734</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">convert</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">text</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="k">if</span> <span class="n">text</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span> <span class="k">else</span> <span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="n">alphanum_key</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">key</span><span class="p">:</span> <span class="p">[</span><span class="n">convert</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;([0-9]+)&#39;</span><span class="p">,</span> <span class="n">key</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">alphanum_key</span><span class="p">)</span></div>
 </pre></div>
 
     </div>
       
   </div>
-</div>  <div class="container">
-	
+</div>
+<div class="container">
+    
 <footer class="footer">
   <div class="container">
     <p class="pull-right">
@@ -310,13 +315,19 @@
     </p>
     <p>
         &copy; Copyright 2014, Olga Botvinnik, Michael Lovci, Patrick Liu, Yan Song.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
     </p>
   </div>
 </footer>
-	Funded by <a href="http://numfocus.org/">NumFOCUS</a> <a href="http://numfocus.org/pages/john_hunter_fellowship_2014.html">John Hunter Technology Fellowship</a> to <a href="http://olgabotvinnik.com/">Olga Botvinnik</a>.<br/>
-	Partially funded by <a href="http://www.nih.gov/">NIH</a> grants NS075449 and HG004659 and <a href="http://www.cirm.ca.gov/">CIRM</a> grants RB4-06045 and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene Yeo</a>. <br/>
+    Funded by <a href="http://numfocus.org/">NumFOCUS</a> <a
+        href="http://numfocus.org/pages/john_hunter_fellowship_2014.html">John
+    Hunter Technology Fellowship</a> to <a href="http://olgabotvinnik.com/">Olga
+    Botvinnik</a>.<br/>
+    Partially funded by <a href="http://www.nih.gov/">NIH</a> grants NS075449
+    and HG004659 and <a href="http://www.cirm.ca.gov/">CIRM</a> grants RB4-06045
+    and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene
+    Yeo</a>. <br/>
 
-
+    
   </body>
 </html>

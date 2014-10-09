@@ -9,7 +9,7 @@
     
     <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../../_static/bootswatch-3.1.0/flatly/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootswatch-3.2.0/flatly/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     
     <script type="text/javascript">
@@ -27,7 +27,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../../../_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
     <link rel="top" title="flotilla 0.1.0 documentation" href="../../../index.html" />
     <link rel="up" title="flotilla" href="../../flotilla.html" />
@@ -69,16 +69,7 @@
      href="../../../index.html">Site <b class="caret"></b></a>
   <ul class="dropdown-menu globaltoc"
       role="menu"
-      aria-labelledby="dLabelGlobalToc"><ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../flotilla.html">flotilla package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#subpackages">Subpackages</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#module-flotilla.external">flotilla.external module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#flotilla-setup-module">flotilla.setup module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#module-flotilla.util">flotilla.util module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#module-flotilla">Module contents</a></li>
-</ul>
-</li>
+      aria-labelledby="dLabelGlobalToc"><ul class="simple">
 </ul>
 </ul>
 </li>
@@ -133,11 +124,11 @@
 <span class="kn">from</span> <span class="nn">..compute.expression</span> <span class="kn">import</span> <span class="n">TwoWayGeneComparisonLocal</span>
 
 
-<div class="viewcode-block" id="TwoWayScatterViz"><a class="viewcode-back" href="../../../flotilla.visualize.html#flotilla.visualize.expression.TwoWayScatterViz">[docs]</a><span class="k">class</span> <span class="nc">TwoWayScatterViz</span><span class="p">(</span><span class="n">TwoWayGeneComparisonLocal</span><span class="p">):</span>
+<div class="viewcode-block" id="TwoWayScatterViz"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.expression.TwoWayScatterViz">[docs]</a><span class="k">class</span> <span class="nc">TwoWayScatterViz</span><span class="p">(</span><span class="n">TwoWayGeneComparisonLocal</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-<div class="viewcode-block" id="TwoWayScatterViz.plot"><a class="viewcode-back" href="../../../flotilla.visualize.html#flotilla.visualize.expression.TwoWayScatterViz.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="TwoWayScatterViz.plot"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.expression.TwoWayScatterViz.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
 
         <span class="n">co</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c"># colors container</span>
         <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_</span><span class="o">.</span><span class="n">get</span><span class="p">([</span><span class="s">&quot;pValue&quot;</span><span class="p">,</span> <span class="s">&quot;log2_ratio&quot;</span><span class="p">,</span> <span class="s">&quot;isSig&quot;</span><span class="p">])</span>
@@ -173,8 +164,9 @@
     </div>
       
   </div>
-</div>  <div class="container">
-	
+</div>
+<div class="container">
+    
 <footer class="footer">
   <div class="container">
     <p class="pull-right">
@@ -183,13 +175,19 @@
     </p>
     <p>
         &copy; Copyright 2014, Olga Botvinnik, Michael Lovci, Patrick Liu, Yan Song.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
     </p>
   </div>
 </footer>
-	Funded by <a href="http://numfocus.org/">NumFOCUS</a> <a href="http://numfocus.org/pages/john_hunter_fellowship_2014.html">John Hunter Technology Fellowship</a> to <a href="http://olgabotvinnik.com/">Olga Botvinnik</a>.<br/>
-	Partially funded by <a href="http://www.nih.gov/">NIH</a> grants NS075449 and HG004659 and <a href="http://www.cirm.ca.gov/">CIRM</a> grants RB4-06045 and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene Yeo</a>. <br/>
+    Funded by <a href="http://numfocus.org/">NumFOCUS</a> <a
+        href="http://numfocus.org/pages/john_hunter_fellowship_2014.html">John
+    Hunter Technology Fellowship</a> to <a href="http://olgabotvinnik.com/">Olga
+    Botvinnik</a>.<br/>
+    Partially funded by <a href="http://www.nih.gov/">NIH</a> grants NS075449
+    and HG004659 and <a href="http://www.cirm.ca.gov/">CIRM</a> grants RB4-06045
+    and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene
+    Yeo</a>. <br/>
 
-
+    
   </body>
 </html>

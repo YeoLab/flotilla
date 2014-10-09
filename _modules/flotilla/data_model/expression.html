@@ -9,7 +9,7 @@
     
     <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../../_static/bootswatch-3.1.0/flatly/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootswatch-3.2.0/flatly/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     
     <script type="text/javascript">
@@ -27,7 +27,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../../../_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
     <link rel="top" title="flotilla 0.1.0 documentation" href="../../../index.html" />
     <link rel="up" title="flotilla" href="../../flotilla.html" />
@@ -69,16 +69,7 @@
      href="../../../index.html">Site <b class="caret"></b></a>
   <ul class="dropdown-menu globaltoc"
       role="menu"
-      aria-labelledby="dLabelGlobalToc"><ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../flotilla.html">flotilla package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#subpackages">Subpackages</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#module-flotilla.external">flotilla.external module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#flotilla-setup-module">flotilla.setup module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#module-flotilla.util">flotilla.util module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#module-flotilla">Module contents</a></li>
-</ul>
-</li>
+      aria-labelledby="dLabelGlobalToc"><ul class="simple">
 </ul>
 </ul>
 </li>
@@ -130,22 +121,22 @@
 <span class="sd">Data types related to gene expression, e.g. from RNA-Seq or microarrays.</span>
 <span class="sd">Included SpikeIn data.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseData</span>
-<span class="kn">from</span> <span class="nn">..visualize.decomposition</span> <span class="kn">import</span> <span class="n">PCAViz</span>
-<span class="kn">from</span> <span class="nn">..visualize.predict</span> <span class="kn">import</span> <span class="n">ClassifierViz</span>
 <span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">memoize</span>
 
 
-<div class="viewcode-block" id="ExpressionData"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.expression.ExpressionData">[docs]</a><span class="k">class</span> <span class="nc">ExpressionData</span><span class="p">(</span><span class="n">BaseData</span><span class="p">):</span>
+<div class="viewcode-block" id="ExpressionData"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.expression.ExpressionData">[docs]</a><span class="k">class</span> <span class="nc">ExpressionData</span><span class="p">(</span><span class="n">BaseData</span><span class="p">):</span>
     <span class="n">_expression_thresh</span> <span class="o">=</span> <span class="mf">0.1</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span>
                  <span class="n">metadata</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">expression_thresh</span><span class="o">=</span><span class="n">_expression_thresh</span><span class="p">,</span>
                  <span class="n">feature_rename_col</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">outliers</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">log_base</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                 <span class="n">pooled</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+                 <span class="n">pooled</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">technical_outliers</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">predictor_config_manager</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -160,150 +151,80 @@
 
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;initializing expression</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+
         <span class="nb">super</span><span class="p">(</span><span class="n">ExpressionData</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span>
             <span class="n">data</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span>
             <span class="n">feature_rename_col</span><span class="o">=</span><span class="n">feature_rename_col</span><span class="p">,</span>
-            <span class="n">outliers</span><span class="o">=</span><span class="n">outliers</span><span class="p">,</span> <span class="n">pooled</span><span class="o">=</span><span class="n">pooled</span><span class="p">)</span>
+            <span class="n">outliers</span><span class="o">=</span><span class="n">outliers</span><span class="p">,</span> <span class="n">pooled</span><span class="o">=</span><span class="n">pooled</span><span class="p">,</span>
+            <span class="n">predictor_config_manager</span><span class="o">=</span><span class="n">predictor_config_manager</span><span class="p">,</span>
+            <span class="n">technical_outliers</span><span class="o">=</span><span class="n">technical_outliers</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_type</span> <span class="o">=</span> <span class="s">&#39;expression&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expression_thresh</span> <span class="o">=</span> <span class="n">expression_thresh</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">original_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">expression_thresh</span><span class="p">]</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_var_cut</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">var</span><span class="p">()</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">data</span><span class="o">.</span><span class="n">var</span><span class="p">()</span> \
-            <span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
-        <span class="n">rpkm_variant</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span>
-             <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">var</span><span class="p">()</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var_cut</span><span class="p">)</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()</span> <span class="k">if</span> <span class="n">j</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">feature_sets</span><span class="p">[</span><span class="s">&#39;variant&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">rpkm_variant</span><span class="p">,</span>
-                                                 <span class="n">index</span><span class="o">=</span><span class="n">rpkm_variant</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;done initializing expression</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">log_base</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">+</span> <span class="o">.</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">log_base</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_base</span> <span class="o">=</span> <span class="n">log_base</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_base</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">+</span> <span class="o">.</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_base</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">feature_data</span> <span class="o">=</span> <span class="n">metadata</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sparse_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">log_data</span> <span class="o">&gt;</span> <span class="n">expression_thresh</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">default_feature_sets</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_sets</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
-    <span class="nd">@memoize</span>
-<div class="viewcode-block" id="ExpressionData.reduce"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.expression.ExpressionData.reduce">[docs]</a>    <span class="k">def</span> <span class="nf">reduce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">feature_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-               <span class="n">featurewise</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-               <span class="n">reducer</span><span class="o">=</span><span class="n">PCAViz</span><span class="p">,</span>
-               <span class="n">standardize</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-               <span class="n">title</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span>
-               <span class="n">reducer_kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Make and memoize a reduced dimensionality representation of data</span>
+        <span class="c"># This may not be totally kosher.... but original data is in</span>
+        <span class="c"># self.original_data</span>
+        <span class="k">if</span> <span class="n">outliers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">outliers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">outliers</span><span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">outliers</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">expression_thresh</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">pooled</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pooled</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pooled</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">pooled</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">expression_thresh</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_feature_sets</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_subsets</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        sample_ids : None or list of strings</span>
-<span class="sd">            If None, all sample ids will be used, else only the sample ids</span>
-<span class="sd">            specified</span>
-<span class="sd">        feature_ids : None or list of strings</span>
-<span class="sd">            If None, all features will be used, else only the features</span>
-<span class="sd">            specified</span>
-<span class="sd">        featurewise : bool</span>
-<span class="sd">            Whether or not to use the features as the &quot;samples&quot;, e.g. if you</span>
-<span class="sd">            want to reduce the features in to &quot;sample-space&quot; instead of</span>
-<span class="sd">            reducing the samples into &quot;feature-space&quot;</span>
-<span class="sd">        standardize : bool</span>
-<span class="sd">            Whether or not to &quot;whiten&quot; (make all variables uncorrelated) and</span>
-<span class="sd">            mean-center via sklearn.preprocessing.StandardScaler</span>
-<span class="sd">        title : str</span>
-<span class="sd">            Title of the plot</span>
-<span class="sd">        reducer_kwargs : dict</span>
-<span class="sd">            Any additional arguments to send to the reducer</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        reducer_object : flotilla.compute.reduce.ReducerViz</span>
-<span class="sd">            A ready-to-plot object containing the reduced space</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">reducer_kwargs</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">reducer_kwargs</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">reducer_kwargs</span>
-        <span class="n">reducer_kwargs</span><span class="p">[</span><span class="s">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">title</span>
-
-        <span class="n">subset</span><span class="p">,</span> <span class="n">means</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subset_and_standardize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sparse_data</span><span class="p">,</span>
-                                                     <span class="n">sample_ids</span><span class="p">,</span> <span class="n">feature_ids</span><span class="p">,</span>
-                                                     <span class="n">standardize</span><span class="p">)</span>
-
-        <span class="c"># compute reduction</span>
-        <span class="k">if</span> <span class="n">featurewise</span><span class="p">:</span>
-            <span class="n">subset</span> <span class="o">=</span> <span class="n">subset</span><span class="o">.</span><span class="n">T</span>
-        <span class="n">reducer_object</span> <span class="o">=</span> <span class="n">reducer</span><span class="p">(</span><span class="n">subset</span><span class="p">,</span> <span class="o">**</span><span class="n">reducer_kwargs</span><span class="p">)</span>
-        <span class="c"># always the mean of input features. i.e. featurewise doesn&#39;t change</span>
-        <span class="c"># this.</span>
-        <span class="n">reducer_object</span><span class="o">.</span><span class="n">means</span> <span class="o">=</span> <span class="n">means</span>
-
-        <span class="c"># add mean gene_expression</span>
-        <span class="k">return</span> <span class="n">reducer_object</span>
-</div>
-    <span class="nd">@memoize</span>
-<div class="viewcode-block" id="ExpressionData.classify"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.expression.ExpressionData.classify">[docs]</a>    <span class="k">def</span> <span class="nf">classify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">sample_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">feature_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                 <span class="n">standardize</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">predictor</span><span class="o">=</span><span class="n">ClassifierViz</span><span class="p">,</span>
-                 <span class="n">predictor_kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">predictor_scoring_fun</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                 <span class="n">score_cutoff_fun</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">plotting_kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Make and memoize a predictor on a categorical trait (associated</span>
-<span class="sd">        with samples) subset of genes</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        trait : pandas.Series</span>
-<span class="sd">            samples x categorical feature</span>
-<span class="sd">        sample_ids : None or list of strings</span>
-<span class="sd">            If None, all sample ids will be used, else only the sample ids</span>
-<span class="sd">            specified</span>
-<span class="sd">        feature_ids : None or list of strings</span>
-<span class="sd">            If None, all features will be used, else only the features</span>
-<span class="sd">            specified</span>
-<span class="sd">        standardize : bool</span>
-<span class="sd">            Whether or not to &quot;whiten&quot; (make all variables uncorrelated) and</span>
-<span class="sd">            mean-center and make unit-variance all the data via sklearn</span>
-<span class="sd">            .preprocessing.StandardScaler</span>
-<span class="sd">        predictor : flotilla.visualize.predict classifier</span>
-<span class="sd">            Must inherit from flotilla.visualize.PredictorBaseViz. Default is</span>
-<span class="sd">            flotilla.visualize.predict.ClassifierViz</span>
-<span class="sd">        predictor_kwargs : dict or None</span>
-<span class="sd">            Additional &#39;keyword arguments&#39; to supply to the predictor class</span>
-<span class="sd">        predictor_scoring_fun : function</span>
-<span class="sd">            Function to get the feature scores for a scikit-learn classifier.</span>
-<span class="sd">            This can be different for different classifiers, e.g. for a</span>
-<span class="sd">            classifier named &quot;x&quot; it could be x.scores_, for other it&#39;s</span>
-<span class="sd">            x.feature_importances_. Default: lambda x: x.feature_importances_</span>
-<span class="sd">        score_cutoff_fun : function</span>
-<span class="sd">            Function to cut off insignificant scores</span>
-<span class="sd">            Default: lambda scores: np.mean(x) + 2 * np.std(x)</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        predictor : flotilla.compute.predict.PredictorBaseViz</span>
-<span class="sd">            A ready-to-plot object containing the predictions</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">subset</span><span class="p">,</span> <span class="n">means</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subset_and_standardize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_data</span><span class="p">,</span>
-                                                     <span class="n">sample_ids</span><span class="p">,</span>
-                                                     <span class="n">feature_ids</span><span class="p">,</span>
-                                                     <span class="n">standardize</span><span class="p">)</span>
-
-        <span class="n">classifier</span> <span class="o">=</span> <span class="n">predictor</span><span class="p">(</span><span class="n">subset</span><span class="p">,</span> <span class="n">trait</span><span class="o">=</span><span class="n">trait</span><span class="p">,</span>
-                               <span class="n">predictor_kwargs</span><span class="o">=</span><span class="n">predictor_kwargs</span><span class="p">,</span>
-                               <span class="n">predictor_scoring_fun</span><span class="o">=</span><span class="n">predictor_scoring_fun</span><span class="p">,</span>
-                               <span class="n">score_cutoff_fun</span><span class="o">=</span><span class="n">score_cutoff_fun</span><span class="p">,</span>
-                               <span class="o">**</span><span class="n">plotting_kwargs</span><span class="p">)</span>
-        <span class="c"># classifier.set_reducer_plotting_args(classifier.reduction_kwargs)</span>
-        <span class="k">return</span> <span class="n">classifier</span>
-
-    <span class="c"># def load_cargo(self, rename=True, **kwargs):</span>
-    <span class="c">#     try:</span>
-    <span class="c">#         species = self.species</span>
-    <span class="c">#         # self.cargo = cargo.get_species_cargo(self.species)</span>
-    <span class="c">#         self.go = self.cargo.get_go(species)</span>
-    <span class="c">#         self.feature_sets.update(self.cargo.gene_lists)</span>
+    <span class="c"># def reduce(self, sample_ids=None, feature_ids=None,</span>
+    <span class="c">#            featurewise=False, reducer=PCAViz, standardize=True,</span>
+    <span class="c">#            title=&#39;&#39;, reducer_kwargs=None, color=None, groupby=None,</span>
+    <span class="c">#            label_to_color=None, label_to_marker=None,</span>
+    <span class="c">#            order=None, x_pc=&#39;pc_1&#39;, y_pc=&#39;pc_1&#39;):</span>
+    <span class="c">#     &quot;&quot;&quot;Make and memoize a reduced dimensionality representation of data</span>
     <span class="c">#</span>
-    <span class="c">#         if rename:</span>
-    <span class="c">#             self._set_feature_renamer(lambda x: self.go.geneNames(x))</span>
-    <span class="c">#     except:</span>
-    <span class="c">#         raise</span>
-
+    <span class="c">#     Parameters</span>
+    <span class="c">#     ----------</span>
+    <span class="c">#     sample_ids : None or list of strings</span>
+    <span class="c">#         If None, all sample ids will be used, else only the sample ids</span>
+    <span class="c">#         specified</span>
+    <span class="c">#     feature_ids : None or list of strings</span>
+    <span class="c">#         If None, all features will be used, else only the features</span>
+    <span class="c">#         specified</span>
+    <span class="c">#     featurewise : bool</span>
+    <span class="c">#         Whether or not to use the features as the &quot;samples&quot;, e.g. if you</span>
+    <span class="c">#         want to reduce the features in to &quot;sample-space&quot; instead of</span>
+    <span class="c">#         reducing the samples into &quot;feature-space&quot;</span>
+    <span class="c">#     standardize : bool</span>
+    <span class="c">#         Whether or not to &quot;whiten&quot; (make all variables uncorrelated) and</span>
+    <span class="c">#         mean-center via sklearn.preprocessing.StandardScaler</span>
+    <span class="c">#     title : str</span>
+    <span class="c">#         Title of the plot</span>
+    <span class="c">#     reducer_kwargs : dict</span>
+    <span class="c">#         Any additional arguments to send to the reducer</span>
     <span class="c">#</span>
-    <span class="c"># def _get(self, expression_data_filename):</span>
-    <span class="c">#     return {&#39;expression_df&#39;: self.load(*expression_data_filename)}</span>
-</div>
-<div class="viewcode-block" id="ExpressionData.twoway"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.expression.ExpressionData.twoway">[docs]</a>    <span class="k">def</span> <span class="nf">twoway</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample1</span><span class="p">,</span> <span class="n">sample2</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="c">#     Returns</span>
+    <span class="c">#     -------</span>
+    <span class="c">#     reducer_object : flotilla.compute.reduce.ReducerViz</span>
+    <span class="c">#         A ready-to-plot object containing the reduced space</span>
+    <span class="c">#     &quot;&quot;&quot;</span>
+    <span class="c">#     return super(ExpressionData, self).reduce(</span>
+    <span class="c">#         self.data, sample_ids=sample_ids, feature_ids=feature_ids,</span>
+    <span class="c">#         featurewise=featurewise, reducer=reducer, standardize=standardize,</span>
+    <span class="c">#         title=title, reducer_kwargs=reducer_kwargs, groupby=groupby,</span>
+    <span class="c">#         label_to_color=label_to_color, label_to_marker=label_to_marker,</span>
+    <span class="c">#         order=order, color=color, x_pc=x_pc, y_pc=y_pc)</span>
+
+<div class="viewcode-block" id="ExpressionData.twoway"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.expression.ExpressionData.twoway">[docs]</a>    <span class="k">def</span> <span class="nf">twoway</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample1</span><span class="p">,</span> <span class="n">sample2</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">..visualize.expression</span> <span class="kn">import</span> <span class="n">TwoWayScatterViz</span>
 
         <span class="n">pCut</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;p_value_cutoff&#39;</span><span class="p">]</span>
@@ -318,13 +239,31 @@
 
         <span class="k">return</span> <span class="n">vz</span>
 </div>
-<div class="viewcode-block" id="ExpressionData.plot_twoway"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.expression.ExpressionData.plot_twoway">[docs]</a>    <span class="k">def</span> <span class="nf">plot_twoway</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample1</span><span class="p">,</span> <span class="n">sample2</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="ExpressionData.plot_twoway"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.expression.ExpressionData.plot_twoway">[docs]</a>    <span class="k">def</span> <span class="nf">plot_twoway</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample1</span><span class="p">,</span> <span class="n">sample2</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">vz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">twoway</span><span class="p">(</span><span class="n">sample1</span><span class="p">,</span> <span class="n">sample2</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">vz</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">vz</span>
+</div>
+    <span class="k">def</span> <span class="nf">_calculate_linkage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_ids</span><span class="p">,</span> <span class="n">feature_ids</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s">&#39;euclidean&#39;</span><span class="p">,</span>
+                           <span class="n">linkage_method</span><span class="o">=</span><span class="s">&#39;average&#39;</span><span class="p">,</span> <span class="n">standardize</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">ExpressionData</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_calculate_linkage</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">sample_ids</span><span class="o">=</span><span class="n">sample_ids</span><span class="p">,</span> <span class="n">feature_ids</span><span class="o">=</span><span class="n">feature_ids</span><span class="p">,</span>
+            <span class="n">standardize</span><span class="o">=</span><span class="n">standardize</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">metric</span><span class="p">,</span>
+            <span class="n">linkage_method</span><span class="o">=</span><span class="n">linkage_method</span><span class="p">)</span>
+
+    <span class="nd">@memoize</span>
+<div class="viewcode-block" id="ExpressionData.binify"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.expression.ExpressionData.binify">[docs]</a>    <span class="k">def</span> <span class="nf">binify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subset</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">require_min_samples</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span> <span class="o">-</span> <span class="n">data</span><span class="o">.</span><span class="n">min</span><span class="p">())</span> <span class="o">/</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">data</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
+        <span class="c"># vmax = data.abs().max().max()</span>
+        <span class="c"># vmin = -vmax</span>
+        <span class="c"># bins = np.linspace(vmin, vmax, 10)</span>
+        <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c"># print &#39;bins:&#39;, bins</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">ExpressionData</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">binify</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">bins</span><span class="p">)</span>
 
 </div></div>
-<div class="viewcode-block" id="SpikeInData"><a class="viewcode-back" href="../../../flotilla.data_model.html#flotilla.data_model.expression.SpikeInData">[docs]</a><span class="k">class</span> <span class="nc">SpikeInData</span><span class="p">(</span><span class="n">ExpressionData</span><span class="p">):</span>
+<div class="viewcode-block" id="SpikeInData"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.expression.SpikeInData">[docs]</a><span class="k">class</span> <span class="nc">SpikeInData</span><span class="p">(</span><span class="n">ExpressionData</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Class for Spikein data and associated functions</span>
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
@@ -335,7 +274,9 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">feature_data</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">feature_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">predictor_config_manager</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">technical_outliers</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Constructor for</span>
 
 <span class="sd">        Parameters</span>
@@ -350,7 +291,9 @@
 <span class="sd">        ------</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">SpikeInData</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">feature_data</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SpikeInData</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">feature_data</span><span class="p">,</span>
+                                          <span class="n">technical_outliers</span><span class="o">=</span><span class="n">technical_outliers</span><span class="p">,</span>
+                                          <span class="n">predictor_config_manager</span><span class="o">=</span><span class="n">predictor_config_manager</span><span class="p">)</span>
 
         <span class="c"># def spikeins_violinplot(self):</span>
         <span class="c">#     import matplotlib.pyplot as plt</span>
@@ -428,8 +371,9 @@
     </div>
       
   </div>
-</div>  <div class="container">
-	
+</div>
+<div class="container">
+    
 <footer class="footer">
   <div class="container">
     <p class="pull-right">
@@ -438,13 +382,19 @@
     </p>
     <p>
         &copy; Copyright 2014, Olga Botvinnik, Michael Lovci, Patrick Liu, Yan Song.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
     </p>
   </div>
 </footer>
-	Funded by <a href="http://numfocus.org/">NumFOCUS</a> <a href="http://numfocus.org/pages/john_hunter_fellowship_2014.html">John Hunter Technology Fellowship</a> to <a href="http://olgabotvinnik.com/">Olga Botvinnik</a>.<br/>
-	Partially funded by <a href="http://www.nih.gov/">NIH</a> grants NS075449 and HG004659 and <a href="http://www.cirm.ca.gov/">CIRM</a> grants RB4-06045 and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene Yeo</a>. <br/>
+    Funded by <a href="http://numfocus.org/">NumFOCUS</a> <a
+        href="http://numfocus.org/pages/john_hunter_fellowship_2014.html">John
+    Hunter Technology Fellowship</a> to <a href="http://olgabotvinnik.com/">Olga
+    Botvinnik</a>.<br/>
+    Partially funded by <a href="http://www.nih.gov/">NIH</a> grants NS075449
+    and HG004659 and <a href="http://www.cirm.ca.gov/">CIRM</a> grants RB4-06045
+    and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene
+    Yeo</a>. <br/>
 
-
+    
   </body>
 </html>

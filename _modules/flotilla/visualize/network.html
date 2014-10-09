@@ -9,7 +9,7 @@
     
     <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../../_static/bootswatch-3.1.0/flatly/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootswatch-3.2.0/flatly/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     
     <script type="text/javascript">
@@ -27,7 +27,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../../../_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
     <link rel="top" title="flotilla 0.1.0 documentation" href="../../../index.html" />
     <link rel="up" title="flotilla" href="../../flotilla.html" />
@@ -69,16 +69,7 @@
      href="../../../index.html">Site <b class="caret"></b></a>
   <ul class="dropdown-menu globaltoc"
       role="menu"
-      aria-labelledby="dLabelGlobalToc"><ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../flotilla.html">flotilla package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#subpackages">Subpackages</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#module-flotilla.external">flotilla.external module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#flotilla-setup-module">flotilla.setup module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#module-flotilla.util">flotilla.util module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#module-flotilla">Module contents</a></li>
-</ul>
-</li>
+      aria-labelledby="dLabelGlobalToc"><ul class="simple">
 </ul>
 </ul>
 </li>
@@ -126,28 +117,29 @@
     <div class="col-md-12">
       
   <h1>Source code for flotilla.visualize.network</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">sys</span>
+
 <span class="kn">import</span> <span class="nn">networkx</span> <span class="kn">as</span> <span class="nn">nx</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="kn">as</span> <span class="nn">mpl</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">seaborn</span>
-<span class="kn">import</span> <span class="nn">sys</span>
 
 <span class="kn">from</span> <span class="nn">.color</span> <span class="kn">import</span> <span class="n">green</span>
 <span class="kn">from</span> <span class="nn">..compute.network</span> <span class="kn">import</span> <span class="n">Networker</span>
 <span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">dict_to_str</span>
 <span class="kn">from</span> <span class="nn">..visualize.color</span> <span class="kn">import</span> <span class="n">blue</span>
-<span class="kn">from</span> <span class="nn">..visualize.decomposition</span> <span class="kn">import</span> <span class="n">DecompositionViz</span>
 
 
-<div class="viewcode-block" id="NetworkerViz"><a class="viewcode-back" href="../../../flotilla.visualize.html#flotilla.visualize.network.NetworkerViz">[docs]</a><span class="k">class</span> <span class="nc">NetworkerViz</span><span class="p">(</span><span class="n">Networker</span><span class="p">,</span> <span class="n">DecompositionViz</span><span class="p">):</span>
+<div class="viewcode-block" id="NetworkerViz"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.network.NetworkerViz">[docs]</a><span class="k">class</span> <span class="nc">NetworkerViz</span><span class="p">(</span><span class="n">Networker</span><span class="p">):</span>
     <span class="c"># TODO.md: needs to be decontaminated, as it requires methods from</span>
     <span class="c"># data_object;</span>
     <span class="c"># maybe this class should move to data_model.BaseData</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_obj</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">data_obj</span> <span class="o">=</span> <span class="n">data_obj</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">DataModel</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DataModel</span> <span class="o">=</span> <span class="n">DataModel</span>
         <span class="n">Networker</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-<div class="viewcode-block" id="NetworkerViz.draw_graph"><a class="viewcode-back" href="../../../flotilla.visualize.html#flotilla.visualize.network.NetworkerViz.draw_graph">[docs]</a>    <span class="k">def</span> <span class="nf">draw_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+<div class="viewcode-block" id="NetworkerViz.draw_graph"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.network.NetworkerViz.draw_graph">[docs]</a>    <span class="k">def</span> <span class="nf">draw_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                    <span class="n">n_pcs</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
                    <span class="n">use_pc_1</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">use_pc_2</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">use_pc_3</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">use_pc_4</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
                    <span class="n">degree_cut</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">cov_std_cut</span><span class="o">=</span><span class="mf">1.8</span><span class="p">,</span>
@@ -160,7 +152,10 @@
                    <span class="n">sample_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                    <span class="n">graph_file</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span>
                    <span class="n">compare</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span>
-                   <span class="n">sample_id_to_color</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+                   <span class="n">sample_id_to_color</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                   <span class="n">label_to_color</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                   <span class="n">label_to_marker</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">groupby</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                   <span class="n">data_type</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
 
         <span class="sd">&quot;&quot;&quot;Draw the graph (network) of these events</span>
 
@@ -171,9 +166,9 @@
 <span class="sd">        sample_ids : list of str, or None</span>
 <span class="sd">            Sample ids to subset the data. If None, all features will be used.</span>
 <span class="sd">        x_pc : str</span>
-<span class="sd">            x component for PCA, default &quot;pc_1&quot;</span>
+<span class="sd">            x component for DataFramePCA, default &quot;pc_1&quot;</span>
 <span class="sd">        y_pc :</span>
-<span class="sd">            y component for PCA, default &quot;pc_2&quot;</span>
+<span class="sd">            y component for DataFramePCA, default &quot;pc_2&quot;</span>
 <span class="sd">        n_pcs : int???</span>
 <span class="sd">            n components to use for cells&#39; covariance calculation</span>
 <span class="sd">        cov_std_cut : float??</span>
@@ -220,7 +215,11 @@
         <span class="n">ax_cov</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="o">.</span><span class="mi">15</span><span class="p">])</span>
         <span class="n">ax_degree</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">([</span><span class="mf">0.9</span><span class="p">,</span> <span class="o">.</span><span class="mi">8</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="o">.</span><span class="mi">15</span><span class="p">])</span>
 
-        <span class="n">pca</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_obj</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="o">**</span><span class="n">pca_settings</span><span class="p">)</span>
+        <span class="n">pca</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DataModel</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span>
+            <span class="c"># label_to_color=label_to_color,</span>
+            <span class="c"># label_to_marker=label_to_marker,</span>
+            <span class="c"># groupby=groupby,</span>
+            <span class="o">**</span><span class="n">pca_settings</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">featurewise</span><span class="p">:</span>
             <span class="n">node_color_mapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s">&#39;r&#39;</span> \
@@ -270,18 +269,24 @@
             <span class="n">ax</span><span class="o">=</span><span class="n">main_ax</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">node_color</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span>
-                <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pca</span><span class="o">.</span><span class="n">X</span><span class="p">[</span><span class="n">feature_of_interest</span><span class="p">]</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">x</span><span class="p">],</span> <span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">())</span>
+
+            <span class="n">feature_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DataModel</span><span class="o">.</span><span class="n">maybe_renamed_to_feature_id</span><span class="p">(</span>
+                <span class="n">feature_of_interest</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="n">node_color</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pca</span><span class="o">.</span><span class="n">X</span><span class="p">[</span><span class="n">feature_id</span><span class="p">]</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">x</span><span class="p">],</span> <span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">())</span>
 
             <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_nodes</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">node_color</span><span class="o">=</span><span class="n">node_color</span><span class="p">,</span>
-                                   <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Greys</span><span class="p">,</span>
+                                   <span class="n">cmap</span><span class="o">=</span><span class="n">mpl</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Greys</span><span class="p">,</span>
                                    <span class="n">node_size</span><span class="o">=</span><span class="nb">map</span><span class="p">(</span>
                                        <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">node_size_mapper</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="o">.</span><span class="mi">5</span><span class="p">,</span>
                                        <span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">()),</span> <span class="n">ax</span><span class="o">=</span><span class="n">main_ax</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">except</span><span class="p">:</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
             <span class="k">pass</span>
 
-        <span class="n">namer</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
+        <span class="k">if</span> <span class="n">featurewise</span><span class="p">:</span>
+            <span class="n">namer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DataModel</span><span class="o">.</span><span class="n">feature_renamer</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">namer</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
         <span class="n">labels</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">name</span><span class="p">,</span> <span class="n">namer</span><span class="p">(</span><span class="n">name</span><span class="p">))</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">()])</span>
         <span class="k">if</span> <span class="n">draw_labels</span><span class="p">:</span>
             <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_labels</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">main_ax</span><span class="p">)</span>
@@ -310,7 +315,7 @@
 
         <span class="k">return</span> <span class="n">graph</span><span class="p">,</span> <span class="n">pos</span>
 </div>
-<div class="viewcode-block" id="NetworkerViz.draw_nonreduced_graph"><a class="viewcode-back" href="../../../flotilla.visualize.html#flotilla.visualize.network.NetworkerViz.draw_nonreduced_graph">[docs]</a>    <span class="k">def</span> <span class="nf">draw_nonreduced_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+<div class="viewcode-block" id="NetworkerViz.draw_nonreduced_graph"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.network.NetworkerViz.draw_nonreduced_graph">[docs]</a>    <span class="k">def</span> <span class="nf">draw_nonreduced_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                               <span class="n">degree_cut</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">cov_std_cut</span><span class="o">=</span><span class="mf">1.8</span><span class="p">,</span>
                               <span class="n">wt_fun</span><span class="o">=</span><span class="s">&#39;abs&#39;</span><span class="p">,</span>
                               <span class="n">featurewise</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>  <span class="c"># else feature_components</span>
@@ -329,9 +334,9 @@
 <span class="sd">        sample_ids : list of str, or None</span>
 <span class="sd">            Sample ids to subset the data. If None, all features will be used.</span>
 <span class="sd">        x_pc : str</span>
-<span class="sd">            x component for PCA, default &quot;pc_1&quot;</span>
+<span class="sd">            x component for DataFramePCA, default &quot;pc_1&quot;</span>
 <span class="sd">        y_pc :</span>
-<span class="sd">            y component for PCA, default &quot;pc_2&quot;</span>
+<span class="sd">            y component for DataFramePCA, default &quot;pc_2&quot;</span>
 <span class="sd">        n_pcs : int???</span>
 <span class="sd">            n components to use for cells&#39; covariance calculation</span>
 <span class="sd">        cov_std_cut : float??</span>
@@ -367,7 +372,7 @@
         <span class="n">ax_cov</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="o">.</span><span class="mi">15</span><span class="p">])</span>
         <span class="n">ax_degree</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">([</span><span class="mf">0.9</span><span class="p">,</span> <span class="o">.</span><span class="mi">8</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="o">.</span><span class="mi">15</span><span class="p">])</span>
 
-        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_obj</span><span class="o">.</span><span class="n">df</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DataModel</span><span class="o">.</span><span class="n">df</span>
 
         <span class="k">if</span> <span class="n">featurewise</span><span class="p">:</span>
             <span class="n">node_color_mapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s">&#39;r&#39;</span> \
@@ -375,7 +380,7 @@
             <span class="n">node_size_mapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">10</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">node_color_mapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> \
-                <span class="bp">self</span><span class="o">.</span><span class="n">data_obj</span><span class="o">.</span><span class="n">sample_metadata</span><span class="o">.</span><span class="n">color</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">DataModel</span><span class="o">.</span><span class="n">sample_metadata</span><span class="o">.</span><span class="n">color</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
             <span class="n">node_size_mapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">75</span>
 
         <span class="n">adjacency_name</span> <span class="o">=</span> <span class="s">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">dict_to_str</span><span class="p">(</span><span class="n">adjacency_settings</span><span class="p">)])</span>
@@ -442,14 +447,15 @@
                 <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;error writing graph file:&quot;</span>
                                  <span class="s">&quot;</span><span class="se">\n</span><span class="s">{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
 
-        <span class="k">return</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span></div></div>
 </pre></div>
 
     </div>
       
   </div>
-</div>  <div class="container">
-	
+</div>
+<div class="container">
+    
 <footer class="footer">
   <div class="container">
     <p class="pull-right">
@@ -458,13 +464,19 @@
     </p>
     <p>
         &copy; Copyright 2014, Olga Botvinnik, Michael Lovci, Patrick Liu, Yan Song.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
     </p>
   </div>
 </footer>
-	Funded by <a href="http://numfocus.org/">NumFOCUS</a> <a href="http://numfocus.org/pages/john_hunter_fellowship_2014.html">John Hunter Technology Fellowship</a> to <a href="http://olgabotvinnik.com/">Olga Botvinnik</a>.<br/>
-	Partially funded by <a href="http://www.nih.gov/">NIH</a> grants NS075449 and HG004659 and <a href="http://www.cirm.ca.gov/">CIRM</a> grants RB4-06045 and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene Yeo</a>. <br/>
+    Funded by <a href="http://numfocus.org/">NumFOCUS</a> <a
+        href="http://numfocus.org/pages/john_hunter_fellowship_2014.html">John
+    Hunter Technology Fellowship</a> to <a href="http://olgabotvinnik.com/">Olga
+    Botvinnik</a>.<br/>
+    Partially funded by <a href="http://www.nih.gov/">NIH</a> grants NS075449
+    and HG004659 and <a href="http://www.cirm.ca.gov/">CIRM</a> grants RB4-06045
+    and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene
+    Yeo</a>. <br/>
 
-
+    
   </body>
 </html>
