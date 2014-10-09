@@ -30,6 +30,7 @@ before_script:
   - git config --global user.email "olga.botvinnik@gmail.com"
   - git config --global user.name "olgabot"
   - git config --global push.default matching
+  - git config --global pull.default matching
   - export REPO_URL_GITHUB="https://$GH_TOKEN@github.com/$GH_REPO.git"
   - . ./.travis/setup.sh # make any change needed for setup.sh
   - echo $DEPLOY_HTML_DIR
