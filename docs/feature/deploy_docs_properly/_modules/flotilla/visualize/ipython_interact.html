@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>flotilla.visualize.ipython_interact &mdash; flotilla 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootswatch-3.2.0/flatly/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="flotilla 0.1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="flotilla" href="../../flotilla.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html">
+          Flotilla</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
+            
+                <li><a href="../../../examples.html">Examples</a></li>
+                <li><a href="http://example.com">Link</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="simple">
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <h1>Source code for flotilla.visualize.ipython_interact</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Named `ipython_interact.py` rather than just `interact.py` to differentiate</span>
+<span class="sd">between IPython interactive visualizations vs D3 interactive visualizations.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">from</span> <span class="nn">IPython.html.widgets</span> <span class="kn">import</span> <span class="n">interact</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+
+
+
+<span class="c"># from ..compute.predict import default_classifier</span>
+<span class="kn">from</span> <span class="nn">..visualize.color</span> <span class="kn">import</span> <span class="n">red</span>
+<span class="kn">from</span> <span class="nn">.network</span> <span class="kn">import</span> <span class="n">NetworkerViz</span>
+<span class="kn">from</span> <span class="nn">.color</span> <span class="kn">import</span> <span class="n">str_to_color</span>
+<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">natural_sort</span>
+<span class="kn">from</span> <span class="nn">..external</span> <span class="kn">import</span> <span class="n">link_to_list</span>
+
+<span class="n">default_classifier</span> <span class="o">=</span> <span class="s">&#39;ExtraTreesClassifier&#39;</span>
+<span class="n">default_regressor</span> <span class="o">=</span> <span class="s">&#39;ExtraTreesRegressor&#39;</span>
+<span class="n">default_score_coefficient</span> <span class="o">=</span> <span class="mi">2</span>
+
+
+<div class="viewcode-block" id="Interactive"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.ipython_interact.Interactive">[docs]</a><span class="k">class</span> <span class="nc">Interactive</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+
+
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_default_x_pc</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_default_y_pc</span> <span class="o">=</span> <span class="mi">2</span>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Interactive.get_feature_subsets"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.ipython_interact.Interactive.get_feature_subsets">[docs]</a>    <span class="k">def</span> <span class="nf">get_feature_subsets</span><span class="p">(</span><span class="n">study</span><span class="p">,</span> <span class="n">data_types</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Given a study and list of data types, get the relevant feature</span>
+<span class="sd">        subsets</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        study : flotilla.Study</span>
+<span class="sd">            A study object which</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">feature_subsets</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;custom&#39;</span><span class="p">]</span>
+
+        <span class="c"># datatype_to_</span>
+
+        <span class="k">if</span> <span class="s">&#39;expression&#39;</span> <span class="ow">in</span> <span class="n">data_types</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">feature_subsets</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">study</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">feature_subsets</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="k">if</span> <span class="s">&#39;splicing&#39;</span> <span class="ow">in</span> <span class="n">data_types</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">feature_subsets</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">study</span><span class="o">.</span><span class="n">splicing</span><span class="o">.</span><span class="n">feature_subsets</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+        <span class="c"># Cast to &quot;set&quot; to get rid of duplicates, then back to list because you</span>
+        <span class="c"># can&#39;t sort a set, then back to list after sorting because you get</span>
+        <span class="c"># an iterator... yeah ....</span>
+        <span class="n">feature_subsets</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">natural_sort</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">feature_subsets</span><span class="p">))))</span>
+
+        <span class="c"># Make sure &quot;variant&quot; is first because all datasets have that</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">feature_subsets</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">feature_subsets</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s">&#39;variant&#39;</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="n">feature_subsets</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s">&#39;variant&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">feature_subsets</span>
+</div>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Interactive.interactive_pca"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.ipython_interact.Interactive.interactive_pca">[docs]</a>    <span class="k">def</span> <span class="nf">interactive_pca</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_types</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;expression&#39;</span><span class="p">,</span> <span class="s">&#39;splicing&#39;</span><span class="p">),</span>
+                        <span class="n">sample_subsets</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                        <span class="n">feature_subsets</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                        <span class="n">featurewise</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                        <span class="n">x_pc</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">y_pc</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+                        <span class="n">show_point_labels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                        <span class="n">list_link</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">plot_violins</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                        <span class="n">savefile</span><span class="o">=</span><span class="s">&#39;data/last.pca.pdf&#39;</span><span class="p">):</span>
+
+        <span class="k">def</span> <span class="nf">do_interact</span><span class="p">(</span><span class="n">data_type</span><span class="o">=</span><span class="s">&#39;expression&#39;</span><span class="p">,</span>
+                        <span class="n">sample_subset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_sample_subsets</span><span class="p">,</span>
+                        <span class="n">feature_subset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_feature_subset</span><span class="p">,</span>
+                        <span class="n">featurewise</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                        <span class="n">list_link</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span>
+                        <span class="n">x_pc</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y_pc</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                        <span class="n">plot_violins</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                        <span class="n">show_point_labels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                        <span class="n">savefile</span><span class="o">=</span><span class="s">&#39;data/last.pca.pdf&#39;</span><span class="p">):</span>
+
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s">&#39;self&#39;</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;{} : {}</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">feature_subset</span> <span class="o">!=</span> <span class="s">&quot;custom&quot;</span> <span class="ow">and</span> <span class="n">list_link</span> <span class="o">!=</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s">&quot;Set feature_subset to </span><span class="se">\&quot;</span><span class="s">custom</span><span class="se">\&quot;</span><span class="s"> to use list_link&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">feature_subset</span> <span class="o">==</span> <span class="s">&quot;custom&quot;</span> <span class="ow">and</span> <span class="n">list_link</span> <span class="o">==</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Use a custom list name please&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">feature_subset</span> <span class="o">==</span> <span class="s">&#39;custom&#39;</span><span class="p">:</span>
+                <span class="n">feature_subset</span> <span class="o">=</span> <span class="n">link_to_list</span><span class="p">(</span><span class="n">list_link</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">feature_subset</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_feature_subsets</span><span class="p">[</span><span class="n">data_type</span><span class="p">]:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;This feature_subset (&#39;{}&#39;) is not available in &quot;</span>
+                              <span class="s">&quot;this data type (&#39;{}&#39;). Falling back on all &quot;</span>
+
+                              <span class="s">&quot;features.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">feature_subset</span><span class="p">,</span> <span class="n">data_type</span><span class="p">))</span>
+
+            <span class="n">pca</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_pca</span><span class="p">(</span><span class="n">sample_subset</span><span class="o">=</span><span class="n">sample_subset</span><span class="p">,</span>
+                                <span class="n">data_type</span><span class="o">=</span><span class="n">data_type</span><span class="p">,</span>
+                                <span class="n">featurewise</span><span class="o">=</span><span class="n">featurewise</span><span class="p">,</span>
+                                <span class="n">x_pc</span><span class="o">=</span><span class="n">x_pc</span><span class="p">,</span> <span class="n">y_pc</span><span class="o">=</span><span class="n">y_pc</span><span class="p">,</span>
+                                <span class="n">show_point_labels</span><span class="o">=</span><span class="n">show_point_labels</span><span class="p">,</span>
+                                <span class="n">feature_subset</span><span class="o">=</span><span class="n">feature_subset</span><span class="p">,</span>
+                                <span class="n">plot_violins</span><span class="o">=</span><span class="n">plot_violins</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">savefile</span> <span class="o">!=</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+                <span class="c"># Make the directory if it&#39;s not already there</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">maybe_make_directory</span><span class="p">(</span><span class="n">savefile</span><span class="p">)</span>
+                <span class="c"># f = plt.gcf()</span>
+                <span class="n">pca</span><span class="o">.</span><span class="n">reduced_fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">savefile</span><span class="p">)</span>
+
+                <span class="c"># add &quot;violins&quot; after the provided filename, but before the</span>
+                <span class="c"># extension</span>
+                <span class="n">violins_file</span> <span class="o">=</span> <span class="s">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">savefile</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span>
+                                         <span class="s">&#39;violins&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="s">&quot;.&quot;</span> <span class="o">+</span> \
+                                         <span class="n">savefile</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">plot_violins</span><span class="p">:</span>
+                    <span class="n">pca</span><span class="o">.</span><span class="n">violins_fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">violins_file</span><span class="p">)</span>
+
+            <span class="n">feature_subsets</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+                <span class="nb">set</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">default_feature_subsets</span>
+                                    <span class="o">.</span><span class="n">values</span><span class="p">())))</span>
+
+        <span class="c"># self.plot_study_sample_legend()</span>
+
+        <span class="k">if</span> <span class="n">feature_subsets</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">feature_subsets</span> <span class="o">=</span> <span class="n">Interactive</span><span class="o">.</span><span class="n">get_feature_subsets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_types</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">sample_subsets</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">sample_subsets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_sample_subsets</span>
+
+        <span class="k">return</span> <span class="n">interact</span><span class="p">(</span><span class="n">do_interact</span><span class="p">,</span>
+                 <span class="n">data_type</span><span class="o">=</span><span class="n">data_types</span><span class="p">,</span>
+                 <span class="n">sample_subset</span><span class="o">=</span><span class="n">sample_subsets</span><span class="p">,</span>
+                 <span class="n">feature_subset</span><span class="o">=</span><span class="n">feature_subsets</span> <span class="o">+</span> <span class="p">[</span><span class="s">&#39;custom&#39;</span><span class="p">],</span>
+                 <span class="n">featurewise</span><span class="o">=</span><span class="n">featurewise</span><span class="p">,</span>
+                 <span class="n">x_pc</span><span class="o">=</span><span class="n">x_pc</span><span class="p">,</span> <span class="n">y_pc</span><span class="o">=</span><span class="n">y_pc</span><span class="p">,</span>
+                 <span class="n">show_point_labels</span><span class="o">=</span><span class="n">show_point_labels</span><span class="p">,</span>
+                 <span class="n">list_link</span><span class="o">=</span><span class="n">list_link</span><span class="p">,</span> <span class="n">plot_violins</span><span class="o">=</span><span class="n">plot_violins</span><span class="p">,</span>
+                 <span class="n">savefile</span><span class="o">=</span><span class="n">savefile</span><span class="p">)</span>
+</div>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Interactive.interactive_graph"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.ipython_interact.Interactive.interactive_graph">[docs]</a>    <span class="k">def</span> <span class="nf">interactive_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_types</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;expression&#39;</span><span class="p">,</span> <span class="s">&#39;splicing&#39;</span><span class="p">),</span>
+                          <span class="n">sample_subsets</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                          <span class="n">feature_subsets</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                          <span class="n">featurewise</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                          <span class="n">cov_std_cut</span><span class="o">=</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+                          <span class="n">degree_cut</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+                          <span class="n">n_pcs</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
+                          <span class="n">draw_labels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                          <span class="n">feature_of_interest</span><span class="o">=</span><span class="s">&quot;RBFOX2&quot;</span><span class="p">,</span>
+                          <span class="n">weight_fun</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                          <span class="n">use_pc_1</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">use_pc_2</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">use_pc_3</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                          <span class="n">use_pc_4</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                          <span class="n">savefile</span><span class="o">=</span><span class="s">&#39;data/last.graph.pdf&#39;</span><span class="p">):</span>
+
+        <span class="kn">from</span> <span class="nn">IPython.html.widgets</span> <span class="kn">import</span> <span class="n">interact</span>
+
+        <span class="c"># not sure why nested fxns are required for this, but they are... i</span>
+        <span class="c"># think...</span>
+        <span class="k">def</span> <span class="nf">do_interact</span><span class="p">(</span><span class="n">data_type</span><span class="o">=</span><span class="s">&#39;expression&#39;</span><span class="p">,</span>
+                        <span class="n">sample_subset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_sample_subsets</span><span class="p">,</span>
+                        <span class="n">feature_subset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_feature_subsets</span><span class="p">,</span>
+                        <span class="n">weight_fun</span><span class="o">=</span><span class="n">NetworkerViz</span><span class="o">.</span><span class="n">weight_funs</span><span class="p">,</span>
+                        <span class="n">featurewise</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                        <span class="n">use_pc_1</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">use_pc_2</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">use_pc_3</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                        <span class="n">use_pc_4</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">degree_cut</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                        <span class="n">cov_std_cut</span><span class="o">=</span><span class="mf">1.8</span><span class="p">,</span> <span class="n">n_pcs</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                        <span class="n">feature_of_interest</span><span class="o">=</span><span class="s">&quot;RBFOX2&quot;</span><span class="p">,</span>
+                        <span class="n">draw_labels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                        <span class="n">savefile</span><span class="o">=</span><span class="s">&#39;data/last.graph.pdf&#39;</span><span class="p">):</span>
+
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s">&#39;self&#39;</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;{} : {}</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s">&#39;expression&#39;</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="p">(</span><span class="n">feature_subset</span> <span class="ow">in</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">feature_subsets</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s">&#39;splicing&#39;</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="p">(</span><span class="n">feature_subset</span> <span class="ow">in</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">splicing</span><span class="o">.</span><span class="n">feature_subsets</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">plot_graph</span><span class="p">(</span><span class="n">data_type</span><span class="o">=</span><span class="n">data_type</span><span class="p">,</span>
+                            <span class="n">sample_subset</span><span class="o">=</span><span class="n">sample_subset</span><span class="p">,</span>
+                            <span class="n">feature_subset</span><span class="o">=</span><span class="n">feature_subset</span><span class="p">,</span>
+                            <span class="n">featurewise</span><span class="o">=</span><span class="n">featurewise</span><span class="p">,</span> <span class="n">draw_labels</span><span class="o">=</span><span class="n">draw_labels</span><span class="p">,</span>
+                            <span class="n">degree_cut</span><span class="o">=</span><span class="n">degree_cut</span><span class="p">,</span> <span class="n">cov_std_cut</span><span class="o">=</span><span class="n">cov_std_cut</span><span class="p">,</span>
+                            <span class="n">n_pcs</span><span class="o">=</span><span class="n">n_pcs</span><span class="p">,</span>
+                            <span class="n">feature_of_interest</span><span class="o">=</span><span class="n">feature_of_interest</span><span class="p">,</span>
+                            <span class="n">use_pc_1</span><span class="o">=</span><span class="n">use_pc_1</span><span class="p">,</span> <span class="n">use_pc_2</span><span class="o">=</span><span class="n">use_pc_2</span><span class="p">,</span>
+                            <span class="n">use_pc_3</span><span class="o">=</span><span class="n">use_pc_3</span><span class="p">,</span>
+                            <span class="n">use_pc_4</span><span class="o">=</span><span class="n">use_pc_4</span><span class="p">,</span>
+                            <span class="n">weight_function</span><span class="o">=</span><span class="n">weight_fun</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">savefile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">maybe_make_directory</span><span class="p">(</span><span class="n">savefile</span><span class="p">)</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">savefile</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">feature_subsets</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">feature_subsets</span> <span class="o">=</span> <span class="n">Interactive</span><span class="o">.</span><span class="n">get_feature_subsets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_types</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">sample_subsets</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">sample_subsets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_sample_subsets</span>
+        <span class="k">if</span> <span class="n">weight_fun</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">weight_fun</span> <span class="o">=</span> <span class="n">NetworkerViz</span><span class="o">.</span><span class="n">weight_funs</span>
+
+        <span class="c"># if not featurewise:</span>
+        <span class="c">#     self.plot_study_sample_legend()</span>
+
+        <span class="k">return</span> <span class="n">interact</span><span class="p">(</span><span class="n">do_interact</span><span class="p">,</span>
+                 <span class="n">data_type</span><span class="o">=</span><span class="n">data_types</span><span class="p">,</span>
+                 <span class="n">sample_subset</span><span class="o">=</span><span class="n">sample_subsets</span><span class="p">,</span>
+                 <span class="n">feature_subset</span><span class="o">=</span><span class="n">feature_subsets</span><span class="p">,</span>
+                 <span class="n">featurewise</span><span class="o">=</span><span class="n">featurewise</span><span class="p">,</span>
+                 <span class="n">cov_std_cut</span><span class="o">=</span><span class="n">cov_std_cut</span><span class="p">,</span>
+                 <span class="n">degree_cut</span><span class="o">=</span><span class="n">degree_cut</span><span class="p">,</span>
+                 <span class="n">n_pcs</span><span class="o">=</span><span class="n">n_pcs</span><span class="p">,</span>
+                 <span class="n">draw_labels</span><span class="o">=</span><span class="n">draw_labels</span><span class="p">,</span>
+                 <span class="n">weight_fun</span><span class="o">=</span><span class="n">weight_fun</span><span class="p">,</span>
+                 <span class="n">feature_of_interest</span><span class="o">=</span><span class="n">feature_of_interest</span><span class="p">,</span>
+                 <span class="n">use_pc_1</span><span class="o">=</span><span class="n">use_pc_1</span><span class="p">,</span> <span class="n">use_pc_2</span><span class="o">=</span><span class="n">use_pc_2</span><span class="p">,</span>
+                 <span class="n">use_pc_3</span><span class="o">=</span><span class="n">use_pc_3</span><span class="p">,</span> <span class="n">use_pc_4</span><span class="o">=</span><span class="n">use_pc_4</span><span class="p">,</span>
+                 <span class="n">savefile</span><span class="o">=</span><span class="n">savefile</span><span class="p">)</span>
+</div>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Interactive.interactive_classifier"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.ipython_interact.Interactive.interactive_classifier">[docs]</a>    <span class="k">def</span> <span class="nf">interactive_classifier</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_types</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;expression&#39;</span><span class="p">,</span> <span class="s">&#39;splicing&#39;</span><span class="p">),</span>
+                               <span class="n">sample_subsets</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                               <span class="n">feature_subsets</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                               <span class="n">categorical_variables</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                               <span class="n">predictor_types</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                               <span class="n">score_coefficient</span><span class="o">=</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>
+                               <span class="n">draw_labels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                               <span class="n">savefile</span><span class="o">=</span><span class="s">&#39;data/last.clf.pdf&#39;</span><span class="p">):</span>
+
+        <span class="k">def</span> <span class="nf">do_interact</span><span class="p">(</span><span class="n">data_type</span><span class="p">,</span>
+                        <span class="n">sample_subset</span><span class="p">,</span>
+                        <span class="n">feature_subset</span><span class="p">,</span>
+                        <span class="n">predictor_type</span><span class="o">=</span><span class="n">default_classifier</span><span class="p">,</span>
+                        <span class="n">categorical_variable</span><span class="o">=</span><span class="s">&#39;outlier&#39;</span><span class="p">,</span>
+                        <span class="n">score_coefficient</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                        <span class="n">savefile</span><span class="o">=</span><span class="s">&#39;data/last.clf.pdf&#39;</span><span class="p">):</span>
+
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s">&#39;self&#39;</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;{} : {}</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">plot_classifier</span><span class="p">(</span><span class="n">trait</span><span class="o">=</span><span class="n">categorical_variable</span><span class="p">,</span>
+                                 <span class="n">feature_subset</span><span class="o">=</span><span class="n">feature_subset</span><span class="p">,</span>
+                                 <span class="n">sample_subset</span><span class="o">=</span><span class="n">sample_subset</span><span class="p">,</span>
+                                 <span class="n">predictor_name</span><span class="o">=</span><span class="n">predictor_type</span><span class="p">,</span>
+                                 <span class="n">score_coefficient</span><span class="o">=</span><span class="n">score_coefficient</span><span class="p">,</span>
+                                 <span class="n">data_type</span><span class="o">=</span><span class="n">data_type</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">savefile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">maybe_make_directory</span><span class="p">(</span><span class="n">savefile</span><span class="p">)</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">savefile</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">feature_subsets</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">feature_subsets</span> <span class="o">=</span> <span class="n">Interactive</span><span class="o">.</span><span class="n">get_feature_subsets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_types</span><span class="p">)</span>
+            <span class="n">feature_subsets</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s">&#39;variant&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sample_subsets</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">sample_subsets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_sample_subsets</span>
+
+        <span class="k">if</span> <span class="n">categorical_variables</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">categorical_variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_sample_subsets</span> <span class="k">if</span>
+                                     <span class="ow">not</span> <span class="n">i</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span>
+                                         <span class="s">&quot;~&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">!=</span> <span class="s">&#39;all_samples&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">predictor_types</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">predictor_types</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictor_config_manager</span><span class="o">.</span><span class="n">predictor_configs</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+
+        <span class="c"># self.plot_study_sample_legend()</span>
+
+        <span class="k">return</span> <span class="n">interact</span><span class="p">(</span><span class="n">do_interact</span><span class="p">,</span>
+                 <span class="n">data_type</span><span class="o">=</span><span class="n">data_types</span><span class="p">,</span>
+                 <span class="n">sample_subset</span><span class="o">=</span><span class="n">sample_subsets</span><span class="p">,</span>
+                 <span class="n">feature_subset</span><span class="o">=</span><span class="n">feature_subsets</span><span class="p">,</span>
+                 <span class="n">categorical_variable</span><span class="o">=</span><span class="n">categorical_variables</span><span class="p">,</span>
+                 <span class="n">score_coefficient</span><span class="o">=</span><span class="n">score_coefficient</span><span class="p">,</span>
+                 <span class="n">draw_labels</span><span class="o">=</span><span class="n">draw_labels</span><span class="p">,</span>
+                 <span class="n">predictor_type</span><span class="o">=</span><span class="n">predictor_types</span><span class="p">,</span>
+                 <span class="n">savefile</span><span class="o">=</span><span class="n">savefile</span><span class="p">)</span>
+</div>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Interactive.interactive_localZ"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.ipython_interact.Interactive.interactive_localZ">[docs]</a>    <span class="k">def</span> <span class="nf">interactive_localZ</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="kn">from</span> <span class="nn">IPython.html.widgets</span> <span class="kn">import</span> <span class="n">interact</span>
+
+        <span class="k">def</span> <span class="nf">do_interact</span><span class="p">(</span><span class="n">data_type</span><span class="o">=</span><span class="s">&#39;expression&#39;</span><span class="p">,</span> <span class="n">sample1</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">sample2</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span>
+                        <span class="n">pCut</span><span class="o">=</span><span class="s">&#39;0.01&#39;</span><span class="p">):</span>
+
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s">&#39;self&#39;</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;{} : {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+
+            <span class="n">pCut</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">pCut</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">pCut</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s">&#39;expression&#39;</span><span class="p">:</span>
+                <span class="n">data_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">expression</span>
+            <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s">&#39;splicing&#39;</span><span class="p">:</span>
+                <span class="n">data_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">splicing</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="n">sample1</span> <span class="ow">in</span> <span class="n">data_obj</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;sample: {}, is not in {} DataFrame, &quot;</span>
+                                 <span class="s">&quot;try a different sample ID&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sample1</span><span class="p">,</span>
+                                                                    <span class="n">data_type</span><span class="p">))</span>
+                <span class="k">return</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="n">sample2</span> <span class="ow">in</span> <span class="n">data_obj</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;sample: {}, is not in {} DataFrame, &quot;</span>
+                                 <span class="s">&quot;try a different sample ID&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sample2</span><span class="p">,</span>
+                                                                    <span class="n">data_type</span><span class="p">))</span>
+                <span class="k">return</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">localZ_result</span> <span class="o">=</span> <span class="n">data_obj</span><span class="o">.</span><span class="n">plot_twoway</span><span class="p">(</span><span class="n">sample1</span><span class="p">,</span> <span class="n">sample2</span><span class="p">,</span>
+                                                      <span class="n">pCut</span><span class="o">=</span><span class="n">pCut</span><span class="p">)</span><span class="o">.</span><span class="n">result_</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;local_z finished, find the result in &quot;</span>
+                             <span class="s">&quot;&lt;this_object&gt;.localZ_result_&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">interact</span><span class="p">(</span><span class="n">do_interact</span><span class="p">,</span>
+                 <span class="n">data_type</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;expression&#39;</span><span class="p">,</span> <span class="s">&#39;splicing&#39;</span><span class="p">),</span>
+                 <span class="n">sample1</span><span class="o">=</span><span class="s">&#39;replaceme&#39;</span><span class="p">,</span>
+                 <span class="n">sample2</span><span class="o">=</span><span class="s">&#39;replaceme&#39;</span><span class="p">,</span>
+                 <span class="n">pCut</span><span class="o">=</span><span class="s">&#39;0.01&#39;</span><span class="p">)</span>
+</div>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Interactive.interactive_plot_modalities_lavalamps"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.ipython_interact.Interactive.interactive_plot_modalities_lavalamps">[docs]</a>    <span class="k">def</span> <span class="nf">interactive_plot_modalities_lavalamps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_subsets</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                                              <span class="n">feature_subsets</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                                              <span class="n">color</span><span class="o">=</span><span class="n">red</span><span class="p">,</span> <span class="n">x_offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                              <span class="n">use_these_modalities</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                                              <span class="n">bootstrapped</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                                              <span class="n">bootstrapped_kws</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                                              <span class="n">savefile</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">do_interact</span><span class="p">(</span><span class="n">sample_subset</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">feature_subset</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                        <span class="n">color</span><span class="o">=</span><span class="n">red</span><span class="p">,</span> <span class="n">x_offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                        <span class="n">use_these_modalities</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                        <span class="n">bootstrapped</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">bootstrapped_kws</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                        <span class="n">savefile</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s">&#39;self&#39;</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;{} : {}</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+
+            <span class="k">assert</span> <span class="p">(</span><span class="n">feature_subset</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">splicing</span><span class="o">.</span><span class="n">feature_subsets</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="n">feature_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">splicing</span><span class="o">.</span><span class="n">feature_subsets</span><span class="p">[</span><span class="n">feature_subset</span><span class="p">]</span>
+
+            <span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">LabelEncoder</span>
+
+            <span class="n">le</span> <span class="o">=</span> <span class="n">LabelEncoder</span><span class="p">()</span>
+            <span class="n">n_in_this_class</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span>
+                <span class="n">le</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">sample_subset</span><span class="p">])))</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="n">n_in_this_class</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s">&quot;this sample designator is not binary&quot;</span><span class="p">)</span>
+
+            <span class="n">sample_series</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">sample_subset</span><span class="p">]</span>
+            <span class="c"># TODO: cast non-boolean binary ids to boolean</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span class="o">.</span><span class="n">data</span><span class="p">[</span>
+                           <span class="n">sample_subset</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="s">&#39;bool&#39;</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s">&quot;this sample designator is not boolean&quot;</span><span class="p">)</span>
+
+            <span class="n">sample_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">sample_subset</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">experiment_design</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">sample_subset</span><span class="p">]]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">splicing</span><span class="o">.</span><span class="n">plot_modalities_lavalamps</span><span class="p">(</span>
+                <span class="n">sample_ids</span><span class="p">,</span> <span class="n">feature_ids</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">x_offset</span><span class="o">=</span><span class="n">x_offset</span><span class="p">,</span>
+                <span class="n">use_these_modalities</span><span class="o">=</span><span class="n">use_these_modalities</span><span class="p">,</span>
+                <span class="n">bootstrapped</span><span class="o">=</span><span class="n">bootstrapped</span><span class="p">,</span> <span class="n">bootstrapped_kws</span><span class="o">=</span><span class="n">bootstrapped_kws</span><span class="p">,</span>
+                <span class="n">ax</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">savefile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">maybe_make_directory</span><span class="p">(</span><span class="n">savefile</span><span class="p">)</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">savefile</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">feature_subsets</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">feature_subsets</span> <span class="o">=</span> <span class="n">Interactive</span><span class="o">.</span><span class="n">get_feature_subsets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                                                              <span class="p">[</span><span class="s">&#39;splicing&#39;</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">sample_subsets</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">sample_subsets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_sample_subsets</span>
+
+        <span class="k">if</span> <span class="n">bootstrapped_kws</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">bootstrapped_kws</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">return</span> <span class="n">interact</span><span class="p">(</span><span class="n">do_interact</span><span class="p">,</span>
+                 <span class="n">sample_subset</span><span class="o">=</span><span class="n">sample_subsets</span><span class="p">,</span> <span class="n">feature_subset</span><span class="o">=</span><span class="n">feature_subsets</span><span class="p">,</span>
+                 <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">x_offset</span><span class="o">=</span><span class="n">x_offset</span><span class="p">,</span>
+                 <span class="n">use_these_modalities</span><span class="o">=</span><span class="n">use_these_modalities</span><span class="p">,</span>
+                 <span class="n">bootstrapped</span><span class="o">=</span><span class="n">bootstrapped</span><span class="p">,</span> <span class="n">bootstrapped_kws</span><span class="o">=</span><span class="n">bootstrapped_kws</span><span class="p">,</span>
+                 <span class="n">savefile</span><span class="o">=</span><span class="n">savefile</span><span class="p">)</span>
+</div>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Interactive.interactive_lavalamp_pooled_inconsistent"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.ipython_interact.Interactive.interactive_lavalamp_pooled_inconsistent">[docs]</a>    <span class="k">def</span> <span class="nf">interactive_lavalamp_pooled_inconsistent</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">sample_subsets</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">feature_subsets</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+            <span class="n">difference_threshold</span><span class="o">=</span><span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">),</span>
+            <span class="n">colors</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;red&#39;</span><span class="p">,</span> <span class="s">&#39;green&#39;</span><span class="p">,</span> <span class="s">&#39;blue&#39;</span><span class="p">,</span> <span class="s">&#39;purple&#39;</span><span class="p">,</span> <span class="s">&#39;yellow&#39;</span><span class="p">],</span> <span class="n">savefile</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">IPython.html.widgets</span> <span class="kn">import</span> <span class="n">interact</span>
+
+        <span class="c"># not sure why nested fxns are required for this, but they are... i</span>
+        <span class="c"># think...</span>
+        <span class="k">def</span> <span class="nf">do_interact</span><span class="p">(</span><span class="n">sample_subset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_sample_subsets</span><span class="p">,</span>
+                        <span class="n">feature_subset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_feature_subsets</span><span class="p">,</span>
+                        <span class="n">difference_threshold</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+                        <span class="n">color</span><span class="o">=</span><span class="n">red</span><span class="p">,</span>
+                        <span class="n">savefile</span><span class="o">=</span><span class="s">&#39;data/last.lavalamp_pooled_inconsistent.pdf&#39;</span><span class="p">):</span>
+
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s">&#39;self&#39;</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;{} : {}</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+
+            <span class="k">assert</span> <span class="p">(</span><span class="n">feature_subset</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">splicing</span><span class="o">.</span><span class="n">feature_subsets</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="n">feature_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">splicing</span><span class="o">.</span><span class="n">feature_subsets</span><span class="p">[</span><span class="n">feature_subset</span><span class="p">]</span>
+            <span class="n">sample_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_subset_to_sample_ids</span><span class="p">(</span><span class="n">sample_subset</span><span class="p">)</span>
+
+            <span class="n">color</span> <span class="o">=</span> <span class="n">str_to_color</span><span class="p">[</span><span class="n">color</span><span class="p">]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">splicing</span><span class="o">.</span><span class="n">plot_lavalamp_pooled_inconsistent</span><span class="p">(</span>
+                <span class="n">sample_ids</span><span class="p">,</span> <span class="n">feature_ids</span><span class="p">,</span> <span class="n">difference_threshold</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">savefile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">maybe_make_directory</span><span class="p">(</span><span class="n">savefile</span><span class="p">)</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">savefile</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">feature_subsets</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">feature_subsets</span> <span class="o">=</span> <span class="n">Interactive</span><span class="o">.</span><span class="n">get_feature_subsets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                                                              <span class="p">[</span><span class="s">&#39;splicing&#39;</span><span class="p">,</span>
+                                                               <span class="s">&#39;expression&#39;</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">sample_subsets</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">sample_subsets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_sample_subsets</span>
+
+        <span class="k">return</span> <span class="n">interact</span><span class="p">(</span><span class="n">do_interact</span><span class="p">,</span>
+                 <span class="n">sample_subset</span><span class="o">=</span><span class="n">sample_subsets</span><span class="p">,</span>
+                 <span class="n">feature_subset</span><span class="o">=</span><span class="n">feature_subsets</span><span class="p">,</span>
+                 <span class="n">difference_threshold</span><span class="o">=</span><span class="n">difference_threshold</span><span class="p">,</span>
+                 <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">,</span>
+                 <span class="n">savefile</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="c"># @staticmethod</span>
+    <span class="c"># def interactive_clusteredheatmap(self):</span>
+    <span class="c">#     def do_interact(data_type=&#39;expression&#39;,</span>
+    <span class="c">#                     sample_subset=self.default_sample_subsets,</span>
+    <span class="c">#                     feature_subset=self.default_feature_subset,</span>
+    <span class="c">#                     metric=&#39;euclidean&#39;,</span>
+    <span class="c">#                     linkage_method=&#39;median&#39;,</span>
+    <span class="c">#                     list_link=&#39;&#39;,</span>
+    <span class="c">#                     savefile=&#39;data/last.clusteredheatmap.pdf&#39;):</span>
+    <span class="c">#</span>
+    <span class="c">#         for k, v in locals().iteritems():</span>
+    <span class="c">#             if k == &#39;self&#39;:</span>
+    <span class="c">#                 continue</span>
+    <span class="c">#             sys.stdout.write(&#39;{} : {}\n&#39;.format(k, v))</span>
+    <span class="c">#</span>
+    <span class="c">#         if feature_subset != &quot;custom&quot; and list_link != &quot;&quot;:</span>
+    <span class="c">#             raise ValueError(</span>
+    <span class="c">#                 &quot;set feature_subset to \&quot;custom\&quot; to use list_link&quot;)</span>
+    <span class="c">#</span>
+    <span class="c">#         if feature_subset == &quot;custom&quot; and list_link == &quot;&quot;:</span>
+    <span class="c">#             raise ValueError(&quot;use a custom list name please&quot;)</span>
+    <span class="c">#</span>
+    <span class="c">#         if feature_subset == &#39;custom&#39;:</span>
+    <span class="c">#             feature_subset = list_link</span>
+    <span class="c">#         elif feature_subset not in self.default_feature_subsets[data_type]:</span>
+    <span class="c">#             warnings.warn(&quot;This feature_subset (&#39;{}&#39;) is not available in &quot;</span>
+    <span class="c">#                           &quot;this data type (&#39;{}&#39;). Falling back on all &quot;</span>
+    <span class="c">#                           &quot;features.&quot;.format(feature_subset, data_type))</span>
+    <span class="c">#</span>
+    <span class="c">#         self.plot_clusteredheatmap(sample_subset=sample_subset,</span>
+    <span class="c">#                                    feature_subset=feature_subset,</span>
+    <span class="c">#                                    data_type=data_type,</span>
+    <span class="c">#                                    metric=metric,</span>
+    <span class="c">#                                    linkage_method=linkage_method)</span>
+    <span class="c">#         plt.tight_layout()</span>
+    <span class="c">#         if savefile != &#39;&#39;:</span>
+    <span class="c">#             # Make the directory if it&#39;s not already there</span>
+    <span class="c">#             self.maybe_make_directory(savefile)</span>
+    <span class="c">#             f = plt.gcf()</span>
+    <span class="c">#             f.savefig(savefile)</span>
+    <span class="c">#</span>
+    <span class="c">#     feature_subsets = Interactive.get_feature_subsets(self,</span>
+    <span class="c">#                                                       [&#39;expression&#39;,</span>
+    <span class="c">#                                                        &#39;splicing&#39;])</span>
+    <span class="c">#</span>
+    <span class="c">#     linkage_method = (&#39;single&#39;, &#39;median&#39;, &#39;centroid&#39;)</span>
+    <span class="c">#     metric = (&#39;euclidean&#39;, &#39;seuclidean&#39;)</span>
+    <span class="c">#     interact(do_interact,</span>
+    <span class="c">#              data_type=(&#39;expression&#39;, &#39;splicing&#39;),</span>
+    <span class="c">#              sample_subset=self.default_sample_subsets,</span>
+    <span class="c">#              feature_subset=feature_subsets,</span>
+    <span class="c">#              metric=metric,</span>
+    <span class="c">#              linkage_method=linkage_method)</span></div></div>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<div class="container">
+    
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2014, Olga Botvinnik, Michael Lovci, Patrick Liu, Yan Song.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
+    </p>
+  </div>
+</footer>
+    Funded by <a href="http://numfocus.org/">NumFOCUS</a> <a
+        href="http://numfocus.org/pages/john_hunter_fellowship_2014.html">John
+    Hunter Technology Fellowship</a> to <a href="http://olgabotvinnik.com/">Olga
+    Botvinnik</a>.<br/>
+    Partially funded by <a href="http://www.nih.gov/">NIH</a> grants NS075449
+    and HG004659 and <a href="http://www.cirm.ca.gov/">CIRM</a> grants RB4-06045
+    and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene
+    Yeo</a>. <br/>
+
+    
+  </body>
+</html>

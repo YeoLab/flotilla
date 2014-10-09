@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>flotilla.data_model.expression &mdash; flotilla 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootswatch-3.2.0/flatly/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="flotilla 0.1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="flotilla" href="../../flotilla.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html">
+          Flotilla</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
+            
+                <li><a href="../../../examples.html">Examples</a></li>
+                <li><a href="http://example.com">Link</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="simple">
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <h1>Source code for flotilla.data_model.expression</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Data types related to gene expression, e.g. from RNA-Seq or microarrays.</span>
+<span class="sd">Included SpikeIn data.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseData</span>
+<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">memoize</span>
+
+
+<div class="viewcode-block" id="ExpressionData"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.expression.ExpressionData">[docs]</a><span class="k">class</span> <span class="nc">ExpressionData</span><span class="p">(</span><span class="n">BaseData</span><span class="p">):</span>
+    <span class="n">_expression_thresh</span> <span class="o">=</span> <span class="mf">0.1</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span>
+                 <span class="n">metadata</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">expression_thresh</span><span class="o">=</span><span class="n">_expression_thresh</span><span class="p">,</span>
+                 <span class="n">feature_rename_col</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">outliers</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">log_base</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">pooled</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">technical_outliers</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">predictor_config_manager</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : pandas.DataFrame</span>
+<span class="sd">            Expression matrix. samples (rows) x features (columns</span>
+<span class="sd">        metadata : pandas.DataFrame</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;initializing expression</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">ExpressionData</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span>
+            <span class="n">data</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span>
+            <span class="n">feature_rename_col</span><span class="o">=</span><span class="n">feature_rename_col</span><span class="p">,</span>
+            <span class="n">outliers</span><span class="o">=</span><span class="n">outliers</span><span class="p">,</span> <span class="n">pooled</span><span class="o">=</span><span class="n">pooled</span><span class="p">,</span>
+            <span class="n">predictor_config_manager</span><span class="o">=</span><span class="n">predictor_config_manager</span><span class="p">,</span>
+            <span class="n">technical_outliers</span><span class="o">=</span><span class="n">technical_outliers</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_type</span> <span class="o">=</span> <span class="s">&#39;expression&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expression_thresh</span> <span class="o">=</span> <span class="n">expression_thresh</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">original_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">expression_thresh</span><span class="p">]</span>
+
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;done initializing expression</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_base</span> <span class="o">=</span> <span class="n">log_base</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_base</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">+</span> <span class="o">.</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_base</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feature_data</span> <span class="o">=</span> <span class="n">metadata</span>
+
+        <span class="c"># This may not be totally kosher.... but original data is in</span>
+        <span class="c"># self.original_data</span>
+        <span class="k">if</span> <span class="n">outliers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">outliers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">outliers</span><span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">outliers</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">expression_thresh</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">pooled</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pooled</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pooled</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">pooled</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">expression_thresh</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_feature_sets</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_subsets</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+    <span class="c"># def reduce(self, sample_ids=None, feature_ids=None,</span>
+    <span class="c">#            featurewise=False, reducer=PCAViz, standardize=True,</span>
+    <span class="c">#            title=&#39;&#39;, reducer_kwargs=None, color=None, groupby=None,</span>
+    <span class="c">#            label_to_color=None, label_to_marker=None,</span>
+    <span class="c">#            order=None, x_pc=&#39;pc_1&#39;, y_pc=&#39;pc_1&#39;):</span>
+    <span class="c">#     &quot;&quot;&quot;Make and memoize a reduced dimensionality representation of data</span>
+    <span class="c">#</span>
+    <span class="c">#     Parameters</span>
+    <span class="c">#     ----------</span>
+    <span class="c">#     sample_ids : None or list of strings</span>
+    <span class="c">#         If None, all sample ids will be used, else only the sample ids</span>
+    <span class="c">#         specified</span>
+    <span class="c">#     feature_ids : None or list of strings</span>
+    <span class="c">#         If None, all features will be used, else only the features</span>
+    <span class="c">#         specified</span>
+    <span class="c">#     featurewise : bool</span>
+    <span class="c">#         Whether or not to use the features as the &quot;samples&quot;, e.g. if you</span>
+    <span class="c">#         want to reduce the features in to &quot;sample-space&quot; instead of</span>
+    <span class="c">#         reducing the samples into &quot;feature-space&quot;</span>
+    <span class="c">#     standardize : bool</span>
+    <span class="c">#         Whether or not to &quot;whiten&quot; (make all variables uncorrelated) and</span>
+    <span class="c">#         mean-center via sklearn.preprocessing.StandardScaler</span>
+    <span class="c">#     title : str</span>
+    <span class="c">#         Title of the plot</span>
+    <span class="c">#     reducer_kwargs : dict</span>
+    <span class="c">#         Any additional arguments to send to the reducer</span>
+    <span class="c">#</span>
+    <span class="c">#     Returns</span>
+    <span class="c">#     -------</span>
+    <span class="c">#     reducer_object : flotilla.compute.reduce.ReducerViz</span>
+    <span class="c">#         A ready-to-plot object containing the reduced space</span>
+    <span class="c">#     &quot;&quot;&quot;</span>
+    <span class="c">#     return super(ExpressionData, self).reduce(</span>
+    <span class="c">#         self.data, sample_ids=sample_ids, feature_ids=feature_ids,</span>
+    <span class="c">#         featurewise=featurewise, reducer=reducer, standardize=standardize,</span>
+    <span class="c">#         title=title, reducer_kwargs=reducer_kwargs, groupby=groupby,</span>
+    <span class="c">#         label_to_color=label_to_color, label_to_marker=label_to_marker,</span>
+    <span class="c">#         order=order, color=color, x_pc=x_pc, y_pc=y_pc)</span>
+
+<div class="viewcode-block" id="ExpressionData.twoway"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.expression.ExpressionData.twoway">[docs]</a>    <span class="k">def</span> <span class="nf">twoway</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample1</span><span class="p">,</span> <span class="n">sample2</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">..visualize.expression</span> <span class="kn">import</span> <span class="n">TwoWayScatterViz</span>
+
+        <span class="n">pCut</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;p_value_cutoff&#39;</span><span class="p">]</span>
+        <span class="n">this_name</span> <span class="o">=</span> <span class="s">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">sample1</span><span class="p">,</span> <span class="n">sample2</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">pCut</span><span class="p">)])</span>
+        <span class="k">if</span> <span class="n">this_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">localZ_dict</span><span class="p">:</span>
+            <span class="n">vz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">localZ_dict</span><span class="p">[</span><span class="n">this_name</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">rename_axis</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_renamer</span><span class="p">(),</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">vz</span> <span class="o">=</span> <span class="n">TwoWayScatterViz</span><span class="p">(</span><span class="n">sample1</span><span class="p">,</span> <span class="n">sample2</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">localZ_dict</span><span class="p">[</span><span class="n">this_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">vz</span>
+
+        <span class="k">return</span> <span class="n">vz</span>
+</div>
+<div class="viewcode-block" id="ExpressionData.plot_twoway"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.expression.ExpressionData.plot_twoway">[docs]</a>    <span class="k">def</span> <span class="nf">plot_twoway</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample1</span><span class="p">,</span> <span class="n">sample2</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">vz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">twoway</span><span class="p">(</span><span class="n">sample1</span><span class="p">,</span> <span class="n">sample2</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">vz</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">vz</span>
+</div>
+    <span class="k">def</span> <span class="nf">_calculate_linkage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_ids</span><span class="p">,</span> <span class="n">feature_ids</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s">&#39;euclidean&#39;</span><span class="p">,</span>
+                           <span class="n">linkage_method</span><span class="o">=</span><span class="s">&#39;average&#39;</span><span class="p">,</span> <span class="n">standardize</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">ExpressionData</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_calculate_linkage</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">sample_ids</span><span class="o">=</span><span class="n">sample_ids</span><span class="p">,</span> <span class="n">feature_ids</span><span class="o">=</span><span class="n">feature_ids</span><span class="p">,</span>
+            <span class="n">standardize</span><span class="o">=</span><span class="n">standardize</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">metric</span><span class="p">,</span>
+            <span class="n">linkage_method</span><span class="o">=</span><span class="n">linkage_method</span><span class="p">)</span>
+
+    <span class="nd">@memoize</span>
+<div class="viewcode-block" id="ExpressionData.binify"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.expression.ExpressionData.binify">[docs]</a>    <span class="k">def</span> <span class="nf">binify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subset</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">require_min_samples</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span> <span class="o">-</span> <span class="n">data</span><span class="o">.</span><span class="n">min</span><span class="p">())</span> <span class="o">/</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">data</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
+        <span class="c"># vmax = data.abs().max().max()</span>
+        <span class="c"># vmin = -vmax</span>
+        <span class="c"># bins = np.linspace(vmin, vmax, 10)</span>
+        <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c"># print &#39;bins:&#39;, bins</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">ExpressionData</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">binify</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">bins</span><span class="p">)</span>
+
+</div></div>
+<div class="viewcode-block" id="SpikeInData"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.expression.SpikeInData">[docs]</a><span class="k">class</span> <span class="nc">SpikeInData</span><span class="p">(</span><span class="n">ExpressionData</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class for Spikein data and associated functions</span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+
+
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">feature_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">predictor_config_manager</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">technical_outliers</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Constructor for</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data, experiment_design_data</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SpikeInData</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">feature_data</span><span class="p">,</span>
+                                          <span class="n">technical_outliers</span><span class="o">=</span><span class="n">technical_outliers</span><span class="p">,</span>
+                                          <span class="n">predictor_config_manager</span><span class="o">=</span><span class="n">predictor_config_manager</span><span class="p">)</span>
+
+        <span class="c"># def spikeins_violinplot(self):</span>
+        <span class="c">#     import matplotlib.pyplot as plt</span>
+        <span class="c">#     import seaborn as sns</span>
+        <span class="c">#     import numpy as np</span>
+        <span class="c">#</span>
+        <span class="c">#     fig, axes = plt.subplots(nrows=5, figsize=(16, 20), sharex=True,</span>
+        <span class="c">#                              sharey=True)</span>
+        <span class="c">#     ercc_concentrations = \</span>
+        <span class="c">#         ercc_controls_analysis.mix1_molecules_per_ul.copy()</span>
+        <span class="c">#     ercc_concentrations.sort()</span>
+        <span class="c">#</span>
+        <span class="c">#     for ax, (celltype, celltype_df) in \</span>
+        <span class="c">#             zip(axes.flat, tpm.ix[spikeins].groupby(</span>
+        <span class="c">#                     sample_id_to_celltype_, axis=1)):</span>
+        <span class="c">#         print celltype</span>
+        <span class="c">#         #     fig, ax = plt.subplots(figsize=(16, 4))</span>
+        <span class="c">#         x_so_far = 0</span>
+        <span class="c">#         #     ax.set_yscale(&#39;log&#39;)</span>
+        <span class="c">#         xticklabels = []</span>
+        <span class="c">#         for spikein_type, spikein_df in celltype_df.groupby(</span>
+        <span class="c">#                 spikein_to_type):</span>
+        <span class="c">#             #         print spikein_df.shape</span>
+        <span class="c">#             df = spikein_df.T + np.random.uniform(0, 0.01,</span>
+        <span class="c">#                                                   size=spikein_df.T.shape)</span>
+        <span class="c">#             df = np.log2(df)</span>
+        <span class="c">#             if spikein_type == &#39;ERCC&#39;:</span>
+        <span class="c">#                 df = df[ercc_concentrations.index]</span>
+        <span class="c">#             xticklabels.extend(df.columns.tolist())</span>
+        <span class="c">#             color = &#39;husl&#39; if spikein_type == &#39;ERCC&#39; else &#39;Greys_d&#39;</span>
+        <span class="c">#             sns.violinplot(df, ax=ax,</span>
+        <span class="c">#                            positions=np.arange(df.shape[1])+x_so_far,</span>
+        <span class="c">#                            linewidth=0, inner=&#39;none&#39;, color=color)</span>
+        <span class="c">#</span>
+        <span class="c">#             x_so_far += df.shape[1]</span>
+        <span class="c">#</span>
+        <span class="c">#         ax.set_title(celltype)</span>
+        <span class="c">#         ax.set_xticks(np.arange(x_so_far))</span>
+        <span class="c">#         ax.set_xticklabels(xticklabels, rotation=90, fontsize=8)</span>
+        <span class="c">#         ax.set_ylabel(&#39;$\\log_2$ TPM&#39;)</span>
+        <span class="c">#</span>
+        <span class="c">#         xmin, xmax = -0.5, x_so_far - 0.5</span>
+        <span class="c">#</span>
+        <span class="c">#         ax.hlines(0, xmin, xmax)</span>
+        <span class="c">#         ax.set_xlim(xmin, xmax)</span>
+        <span class="c">#         sns.despine()</span>
+        <span class="c">#</span>
+        <span class="c">#     def samples_violinplot():</span>
+        <span class="c">#         fig, axes = plt.subplots(nrows=3, figsize=(16, 6))</span>
+        <span class="c">#</span>
+        <span class="c">#         for ax, (spikein_type, df) in zip(axes,</span>
+        <span class="c">#                                           tpm.groupby(spikein_to_type,</span>
+        <span class="c">#                                                       axis=0)):</span>
+        <span class="c">#             print spikein_type, df.shape</span>
+        <span class="c">#             if df.shape[0] &gt; 1:</span>
+        <span class="c">#                 sns.violinplot(np.log2(df + 1), ax=ax, linewidth=0.1)</span>
+        <span class="c">#                 ax.set_xticks([])</span>
+        <span class="c">#                 ax.set_xlabel(&#39;&#39;)</span>
+        <span class="c">#</span>
+        <span class="c">#             else:</span>
+        <span class="c">#                 x = np.arange(df.shape[1])</span>
+        <span class="c">#                 ax.bar(np.arange(df.shape[1]),</span>
+        <span class="c">#                        np.log2(df.ix[spikein_type]),</span>
+        <span class="c">#                        color=green)</span>
+        <span class="c">#                 ax.set_xticks(x + 0.4)</span>
+        <span class="c">#                 ax.set_xticklabels(df.columns, rotation=60)</span>
+        <span class="c">#                 sns.despine()</span>
+        <span class="c">#</span>
+        <span class="c">#             ax.set_title(spikein_type)</span>
+        <span class="c">#             ax.set_xlim(0, tpm.shape[1])</span>
+        <span class="c">#             ax.set_ylabel(&#39;$\\log_2$ TPM&#39;)</span>
+        <span class="c">#         sns.despine()</span></div>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<div class="container">
+    
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2014, Olga Botvinnik, Michael Lovci, Patrick Liu, Yan Song.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
+    </p>
+  </div>
+</footer>
+    Funded by <a href="http://numfocus.org/">NumFOCUS</a> <a
+        href="http://numfocus.org/pages/john_hunter_fellowship_2014.html">John
+    Hunter Technology Fellowship</a> to <a href="http://olgabotvinnik.com/">Olga
+    Botvinnik</a>.<br/>
+    Partially funded by <a href="http://www.nih.gov/">NIH</a> grants NS075449
+    and HG004659 and <a href="http://www.cirm.ca.gov/">CIRM</a> grants RB4-06045
+    and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene
+    Yeo</a>. <br/>
+
+    
+  </body>
+</html>
