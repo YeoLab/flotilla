@@ -324,7 +324,7 @@ class BaseData(object):
                                       label_to_marker=None,
                                       groupby=None, order=None, color=None,
                                       reduce_kwargs=None,
-                                      title='',
+                                      title='', plot_violins=True,
                                       **plotting_kwargs):
         """Principal component-like analysis of measurements
 
@@ -345,6 +345,10 @@ class BaseData(object):
         reducer : flotilla.visualize.DecompositionViz
             Which decomposition object to use. Must be a flotilla object,
             as this has built-in compatibility with pandas.DataFrames.
+        plot_violins : bool
+            Whether or not to make the violinplots of the top features. This
+            can take a long time, so to save time you can turn it off if you
+            just want a quick look at the PCA.
 
 
         Returns
@@ -372,7 +376,8 @@ class BaseData(object):
                                       y_pc="pc_" + str(y_pc))
         # pca(show_vectors=True,
         #     **plotting_kwargs)
-        return visualized(title=title, **plotting_kwargs)
+        return visualized(title=title,
+                          plot_violins=plot_violins, **plotting_kwargs)
 
     def plot_pca(self, **kwargs):
         return self.plot_dimensionality_reduction(reducer=DataFramePCA,
@@ -731,7 +736,8 @@ class BaseData(object):
                      phenotype_groupby=None,
                      phenotype_order=None, color=None,
                      phenotype_to_color=None,
-                     phenotype_to_marker=None, xlabel=None, ylabel=None):
+                     phenotype_to_marker=None, xlabel=None, ylabel=None,
+                     nmf_space=False):
 
         """
         Plot the violinplot of a splicing event (should also show DataFrameNMF movement)
@@ -741,10 +747,12 @@ class BaseData(object):
         if not isinstance(feature_ids, pd.Index):
             feature_ids = [feature_id]
 
-        ncols = 2  #if self.data_type == 'splicing' else 1
+        ncols = 2 if nmf_space else 1
 
         for feature_id in feature_ids:
             fig, axes = plt.subplots(ncols=ncols, figsize=(4 * ncols, 4))
+            if not nmf_space:
+                axes = [axes]
             # if self.data_type == 'expression':
             #     axes = [axes]
 
@@ -753,15 +761,16 @@ class BaseData(object):
                              phenotype_order=phenotype_order, ax=axes[0],
                              color=color)
             # if self.data_type == 'splicing':
-            try:
-                self.plot_nmf_space_transitions(
-                    feature_id, groupby=phenotype_groupby,
-                    phenotype_to_color=phenotype_to_color,
-                    phenotype_to_marker=phenotype_to_marker,
-                    order=phenotype_order, ax=axes[1],
-                    xlabel=xlabel, ylabel=ylabel)
-            except KeyError:
-                continue
+            if nmf_space:
+                try:
+                    self.plot_nmf_space_transitions(
+                        feature_id, groupby=phenotype_groupby,
+                        phenotype_to_color=phenotype_to_color,
+                        phenotype_to_marker=phenotype_to_marker,
+                        order=phenotype_order, ax=axes[1],
+                        xlabel=xlabel, ylabel=ylabel)
+                except KeyError:
+                    continue
             sns.despine()
 
     def nmf_space_positions(self, groupby, min_samples_per_group=5):
@@ -820,4 +829,5 @@ class BaseData(object):
             self.plot_feature(feature_id, phenotype_groupby=phenotype_groupby,
                               phenotype_order=phenotype_order, color=color,
                               phenotype_to_color=phenotype_to_color,
-                              phenotype_to_marker=phenotype_to_marker)
+                              phenotype_to_marker=phenotype_to_marker,
+                              nmf_space=True)

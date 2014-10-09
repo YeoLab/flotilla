@@ -6,7 +6,7 @@ import data_model
 from .external import make_study_datapackage
 import visualize
 
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 try:
     get_ipython().magic(u'matplotlib inline')
@@ -23,12 +23,10 @@ def embark(study_name, load_species_data=True):
     data_package_url : str
         A URL to a datapackage.json file
 
-
     Returns
     -------
     study : flotilla.Study
         A biological study created from the data package specified
-
     """
     try:
         try:

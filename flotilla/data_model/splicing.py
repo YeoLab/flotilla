@@ -271,21 +271,22 @@ class SplicingData(BaseData):
         pie_axis.pie(map(int, modality_count.values()),
                      labels=modality_count.keys(), autopct='%1.1f%%')
 
-    def plot_event(self, feature_id, sample_ids=None,
-                   phenotype_groupby=None,
-                   phenotype_order=None, color=None,
-                   phenotype_to_color=None,
-                   phenotype_to_marker=None):
-        self.plot_feature(feature_id, sample_ids,
-                          phenotype_groupby, phenotype_order,
-                          color, phenotype_to_color, phenotype_to_marker)
+    # def plot_event(self, feature_id, sample_ids=None,
+    #                phenotype_groupby=None,
+    #                phenotype_order=None, color=None,
+    #                phenotype_to_color=None,
+    #                phenotype_to_marker=None):
+    #     self.plot_feature(feature_id, sample_ids,
+    #                       phenotype_groupby, phenotype_order,
+    #                       color, phenotype_to_color, phenotype_to_marker)
 
 
     def plot_feature(self, feature_id, sample_ids=None,
                      phenotype_groupby=None,
                      phenotype_order=None, color=None,
                      phenotype_to_color=None,
-                     phenotype_to_marker=None, xlabel=None, ylabel=None):
+                     phenotype_to_marker=None, xlabel=None, ylabel=None,
+                     nmf_space=False):
         nmf_space_positions = self.nmf_space_positions(phenotype_groupby)
 
         # Get the correct included/excluded labeling for the x and y axes
@@ -309,7 +310,7 @@ class SplicingData(BaseData):
                                                phenotype_order, color,
                                                phenotype_to_color,
                                                phenotype_to_marker, xlabel,
-                                               ylabel)
+                                               ylabel, nmf_space=nmf_space)
 
     @memoize
     def pooled_inconsistent(self, sample_ids, feature_ids=None,
