@@ -109,7 +109,7 @@ RSYNC_DELETE_OPT = --delete
 endif
 
 init_gh_pages:
-    echo "DEPLOY_DIR is" $(DEPLOY_DIR)
+	echo "DEPLOY_DIR is" $(DEPLOY_DIR)
 	rm -rf $(DEPLOY_DIR)
 	mkdir -p $(DEPLOY_DIR)
 	cd $(DEPLOY_DIR); git init;\
