@@ -1,19 +1,7 @@
-FROM ubuntu
+FROM mlovci/anaconda_python
 
 MAINTAINER Michael Lovci <michaeltlovci@gmail.com>
 
-RUN apt-get update && apt-get install -q -y wget libglib2.0-0 libsm6 libx11-dev libxrender1 libfontconfig1 libxext6 gcc ftp build-essential zlibc zlib1g zlib1g-dev openssl libssl-dev mysql-server libmysqlclient-dev ghostscript zip emacs npm git curl libncurses5-dev default-jre default-jdk
-
-ADD http://repo.continuum.io/miniconda/Miniconda-3.7.0-Linux-x86_64.sh /home/root/software/
-
-WORKDIR /home/root/software
-
-RUN ["chmod", "u+x", "Miniconda-3.7.0-Linux-x86_64.sh"]
-RUN ./Miniconda-3.7.0-Linux-x86_64.sh -b -p /usr/local/miniconda -f
-
-ENV PATH /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/miniconda/bin
-RUN conda install --yes cython numpy scipy scikit-learn pip pandas ipython jinja2 tornado pyzmq matplotlib pyqt
-RUN pip install patsy && pip install seaborn brewer2mpl networkx semantic_version statsmodels htseq misopy pybedtools gffutils cutadapt pysam
 RUN pip install -e git://github.com/YeoLab/flotilla.git@master#egg=flotilla
 
 RUN adduser --disabled-password --gecos '' --home=/home/flotilla flotilla
