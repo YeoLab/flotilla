@@ -1,7 +1,5 @@
 """
-
-general utilities
-
+General use utilities
 """
 
 from functools import wraps
@@ -13,6 +11,11 @@ import sys
 import subprocess
 import functools
 import time
+import cPickle
+import gzip
+import tempfile
+
+import pandas as pd
 
 
 class TimeoutError(Exception):
@@ -74,8 +77,7 @@ def install_development_package(package_location):
 
 
 def memoize(obj):
-    """
-    'memoize' aka remember the output from a function and return that,
+    """'Memoize' aka remember the output from a function and return that,
     rather than recalculating
 
     Stolen from:
@@ -180,3 +182,94 @@ def natural_sort(l):
     convert = lambda text: int(text) if text.isdigit() else text.lower()
     alphanum_key = lambda key: [convert(c) for c in re.split('([0-9]+)', key)]
     return sorted(l, key=alphanum_key)
+
+
+def to_base_file_tuple(tup):
+    """for making new packages, auto-loadable data!"""
+    assert len(tup) == 2
+    return "os.path.join(study_data_dir, %s)" % os.path.basename(tup[0]), \
+           tup[1]
+
+
+def add_package_data_resource(self, file_name, data_df,
+                              toplevel_package_dir,
+                              file_write_mode="tsv"):
+    writer = getattr(self, "_write_" + file_write_mode)
+    file_base = os.path.basename(file_name)
+    rsc_file = os.path.join(toplevel_package_dir, "study_data",
+                            file_base + "." + file_write_mode)
+    writer(data_df, rsc_file)
+    return (rsc_file, file_write_mode)
+
+
+def validate_params(self):
+    """make sure that all necessary attributes are present"""
+    for param in self.minimal_study_parameters:
+        try:
+            x = getattr(self, param)
+        except KeyError:
+            raise AssertionError("Missing minimal parameter %s" % param)
+
+
+def load_pickle_df(file_name):
+    return pd.read_pickle(file_name)
+
+
+def write_pickle_df(df, file_name):
+    df.to_pickle(file_name)
+
+
+def load_gzip_pickle_df(file_name):
+    with gzip.open(file_name, 'r') as f:
+        return cPickle.load(f)
+
+
+def write_gzip_pickle_df(df, file_name):
+    tmpfile_h, tmpfile = tempfile.mkstemp()
+    df.to_pickle(tmpfile)
+    subprocess.call(['gzip -f %s' % tempfile])
+    subprocess.call(['mv %s %s' % (tempfile, file_name)])
+
+
+def load_tsv(file_name, compression=None):
+    return pd.read_table(file_name, index_col=0, compression=compression)
+
+
+def load_json(filename, compression=None):
+    """
+    Parameters
+    ----------
+    filename : str
+        Name of the json file toread
+    compression : str
+        Not used, only for  compatibility with other load functions
+
+    Returns
+    -------
+
+
+    Raises
+    ------
+    """
+    return pd.read_json(filename)
+
+
+def write_tsv(df, file_name):
+    df.to_csv(file_name, sep='\t')
+
+
+def load_csv(file_name, compression=None):
+    return pd.read_csv(file_name, index_col=0, compression=compression)
+
+
+def write_csv(df, file_name):
+    df.to_csv(file_name)
+
+
+def get_loading_method(self, file_name):
+    """loading_methods for loading from file"""
+    return getattr(self, "_load_" + file_name)
+
+
+def load(self, file_name, file_type='pickle_df'):
+    return self._get_loading_method(file_type)(file_name)
