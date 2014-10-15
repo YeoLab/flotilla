@@ -3,12 +3,7 @@
 flotilla
 ========
 
-![flotilla Logo](flotilla.png)
-
-![NumFOCUS logo](http://numfocus.org/theme/img/numfocus_logo.png)
-
-Proudly sponsored by a NumFOCUS John Hunter Technical Fellowship to Olga
-Botvinnik.
+![flotilla Logo](https://github.com/YeoLab/flotilla/blob/master/flotilla.png)
 
 Installation instructions
 =========================
@@ -122,4 +117,9 @@ Adjust parameters to explore valid parameter spaces.
 For example, you can manually select `all_genes` as the `feature_subset`
 from the drop-down menu that appears after running these interactive functions.
 
+
+![NumFOCUS logo](http://numfocus.org/theme/img/numfocus_logo.png)
+
+Proudly sponsored by a NumFOCUS John Hunter Technical Fellowship to Olga
+Botvinnik.
 
