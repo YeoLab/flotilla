@@ -40,7 +40,7 @@ class BaseData(object):
 
     def __init__(self, data=None, metadata=None,
                  species=None, feature_rename_col=None, outliers=None,
-                 min_samples=MINIMUM_SAMPLES, pooled=None,
+                 minimum_samples=MINIMUM_SAMPLES, pooled=None,
                  technical_outliers=None,
                  predictor_config_manager=None):
         """Base class for biological data measurements
@@ -59,7 +59,7 @@ class BaseData(object):
         if technical_outliers is not None:
             good_samples = ~self.data.index.isin(technical_outliers)
             self.data = self.data.ix[good_samples]
-        self.data = self.data.dropna(thresh=min_samples, axis=1)
+        self.data = self.data.dropna(thresh=minimum_samples, axis=1)
 
         self.pooled_samples = pooled if pooled is not None else []
         self.outlier_samples = outliers if outliers is not None else []
@@ -70,7 +70,7 @@ class BaseData(object):
         if self.feature_data is None:
             self.feature_data = pd.DataFrame(index=self.data.columns)
         self.feature_rename_col = feature_rename_col
-        self.min_samples = min_samples
+        self.min_samples = minimum_samples
         self.default_feature_sets = []
         self.data_type = None
 

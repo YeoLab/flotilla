@@ -6,7 +6,7 @@ import sys
 
 import numpy as np
 
-from .base import BaseData, MINIMUM_SAMPLES
+from .base import BaseData
 from ..util import memoize
 
 EXPRESSION_THRESH = .1
@@ -15,7 +15,7 @@ class ExpressionData(BaseData):
     def __init__(self, data,
                  metadata=None, expression_thresh=EXPRESSION_THRESH,
                  feature_rename_col=None, outliers=None, log_base=None,
-                 pooled=None, plus_one=False, min_samples=MINIMUM_SAMPLES,
+                 pooled=None, plus_one=False, minimum_samples=0,
                  technical_outliers=None, predictor_config_manager=None):
         """
         Parameters
@@ -36,7 +36,7 @@ class ExpressionData(BaseData):
         super(ExpressionData, self).__init__(
             data, metadata,
             feature_rename_col=feature_rename_col,
-            outliers=outliers, pooled=pooled, min_samples=min_samples,
+            outliers=outliers, pooled=pooled, minimum_samples=minimum_samples,
             predictor_config_manager=predictor_config_manager,
             technical_outliers=technical_outliers)
         self.data_type = 'expression'

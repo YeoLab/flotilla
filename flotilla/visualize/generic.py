@@ -227,16 +227,19 @@ def simple_twoway_scatter(sample1, sample2, **kwargs):
 
     """
     joint_kws = kwargs.pop('joint_kws', {})
-    joint_kws.setdefault('alpha', 0.5)
 
+    kind = kwargs.pop('kind', 'scatter')
     marginal_kws = kwargs.pop('marginal_kws', {})
-    vmin = min(sample1.min(), sample2.min())
-    vmax = max(sample1.max(), sample2.max())
-    bins = np.linspace(vmin, vmax, 50)
-    marginal_kws.setdefault('bins', bins)
+    if kind == 'scatter':
+        vmin = min(sample1.min(), sample2.min())
+        vmax = max(sample1.max(), sample2.max())
+        bins = np.linspace(vmin, vmax, 50)
+        marginal_kws.setdefault('bins', bins)
+    if kind not in ('reg', 'resid'):
+        joint_kws.setdefault('alpha', 0.5)
 
     jointgrid = sns.jointplot(sample1, sample2, joint_kws=joint_kws,
-                              marginal_kws=marginal_kws, **kwargs)
+                              marginal_kws=marginal_kws, kind=kind, **kwargs)
     xmin, xmax, ymin, ymax = jointgrid.ax_joint.axis()
 
     xmin = max(xmin, sample1.min() - .1)

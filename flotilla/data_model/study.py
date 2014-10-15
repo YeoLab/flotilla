@@ -13,9 +13,8 @@ import numpy as np
 import pandas as pd
 import semantic_version
 
-from .base import MINIMUM_SAMPLES
 from .metadata import MetaData, PHENOTYPE_COL, POOLED_COL
-from .expression import ExpressionData, SpikeInData, EXPRESSION_THRESH
+from .expression import ExpressionData, SpikeInData
 from .quality_control import MappingStatsData, MIN_READS
 from .splicing import SplicingData, FRACTION_DIFF_THRESH
 from ..compute.predict import PredictorConfigManager
@@ -23,6 +22,8 @@ from ..visualize.color import blue
 from ..visualize.ipython_interact import Interactive
 from ..external import data_package_url_to_dict, check_if_already_downloaded, \
     make_study_datapackage, FLOTILLA_DOWNLOAD_DIR
+from ..util import load_csv, load_json, load_tsv, load_gzip_pickle_df, \
+    load_pickle_df
 
 
 SPECIES_DATA_PACKAGE_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects'
@@ -31,119 +32,8 @@ SPECIES_DATA_PACKAGE_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects'
 # FLOTILLA_DIR = os.path.dirname(flotilla.__file__)
 
 
-class StudyFactory(object):
-    _accepted_filetypes = 'tsv'
 
-    def __init__(self):
-        self.minimal_study_parameters = set()
-        self.new_study_params = set()
-        self.getters = []
-        self.default_sample_subset = None
-        self.default_feature_subset = None
-
-    def __setattr__(self, key, value):
-        """Check if the attribute already exists and warns on overwrite.
-        """
-        if hasattr(self, key):
-            warnings.warn('Over-writing attribute {}'.format(key))
-        super(StudyFactory, self).__setattr__(key, value)
-
-    @staticmethod
-    def _to_base_file_tuple(tup):
-        """for making new packages, auto-loadable data!"""
-        assert len(tup) == 2
-        return "os.path.join(study_data_dir, %s)" % os.path.basename(tup[0]), \
-               tup[1]
-
-    def _add_package_data_resource(self, file_name, data_df,
-                                   toplevel_package_dir,
-                                   file_write_mode="tsv"):
-        writer = getattr(self, "_write_" + file_write_mode)
-        file_base = os.path.basename(file_name)
-        rsc_file = os.path.join(toplevel_package_dir, "study_data",
-                                file_base + "." + file_write_mode)
-        writer(data_df, rsc_file)
-        return (rsc_file, file_write_mode)
-
-    def validate_params(self):
-        """make sure that all necessary attributes are present"""
-        for param in self.minimal_study_parameters:
-            try:
-                x = getattr(self, param)
-            except KeyError:
-                raise AssertionError("Missing minimal parameter %s" % param)
-
-    @staticmethod
-    def _load_pickle_df(file_name):
-        return pd.read_pickle(file_name)
-
-    @staticmethod
-    def _write_pickle_df(df, file_name):
-        df.to_pickle(file_name)
-
-    @staticmethod
-    def _load_gzip_pickle_df(file_name):
-        import cPickle
-        import gzip
-
-        with gzip.open(file_name, 'r') as f:
-            return cPickle.load(f)
-
-    @staticmethod
-    def _write_gzip_pickle_df(df, file_name):
-        import tempfile
-
-        tmpfile_h, tmpfile = tempfile.mkstemp()
-        df.to_pickle(tmpfile)
-        import subprocess
-
-        subprocess.call(['gzip -f %s' % tempfile])
-        subprocess.call(['mv %s %s' % (tempfile, file_name)])
-
-    @staticmethod
-    def _load_tsv(file_name, compression=None):
-        return pd.read_table(file_name, index_col=0, compression=compression)
-
-    @staticmethod
-    def _load_json(filename, compression=None):
-        """
-        Parameters
-        ----------
-        filename : str
-            Name of the json file toread
-        compression : str
-            Not used, only for  compatibility with other load functions
-
-        Returns
-        -------
-
-
-        Raises
-        ------
-        """
-        return pd.read_json(filename)
-
-    @staticmethod
-    def _write_tsv(df, file_name):
-        df.to_csv(file_name, sep='\t')
-
-    @staticmethod
-    def _load_csv(file_name, compression=None):
-        return pd.read_csv(file_name, index_col=0, compression=compression)
-
-    @staticmethod
-    def _write_csv(df, file_name):
-        df.to_csv(file_name)
-
-    def _get_loading_method(self, file_name):
-        """loading_methods for loading from file"""
-        return getattr(self, "_load_" + file_name)
-
-    def load(self, file_name, file_type='pickle_df'):
-        return self._get_loading_method(file_type)(file_name)
-
-
-class Study(StudyFactory):
+class Study(object):
     """A biological study, with associated metadata, expression, and splicing
     data.
     """
@@ -161,11 +51,11 @@ class Study(StudyFactory):
                     'mapping_stats_data': MappingStatsData,
                     'spikein_data': SpikeInData}
 
-    readers = {'tsv': StudyFactory._load_tsv,
-               'csv': StudyFactory._load_csv,
-               'json': StudyFactory._load_json,
-               'pickle_df': StudyFactory._load_pickle_df,
-               'gzip_pickle_df': StudyFactory._load_gzip_pickle_df}
+    readers = {'tsv': load_tsv,
+               'csv': load_csv,
+               'json': load_json,
+               'pickle_df': load_pickle_df,
+               'gzip_pickle_df': load_gzip_pickle_df}
 
     _default_reducer_kwargs = {'whiten': False,
                                'show_point_labels': False,
@@ -173,13 +63,13 @@ class Study(StudyFactory):
 
     _default_plot_kwargs = {'marker': 'o', 'color': blue}
 
-    def __init__(self, sample_metadata, version, expression_data=None,
-                 splicing_data=None,
+    def __init__(self, sample_metadata, version='0.1.0', expression_data=None,
                  expression_feature_data=None,
                  expression_feature_rename_col='gene_name',
                  expression_log_base=None,
-                 expression_thresh=EXPRESSION_THRESH,
+                 expression_thresh=-np.inf,
                  expression_plus_one=False,
+                 splicing_data=None,
                  splicing_feature_data=None,
                  splicing_feature_rename_col='gene_name',
                  mapping_stats_data=None,
@@ -197,7 +87,7 @@ class Study(StudyFactory):
                  phenotype_to_color=None,
                  phenotype_to_marker=None,
                  license=None, title=None, sources=None,
-                 minimum_samples=MINIMUM_SAMPLES):
+                 minimum_samples=0):
         """Construct a biological study
 
         This class only accepts data, no filenames. All data must already
@@ -205,27 +95,40 @@ class Study(StudyFactory):
 
         Parameters
         ----------
-        #TODO: Maybe make these all kwargs?
         sample_metadata : pandas.DataFrame
-            Only required parameter. Samples as the index, with features as
-            columns. If there is a column named "color", this will be used as
-            the color for that sample in DataFramePCA and other plots. If there is no
-            color but there is a column named "celltype", then colors for
-            each of the different celltypes will be auto-created.
+            The only required parameter. Samples as the index, with features as
+            columns. Required column: "phenotype". If there is a boolean
+            column "pooled", this will be used to separate pooled from single
+            cells. Similarly, the column "outliers" will also be used to
+            separate outlier cells from the rest.
+        version : str
+            A string describing the semantic version of the data. Must be in:
+            major.minor.patch format, as the "patch" number will be increased
+            if you change something in the study and then study.save() it.
+            (default "0.1.0")
         expression_data : pandas.DataFrame
             Samples x feature dataframe of gene expression measurements,
             e.g. from an RNA-Seq or a microarray experiment. Assumed to be
-            log-normal (i.e. not log-transformed)
+            log-transformed, i.e. you took the log of it. (default None)
         expression_feature_data : pandas.DatFrame
-            features x other_features dataframe describing other parameters
+            Features x annotations dataframe describing other parameters
             of the gene expression features, e.g. mapping Ensembl IDs to gene
-            symbols or gene biotypes.
+            symbols or gene biotypes. (default None)
         expression_feature_rename_col : str
             A column name in the expression_feature_data dataframe that you'd
             like to rename the expression features to, in the plots. For
             example, if your gene IDs are Ensembl IDs, but you want to plot
             UCSC IDs, make sure the column you want, e.g. "ucsc_id" is in your
-            dataframe and specify that. Default "gene_name"
+            dataframe and specify that. (default "gene_name")
+        expression_log_base : float
+            If you want to log-transform your expression data (and it's not
+            already log-transformed), use this number as the base of the
+            transform. E.g. expression_log_base=10 will take the log10 of
+            your data. (default None)
+        expression_thresh : float
+            Minimum (non log-transformed) expression value. (default -inf)
+        expression_plus_one : bool
+            Whether or not to add 1 to the expression data. (default False)
         splicing_data : pandas.DataFrame
             Samples x feature dataframe of percent spliced in scores, e.g. as
             measured by the program MISO. Assumed that these values only fall
@@ -277,7 +180,7 @@ class Study(StudyFactory):
         """
         super(Study, self).__init__()
 
-        sys.stderr.write("initializing study\n")
+        sys.stderr.write("Initializing study\n")
         self.predictor_config_manager = predictor_config_manager \
             if predictor_config_manager is not None \
             else PredictorConfigManager()
@@ -337,7 +240,7 @@ class Study(StudyFactory):
             self.technical_outliers = None
 
         if expression_data is not None:
-            sys.stderr.write("loading expression data\n")
+            sys.stderr.write("Loading expression data\n")
             self.expression = ExpressionData(
                 expression_data,
                 expression_feature_data,
@@ -346,18 +249,20 @@ class Study(StudyFactory):
                 outliers=outliers, plus_one=expression_plus_one,
                 log_base=expression_log_base, pooled=pooled,
                 predictor_config_manager=self.predictor_config_manager,
-                technical_outliers=self.technical_outliers)
+                technical_outliers=self.technical_outliers,
+                minimum_samples=minimum_samples)
             # self.expression.networks = NetworkerViz(self.expression)
             self.default_feature_set_ids.extend(self.expression.feature_subsets
                                                 .keys())
         if splicing_data is not None:
-            sys.stderr.write("loading splicing data\n")
+            sys.stderr.write("Loading splicing data\n")
             self.splicing = SplicingData(
                 splicing_data, splicing_feature_data,
                 feature_rename_col=splicing_feature_rename_col,
                 outliers=outliers, pooled=pooled,
                 predictor_config_manager=self.predictor_config_manager,
-                technical_outliers=self.technical_outliers)
+                technical_outliers=self.technical_outliers,
+                minimum_samples=minimum_samples)
             # self.splicing.networks = NetworkerViz(self.splicing)
 
         if spikein_data is not None:
@@ -365,9 +270,15 @@ class Study(StudyFactory):
                 spikein_data, spikein_feature_data,
                 technical_outliers=self.technical_outliers,
                 predictor_config_manager=self.predictor_config_manager)
-        sys.stderr.write("subclasses initialized\n")
-        self.validate_params()
-        sys.stderr.write("package validated\n")
+        sys.stderr.write("Subclasses initialized\n")
+
+    def __setattr__(self, key, value):
+        """Check if the attribute already exists and warns on overwrite.
+        """
+        if hasattr(self, key):
+            warnings.warn('Over-writing attribute {}'.format(key))
+        super(Study, self).__setattr__(key, value)
+
 
     @property
     def default_sample_subsets(self):
