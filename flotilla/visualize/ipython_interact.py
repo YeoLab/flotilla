@@ -93,7 +93,7 @@ class Interactive(object):
                         featurewise=False,
                         x_pc=(1, 10), y_pc=(1, 10),
                         show_point_labels=False,
-                        list_link='', plot_violins=True,
+                        list_link='', plot_violins=False,
                         savefile='data/last.pca.pdf'):
 
         def do_interact(data_type='expression',
