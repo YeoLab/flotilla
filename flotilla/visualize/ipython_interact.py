@@ -2,12 +2,12 @@
 Named `ipython_interact.py` rather than just `interact.py` to differentiate
 between IPython interactive visualizations vs D3 interactive visualizations.
 """
-import itertools
 import sys
 import warnings
 
 from IPython.html.widgets import interact
 import matplotlib.pyplot as plt
+
 
 
 
@@ -98,7 +98,7 @@ class Interactive(object):
 
         def do_interact(data_type='expression',
                         sample_subset=self.default_sample_subsets,
-                        feature_subset=self.default_feature_subset,
+                        feature_subset=self.default_feature_subsets,
                         featurewise=False,
                         list_link='',
                         x_pc=1, y_pc=2,
@@ -148,9 +148,6 @@ class Interactive(object):
                 if plot_violins:
                     pca.violins_fig.savefig(violins_file)
 
-            feature_subsets = list(
-                set(itertools.chain(*self.default_feature_subsets
-                                    .values())))
 
         # self.plot_study_sample_legend()
 
