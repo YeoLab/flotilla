@@ -11,6 +11,7 @@ import seaborn as sns
 
 
 
+
 # from ..compute.decomposition import DataFrameNMF, DataFramePCA
 from .color import set1
 
@@ -64,6 +65,8 @@ class DecompositionViz(object):
 
         self.reduced_space = reduced_space
         self.components_ = components_
+        self.explained_variance_ratio_ = explained_variance_ratio_
+
 
         if self.label_to_color is None:
             colors = cycle(set1)
@@ -312,25 +315,25 @@ class DecompositionViz(object):
             lab.set_rotation(90)
         sns.despine(ax=ax)
 
-    # def plot_explained_variance(self, title="DataFramePCA"):
-    #     """If the reducer is a form of DataFramePCA, then plot the explained variance
-    #     ratio by the components.
-    #     """
-    #     # Plot the explained variance ratio
-    #     assert hasattr(self, 'explained_variance_ratio_')
-    #     import matplotlib.pyplot as plt
-    #     import seaborn as sns
-    #
-    #     fig, ax = plt.subplots()
-    #     ax.plot(self.explained_variance_ratio_, 'o-')
-    #
-    #     ax.set_xticks(range(self.n_components))
-    #     ax.set_xticklabels(map(str, np.arange(self.n_components) + 1))
-    #     ax.set_xlabel('Principal component')
-    #     ax.set_ylabel('Fraction explained variance')
-    #     ax.set_title(title)
-    #     sns.despine()
-    #     return fig
+    def plot_explained_variance(self, title="PCA explained variance"):
+        """If the reducer is a form of PCA, then plot the explained variance
+        ratio by the components.
+        """
+        # Plot the explained variance ratio
+        assert self.explained_variance_ratio_ is not None
+        import matplotlib.pyplot as plt
+        import seaborn as sns
+
+        fig, ax = plt.subplots()
+        ax.plot(self.explained_variance_ratio_, 'o-')
+
+        xticks = np.arange(len(self.explained_variance_ratio_))
+        ax.set_xticks(xticks)
+        ax.set_xticklabels(xticks + 1)
+        ax.set_xlabel('Principal component')
+        ax.set_ylabel('Fraction explained variance')
+        ax.set_title(title)
+        sns.despine()
 
     def plot_violins(self):
         """Make violinplots of each feature
@@ -367,50 +370,3 @@ class DecompositionViz(object):
             if len(ax.collections) == 0 or len(ax.lines) == 0:
                 ax.axis('off')
         self.violins_fig.tight_layout()
-
-
-        # class PCAViz(DecompositionViz, DataFramePCA):
-        #     _default_reduction_kwargs = dict(whiten=False)
-        #     pass
-        #
-        #
-        # class NMFViz(DecompositionViz, DataFrameNMF):
-        #     _default_reduction_kwargs = \
-        #         {'n_components': 2, 'max_iter': 20000, 'nls_max_iter': 40000}
-        #
-        #     def __call__(self, ax=None, **kwargs):
-        #         pass
-        # gs_x = 14
-        # gs_y = 12
-        #
-        # if ax is None:
-        #     fig, ax = plt.subplots(1, 1, figsize=(25, 12))
-        #     gs = GridSpec(gs_x, gs_y)
-        #
-        # else:
-        #     gs = GridSpecFromSubplotSpec(gs_x, gs_y, ax.get_subplotspec())
-        #     fig = plt.gcf()
-        #
-        # ax_components = plt.subplot(gs[:, :5])
-        # ax_loading1 = plt.subplot(gs[:, 6:8])
-        # ax_loading2 = plt.subplot(gs[:, 10:14])
-        #
-        # passed_kwargs = kwargs
-        # local_kwargs = self.plotting_kwargs.copy()
-        # local_kwargs.update(passed_kwargs)
-        # local_kwargs.update({'ax': ax_components})
-        # self.plot_samples(**local_kwargs)
-        # self.plot_loadings(pc=local_kwargs['x_pc'], ax=ax_loading1)
-        # self.plot_loadings(pc=local_kwargs['y_pc'], ax=ax_loading2)
-        # sns.despine()
-        # fig.tight_layout()
-        # return self
-
-        # def splicing_movies(self):
-
-
-# def plot_pca(df, **kwargs):
-#     """ for backwards-compatibility """
-#     pca = PCAViz(df, **kwargs)
-#     pca.plot_samples()
-#     return pca

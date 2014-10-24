@@ -94,6 +94,9 @@ class BaseData(object):
         self.networks = NetworkerViz(self)
 
     def _feature_renamer(self, x):
+        if isinstance(self.data.columns, pd.MultiIndex):
+            return x[1]
+
         if x in self.feature_renamer_series.index:
             rename = self.feature_renamer_series[x]
             if isinstance(rename, pd.Series):
@@ -128,7 +131,6 @@ class BaseData(object):
     @property
     def outliers(self):
         return self.data.ix[self.outlier_samples]
-
 
     @property
     def feature_renamer_series(self):
@@ -194,21 +196,15 @@ class BaseData(object):
         if self.feature_data is not None:
             for col in self.feature_data:
                 if self.feature_data[col].dtype != bool:
-                    continue
-                feature_subset = self.feature_data.index[self.feature_data[col]]
-                if len(feature_subset) > 1:
-                    feature_subsets[col] = feature_subset
-            categories = [  # 'tag',
-                            'gene_type', 'splice_type']  #, 'gene_status']
-            try:
-                filtered = self.feature_data.groupby('gene_type').filter(
-                    lambda x: len(x) > 20)
-            except KeyError:
-                filtered = self.feature_data
-            for category in categories:
-                if category in filtered:
-                    feature_subsets.update(
-                        self.feature_data.groupby(category).groups)
+                    filtered = self.feature_data.groupby(col).filter(lambda x:
+                                                                     len(
+                                                                         x) > 20)
+                    feature_subsets.update(filtered.groupby(col).groups)
+                else:
+                    feature_subset = self.feature_data.index[
+                        self.feature_data[col]]
+                    if len(feature_subset) > 1:
+                        feature_subsets[col] = feature_subset
 
         for feature_subset in feature_subsets.keys():
             not_feature_subset = 'not {}'.format(feature_subset)
@@ -722,7 +718,10 @@ class BaseData(object):
         except AttributeError:
             pass
 
-        renamed = self.feature_renamer(feature_id)
+        if isinstance(self.data.columns, pd.MultiIndex):
+            feature_id, renamed = feature_id
+        else:
+            renamed = self.feature_renamer(feature_id)
         title = '{}\n{}'.format(renamed, ':'.join(
             feature_id.split('@')[0].split(':')[:2]))
 
