@@ -140,7 +140,7 @@ class DecompositionViz(object):
             self.pc_loadings_labels[pc] = labels
             self.top_features.update(labels)
 
-    def __call__(self, ax=None, title='', plot_violins=True,
+    def __call__(self, ax=None, title='', plot_violins=False,
                  show_point_labels=False,
                  show_vectors=True,
                  show_vector_labels=True,
