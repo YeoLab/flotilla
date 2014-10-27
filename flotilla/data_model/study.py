@@ -82,9 +82,9 @@ class Study(object):
                  predictor_config_manager=None,
                  metadata_pooled_col=POOLED_COL,
                  metadata_phenotype_col=PHENOTYPE_COL,
-                 phenotype_order=None,
-                 phenotype_to_color=None,
-                 phenotype_to_marker=None,
+                 metadata_phenotype_order=None,
+                 metadata_phenotype_to_color=None,
+                 metadata_phenotype_to_marker=None,
                  license=None, title=None, sources=None,
                  minimum_samples=0):
         """Construct a biological study
@@ -194,8 +194,9 @@ class Study(object):
         self.version = version
 
         self.metadata = MetaData(
-            sample_metadata, phenotype_order, phenotype_to_color,
-            phenotype_to_marker, pooled_col=metadata_pooled_col,
+            sample_metadata, metadata_phenotype_order,
+            metadata_phenotype_to_color,
+            metadata_phenotype_to_marker, pooled_col=metadata_pooled_col,
             phenotype_col=metadata_phenotype_col,
             predictor_config_manager=self.predictor_config_manager)
         self.phenotype_col = self.metadata.phenotype_col
@@ -367,6 +368,7 @@ class Study(object):
             Study object
         """
         dfs = {}
+        kwargs = {}
         log_base = None
         # metadata_pooled_col = None
         # metadata_phenotype_col = None
@@ -377,6 +379,7 @@ class Study(object):
         metadata_kws = dict.fromkeys(['metadata_pooled_col', 'phenotype_order',
                                       'phenotype_to_color',
                                       'phenotype_to_marker'], None)
+        resource_usual_kws = ('url', 'path', 'format', 'compression', 'name')
 
         for resource in datapackage['resources']:
             if 'url' in resource:
@@ -403,22 +406,24 @@ class Study(object):
             if name == 'expression':
                 if 'log_transformed' in resource:
                     log_base = 2
-            if name == 'metadata':
-                if 'pooled_col' in resource:
-                    metadata_kws['metadata_pooled_col'] = resource[
-                        'pooled_col']
-                if 'phenotype_col' in resource:
-                    metadata_kws['metadata_phenotype_col'] = resource[
-                        'phenotype_col']
-                if 'phenotype_order' in resource:
-                    metadata_kws['phenotype_order'] = resource[
-                        'phenotype_order']
-                if 'phenotype_to_color' in resource:
-                    metadata_kws['phenotype_to_color'] = resource[
-                        'phenotype_to_color']
-                if 'phenotype_to_marker' in resource:
-                    metadata_kws['phenotype_to_marker'] = resource[
-                        'phenotype_to_marker']
+            # if name == 'metadata':
+            # if 'pooled_col' in resource:
+            #         metadata_kws['metadata_pooled_col'] = resource[
+            #             'pooled_col']
+            #     if 'phenotype_col' in resource:
+            #         metadata_kws['metadata_phenotype_col'] = resource[
+            #             'phenotype_col']
+            #     if 'phenotype_order' in resource:
+            #         metadata_kws['phenotype_order'] = resource[
+            #             'phenotype_order']
+            #     if 'phenotype_to_color' in resource:
+            #         metadata_kws['phenotype_to_color'] = resource[
+            #             'phenotype_to_color']
+            #     if 'phenotype_to_marker' in resource:
+            #         metadata_kws['phenotype_to_marker'] = resource[
+            #             'phenotype_to_marker']
+            for key in set(resource.keys()).difference(resource_usual_kws):
+                kwargs['{}_{}'.format(name, key)] = resource[key]
 
         species_dfs = {}
         species = None if 'species' not in datapackage else datapackage[
@@ -471,14 +476,11 @@ class Study(object):
         except KeyError:
             spikein_data = None
 
-        nones = [k for k, v in metadata_kws.iteritems() if v is None]
+        nones = [k for k, v in kwargs.iteritems() if v is None]
         for key in nones:
-            metadata_kws.pop(key)
+            kwargs.pop(key)
 
-        # import pdb; pdb.set_trace()
-
-        kwargs = species_dfs
-        kwargs.update(metadata_kws)
+        kwargs.update(species_dfs)
 
         license = None if 'license' not in datapackage else datapackage[
             'license']
