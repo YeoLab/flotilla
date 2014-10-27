@@ -21,7 +21,7 @@ from ..visualize.network import NetworkerViz
 from ..visualize.predict import ClassifierViz
 from ..util import memoize, cached_property
 
-MINIMUM_SAMPLES = 10
+MINIMUM_SAMPLES = 2
 default_predictor_name = "ExtraTreesClassifier"
 
 
