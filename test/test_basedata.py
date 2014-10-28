@@ -36,17 +36,11 @@ def feature_ids(request, base_data):
         return base_data.data.columns
 
 
-@pytest.fixture(params=[True, False])
-def require_min_samples(request):
-    return request.param
-
-
-def test_subset(base_data, sample_ids, feature_ids, require_min_samples):
+def test_subset(base_data, sample_ids, feature_ids):
     import pandas as pd
 
     subset = base_data._subset(base_data.data, sample_ids=sample_ids,
-                               feature_ids=feature_ids,
-                               require_min_samples=require_min_samples)
+                               feature_ids=feature_ids)
 
     data = base_data.data
     if feature_ids is None:
@@ -60,9 +54,6 @@ def test_subset(base_data, sample_ids, feature_ids, require_min_samples):
     true_subset = data.ix[sample_ids]
     true_subset = true_subset.T.ix[feature_ids].T
 
-    if require_min_samples:
-        true_subset = true_subset.ix[:,
-                      true_subset.count() > base_data.minimum_samples]
     pdt.assert_frame_equal(subset, true_subset)
 
 
