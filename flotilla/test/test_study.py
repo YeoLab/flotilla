@@ -9,6 +9,9 @@ import pandas.util.testing as pdt
 import pytest
 import semantic_version
 
+from flotilla.datapackage import get_resource_from_name
+
+
 def name_to_resource(datapackage, name):
     """
     Given the name of a resource, search through a datapackage's "resource"
@@ -66,7 +69,8 @@ class TestStudy(object):
                             pytest.mark.xfail(reason='"phenotype_col" in the '
                                                      'test dataset is '
                                                      '"celltype", so need to '
-                                                     'specify')('phenotype_col')])
+                                                     'specify')(
+                                'phenotype_col')])
     def metadata_key(self, request):
         return request.param
 
@@ -99,7 +103,6 @@ class TestStudy(object):
 
     def test_from_datapackage(self, datapackage, datapackage_dir):
         import flotilla
-        from flotilla.external import get_resource_from_name
 
         study = flotilla.Study.from_datapackage(datapackage, datapackage_dir,
                                                 load_species_data=False)
@@ -110,7 +113,8 @@ class TestStudy(object):
         splicing_resource = get_resource_from_name(datapackage, 'splicing')
 
         phenotype_col = 'phenotype' if 'phenotype_col' \
-            not in metadata_resource else metadata_resource['phenotype_col']
+                                       not in metadata_resource else \
+        metadata_resource['phenotype_col']
         pooled_col = None if 'pooled_col' not in metadata_resource else \
             metadata_resource['pooled_col']
         expression_feature_rename_col = 'gene_name' if \
@@ -128,7 +132,7 @@ class TestStudy(object):
 
     def test_save(self, example_datapackage_path, tmpdir, monkeypatch):
         import flotilla
-        from flotilla.external import get_resource_from_name
+        from flotilla.go import get_resource_from_name
 
         study = flotilla.embark(example_datapackage_path,
                                 load_species_data=False)
@@ -192,7 +196,7 @@ class TestStudy(object):
 
 
 # def test_write_package(tmpdir):
-#     from flotilla.data_model import StudyFactory
+# from flotilla.data_model import StudyFactory
 #
 #     new_study = StudyFactory()
 #     new_study.experiment_design_data = None
