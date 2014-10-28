@@ -278,3 +278,38 @@ def load(self, file_name, file_type='pickle_df'):
 
 def timestamp():
     return str(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+
+
+class AssertionError(StandardError):
+    """ Assertion failed. """
+
+    def __init__(self, *args, **kwargs):  # real signature unknown
+        pass
+
+    @staticmethod  # known case of __new__
+    def __new__(S, *more):  # real signature unknown; restored from __doc__
+        """ T.__new__(S, ...) -> a new object with type S, a subtype of T """
+        pass
+
+
+def link_to_list(link):
+    print 'link', link
+    try:
+        assert link.startswith("http") or os.path.exists(os.path.abspath(link))
+    except AssertionError:
+        raise ValueError("use a link that starts with http or a file path")
+
+    if link.startswith("http"):
+        sys.stderr.write(
+            "WARNING, downloading things from the internet, potential danger "
+            "from untrusted sources\n")
+        filename = tempfile.NamedTemporaryFile(mode='w+')
+        filename.write(subprocess.check_output(
+            ["curl", "-k", '--location-trusted', link]))
+        filename.seek(0)
+    elif link.startswith("/"):
+        assert os.path.exists(os.path.abspath(link))
+        filename = os.path.abspath(link)
+    gene_list = pd.read_table(filename, squeeze=True, header=None).values \
+        .tolist()
+    return gene_list
