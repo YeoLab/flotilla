@@ -12,15 +12,13 @@ import numpy as np
 import pandas as pd
 import semantic_version
 
-from flotilla import make_study_datapackage
-from flotilla.datapackage import data_package_url_to_dict, \
-    check_if_already_downloaded
-
 from .metadata import MetaData, PHENOTYPE_COL, POOLED_COL
 from .expression import ExpressionData, SpikeInData
 from .quality_control import MappingStatsData, MIN_READS
 from .splicing import SplicingData, FRACTION_DIFF_THRESH
 from ..compute.predict import PredictorConfigManager
+from ..datapackage import data_package_url_to_dict, \
+    check_if_already_downloaded, make_study_datapackage
 from ..visualize.color import blue
 from ..visualize.ipython_interact import Interactive
 from ..datapackage import FLOTILLA_DOWNLOAD_DIR
@@ -238,6 +236,20 @@ class Study(object):
         else:
             self.technical_outliers = None
 
+        if self.species is not None and (expression_feature_data is None or
+                                                 splicing_feature_data is None):
+            sys.stdout.write('{}\tLoading species metadata from '
+                             'sauron.ucsd.edu'.format(timestamp()))
+            species_kws = self.load_species_data(self.species)
+            expression_feature_data = species_kws.pop('expression_feature_data',
+                                                      None)
+            expression_feature_rename_col = species_kws.pop(
+                'expression_feature_rename_col', None)
+            splicing_feature_data = species_kws.pop('splicing_feature_data',
+                                                    None)
+            splicing_feature_rename_col = species_kws.pop(
+                'splicing_feature_rename_col', None)
+
         if expression_data is not None:
             sys.stdout.write(
                 "{}\tLoading expression data\n".format(timestamp()))
@@ -281,7 +293,6 @@ class Study(object):
         if hasattr(self, key):
             warnings.warn('Over-writing attribute {}'.format(key))
         super(Study, self).__setattr__(key, value)
-
 
     @property
     def default_sample_subsets(self):
@@ -407,37 +418,12 @@ class Study(object):
             for key in set(resource.keys()).difference(resource_usual_kws):
                 kwargs['{}_{}'.format(name, key)] = resource[key]
 
-        species_dfs = {}
+        species_kws = {}
         species = None if 'species' not in datapackage else datapackage[
             'species']
         if load_species_data:
-            try:
-                if 'species' in datapackage:
-                    species_data_url = '{}/{}/datapackage.json'.format(
-                        species_datapackage_base_url, species)
-                    species_data_package = data_package_url_to_dict(
-                        species_data_url)
-
-                    for resource in species_data_package['resources']:
-                        if 'url' in resource:
-                            resource_url = resource['url']
-                            filename = check_if_already_downloaded(resource_url)
-                        else:
-                            filename = resource['path']
-
-                        reader = cls.readers[resource['format']]
-
-                        compression = None if 'compression' not in resource else \
-                            resource['compression']
-                        name = resource['name']
-                        species_dfs[name] = reader(filename,
-                                                   compression=compression)
-                        if 'feature_rename_col' in resource:
-                            key = '{}_feature_rename_col'.format(
-                                name.split('_feature_data')[0])
-                            species_dfs[key] = resource['feature_rename_col']
-            except (IOError, ValueError) as e:
-                pass
+            species_kws = cls.load_species_data(species,
+                                                species_datapackage_base_url)
 
         try:
             sample_metadata = dfs['metadata']
@@ -459,7 +445,7 @@ class Study(object):
         nones = [k for k, v in kwargs.iteritems() if v is None]
         for key in nones:
             kwargs.pop(key)
-        kwargs.update(species_dfs)
+        kwargs.update(species_kws)
 
         license = None if 'license' not in datapackage else datapackage[
             'license']
@@ -491,6 +477,38 @@ class Study(object):
             version=version,
             **kwargs)
         return study
+
+    def load_species_data(self, species,
+                          species_datapackage_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
+        dfs = {}
+        try:
+            species_data_url = '{}/{}/datapackage.json'.format(
+                species_datapackage_base_url, species)
+            species_data_package = data_package_url_to_dict(
+                species_data_url)
+
+            for resource in species_data_package['resources']:
+                if 'url' in resource:
+                    resource_url = resource['url']
+                    filename = check_if_already_downloaded(resource_url)
+                else:
+                    filename = resource['path']
+
+                reader = self.readers[resource['format']]
+
+                compression = None if 'compression' not in resource else \
+                    resource['compression']
+                name = resource['name']
+                dfs[name] = reader(filename,
+                                   compression=compression)
+                if 'feature_rename_col' in resource:
+                    key = '{}_feature_rename_col'.format(
+                        name.split('_feature_data')[0])
+                    dfs[key] = resource['feature_rename_col']
+        except (IOError, ValueError) as e:
+            sys.stderr.write('Error loading species {} data '.format(species))
+            pass
+        return dfs
 
     def detect_outliers(self):
         """Detects outlier cells from expression, mapping, and splicing
@@ -1006,8 +1024,8 @@ class Study(object):
     # def plot_clusteredheatmap(self, sample_subset=None,
     # feature_subset='variant',
     # data_type='expression', metric='euclidean',
-    #                           linkage_method='median', figsize=None):
-    #     if data_type == 'expression':
+    # linkage_method='median', figsize=None):
+    # if data_type == 'expression':
     #         data = self.expression.data
     #     elif data_type == 'splicing':
     #         data = self.splicing.data
@@ -1129,7 +1147,7 @@ class Study(object):
 
         try:
             expression_feature_data = self.expression.feature_data
-            expression_feature_kws = {'feature_rename_col':
+            expression_feature_kws = {'rename_col':
                                           self.expression.feature_rename_col}
         except AttributeError:
             expression_feature_data = None
@@ -1137,15 +1155,14 @@ class Study(object):
 
         try:
             splicing = self.splicing.data
-            splicing_kws = {'feature_rename_col':
-                                self.splicing.feature_rename_col}
+            splicing_kws = {}
         except AttributeError:
             splicing = None
             splicing_kws = None
 
         try:
             splicing_feature_data = self.splicing.feature_data
-            splicing_feature_kws = {'feature_rename_col':
+            splicing_feature_kws = {'rename_col':
                                         self.splicing.feature_rename_col}
         except AttributeError:
             splicing_feature_data = None

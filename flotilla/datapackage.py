@@ -74,6 +74,10 @@ def make_study_datapackage(name, metadata,
                            spikein_kws=None,
                            mapping_stats_kws=None,
                            version=None,
+                           expression_feature_kws=None,
+                           expression_feature_data=None,
+                           splicing_feature_data=None,
+                           splicing_feature_kws=None,
                            host="sauron.ucsd.edu",
                            host_destination='/zfs/www/flotilla_packages/'):
     """Example code for making a datapackage for a Study
@@ -103,7 +107,11 @@ def make_study_datapackage(name, metadata,
                  'expression': (expression_data, expression_kws),
                  'splicing': (splicing_data, splicing_kws),
                  'spikein': (spikein_data, spikein_kws),
-                 'mapping_stats': (mapping_stats_data, mapping_stats_kws)}
+                 'mapping_stats': (mapping_stats_data, mapping_stats_kws),
+                 'expression_feature': (expression_feature_data,
+                                        expression_feature_kws),
+                 'splicing_feature': (splicing_feature_data,
+                                      splicing_feature_kws)}
 
     datapackage['resources'] = []
     for resource_name, (data, kws) in resources.items():
@@ -118,8 +126,8 @@ def make_study_datapackage(name, metadata,
             data.to_csv(f)
         # try:
         # # TODO: only transmit data if it has been updated
-        #     subprocess.call(
-        #         "scp {} {}:{}{}.".format(data_filename, host, host_destination,
+        # subprocess.call(
+        # "scp {} {}:{}{}.".format(data_filename, host, host_destination,
         #                                  name), shell=True)
         # except Exception as e:
         #     sys.stderr.write("error sending data to host: {}".format(e))
