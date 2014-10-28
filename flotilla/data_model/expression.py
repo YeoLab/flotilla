@@ -14,38 +14,26 @@ EXPRESSION_THRESH = -np.inf
 
 class ExpressionData(BaseData):
     def __init__(self, data,
-                 metadata=None, thresh=EXPRESSION_THRESH,
+                 feature_data=None, thresh=EXPRESSION_THRESH,
                  feature_rename_col=None, outliers=None, log_base=None,
                  pooled=None, plus_one=False, minimum_samples=0,
                  technical_outliers=None, predictor_config_manager=None):
         """
-        Parameters
-        ----------
-        data : pandas.DataFrame
-            Expression matrix. samples (rows) x features (columns
-        metadata : pandas.DataFrame
-
-
-        Returns
-        -------
-
 
 
         """
+        __doc__ += BaseData.__doc__
         sys.stdout.write("{}\tInitializing expression\n".format(timestamp()))
 
         super(ExpressionData, self).__init__(
-            data, metadata,
+            data, feature_data=feature_data,
             feature_rename_col=feature_rename_col,
+            thresh=thresh,
             outliers=outliers, pooled=pooled, minimum_samples=minimum_samples,
             predictor_config_manager=predictor_config_manager,
             technical_outliers=technical_outliers)
         self.data_type = 'expression'
         self.thresh = thresh
-
-        if self.thresh > -np.inf or self.min_samples > 0:
-            self.data_original = self.data.copy()
-            self.data = self._threshold(self.data, self.singles)
 
         if plus_one:
             self.data += 1
@@ -58,34 +46,10 @@ class ExpressionData(BaseData):
         if self.log_base is not None:
             self.data = np.log(self.data) / np.log(self.log_base)
 
-        self.feature_data = metadata
+        self.feature_data = feature_data
 
         sys.stdout.write("{}\tDone initializing expression\n".format(
             timestamp()))
-
-    def _threshold(self, data, other=None):
-        """Only take features with expression greater than the threshold,
-        in at least the minimum number of samples.
-
-        Parameters
-        ----------
-        data : pandas.DataFrame
-            The data to filter, make smaller
-        other : pandas.DataFrame, optional
-            If provided, use this DataFrame to filter data. E.g. use the
-            genes expressed in only single cells to filter the whole dataset.
-
-        Returns
-        -------
-        filtered : pandas.DataFrame
-            "data" filtered with expression values at least self.thresh
-            in least self.min_samples
-        """
-        if other is None:
-            other = data
-        filtered = data.ix[:, other[other > self.thresh].count() >=
-                              self.min_samples]
-        return filtered
 
     @property
     def data_thresholded(self):

@@ -31,7 +31,7 @@ class SplicingData(BaseData):
     _last_reducer_accessed = None
 
     def __init__(self, data,
-                 metadata=None, binsize=0.1, outliers=None,
+                 feature_data=None, binsize=0.1, outliers=None,
                  feature_rename_col=None, excluded_max=0.2, included_min=0.8,
                  pooled=None, predictor_config_manager=None,
                  technical_outliers=None, minimum_samples=0):
@@ -54,10 +54,15 @@ class SplicingData(BaseData):
             Maximum value for the "excluded" bin of psi scores. Default 0.2.
         included_max : float
             Minimum value for the "included" bin of psi scores. Default 0.8.
+
+        Notes
+        -----
+        'thresh' from BaseData is not used.
         """
         sys.stdout.write("{}\tInitializing splicing\n".format(timestamp()))
         super(SplicingData, self).__init__(
-            data, metadata, feature_rename_col=feature_rename_col,
+            data, feature_data=feature_data,
+            feature_rename_col=feature_rename_col,
             outliers=outliers, pooled=pooled,
             technical_outliers=technical_outliers,
             predictor_config_manager=predictor_config_manager,
@@ -88,7 +93,7 @@ class SplicingData(BaseData):
             event several times to get a better estimate of its true modality.
         bootstrappped_kws : dict
             Valid arguments to _bootstrapped_fit_transform. If None, default is
-            dict(n_iter=100, thresh=0.6, min_samples=10)
+            dict(n_iter=100, thresh=0.6, minimum_samples=10)
 
         Returns
         -------
@@ -116,7 +121,7 @@ class SplicingData(BaseData):
             Default False.
         bootstrappped_kws : dict
             Valid arguments to _bootstrapped_fit_transform. If None, default is
-            dict(n_iter=100, thresh=0.6, min_samples=10)
+            dict(n_iter=100, thresh=0.6, minimum_samples=10)
 
         Returns
         -------
@@ -145,7 +150,7 @@ class SplicingData(BaseData):
             Default False.
         bootstrappped_kws : dict
             Valid arguments to _bootstrapped_fit_transform. If None, default is
-            dict(n_iter=100, thresh=0.6, min_samples=10)
+            dict(n_iter=100, thresh=0.6, minimum_samples=10)
 
 
         Returns
@@ -175,7 +180,7 @@ class SplicingData(BaseData):
             Default False.
         bootstrappped_kws : dict
             Valid arguments to _bootstrapped_fit_transform. If None, default is
-            dict(n_iter=100, thresh=0.6, min_samples=10)
+            dict(n_iter=100, thresh=0.6, minimum_samples=10)
 
 
         Returns
@@ -226,7 +231,7 @@ class SplicingData(BaseData):
             Default False.
         bootstrappped_kws : dict
             Valid arguments to _bootstrapped_fit_transform. If None, default is
-            dict(n_iter=100, thresh=0.6, min_samples=10)
+            dict(n_iter=100, thresh=0.6, minimum_samples=10)
         """
 
         if use_these_modalities:
