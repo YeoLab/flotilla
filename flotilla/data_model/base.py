@@ -117,7 +117,8 @@ class BaseData(object):
                 self.feature_data = self.feature_data.join(column,
                                                            rsuffix='_right')
                 if self.feature_rename_col in self.feature_data and \
-                                        self.feature_rename_col + '_right' in self.feature_data:
+                                        self.feature_rename_col + '_right' \
+                                in self.feature_data:
                     self.feature_rename_col += '_right'
 
         if self.feature_data is not None and self.feature_rename_col is not \
@@ -261,10 +262,12 @@ class BaseData(object):
         if self.feature_data is not None:
             for col in self.feature_data:
                 if self.feature_data[col].dtype != bool:
-                    filtered = self.feature_data.groupby(col).filter(lambda x:
-                                                                     len(
-                                                                         x) > 20)
-                    feature_subsets.update(filtered.groupby(col).groups)
+                    grouped = self.feature_data.groupby(col)
+                    sizes = grouped.size()
+                    filtered_sizes = sizes[sizes >= 20]
+                    for group in filtered_sizes.keys():
+                        name = '{}: {}'.format(col, group)
+                        feature_subsets[name] = grouped.groups[group]
                 else:
                     feature_subset = self.feature_data.index[
                         self.feature_data[col]]
