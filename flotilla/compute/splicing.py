@@ -27,7 +27,7 @@ class Modalities(object):
         self.bins = (0, excluded_max, included_min, 1)
 
     # def __call__(self, *args, **kwargs):
-    #     return self.assignments
+    # return self.assignments
 
     def _col_jsd_modalities(self, col):
         return self.true_modalities.apply(lambda x: jsd(x, col), axis=0)
@@ -71,7 +71,7 @@ class Modalities(object):
             Default False.
         bootstrappped_kws : dict
             Valid arguments to _bootstrapped_fit_transform. If None, default is
-            dict(n_iter=100, thresh=0.6, min_samples=10)
+            dict(n_iter=100, thresh=0.6, minimum_samples=10)
 
         Returns
         -------
@@ -80,7 +80,7 @@ class Modalities(object):
         """
         if bootstrapped:
             bootstrapped_kws = {} if bootstrapped_kws \
-                is None else bootstrapped_kws
+                                     is None else bootstrapped_kws
             return self._bootstrapped_fit_transform(data, **bootstrapped_kws)
         else:
             return self._single_fit_transform(data)

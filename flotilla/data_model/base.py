@@ -22,59 +22,88 @@ from ..visualize.network import NetworkerViz
 from ..visualize.predict import ClassifierViz
 from ..util import memoize, cached_property
 
-MINIMUM_SAMPLES = 10
 default_predictor_name = "ExtraTreesClassifier"
 
 
 class BaseData(object):
-    """Generic study_data model for both splicing and expression study_data
+    """Base class for biological data measurements"""
 
-    Attributes
-    ----------
-
-
-    Methods
-    -------
-
-    """
-
-    def __init__(self, data=None, metadata=None,
-                 species=None, feature_rename_col=None, outliers=None,
-                 minimum_samples=MINIMUM_SAMPLES, pooled=None,
+    def __init__(self, data, thresh=-np.inf,
+                 minimum_samples=0,
+                 feature_data=None,
+                 feature_rename_col=None,
                  technical_outliers=None,
+                 outliers=None,
+                 pooled=None,
                  predictor_config_manager=None):
-        """Base class for biological data measurements
+        """Abstract base class for biological measurements
 
         Parameters
         ----------
         data : pandas.DataFrame
-            A dataframe of samples x features (samples on rows, features on
-            columns) with some kind of measurements of cells,
+            A samples x features (samples on rows, features on columns)
+            dataframe with some kind of measurements of cells,
             e.g. gene expression values such as TPM, RPKM or FPKM, alternative
             splicing "Percent-spliced-in" (PSI) values, or RNA editing scores.
+        thresh : float, optional
+            Minimum value to accept for this data. (default -np.inf)
+        minimum_samples : int, optional
+            Minimum number of samples with values greater than 'thresh'. E.g.,
+            for use with "at least 3 single cells expressing the gene at
+            greater than 1 TPM." (default 0)
+        feature_data : pandas.DataFrame, optional
+            A features x attributes dataframe of metadata about the features,
+            e.g. annotating whether the gene is a housekeeping gene (default
+            None)
+        feature_rename_col : str, optional
+            Which column in the feature_data to use to rename feature IDs
+            from a crazy ID to a common gene symbol, e.g. to transform
+            'ENSG00000100320' into 'RBFOX2' (default None)
+        technical_outliers : list-like, optional
+            List of sample IDs which should be completely ignored because
+            they didn't pass the technical quality control (default None)
+        outliers : list-like, optional
+            List of sample IDs which should be marked as outliers for
+            plotting and interpretation purposes (default None)
+        pooled : list-like, optional
+            List of sample IDs which should be marked as pooled for plotting
+            and interpretation purposes. (default None)
+        predictor_config_manager : PredictorConfigManager, optional
+            Object used to organize inputs to compute.predict.Regressor and
+            compute.predict.Classifier (default None)
+
+        Notes
+        -----
+        Any cells not marked as "technical_outliers", "outliers" or "pooled"
+        are considered as single-cell samples.
+
         """
-        self.original_data = data
         self.data = data
+        self.thresh = thresh
+        self.minimum_samples = minimum_samples
 
         if technical_outliers is not None:
             good_samples = ~self.data.index.isin(technical_outliers)
             self.data = self.data.ix[good_samples]
-        self.data = self.data.dropna(thresh=minimum_samples, axis=1)
 
         self.pooled_samples = pooled if pooled is not None else []
         self.outlier_samples = outliers if outliers is not None else []
         self.single_samples = self.data.index[~self.data.index.isin(
             self.pooled_samples)]
 
-        self.feature_data = metadata
+        if self.thresh > -np.inf or self.minimum_samples > 0:
+            self.data_original = self.data.copy()
+            if not self.singles.empty:
+                self.data = self._threshold(self.data, self.singles)
+            else:
+                self.data = self._threshold(self.data)
+
+        self.feature_data = feature_data
         if self.feature_data is None:
             self.feature_data = pd.DataFrame(index=self.data.columns)
         self.feature_rename_col = feature_rename_col
-        self.min_samples = minimum_samples
         self.default_feature_sets = []
         self.data_type = None
-
-        self.species = species
 
         if self.feature_data is not None and self.feature_rename_col is not \
                 None:
@@ -92,6 +121,30 @@ class BaseData(object):
             self.predictor_config_manager)
 
         self.networks = NetworkerViz(self)
+
+    def _threshold(self, data, other=None):
+        """Only take features with expression greater than the threshold,
+        in at least the minimum number of samples.
+
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            The data to filter, make smaller
+        other : pandas.DataFrame, optional
+            If provided, use this DataFrame to filter data. E.g. use the
+            genes expressed in only single cells to filter the whole dataset.
+
+        Returns
+        -------
+        filtered : pandas.DataFrame
+            "data" filtered with expression values at least self.thresh
+            in least self.minimum_samples
+        """
+        if other is None:
+            other = data
+        filtered = data.ix[:, other[other > self.thresh].count() >=
+                              self.minimum_samples]
+        return filtered
 
     def _feature_renamer(self, x):
         if isinstance(self.data.columns, pd.MultiIndex):
@@ -394,11 +447,11 @@ class BaseData(object):
                                                   **kwargs)
 
     @property
-    def min_samples(self):
+    def minimum_samples(self):
         return self._min_samples
 
-    @min_samples.setter
-    def min_samples(self, values):
+    @minimum_samples.setter
+    def minimum_samples(self, values):
         self._min_samples = values
 
     def _subset(self, data, sample_ids=None, feature_ids=None,
@@ -443,7 +496,7 @@ class BaseData(object):
         subset = subset.T.ix[feature_ids].T
 
         if require_min_samples and not single_feature:
-            subset = subset.ix[:, subset.count() >= self.min_samples]
+            subset = subset.ix[:, subset.count() >= self.minimum_samples]
 
         if subset.empty:
             raise ValueError('This data subset is empty. Please double-check '
@@ -718,10 +771,11 @@ class BaseData(object):
         except AttributeError:
             pass
 
-        if isinstance(self.data.columns, pd.MultiIndex):
-            feature_id, renamed = feature_id
-        else:
-            renamed = self.feature_renamer(feature_id)
+        renamed = self.feature_renamer(feature_id)
+        # if isinstance(self.data.columns, pd.MultiIndex):
+        # feature_id, renamed = feature_id
+        # else:
+        #     renamed = self.feature_renamer(feature_id)
         title = '{}\n{}'.format(renamed, ':'.join(
             feature_id.split('@')[0].split(':')[:2]))
 

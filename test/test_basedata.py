@@ -62,7 +62,7 @@ def test_subset(base_data, sample_ids, feature_ids, require_min_samples):
 
     if require_min_samples:
         true_subset = true_subset.ix[:,
-                      true_subset.count() > base_data.min_samples]
+                      true_subset.count() > base_data.minimum_samples]
     pdt.assert_frame_equal(subset, true_subset)
 
 

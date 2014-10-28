@@ -27,10 +27,6 @@ from ..util import load_csv, load_json, load_tsv, load_gzip_pickle_df, \
 
 SPECIES_DATA_PACKAGE_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects'
 
-# import flotilla
-# FLOTILLA_DIR = os.path.dirname(flotilla.__file__)
-
-
 
 class Study(object):
     """A biological study, with associated metadata, expression, and splicing
@@ -176,7 +172,9 @@ class Study(object):
 
         [1] http://stackoverflow.com/q/12513185/1628971
         """
-        sys.stdout.write("{}\tInitializing study\n".format(timestamp()))
+        sys.stdout.write("{}\tInitializing Study\n".format(timestamp()))
+        sys.stdout.write("{}\tInitializing Predictor configuration manager "
+                         "for Study\n".format(timestamp()))
         self.predictor_config_manager = predictor_config_manager \
             if predictor_config_manager is not None \
             else PredictorConfigManager()
@@ -230,7 +228,7 @@ class Study(object):
         if mapping_stats_data is not None:
             self.mapping_stats = MappingStatsData(
                 mapping_stats_data,
-                mapping_stats_number_mapped_col,
+                number_mapped_col=mapping_stats_number_mapped_col,
                 predictor_config_manager=self.predictor_config_manager,
                 min_reads=mapping_stats_min_reads)
             self.technical_outliers = self.mapping_stats.too_few_mapped
@@ -242,7 +240,7 @@ class Study(object):
                 "{}\tLoading expression data\n".format(timestamp()))
             self.expression = ExpressionData(
                 expression_data,
-                expression_feature_data,
+                feature_data=expression_feature_data,
                 thresh=expression_thresh,
                 feature_rename_col=expression_feature_rename_col,
                 outliers=outliers, plus_one=expression_plus_one,
@@ -257,7 +255,7 @@ class Study(object):
             sys.stdout.write("{}\tLoading splicing data\n".format(
                 timestamp()))
             self.splicing = SplicingData(
-                splicing_data, splicing_feature_data,
+                splicing_data, feature_data=splicing_feature_data,
                 feature_rename_col=splicing_feature_rename_col,
                 outliers=outliers, pooled=pooled,
                 predictor_config_manager=self.predictor_config_manager,
@@ -267,7 +265,7 @@ class Study(object):
 
         if spikein_data is not None:
             self.spikein = SpikeInData(
-                spikein_data, spikein_feature_data,
+                spikein_data, feature_data=spikein_feature_data,
                 technical_outliers=self.technical_outliers,
                 predictor_config_manager=self.predictor_config_manager)
         sys.stdout.write("{}\tSuccessfully initialized a Study "
@@ -345,6 +343,8 @@ class Study(object):
             load_species_data=True,
             species_datapackage_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
         with open(datapackage_filename) as f:
+            sys.stdout.write('{}\tReading datapackage from {}\n'.format(
+                timestamp(), datapackage_filename))
             datapackage = json.load(f)
         datapackage_dir = os.path.dirname(datapackage_filename)
         return cls.from_datapackage(
@@ -369,18 +369,11 @@ class Study(object):
         study : flotilla.Study
             Study object
         """
+        sys.stdout.write('{}\tParsing datapackage to create a Study '
+                         'object\n'.format(timestamp()))
         dfs = {}
         kwargs = {}
         log_base = None
-        # metadata_pooled_col = None
-        # metadata_phenotype_col = None
-        # phenotype_order = None
-        # phenotype_to_color = None
-        # phenotype_to_marker = None
-
-        metadata_kws = dict.fromkeys(['metadata_pooled_col', 'phenotype_order',
-                                      'phenotype_to_color',
-                                      'phenotype_to_marker'], None)
         resource_usual_kws = ('url', 'path', 'format', 'compression', 'name')
 
         for resource in datapackage['resources']:
@@ -408,22 +401,6 @@ class Study(object):
             if name == 'expression':
                 if 'log_transformed' in resource:
                     log_base = 2
-            # if name == 'metadata':
-            # if 'pooled_col' in resource:
-            #         metadata_kws['metadata_pooled_col'] = resource[
-            #             'pooled_col']
-            #     if 'phenotype_col' in resource:
-            #         metadata_kws['metadata_phenotype_col'] = resource[
-            #             'phenotype_col']
-            #     if 'phenotype_order' in resource:
-            #         metadata_kws['phenotype_order'] = resource[
-            #             'phenotype_order']
-            #     if 'phenotype_to_color' in resource:
-            #         metadata_kws['phenotype_to_color'] = resource[
-            #             'phenotype_to_color']
-            #     if 'phenotype_to_marker' in resource:
-            #         metadata_kws['phenotype_to_marker'] = resource[
-            #             'phenotype_to_marker']
             for key in set(resource.keys()).difference(resource_usual_kws):
                 kwargs['{}_{}'.format(name, key)] = resource[key]
 
@@ -437,7 +414,6 @@ class Study(object):
                         species_datapackage_base_url, species)
                     species_data_package = data_package_url_to_dict(
                         species_data_url)
-                    # species_dfs = {}
 
                     for resource in species_data_package['resources']:
                         if 'url' in resource:
@@ -446,7 +422,6 @@ class Study(object):
                         else:
                             filename = resource['path']
 
-                        # reader = getattr(cls, '_load_' + resource['format'])
                         reader = cls.readers[resource['format']]
 
                         compression = None if 'compression' not in resource else \
@@ -481,7 +456,6 @@ class Study(object):
         nones = [k for k, v in kwargs.iteritems() if v is None]
         for key in nones:
             kwargs.pop(key)
-
         kwargs.update(species_dfs)
 
         license = None if 'license' not in datapackage else datapackage[
@@ -514,50 +488,6 @@ class Study(object):
             version=version,
             **kwargs)
         return study
-
-    def __add__(self, other):
-        """Sanely concatenate one or more Study objects
-        """
-        raise NotImplementedError
-        self.metadata = MetaData(
-            pd.concat([self.metadata.data,
-                       other.metadata.data]))
-        self.expression.data = ExpressionData(
-            pd.concat([self.expression.data,
-                       other.expression.data]))
-
-    # def _set_plot_colors(self):
-    #     """If there is a column 'color' in the sample metadata, specify this
-    #     as the plotting color
-    #     """
-    #     try:
-    #         self._default_reducer_kwargs.update(
-    #             {'colors_dict': self.metadata_data.color})
-    #         self._default_plot_kwargs.update(
-    #             {'color': self.metadata_data.color.tolist()})
-    #     except AttributeError:
-    #         sys.stderr.write("There is no column named 'color' in the "
-    #                          "metadata, defaulting to blue for all samples\n")
-    #         self._default_reducer_kwargs.update(
-    #             {'colors_dict': defaultdict(lambda: blue)})
-
-    # def _set_plot_markers(self):
-    #     """If there is a column 'marker' in the sample metadata, specify this
-    #     as the plotting marker (aka the plotting shape). Only valid matplotlib
-    #     symbols are allowed. See http://matplotlib.org/api/markers_api.html
-    #     for a more complete description.
-    #     """
-    #     try:
-    #         self._default_reducer_kwargs.update(
-    #             {'markers_dict': self.metadata_data.marker})
-    #         self._default_plot_kwargs.update(
-    #             {'marker': self.metadata_data.marker.tolist()})
-    #     except AttributeError:
-    #         sys.stderr.write("There is no column named 'marker' in the sample "
-    #                          "metadata, defaulting to a circle for all "
-    #                          "samples\n")
-    #         self._default_reducer_kwargs.update(
-    #             {'markers_dict': defaultdict(lambda: 'o')})
 
     def detect_outliers(self):
         """Detects outlier cells from expression, mapping, and splicing

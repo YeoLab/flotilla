@@ -9,14 +9,6 @@ import pandas as pd
 import seaborn as sns
 
 
-
-
-
-
-# from ..compute.decomposition import DataFrameNMF, DataFramePCA
-from .color import set1
-
-
 class DecompositionViz(object):
     """
     Plots the reduced space from a decomposed dataset. Does not perform any
@@ -26,6 +18,7 @@ class DecompositionViz(object):
     def __init__(self, reduced_space, components_,
                  explained_variance_ratio_,
                  feature_renamer=None, groupby=None,
+                 unreduced_data=None,
                  featurewise=False,
                  color=None, order=None, violinplot_kws=None,
                  data_type=None, label_to_color=None, label_to_marker=None,
@@ -33,7 +26,21 @@ class DecompositionViz(object):
                  scale_by_variance=True, x_pc='pc_1',
                  y_pc='pc_2', n_vectors=20, distance='L1',
                  n_top_pc_features=50):
-        """
+        """Plot the results of a decomposition visualization
+
+        Parameters
+        ----------
+        reduced_space : pandas.DataFrame
+            The
+
+
+        Returns
+        -------
+
+
+        Raises
+        ------
+
         x_pc : str
             which Principal Component to plot on the x-axis
         y_pc : str
@@ -81,19 +88,6 @@ class DecompositionViz(object):
                 return markers.next()
 
             self.label_to_marker = defaultdict(marker_factory)
-
-        # if decomposer_kwargs is None:
-        #     decomposer_kwargs = self._default_reduction_kwargs
-        # else:
-        #     decomposer_kwargs = self._default_reduction_kwargs.update(
-        #         decomposer_kwargs)
-
-        # This magically initializes the reducer like DataFramePCA or DataFrameNMF
-        # self.decomposer = deco
-        # mposer(n_components=n_components,
-        #                              **decomposer_kwargs)
-        # super(DecompositionViz, self).__init__(n_components=n_components,
-        #                                        **decomposer_kwargs)
 
         if self.groupby is None:
             self.groupby = dict.fromkeys(self.reduced_space.index, 'all')
