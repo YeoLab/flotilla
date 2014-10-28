@@ -9,6 +9,7 @@ from ..visualize.color import str_to_color
 
 POOLED_COL = 'pooled'
 PHENOTYPE_COL = 'phenotype'
+MINIMUM_SAMPLE_SUBSET = 10
 
 # Any informational data goes here
 
@@ -125,3 +126,28 @@ class MetaData(BaseData):
     @property
     def phenotype_transitions(self):
         return zip(self.phenotype_order[:-1], self.phenotype_order[1:])
+
+    @property
+    def sample_subsets(self):
+        sample_subsets = {}
+        for col in self.data:
+            if self.data[col].dtype == bool:
+                sample_subset = self.feature_data.index[
+                    self.feature_data[col]]
+                if len(sample_subset) > MINIMUM_SAMPLE_SUBSET:
+                    sample_subsets[col] = sample_subset
+            else:
+                grouped = self.data.groupby(col)
+                sizes = grouped.size()
+                filtered_sizes = sizes[sizes >= MINIMUM_SAMPLE_SUBSET]
+                for group in filtered_sizes.keys():
+                    name = '{}: {}'.format(col, group)
+                    sample_subsets[name] = grouped.groups[group]
+        for sample_subset in sample_subsets.keys():
+            name = 'not ()'.format(sample_subset)
+            if name not in sample_subsets:
+                in_features = self.data.index.isin(sample_subsets[
+                    sample_subset])
+                sample_subsets[name] = self.data.index[~in_features]
+        sample_subsets['all_samples'] = self.data.index
+        return sample_subsets
