@@ -99,11 +99,26 @@ class BaseData(object):
                 self.data = self._threshold(self.data)
 
         self.feature_data = feature_data
-        if self.feature_data is None:
-            self.feature_data = pd.DataFrame(index=self.data.columns)
+        # if self.feature_data is None:
+        # self.feature_data = pd.DataFrame(index=self.data.columns)
         self.feature_rename_col = feature_rename_col
         self.default_feature_sets = []
         self.data_type = None
+
+        if isinstance(self.data.columns, pd.MultiIndex):
+            feature_ids, renamed = zip(*self.data.columns.values)
+            self.feature_rename_col = 'gene_name'
+            column = pd.Series(renamed, index=self.data.columns,
+                               name=self.feature_rename_col)
+            if self.feature_data is None:
+                self.feature_data = pd.DataFrame(column,
+                                                 index=self.data.columns)
+            else:
+                self.feature_data = self.feature_data.join(column,
+                                                           rsuffix='_right')
+                if self.feature_rename_col in self.feature_data and \
+                                        self.feature_rename_col + '_right' in self.feature_data:
+                    self.feature_rename_col += '_right'
 
         if self.feature_data is not None and self.feature_rename_col is not \
                 None:
@@ -147,9 +162,6 @@ class BaseData(object):
         return filtered
 
     def _feature_renamer(self, x):
-        if isinstance(self.data.columns, pd.MultiIndex):
-            return x[1]
-
         if x in self.feature_renamer_series.index:
             rename = self.feature_renamer_series[x]
             if isinstance(rename, pd.Series):
@@ -190,7 +202,7 @@ class BaseData(object):
         try:
             return self.feature_data[self.feature_rename_col].dropna()
         except TypeError:
-            return pd.Series(self.data.columns,
+            return pd.Series(self.data.columns.values,
                              index=self.data.columns)
 
     def maybe_renamed_to_feature_id(self, feature_id):
