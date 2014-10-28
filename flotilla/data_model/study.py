@@ -240,7 +240,7 @@ class Study(object):
                                                  splicing_feature_data is None):
             sys.stdout.write('{}\tLoading species metadata from '
                              'sauron.ucsd.edu'.format(timestamp()))
-            species_kws = self.load_species_data(self.species)
+            species_kws = self.load_species_data(self.species, self.readers)
             expression_feature_data = species_kws.pop('expression_feature_data',
                                                       None)
             expression_feature_rename_col = species_kws.pop(
@@ -421,31 +421,22 @@ class Study(object):
         species_kws = {}
         species = None if 'species' not in datapackage else datapackage[
             'species']
-        if load_species_data:
-            species_kws = cls.load_species_data(species,
+        if load_species_data and species is not None:
+            species_kws = cls.load_species_data(species, cls.readers,
                                                 species_datapackage_base_url)
 
         try:
-            sample_metadata = dfs['metadata']
-            expression_data = None if 'expression' not in dfs else dfs[
-                'expression']
-            splicing_data = None if 'splicing' not in dfs else dfs['splicing']
+            sample_metadata = dfs.pop('metadata')
         except KeyError:
             raise AttributeError('The datapackage.json file is required to '
                                  'have the "metadata" resource')
-        try:
-            mapping_stats_data = dfs['mapping_stats']
-        except KeyError:
-            mapping_stats_data = None
-        try:
-            spikein_data = dfs['spikein']
-        except KeyError:
-            spikein_data = None
+        dfs = dict(('{}_data'.format(k), v) for k, v in dfs.iteritems())
 
         nones = [k for k, v in kwargs.iteritems() if v is None]
         for key in nones:
             kwargs.pop(key)
         kwargs.update(species_kws)
+        kwargs.update(dfs)
 
         license = None if 'license' not in datapackage else datapackage[
             'license']
@@ -460,15 +451,8 @@ class Study(object):
                              'semantic versioning, with major.minor.patch, '
                              'e.g. 0.1.2 is a valid version string'.format(
                 version))
-
         study = Study(
             sample_metadata=sample_metadata,
-            expression_data=expression_data,
-            splicing_data=splicing_data,
-            mapping_stats_data=mapping_stats_data,
-            spikein_data=spikein_data,
-            # expression_feature_rename_col='gene_name',
-            # splicing_feature_rename_col='gene_name',
             expression_log_base=log_base,
             species=species,
             license=license,
@@ -478,7 +462,8 @@ class Study(object):
             **kwargs)
         return study
 
-    def load_species_data(self, species,
+    @staticmethod
+    def load_species_data(species, readers,
                           species_datapackage_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
         dfs = {}
         try:
@@ -494,7 +479,7 @@ class Study(object):
                 else:
                     filename = resource['path']
 
-                reader = self.readers[resource['format']]
+                reader = readers[resource['format']]
 
                 compression = None if 'compression' not in resource else \
                     resource['compression']
