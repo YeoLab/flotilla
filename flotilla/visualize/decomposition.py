@@ -206,8 +206,6 @@ class DecompositionViz(object):
         ax_loading1 = plt.subplot(gs[:, 6:8])
         ax_loading2 = plt.subplot(gs[:, 10:14])
 
-        # kwargs.update({'ax': ax_components})
-
         self.plot_samples(show_point_labels=show_point_labels,
                           title=title, show_vectors=show_vectors,
                           show_vector_labels=show_vector_labels,
@@ -280,7 +278,26 @@ class DecompositionViz(object):
             x = df[self.x_pc]
             y = df[self.y_pc]
             ax.plot(x, y, color=color, marker=marker, linestyle='None',
-                    label=name, markersize=markersize, alpha=0.75)
+                    label=name, markersize=markersize, alpha=0.75,
+                    markeredgewidth=.1)
+            try:
+                pooled_ids = x.index.intersection(self.pooled.index)
+                pooled_x, pooled_y = x[pooled_ids], y[pooled_ids]
+                ax.plot(pooled_x, pooled_y, 'o', color=color, marker=marker,
+                        markeredgecolor='k', markeredgewidth=2,
+                        label='{} pooled'.format(name),
+                        markersize=markersize, alpha=0.75)
+            except AttributeError:
+                pass
+            try:
+                outlier_ids = x.index.intersection(self.outliers.index)
+                outlier_x, outlier_y = x[outlier_ids], y[outlier_ids]
+                ax.plot(outlier_x, outlier_y, 'o', color=color, marker=marker,
+                        markeredgecolor='lightgrey', markeredgewidth=5,
+                        label='{} outlier'.format(name),
+                        markersize=markersize, alpha=0.75)
+            except AttributeError:
+                pass
             if show_point_labels:
                 for args in zip(x, y, df.index):
                     ax.text(*args)
@@ -404,7 +421,7 @@ class DecompositionViz(object):
             # sample_ids=self.reduced_space.index,
             # phenotype_groupby=self.groupby,
             # phenotype_order=self.order,
-            #                            ax=ax, color=self.color)
+            # ax=ax, color=self.color)
 
         # Clear any unused axes
         for ax in axes.flat:
