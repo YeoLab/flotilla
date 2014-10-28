@@ -4,7 +4,8 @@ import numpy as np
 import seaborn as sns
 
 
-def violinplot(data, groupby=None, color=None, ax=None, pooled_data=None,
+def violinplot(data, groupby=None, color_ordered=None, ax=None,
+               pooled_data=None,
                order=None, violinplot_kws=None, title=None,
                label_pooled=False, outliers=None, data_type=None):
     """
@@ -14,7 +15,7 @@ def violinplot(data, groupby=None, color=None, ax=None, pooled_data=None,
         The main data to plot
     groupby : dict-like
         How to group the samples (e.g. by phenotype)
-    color : list
+    color_ordered : list
 
     Returns
     -------
@@ -32,8 +33,9 @@ def violinplot(data, groupby=None, color=None, ax=None, pooled_data=None,
     if ax is None:
         ax = plt.gca()
 
-    _violinplot_single_dataset(data, groupby=groupby, color=color, ax=ax, order=order,
-                     violinplot_kws=violinplot_kws, splicing=splicing)
+    _violinplot_single_dataset(data, groupby=groupby, color=color_ordered,
+                               ax=ax, order=order,
+                               violinplot_kws=violinplot_kws, splicing=splicing)
     if pooled_data is not None and groupby is not None:
         grouped = pooled_data.groupby(groupby)
         if order is not None:
@@ -51,9 +53,11 @@ def violinplot(data, groupby=None, color=None, ax=None, pooled_data=None,
 
         # make sure this is behind the non outlier data
         outlier_violinplot_kws['zorder'] = -1
-        _violinplot_single_dataset(outliers, groupby=groupby, color='lightgrey', ax=ax,
-                         order=order, violinplot_kws=outlier_violinplot_kws,
-                         splicing=splicing)
+        _violinplot_single_dataset(outliers, groupby=groupby, color='lightgrey',
+                                   ax=ax,
+                                   order=order,
+                                   violinplot_kws=outlier_violinplot_kws,
+                                   splicing=splicing)
 
     if splicing:
         ax.set_ylim(0, 1)

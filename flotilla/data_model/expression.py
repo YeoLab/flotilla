@@ -22,7 +22,6 @@ class ExpressionData(BaseData):
 
 
         """
-        __doc__ += BaseData.__doc__
         sys.stdout.write("{}\tInitializing expression\n".format(timestamp()))
 
         super(ExpressionData, self).__init__(

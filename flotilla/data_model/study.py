@@ -657,7 +657,7 @@ class Study(object):
                 feature_ids=feature_ids,
                 label_to_color=label_to_color,
                 label_to_marker=label_to_marker, groupby=groupby,
-                order=order, color=color,
+                order=order,
                 featurewise=featurewise, show_point_labels=show_point_labels,
                 title=title, reduce_kwargs=reduce_kwargs,
                 plot_violins=plot_violins, **kwargs)
@@ -667,7 +667,7 @@ class Study(object):
                 feature_ids=feature_ids,
                 label_to_color=label_to_color,
                 label_to_marker=label_to_marker, groupby=groupby,
-                order=order, color=color,
+                order=order,
                 featurewise=featurewise, show_point_labels=show_point_labels,
                 title=title, reduce_kwargs=reduce_kwargs,
                 plot_violins=plot_violins, **kwargs)
