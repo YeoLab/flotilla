@@ -12,6 +12,10 @@ import numpy as np
 import pandas as pd
 import semantic_version
 
+from flotilla import make_study_datapackage
+from flotilla.datapackage import data_package_url_to_dict, \
+    check_if_already_downloaded
+
 from .metadata import MetaData, PHENOTYPE_COL, POOLED_COL
 from .expression import ExpressionData, SpikeInData
 from .quality_control import MappingStatsData, MIN_READS
@@ -19,8 +23,7 @@ from .splicing import SplicingData, FRACTION_DIFF_THRESH
 from ..compute.predict import PredictorConfigManager
 from ..visualize.color import blue
 from ..visualize.ipython_interact import Interactive
-from ..external import data_package_url_to_dict, check_if_already_downloaded, \
-    make_study_datapackage, FLOTILLA_DOWNLOAD_DIR
+from ..datapackage import FLOTILLA_DOWNLOAD_DIR
 from ..util import load_csv, load_json, load_tsv, load_gzip_pickle_df, \
     load_pickle_df, timestamp
 
@@ -580,7 +583,7 @@ class Study(object):
         # IF this is a list of IDs
 
         try:
-            #TODO: check this, seems like a strange usage: 'all_samples'.startswith(phenotype_subset)
+            # TODO: check this, seems like a strange usage: 'all_samples'.startswith(phenotype_subset)
             if phenotype_subset is None or 'all_samples'.startswith(
                     phenotype_subset):
                 sample_ind = np.ones(self.metadata.data.shape[0],
@@ -854,7 +857,7 @@ class Study(object):
         bar_ax.set_xticks(np.arange(len(groups)) + 0.4)
         bar_ax.set_xticklabels(groups)
         # except AttributeError:
-        #     pass
+        # pass
 
     def celltype_sizes(self, data_type='splicing'):
         if data_type == 'expression':
@@ -926,11 +929,11 @@ class Study(object):
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
         self.splicing.plot_feature(feature_id, sample_ids,
                                    phenotype_groupby=self.sample_id_to_phenotype,
-                                 phenotype_order=self.phenotype_order,
-                                 color=self.phenotype_color_ordered,
-                                 phenotype_to_color=self.phenotype_to_color,
-                                 phenotype_to_marker=self.phenotype_to_marker,
-                                 nmf_space=nmf_space)
+                                   phenotype_order=self.phenotype_order,
+                                   color=self.phenotype_color_ordered,
+                                   phenotype_to_color=self.phenotype_to_color,
+                                   phenotype_to_marker=self.phenotype_to_marker,
+                                   nmf_space=nmf_space)
 
     def plot_gene(self, feature_id, sample_subset=None, nmf_space=False):
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
@@ -946,7 +949,7 @@ class Study(object):
             self, sample_subset=None, feature_ids=None,
             fraction_diff_thresh=FRACTION_DIFF_THRESH):
         # grouped_ids = self.splicing.data.groupby(self.sample_id_to_color,
-        #                                          axis=0)
+        # axis=0)
         celltype_groups = self.metadata.data.groupby(
             self.sample_id_to_phenotype, axis=0)
 
@@ -1001,8 +1004,8 @@ class Study(object):
                                                       fraction_diff_thresh)
 
     # def plot_clusteredheatmap(self, sample_subset=None,
-    #                           feature_subset='variant',
-    #                           data_type='expression', metric='euclidean',
+    # feature_subset='variant',
+    # data_type='expression', metric='euclidean',
     #                           linkage_method='median', figsize=None):
     #     if data_type == 'expression':
     #         data = self.expression.data
@@ -1112,25 +1115,41 @@ class Study(object):
                         'phenotype_to_color':
                             self.metadata.phenotype_to_color,
                         'phenotype_to_marker':
-                            self.metadata.phenotype_to_marker}
+                            self.metadata.phenotype_to_marker,
+                        'minimum_samples': self.metadata.minimum_samples}
 
         try:
             expression = self.expression.data
-            expression_kws = {'feature_rename_col':
-                                  self.expression.feature_rename_col,
-                              'log_base': self.expression.log_base}
+            expression_kws = {
+                'log_base': self.expression.log_base,
+                'thresh': self.expression.thresh}
         except AttributeError:
             expression = None
             expression_kws = None
 
         try:
+            expression_feature_data = self.expression.feature_data
+            expression_feature_kws = {'feature_rename_col':
+                                          self.expression.feature_rename_col}
+        except AttributeError:
+            expression_feature_data = None
+            expression_feature_kws = None
+
+        try:
             splicing = self.splicing.data
             splicing_kws = {'feature_rename_col':
                                 self.splicing.feature_rename_col}
-
         except AttributeError:
             splicing = None
             splicing_kws = None
+
+        try:
+            splicing_feature_data = self.splicing.feature_data
+            splicing_feature_kws = {'feature_rename_col':
+                                        self.splicing.feature_rename_col}
+        except AttributeError:
+            splicing_feature_data = None
+            splicing_feature_kws = None
 
         try:
             spikein = self.spikein.data
@@ -1141,10 +1160,10 @@ class Study(object):
             mapping_stats = self.mapping_stats.data
             mapping_stats_kws = {'number_mapped_col':
                                      self.mapping_stats.number_mapped_col}
-
         except AttributeError:
             mapping_stats = None
             mapping_stats_kws = None
+
 
         # Increase the version number
         version = semantic_version.Version(self.version)
@@ -1157,6 +1176,10 @@ class Study(object):
                                       expression_kws=expression_kws,
                                       splicing_kws=splicing_kws,
                                       mapping_stats_kws=mapping_stats_kws,
+                                      expression_feature_kws=expression_feature_kws,
+                                      expression_feature_data=expression_feature_data,
+                                      splicing_feature_data=splicing_feature_data,
+                                      splicing_feature_kws=splicing_feature_kws,
                                       species=self.species,
                                       license=self.license,
                                       title=self.title,
