@@ -281,21 +281,24 @@ class DecompositionViz(object):
                     label=name, markersize=markersize, alpha=0.75,
                     markeredgewidth=.1)
             try:
-                pooled_ids = x.index.intersection(self.pooled.index)
-                pooled_x, pooled_y = x[pooled_ids], y[pooled_ids]
-                ax.plot(pooled_x, pooled_y, 'o', color=color, marker=marker,
-                        markeredgecolor='k', markeredgewidth=2,
-                        label='{} pooled'.format(name),
-                        markersize=markersize, alpha=0.75)
+                if not self.pooled.empty:
+                    pooled_ids = x.index.intersection(self.pooled.index)
+                    pooled_x, pooled_y = x[pooled_ids], y[pooled_ids]
+                    ax.plot(pooled_x, pooled_y, 'o', color=color, marker=marker,
+                            markeredgecolor='k', markeredgewidth=2,
+                            label='{} pooled'.format(name),
+                            markersize=markersize, alpha=0.75)
             except AttributeError:
                 pass
             try:
-                outlier_ids = x.index.intersection(self.outliers.index)
-                outlier_x, outlier_y = x[outlier_ids], y[outlier_ids]
-                ax.plot(outlier_x, outlier_y, 'o', color=color, marker=marker,
-                        markeredgecolor='lightgrey', markeredgewidth=5,
-                        label='{} outlier'.format(name),
-                        markersize=markersize, alpha=0.75)
+                if not self.outliers.empty:
+                    outlier_ids = x.index.intersection(self.outliers.index)
+                    outlier_x, outlier_y = x[outlier_ids], y[outlier_ids]
+                    ax.plot(outlier_x, outlier_y, 'o', color=color,
+                            marker=marker,
+                            markeredgecolor='lightgrey', markeredgewidth=5,
+                            label='{} outlier'.format(name),
+                            markersize=markersize, alpha=0.75)
             except AttributeError:
                 pass
             if show_point_labels:
