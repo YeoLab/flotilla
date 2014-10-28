@@ -148,9 +148,9 @@ class Interactive(object):
                 if plot_violins:
                     pca.violins_fig.savefig(violins_file)
 
-            feature_subsets = list(
-                set(itertools.chain(*self.default_feature_subsets
-                                    .values())))
+            #feature_subsets = list(
+            #    set(itertools.chain(*self.default_feature_subsets
+            #                        .values())))
 
         # self.plot_study_sample_legend()
 
@@ -477,6 +477,81 @@ class Interactive(object):
                  difference_threshold=difference_threshold,
                  color=colors,
                  savefile='')
+
+    @staticmethod
+    def interactive_choose_outliers(self,
+                                    data_types=('expression', 'splicing'),
+                                    sample_subsets=None,
+                                    feature_subsets=None,
+                                    featurewise=False,
+                                    x_pc=(1, 3), y_pc=(1, 3),
+                                    show_point_labels=False,
+                                    nu=(0.1, 9.9),
+                                    gamma=(0, 25),
+                                    ):
+
+        def do_interact(data_type='expression',
+                        sample_subset=self.default_sample_subset,
+                        feature_subset=self.default_feature_subset,
+                        x_pc=1, y_pc=2,
+                        show_point_labels=False,
+                        gamma = 12,
+                        nu = 1,
+
+                        ):
+            print "transforming input gamma by 2^-(input): %f" % gamma
+            gamma = 2**-float(gamma)
+            print "transforming input nu by input/10: %f" % nu
+            nu = float(nu)/10
+
+            for k, v in locals().iteritems():
+                if k == 'self':
+                    continue
+                sys.stdout.write('{} : {}\n'.format(k, v))
+
+            else:
+                renamer = lambda x: x
+                data_model = None
+
+            if feature_subset not in self.default_feature_subsets[data_type]:
+                warnings.warn("This feature_subset ('{}') is not available in "
+                              "this data type ('{}'). Falling back on all "
+                              "features.".format(feature_subset, data_type))
+
+            reducer, outlier_detector = self.detect_outliers(data_type=data_type,
+                                                   sample_subset=None, feature_subset=None,
+                                                   reducer=None,
+                                                   reducer_kwargs=None,
+                                                   outlier_detection_method=None,
+                                                   outlier_detection_method_kwargs={'gamma':gamma,
+                                                                                    'nu':nu})
+            if data_type == "expression":
+                obj = self.expression
+            if data_type == "splicing":
+                obj = self.splicing
+
+            obj.plot_outliers(reducer, outlier_detector,
+                              feature_renamer=renamer,
+                              show_point_labels=show_point_labels)
+
+            print "total samples:", len(outlier_detector.outliers)
+            print "outlier samples:", outlier_detector.outliers.sum()
+            print "metadata column name:", outlier_detector.title
+
+        if feature_subsets is None:
+            feature_subsets = Interactive.get_feature_subsets(self, data_types)
+
+        if sample_subsets is None:
+            sample_subsets = self.default_sample_subsets
+
+        return interact(do_interact,
+                 data_type=data_types,
+                 sample_subset=sample_subsets,
+                 feature_subset=feature_subsets,
+                 x_pc=x_pc, y_pc=y_pc,
+                 show_point_labels=show_point_labels,
+                 nu=nu,
+                 gamma=gamma)
 
     # @staticmethod
     # def interactive_clusteredheatmap(self):

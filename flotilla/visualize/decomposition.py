@@ -51,7 +51,7 @@ class DecompositionViz(object):
         self.color = color
         self.order = order
         self.violinplot_kws = violinplot_kws
-        self.data_type = data_type
+        #self.data_type = data_type
         self.label_to_color = label_to_color
         self.label_to_marker = label_to_marker
         self.n_vectors = n_vectors
