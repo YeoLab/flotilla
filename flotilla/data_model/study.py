@@ -296,14 +296,7 @@ class Study(object):
 
     @property
     def default_sample_subsets(self):
-        default_sample_subsets = [col for col in self.metadata.data.columns
-                                  if self.metadata.data[col].dtype == bool]
-        default_sample_subsets.extend(['~{}'.format(col)
-                                       for col in self.metadata.data.columns
-                                       if
-                                       self.metadata.data[col].dtype == bool])
-        default_sample_subsets.insert(0, 'all_samples')
-        return default_sample_subsets
+        return self.metadata.sample_subsets
 
     @property
     def default_feature_subsets(self):
