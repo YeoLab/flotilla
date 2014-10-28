@@ -643,13 +643,11 @@ class Study(object):
             label_to_marker = self.phenotype_to_marker
             groupby = self.sample_id_to_phenotype
             order = self.phenotype_order
-            color = self.phenotype_color_ordered
         else:
             label_to_color = None
             label_to_marker = None
             groupby = None
             order = None
-            color = None
 
         if "expression".startswith(data_type):
             reducer = self.expression.plot_pca(
