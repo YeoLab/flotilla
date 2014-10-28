@@ -269,7 +269,6 @@ class DecompositionViz(object):
         if ax is None:
             ax = plt.gca()
 
-
         # Plot the samples
         grouped = self.reduced_space.groupby(self.groupby, axis=0)
         for name, df in grouped:
