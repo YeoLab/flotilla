@@ -52,18 +52,6 @@ class ExpressionData(BaseData):
         sys.stdout.write("{}\tDone initializing expression\n".format(
             timestamp()))
 
-    @property
-    def data_thresholded(self):
-        return self._threshold(self.data)
-
-    @property
-    def singles_thresholded(self):
-        return self._threshold(self.singles)
-
-    @property
-    def pooled_thresholded(self):
-        return self._threshold(self.pooled)
-
     def _calculate_linkage(self, sample_ids, feature_ids, metric='euclidean',
                            linkage_method='average', standardize=True):
         return super(ExpressionData, self)._calculate_linkage(
