@@ -3,7 +3,7 @@ import sys
 import matplotlib as mpl
 import seaborn as sns
 
-from .base import BaseData
+from .base import BaseData, subsets_from_metadata
 from ..visualize.color import str_to_color
 
 
@@ -129,25 +129,5 @@ class MetaData(BaseData):
 
     @property
     def sample_subsets(self):
-        sample_subsets = {}
-        for col in self.data:
-            if self.data[col].dtype == bool:
-                sample_subset = self.feature_data.index[
-                    self.feature_data[col]]
-                if len(sample_subset) > MINIMUM_SAMPLE_SUBSET:
-                    sample_subsets[col] = sample_subset
-            else:
-                grouped = self.data.groupby(col)
-                sizes = grouped.size()
-                filtered_sizes = sizes[sizes >= MINIMUM_SAMPLE_SUBSET]
-                for group in filtered_sizes.keys():
-                    name = '{}: {}'.format(col, group)
-                    sample_subsets[name] = grouped.groups[group]
-        for sample_subset in sample_subsets.keys():
-            name = 'not ()'.format(sample_subset)
-            if name not in sample_subsets:
-                in_features = self.data.index.isin(sample_subsets[
-                    sample_subset])
-                sample_subsets[name] = self.data.index[~in_features]
-        sample_subsets['all_samples'] = self.data.index
-        return sample_subsets
+        return subsets_from_metadata(self.data, MINIMUM_SAMPLE_SUBSET,
+                                     'samples')

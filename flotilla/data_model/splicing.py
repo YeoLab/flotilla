@@ -32,7 +32,9 @@ class SplicingData(BaseData):
 
     def __init__(self, data,
                  feature_data=None, binsize=0.1, outliers=None,
-                 feature_rename_col=None, excluded_max=0.2, included_min=0.8,
+                 feature_rename_col=None,
+                 feature_ignore_subset_cols=None,
+                 excluded_max=0.2, included_min=0.8,
                  pooled=None, predictor_config_manager=None,
                  technical_outliers=None, minimum_samples=0):
         """Instantiate a object for percent spliced in (PSI) scores
@@ -46,10 +48,6 @@ class SplicingData(BaseData):
         binsize : float
             Value between 0 and 1, the bin size for binning the study_data
             scores
-        reducer : sklearn.decomposition object
-            An scikit-learn class that reduces the dimensionality of study_data
-            somehow. Must accept the parameter n_components, have the
-            functions fit, transform, and have the attribute components_
         excluded_max : float
             Maximum value for the "excluded" bin of psi scores. Default 0.2.
         included_max : float
@@ -63,6 +61,7 @@ class SplicingData(BaseData):
         super(SplicingData, self).__init__(
             data, feature_data=feature_data,
             feature_rename_col=feature_rename_col,
+            feature_ignore_subset_cols=feature_ignore_subset_cols,
             outliers=outliers, pooled=pooled,
             technical_outliers=technical_outliers,
             predictor_config_manager=predictor_config_manager,
