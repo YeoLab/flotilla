@@ -173,7 +173,7 @@ class ConfigOptimizer(object):
         """choose the  coefficient that optimizes the result of some
         objective function of a predictor's parameters to return a user-chosen target value"""
         raise NotImplementedError
-        return PredictorConfigScalers(coef=optimized_coef)
+        # return PredictorConfigScalers(coef=optimized_coef)
         #scipy.optimize(.....)
 
 
