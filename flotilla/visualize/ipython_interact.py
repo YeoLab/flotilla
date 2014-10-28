@@ -9,9 +9,6 @@ from IPython.html.widgets import interact
 import matplotlib.pyplot as plt
 
 
-
-
-
 # from ..compute.predict import default_classifier
 from ..visualize.color import red
 from .network import NetworkerViz
@@ -144,7 +141,7 @@ class Interactive(object):
                 # extension
                 violins_file = "_".join([".".join(savefile.split('.')[:-1]),
                                          'violins']) + "." + \
-                                         savefile.split('.')[-1]
+                               savefile.split('.')[-1]
                 if plot_violins:
                     pca.violins_fig.savefig(violins_file)
 
@@ -158,14 +155,14 @@ class Interactive(object):
             sample_subsets = self.default_sample_subsets
 
         return interact(do_interact,
-                 data_type=data_types,
-                 sample_subset=sample_subsets,
-                 feature_subset=feature_subsets + ['custom'],
-                 featurewise=featurewise,
-                 x_pc=x_pc, y_pc=y_pc,
-                 show_point_labels=show_point_labels,
-                 list_link=list_link, plot_violins=plot_violins,
-                 savefile=savefile)
+                        data_type=data_types,
+                        sample_subset=sample_subsets,
+                        feature_subset=feature_subsets + ['custom'],
+                        featurewise=featurewise,
+                        x_pc=x_pc, y_pc=y_pc,
+                        show_point_labels=show_point_labels,
+                        list_link=list_link, plot_violins=plot_violins,
+                        savefile=savefile)
 
     @staticmethod
     def interactive_graph(self, data_types=('expression', 'splicing'),
@@ -234,22 +231,22 @@ class Interactive(object):
             weight_fun = NetworkerViz.weight_funs
 
         # if not featurewise:
-        #     self.plot_study_sample_legend()
+        # self.plot_study_sample_legend()
 
         return interact(do_interact,
-                 data_type=data_types,
-                 sample_subset=sample_subsets,
-                 feature_subset=feature_subsets,
-                 featurewise=featurewise,
-                 cov_std_cut=cov_std_cut,
-                 degree_cut=degree_cut,
-                 n_pcs=n_pcs,
-                 draw_labels=draw_labels,
-                 weight_fun=weight_fun,
-                 feature_of_interest=feature_of_interest,
-                 use_pc_1=use_pc_1, use_pc_2=use_pc_2,
-                 use_pc_3=use_pc_3, use_pc_4=use_pc_4,
-                 savefile=savefile)
+                        data_type=data_types,
+                        sample_subset=sample_subsets,
+                        feature_subset=feature_subsets,
+                        featurewise=featurewise,
+                        cov_std_cut=cov_std_cut,
+                        degree_cut=degree_cut,
+                        n_pcs=n_pcs,
+                        draw_labels=draw_labels,
+                        weight_fun=weight_fun,
+                        feature_of_interest=feature_of_interest,
+                        use_pc_1=use_pc_1, use_pc_2=use_pc_2,
+                        use_pc_3=use_pc_3, use_pc_4=use_pc_4,
+                        savefile=savefile)
 
     @staticmethod
     def interactive_classifier(self, data_types=('expression', 'splicing'),
@@ -302,14 +299,14 @@ class Interactive(object):
         # self.plot_study_sample_legend()
 
         return interact(do_interact,
-                 data_type=data_types,
-                 sample_subset=sample_subsets,
-                 feature_subset=feature_subsets,
-                 categorical_variable=categorical_variables,
-                 score_coefficient=score_coefficient,
-                 draw_labels=draw_labels,
-                 predictor_type=predictor_types,
-                 savefile=savefile)
+                        data_type=data_types,
+                        sample_subset=sample_subsets,
+                        feature_subset=feature_subsets,
+                        categorical_variable=categorical_variables,
+                        score_coefficient=score_coefficient,
+                        draw_labels=draw_labels,
+                        predictor_type=predictor_types,
+                        savefile=savefile)
 
     @staticmethod
     def interactive_localZ(self):
@@ -351,10 +348,10 @@ class Interactive(object):
                              "<this_object>.localZ_result_")
 
         return interact(do_interact,
-                 data_type=('expression', 'splicing'),
-                 sample1='replaceme',
-                 sample2='replaceme',
-                 pCut='0.01')
+                        data_type=('expression', 'splicing'),
+                        sample1='replaceme',
+                        sample2='replaceme',
+                        pCut='0.01')
 
     @staticmethod
     def interactive_plot_modalities_lavalamps(self, sample_subsets=None,
@@ -421,11 +418,13 @@ class Interactive(object):
             bootstrapped_kws = {}
 
         return interact(do_interact,
-                 sample_subset=sample_subsets, feature_subset=feature_subsets,
-                 color=color, x_offset=x_offset,
-                 use_these_modalities=use_these_modalities,
-                 bootstrapped=bootstrapped, bootstrapped_kws=bootstrapped_kws,
-                 savefile=savefile)
+                        sample_subset=sample_subsets,
+                        feature_subset=feature_subsets,
+                        color=color, x_offset=x_offset,
+                        use_these_modalities=use_these_modalities,
+                        bootstrapped=bootstrapped,
+                        bootstrapped_kws=bootstrapped_kws,
+                        savefile=savefile)
 
     @staticmethod
     def interactive_lavalamp_pooled_inconsistent(
@@ -469,62 +468,62 @@ class Interactive(object):
             sample_subsets = self.default_sample_subsets
 
         return interact(do_interact,
-                 sample_subset=sample_subsets,
-                 feature_subset=feature_subsets,
-                 difference_threshold=difference_threshold,
-                 color=colors,
-                 savefile='')
+                        sample_subset=sample_subsets,
+                        feature_subset=feature_subsets,
+                        difference_threshold=difference_threshold,
+                        color=colors,
+                        savefile='')
 
-    # @staticmethod
-    # def interactive_clusteredheatmap(self):
-    #     def do_interact(data_type='expression',
-    #                     sample_subset=self.default_sample_subsets,
-    #                     feature_subset=self.default_feature_subset,
-    #                     metric='euclidean',
-    #                     linkage_method='median',
-    #                     list_link='',
-    #                     savefile='data/last.clusteredheatmap.pdf'):
-    #
-    #         for k, v in locals().iteritems():
-    #             if k == 'self':
-    #                 continue
-    #             sys.stdout.write('{} : {}\n'.format(k, v))
-    #
-    #         if feature_subset != "custom" and list_link != "":
-    #             raise ValueError(
-    #                 "set feature_subset to \"custom\" to use list_link")
-    #
-    #         if feature_subset == "custom" and list_link == "":
-    #             raise ValueError("use a custom list name please")
-    #
-    #         if feature_subset == 'custom':
-    #             feature_subset = list_link
-    #         elif feature_subset not in self.default_feature_subsets[data_type]:
-    #             warnings.warn("This feature_subset ('{}') is not available in "
-    #                           "this data type ('{}'). Falling back on all "
-    #                           "features.".format(feature_subset, data_type))
-    #
-    #         self.plot_clusteredheatmap(sample_subset=sample_subset,
-    #                                    feature_subset=feature_subset,
-    #                                    data_type=data_type,
-    #                                    metric=metric,
-    #                                    linkage_method=linkage_method)
-    #         plt.tight_layout()
-    #         if savefile != '':
-    #             # Make the directory if it's not already there
-    #             self.maybe_make_directory(savefile)
-    #             f = plt.gcf()
-    #             f.savefig(savefile)
-    #
-    #     feature_subsets = Interactive.get_feature_subsets(self,
-    #                                                       ['expression',
-    #                                                        'splicing'])
-    #
-    #     linkage_method = ('single', 'median', 'centroid')
-    #     metric = ('euclidean', 'seuclidean')
-    #     interact(do_interact,
-    #              data_type=('expression', 'splicing'),
-    #              sample_subset=self.default_sample_subsets,
-    #              feature_subset=feature_subsets,
-    #              metric=metric,
-    #              linkage_method=linkage_method)
+        # @staticmethod
+        # def interactive_clusteredheatmap(self):
+        # def do_interact(data_type='expression',
+        # sample_subset=self.default_sample_subsets,
+        # feature_subset=self.default_feature_subset,
+        #                     metric='euclidean',
+        #                     linkage_method='median',
+        #                     list_link='',
+        #                     savefile='data/last.clusteredheatmap.pdf'):
+        #
+        #         for k, v in locals().iteritems():
+        #             if k == 'self':
+        #                 continue
+        #             sys.stdout.write('{} : {}\n'.format(k, v))
+        #
+        #         if feature_subset != "custom" and list_link != "":
+        #             raise ValueError(
+        #                 "set feature_subset to \"custom\" to use list_link")
+        #
+        #         if feature_subset == "custom" and list_link == "":
+        #             raise ValueError("use a custom list name please")
+        #
+        #         if feature_subset == 'custom':
+        #             feature_subset = list_link
+        #         elif feature_subset not in self.default_feature_subsets[data_type]:
+        #             warnings.warn("This feature_subset ('{}') is not available in "
+        #                           "this data type ('{}'). Falling back on all "
+        #                           "features.".format(feature_subset, data_type))
+        #
+        #         self.plot_clusteredheatmap(sample_subset=sample_subset,
+        #                                    feature_subset=feature_subset,
+        #                                    data_type=data_type,
+        #                                    metric=metric,
+        #                                    linkage_method=linkage_method)
+        #         plt.tight_layout()
+        #         if savefile != '':
+        #             # Make the directory if it's not already there
+        #             self.maybe_make_directory(savefile)
+        #             f = plt.gcf()
+        #             f.savefig(savefile)
+        #
+        #     feature_subsets = Interactive.get_feature_subsets(self,
+        #                                                       ['expression',
+        #                                                        'splicing'])
+        #
+        #     linkage_method = ('single', 'median', 'centroid')
+        #     metric = ('euclidean', 'seuclidean')
+        #     interact(do_interact,
+        #              data_type=('expression', 'splicing'),
+        #              sample_subset=self.default_sample_subsets,
+        #              feature_subset=feature_subsets,
+        #              metric=metric,
+        #              linkage_method=linkage_method)

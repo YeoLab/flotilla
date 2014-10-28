@@ -385,7 +385,7 @@ class BaseData(object):
                                       featurewise=False, reducer=DataFramePCA,
                                       label_to_color=None,
                                       label_to_marker=None,
-                                      groupby=None, order=None, color=None,
+                                      groupby=None, order=None,
                                       reduce_kwargs=None,
                                       title='', plot_violins=True,
                                       **plotting_kwargs):
@@ -412,7 +412,8 @@ class BaseData(object):
             Whether or not to make the violinplots of the top features. This
             can take a long time, so to save time you can turn it off if you
             just want a quick look at the PCA.
-
+        n_top_pc_features : int, optional
+            Number of PC features to plot
 
         Returns
         -------
@@ -430,15 +431,18 @@ class BaseData(object):
         visualized = DecompositionViz(reduced.reduced_space,
                                       reduced.components_,
                                       reduced.explained_variance_ratio_,
+                                      singles=self.singles,
+                                      pooled=self.pooled,
+                                      outliers=self.outliers,
+                                      feature_renamer=self.feature_renamer,
                                       featurewise=featurewise,
-                                      DataModel=self,
                                       label_to_color=label_to_color,
                                       label_to_marker=label_to_marker,
-                                      groupby=groupby, order=order, color=color,
+                                      groupby=groupby, order=order,
                                       x_pc="pc_" + str(x_pc),
                                       y_pc="pc_" + str(y_pc))
         # pca(show_vectors=True,
-        #     **plotting_kwargs)
+        # **plotting_kwargs)
         return visualized(title=title,
                           plot_violins=plot_violins, **plotting_kwargs)
 
@@ -482,9 +486,6 @@ class BaseData(object):
 
         if len(sample_ids) == 1:
             sample_ids = sample_ids[0]
-            single_sample = True
-        else:
-            single_sample = False
 
         if len(feature_ids) == 1:
             feature_ids = feature_ids[0]
@@ -679,7 +680,7 @@ class BaseData(object):
                  plotting_kwargs=None,
                  color=None, groupby=None, label_to_color=None,
                  label_to_marker=None, order=None, bins=None):
-        #Should all this be exposed to the user???
+        # Should all this be exposed to the user???
 
         """Make and memoize a predictor on a categorical trait (associated
         with samples) subset of genes
@@ -775,11 +776,11 @@ class BaseData(object):
         # if isinstance(self.data.columns, pd.MultiIndex):
         # feature_id, renamed = feature_id
         # else:
-        #     renamed = self.feature_renamer(feature_id)
+        # renamed = self.feature_renamer(feature_id)
         title = '{}\n{}'.format(renamed, ':'.join(
             feature_id.split('@')[0].split(':')[:2]))
 
-        violinplot(singles, groupby=phenotype_groupby, color=color,
+        violinplot(singles, groupby=phenotype_groupby, color_ordered=color,
                    pooled_data=pooled, order=phenotype_order,
                    title=title, data_type=self.data_type, ax=ax,
                    label_pooled=label_pooled, outliers=outliers)
@@ -794,7 +795,8 @@ class BaseData(object):
         """
 
         """
-        data = self._subset(self.data, sample_ids, feature_ids, require_min_samples=False)
+        data = self._subset(self.data, sample_ids, feature_ids,
+                            require_min_samples=False)
         binned = self.binify(data)
         reduced = self.nmf.transform(binned.T)
         return reduced
@@ -821,7 +823,7 @@ class BaseData(object):
             if not nmf_space:
                 axes = [axes]
             # if self.data_type == 'expression':
-            #     axes = [axes]
+            # axes = [axes]
 
             self._violinplot(feature_id, sample_ids=sample_ids,
                              phenotype_groupby=phenotype_groupby,
@@ -841,8 +843,10 @@ class BaseData(object):
             sns.despine()
 
     def nmf_space_positions(self, groupby, min_samples_per_group=5):
-        data = self.data.groupby(groupby).filter(lambda x: len(x) >= min_samples_per_group)
-        df = data.groupby(groupby).apply(lambda x: self.binned_nmf_reduced(sample_ids=x.index))
+        data = self.data.groupby(groupby).filter(
+            lambda x: len(x) >= min_samples_per_group)
+        df = data.groupby(groupby).apply(
+            lambda x: self.binned_nmf_reduced(sample_ids=x.index))
         df = df.swaplevel(0, 1)
         df = df.sort_index()
         return df
@@ -866,7 +870,7 @@ class BaseData(object):
             try:
                 phenotype1, phenotype2 = transition
                 norm = np.linalg.norm(df.ix[phenotype2] - df.ix[phenotype1])
-                #             print phenotype1, phenotype2, norm
+                # print phenotype1, phenotype2, norm
                 distances[transition] = norm
             except KeyError:
                 pass
