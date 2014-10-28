@@ -62,7 +62,7 @@ class MetaData(BaseData):
             sys.stderr.write('No phenotype to color mapping was provided, '
                              'so coming up with reasonable defaults\n')
             self.phenotype_to_color = {}
-            colors = sns.color_palette('Set1', n_colors=self.n_phenotypes)
+            colors = sns.color_palette('Dark2', n_colors=self.n_phenotypes)
             for phenotype, color in zip(self.unique_phenotypes, colors):
                 self.phenotype_to_color[phenotype] = mpl.colors.rgb2hex(color)
 
