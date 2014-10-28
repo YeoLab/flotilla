@@ -12,7 +12,7 @@ from ..compute.splicing import Modalities
 from ..compute.decomposition import DataFramePCA
 from ..visualize.color import purples
 from ..visualize.splicing import ModalitiesViz
-from ..util import memoize
+from ..util import memoize, timestamp
 from ..visualize.color import red
 from ..visualize.splicing import lavalamp, hist_single_vs_pooled_diff, \
     lavalamp_pooled_inconsistent
@@ -55,14 +55,14 @@ class SplicingData(BaseData):
         included_max : float
             Minimum value for the "included" bin of psi scores. Default 0.8.
         """
-        sys.stderr.write("initializing splicing\n")
+        sys.stdout.write("{}\tInitializing splicing\n".format(timestamp()))
         super(SplicingData, self).__init__(
             data, metadata, feature_rename_col=feature_rename_col,
             outliers=outliers, pooled=pooled,
             technical_outliers=technical_outliers,
             predictor_config_manager=predictor_config_manager,
             minimum_samples=minimum_samples)
-        sys.stderr.write("done initializing splicing\n")
+        sys.stdout.write("{}\tDone initializing splicing\n".format(timestamp()))
         self.binsize = binsize
         self.bins = np.arange(0, 1 + self.binsize, self.binsize)
 

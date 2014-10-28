@@ -7,13 +7,14 @@ import sys
 import numpy as np
 
 from .base import BaseData
-from ..util import memoize
+from ..util import memoize, timestamp
 
-EXPRESSION_THRESH = .1
+EXPRESSION_THRESH = -np.inf
+
 
 class ExpressionData(BaseData):
     def __init__(self, data,
-                 metadata=None, expression_thresh=EXPRESSION_THRESH,
+                 metadata=None, thresh=EXPRESSION_THRESH,
                  feature_rename_col=None, outliers=None, log_base=None,
                  pooled=None, plus_one=False, minimum_samples=0,
                  technical_outliers=None, predictor_config_manager=None):
@@ -31,7 +32,7 @@ class ExpressionData(BaseData):
 
 
         """
-        sys.stderr.write("initializing expression\n")
+        sys.stdout.write("{}\tInitializing expression\n".format(timestamp()))
 
         super(ExpressionData, self).__init__(
             data, metadata,
@@ -40,17 +41,18 @@ class ExpressionData(BaseData):
             predictor_config_manager=predictor_config_manager,
             technical_outliers=technical_outliers)
         self.data_type = 'expression'
-        self.expression_thresh = expression_thresh
+        self.thresh = thresh
+
+        if self.thresh > -np.inf or self.min_samples > 0:
+            self.data_original = self.data.copy()
+            self.data = self._threshold(self.data, self.singles)
 
         if plus_one:
             self.data += 1
-            self.expression_thresh += 1
+            self.thresh += 1
         # self.original_data = self.data
         # import pdb; pdb.set_trace()
-        # self.data = self._threshold(data, expression_thresh)
-
-        sys.stderr.write("done initializing expression\n")
-
+        # self.data = self._threshold(data, thresh)
         self.log_base = log_base
 
         if self.log_base is not None:
@@ -58,13 +60,32 @@ class ExpressionData(BaseData):
 
         self.feature_data = metadata
 
-    @staticmethod
-    def _threshold(data, thresh, min_samples=None):
-        data = data[data >= thresh]
-        data = data.dropna(how='all', axis=1).dropna(how='all', axis=0)
-        if min_samples is not None:
-            data = data.dropna(thresh=min_samples, axis=1)
-        return data
+        sys.stdout.write("{}\tDone initializing expression\n".format(
+            timestamp()))
+
+    def _threshold(self, data, other=None):
+        """Only take features with expression greater than the threshold,
+        in at least the minimum number of samples.
+
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            The data to filter, make smaller
+        other : pandas.DataFrame, optional
+            If provided, use this DataFrame to filter data. E.g. use the
+            genes expressed in only single cells to filter the whole dataset.
+
+        Returns
+        -------
+        filtered : pandas.DataFrame
+            "data" filtered with expression values at least self.thresh
+            in least self.min_samples
+        """
+        if other is None:
+            other = data
+        filtered = data.ix[:, other[other > self.thresh].count() >=
+                              self.min_samples]
+        return filtered
 
     @property
     def data_thresholded(self):
@@ -98,7 +119,7 @@ class ExpressionData(BaseData):
 
         # def plot_two_samples(self, sample1, sample2, **kwargs):
         # thresholded = kwargs.pop('thresholded', True)
-        #     super(ExpressionData, self).plot_two_samples(sample1, sample2,
+        # super(ExpressionData, self).plot_two_samples(sample1, sample2,
         #                                                  thresholded=thresholded,
         #                                                  **kwargs)
 
@@ -136,7 +157,7 @@ class SpikeInData(ExpressionData):
                                           predictor_config_manager=predictor_config_manager)
 
         # def spikeins_violinplot(self):
-        #     import matplotlib.pyplot as plt
+        # import matplotlib.pyplot as plt
         #     import seaborn as sns
         #     import numpy as np
         #

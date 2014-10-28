@@ -2,7 +2,6 @@
 Data models for "studies" studies include attributes about the data and are
 heavier in terms of data load
 """
-
 import json
 import os
 import sys
@@ -23,7 +22,7 @@ from ..visualize.ipython_interact import Interactive
 from ..external import data_package_url_to_dict, check_if_already_downloaded, \
     make_study_datapackage, FLOTILLA_DOWNLOAD_DIR
 from ..util import load_csv, load_json, load_tsv, load_gzip_pickle_df, \
-    load_pickle_df
+    load_pickle_df, timestamp
 
 
 SPECIES_DATA_PACKAGE_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects'
@@ -86,7 +85,7 @@ class Study(object):
                  metadata_phenotype_to_color=None,
                  metadata_phenotype_to_marker=None,
                  license=None, title=None, sources=None,
-                 minimum_samples=0):
+                 metadata_minimum_samples=0):
         """Construct a biological study
 
         This class only accepts data, no filenames. All data must already
@@ -124,7 +123,7 @@ class Study(object):
             already log-transformed), use this number as the base of the
             transform. E.g. expression_log_base=10 will take the log10 of
             your data. (default None)
-        expression_thresh : float
+        thresh : float
             Minimum (non log-transformed) expression value. (default -inf)
         expression_plus_one : bool
             Whether or not to add 1 to the expression data. (default False)
@@ -177,9 +176,7 @@ class Study(object):
 
         [1] http://stackoverflow.com/q/12513185/1628971
         """
-        super(Study, self).__init__()
-
-        sys.stderr.write("Initializing study\n")
+        sys.stdout.write("{}\tInitializing study\n".format(timestamp()))
         self.predictor_config_manager = predictor_config_manager \
             if predictor_config_manager is not None \
             else PredictorConfigManager()
@@ -193,6 +190,7 @@ class Study(object):
         self.sources = sources
         self.version = version
 
+        sys.stdout.write('{}\tLoading metadata\n'.format(timestamp()))
         self.metadata = MetaData(
             sample_metadata, metadata_phenotype_order,
             metadata_phenotype_to_color,
@@ -240,29 +238,31 @@ class Study(object):
             self.technical_outliers = None
 
         if expression_data is not None:
-            sys.stderr.write("Loading expression data\n")
+            sys.stdout.write(
+                "{}\tLoading expression data\n".format(timestamp()))
             self.expression = ExpressionData(
                 expression_data,
                 expression_feature_data,
-                expression_thresh=expression_thresh,
+                thresh=expression_thresh,
                 feature_rename_col=expression_feature_rename_col,
                 outliers=outliers, plus_one=expression_plus_one,
                 log_base=expression_log_base, pooled=pooled,
                 predictor_config_manager=self.predictor_config_manager,
                 technical_outliers=self.technical_outliers,
-                minimum_samples=minimum_samples)
+                minimum_samples=metadata_minimum_samples)
             # self.expression.networks = NetworkerViz(self.expression)
             self.default_feature_set_ids.extend(self.expression.feature_subsets
                                                 .keys())
         if splicing_data is not None:
-            sys.stderr.write("Loading splicing data\n")
+            sys.stdout.write("{}\tLoading splicing data\n".format(
+                timestamp()))
             self.splicing = SplicingData(
                 splicing_data, splicing_feature_data,
                 feature_rename_col=splicing_feature_rename_col,
                 outliers=outliers, pooled=pooled,
                 predictor_config_manager=self.predictor_config_manager,
                 technical_outliers=self.technical_outliers,
-                minimum_samples=minimum_samples)
+                minimum_samples=metadata_minimum_samples)
             # self.splicing.networks = NetworkerViz(self.splicing)
 
         if spikein_data is not None:
@@ -270,7 +270,9 @@ class Study(object):
                 spikein_data, spikein_feature_data,
                 technical_outliers=self.technical_outliers,
                 predictor_config_manager=self.predictor_config_manager)
-        sys.stderr.write("Subclasses initialized\n")
+        sys.stdout.write("{}\tSuccessfully initialized a Study "
+                         "object!\n".format(
+            timestamp()))
 
     def __setattr__(self, key, value):
         """Check if the attribute already exists and warns on overwrite.
