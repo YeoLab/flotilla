@@ -9,12 +9,13 @@ from IPython.html.widgets import interact
 import matplotlib.pyplot as plt
 
 
+
 # from ..compute.predict import default_classifier
+from flotilla.util import link_to_list
 from ..visualize.color import red
 from .network import NetworkerViz
 from .color import str_to_color
 from ..util import natural_sort
-from ..external import link_to_list
 
 default_classifier = 'ExtraTreesClassifier'
 default_regressor = 'ExtraTreesRegressor'
