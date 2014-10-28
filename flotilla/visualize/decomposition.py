@@ -195,7 +195,7 @@ class DecompositionViz(object):
         gs_y = 12
 
         if ax is None:
-            self.reduced_fig, ax = plt.subplots(1, 1, figsize=(25, 12))
+            self.reduced_fig, ax = plt.subplots(1, 1, figsize=(20, 10))
             gs = GridSpec(gs_x, gs_y)
 
         else:
