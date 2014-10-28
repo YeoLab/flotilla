@@ -32,6 +32,7 @@ class BaseData(object):
                  minimum_samples=0,
                  feature_data=None,
                  feature_rename_col=None,
+                 feature_ignore_subset_cols=None,
                  technical_outliers=None,
                  outliers=None,
                  pooled=None,
@@ -59,6 +60,10 @@ class BaseData(object):
             Which column in the feature_data to use to rename feature IDs
             from a crazy ID to a common gene symbol, e.g. to transform
             'ENSG00000100320' into 'RBFOX2' (default None)
+        feature_ignore_subset_cols : list-like
+            Columns in the feature data to ignore when making subsets,
+            e.g. "gene_name" shouldn't be used to create subsets, since it's
+            just a small number of them.
         technical_outliers : list-like, optional
             List of sample IDs which should be completely ignored because
             they didn't pass the technical quality control (default None)
@@ -99,6 +104,8 @@ class BaseData(object):
                 self.data = self._threshold(self.data)
 
         self.feature_data = feature_data
+        self.feature_ignore_subset_cols = [] if feature_ignore_subset_cols is \
+                                                None else feature_ignore_subset_cols
         # if self.feature_data is None:
         # self.feature_data = pd.DataFrame(index=self.data.columns)
         self.feature_rename_col = feature_rename_col
@@ -257,32 +264,10 @@ class BaseData(object):
 
     @property
     def feature_subsets(self):
-        feature_subsets = {}
-        if self.feature_data is not None:
-            for col in self.feature_data:
-                if not isinstance(self.feature_data[col].dtype, bool):
-                    grouped = self.feature_data.groupby(col)
-                    sizes = grouped.size()
-                    filtered_sizes = sizes[sizes >= MINIMUM_FEATURE_SUBSET]
-                    for group in filtered_sizes.keys():
-                        name = '{}: {}'.format(col, group)
-                        feature_subsets[name] = grouped.groups[group]
-                else:
-                    feature_subset = self.feature_data.index[
-                        self.feature_data[col]]
-                    if len(feature_subset) > MINIMUM_FEATURE_SUBSET:
-                        feature_subsets[col] = feature_subset
-
-        for feature_subset in feature_subsets.keys():
-            not_feature_subset = 'not ({})'.format(feature_subset)
-            if not_feature_subset not in feature_subsets:
-                in_features = self.feature_data.index.isin(feature_subsets[
-                    feature_subset])
-
-                feature_subsets[not_feature_subset] = \
-                    self.feature_data.index[~in_features]
-
-        feature_subsets['all_genes'] = self.data.columns
+        feature_subsets = subsets_from_metadata(self.feature_data,
+                                                MINIMUM_FEATURE_SUBSET,
+                                                'features',
+                                                ignore=self.feature_ignore_subset_cols)
         feature_subsets['variant'] = self.variant
         return feature_subsets
 
@@ -823,7 +808,7 @@ class BaseData(object):
                      nmf_space=False):
 
         """
-        Plot the violinplot of a splicing event (should also show DataFrameNMF movement)
+        Plot the violinplot of a splicing event (should also show NMF movement)
         """
         feature_ids = self.maybe_renamed_to_feature_id(feature_id)
 
@@ -942,3 +927,52 @@ class BaseData(object):
         x = self.data.ix[sample1]
         y = self.data.ix[sample2]
         return simple_twoway_scatter(x, y, **kwargs)
+
+
+def subsets_from_metadata(metadata, minimum, subset_type, ignore=None):
+    """
+
+    Parameters
+    ----------
+    metadata : pandas.DataFrame
+        The dataframe whose columns to use to create subsets of the rows
+    minimum : int
+        Minimum number of rows required for a column or group in the column
+        to be included
+    subset_type : str
+        The name of the kind of subset. e.g. "samples" or "features"
+    ignore : list-like
+        List of columns to ignore
+
+    Returns
+    -------
+    subsets : dict
+        A name: row_ids mapping of which samples correspond to which group
+    """
+    subsets = {}
+    ignore = () if ignore is None else ignore
+    for col in metadata:
+        if col in ignore:
+            continue
+        if metadata[col].dtype == bool:
+            sample_subset = metadata.index[metadata[col]]
+            if len(sample_subset) > minimum:
+                subsets[col] = sample_subset
+        else:
+            grouped = metadata.groupby(col)
+            sizes = grouped.size()
+            filtered_sizes = sizes[sizes >= minimum]
+            for group in filtered_sizes.keys():
+                name = '{}: {}'.format(col, group)
+                subsets[name] = grouped.groups[group]
+    for sample_subset in subsets.keys():
+        name = 'not {}'.format(sample_subset)
+        if 'False' or 'True' in name:
+            continue
+        if name not in subsets:
+            in_features = metadata.index.isin(subsets[
+                sample_subset])
+            subsets[name] = metadata.index[~in_features]
+    subsets['all {}'.format(subset_type)] = metadata.index
+    return subsets
+    

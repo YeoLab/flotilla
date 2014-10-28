@@ -27,6 +27,8 @@ from ..util import load_csv, load_json, load_tsv, load_gzip_pickle_df, \
 
 
 SPECIES_DATA_PACKAGE_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects'
+DATAPACKAGE_RESOURCE_COMMON_KWS = ('url', 'path', 'format', 'compression',
+                                   'name')
 
 
 class Study(object):
@@ -62,12 +64,14 @@ class Study(object):
     def __init__(self, sample_metadata, version='0.1.0', expression_data=None,
                  expression_feature_data=None,
                  expression_feature_rename_col=None,
+                 expression_feature_ignore_subset_cols=None,
                  expression_log_base=None,
                  expression_thresh=-np.inf,
                  expression_plus_one=False,
                  splicing_data=None,
                  splicing_feature_data=None,
                  splicing_feature_rename_col=None,
+                 splicing_feature_ignore_subset_cols=None,
                  mapping_stats_data=None,
                  mapping_stats_number_mapped_col=None,
                  mapping_stats_min_reads=MIN_READS,
@@ -239,7 +243,7 @@ class Study(object):
         if self.species is not None and (expression_feature_data is None or
                                                  splicing_feature_data is None):
             sys.stdout.write('{}\tLoading species metadata from '
-                             'sauron.ucsd.edu'.format(timestamp()))
+                             'sauron.ucsd.edu\n'.format(timestamp()))
             species_kws = self.load_species_data(self.species, self.readers)
             expression_feature_data = species_kws.pop('expression_feature_data',
                                                       None)
@@ -262,8 +266,8 @@ class Study(object):
                 log_base=expression_log_base, pooled=pooled,
                 predictor_config_manager=self.predictor_config_manager,
                 technical_outliers=self.technical_outliers,
-                minimum_samples=metadata_minimum_samples)
-            # self.expression.networks = NetworkerViz(self.expression)
+                minimum_samples=metadata_minimum_samples,
+                feature_ignore_subset_cols=expression_feature_ignore_subset_cols)
             self.default_feature_set_ids.extend(self.expression.feature_subsets
                                                 .keys())
         if splicing_data is not None:
@@ -275,8 +279,8 @@ class Study(object):
                 outliers=outliers, pooled=pooled,
                 predictor_config_manager=self.predictor_config_manager,
                 technical_outliers=self.technical_outliers,
-                minimum_samples=metadata_minimum_samples)
-            # self.splicing.networks = NetworkerViz(self.splicing)
+                minimum_samples=metadata_minimum_samples,
+                feature_ignore_subset_cols=splicing_feature_ignore_subset_cols)
 
         if spikein_data is not None:
             self.spikein = SpikeInData(
@@ -284,8 +288,7 @@ class Study(object):
                 technical_outliers=self.technical_outliers,
                 predictor_config_manager=self.predictor_config_manager)
         sys.stdout.write("{}\tSuccessfully initialized a Study "
-                         "object!\n".format(
-            timestamp()))
+                         "object!\n".format(timestamp()))
 
     def __setattr__(self, key, value):
         """Check if the attribute already exists and warns on overwrite.
@@ -296,7 +299,7 @@ class Study(object):
 
     @property
     def default_sample_subsets(self):
-        return self.metadata.sample_subsets
+        return self.metadata.sample_subsets.keys()
 
     @property
     def default_feature_subsets(self):
@@ -381,7 +384,6 @@ class Study(object):
         dfs = {}
         kwargs = {}
         log_base = None
-        resource_usual_kws = ('url', 'path', 'format', 'compression', 'name')
 
         for resource in datapackage['resources']:
             if 'url' in resource:
@@ -408,7 +410,8 @@ class Study(object):
             if name == 'expression':
                 if 'log_transformed' in resource:
                     log_base = 2
-            for key in set(resource.keys()).difference(resource_usual_kws):
+            for key in set(resource.keys()).difference(
+                    DATAPACKAGE_RESOURCE_COMMON_KWS):
                 kwargs['{}_{}'.format(name, key)] = resource[key]
 
         species_kws = {}
@@ -459,6 +462,7 @@ class Study(object):
     def load_species_data(species, readers,
                           species_datapackage_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
         dfs = {}
+
         try:
             species_data_url = '{}/{}/datapackage.json'.format(
                 species_datapackage_base_url, species)
@@ -479,10 +483,12 @@ class Study(object):
                 name = resource['name']
                 dfs[name] = reader(filename,
                                    compression=compression)
-                if 'feature_rename_col' in resource:
-                    key = '{}_feature_rename_col'.format(
-                        name.split('_feature_data')[0])
-                    dfs[key] = resource['feature_rename_col']
+                other_keys = set(resource.keys()).difference(
+                    DATAPACKAGE_RESOURCE_COMMON_KWS)
+                name_no_data = name.rstrip('_data')
+                for key in other_keys:
+                    new_key = '{}_{}'.format(name_no_data, key)
+                    dfs[new_key] = resource[key]
         except (IOError, ValueError) as e:
             sys.stderr.write('Error loading species {} data '.format(species))
             pass
@@ -579,7 +585,11 @@ class Study(object):
         # IF this is a list of IDs
 
         try:
-            # TODO: check this, seems like a strange usage: 'all_samples'.startswith(phenotype_subset)
+            return self.metadata.sample_subsets[phenotype_subset]
+        except KeyError:
+            pass
+
+        try:
             if phenotype_subset is None or 'all_samples'.startswith(
                     phenotype_subset):
                 sample_ind = np.ones(self.metadata.data.shape[0],
@@ -1004,7 +1014,7 @@ class Study(object):
     # data_type='expression', metric='euclidean',
     # linkage_method='median', figsize=None):
     # if data_type == 'expression':
-    #         data = self.expression.data
+    # data = self.expression.data
     #     elif data_type == 'splicing':
     #         data = self.splicing.data
     #     celltype_groups = data.groupby(
@@ -1126,7 +1136,9 @@ class Study(object):
         try:
             expression_feature_data = self.expression.feature_data
             expression_feature_kws = {'rename_col':
-                                          self.expression.feature_rename_col}
+                                          self.expression.feature_rename_col,
+                                      'ignore_subset_cols':
+                                          self.expression.feature_ignore_subset_cols}
         except AttributeError:
             expression_feature_data = None
             expression_feature_kws = None
@@ -1141,7 +1153,9 @@ class Study(object):
         try:
             splicing_feature_data = self.splicing.feature_data
             splicing_feature_kws = {'rename_col':
-                                        self.splicing.feature_rename_col}
+                                        self.splicing.feature_rename_col,
+                                    'ignore_subset_cols':
+                                        self.splicing.feature_ignore_subset_cols}
         except AttributeError:
             splicing_feature_data = None
             splicing_feature_kws = None

@@ -15,10 +15,11 @@ EXPRESSION_THRESH = -np.inf
 class ExpressionData(BaseData):
     def __init__(self, data,
                  feature_data=None, thresh=EXPRESSION_THRESH,
-                 feature_rename_col=None, outliers=None, log_base=None,
+                 feature_rename_col=None, feature_ignore_subset_cols=None,
+                 outliers=None, log_base=None,
                  pooled=None, plus_one=False, minimum_samples=0,
                  technical_outliers=None, predictor_config_manager=None):
-        """
+        """Object for holding and operating on expression data
 
 
         """
@@ -27,6 +28,7 @@ class ExpressionData(BaseData):
         super(ExpressionData, self).__init__(
             data, feature_data=feature_data,
             feature_rename_col=feature_rename_col,
+            feature_ignore_subset_cols=feature_ignore_subset_cols,
             thresh=thresh,
             outliers=outliers, pooled=pooled, minimum_samples=minimum_samples,
             predictor_config_manager=predictor_config_manager,
