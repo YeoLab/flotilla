@@ -12,6 +12,7 @@ import seaborn as sns
 
 
 
+
 # from ..compute.decomposition import DataFrameNMF, DataFramePCA
 from .color import set1
 
@@ -23,7 +24,7 @@ class DecompositionViz(object):
     """
 
     def __init__(self, reduced_space, components_,
-                 explained_variance_ratio_, DataModel=None,
+                 explained_variance_ratio_,
                  feature_renamer=None, groupby=None,
                  featurewise=False,
                  color=None, order=None, violinplot_kws=None,
@@ -33,19 +34,16 @@ class DecompositionViz(object):
                  y_pc='pc_2', n_vectors=20, distance='L1',
                  n_top_pc_features=50):
         """
-
         x_pc : str
             which Principal Component to plot on the x-axis
         y_pc : str
             Which Principal Component to plot on the y-axis
-        distance : str
-            either 'L1' or 'L2' distance to plot the vectors
+        distance : 'L1' | 'L2'
+
         n_vectors : int
             Number of vectors to plot of the principal components
 
         """
-
-        self.DataModel = DataModel
         self._default_reduction_kwargs = {}
 
         self.groupby = groupby

@@ -2,6 +2,7 @@
 General use utilities
 """
 
+import datetime
 from functools import wraps
 import errno
 import os
@@ -273,3 +274,7 @@ def get_loading_method(self, file_name):
 
 def load(self, file_name, file_type='pickle_df'):
     return self._get_loading_method(file_type)(file_name)
+
+
+def timestamp():
+    return str(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))

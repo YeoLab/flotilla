@@ -1,7 +1,6 @@
 """
 Compute predictors on data, i.e. regressors or classifiers
 """
-
 import sys
 import warnings
 from collections import defaultdict
@@ -14,12 +13,9 @@ from sklearn.ensemble import ExtraTreesClassifier, ExtraTreesRegressor, \
 from sklearn.preprocessing import LabelEncoder
 from pandas.util.testing import assert_frame_equal, assert_series_equal
 
-from ..util import memoize
-
-
-
-# from ..visualize.decomposition import PCAViz, NMFViz
+from ..util import memoize, timestamp
 from .decomposition import DataFramePCA, DataFrameNMF
+
 
 default_classifier = 'ExtraTreesClassifier'
 default_regressor = 'ExtraTreesRegressor'
@@ -53,10 +49,8 @@ class PredictorConfig(object):
                  n_features_dependent_parameters=None,
                  constant_parameters=None):
         """
-
-
         Parameters
-        ==========
+        ----------
 
 
         predictor_name - a name for this predictor
@@ -86,12 +80,14 @@ class PredictorConfig(object):
         self.predictor_scoring_fun = predictor_scoring_fun
         self.score_cutoff_fun = score_cutoff_fun
         self.predictor_name = predictor_name
-        sys.stderr.write(
-            "predictor {} is of type {}\n".format(self.predictor_name, obj))
+        sys.stdout.write(
+            "{}\tPredictor {} is of type {}\n".format(timestamp(),
+                                                      self.predictor_name, obj))
         self._parent = obj
         self.__doc__ = obj.__doc__
-        sys.stderr.write(
-            "added {} to default predictors\n".format(self.predictor_name))
+        sys.stdout.write(
+            "{}\tAdded {} to default predictors\n".format(timestamp(),
+                                                          self.predictor_name))
 
     @memoize
     def parameters(self, n_features):
@@ -99,11 +95,11 @@ class PredictorConfig(object):
 
         recommended parameters for this classifier for n_features-sized dataset
 
-         Parameters:
-         ===========
-         n_features - int is used to scale appropriate kwargs to predictor
+        Parameters
+        ----------
+        n_features - int is used to scale appropriate kwargs to predictor
 
-         """
+        """
         parameters = {}
         for parameter, setter in self.n_features_dependent_parameters.items():
             parameters[parameter] = setter(n_features)
@@ -119,9 +115,9 @@ class PredictorConfig(object):
             raise Exception
         parameters = self.parameters(n_features)
 
-        sys.stderr.write(
-            "configuring predictor type: {} with {} features".format(
-                self.predictor_name, n_features))
+        sys.stdout.write(
+            "{} Configuring predictor type: {} with {} features".format(
+                timestamp(), self.predictor_name, n_features))
 
         prd = self._parent(**parameters)
         prd.score_cutoff_fun = self.score_cutoff_fun
