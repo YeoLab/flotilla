@@ -1,0 +1,50 @@
+{
+    "name": "neural_diff",
+    "title": "Single-cell analysis of celltypes representative of motor neuron differentiation",
+    "licenses": null,
+    "sources": "Craig Venter and Yan Song's magic hands",
+    "datapackage_version": "0.1.0",
+    "resources": [
+        {
+            "format": "csv",
+            "name": "metadata",
+            "path": "metadata.csv",
+            "pooled_col": "is_pooled",
+            "phenotype_col": "celltype",
+            "phenotype_order": ["P", "N", "M", "S"],
+            "phenotype_to_color": {
+                "P": "blue",
+                "N": "green",
+                "M": "red",
+                "S": "orange"
+            },
+            "phenotype_to_marker": {
+                "P": "o",
+                "N": "s",
+                "M": "D",
+                "S": "p"
+            }
+        },
+        {
+            "format": "tsv",
+            "name": "expression",
+            "path": "expression.tsv"
+        },
+        {
+            "format": "tsv",
+            "name": "splicing",
+            "path": "splicing.tsv"
+        },
+        {
+            "format": "tsv",
+            "name": "spikein",
+            "path": "spikein.tsv"
+        },
+        {
+            "format": "tsv",
+            "name": "mapping_stats",
+            "path": "mapping_stats.tsv"
+        }
+    ],
+    "species": "hg19"
+}
