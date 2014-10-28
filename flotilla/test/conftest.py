@@ -13,7 +13,10 @@ import pandas as pd
 
 
 
+
 # Tell matplotlib to not make any window popups
+from flotilla.util import link_to_list
+
 mpl.use('Agg')
 
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -99,7 +102,6 @@ def feature_subset(request, genelist_dropbox_link, genelist_path):
     if request.param is None:
         return request.param
     elif request.param in ('link', 'path'):
-        from flotilla.external import link_to_list
 
         try:
             return link_to_list(name_to_location[request.param])

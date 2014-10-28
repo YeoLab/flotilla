@@ -7,10 +7,10 @@ import subprocess
 
 import pandas as pd
 
+from flotilla.util import link_to_list
+
 
 def test_link_to_list(genelist_link):
-    from flotilla.external import link_to_list
-
     test_list = link_to_list(genelist_link)
 
     if genelist_link.startswith("http"):
