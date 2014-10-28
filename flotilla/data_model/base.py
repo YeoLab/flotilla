@@ -114,12 +114,11 @@ class BaseData(object):
                 self.feature_data = pd.DataFrame(column,
                                                  index=self.data.columns)
             else:
-                self.feature_data = self.feature_data.join(column,
-                                                           rsuffix='_right')
-                if self.feature_rename_col in self.feature_data and \
-                                        self.feature_rename_col + '_right' \
-                                in self.feature_data:
-                    self.feature_rename_col += '_right'
+                if self.feature_rename_col not in self.feature_data:
+                    self.feature_data = self.feature_data.join(column,
+                                                               rsuffix='_right')
+                    if self.feature_rename_col + '_right' in self.feature_data:
+                        self.feature_rename_col += '_right'
 
         if self.feature_data is not None and self.feature_rename_col is not \
                 None:
