@@ -23,7 +23,7 @@ from ..visualize.predict import ClassifierViz
 from ..util import memoize, cached_property
 
 default_predictor_name = "ExtraTreesClassifier"
-
+MINIMUM_FEATURE_SUBSET = 20
 
 class BaseData(object):
     """Base class for biological data measurements"""
@@ -260,21 +260,21 @@ class BaseData(object):
         feature_subsets = {}
         if self.feature_data is not None:
             for col in self.feature_data:
-                if self.feature_data[col].dtype != bool:
+                if not isinstance(self.feature_data[col].dtype, bool):
                     grouped = self.feature_data.groupby(col)
                     sizes = grouped.size()
-                    filtered_sizes = sizes[sizes >= 20]
+                    filtered_sizes = sizes[sizes >= MINIMUM_FEATURE_SUBSET]
                     for group in filtered_sizes.keys():
                         name = '{}: {}'.format(col, group)
                         feature_subsets[name] = grouped.groups[group]
                 else:
                     feature_subset = self.feature_data.index[
                         self.feature_data[col]]
-                    if len(feature_subset) > 1:
+                    if len(feature_subset) > MINIMUM_FEATURE_SUBSET:
                         feature_subsets[col] = feature_subset
 
         for feature_subset in feature_subsets.keys():
-            not_feature_subset = 'not {}'.format(feature_subset)
+            not_feature_subset = 'not ({})'.format(feature_subset)
             if not_feature_subset not in feature_subsets:
                 in_features = self.feature_data.index.isin(feature_subsets[
                     feature_subset])
