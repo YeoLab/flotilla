@@ -26,9 +26,10 @@ class OutlierDetection(object):
         if outlier_detection_method_kwargs is None:
             outlier_detection_method_kwargs = {}
 
-        outlier_kwargs = {'nu':0.1,
-                          'kernel':"rbf",
-                          'gamma':0.1}
+        outlier_kwargs = {'nu': 0.1,
+                          'kernel': "rbf",
+                          'gamma': 0.1,
+                          'random_state': 2014}
 
         outlier_kwargs.update(outlier_detection_method_kwargs)
         self.outlier_detector_parameters = outlier_kwargs

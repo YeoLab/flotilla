@@ -28,7 +28,6 @@ class SplicingData(BaseData):
     n_components = 2
     _binsize = 0.1
 
-    _last_reducer_accessed = None
 
     def __init__(self, data, sample_metadata=None,
                  feature_metadata=None, binsize=0.1, outliers=None,

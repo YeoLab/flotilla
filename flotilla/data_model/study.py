@@ -650,14 +650,14 @@ class Study(StudyFactory):
     #             {'markers_dict': defaultdict(lambda: 'o')})
 
     def detect_outliers(self, data_type='expression',
-                     sample_subset=None, feature_subset=None,
-                     featurewise=False,
-                     reducer=None,
-                     standardize=None,
-                     reducer_kwargs=None,
-                     bins=None,
-                     outlier_detection_method=None,
-                     outlier_detection_method_kwargs=None):
+                         sample_subset=None, feature_subset=None,
+                         featurewise=False,
+                         reducer=None,
+                         standardize=None,
+                         reducer_kwargs=None,
+                         bins=None,
+                         outlier_detection_method=None,
+                         outlier_detection_method_kwargs=None):
 
         if sample_subset is None:
             sample_subset = self.default_sample_subset
@@ -694,6 +694,23 @@ class Study(StudyFactory):
 
         self.metadata.data[outlier_detector.title].update(outlier_detector.outliers)
         return reducer, outlier_detector
+
+    def drop_outliers(self):
+        """remove samples labeled "outlier" in self.metadata,
+        replace the data in self.expression and self.splicing with the smaller version"""
+        outliers = self.metadata.data['outlier'][self.metadata.data['outlier']].index
+        try:
+            sys.stdout.write("dropping expression outliers\n")
+
+            self.expression.data = self.expression.drop_outliers(self.expression.data, outliers)[0]
+        except:
+            sys.stderr.write("couldn't drop expression outliers\n")
+
+        try:
+            sys.stdout.write("dropping splicing outliers\n")
+            self.splicing.data = self.splicing.drop_outliers(self.splicing.data, outliers)[0]
+        except:
+            sys.stderr.write("couldn't drop splicing outliers")
 
     def jsd(self):
         """Performs Jensen-Shannon Divergence on both splicing and expression
@@ -1297,6 +1314,18 @@ class Study(StudyFactory):
                                       version=version,
                                       flotilla_dir=flotilla_dir)
 
+    def merge_outlier_columns(self, columns_to_merge):
+        is_ever_an_outlier = self.metadata.data[columns_to_merge].any(axis=1)
+        return is_ever_an_outlier
+
+    def set_outlier_by_merging_outlier_columns(self, columns_to_merge):
+        """merge columns of metadata listed in columns_to_merge into outlier"""
+        self.metadata.data['outlier'] = False
+        print "using thse columns: \n{}\n".format("\n".join(columns_to_merge))
+        is_ever_an_outlier = self.merge_outlier_columns(columns_to_merge)
+        print "there are {} outliers".format(is_ever_an_outlier.sum())
+        self.metadata.data['outlier'] = is_ever_an_outlier
+        return is_ever_an_outlier
 
 # Add interactive visualizations
 Study.interactive_classifier = Interactive.interactive_classifier
@@ -1306,4 +1335,5 @@ Study.interactive_pca = Interactive.interactive_pca
 Study.interactive_lavalamp_pooled_inconsistent = \
     Interactive.interactive_lavalamp_pooled_inconsistent
 Study.interactive_choose_outliers = Interactive.interactive_choose_outliers
+Study.interactive_reset_outliers = Interactive.interactive_reset_outliers
 # Study.interactive_clusteredheatmap = Interactive.interactive_clusteredheatmap
