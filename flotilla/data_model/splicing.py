@@ -28,10 +28,9 @@ class SplicingData(BaseData):
     n_components = 2
     _binsize = 0.1
 
-    _last_reducer_accessed = None
 
-    def __init__(self, data,
-                 metadata=None, binsize=0.1, outliers=None,
+    def __init__(self, data, sample_metadata=None,
+                 feature_metadata=None, binsize=0.1, outliers=None,
                  feature_rename_col=None, excluded_max=0.2, included_min=0.8,
                  pooled=None, predictor_config_manager=None,
                  technical_outliers=None):
@@ -57,7 +56,9 @@ class SplicingData(BaseData):
         """
         sys.stderr.write("initializing splicing\n")
         super(SplicingData, self).__init__(
-            data, metadata, feature_rename_col=feature_rename_col,
+            data, feature_metadata=feature_metadata,
+            feature_rename_col=feature_rename_col,
+            sample_metadata=sample_metadata,
             outliers=outliers, pooled=pooled,
             technical_outliers=technical_outliers,
             predictor_config_manager=predictor_config_manager)
@@ -433,12 +434,24 @@ class SplicingData(BaseData):
 
     def reduce(self, sample_ids=None, feature_ids=None,
                featurewise=False,
-               reducer=DataFramePCA,
-               standardize=True,
+               reducer=None,
+               standardize=False,
                reducer_kwargs=None, bins=None):
+        """
+        :param sample_ids: list of sample ids
+        :param feature_ids: list of features
+        :param featurewise: reduce transpose (feature X sample) instead of sample X feature
+        :param reducer: DataFrameReducer object, defaults to DataFramePCA
+        :param standardize: standardize columns before reduction
+        :param reducer_kwargs: kwargs for reducer
+        :param bins: bins to use for binify
+        :return: reducer object
+
+        """
+
         return super(SplicingData, self).reduce(sample_ids, feature_ids,
                                                 featurewise, reducer,
-                                                standardize=False,
+                                                standardize=standardize,
                                                 reducer_kwargs=reducer_kwargs,
                                                 bins=bins)
 
