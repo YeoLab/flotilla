@@ -5,6 +5,7 @@ computation or visualization tests yet.
 import json
 import os
 
+import matplotlib.pyplot as plt
 import pandas.util.testing as pdt
 import pytest
 import semantic_version
@@ -31,8 +32,7 @@ class TestStudy(object):
         return Study(sample_metadata=example_data.metadata,
                      version='0.1.0',
                      expression_data=example_data.expression,
-                     splicing_data=example_data.splicing,
-                     metadata_phenotype_col='celltype')
+                     splicing_data=example_data.splicing)
 
     def test_toy_init(self, toy_study, example_data):
         from flotilla.data_model import ExpressionData, SplicingData
@@ -61,35 +61,32 @@ class TestStudy(object):
 
     def test_plot_graph(self, study):
         study.plot_graph(feature_of_interest=None)
+        plt.close('all')
 
     def test_plot_classifier(self, study):
-        study.plot_classifier('P_cell')
+        study.plot_classifier('pooled')
+        plt.close('all')
 
-    @pytest.fixture(params=[None, pytest.mark.xfail('pooled_col'),
-                            pytest.mark.xfail(reason='"phenotype_col" in the '
-                                                     'test dataset is '
-                                                     '"celltype", so need to '
-                                                     'specify')(
-                                'phenotype_col')])
-    def metadata_key(self, request):
+    @pytest.fixture(params=[None, 'pooled_col', 'phenotype_col'])
+    def metadata_none_key(self, request):
         return request.param
 
-    @pytest.fixture(params=[None, 'feature_rename_col'])
-    def expression_key(self, request):
+    @pytest.fixture(params=[None])
+    def expression_none_key(self, request):
         return request.param
 
-    @pytest.fixture(params=[None, 'feature_rename_col'])
-    def splicing_key(self, request):
+    @pytest.fixture(params=[None, pytest.mark.xfail('feature_rename_col')])
+    def splicing_none_key(self, request):
         return request.param
 
     @pytest.fixture
-    def datapackage(self, example_datapackage_path, metadata_key,
-                    expression_key, splicing_key):
+    def datapackage(self, example_datapackage_path, metadata_none_key,
+                    expression_none_key, splicing_none_key):
         with open(example_datapackage_path) as f:
             datapackage = json.load(f)
-        datatype_to_key = {'metadata': metadata_key,
-                           'expression': expression_key,
-                           'splicing': splicing_key}
+        datatype_to_key = {'metadata': metadata_none_key,
+                           'expression': expression_none_key,
+                           'splicing': splicing_none_key}
         for datatype, key in datatype_to_key.iteritems():
             if key is not None:
                 resource = name_to_resource(datapackage, datatype)
@@ -115,9 +112,9 @@ class TestStudy(object):
         phenotype_col = 'phenotype' if 'phenotype_col' \
                                        not in metadata_resource else \
         metadata_resource['phenotype_col']
-        pooled_col = None if 'pooled_col' not in metadata_resource else \
+        pooled_col = 'pooled' if 'pooled_col' not in metadata_resource else \
             metadata_resource['pooled_col']
-        expression_feature_rename_col = 'gene_name' if \
+        expression_feature_rename_col = None if \
             'feature_rename_col' not in expression_resource \
             else expression_resource['feature_rename_col']
         splicing_feature_rename_col = 'gene_name' if \
@@ -132,7 +129,7 @@ class TestStudy(object):
 
     def test_save(self, example_datapackage_path, tmpdir, monkeypatch):
         import flotilla
-        from flotilla.go import get_resource_from_name
+        from flotilla.datapackage import get_resource_from_name
 
         study = flotilla.embark(example_datapackage_path,
                                 load_species_data=False)
@@ -150,22 +147,32 @@ class TestStudy(object):
         assert study_name == save_dir.purebasename
 
         resource_keys_to_ignore = ('compression', 'format', 'path')
-        keys_from_study = {'splicing': ['feature_rename_col'],
-                           'expression': ['feature_rename_col',
+        keys_from_study = {'splicing': [],
+                           'expression': ['thresh',
                                           'log_base'],
                            'metadata': ['phenotype_order',
                                         'phenotype_to_color',
-                                        'phenotype_col'],
-                           'mapping_stats': [u'number_mapped_col']}
-        resource_names = ('metadata', 'expression', 'splicing',
-                          'mapping_stats', 'spikein')
+                                        'phenotype_col',
+                                        'phenotype_to_marker',
+                                        'pooled_col',
+                                        'minimum_samples'],
+                           'mapping_stats': ['number_mapped_col'],
+                           'expression_feature': ['rename_col',
+                                                  'ignore_subset_cols'],
+                           'splicing_feature': ['rename_col',
+                                                'ignore_subset_cols']}
+        resource_names = keys_from_study.keys()
 
         # Add auto-generated attributes into the true datapackage
         for name, keys in keys_from_study.iteritems():
             resource = get_resource_from_name(true_datapackage, name)
             for key in keys:
-                monkeypatch.setitem(resource, key,
-                                    eval('study.{}.{}'.format(name, key)))
+                if 'feature' in name:
+                    command = 'study.{}.feature_{}'.format(name.rstrip(
+                        '_feature'), key)
+                else:
+                    command = 'study.{}.{}'.format(name, key)
+                monkeypatch.setitem(resource, key, eval(command))
 
         version = semantic_version.Version(study.version)
         version.patch += 1

@@ -539,8 +539,9 @@ class PredictorBase(object):
                  predictor_config_manager=None,
                  feature_renamer=None,
                  groupby=None, color=None, pooled=None, order=None,
-                 violinplot_kws=None, data_type=None, DataModel=None,
-                 label_to_color=None, label_to_marker=None):
+                 violinplot_kws=None, data_type=None,
+                 label_to_color=None, label_to_marker=None,
+                 singles=None, outliers=None):
 
         self.predictor_name = predictor_name
         self.data_name = data_name
@@ -550,10 +551,11 @@ class PredictorBase(object):
         self.groupby = groupby
         self.color = color
         self.pooled = pooled
+        self.singles = singles
+        self.outliers = outliers
         self.order = order
         self.violinplot_kws = violinplot_kws
         self.data_type = data_type
-        self.DataModel = DataModel
         self.label_to_color = label_to_color
         self.label_to_marker = label_to_marker
 

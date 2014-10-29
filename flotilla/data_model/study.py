@@ -770,7 +770,15 @@ class Study(object):
 
 
         """
-        trait_data = self.metadata.data[trait]
+        try:
+            trait_data = self.metadata.data[trait]
+        except KeyError:
+            trait_ids = self.metadata.sample_subsets[trait]
+            trait_data = self.metadata.data.index.isin(trait_ids)
+        if all(trait_data) or all(~trait_data):
+            raise ValueError("All samples are True (or all samples are "
+                             "False), cannot classify when all samples are "
+                             "the same")
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
         feature_ids = self.feature_subset_to_feature_ids(data_type,
                                                          feature_subset,

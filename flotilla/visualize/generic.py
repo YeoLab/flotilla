@@ -24,6 +24,7 @@ def violinplot(data, groupby=None, color_ordered=None, ax=None,
     Raises
     ------
     """
+    # import pdb; pdb.set_trace()
     data_type = 'none' if data_type is None else data_type
     splicing = 'splicing'.startswith(data_type)
 
@@ -89,6 +90,8 @@ def _violinplot_single_dataset(data, groupby=None, order=None,
     Separated out so real data plotting and outlier plotting works the same
     """
     data = data.dropna()
+    if data.empty:
+        return
 
     single_points = data.groupby(groupby).filter(lambda x: len(x) < 2)
     data = data.groupby(groupby).filter(lambda x: len(x) > 1)
