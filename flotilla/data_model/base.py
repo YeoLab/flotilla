@@ -601,7 +601,7 @@ class BaseData(object):
 
         dv(show_point_labels=show_point_labels, title=outlier_detector.title)
 
-    @memoize
+    #@memoize
     def reduce(self, sample_ids=None, feature_ids=None,
                featurewise=False,
                reducer=None,
