@@ -495,8 +495,8 @@ class Interactive(object):
                         feature_subset=self.default_feature_subset,
                         x_pc=1, y_pc=2,
                         show_point_labels=False,
-                        gamma = 12,
-                        nu = 1,
+                        gamma = 16,
+                        nu = .2,
 
                         ):
             print "transforming input gamma by 2^-(input): %f" % gamma
@@ -519,7 +519,8 @@ class Interactive(object):
                               "features.".format(feature_subset, data_type))
 
             reducer, outlier_detector = self.detect_outliers(data_type=data_type,
-                                                   sample_subset=None, feature_subset=None,
+                                                   sample_subset=sample_subset,
+                                                   feature_subset=feature_subset,
                                                    reducer=None,
                                                    reducer_kwargs=None,
                                                    outlier_detection_method=None,
@@ -532,7 +533,9 @@ class Interactive(object):
 
             obj.plot_outliers(reducer, outlier_detector,
                               feature_renamer=renamer,
-                              show_point_labels=show_point_labels)
+                              show_point_labels=show_point_labels,
+                              x_pc="pc_" + str(x_pc),
+                              y_pc="pc_" + str(y_pc))
 
             print "total samples:", len(outlier_detector.outliers)
             print "outlier samples:", outlier_detector.outliers.sum()
@@ -552,6 +555,23 @@ class Interactive(object):
                  show_point_labels=show_point_labels,
                  nu=nu,
                  gamma=gamma)
+
+    @staticmethod
+    def interactive_reset_outliers(self):
+        """ user selects from columns that start with 'outlier_' to merge multiple outlier classifications"""
+        outlier_columns = dict()
+
+        for column in self.metadata.data.columns:
+            if column.startswith("outlier_"):
+                outlier_columns[column] = False
+        def do_interact(**columns):
+            if len(columns.keys()) == 0:
+                print "You have not specified any 'outlier_' columns in study.metadata.data... \n"\
+                "This will be quite boring until you do."
+            else:
+                self.set_outlier_by_merging_outlier_columns([k for (k,v) in columns.items() if v])
+        interact(do_interact, **outlier_columns)
+
 
     # @staticmethod
     # def interactive_clusteredheatmap(self):
