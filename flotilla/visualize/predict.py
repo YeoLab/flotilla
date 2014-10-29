@@ -137,13 +137,13 @@ class PredictorBaseViz(PredictorBase):
 
         pcaviz = DecompositionViz(pca.reduced_space, pca.components_,
                                   pca.explained_variance_ratio_,
-                                  self.DataModel,
+                                  feature_renamer=self.feature_renamer,
                                   groupby=groupby,
+                                  singles=self.singles,
+                                  pooled=self.pooled,
+                                  outliers=self.outliers,
                                   # label_to_color=self.label_to_color,
                                   # label_to_marker=self.label_to_marker,
-                                  # groupby=self.groupby,
-                                  # color=self.color,
-                                  # order=self.order
         )
         pcaviz(**local_plotting_kwargs)
         return pcaviz

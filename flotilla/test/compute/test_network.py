@@ -21,7 +21,7 @@ class TestComputeNetwork:
         reduced = expression.reduce()
         reduced.adjacency = networker.adjacency(reduced.reduced_space)
 
-        #TODO: parameterize this
+        # TODO: parameterize this
         n_pcs = 5
         use_pc_1, use_pc_2, use_pc_3, use_pc_4 = True, True, True, True
 

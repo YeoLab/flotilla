@@ -734,7 +734,8 @@ class BaseData(object):
             data_type=self.data_type, color=color,
             groupby=groupby, label_to_color=label_to_color,
             label_to_marker=label_to_marker, order=order,
-            DataModel=self, feature_renamer=self.feature_renamer,
+            feature_renamer=self.feature_renamer,
+            singles=self.singles, pooled=self.pooled, outliers=self.outliers,
             **plotting_kwargs)
         return classifier
 
@@ -951,28 +952,28 @@ def subsets_from_metadata(metadata, minimum, subset_type, ignore=None):
     """
     subsets = {}
     ignore = () if ignore is None else ignore
-    for col in metadata:
-        if col in ignore:
-            continue
-        if metadata[col].dtype == bool:
-            sample_subset = metadata.index[metadata[col]]
-            if len(sample_subset) > minimum:
+    if metadata is not None:
+        for col in metadata:
+            if col in ignore:
+                continue
+            if metadata[col].dtype == bool:
+                sample_subset = metadata.index[metadata[col]]
                 subsets[col] = sample_subset
-        else:
-            grouped = metadata.groupby(col)
-            sizes = grouped.size()
-            filtered_sizes = sizes[sizes >= minimum]
-            for group in filtered_sizes.keys():
-                name = '{}: {}'.format(col, group)
-                subsets[name] = grouped.groups[group]
-    for sample_subset in subsets.keys():
-        name = 'not {}'.format(sample_subset)
-        if 'False' or 'True' in name:
-            continue
-        if name not in subsets:
-            in_features = metadata.index.isin(subsets[
-                sample_subset])
-            subsets[name] = metadata.index[~in_features]
-    subsets['all {}'.format(subset_type)] = metadata.index
+            else:
+                grouped = metadata.groupby(col)
+                sizes = grouped.size()
+                filtered_sizes = sizes[sizes >= minimum]
+                for group in filtered_sizes.keys():
+                    name = '{}: {}'.format(col, group)
+                    subsets[name] = grouped.groups[group]
+        for sample_subset in subsets.keys():
+            name = 'not {}'.format(sample_subset)
+            if 'False' or 'True' in name:
+                continue
+            if name not in subsets:
+                in_features = metadata.index.isin(subsets[
+                    sample_subset])
+                subsets[name] = metadata.index[~in_features]
+        subsets['all {}'.format(subset_type)] = metadata.index
     return subsets
     

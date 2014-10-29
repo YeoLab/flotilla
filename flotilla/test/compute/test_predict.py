@@ -9,7 +9,7 @@
 #
 # @pytest.fixture
 # def study(example_data):
-#     from flotilla.data_model import Study
+# from flotilla.data_model import Study
 #
 #     return Study(sample_metadata=example_data.metadata,
 #                  expression_data=example_data.expression,

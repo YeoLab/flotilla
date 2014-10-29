@@ -14,6 +14,7 @@ import pandas as pd
 
 
 
+
 # Tell matplotlib to not make any window popups
 from flotilla.util import link_to_list
 
@@ -34,15 +35,17 @@ class ExampleData(object):
 
 @pytest.fixture(scope='module')
 def data_dir():
-    return '{}/data'.format(CURRENT_DIR.rstrip('/'))
+    return '{}/example_data'.format(CURRENT_DIR.rstrip('/'))
 
 
 @pytest.fixture(scope='module')
 def example_data(data_dir):
-    expression = pd.read_table('{}/expression.tsv'.format(data_dir),
-                               index_col=0)
-    splicing = pd.read_table('{}/splicing.tsv'.format(data_dir), index_col=0)
-    metadata = pd.read_csv('{}/metadata.csv'.format(data_dir), index_col=0)
+    expression = pd.read_csv('{}/expression.csv.gz'.format(data_dir),
+                             index_col=0, compression='gzip')
+    splicing = pd.read_csv('{}/splicing.csv.gz'.format(data_dir), index_col=0,
+                           compression='gzip')
+    metadata = pd.read_csv('{}/metadata.csv.gz'.format(data_dir), index_col=0,
+                           compression='gzip')
     return ExampleData(metadata, expression, splicing)
 
 
@@ -56,8 +59,8 @@ def example_study(example_data):
 
 
 @pytest.fixture(scope='module')
-def example_datapackage_path():
-    return os.path.join(CURRENT_DIR, 'data/datapackage.json')
+def example_datapackage_path(data_dir):
+    return os.path.join(data_dir, 'datapackage.json')
 
 
 @pytest.fixture(scope='module')
@@ -76,12 +79,13 @@ def study(example_datapackage_path):
 
 @pytest.fixture(scope='module')
 def genelist_path(data_dir):
-    return '{}/test_gene_list.txt'.format(data_dir)
+    return '{}/example_gene_list.txt'.format(data_dir)
 
 
 @pytest.fixture(scope='module')
 def genelist_dropbox_link():
-    return 'https://www.dropbox.com/s/qddybszcses6pi6/DE_genes.male%20adult%20%2019.txt?dl=0'
+    return 'https://www.dropbox.com/s/652y6hb8zonxe4c/example_gene_list.txt' \
+           '?dl=0'
 
 
 @pytest.fixture(params=['local', 'dropbox'])
@@ -92,7 +96,7 @@ def genelist_link(request, genelist_path, genelist_dropbox_link):
         return genelist_dropbox_link
 
 
-@pytest.fixture(params=[None, 'transcription_factor',
+@pytest.fixture(params=[None, 'gene_category: LPS Response',
                         'link',
                         'path'], scope='module')
 def feature_subset(request, genelist_dropbox_link, genelist_path):

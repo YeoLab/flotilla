@@ -132,7 +132,6 @@ class DecompositionViz(object):
                 return colors.next()
 
             self.label_to_color = defaultdict(color_factory)
-        self.color_ordered = [self.label_to_color[x] for x in self.order]
 
         if self.label_to_marker is None:
             markers = cycle(['o', '^', 's', 'v', '*', 'D', 'h'])
@@ -144,6 +143,12 @@ class DecompositionViz(object):
 
         if self.groupby is None:
             self.groupby = dict.fromkeys(self.reduced_space.index, 'all')
+        self.grouped = self.reduced_space.groupby(self.groupby, axis=0)
+        if order is not None:
+            self.color_ordered = [self.label_to_color[x] for x in self.order]
+        else:
+            self.color_ordered = [self.label_to_color[x] for x in
+                                  self.grouped.groups]
 
         self.loadings = self.components_.ix[[self.x_pc, self.y_pc]]
 
@@ -270,8 +275,7 @@ class DecompositionViz(object):
             ax = plt.gca()
 
         # Plot the samples
-        grouped = self.reduced_space.groupby(self.groupby, axis=0)
-        for name, df in grouped:
+        for name, df in self.grouped:
             color = self.label_to_color[name]
             marker = self.label_to_marker[name]
             x = df[self.x_pc]

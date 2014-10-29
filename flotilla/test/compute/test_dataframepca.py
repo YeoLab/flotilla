@@ -7,7 +7,7 @@ from flotilla.compute.decomposition import DataFramePCA
 
 class TestDataFramePCA():
     def test_init(self, example_data):
-        #TODO: parameterize and test with featurewise and subsets
+        # TODO: parameterize and test with featurewise and subsets
         expression = ExpressionData(example_data.expression)
         test_reduced = expression.reduce()
 
