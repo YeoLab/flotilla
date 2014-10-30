@@ -5,14 +5,17 @@ computation or visualization tests yet.
 import json
 import os
 
+import matplotlib as mpl
+
 import matplotlib.pyplot as plt
 import pandas.util.testing as pdt
 import pytest
 import semantic_version
 
-from flotilla.datapackage import get_resource_from_name, \
-    data_package_url_to_dict
+from flotilla.datapackage import get_resource_from_name
 
+
+mpl.use('Agg')
 
 def name_to_resource(datapackage, name):
     """
@@ -81,10 +84,9 @@ class TestStudy(object):
         return request.param
 
     @pytest.fixture
-    def datapackage(self, example_datapackage_path, metadata_none_key,
+    def datapackage(self, example_datapackage, metadata_none_key,
                     expression_none_key, splicing_none_key):
-        with open(example_datapackage_path) as f:
-            datapackage = json.load(f)
+        datapackage = example_datapackage.copy()
         datatype_to_key = {'metadata': metadata_none_key,
                            'expression': expression_none_key,
                            'splicing': splicing_none_key}
@@ -128,7 +130,8 @@ class TestStudy(object):
                == expression_feature_rename_col
         assert study.splicing.feature_rename_col == splicing_feature_rename_col
 
-    def test_save(self, example_datapackage_path, tmpdir, monkeypatch):
+    def test_save(self, example_datapackage_path, example_datapackage, tmpdir,
+                  monkeypatch):
         import flotilla
         from flotilla.datapackage import get_resource_from_name
 
@@ -142,7 +145,7 @@ class TestStudy(object):
 
         with open('{}/datapackage.json'.format(save_dir)) as f:
             test_datapackage = json.load(f)
-        true_datapackage = data_package_url_to_dict(example_datapackage_path)
+        true_datapackage = example_datapackage.copy()
 
         assert study_name == save_dir.purebasename
 
