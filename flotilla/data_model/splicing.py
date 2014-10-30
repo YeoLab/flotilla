@@ -9,7 +9,6 @@ import seaborn as sns
 
 from .base import BaseData
 from ..compute.splicing import Modalities
-from ..compute.decomposition import DataFramePCA
 from ..visualize.color import purples
 from ..visualize.splicing import ModalitiesViz
 from ..util import memoize, timestamp
@@ -28,7 +27,6 @@ class SplicingData(BaseData):
     n_components = 2
     _binsize = 0.1
 
-    _last_reducer_accessed = None
 
     def __init__(self, data,
                  feature_data=None, binsize=0.1, outliers=None,
@@ -438,12 +436,24 @@ class SplicingData(BaseData):
 
     def reduce(self, sample_ids=None, feature_ids=None,
                featurewise=False,
-               reducer=DataFramePCA,
-               standardize=True,
+               reducer=None,
+               standardize=False,
                reducer_kwargs=None, bins=None):
+        """
+        :param sample_ids: list of sample ids
+        :param feature_ids: list of features
+        :param featurewise: reduce transpose (feature X sample) instead of sample X feature
+        :param reducer: DataFrameReducer object, defaults to DataFramePCA
+        :param standardize: standardize columns before reduction
+        :param reducer_kwargs: kwargs for reducer
+        :param bins: bins to use for binify
+        :return: reducer object
+
+        """
+
         return super(SplicingData, self).reduce(sample_ids, feature_ids,
                                                 featurewise, reducer,
-                                                standardize=False,
+                                                standardize=standardize,
                                                 reducer_kwargs=reducer_kwargs,
                                                 bins=bins)
 

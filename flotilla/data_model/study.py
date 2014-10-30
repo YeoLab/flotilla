@@ -39,7 +39,7 @@ class Study(object):
 
     # Data types with enough data that we'd probably reduce them, and even
     # then we might want to take subsets. E.g. most variant genes for
-    # expresion. But we don't expect to do this for spikein or mapping_stats
+    # expression. But we don't expect to do this for spikein or mapping_stats
     # data
     _subsetable_data_types = ['expression', 'splicing']
 
@@ -86,6 +86,8 @@ class Study(object):
                  metadata_phenotype_to_color=None,
                  metadata_phenotype_to_marker=None,
                  license=None, title=None, sources=None,
+                 default_sample_subset="all_samples",
+                 default_feature_subset="variant",
                  metadata_minimum_samples=0):
         """Construct a biological study
 
@@ -200,6 +202,7 @@ class Study(object):
             metadata_phenotype_to_marker, pooled_col=metadata_pooled_col,
             phenotype_col=metadata_phenotype_col,
             predictor_config_manager=self.predictor_config_manager)
+
         self.phenotype_col = self.metadata.phenotype_col
         self.phenotype_order = self.metadata.phenotype_order
         self.phenotype_to_color = self.metadata.phenotype_to_color
@@ -208,6 +211,9 @@ class Study(object):
         self.sample_id_to_phenotype = self.metadata.sample_id_to_phenotype
         self.sample_id_to_color = self.metadata.sample_id_to_color
         self.phenotype_transitions = self.metadata.phenotype_transitions
+
+        self.default_feature_subset = default_feature_subset
+        self.default_sample_subset = default_sample_subset
 
         if 'outlier' in self.metadata.data and drop_outliers:
             outliers = self.metadata.data.index[
@@ -497,24 +503,74 @@ class Study(object):
             pass
         return dfs
 
-    def detect_outliers(self):
-        """Detects outlier cells from expression, mapping, and splicing
-        study_data and labels the outliers as such for future analysis.
+    def detect_outliers(self, data_type='expression',
+                        sample_subset=None, feature_subset=None,
+                        featurewise=False,
+                        reducer=None,
+                        standardize=None,
+                        reducer_kwargs=None,
+                        bins=None,
+                        outlier_detection_method=None,
+                        outlier_detection_method_kwargs=None):
 
-        Parameters
-        ----------
-        self
+        if sample_subset is None:
+            sample_subset = self.default_sample_subset
 
-        Returns
-        -------
+        sample_ids = self.sample_subset_to_sample_ids(sample_subset)
 
+        if feature_subset is None:
+            feature_subset = self.default_feature_subset
 
-        Raises
-        ------
+        feature_ids = self.feature_subset_to_feature_ids(data_type,
+                                                         feature_subset,
+                                                         rename=False)
 
-        """
-        # TODO.md: Boyko/Patrick please implement
-        raise NotImplementedError
+        if data_type == "expression":
+            obj = self.expression
+        elif data_type == "splicing":
+            obj = self.splicing
+
+        reducer, outlier_detector = obj.detect_outliers(sample_ids=sample_ids,
+                                                        feature_ids=feature_ids,
+                                                        featurewise=featurewise,
+                                                        reducer=reducer,
+                                                        standardize=standardize,
+                                                        reducer_kwargs=reducer_kwargs,
+                                                        bins=bins,
+                                                        outlier_detection_method=outlier_detection_method,
+                                                        outlier_detection_method_kwargs=outlier_detection_method_kwargs)
+
+        outlier_detector.predict(reducer.reduced_space)
+        outlier_detector.title = "_".join(
+            ['outlier', data_type, sample_subset, feature_subset])
+        print "setting outlier type:\n{}\nin metadata".format(
+            outlier_detector.title)
+        if outlier_detector.title not in self.metadata.data:
+            self.metadata.data[outlier_detector.title] = False
+
+        self.metadata.data[outlier_detector.title].update(
+            outlier_detector.outliers)
+        return reducer, outlier_detector
+
+    def drop_outliers(self):
+        """remove samples labeled "outlier" in self.metadata,
+        replace the data in self.expression and self.splicing with the smaller version"""
+        outliers = self.metadata.data['outlier'][
+            self.metadata.data['outlier']].index
+        try:
+            sys.stdout.write("dropping expression outliers\n")
+
+            self.expression.data = \
+            self.expression.drop_outliers(self.expression.data, outliers)[0]
+        except:
+            sys.stderr.write("couldn't drop expression outliers\n")
+
+        try:
+            sys.stdout.write("dropping splicing outliers\n")
+            self.splicing.data = \
+            self.splicing.drop_outliers(self.splicing.data, outliers)[0]
+        except:
+            sys.stderr.write("couldn't drop splicing outliers")
 
     def jsd(self):
         """Performs Jensen-Shannon Divergence on both splicing and expression
@@ -584,8 +640,6 @@ class Study(object):
         sample_ids : list of strings
             List of sample ids in the data
         """
-
-        # IF this is a list of IDs
 
         try:
             return self.metadata.sample_subsets[phenotype_subset]
@@ -671,6 +725,7 @@ class Study(object):
                 featurewise=featurewise, show_point_labels=show_point_labels,
                 title=title, reduce_kwargs=reduce_kwargs,
                 plot_violins=plot_violins, **kwargs)
+
         elif "splicing".startswith(data_type):
             reducer = self.splicing.plot_pca(
                 x_pc=x_pc, y_pc=y_pc, sample_ids=sample_ids,
@@ -1055,6 +1110,7 @@ class Study(object):
     #             sample_ids, feature_ids, linkage_method=linkage_method,
     #             metric=metric, sample_colors=sample_colors, figsize=figsize)
 
+
     def plot_big_nmf_space_transitions(self, data_type='expression'):
         if data_type == 'expression':
             self.expression.plot_big_nmf_space_transitions(
@@ -1207,6 +1263,18 @@ class Study(object):
                                       version=version,
                                       flotilla_dir=flotilla_dir)
 
+    def merge_outlier_columns(self, columns_to_merge):
+        is_ever_an_outlier = self.metadata.data[columns_to_merge].any(axis=1)
+        return is_ever_an_outlier
+
+    def set_outlier_by_merging_outlier_columns(self, columns_to_merge):
+        """merge columns of metadata listed in columns_to_merge into outlier"""
+        self.metadata.data['outlier'] = False
+        print "using thse columns: \n{}\n".format("\n".join(columns_to_merge))
+        is_ever_an_outlier = self.merge_outlier_columns(columns_to_merge)
+        print "there are {} outliers".format(is_ever_an_outlier.sum())
+        self.metadata.data['outlier'] = is_ever_an_outlier
+        return is_ever_an_outlier
 
 # Add interactive visualizations
 Study.interactive_classifier = Interactive.interactive_classifier
@@ -1215,4 +1283,6 @@ Study.interactive_pca = Interactive.interactive_pca
 # Study.interactive_localZ = Interactive.interactive_localZ
 Study.interactive_lavalamp_pooled_inconsistent = \
     Interactive.interactive_lavalamp_pooled_inconsistent
+Study.interactive_choose_outliers = Interactive.interactive_choose_outliers
+Study.interactive_reset_outliers = Interactive.interactive_reset_outliers
 # Study.interactive_clusteredheatmap = Interactive.interactive_clusteredheatmap
