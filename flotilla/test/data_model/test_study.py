@@ -7,15 +7,15 @@ import os
 
 import matplotlib as mpl
 
+# Tell matplotlib to not make any window popups
+mpl.use('Agg')
+
 import matplotlib.pyplot as plt
 import pandas.util.testing as pdt
 import pytest
 import semantic_version
 
 from flotilla.datapackage import get_resource_from_name
-
-
-mpl.use('Agg')
 
 def name_to_resource(datapackage, name):
     """
