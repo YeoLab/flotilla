@@ -410,7 +410,6 @@ class DecompositionViz(object):
                                                   vector_labels))]
 
         for (renamed, feature_id), ax in zip(labels, axes.flat):
-            # renamed = self.feature_renamer(vector_label)
             singles = self.singles[feature_id] if self.singles is not None \
                 else None
             pooled = self.pooled[feature_id] if self.pooled is not None else \
@@ -423,11 +422,6 @@ class DecompositionViz(object):
                        order=self.order, title=title,
                        ax=ax, data_type=self.data_type,
                        **self.violinplot_kws)
-            # self.DataModel._violinplot(feature_id=vector_label,
-            # sample_ids=self.reduced_space.index,
-            # phenotype_groupby=self.groupby,
-            # phenotype_order=self.order,
-            # ax=ax, color=self.color)
 
         # Clear any unused axes
         for ax in axes.flat:
