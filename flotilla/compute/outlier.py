@@ -1,9 +1,8 @@
 import sklearn
 import pandas as pd
 
+
 class OutlierDetection(object):
-
-
     """
     Detect outliers. Uses OneClassSVM by default
     """
@@ -12,7 +11,7 @@ class OutlierDetection(object):
     def __init__(self, X,
                  outlier_detection_method=None,
                  outlier_detection_method_kwargs=None,
-                 ):
+    ):
         """
 
         :param X: data on which to detect outliers
@@ -46,8 +45,10 @@ class OutlierDetection(object):
         :return: outliers
         """
         if X is None:
-            self.outliers = pd.Series(self.outlier_detector.predict(self.X) == -1, index=X.index)
+            self.outliers = pd.Series(
+                self.outlier_detector.predict(self.X) == -1, index=X.index)
             return self.outliers
         else:
-            self.outliers = pd.Series(self.outlier_detector.predict(X.fillna(0)) == -1, index=X.index)
+            self.outliers = pd.Series(
+                self.outlier_detector.predict(X.fillna(0)) == -1, index=X.index)
             return self.outliers

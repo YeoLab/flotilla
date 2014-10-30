@@ -8,11 +8,8 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
-
-
-
-# from ..compute.decomposition import DataFrameNMF, DataFramePCA
-from .color import set1
+from .color import dark2
+from .generic import violinplot
 
 
 class DecompositionViz(object):
@@ -22,51 +19,114 @@ class DecompositionViz(object):
     """
 
     def __init__(self, reduced_space, components_,
-                 explained_variance_ratio_, DataModel=None,
+                 explained_variance_ratio_,
                  feature_renamer=None, groupby=None,
+                 singles=None, pooled=None, outliers=None,
                  featurewise=False,
-                 color=None, order=None, violinplot_kws=None,
-                 data_type=None, label_to_color=None, label_to_marker=None,
-                 # violinplot=None,
+                 order=None, violinplot_kws=None,
+                 data_type='expression', label_to_color=None,
+                 label_to_marker=None,
                  scale_by_variance=True, x_pc='pc_1',
                  y_pc='pc_2', n_vectors=20, distance='L1',
-                 n_top_pc_features=50):
+                 n_top_pc_features=50, max_char_width=30):
+        """Plot the results of a decomposition visualization
+
+        Parameters
+        ----------
+        reduced_space : pandas.DataFrame
+            A (n_samples, n_dimensions) DataFrame of the post-dimensionality
+            reduction data
+        components_ : pandas.DataFrame
+            A (n_features, n_dimensions) DataFrame of how much each feature
+            contributes to the components (trailing underscore to be
+            consistent with scikit-learn)
+        explained_variance_ratio_ : pandas.Series
+            A (n_dimensions,) Series of how much variance each component
+            explains. (trailing underscore to be consistent with scikit-learn)
+        feature_renamer : function, optional
+            A function which takes the name of the feature and renames it,
+            e.g. from an ENSEMBL ID to a HUGO known gene symbol. If not
+            provided, the original name is used.
+        groupby : mapping function | dict, optional
+            A mapping of the samples to a label, e.g. sample IDs to
+            phenotype, for the violinplots. If None, all samples are treated
+            the same and are colored the same.
+        singles : pandas.DataFrame, optional
+            For violinplots only. If provided and 'plot_violins' is True,
+            will plot the raw (not reduced) measurement values as violin plots.
+        pooled : pandas.DataFrame, optional
+            For violinplots only. If provided, pooled samples are plotted as
+            black dots within their label.
+        outliers : pandas.DataFrame, optional
+            For violinplots only. If provided, outlier samples are plotted as
+            a grey shadow within their label.
+        featurewise : bool, optional
+            If True, then the "samples" are features, e.g. genes instead of
+            samples, and the "features" are the samples, e.g. the cells
+            instead of the gene ids. Essentially, the transpose of the
+            original matrix. If True, then violins aren't plotted. (default
+            False)
+        order : list-like
+            The order of the labels for the violinplots, e.g. if the data is
+            from a differentiation timecourse, then this would be the labels
+            of the phenotypes, in the differentiation order.
+        violinplot_kws : dict
+            Any additional parameters to violinplot
+        data_type : 'expression' | 'splicing', optional
+            For violinplots only. The kind of data that was originally used
+            for the reduction. (default 'expression')
+        label_to_color : dict, optional
+            A mapping of the label, e.g. the phenotype, to the desired
+            plotting color (default None, auto-assigned with the groupby)
+        label_to_marker : dict, optional
+            A mapping of the label, e.g. the phenotype, to the desired
+            plotting symbol (default None, auto-assigned with the groupby)
+        scale_by_variance : bool, optional
+            If True, scale the x- and y-axes by their explained_variance_ratio_
+            (default True)
+        {x,y}_pc : str, optional
+            Principal component to plot on the x- and y-axis. (default "pc_1"
+            and "pc_2")
+        n_vectors : int, optional
+            Number of vectors to plot of the principal components. (default 20)
+        distance : 'L1' | 'L2', optional
+            The distance metric to use to plot the vector lengths. L1 is
+            "Cityblock", i.e. the sum of the x and y coordinates, and L2 is
+            the traditional Euclidean distance. (default "L1")
+        n_top_pc_features : int, optional
+            THe number of top features from the principal components to plot.
+            (default 50)
+        max_char_width : int, optional
+            Maximum character width of a feature name. Useful for crazy long
+            feature IDs like MISO IDs
         """
+        self.reduced_space = reduced_space
+        self.components_ = components_
+        self.explained_variance_ratio_ = explained_variance_ratio_
 
-        x_pc : str
-            which Principal Component to plot on the x-axis
-        y_pc : str
-            Which Principal Component to plot on the y-axis
-        distance : str
-            either 'L1' or 'L2' distance to plot the vectors
-        n_vectors : int
-            Number of vectors to plot of the principal components
-
-        """
-
-        self.DataModel = DataModel
-        self._default_reduction_kwargs = {}
+        self.singles = singles
+        self.pooled = pooled
+        self.outliers = outliers
 
         self.groupby = groupby
-        self.color = color
         self.order = order
-        self.violinplot_kws = violinplot_kws
-        #self.data_type = data_type
+        self.violinplot_kws = violinplot_kws if violinplot_kws is not None \
+            else {}
+        self.data_type = data_type
         self.label_to_color = label_to_color
         self.label_to_marker = label_to_marker
         self.n_vectors = n_vectors
         self.x_pc = x_pc
         self.y_pc = y_pc
-        self.pcs = [self.x_pc, self.y_pc]
+        self.pcs = (self.x_pc, self.y_pc)
         self.distance = distance
         self.n_top_pc_features = n_top_pc_features
         self.featurewise = featurewise
-
-        self.reduced_space = reduced_space
-        self.components_ = components_
+        self.feature_renamer = feature_renamer
+        self.max_char_width = max_char_width
 
         if self.label_to_color is None:
-            colors = cycle(set1)
+            colors = cycle(dark2)
 
             def color_factory():
                 return colors.next()
@@ -81,23 +141,15 @@ class DecompositionViz(object):
 
             self.label_to_marker = defaultdict(marker_factory)
 
-        # if decomposer_kwargs is None:
-        #     decomposer_kwargs = self._default_reduction_kwargs
-        # else:
-        #     decomposer_kwargs = self._default_reduction_kwargs.update(
-        #         decomposer_kwargs)
-
-        # This magically initializes the reducer like DataFramePCA or DataFrameNMF
-        # self.decomposer = deco
-        # mposer(n_components=n_components,
-        #                              **decomposer_kwargs)
-        # super(DecompositionViz, self).__init__(n_components=n_components,
-        #                                        **decomposer_kwargs)
-
         if self.groupby is None:
             self.groupby = dict.fromkeys(self.reduced_space.index, 'all')
+        self.grouped = self.reduced_space.groupby(self.groupby, axis=0)
+        if order is not None:
+            self.color_ordered = [self.label_to_color[x] for x in self.order]
+        else:
+            self.color_ordered = [self.label_to_color[x] for x in
+                                  self.grouped.groups]
 
-        # self.reduced_space = self.fit_transform(self.df)
         self.loadings = self.components_.ix[[self.x_pc, self.y_pc]]
 
         # Get the explained variance
@@ -136,7 +188,6 @@ class DecompositionViz(object):
                 labels = x.index
                 self.pc_loadings[pc] = x
 
-
             self.pc_loadings_labels[pc] = labels
             self.top_features.update(labels)
 
@@ -149,7 +200,7 @@ class DecompositionViz(object):
         gs_y = 12
 
         if ax is None:
-            self.reduced_fig, ax = plt.subplots(1, 1, figsize=(25, 12))
+            self.reduced_fig, ax = plt.subplots(1, 1, figsize=(20, 10))
             gs = GridSpec(gs_x, gs_y)
 
         else:
@@ -159,8 +210,6 @@ class DecompositionViz(object):
         ax_components = plt.subplot(gs[:, :5])
         ax_loading1 = plt.subplot(gs[:, 6:8])
         ax_loading2 = plt.subplot(gs[:, 10:14])
-
-        # kwargs.update({'ax': ax_components})
 
         self.plot_samples(show_point_labels=show_point_labels,
                           title=title, show_vectors=show_vectors,
@@ -172,10 +221,15 @@ class DecompositionViz(object):
         sns.despine()
         self.reduced_fig.tight_layout()
 
-        if plot_violins and self.DataModel is not None and not self \
-                .featurewise:
+        if plot_violins and not self.featurewise and self.singles is not None:
             self.plot_violins()
         return self
+
+    def shorten(self, x):
+        if len(x) > self.max_char_width:
+            return '{}...'.format(x[:self.max_char_width])
+        else:
+            return x
 
     def plot_samples(self, show_point_labels=True,
                      title='DataFramePCA', show_vectors=True,
@@ -217,28 +271,39 @@ class DecompositionViz(object):
         For each vector in data:
         x, y, marker, distance
         """
-        # if three_d:
-        #     from mpl_toolkits.mplot3d import Axes3D
-        #
-        #     fig = plt.figure(figsize=(10, 10))
-        #     ax = fig.add_subplot(111, projection='3d')
-        # else:
-        #     fig, ax = plt.subplots(figsize=(10, 10))
-
         if ax is None:
             ax = plt.gca()
 
-
-
         # Plot the samples
-        grouped = self.reduced_space.groupby(self.groupby, axis=0)
-        for name, df in grouped:
+        for name, df in self.grouped:
             color = self.label_to_color[name]
             marker = self.label_to_marker[name]
             x = df[self.x_pc]
             y = df[self.y_pc]
             ax.plot(x, y, color=color, marker=marker, linestyle='None',
-                    label=name, markersize=markersize, alpha=0.75)
+                    label=name, markersize=markersize, alpha=0.75,
+                    markeredgewidth=.1)
+            try:
+                if not self.pooled.empty:
+                    pooled_ids = x.index.intersection(self.pooled.index)
+                    pooled_x, pooled_y = x[pooled_ids], y[pooled_ids]
+                    ax.plot(pooled_x, pooled_y, 'o', color=color, marker=marker,
+                            markeredgecolor='k', markeredgewidth=2,
+                            label='{} pooled'.format(name),
+                            markersize=markersize, alpha=0.75)
+            except AttributeError:
+                pass
+            try:
+                if not self.outliers.empty:
+                    outlier_ids = x.index.intersection(self.outliers.index)
+                    outlier_x, outlier_y = x[outlier_ids], y[outlier_ids]
+                    ax.plot(outlier_x, outlier_y, 'o', color=color,
+                            marker=marker,
+                            markeredgecolor='lightgrey', markeredgewidth=5,
+                            label='{} outlier'.format(name),
+                            markersize=markersize, alpha=0.75)
+            except AttributeError:
+                pass
             if show_point_labels:
                 for args in zip(x, y, df.index):
                     ax.text(*args)
@@ -252,7 +317,10 @@ class DecompositionViz(object):
                     x_offset = math.copysign(5, x)
                     y_offset = math.copysign(5, y)
                     horizontalalignment = 'left' if x > 0 else 'right'
-                    renamed = self.DataModel.feature_renamer(vector_label)
+                    if self.feature_renamer is not None:
+                        renamed = self.feature_renamer(vector_label)
+                    else:
+                        renamed = vector_label
                     ax.annotate(renamed, (x, y),
                                 textcoords='offset points',
                                 xytext=(x_offset, y_offset),
@@ -272,21 +340,6 @@ class DecompositionViz(object):
         sns.despine()
 
     def plot_loadings(self, pc='pc_1', n_features=50, ax=None):
-        # x = self.components_.ix[pc].copy()
-        # x.sort(ascending=True)
-        # half_features = int(n_features / 2)
-        # if len(x) > n_features:
-        #     a = x[:half_features]
-        #     b = x[-half_features:]
-        #     dd = np.r_[a, b]
-        #     labels = np.r_[a.index, b.index]
-        # else:
-        #     dd = x
-        #     labels = x.index
-        # import pdb; pdb.set_trace()
-        # half_features = n_features/2
-        # top_loadings = self.pc_loadings[pc][:half_features]
-        # bottom_loadings = self.pc_loadings[pc][-half_features:]
         loadings = self.pc_loadings[pc]
         labels = self.pc_loadings_labels[pc]
 
@@ -302,35 +355,37 @@ class DecompositionViz(object):
         ax.set_xlim(left=loadings.min() - x_offset,
                     right=loadings.max() + x_offset)
 
-        # self.top_features.extend(labels)
+        if self.feature_renamer is not None:
+            labels = map(self.feature_renamer, labels)
+        else:
+            labels = labels
 
-        labels = map(self.DataModel.feature_renamer, labels)
-        # shorten = lambda x: '{}...'.format(x[:30]) if len(x) > 30 else x
+        labels = map(self.shorten, labels)
         # ax.set_yticklabels(map(shorten, labels))
         ax.set_yticklabels(labels)
         for lab in ax.get_xticklabels():
             lab.set_rotation(90)
         sns.despine(ax=ax)
 
-    # def plot_explained_variance(self, title="DataFramePCA"):
-    #     """If the reducer is a form of DataFramePCA, then plot the explained variance
-    #     ratio by the components.
-    #     """
-    #     # Plot the explained variance ratio
-    #     assert hasattr(self, 'explained_variance_ratio_')
-    #     import matplotlib.pyplot as plt
-    #     import seaborn as sns
-    #
-    #     fig, ax = plt.subplots()
-    #     ax.plot(self.explained_variance_ratio_, 'o-')
-    #
-    #     ax.set_xticks(range(self.n_components))
-    #     ax.set_xticklabels(map(str, np.arange(self.n_components) + 1))
-    #     ax.set_xlabel('Principal component')
-    #     ax.set_ylabel('Fraction explained variance')
-    #     ax.set_title(title)
-    #     sns.despine()
-    #     return fig
+    def plot_explained_variance(self, title="PCA explained variance"):
+        """If the reducer is a form of PCA, then plot the explained variance
+        ratio by the components.
+        """
+        # Plot the explained variance ratio
+        assert self.explained_variance_ratio_ is not None
+        import matplotlib.pyplot as plt
+        import seaborn as sns
+
+        fig, ax = plt.subplots()
+        ax.plot(self.explained_variance_ratio_, 'o-')
+
+        xticks = np.arange(len(self.explained_variance_ratio_))
+        ax.set_xticks(xticks)
+        ax.set_xticklabels(xticks + 1)
+        ax.set_xlabel('Principal component')
+        ax.set_ylabel('Fraction explained variance')
+        ax.set_title(title)
+        sns.despine()
 
     def plot_violins(self):
         """Make violinplots of each feature
@@ -346,20 +401,27 @@ class DecompositionViz(object):
             nrows += 1
         self.violins_fig, axes = plt.subplots(nrows=nrows, ncols=ncols,
                                               figsize=(4 * ncols, 4 * nrows))
-        renamed_vectors = map(self.DataModel.feature_renamer, vector_labels)
-        vector_labels = [x for (y, x) in sorted(zip(renamed_vectors,
-                                                    vector_labels))]
 
-        # import pdb; pdb.set_trace()
+        if self.feature_renamer is not None:
+            renamed_vectors = map(self.feature_renamer, vector_labels)
+        else:
+            renamed_vectors = vector_labels
+        labels = [(y, x) for (y, x) in sorted(zip(renamed_vectors,
+                                                  vector_labels))]
 
-        for vector_label, ax in zip(vector_labels, axes.flat):
-            # renamed = self.feature_renamer(vector_label)
-
-            self.DataModel._violinplot(feature_id=vector_label,
-                                       sample_ids=self.reduced_space.index,
-                                       phenotype_groupby=self.groupby,
-                                       phenotype_order=self.order,
-                                       ax=ax, color=self.color)
+        for (renamed, feature_id), ax in zip(labels, axes.flat):
+            singles = self.singles[feature_id] if self.singles is not None \
+                else None
+            pooled = self.pooled[feature_id] if self.pooled is not None else \
+                None
+            outliers = self.outliers[feature_id] if self.outliers is not None \
+                else None
+            title = '{}\n{}'.format(feature_id, renamed)
+            violinplot(singles, pooled_data=pooled, outliers=outliers,
+                       groupby=self.groupby, color_ordered=self.color_ordered,
+                       order=self.order, title=title,
+                       ax=ax, data_type=self.data_type,
+                       **self.violinplot_kws)
 
         # Clear any unused axes
         for ax in axes.flat:
@@ -367,50 +429,3 @@ class DecompositionViz(object):
             if len(ax.collections) == 0 or len(ax.lines) == 0:
                 ax.axis('off')
         self.violins_fig.tight_layout()
-
-
-        # class PCAViz(DecompositionViz, DataFramePCA):
-        #     _default_reduction_kwargs = dict(whiten=False)
-        #     pass
-        #
-        #
-        # class NMFViz(DecompositionViz, DataFrameNMF):
-        #     _default_reduction_kwargs = \
-        #         {'n_components': 2, 'max_iter': 20000, 'nls_max_iter': 40000}
-        #
-        #     def __call__(self, ax=None, **kwargs):
-        #         pass
-        # gs_x = 14
-        # gs_y = 12
-        #
-        # if ax is None:
-        #     fig, ax = plt.subplots(1, 1, figsize=(25, 12))
-        #     gs = GridSpec(gs_x, gs_y)
-        #
-        # else:
-        #     gs = GridSpecFromSubplotSpec(gs_x, gs_y, ax.get_subplotspec())
-        #     fig = plt.gcf()
-        #
-        # ax_components = plt.subplot(gs[:, :5])
-        # ax_loading1 = plt.subplot(gs[:, 6:8])
-        # ax_loading2 = plt.subplot(gs[:, 10:14])
-        #
-        # passed_kwargs = kwargs
-        # local_kwargs = self.plotting_kwargs.copy()
-        # local_kwargs.update(passed_kwargs)
-        # local_kwargs.update({'ax': ax_components})
-        # self.plot_samples(**local_kwargs)
-        # self.plot_loadings(pc=local_kwargs['x_pc'], ax=ax_loading1)
-        # self.plot_loadings(pc=local_kwargs['y_pc'], ax=ax_loading2)
-        # sns.despine()
-        # fig.tight_layout()
-        # return self
-
-        # def splicing_movies(self):
-
-
-# def plot_pca(df, **kwargs):
-#     """ for backwards-compatibility """
-#     pca = PCAViz(df, **kwargs)
-#     pca.plot_samples()
-#     return pca
