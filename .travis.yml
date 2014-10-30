@@ -45,13 +45,14 @@ after_script:
   - pip install pep8
   - pip install https://github.com/dcramer/pyflakes/tarball/master
   - pip install .
-  - sudo pip install -r doc/requirements.txt --use-mirrors # change this to the right project path
+  - sudo pip install -r doc/requirements.txt --use-mirrors
   # Make sure README.rst is always synced with README.md
-  - pandoc -f markdown README.md -t rst > README.rst
-  - cd doc
-  - make setup_gh_pages
-  - make generate
-  - make deploy
+  if [[ $TRAVIS_BRANCH == 'master' ]]
+    cd doc
+    make setup_gh_pages
+    make generate
+    make deploy
+  fi
 
 after_success:
   coveralls
