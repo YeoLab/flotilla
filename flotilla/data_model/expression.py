@@ -12,9 +12,6 @@ from ..util import memoize, timestamp
 EXPRESSION_THRESH = -np.inf
 
 
-<< << << < HEAD
-
-
 class ExpressionData(BaseData):
     def __init__(self, data,
                  feature_data=None, thresh=EXPRESSION_THRESH,
