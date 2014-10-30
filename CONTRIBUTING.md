@@ -1,15 +1,3 @@
-We use the [`gitflow`](https://github.com/nvie/gitflow) model of branching
-and features. The "production release" repo is `master` and the "development"
-repo is `dev`. Everything else is default:
-
-```
-How to name your supporting branch prefixes?
-Feature branches? [feature/]
-Release branches? [release/]
-Hotfix branches? [hotfix/]
-Support branches? [support/]
-Version tag prefix? []
-```
 
 For developers
 ==============
@@ -18,29 +6,63 @@ Please put ALL import statements at the top of the `*.py` file (potentially unde
 The only exception is if a package is not listed in `requirements.txt`,then a "function-only" import may be allowed.
 If this doesn't make sense to you, just put the import at the top of the file.
 
+
+Install in development mode
+---------------------------
+
+First clone the repository,
+
+    git clone git@github.com:YeoLab/flotilla
+
+Change directories to the flotilla directory you just made,
+
+    cd flotilla
+
+Now install via `pip` in "editable" mode, aka "develop" mode:
+
+    pip install -e
+
 Git branching
 -------------
 
-We use the [git-flow](http://nvie
-.com/posts/a-successful-git-branching-model/) model. So if you have a feature
+We use the [git-flow](http://nvie.com/posts/a-successful-git-branching-model/) model.
+
+We use the [`gitflow`](https://github.com/nvie/gitflow) model of branching
+and features. The "production release" repo is `master` and the '"next release"
+development' repo is `dev`. Everything else is default:
+
+```
+Which branch should be used for bringing forth production releases?
+   - master
+Branch name for production releases: [master]
+Branch name for "next release" development: [develop] dev
+
+How to name your supporting branch prefixes?
+Feature branches? [feature/]
+Release branches? [release/]
+Hotfix branches? [hotfix/]
+Support branches? [support/]
+Version tag prefix? []
+```
+
+
+So if you have a feature
 (called `myfeature` as an example) you want to add, please add it off of the
 `dev` branch, as so:
 
-    git checkout -b myfeature dev
+    git flow feature start myfeature
 
-When you're done working on your feature, merge it back to `dev` via:
+This creates the branch `feature/myfeature` as a copy off of `dev`.
 
-    $ git checkout develop
-    Switched to branch 'dev'
-    $ git merge --no-ff myfeature
-    Updating ea1b82a..05e9557
-    (Summary of changes)
-    $ git branch -d myfeature
-    Deleted branch myfeature (was 05e9557).
-    $ git push origin dev
+... Make changes to files, commit them ...
 
-The reason for the `--no-ff` flag is because it makes it easy to reverse
-changes in case there was a simple mistake.
+When you're done working on your feature, do
+
+    git flow feature finish myfeature
+
+Which will merge the branch `feature/myfeature` with `dev`,
+and remove the branch `feature/myfeature` in one command!
+
 
 Naming conventions
 ------------------
