@@ -15,6 +15,7 @@ import pandas as pd
 
 
 
+
 # Tell matplotlib to not make any window popups
 from flotilla.util import link_to_list
 
@@ -22,6 +23,7 @@ mpl.use('Agg')
 
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
 
+DATA_BASE_URL = 'https://raw.githubusercontent.com/YeoLab/shalek2013/master/'
 
 class ExampleData(object):
     __slots__ = ('metadata', 'expression', 'splicing', 'data')
@@ -39,13 +41,13 @@ def data_dir():
 
 
 @pytest.fixture(scope='module')
-def example_data(data_dir):
-    expression = pd.read_csv('{}/expression.csv.gz'.format(data_dir),
+def example_data():
+    expression = pd.read_csv('{}/expression.csv.gz'.format(DATA_BASE_URL),
                              index_col=0, compression='gzip')
-    splicing = pd.read_csv('{}/splicing.csv.gz'.format(data_dir), index_col=0,
-                           compression='gzip')
-    metadata = pd.read_csv('{}/metadata.csv.gz'.format(data_dir), index_col=0,
-                           compression='gzip')
+    splicing = pd.read_csv('{}/splicing.csv.gz'.format(DATA_BASE_URL),
+                           index_col=0, compression='gzip')
+    metadata = pd.read_csv('{}/metadata.csv.gz'.format(DATA_BASE_URL),
+                           index_col=0, compression='gzip')
     return ExampleData(metadata, expression, splicing)
 
 
@@ -59,8 +61,8 @@ def example_study(example_data):
 
 
 @pytest.fixture(scope='module')
-def example_datapackage_path(data_dir):
-    return os.path.join(data_dir, 'datapackage.json')
+def example_datapackage_path():
+    return os.path.join(DATA_BASE_URL, 'datapackage.json')
 
 
 @pytest.fixture(scope='module')
