@@ -6,6 +6,10 @@ import os
 import subprocess
 
 import matplotlib as mpl
+
+# Tell matplotlib to not make any window popups
+mpl.use('Agg')
+
 import pytest
 import pandas as pd
 
@@ -13,8 +17,6 @@ from flotilla.util import link_to_list
 from flotilla.datapackage import data_package_url_to_dict
 
 
-# Tell matplotlib to not make any window popups
-mpl.use('Agg')
 
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
 DATA_BASE_URL = 'https://raw.githubusercontent.com/YeoLab/shalek2013/master'
