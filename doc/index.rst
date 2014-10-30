@@ -5,15 +5,21 @@ contain the root `toctree` directive.
 
 Welcome to flotilla's documentation!
 ====================================
-.. include:: ../flotilla.png
-.. include:: ../README.rst
+
+Flotilla is a
+
+Check out `what's new`_
 
 Contents:
 
 .. toctree::
 :maxdepth: 4
 
-   flotilla
+       flotilla
+       whats_new.rst
+       installation.rst
+
+.. _what's new: whats_new.rst
 
 
 Indices and tables

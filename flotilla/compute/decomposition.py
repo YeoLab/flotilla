@@ -1,6 +1,5 @@
 import sys
 
-import sklearn
 from sklearn import decomposition
 import pandas as pd
 
@@ -75,8 +74,8 @@ class DataFramePCA(DataFrameReducerBase, decomposition.PCA):
 class DataFrameNMF(DataFrameReducerBase, decomposition.NMF):
     def fit(self, X):
         """
-        duplicated fit code for DataFrameNMF because sklearn's DataFrameNMF cheats for
-        efficiency and calls _single_fit_transform. MRO resolves the closest
+        duplicated fit code for DataFrameNMF because sklearn's NMF cheats for
+        efficiency and calls fit_transform. MRO resolves the closest
         (in this package)
         _single_fit_transform first and so there's a recursion error:
 
@@ -93,8 +92,8 @@ class DataFrameNMF(DataFrameReducerBase, decomposition.NMF):
                              'was of type {} instead'.format(str(type(X))))
 
         self.X = X
-        # notice this is _single_fit_transform, not fit
-        super(sklearn.decomposition.NMF, self).fit_transform(X)
+        # notice this is fit_transform, not fit
+        super(decomposition.NMF, self).fit_transform(X)
         self.components_ = pd.DataFrame(self.components_,
                                         columns=self.X.columns).rename_axis(
             self.relabel_pcs, 0)
@@ -103,13 +102,3 @@ class DataFrameNMF(DataFrameReducerBase, decomposition.NMF):
 
 class DataFrameICA(DataFrameReducerBase, decomposition.FastICA):
     pass
-
-
-# def L1_distance(x, y):
-#     """Really should just be using TODO:scipy.linalg.norm with order=1"""
-#     return abs(y) + abs(x)
-#
-#
-# def L2_distance(x, y):
-#     """Really should just be using TODO:scipy.linalg.norm with order=2"""
-#     return math.sqrt((y ** 2) + (x ** 2))
