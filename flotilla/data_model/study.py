@@ -384,11 +384,13 @@ class Study(object):
         dfs = {}
         kwargs = {}
         log_base = None
+        datapackage_name = datapackage['name']
 
         for resource in datapackage['resources']:
             if 'url' in resource:
                 resource_url = resource['url']
-                filename = check_if_already_downloaded(resource_url)
+                filename = check_if_already_downloaded(resource_url,
+                                                       datapackage_name)
             else:
                 filename = resource['path']
                 # Test if the file exists, if not, then add the datapackage
@@ -472,7 +474,8 @@ class Study(object):
             for resource in species_data_package['resources']:
                 if 'url' in resource:
                     resource_url = resource['url']
-                    filename = check_if_already_downloaded(resource_url)
+                    filename = check_if_already_downloaded(resource_url,
+                                                           species)
                 else:
                     filename = resource['path']
 

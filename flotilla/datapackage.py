@@ -16,7 +16,9 @@ def data_package_url_to_dict(data_package_url):
     return data_package
 
 
-def check_if_already_downloaded(url, download_dir=FLOTILLA_DOWNLOAD_DIR):
+def check_if_already_downloaded(url,
+                                datapackage_name=None,
+                                download_dir=FLOTILLA_DOWNLOAD_DIR):
     """If a url filename has already been downloaded, don't download it again.
 
     Parameters
@@ -35,8 +37,15 @@ def check_if_already_downloaded(url, download_dir=FLOTILLA_DOWNLOAD_DIR):
                          'projects: {}\n'.format(download_dir))
     except OSError:
         pass
-    suffix = '/'.join(url.rsplit('/', 2)[1:-1])
-    package_dir = '{}/{}'.format(download_dir, suffix)
+
+    if datapackage_name is None:
+        req = urllib2.Request(url)
+        opener = urllib2.build_opener()
+        opened_url = opener.open(req)
+        datapackage = json.loads(opened_url.read())
+        datapackage_name = datapackage['name']
+
+    package_dir = '{}/{}'.format(download_dir, datapackage_name)
 
     try:
         os.mkdir(package_dir)
@@ -44,9 +53,8 @@ def check_if_already_downloaded(url, download_dir=FLOTILLA_DOWNLOAD_DIR):
                          'project: {}\n'.format(package_dir))
     except OSError:
         pass
-
-    name = url.rsplit('/', 1)[-1]
-    filename = os.path.expanduser(os.path.join(package_dir, name))
+    basename = url.rsplit('/', 1)[-1]
+    filename = os.path.expanduser(os.path.join(package_dir, basename))
 
     if not os.path.isfile(filename):
         sys.stdout.write('{} has not been downloaded before.\n\tDownloading '
