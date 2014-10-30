@@ -32,7 +32,6 @@ before_script:
   - export REPO_URL_GITHUB="https://$GH_TOKEN@github.com/$GH_REPO.git"
   - . ./.travis/setup.sh # make any change needed for setup.sh
   - echo $DEPLOY_HTML_DIR
-  - "export DISPLAY=:99.0"
 
 # command to run tests
 script: make coverage
