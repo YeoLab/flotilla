@@ -52,7 +52,7 @@ endif
 
 # Copy contents from $(BUILDDIR) to $(DEPLOY_DIR)/$(DEPLOY_HTML_DIR) directory
 ifndef DEPLOY_HTML_DIR
-DEPLOY_HTML_DIR = doc
+DEPLOY_HTML_DIR =
 endif
 
 
@@ -90,7 +90,7 @@ endif
 #if REPO_URL_GITHUB was NOT defined by travis-ci
 ifndef REPO_URL_GITHUB
 # Configure your right github project repo
-# REPO_URL       = git@github.com:teracy-official/sphinx-deployment.git
+REPO_URL       = git@github.com:YeoLab/flotilla.git
 endif
 
 ## -- Heroku Deployment Config -- ##
@@ -109,27 +109,28 @@ RSYNC_DELETE_OPT = --delete
 endif
 
 init_gh_pages:
-	@rm -rf $(DEPLOY_DIR)
-	@mkdir -p $(DEPLOY_DIR)
-	@cd $(DEPLOY_DIR); git init;\
-		echo 'sphinx docs comming soon...' > index.html;\
+	echo "DEPLOY_DIR is" $(DEPLOY_DIR)
+	rm -rf $(DEPLOY_DIR)
+	mkdir -p $(DEPLOY_DIR)
+	cd $(DEPLOY_DIR); git init;\
+		echo 'sphinx docs coming soon...' > index.html;\
 		touch .nojekyll;\
 		git add .; git commit -m "sphinx docs init";\
 		git branch -m $(DEPLOY_BRANCH_GITHUB);\
 		git remote add origin $(REPO_URL_GITHUB);
-	@cd $(DEPLOY_DIR);\
+	cd $(DEPLOY_DIR);\
 		if ! git ls-remote origin $(DEPLOY_BRANCH_GITHUB) | grep $(DEPLOY_BRANCH_GITHUB) ; then \
 			echo "Preparing Github deployment branch: $(DEPLOY_BRANCH_GITHUB) for the first time only...";\
 			git push -u origin $(DEPLOY_BRANCH_GITHUB);\
 		fi
 
 setup_gh_pages: init_gh_pages
-	@echo "Setting up gh-pages deployment..."
-	@cd $(DEPLOY_DIR);\
+	echo "Setting up gh-pages deployment..."
+	cd $(DEPLOY_DIR);\
 		git fetch origin;\
-		git reset --hard origin $(DEPLOY_BRANCH_GITHUB);\
-		git branch --set-upstream-to $(DEPLOY_BRANCH_GITHUB) origin $(DEPLOY_BRANCH_GITHUB)
-	@echo "Now you can deploy to Github Pages with 'make generate' and then 'make deploy_gh_pages'"
+		git reset --hard origin/$(DEPLOY_BRANCH_GITHUB);\
+		git branch --set-upstream-to origin/$(DEPLOY_BRANCH_GITHUB)
+	echo "Now you can deploy to Github Pages with 'make generate' and then 'make deploy_gh_pages'"
 
 init_heroku:
 	@rm -rf $(DEPLOY_DIR_HEROKU)
@@ -159,25 +160,25 @@ prepare_rsync_deployment:
 	@echo "Preparing rsync deployment..."
 	@mkdir -p $(DEPLOY_DIR)/$(DEPLOY_HTML_DIR)
 	@echo "Copying files from '$(BUILDDIR)/html/.' to '$(DEPLOY_DIR)/$(DEPLOY_HTML_DIR)'"
-	@cp -r $(BUILDDIR)/html/. $(DEPLOY_DIR)/$(DEPLOY_HTML_DIR)
+	@cp -r $(BUILDDIR)/html/. $(DEPLOY_DIR)/
 
 deploy_rsync: prepare_rsync_deployment
 	@echo "Deploying on rsync now..."
 	rsync -avze 'ssh -p $(SSH_PORT)' --exclude-from $(realpath ./rsync_exclude) $(RSYNC_ARGS) $(RSYNC_DELETE_OPT) ${DEPLOY_DIR}/ $(SSH_USER):$(DOCUMENT_ROOT)
 
 prepare_gh_pages_deployment:
-	@echo "Preparing gh_pages deployment..."
-	@echo "Pulling any updates from Github Pages..."
-	@cd $(DEPLOY_DIR); git pull;
-	@mkdir -p $(DEPLOY_DIR)/$(DEPLOY_HTML_DIR)
-	@echo "Copying files from '$(BUILDDIR)/html/.' to '$(DEPLOY_DIR)/$(DEPLOY_HTML_DIR)'"
-	@cp -r $(BUILDDIR)/html/. $(DEPLOY_DIR)/$(DEPLOY_HTML_DIR)
+	echo "Preparing gh_pages deployment..."
+	echo "Pulling any updates from Github Pages..."
+	cd $(DEPLOY_DIR); git pull;
+	mkdir -p $(DEPLOY_DIR)/
+	echo "Copying files from '$(BUILDDIR)/html/.' to '$(DEPLOY_DIR)/'"
+	cp -r $(BUILDDIR)/html/. $(DEPLOY_DIR)/
 
 deploy_gh_pages: prepare_gh_pages_deployment
-	@echo "Deploying on github pages now..."
-	@cd $(DEPLOY_DIR); git add -A; git commit -m "docs updated at `date -u`";\
+	echo "Deploying on github pages now..."
+	cd $(DEPLOY_DIR); git add -A; git commit -m "docs updated at `date -u`";\
 		git push origin $(DEPLOY_BRANCH) --quiet
-	@echo "Github Pages deploy was completed at `date -u`"
+	echo "Github Pages deploy was completed at `date -u`"
 
 prepare_heroku_deployment:
 	@echo "Preparing heroku deployment..."
