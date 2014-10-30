@@ -4,7 +4,8 @@ import numpy as np
 import seaborn as sns
 
 
-def violinplot(data, groupby=None, color=None, ax=None, pooled_data=None,
+def violinplot(data, groupby=None, color_ordered=None, ax=None,
+               pooled_data=None,
                order=None, violinplot_kws=None, title=None,
                label_pooled=False, outliers=None, data_type=None):
     """
@@ -14,7 +15,7 @@ def violinplot(data, groupby=None, color=None, ax=None, pooled_data=None,
         The main data to plot
     groupby : dict-like
         How to group the samples (e.g. by phenotype)
-    color : list
+    color_ordered : list
 
     Returns
     -------
@@ -23,6 +24,7 @@ def violinplot(data, groupby=None, color=None, ax=None, pooled_data=None,
     Raises
     ------
     """
+    # import pdb; pdb.set_trace()
     data_type = 'none' if data_type is None else data_type
     splicing = 'splicing'.startswith(data_type)
 
@@ -32,8 +34,9 @@ def violinplot(data, groupby=None, color=None, ax=None, pooled_data=None,
     if ax is None:
         ax = plt.gca()
 
-    _violinplot_single_dataset(data, groupby=groupby, color=color, ax=ax, order=order,
-                     violinplot_kws=violinplot_kws, splicing=splicing)
+    _violinplot_single_dataset(data, groupby=groupby, color=color_ordered,
+                               ax=ax, order=order,
+                               violinplot_kws=violinplot_kws, splicing=splicing)
     if pooled_data is not None and groupby is not None:
         grouped = pooled_data.groupby(groupby)
         if order is not None:
@@ -51,9 +54,11 @@ def violinplot(data, groupby=None, color=None, ax=None, pooled_data=None,
 
         # make sure this is behind the non outlier data
         outlier_violinplot_kws['zorder'] = -1
-        _violinplot_single_dataset(outliers, groupby=groupby, color='lightgrey', ax=ax,
-                         order=order, violinplot_kws=outlier_violinplot_kws,
-                         splicing=splicing)
+        _violinplot_single_dataset(outliers, groupby=groupby, color='lightgrey',
+                                   ax=ax,
+                                   order=order,
+                                   violinplot_kws=outlier_violinplot_kws,
+                                   splicing=splicing)
 
     if splicing:
         ax.set_ylim(0, 1)
@@ -85,6 +90,8 @@ def _violinplot_single_dataset(data, groupby=None, order=None,
     Separated out so real data plotting and outlier plotting works the same
     """
     data = data.dropna()
+    if data.empty:
+        return
 
     single_points = data.groupby(groupby).filter(lambda x: len(x) < 2)
     data = data.groupby(groupby).filter(lambda x: len(x) > 1)
@@ -117,6 +124,12 @@ def _violinplot_single_dataset(data, groupby=None, order=None,
 
         single_positions = None
         single_color = None
+
+    print data.name, data.shape
+    print 'verified_color', verified_color
+    print 'verified_order', verified_order
+    print data.groupby(groupby).groups.keys()
+    print
 
     violinplot_kws = {} if violinplot_kws is None else violinplot_kws
 
@@ -203,3 +216,46 @@ def nmf_space_transitions(nmf_space_positions, feature_id,
     if ylabel is not None:
         ax.set_ylabel(ylabel)
         ax.set_yticks([])
+
+
+def simple_twoway_scatter(sample1, sample2, **kwargs):
+    """Plot a two-dimensional scatterplot between two samples
+
+    Parameters
+    ----------
+    sample1 : pandas.Series
+        Data to plot on the x-axis
+    sample2 : pandas.Series
+        Data to plot on the y-axis
+    Any other keyword arguments valid for seaborn.jointplot
+
+    Returns
+    -------
+    jointgrid : seaborn.axisgrid.JointGrid
+        Returns a JointGrid instance
+
+    See Also
+    -------
+    seaborn.jointplot
+
+    """
+    joint_kws = kwargs.pop('joint_kws', {})
+
+    kind = kwargs.pop('kind', 'scatter')
+    marginal_kws = kwargs.pop('marginal_kws', {})
+    if kind == 'scatter':
+        vmin = min(sample1.min(), sample2.min())
+        vmax = max(sample1.max(), sample2.max())
+        bins = np.linspace(vmin, vmax, 50)
+        marginal_kws.setdefault('bins', bins)
+    if kind not in ('reg', 'resid'):
+        joint_kws.setdefault('alpha', 0.5)
+
+    jointgrid = sns.jointplot(sample1, sample2, joint_kws=joint_kws,
+                              marginal_kws=marginal_kws, kind=kind, **kwargs)
+    xmin, xmax, ymin, ymax = jointgrid.ax_joint.axis()
+
+    xmin = max(xmin, sample1.min() - .1)
+    ymin = max(ymin, sample2.min() - .1)
+    jointgrid.ax_joint.set_xlim(xmin, xmax)
+    jointgrid.ax_joint.set_ylim(ymin, ymax)

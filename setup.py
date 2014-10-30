@@ -14,9 +14,9 @@ setup(
     author='mlovci,olgabot',
     author_email='obotvinn@ucsd.edu',
     description='Embark on a journey of single-cell data exploration.',
-# These are all in a specific order! If you add another package as
-# a depencency, please make sure that its dependencies come before it (above)
-# in the list. E.g. "numpy" and "scipy" must precede "matplotlib"
+    # These are all in a specific order! If you add another package as
+    # a depencency, please make sure that its dependencies come before it (above)
+    # in the list. E.g. "numpy" and "scipy" must precede "matplotlib"
     install_requires=["setuptools",
                       "numpy >= 1.8.0",
                       "scipy >= 0.14",
@@ -34,14 +34,14 @@ setup(
                       "networkx",
                       "tornado >= 3.2.1",
                       "pyzmq",
-                      #"dcor_cpy' #needs to be built with extutils",
+                      # "dcor_cpy' #needs to be built with extutils",
                       "six",
                       "pytest-cov",
                       "python-coveralls",
                       "jinja2",
                       #"fastcluster",
                       "semantic_version",
-                      ],
+    ],
     version=version,
     classifiers=['License :: OSI Approved :: MIT License',
                  'Topic :: Scientific/Engineering :: Bio-Informatics',
