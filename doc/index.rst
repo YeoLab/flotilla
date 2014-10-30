@@ -11,8 +11,7 @@ Welcome to flotilla's documentation!
 Contents:
 
 .. toctree::
-:maxdepth: 4
-
+   :maxdepth: 4
    flotilla
 
 
