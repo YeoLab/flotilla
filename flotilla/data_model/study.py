@@ -223,7 +223,7 @@ class Study(object):
             self.metadata.data['outlier'] = False
 
         # Get pooled samples
-
+        pooled = None
         if self.metadata.pooled_col is not None:
             if self.metadata.pooled_col in self.metadata.data:
                 try:
@@ -232,8 +232,6 @@ class Study(object):
                             self.metadata.pooled_col].astype(bool)]
                 except:
                     pooled = None
-        else:
-            pooled = None
         self.pooled = pooled
 
         if mapping_stats_data is not None:
