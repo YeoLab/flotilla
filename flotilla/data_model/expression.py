@@ -12,6 +12,9 @@ from ..util import memoize, timestamp
 EXPRESSION_THRESH = -np.inf
 
 
+<< << << < HEAD
+
+
 class ExpressionData(BaseData):
     def __init__(self, data,
                  feature_data=None, thresh=EXPRESSION_THRESH,
@@ -109,6 +112,7 @@ class SpikeInData(ExpressionData):
                                           technical_outliers=technical_outliers,
                                           predictor_config_manager=predictor_config_manager)
 
+
         # def spikeins_violinplot(self):
         # import matplotlib.pyplot as plt
         #     import seaborn as sns
@@ -180,3 +184,4 @@ class SpikeInData(ExpressionData):
         #             ax.set_xlim(0, tpm.shape[1])
         #             ax.set_ylabel('$\\log_2$ TPM')
         #         sns.despine()
+

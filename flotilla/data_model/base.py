@@ -21,6 +21,7 @@ from ..visualize.generic import violinplot, nmf_space_transitions, \
 from ..visualize.network import NetworkerViz
 from ..visualize.predict import ClassifierViz
 from ..util import memoize, cached_property
+from ..compute.outlier import OutlierDetection
 
 default_predictor_name = "ExtraTreesClassifier"
 MINIMUM_FEATURE_SUBSET = 20
@@ -381,7 +382,7 @@ class BaseData(object):
 
     def plot_dimensionality_reduction(self, x_pc=1, y_pc=2,
                                       sample_ids=None, feature_ids=None,
-                                      featurewise=False, reducer=DataFramePCA,
+                                      featurewise=False, reducer=None,
                                       label_to_color=None,
                                       label_to_marker=None,
                                       groupby=None, order=None,
@@ -422,6 +423,7 @@ class BaseData(object):
         ------
 
         """
+
         reduce_kwargs = {} if reduce_kwargs is None else reduce_kwargs
 
         reduced = self.reduce(sample_ids, feature_ids,
@@ -614,10 +616,61 @@ class BaseData(object):
                                     figsize=figsize)
 
     @memoize
+    def detect_outliers(self,
+                        sample_ids=None, feature_ids=None,
+                        featurewise=False,
+                        reducer=None,
+                        standardize=True,
+                        reducer_kwargs=None,
+                        bins=None,
+                        outlier_detection_method=None,
+                        outlier_detection_method_kwargs=None):
+
+        default_reducer_args = {"n_components": 3}
+
+        if reducer_kwargs is None:
+            reducer_kwargs = default_reducer_args
+        else:
+            default_reducer_args.update(reducer_kwargs)
+            reducer_kwargs = default_reducer_args
+
+        reducer = self.reduce(sample_ids, feature_ids,
+                              featurewise, reducer,
+                              standardize, reducer_kwargs,
+                              bins)
+
+        outlier_detector = OutlierDetection(reducer.reduced_space,
+                                            outlier_detection_method=outlier_detection_method,
+                                            outlier_detection_method_kwargs=outlier_detection_method_kwargs)
+
+        return reducer, outlier_detector
+
+    def plot_outliers(self, reducer,
+                      outlier_detector,
+                      show_point_labels=False,
+                      feature_renamer=None,
+                      x_pc='pc_1', y_pc='pc_2'):
+
+        dv = DecompositionViz(reducer.reduced_space,
+                              reducer.components_,
+                              reducer.explained_variance_ratio_, DataModel=self,
+                              feature_renamer=feature_renamer,
+                              groupby=outlier_detector.outliers,
+                              featurewise=False,
+                              color=None, order=None, violinplot_kws=None,
+                              data_type=None, label_to_color=None,
+                              label_to_marker=None,
+                              scale_by_variance=True, x_pc=x_pc,
+                              y_pc=y_pc, n_vectors=0, distance='L1',
+                              n_top_pc_features=50)
+
+        dv(show_point_labels=show_point_labels, title=outlier_detector.title)
+
+    # @memoize
     def reduce(self, sample_ids=None, feature_ids=None,
                featurewise=False,
-               reducer=DataFramePCA,
-               standardize=True,
+               reducer=None,
+               standardize=None,
                reducer_kwargs=None, bins=None):
         """Make and memoize a reduced dimensionality representation of data
 
@@ -648,6 +701,11 @@ class BaseData(object):
         reducer_object : flotilla.compute.reduce.ReducerViz
             A ready-to-plot object containing the reduced space
         """
+        if reducer is None:
+            reducer = DataFramePCA
+
+        if standardize is None:
+            standardize = True
 
         reducer_kwargs = {} if reducer_kwargs is None else reducer_kwargs
 
@@ -666,7 +724,6 @@ class BaseData(object):
         reducer_object.means = means
         return reducer_object
 
-    @memoize
     def classify(self, trait, sample_ids, feature_ids,
                  standardize=True,
                  data_name='expression',
@@ -976,4 +1033,4 @@ def subsets_from_metadata(metadata, minimum, subset_type, ignore=None):
                 subsets[name] = metadata.index[~in_features]
         subsets['all {}'.format(subset_type)] = metadata.index
     return subsets
-    
+
