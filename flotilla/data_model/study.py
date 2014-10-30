@@ -2,7 +2,6 @@
 Data models for "studies" studies include attributes about the data and are
 heavier in terms of data load
 """
-
 import json
 import os
 import sys
@@ -13,136 +12,26 @@ import numpy as np
 import pandas as pd
 import semantic_version
 
-from .metadata import MetaData
+from .metadata import MetaData, PHENOTYPE_COL, POOLED_COL
 from .expression import ExpressionData, SpikeInData
 from .quality_control import MappingStatsData, MIN_READS
 from .splicing import SplicingData, FRACTION_DIFF_THRESH
 from ..compute.predict import PredictorConfigManager
+from ..datapackage import data_package_url_to_dict, \
+    check_if_already_downloaded, make_study_datapackage
 from ..visualize.color import blue
 from ..visualize.ipython_interact import Interactive
-from ..external import data_package_url_to_dict, check_if_already_downloaded, \
-    make_study_datapackage, FLOTILLA_DOWNLOAD_DIR
+from ..datapackage import FLOTILLA_DOWNLOAD_DIR
+from ..util import load_csv, load_json, load_tsv, load_gzip_pickle_df, \
+    load_pickle_df, timestamp
 
 
 SPECIES_DATA_PACKAGE_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects'
-
-# import flotilla
-# FLOTILLA_DIR = os.path.dirname(flotilla.__file__)
-
-
-class StudyFactory(object):
-    _accepted_filetypes = 'tsv'
-
-    def __init__(self):
-        self.minimal_study_parameters = set()
-        self.new_study_params = set()
-        self.getters = []
-        self.default_sample_subset = None
-        self.default_feature_subset = None
-
-    def __setattr__(self, key, value):
-        """Check if the attribute already exists and warns on overwrite.
-        """
-        if hasattr(self, key):
-            warnings.warn('Over-writing attribute {}'.format(key))
-        super(StudyFactory, self).__setattr__(key, value)
-
-    @staticmethod
-    def _to_base_file_tuple(tup):
-        """for making new packages, auto-loadable data!"""
-        assert len(tup) == 2
-        return "os.path.join(study_data_dir, %s)" % os.path.basename(tup[0]), \
-               tup[1]
-
-    def _add_package_data_resource(self, file_name, data_df,
-                                   toplevel_package_dir,
-                                   file_write_mode="tsv"):
-        writer = getattr(self, "_write_" + file_write_mode)
-        file_base = os.path.basename(file_name)
-        rsc_file = os.path.join(toplevel_package_dir, "study_data",
-                                file_base + "." + file_write_mode)
-        writer(data_df, rsc_file)
-        return (rsc_file, file_write_mode)
-
-    def validate_params(self):
-        """make sure that all necessary attributes are present"""
-        for param in self.minimal_study_parameters:
-            try:
-                x = getattr(self, param)
-            except KeyError:
-                raise AssertionError("Missing minimal parameter %s" % param)
-
-    @staticmethod
-    def _load_pickle_df(file_name):
-        return pd.read_pickle(file_name)
-
-    @staticmethod
-    def _write_pickle_df(df, file_name):
-        df.to_pickle(file_name)
-
-    @staticmethod
-    def _load_gzip_pickle_df(file_name):
-        import cPickle
-        import gzip
-
-        with gzip.open(file_name, 'r') as f:
-            return cPickle.load(f)
-
-    @staticmethod
-    def _write_gzip_pickle_df(df, file_name):
-        import tempfile
-
-        tmpfile_h, tmpfile = tempfile.mkstemp()
-        df.to_pickle(tmpfile)
-        import subprocess
-
-        subprocess.call(['gzip -f %s' % tempfile])
-        subprocess.call(['mv %s %s' % (tempfile, file_name)])
-
-    @staticmethod
-    def _load_tsv(file_name, compression=None):
-        return pd.read_table(file_name, index_col=0, compression=compression)
-
-    @staticmethod
-    def _load_json(filename, compression=None):
-        """
-        Parameters
-        ----------
-        filename : str
-            Name of the json file toread
-        compression : str
-            Not used, only for  compatibility with other load functions
-
-        Returns
-        -------
+DATAPACKAGE_RESOURCE_COMMON_KWS = ('url', 'path', 'format', 'compression',
+                                   'name')
 
 
-        Raises
-        ------
-        """
-        return pd.read_json(filename)
-
-    @staticmethod
-    def _write_tsv(df, file_name):
-        df.to_csv(file_name, sep='\t')
-
-    @staticmethod
-    def _load_csv(file_name, compression=None):
-        return pd.read_csv(file_name, index_col=0, compression=compression)
-
-    @staticmethod
-    def _write_csv(df, file_name):
-        df.to_csv(file_name)
-
-    def _get_loading_method(self, file_name):
-        """loading_methods for loading from file"""
-        return getattr(self, "_load_" + file_name)
-
-    def load(self, file_name, file_type='pickle_df'):
-        return self._get_loading_method(file_type)(file_name)
-
-
-class Study(StudyFactory):
+class Study(object):
     """A biological study, with associated metadata, expression, and splicing
     data.
     """
@@ -160,11 +49,11 @@ class Study(StudyFactory):
                     'mapping_stats_data': MappingStatsData,
                     'spikein_data': SpikeInData}
 
-    readers = {'tsv': StudyFactory._load_tsv,
-               'csv': StudyFactory._load_csv,
-               'json': StudyFactory._load_json,
-               'pickle_df': StudyFactory._load_pickle_df,
-               'gzip_pickle_df': StudyFactory._load_gzip_pickle_df}
+    readers = {'tsv': load_tsv,
+               'csv': load_csv,
+               'json': load_json,
+               'pickle_df': load_pickle_df,
+               'gzip_pickle_df': load_gzip_pickle_df}
 
     _default_reducer_kwargs = {'whiten': False,
                                'show_point_labels': False,
@@ -172,28 +61,32 @@ class Study(StudyFactory):
 
     _default_plot_kwargs = {'marker': 'o', 'color': blue}
 
-    def __init__(self, sample_metadata, version, expression_data=None,
-                 splicing_data=None,
+    def __init__(self, sample_metadata, version='0.1.0', expression_data=None,
                  expression_feature_data=None,
-                 expression_feature_rename_col='gene_name',
+                 expression_feature_rename_col=None,
+                 expression_feature_ignore_subset_cols=None,
+                 expression_log_base=None,
+                 expression_thresh=-np.inf,
+                 expression_plus_one=False,
+                 splicing_data=None,
                  splicing_feature_data=None,
-                 splicing_feature_rename_col='gene_name',
+                 splicing_feature_rename_col=None,
+                 splicing_feature_ignore_subset_cols=None,
                  mapping_stats_data=None,
-                 mapping_stats_number_mapped_col="Uniquely mapped reads "
-                                                 "number",
+                 mapping_stats_number_mapped_col=None,
                  mapping_stats_min_reads=MIN_READS,
                  spikein_data=None,
                  spikein_feature_data=None,
                  drop_outliers=True, species=None,
                  gene_ontology_data=None,
-                 expression_log_base=None,
                  predictor_config_manager=None,
-                 metadata_pooled_col=None,
-                 metadata_phenotype_col='phenotype',
-                 phenotype_order=None,
-                 phenotype_to_color=None,
-                 phenotype_to_marker=None,
-                 license=None, title=None, sources=None):
+                 metadata_pooled_col=POOLED_COL,
+                 metadata_phenotype_col=PHENOTYPE_COL,
+                 metadata_phenotype_order=None,
+                 metadata_phenotype_to_color=None,
+                 metadata_phenotype_to_marker=None,
+                 license=None, title=None, sources=None,
+                 metadata_minimum_samples=0):
         """Construct a biological study
 
         This class only accepts data, no filenames. All data must already
@@ -201,27 +94,40 @@ class Study(StudyFactory):
 
         Parameters
         ----------
-        #TODO: Maybe make these all kwargs?
         sample_metadata : pandas.DataFrame
-            Only required parameter. Samples as the index, with features as
-            columns. If there is a column named "color", this will be used as
-            the color for that sample in DataFramePCA and other plots. If there is no
-            color but there is a column named "celltype", then colors for
-            each of the different celltypes will be auto-created.
+            The only required parameter. Samples as the index, with features as
+            columns. Required column: "phenotype". If there is a boolean
+            column "pooled", this will be used to separate pooled from single
+            cells. Similarly, the column "outliers" will also be used to
+            separate outlier cells from the rest.
+        version : str
+            A string describing the semantic version of the data. Must be in:
+            major.minor.patch format, as the "patch" number will be increased
+            if you change something in the study and then study.save() it.
+            (default "0.1.0")
         expression_data : pandas.DataFrame
             Samples x feature dataframe of gene expression measurements,
             e.g. from an RNA-Seq or a microarray experiment. Assumed to be
-            log-normal (i.e. not log-transformed)
+            log-transformed, i.e. you took the log of it. (default None)
         expression_feature_data : pandas.DatFrame
-            features x other_features dataframe describing other parameters
+            Features x annotations dataframe describing other parameters
             of the gene expression features, e.g. mapping Ensembl IDs to gene
-            symbols or gene biotypes.
+            symbols or gene biotypes. (default None)
         expression_feature_rename_col : str
             A column name in the expression_feature_data dataframe that you'd
             like to rename the expression features to, in the plots. For
             example, if your gene IDs are Ensembl IDs, but you want to plot
             UCSC IDs, make sure the column you want, e.g. "ucsc_id" is in your
-            dataframe and specify that. Default "gene_name"
+            dataframe and specify that. (default "gene_name")
+        expression_log_base : float
+            If you want to log-transform your expression data (and it's not
+            already log-transformed), use this number as the base of the
+            transform. E.g. expression_log_base=10 will take the log10 of
+            your data. (default None)
+        thresh : float
+            Minimum (non log-transformed) expression value. (default -inf)
+        expression_plus_one : bool
+            Whether or not to add 1 to the expression data. (default False)
         splicing_data : pandas.DataFrame
             Samples x feature dataframe of percent spliced in scores, e.g. as
             measured by the program MISO. Assumed that these values only fall
@@ -271,9 +177,9 @@ class Study(StudyFactory):
 
         [1] http://stackoverflow.com/q/12513185/1628971
         """
-        super(Study, self).__init__()
-
-        sys.stderr.write("initializing study\n")
+        sys.stdout.write("{}\tInitializing Study\n".format(timestamp()))
+        sys.stdout.write("{}\tInitializing Predictor configuration manager "
+                         "for Study\n".format(timestamp()))
         self.predictor_config_manager = predictor_config_manager \
             if predictor_config_manager is not None \
             else PredictorConfigManager()
@@ -287,9 +193,11 @@ class Study(StudyFactory):
         self.sources = sources
         self.version = version
 
+        sys.stdout.write('{}\tLoading metadata\n'.format(timestamp()))
         self.metadata = MetaData(
-            sample_metadata, phenotype_order, phenotype_to_color,
-            phenotype_to_marker, pooled_col=metadata_pooled_col,
+            sample_metadata, metadata_phenotype_order,
+            metadata_phenotype_to_color,
+            metadata_phenotype_to_marker, pooled_col=metadata_pooled_col,
             phenotype_col=metadata_phenotype_col,
             predictor_config_manager=self.predictor_config_manager)
         self.phenotype_col = self.metadata.phenotype_col
@@ -320,59 +228,78 @@ class Study(StudyFactory):
                     pooled = None
         else:
             pooled = None
+        self.pooled = pooled
 
         if mapping_stats_data is not None:
             self.mapping_stats = MappingStatsData(
                 mapping_stats_data,
-                mapping_stats_number_mapped_col,
+                number_mapped_col=mapping_stats_number_mapped_col,
                 predictor_config_manager=self.predictor_config_manager,
                 min_reads=mapping_stats_min_reads)
             self.technical_outliers = self.mapping_stats.too_few_mapped
         else:
             self.technical_outliers = None
 
+        if self.species is not None and (expression_feature_data is None or
+                                                 splicing_feature_data is None):
+            sys.stdout.write('{}\tLoading species metadata from '
+                             'sauron.ucsd.edu\n'.format(timestamp()))
+            species_kws = self.load_species_data(self.species, self.readers)
+            expression_feature_data = species_kws.pop('expression_feature_data',
+                                                      None)
+            expression_feature_rename_col = species_kws.pop(
+                'expression_feature_rename_col', None)
+            splicing_feature_data = species_kws.pop('splicing_feature_data',
+                                                    None)
+            splicing_feature_rename_col = species_kws.pop(
+                'splicing_feature_rename_col', None)
+
         if expression_data is not None:
-            sys.stderr.write("loading expression data\n")
+            sys.stdout.write(
+                "{}\tLoading expression data\n".format(timestamp()))
             self.expression = ExpressionData(
                 expression_data,
-                expression_feature_data,
+                feature_data=expression_feature_data,
+                thresh=expression_thresh,
                 feature_rename_col=expression_feature_rename_col,
-                outliers=outliers,
+                outliers=outliers, plus_one=expression_plus_one,
                 log_base=expression_log_base, pooled=pooled,
                 predictor_config_manager=self.predictor_config_manager,
-                technical_outliers=self.technical_outliers)
-            # self.expression.networks = NetworkerViz(self.expression)
+                technical_outliers=self.technical_outliers,
+                minimum_samples=metadata_minimum_samples,
+                feature_ignore_subset_cols=expression_feature_ignore_subset_cols)
             self.default_feature_set_ids.extend(self.expression.feature_subsets
                                                 .keys())
         if splicing_data is not None:
-            sys.stderr.write("loading splicing data\n")
+            sys.stdout.write("{}\tLoading splicing data\n".format(
+                timestamp()))
             self.splicing = SplicingData(
-                splicing_data, splicing_feature_data,
+                splicing_data, feature_data=splicing_feature_data,
                 feature_rename_col=splicing_feature_rename_col,
                 outliers=outliers, pooled=pooled,
                 predictor_config_manager=self.predictor_config_manager,
-                technical_outliers=self.technical_outliers)
-            # self.splicing.networks = NetworkerViz(self.splicing)
+                technical_outliers=self.technical_outliers,
+                minimum_samples=metadata_minimum_samples,
+                feature_ignore_subset_cols=splicing_feature_ignore_subset_cols)
 
         if spikein_data is not None:
             self.spikein = SpikeInData(
-                spikein_data, spikein_feature_data,
+                spikein_data, feature_data=spikein_feature_data,
                 technical_outliers=self.technical_outliers,
                 predictor_config_manager=self.predictor_config_manager)
-        sys.stderr.write("subclasses initialized\n")
-        self.validate_params()
-        sys.stderr.write("package validated\n")
+        sys.stdout.write("{}\tSuccessfully initialized a Study "
+                         "object!\n".format(timestamp()))
+
+    def __setattr__(self, key, value):
+        """Check if the attribute already exists and warns on overwrite.
+        """
+        if hasattr(self, key):
+            warnings.warn('Over-writing attribute {}'.format(key))
+        super(Study, self).__setattr__(key, value)
 
     @property
     def default_sample_subsets(self):
-        default_sample_subsets = [col for col in self.metadata.data.columns
-                                  if self.metadata.data[col].dtype == bool]
-        default_sample_subsets.extend(['~{}'.format(col)
-                                       for col in self.metadata.data.columns
-                                       if
-                                       self.metadata.data[col].dtype == bool])
-        default_sample_subsets.insert(0, 'all_samples')
-        return default_sample_subsets
+        return self.metadata.sample_subsets.keys()
 
     @property
     def default_feature_subsets(self):
@@ -426,6 +353,8 @@ class Study(StudyFactory):
             load_species_data=True,
             species_datapackage_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
         with open(datapackage_filename) as f:
+            sys.stdout.write('{}\tReading datapackage from {}\n'.format(
+                timestamp(), datapackage_filename))
             datapackage = json.load(f)
         datapackage_dir = os.path.dirname(datapackage_filename)
         return cls.from_datapackage(
@@ -450,22 +379,18 @@ class Study(StudyFactory):
         study : flotilla.Study
             Study object
         """
+        sys.stdout.write('{}\tParsing datapackage to create a Study '
+                         'object\n'.format(timestamp()))
         dfs = {}
+        kwargs = {}
         log_base = None
-        # metadata_pooled_col = None
-        # metadata_phenotype_col = None
-        # phenotype_order = None
-        # phenotype_to_color = None
-        # phenotype_to_marker = None
-
-        metadata_kws = dict.fromkeys(['metadata_pooled_col', 'phenotype_order',
-                                      'phenotype_to_color',
-                                      'phenotype_to_marker'], None)
+        datapackage_name = datapackage['name']
 
         for resource in datapackage['resources']:
             if 'url' in resource:
                 resource_url = resource['url']
-                filename = check_if_already_downloaded(resource_url)
+                filename = check_if_already_downloaded(resource_url,
+                                                       datapackage_name)
             else:
                 filename = resource['path']
                 # Test if the file exists, if not, then add the datapackage
@@ -487,82 +412,29 @@ class Study(StudyFactory):
             if name == 'expression':
                 if 'log_transformed' in resource:
                     log_base = 2
-            if name == 'metadata':
-                if 'pooled_col' in resource:
-                    metadata_kws['metadata_pooled_col'] = resource[
-                        'pooled_col']
-                if 'phenotype_col' in resource:
-                    metadata_kws['metadata_phenotype_col'] = resource[
-                        'phenotype_col']
-                if 'phenotype_order' in resource:
-                    metadata_kws['phenotype_order'] = resource[
-                        'phenotype_order']
-                if 'phenotype_to_color' in resource:
-                    metadata_kws['phenotype_to_color'] = resource[
-                        'phenotype_to_color']
-                if 'phenotype_to_marker' in resource:
-                    metadata_kws['phenotype_to_marker'] = resource[
-                        'phenotype_to_marker']
+            for key in set(resource.keys()).difference(
+                    DATAPACKAGE_RESOURCE_COMMON_KWS):
+                kwargs['{}_{}'.format(name, key)] = resource[key]
 
-        species_dfs = {}
+        species_kws = {}
         species = None if 'species' not in datapackage else datapackage[
             'species']
-        if load_species_data:
-            try:
-                if 'species' in datapackage:
-                    species_data_url = '{}/{}/datapackage.json'.format(
-                        species_datapackage_base_url, species)
-                    species_data_package = data_package_url_to_dict(
-                        species_data_url)
-                    # species_dfs = {}
-
-                    for resource in species_data_package['resources']:
-                        if 'url' in resource:
-                            resource_url = resource['url']
-                            filename = check_if_already_downloaded(resource_url)
-                        else:
-                            filename = resource['path']
-
-                        # reader = getattr(cls, '_load_' + resource['format'])
-                        reader = cls.readers[resource['format']]
-
-                        compression = None if 'compression' not in resource else \
-                            resource['compression']
-                        name = resource['name']
-                        species_dfs[name] = reader(filename,
-                                                   compression=compression)
-                        if 'feature_rename_col' in resource:
-                            key = '{}_feature_rename_col'.format(
-                                name.split('_feature_data')[0])
-                            species_dfs[key] = resource['feature_rename_col']
-            except (IOError, ValueError) as e:
-                pass
+        if load_species_data and species is not None:
+            species_kws = cls.load_species_data(species, cls.readers,
+                                                species_datapackage_base_url)
 
         try:
-            sample_metadata = dfs['metadata']
-            expression_data = None if 'expression' not in dfs else dfs[
-                'expression']
-            splicing_data = None if 'splicing' not in dfs else dfs['splicing']
+            sample_metadata = dfs.pop('metadata')
         except KeyError:
             raise AttributeError('The datapackage.json file is required to '
                                  'have the "metadata" resource')
-        try:
-            mapping_stats_data = dfs['mapping_stats']
-        except KeyError:
-            mapping_stats_data = None
-        try:
-            spikein_data = dfs['spikein']
-        except KeyError:
-            spikein_data = None
+        dfs = dict(('{}_data'.format(k), v) for k, v in dfs.iteritems())
 
-        nones = [k for k, v in metadata_kws.iteritems() if v is None]
+        nones = [k for k, v in kwargs.iteritems() if v is None]
         for key in nones:
-            metadata_kws.pop(key)
-
-        # import pdb; pdb.set_trace()
-
-        kwargs = species_dfs
-        kwargs.update(metadata_kws)
+            kwargs.pop(key)
+        kwargs.update(species_kws)
+        kwargs.update(dfs)
 
         license = None if 'license' not in datapackage else datapackage[
             'license']
@@ -577,15 +449,8 @@ class Study(StudyFactory):
                              'semantic versioning, with major.minor.patch, '
                              'e.g. 0.1.2 is a valid version string'.format(
                 version))
-
         study = Study(
             sample_metadata=sample_metadata,
-            expression_data=expression_data,
-            splicing_data=splicing_data,
-            mapping_stats_data=mapping_stats_data,
-            spikein_data=spikein_data,
-            # expression_feature_rename_col='gene_name',
-            # splicing_feature_rename_col='gene_name',
             expression_log_base=log_base,
             species=species,
             license=license,
@@ -595,49 +460,42 @@ class Study(StudyFactory):
             **kwargs)
         return study
 
-    def __add__(self, other):
-        """Sanely concatenate one or more Study objects
-        """
-        raise NotImplementedError
-        self.metadata = MetaData(
-            pd.concat([self.metadata.data,
-                       other.metadata.data]))
-        self.expression.data = ExpressionData(
-            pd.concat([self.expression.data,
-                       other.expression.data]))
+    @staticmethod
+    def load_species_data(species, readers,
+                          species_datapackage_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
+        dfs = {}
 
-    # def _set_plot_colors(self):
-    #     """If there is a column 'color' in the sample metadata, specify this
-    #     as the plotting color
-    #     """
-    #     try:
-    #         self._default_reducer_kwargs.update(
-    #             {'colors_dict': self.metadata_data.color})
-    #         self._default_plot_kwargs.update(
-    #             {'color': self.metadata_data.color.tolist()})
-    #     except AttributeError:
-    #         sys.stderr.write("There is no column named 'color' in the "
-    #                          "metadata, defaulting to blue for all samples\n")
-    #         self._default_reducer_kwargs.update(
-    #             {'colors_dict': defaultdict(lambda: blue)})
+        try:
+            species_data_url = '{}/{}/datapackage.json'.format(
+                species_datapackage_base_url, species)
+            species_data_package = data_package_url_to_dict(
+                species_data_url)
 
-    # def _set_plot_markers(self):
-    #     """If there is a column 'marker' in the sample metadata, specify this
-    #     as the plotting marker (aka the plotting shape). Only valid matplotlib
-    #     symbols are allowed. See http://matplotlib.org/api/markers_api.html
-    #     for a more complete description.
-    #     """
-    #     try:
-    #         self._default_reducer_kwargs.update(
-    #             {'markers_dict': self.metadata_data.marker})
-    #         self._default_plot_kwargs.update(
-    #             {'marker': self.metadata_data.marker.tolist()})
-    #     except AttributeError:
-    #         sys.stderr.write("There is no column named 'marker' in the sample "
-    #                          "metadata, defaulting to a circle for all "
-    #                          "samples\n")
-    #         self._default_reducer_kwargs.update(
-    #             {'markers_dict': defaultdict(lambda: 'o')})
+            for resource in species_data_package['resources']:
+                if 'url' in resource:
+                    resource_url = resource['url']
+                    filename = check_if_already_downloaded(resource_url,
+                                                           species)
+                else:
+                    filename = resource['path']
+
+                reader = readers[resource['format']]
+
+                compression = None if 'compression' not in resource else \
+                    resource['compression']
+                name = resource['name']
+                dfs[name] = reader(filename,
+                                   compression=compression)
+                other_keys = set(resource.keys()).difference(
+                    DATAPACKAGE_RESOURCE_COMMON_KWS)
+                name_no_data = name.rstrip('_data')
+                for key in other_keys:
+                    new_key = '{}_{}'.format(name_no_data, key)
+                    dfs[new_key] = resource[key]
+        except (IOError, ValueError) as e:
+            sys.stderr.write('Error loading species {} data '.format(species))
+            pass
+        return dfs
 
     def detect_outliers(self):
         """Detects outlier cells from expression, mapping, and splicing
@@ -730,7 +588,11 @@ class Study(StudyFactory):
         # IF this is a list of IDs
 
         try:
-            #TODO: check this, seems like a strange usage: 'all_samples'.startswith(phenotype_subset)
+            return self.metadata.sample_subsets[phenotype_subset]
+        except KeyError:
+            pass
+
+        try:
             if phenotype_subset is None or 'all_samples'.startswith(
                     phenotype_subset):
                 sample_ind = np.ones(self.metadata.data.shape[0],
@@ -750,7 +612,7 @@ class Study(StudyFactory):
 
     def plot_pca(self, data_type='expression', x_pc=1, y_pc=2,
                  sample_subset=None, feature_subset=None,
-                 title='', featurewise=False,
+                 title='', featurewise=False, plot_violins=True,
                  show_point_labels=False, reduce_kwargs=None,
                  **kwargs):
         """Performs DataFramePCA on both expression and splicing study_data
@@ -774,14 +636,14 @@ class Study(StudyFactory):
             are used.
         title : str
             The title of the plot
+        plot_violins : bool
+            Whether or not to make the violinplots of the top features. This
+            can take a long time, so to save time you can turn it off if you
+            just want a quick look at the PCA.
         show_point_labels : bool
             Whether or not to show the labels of the points. If this is
             samplewise (default), then this labels the samples. If this is
             featurewise, then this labels the features.
-
-        Raises
-        ------
-
         """
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
         feature_ids = self.feature_subset_to_feature_ids(data_type,
@@ -793,13 +655,11 @@ class Study(StudyFactory):
             label_to_marker = self.phenotype_to_marker
             groupby = self.sample_id_to_phenotype
             order = self.phenotype_order
-            color = self.phenotype_color_ordered
         else:
             label_to_color = None
             label_to_marker = None
             groupby = None
             order = None
-            color = None
 
         if "expression".startswith(data_type):
             reducer = self.expression.plot_pca(
@@ -807,18 +667,20 @@ class Study(StudyFactory):
                 feature_ids=feature_ids,
                 label_to_color=label_to_color,
                 label_to_marker=label_to_marker, groupby=groupby,
-                order=order, color=color,
+                order=order,
                 featurewise=featurewise, show_point_labels=show_point_labels,
-                title=title, reduce_kwargs=reduce_kwargs, **kwargs)
+                title=title, reduce_kwargs=reduce_kwargs,
+                plot_violins=plot_violins, **kwargs)
         elif "splicing".startswith(data_type):
             reducer = self.splicing.plot_pca(
                 x_pc=x_pc, y_pc=y_pc, sample_ids=sample_ids,
                 feature_ids=feature_ids,
                 label_to_color=label_to_color,
                 label_to_marker=label_to_marker, groupby=groupby,
-                order=order, color=color,
+                order=order,
                 featurewise=featurewise, show_point_labels=show_point_labels,
-                title=title, reduce_kwargs=reduce_kwargs, **kwargs)
+                title=title, reduce_kwargs=reduce_kwargs,
+                plot_violins=plot_violins, **kwargs)
         else:
             raise ValueError('The data type {} does not exist in this study'
                              .format(data_type))
@@ -911,7 +773,15 @@ class Study(StudyFactory):
 
 
         """
-        trait_data = self.metadata.data[trait]
+        try:
+            trait_data = self.metadata.data[trait]
+        except KeyError:
+            trait_ids = self.metadata.sample_subsets[trait]
+            trait_data = self.metadata.data.index.isin(trait_ids)
+        if all(trait_data) or all(~trait_data):
+            raise ValueError("All samples are True (or all samples are "
+                             "False), cannot classify when all samples are "
+                             "the same")
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
         feature_ids = self.feature_subset_to_feature_ids(data_type,
                                                          feature_subset,
@@ -1004,7 +874,7 @@ class Study(StudyFactory):
         bar_ax.set_xticks(np.arange(len(groups)) + 0.4)
         bar_ax.set_xticklabels(groups)
         # except AttributeError:
-        #     pass
+        # pass
 
     def celltype_sizes(self, data_type='splicing'):
         if data_type == 'expression':
@@ -1070,31 +940,33 @@ class Study(StudyFactory):
                     bootstrapped=bootstrapped,
                     bootstrapped_kws=bootstrapped_kws)
 
-    def plot_event(self, feature_id, sample_subset=None):
+    def plot_event(self, feature_id, sample_subset=None, nmf_space=False):
         """Plot the violinplot and DataFrameNMF transitions of a splicing event
         """
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
-        self.splicing.plot_event(feature_id, sample_ids,
-                                 phenotype_groupby=self.sample_id_to_phenotype,
-                                 phenotype_order=self.phenotype_order,
-                                 color=self.phenotype_color_ordered,
-                                 phenotype_to_color=self.phenotype_to_color,
-                                 phenotype_to_marker=self.phenotype_to_marker)
+        self.splicing.plot_feature(feature_id, sample_ids,
+                                   phenotype_groupby=self.sample_id_to_phenotype,
+                                   phenotype_order=self.phenotype_order,
+                                   color=self.phenotype_color_ordered,
+                                   phenotype_to_color=self.phenotype_to_color,
+                                   phenotype_to_marker=self.phenotype_to_marker,
+                                   nmf_space=nmf_space)
 
-    def plot_gene(self, feature_id, sample_subset=None):
+    def plot_gene(self, feature_id, sample_subset=None, nmf_space=False):
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
-        self.expression.plot_feature(feature_id, sample_ids,
-                                     phenotype_groupby=self.sample_id_to_phenotype,
-                                     phenotype_order=self.phenotype_order,
-                                     color=self.phenotype_color_ordered,
-                                     phenotype_to_color=self.phenotype_to_color,
-                                     phenotype_to_marker=self.phenotype_to_marker)
+        self.expression.plot_feature(
+            feature_id, sample_ids,
+            phenotype_groupby=self.sample_id_to_phenotype,
+            phenotype_order=self.phenotype_order,
+            color=self.phenotype_color_ordered,
+            phenotype_to_color=self.phenotype_to_color,
+            phenotype_to_marker=self.phenotype_to_marker, nmf_space=nmf_space)
 
     def plot_lavalamp_pooled_inconsistent(
             self, sample_subset=None, feature_ids=None,
             fraction_diff_thresh=FRACTION_DIFF_THRESH):
         # grouped_ids = self.splicing.data.groupby(self.sample_id_to_color,
-        #                                          axis=0)
+        # axis=0)
         celltype_groups = self.metadata.data.groupby(
             self.sample_id_to_phenotype, axis=0)
 
@@ -1149,11 +1021,11 @@ class Study(StudyFactory):
                                                       fraction_diff_thresh)
 
     # def plot_clusteredheatmap(self, sample_subset=None,
-    #                           feature_subset='variant',
-    #                           data_type='expression', metric='euclidean',
-    #                           linkage_method='median', figsize=None):
-    #     if data_type == 'expression':
-    #         data = self.expression.data
+    # feature_subset='variant',
+    # data_type='expression', metric='euclidean',
+    # linkage_method='median', figsize=None):
+    # if data_type == 'expression':
+    # data = self.expression.data
     #     elif data_type == 'splicing':
     #         data = self.splicing.data
     #     celltype_groups = data.groupby(
@@ -1196,6 +1068,60 @@ class Study(StudyFactory):
                 self.phenotype_to_color, self.phenotype_to_marker)
 
 
+    def plot_two_samples(self, sample1, sample2, data_type='expression',
+                         **kwargs):
+        """Plot a scatterplot of two samples' data
+
+        Parameters
+        ----------
+        sample1 : str
+            Name of the sample to plot on the x-axis
+        sample2 : str
+            Name of the sample to plot on the y-axis
+        data_type : "expression" | "splicing"
+            Type of data to plot. Default "expression"
+        Any other keyword arguments valid for seaborn.jointplot
+
+        Returns
+        -------
+        jointgrid : seaborn.axisgrid.JointGrid
+            Returns a JointGrid instance
+
+        See Also
+        -------
+        seaborn.jointplot
+
+        """
+        if data_type == 'expression':
+            return self.expression.plot_two_samples(sample1, sample2, **kwargs)
+        elif data_type == 'splicing':
+            return self.splicing.plot_two_samples(sample1, sample2, **kwargs)
+
+    def plot_two_features(self, feature1, feature2, data_type='expression',
+                          **kwargs):
+        """Make a scatterplot of two features' data
+
+        Parameters
+        ----------
+        feature1 : str
+            Name of the feature to plot on the x-axis. If you have a
+            feature_data dataframe for this data type, will attempt to map
+            the common name, e.g. "RBFOX2" back to the crazy name,
+            e.g. "ENSG00000100320"
+        feature2 : str
+            Name of the feature to plot on the y-axis. If you have a
+            feature_data dataframe for this data type, will attempt to map
+            the common name, e.g. "RBFOX2" back to the crazy name,
+            e.g. "ENSG00000100320"
+
+        Returns
+        -------
+
+
+        Raises
+        ------
+        """
+
     def save(self, name, flotilla_dir=FLOTILLA_DOWNLOAD_DIR):
 
         metadata = self.metadata.data
@@ -1206,25 +1132,44 @@ class Study(StudyFactory):
                         'phenotype_to_color':
                             self.metadata.phenotype_to_color,
                         'phenotype_to_marker':
-                            self.metadata.phenotype_to_marker}
+                            self.metadata.phenotype_to_marker,
+                        'minimum_samples': self.metadata.minimum_samples}
 
         try:
             expression = self.expression.data
-            expression_kws = {'feature_rename_col':
-                                  self.expression.feature_rename_col,
-                              'log_base': self.expression.log_base}
+            expression_kws = {
+                'log_base': self.expression.log_base,
+                'thresh': self.expression.thresh}
         except AttributeError:
             expression = None
             expression_kws = None
 
         try:
-            splicing = self.splicing.data
-            splicing_kws = {'feature_rename_col':
-                                self.splicing.feature_rename_col}
+            expression_feature_data = self.expression.feature_data
+            expression_feature_kws = {'rename_col':
+                                          self.expression.feature_rename_col,
+                                      'ignore_subset_cols':
+                                          self.expression.feature_ignore_subset_cols}
+        except AttributeError:
+            expression_feature_data = None
+            expression_feature_kws = None
 
+        try:
+            splicing = self.splicing.data
+            splicing_kws = {}
         except AttributeError:
             splicing = None
             splicing_kws = None
+
+        try:
+            splicing_feature_data = self.splicing.feature_data
+            splicing_feature_kws = {'rename_col':
+                                        self.splicing.feature_rename_col,
+                                    'ignore_subset_cols':
+                                        self.splicing.feature_ignore_subset_cols}
+        except AttributeError:
+            splicing_feature_data = None
+            splicing_feature_kws = None
 
         try:
             spikein = self.spikein.data
@@ -1235,10 +1180,10 @@ class Study(StudyFactory):
             mapping_stats = self.mapping_stats.data
             mapping_stats_kws = {'number_mapped_col':
                                      self.mapping_stats.number_mapped_col}
-
         except AttributeError:
             mapping_stats = None
             mapping_stats_kws = None
+
 
         # Increase the version number
         version = semantic_version.Version(self.version)
@@ -1251,6 +1196,10 @@ class Study(StudyFactory):
                                       expression_kws=expression_kws,
                                       splicing_kws=splicing_kws,
                                       mapping_stats_kws=mapping_stats_kws,
+                                      expression_feature_kws=expression_feature_kws,
+                                      expression_feature_data=expression_feature_data,
+                                      splicing_feature_data=splicing_feature_data,
+                                      splicing_feature_kws=splicing_feature_kws,
                                       species=self.species,
                                       license=self.license,
                                       title=self.title,

@@ -20,7 +20,7 @@ Change directories to the flotilla directory you just made,
 
 Now install via `pip` in "editable" mode, aka "develop" mode:
 
-    pip install -e
+    pip install -e .
 
 Git branching
 -------------

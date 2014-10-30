@@ -122,4 +122,3 @@ from the drop-down menu that appears after running these interactive functions.
 
 Proudly sponsored by a NumFOCUS John Hunter Technical Fellowship to Olga
 Botvinnik.
-
