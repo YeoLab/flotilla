@@ -12,7 +12,7 @@ from ..compute.splicing import Modalities
 from ..compute.decomposition import DataFramePCA
 from ..visualize.color import purples
 from ..visualize.splicing import ModalitiesViz
-from ..util import memoize
+from ..util import memoize, timestamp
 from ..visualize.color import red
 from ..visualize.splicing import lavalamp, hist_single_vs_pooled_diff, \
     lavalamp_pooled_inconsistent
@@ -31,10 +31,12 @@ class SplicingData(BaseData):
     _last_reducer_accessed = None
 
     def __init__(self, data,
-                 metadata=None, binsize=0.1, outliers=None,
-                 feature_rename_col=None, excluded_max=0.2, included_min=0.8,
+                 feature_data=None, binsize=0.1, outliers=None,
+                 feature_rename_col=None,
+                 feature_ignore_subset_cols=None,
+                 excluded_max=0.2, included_min=0.8,
                  pooled=None, predictor_config_manager=None,
-                 technical_outliers=None):
+                 technical_outliers=None, minimum_samples=0):
         """Instantiate a object for percent spliced in (PSI) scores
 
         Parameters
@@ -46,22 +48,25 @@ class SplicingData(BaseData):
         binsize : float
             Value between 0 and 1, the bin size for binning the study_data
             scores
-        reducer : sklearn.decomposition object
-            An scikit-learn class that reduces the dimensionality of study_data
-            somehow. Must accept the parameter n_components, have the
-            functions fit, transform, and have the attribute components_
         excluded_max : float
             Maximum value for the "excluded" bin of psi scores. Default 0.2.
         included_max : float
             Minimum value for the "included" bin of psi scores. Default 0.8.
+
+        Notes
+        -----
+        'thresh' from BaseData is not used.
         """
-        sys.stderr.write("initializing splicing\n")
+        sys.stdout.write("{}\tInitializing splicing\n".format(timestamp()))
         super(SplicingData, self).__init__(
-            data, metadata, feature_rename_col=feature_rename_col,
+            data, feature_data=feature_data,
+            feature_rename_col=feature_rename_col,
+            feature_ignore_subset_cols=feature_ignore_subset_cols,
             outliers=outliers, pooled=pooled,
             technical_outliers=technical_outliers,
-            predictor_config_manager=predictor_config_manager)
-        sys.stderr.write("done initializing splicing\n")
+            predictor_config_manager=predictor_config_manager,
+            minimum_samples=minimum_samples)
+        sys.stdout.write("{}\tDone initializing splicing\n".format(timestamp()))
         self.binsize = binsize
         self.bins = np.arange(0, 1 + self.binsize, self.binsize)
 
@@ -87,7 +92,7 @@ class SplicingData(BaseData):
             event several times to get a better estimate of its true modality.
         bootstrappped_kws : dict
             Valid arguments to _bootstrapped_fit_transform. If None, default is
-            dict(n_iter=100, thresh=0.6, min_samples=10)
+            dict(n_iter=100, thresh=0.6, minimum_samples=10)
 
         Returns
         -------
@@ -115,7 +120,7 @@ class SplicingData(BaseData):
             Default False.
         bootstrappped_kws : dict
             Valid arguments to _bootstrapped_fit_transform. If None, default is
-            dict(n_iter=100, thresh=0.6, min_samples=10)
+            dict(n_iter=100, thresh=0.6, minimum_samples=10)
 
         Returns
         -------
@@ -144,7 +149,7 @@ class SplicingData(BaseData):
             Default False.
         bootstrappped_kws : dict
             Valid arguments to _bootstrapped_fit_transform. If None, default is
-            dict(n_iter=100, thresh=0.6, min_samples=10)
+            dict(n_iter=100, thresh=0.6, minimum_samples=10)
 
 
         Returns
@@ -174,7 +179,7 @@ class SplicingData(BaseData):
             Default False.
         bootstrappped_kws : dict
             Valid arguments to _bootstrapped_fit_transform. If None, default is
-            dict(n_iter=100, thresh=0.6, min_samples=10)
+            dict(n_iter=100, thresh=0.6, minimum_samples=10)
 
 
         Returns
@@ -225,7 +230,7 @@ class SplicingData(BaseData):
             Default False.
         bootstrappped_kws : dict
             Valid arguments to _bootstrapped_fit_transform. If None, default is
-            dict(n_iter=100, thresh=0.6, min_samples=10)
+            dict(n_iter=100, thresh=0.6, minimum_samples=10)
         """
 
         if use_these_modalities:
@@ -271,21 +276,22 @@ class SplicingData(BaseData):
         pie_axis.pie(map(int, modality_count.values()),
                      labels=modality_count.keys(), autopct='%1.1f%%')
 
-    def plot_event(self, feature_id, sample_ids=None,
-                   phenotype_groupby=None,
-                   phenotype_order=None, color=None,
-                   phenotype_to_color=None,
-                   phenotype_to_marker=None):
-        self.plot_feature(feature_id, sample_ids,
-                          phenotype_groupby, phenotype_order,
-                          color, phenotype_to_color, phenotype_to_marker)
+    # def plot_event(self, feature_id, sample_ids=None,
+    #                phenotype_groupby=None,
+    #                phenotype_order=None, color=None,
+    #                phenotype_to_color=None,
+    #                phenotype_to_marker=None):
+    #     self.plot_feature(feature_id, sample_ids,
+    #                       phenotype_groupby, phenotype_order,
+    #                       color, phenotype_to_color, phenotype_to_marker)
 
 
     def plot_feature(self, feature_id, sample_ids=None,
                      phenotype_groupby=None,
                      phenotype_order=None, color=None,
                      phenotype_to_color=None,
-                     phenotype_to_marker=None, xlabel=None, ylabel=None):
+                     phenotype_to_marker=None, xlabel=None, ylabel=None,
+                     nmf_space=False):
         nmf_space_positions = self.nmf_space_positions(phenotype_groupby)
 
         # Get the correct included/excluded labeling for the x and y axes
@@ -309,7 +315,7 @@ class SplicingData(BaseData):
                                                phenotype_order, color,
                                                phenotype_to_color,
                                                phenotype_to_marker, xlabel,
-                                               ylabel)
+                                               ylabel, nmf_space=nmf_space)
 
     @memoize
     def pooled_inconsistent(self, sample_ids, feature_ids=None,
