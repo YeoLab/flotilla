@@ -68,7 +68,9 @@
      href="#">Site <b class="caret"></b></a>
   <ul class="dropdown-menu globaltoc"
       role="menu"
-      aria-labelledby="dLabelGlobalToc"></ul>
+      aria-labelledby="dLabelGlobalToc"><ul class="simple">
+</ul>
+</ul>
 </li>
               
                 <li class="dropdown">
@@ -81,12 +83,6 @@
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
 <li><a class="reference internal" href="#">Welcome to flotilla&#8217;s documentation!</a></li>
-<li><a class="reference internal" href="#flotilla">flotilla</a></li>
-<li><a class="reference internal" href="#installation-instructions">Installation instructions</a></li>
-<li><a class="reference internal" href="#start-using-flotilla">Start using flotilla:</a><ul>
-<li><a class="reference internal" href="#test-interactive-features-with-example-data">Test interactive features with example data:</a></li>
-</ul>
-</li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 </ul>
@@ -127,127 +123,12 @@
   <div class="row">
     <div class="col-md-12">
       
-  <p>sphinx-quickstart on Thu Jul 10 10:03:26 2014.
-You can adapt this file completely to your liking, but it should at least
-contain the root <cite>toctree</cite> directive.</p>
-<div class="section" id="welcome-to-flotilla-s-documentation">
+  <div class="section" id="welcome-to-flotilla-s-documentation">
 <h1>Welcome to flotilla&#8217;s documentation!<a class="headerlink" href="#welcome-to-flotilla-s-documentation" title="Permalink to this headline">¶</a></h1>
-<p><a class="reference external" href="https://pypi.python.org/pypi/flotilla/">|Build Status| &lt;https://travis-ci.org/YeoLab/flotilla&gt;`_`|Coverage
-Status| &lt;https://coveralls.io/r/YeoLab/flotilla?branch=master&gt;`_`|License| &lt;https://pypi.python.org/pypi/flotilla/&gt;`_`|Downloads| &lt;https://pypi.python.org/pypi/flotilla/&gt;`_`|Latest
-Version|</a></p>
-</div>
-<div class="section" id="flotilla">
-<h1>flotilla<a class="headerlink" href="#flotilla" title="Permalink to this headline">¶</a></h1>
-<div class="figure align-center">
-<img alt="flotilla Logo" src="flotilla.png" />
-<p class="caption">flotilla Logo</p>
-</div>
-<div class="figure align-center">
-<img alt="NumFOCUS logo" src="http://numfocus.org/theme/img/numfocus_logo.png" />
-<p class="caption">NumFOCUS logo</p>
-</div>
-<p>Proudly sponsored by a NumFOCUS John Hunter Technical Fellowship to Olga
-Botvinnik.</p>
-</div>
-<div class="section" id="installation-instructions">
-<h1>Installation instructions<a class="headerlink" href="#installation-instructions" title="Permalink to this headline">¶</a></h1>
-<p>From a clean install of Mavericks 10.9.4, follow these steps.</p>
-<p>All others must fend for themselves to install matplotlib, scipy and
-their third-party dependencies.</p>
-<p><em>This part only needs to be done once</em></p>
-<ul>
-<li><p class="first"><a class="reference external" href="https://store.continuum.io/cshop/anaconda/">Install anaconda</a></p>
-</li>
-<li><p class="first"><a class="reference external" href="https://itunes.apple.com/us/app/xcode/id497799835?mt=12">Install Xcode (this can take an
-hour)</a></p>
-</li>
-<li><p class="first">Open Xcode and agree to terms and services (it is very important to
-read them thoroughly)</p>
-</li>
-<li><p class="first">Install <a class="reference external" href="http://brew.sh/">homebrew</a></p>
-<p><tt class="docutils literal"><span class="pre">ruby</span> <span class="pre">-e</span> <span class="pre">&quot;$(curl</span> <span class="pre">-fsSL</span> <span class="pre">https://raw.github.com/Homebrew/homebrew/go/install)&quot;</span></tt></p>
-</li>
-<li><p class="first">Install freetype:</p>
-<p><tt class="docutils literal"><span class="pre">brew</span> <span class="pre">install</span> <span class="pre">freetype</span></tt></p>
-</li>
-<li><p class="first">Install heavy packages (this can take an hour or more)</p>
-</li>
-</ul>
-<div class="highlight-python"><div class="highlight"><pre>conda install pip numpy scipy cython matplotlib nose six scikit-learn ipython networkx pandas tornado statsmodels setuptools pytest pyzmq jinja2 pyyaml`
-</pre></div>
-</div>
-<ul>
-<li><p class="first">Create a virtual environment
-<tt class="docutils literal"><span class="pre">conda</span> <span class="pre">create</span> <span class="pre">-n</span> <span class="pre">flotilla_env</span> <span class="pre">pip</span> <span class="pre">numpy</span> <span class="pre">scipy</span> <span class="pre">cython</span> <span class="pre">matplotlib</span> <span class="pre">nose</span> <span class="pre">six</span> <span class="pre">scikit-learn</span> <span class="pre">ipython</span> <span class="pre">networkx</span> <span class="pre">pandas</span> <span class="pre">tornado</span> <span class="pre">statsmodels</span> <span class="pre">setuptools</span> <span class="pre">pytest</span> <span class="pre">pyzmq</span> <span class="pre">jinja2</span> <span class="pre">pyyaml`</span></tt></p>
-</li>
-<li><p class="first">Switch to virtual environment</p>
-<p><tt class="docutils literal"><span class="pre">source</span> <span class="pre">activate</span> <span class="pre">flotilla_env</span></tt></p>
-</li>
-<li><p class="first">Install flotilla and its dependencies (this can take a few minutes):</p>
-<p><tt class="docutils literal"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">git+https://github.com/YeoLab/flotilla.git</span></tt></p>
-</li>
-<li><p class="first">Create a scratch space for your work</p>
-<p><tt class="docutils literal"><span class="pre">mkdir</span> <span class="pre">~/flotilla_scratch</span></tt></p>
-</li>
-<li><p class="first">Make a place to store flotilla projects</p>
-<p><tt class="docutils literal"><span class="pre">mkdir</span> <span class="pre">~/flotilla_projects</span></tt></p>
-</li>
-<li><p class="first">Go back to the real world</p>
-<p><tt class="docutils literal"><span class="pre">source</span> <span class="pre">deactivate</span></tt></p>
-</li>
-</ul>
-</div>
-<div class="section" id="start-using-flotilla">
-<h1>Start using flotilla:<a class="headerlink" href="#start-using-flotilla" title="Permalink to this headline">¶</a></h1>
-<p>Use the above instructions to create a flotilla-friendly environment,
-then:</p>
-<ul>
-<li><p class="first">switch to virtual environment</p>
-<p><tt class="docutils literal"><span class="pre">source</span> <span class="pre">activate</span> <span class="pre">flotilla_env</span></tt></p>
-</li>
-<li><p class="first">start an ipython notebook:</p>
-<p><tt class="docutils literal"><span class="pre">ipython</span> <span class="pre">notebook</span> <span class="pre">--notebook-dir=~/flotilla_scratch</span></tt></p>
-</li>
-<li><p class="first">create a new notebook by clicking <tt class="docutils literal"><span class="pre">New</span> <span class="pre">Notebook</span></tt></p>
-</li>
-<li><p class="first">rename your notebook from &#8220;Untitled&#8221; to something more informative by
-clicking the title panel.</p>
-</li>
-<li><p class="first">load matplotlib backend using every notebook must use this to display
-inline output</p>
-<p><tt class="docutils literal"><span class="pre">%matplotlib</span> <span class="pre">inline</span></tt></p>
-</li>
-</ul>
-<div class="section" id="test-interactive-features-with-example-data">
-<h2>Test interactive features with example data:<a class="headerlink" href="#test-interactive-features-with-example-data" title="Permalink to this headline">¶</a></h2>
-<p>We have prepared a slice of the full dataset for testing and
-demonstration purposes.</p>
-<p>Run each of the following code lines in its own ipython notebook cell
-for an interactive feature.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">flotilla</span>
-<span class="n">test_study</span> <span class="o">=</span> <span class="n">flotilla</span><span class="o">.</span><span class="n">embark</span><span class="p">(</span><span class="s">&#39;http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22/datapackage.json&#39;</span><span class="p">)</span>
-
-<span class="n">test_study</span><span class="o">.</span><span class="n">interactive_pca</span><span class="p">()</span>
-
-<span class="n">test_study</span><span class="o">.</span><span class="n">interactive_graph</span><span class="p">()</span>
-
-<span class="n">test_study</span><span class="o">.</span><span class="n">interactive_classifier</span><span class="p">()</span>
-
-<span class="n">test_study</span><span class="o">.</span><span class="n">interactive_lavalamp_pooled_inconsistent</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>IMPORTANT NOTE: for this test,several failures are expected since the
-test set is small. Adjust parameters to explore valid parameter spaces.
-For example, you can manually select <tt class="docutils literal"><span class="pre">all_genes</span></tt> as the
-<tt class="docutils literal"><span class="pre">feature_subset</span></tt> from the drop-down menu that appears after running
-these interactive functions.</p>
-<p>Status| image:: <a class="reference external" href="https://travis-ci.org/YeoLab/flotilla.svg?branch=master">https://travis-ci.org/YeoLab/flotilla.svg?branch=master</a>
-.. <a href="#id1"><span class="problematic" id="id2">|Coverage
-Status|</span></a> image:: <a class="reference external" href="https://img.shields.io/coveralls/YeoLab/flotilla.svg">https://img.shields.io/coveralls/YeoLab/flotilla.svg</a>
-.. <a href="#id3"><span class="problematic" id="id4">|License|</span></a> image:: <a class="reference external" href="https://pypip.in/license/flotilla/badge.svg">https://pypip.in/license/flotilla/badge.svg</a>
-.. <a href="#id5"><span class="problematic" id="id6">|Downloads|</span></a> image:: <a class="reference external" href="https://pypip.in/download/flotilla/badge.svg">https://pypip.in/download/flotilla/badge.svg</a>
-.. <a href="#id7"><span class="problematic" id="id8">|Latest Version|</span></a> image:: <a class="reference external" href="https://pypip.in/version/flotilla/badge.svg">https://pypip.in/version/flotilla/badge.svg</a></p>
 <p>Contents:</p>
+<div class="toctree-wrapper compound">
+<ul class="simple">
+</ul>
 </div>
 </div>
 <div class="section" id="indices-and-tables">
