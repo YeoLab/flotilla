@@ -58,8 +58,7 @@ def check_if_already_downloaded(url,
 
     if not os.path.isfile(filename):
         sys.stdout.write('{} has not been downloaded before.\n\tDownloading '
-                         'now '
-                         'to {}\n'.format(url, filename))
+                         'now to {}\n'.format(url, filename))
         req = urllib2.Request(url)
         opener = urllib2.build_opener()
         opened_url = opener.open(req)
