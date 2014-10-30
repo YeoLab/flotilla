@@ -9,21 +9,14 @@ import matplotlib as mpl
 import pytest
 import pandas as pd
 
-
-
-
-
-
+from flotilla.util import link_to_list
 
 
 # Tell matplotlib to not make any window popups
-from flotilla.util import link_to_list
-
 mpl.use('Agg')
 
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
-
-DATA_BASE_URL = 'https://raw.githubusercontent.com/YeoLab/shalek2013/master/'
+DATA_BASE_URL = 'https://raw.githubusercontent.com/YeoLab/shalek2013/master'
 
 class ExampleData(object):
     __slots__ = ('metadata', 'expression', 'splicing', 'data')
@@ -39,15 +32,14 @@ class ExampleData(object):
 def data_dir():
     return '{}/example_data'.format(CURRENT_DIR.rstrip('/'))
 
-
 @pytest.fixture(scope='module')
 def example_data():
-    expression = pd.read_csv('{}/expression.csv.gz'.format(DATA_BASE_URL),
-                             index_col=0, compression='gzip')
-    splicing = pd.read_csv('{}/splicing.csv.gz'.format(DATA_BASE_URL),
-                           index_col=0, compression='gzip')
-    metadata = pd.read_csv('{}/metadata.csv.gz'.format(DATA_BASE_URL),
-                           index_col=0, compression='gzip')
+    expression = pd.read_csv('{}/expression.csv'.format(DATA_BASE_URL),
+                             index_col=0)
+    splicing = pd.read_csv('{}/splicing.csv'.format(DATA_BASE_URL),
+                           index_col=0)
+    metadata = pd.read_csv('{}/metadata.csv'.format(DATA_BASE_URL),
+                           index_col=0)
     return ExampleData(metadata, expression, splicing)
 
 
