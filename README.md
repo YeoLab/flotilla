@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/YeoLab/flotilla.svg?branch=master)](https://travis-ci.org/YeoLab/flotilla)[![Coverage Status](https://img.shields.io/coveralls/YeoLab/flotilla.svg)](https://coveralls.io/r/YeoLab/flotilla?branch=master)[![License](https://pypip.in/license/flotilla/badge.svg)](https://pypi.python.org/pypi/flotilla/)[![Downloads](https://pypip.in/download/flotilla/badge.svg)](https://pypi.python.org/pypi/flotilla/)[![Latest Version](https://pypip.in/version/flotilla/badge.svg)](https://pypi.python.org/pypi/flotilla/)
+[![Build Status](https://travis-ci.org/YeoLab/flotilla.svg?branch=master)](https://travis-ci.org/YeoLab/flotilla)[![Coverage Status](https://img.shields.io/coveralls/YeoLab/flotilla.svg)](https://coveralls.io/r/YeoLab/flotilla?branch=master)[![License](https://pypip.in/license/flotilla/badge.svg)](https://pypi.python.org/pypi/flotilla/)[![Downloads](https://pypip.in/download/flotilla/badge.svg)](https://pypi.python.org/pypi/flotilla/)[![Latest Version](https://pypip.in/version/flotilla/badge.svg)](https://pypi.python.org/pypi/flotilla/)[![DOI](https://zenodo.org/badge/6604/YeoLab/flotilla.png)](http://dx.doi.org/10.5281/zenodo.12230)
 
 flotilla
 ========
@@ -116,7 +116,6 @@ IMPORTANT NOTE: for this test,several failures are expected since the test set i
 Adjust parameters to explore valid parameter spaces.
 For example, you can manually select `all_genes` as the `feature_subset`
 from the drop-down menu that appears after running these interactive functions.
-
 
 
 ![NumFOCUS logo](http://numfocus.org/theme/img/numfocus_logo.png)
