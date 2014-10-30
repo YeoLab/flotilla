@@ -4,7 +4,7 @@ test:
 	py.test
 
 coverage:
-	py.test --cov flotilla flotilla/test/
+	py.test --cov --cov-report term-missing flotilla flotilla/test/
 
 lint:
 	pyflakes -x W flotilla flotilla/test
