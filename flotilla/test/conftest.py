@@ -10,6 +10,7 @@ import pytest
 import pandas as pd
 
 from flotilla.util import link_to_list
+from flotilla.datapackage import data_package_url_to_dict
 
 
 # Tell matplotlib to not make any window popups
@@ -55,6 +56,11 @@ def example_study(example_data):
 @pytest.fixture(scope='module')
 def example_datapackage_path():
     return os.path.join(DATA_BASE_URL, 'datapackage.json')
+
+
+@pytest.fixture(scope='module')
+def example_datapackage(example_datapackage_path):
+    return data_package_url_to_dict(example_datapackage_path)
 
 
 @pytest.fixture(scope='module')
