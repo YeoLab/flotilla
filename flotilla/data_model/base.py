@@ -16,95 +16,124 @@ from ..compute.decomposition import DataFramePCA, DataFrameNMF
 from ..compute.infotheory import binify
 from ..compute.predict import PredictorConfigManager, PredictorDataSetManager
 from ..visualize.decomposition import DecompositionViz
-from ..visualize.generic import violinplot, nmf_space_transitions
+from ..visualize.generic import violinplot, nmf_space_transitions, \
+    simple_twoway_scatter
 from ..visualize.network import NetworkerViz
 from ..visualize.predict import ClassifierViz
 from ..util import memoize, cached_property
 from ..compute.outlier import OutlierDetection
 
-MINIMUM_SAMPLES = 2
 default_predictor_name = "ExtraTreesClassifier"
+MINIMUM_FEATURE_SUBSET = 20
 
 class BaseData(object):
-    """Generic study_data model for both splicing and expression study_data
+    """Base class for biological data measurements"""
 
-    Attributes
-    ----------
-
-
-    Methods
-    -------
-
-    """
-
-    def __init__(self, data=None, feature_metadata=None, sample_metadata=None,
-                 species=None, feature_rename_col=None, outliers=None,
-                 min_samples=MINIMUM_SAMPLES, pooled=None,
+    def __init__(self, data, thresh=-np.inf,
+                 minimum_samples=0,
+                 feature_data=None,
+                 feature_rename_col=None,
+                 feature_ignore_subset_cols=None,
                  technical_outliers=None,
+                 outliers=None,
+                 pooled=None,
                  predictor_config_manager=None):
-        """Base class for biological data measurements
+        """Abstract base class for biological measurements
 
         Parameters
         ----------
         data : pandas.DataFrame
-            A dataframe of samples x features (samples on rows, features on
-            columns) with some kind of measurements of cells,
+            A samples x features (samples on rows, features on columns)
+            dataframe with some kind of measurements of cells,
             e.g. gene expression values such as TPM, RPKM or FPKM, alternative
             splicing "Percent-spliced-in" (PSI) values, or RNA editing scores.
+        thresh : float, optional
+            Minimum value to accept for this data. (default -np.inf)
+        minimum_samples : int, optional
+            Minimum number of samples with values greater than 'thresh'. E.g.,
+            for use with "at least 3 single cells expressing the gene at
+            greater than 1 TPM." (default 0)
+        feature_data : pandas.DataFrame, optional
+            A features x attributes dataframe of metadata about the features,
+            e.g. annotating whether the gene is a housekeeping gene (default
+            None)
+        feature_rename_col : str, optional
+            Which column in the feature_data to use to rename feature IDs
+            from a crazy ID to a common gene symbol, e.g. to transform
+            'ENSG00000100320' into 'RBFOX2' (default None)
+        feature_ignore_subset_cols : list-like
+            Columns in the feature data to ignore when making subsets,
+            e.g. "gene_name" shouldn't be used to create subsets, since it's
+            just a small number of them.
+        technical_outliers : list-like, optional
+            List of sample IDs which should be completely ignored because
+            they didn't pass the technical quality control (default None)
+        outliers : list-like, optional
+            List of sample IDs which should be marked as outliers for
+            plotting and interpretation purposes (default None)
+        pooled : list-like, optional
+            List of sample IDs which should be marked as pooled for plotting
+            and interpretation purposes. (default None)
+        predictor_config_manager : PredictorConfigManager, optional
+            Object used to organize inputs to compute.predict.Regressor and
+            compute.predict.Classifier (default None)
+
+        Notes
+        -----
+        Any cells not marked as "technical_outliers", "outliers" or "pooled"
+        are considered as single-cell samples.
+
         """
         self.data = data
+        self.thresh = thresh
+        self.minimum_samples = minimum_samples
 
         if technical_outliers is not None:
             good_samples = ~self.data.index.isin(technical_outliers)
             self.data = self.data.ix[good_samples]
 
-        if pooled is not None:
-            self.pooled = self.data.ix[pooled]
-            self.data = self.data.ix[~self.data.index.isin(pooled)]
+        self.pooled_samples = pooled if pooled is not None else []
+        self.outlier_samples = outliers if outliers is not None else []
+        self.single_samples = self.data.index[~self.data.index.isin(
+            self.pooled_samples)]
 
-        if outliers is not None:
-            self.data, self.outliers = self.drop_outliers(self.data,
-                                                          outliers)
-        self.feature_data = feature_metadata
-        if self.feature_data is None:
-            self.feature_data = pd.DataFrame(index=self.data.columns)
+        if self.thresh > -np.inf or self.minimum_samples > 0:
+            self.data_original = self.data.copy()
+            if not self.singles.empty:
+                self.data = self._threshold(self.data, self.singles)
+            else:
+                self.data = self._threshold(self.data)
+
+        self.feature_data = feature_data
+        self.feature_ignore_subset_cols = [] if feature_ignore_subset_cols is \
+                                                None else feature_ignore_subset_cols
+        # if self.feature_data is None:
+        # self.feature_data = pd.DataFrame(index=self.data.columns)
         self.feature_rename_col = feature_rename_col
-        self.min_samples = min_samples
         self.default_feature_sets = []
         self.data_type = None
-        self.sample_metadata = sample_metadata
-        # self.clusterer = Cluster()
 
-        self.species = species
-
-        def shortener(renamer, x):
-            renamed = renamer(x)
-            if isinstance(renamed, float):
-                return renamed
-            elif len(renamed) > 20:
-                return '{}...'.format(renamed[:20])
+        if isinstance(self.data.columns, pd.MultiIndex):
+            feature_ids, renamed = zip(*self.data.columns.values)
+            self.feature_rename_col = 'gene_name'
+            column = pd.Series(renamed, index=self.data.columns,
+                               name=self.feature_rename_col)
+            if self.feature_data is None:
+                self.feature_data = pd.DataFrame(column,
+                                                 index=self.data.columns)
             else:
-                return renamed
+                if self.feature_rename_col not in self.feature_data:
+                    self.feature_data = self.feature_data.join(column,
+                                                               rsuffix='_right')
+                    if self.feature_rename_col + '_right' in self.feature_data:
+                        self.feature_rename_col += '_right'
 
         if self.feature_data is not None and self.feature_rename_col is not \
                 None:
-            def feature_renamer(x):
-                if x in self.feature_renamer_series.index:
-                    rename = self.feature_renamer_series[x]
-                    if isinstance(rename, pd.Series):
-                        return rename.values[0]
-                    # elif not isinstance(rename, float) and ':' in x:
-                    #     # Check for NaN and ":" (then it's a splicing event
-                    #     # name)
-                    #     return ":".join(x.split("@")[1].split(":")[:2])
-                    else:
-                        return rename
-                else:
-                    return x
-
-            self.feature_renamer = lambda x: shortener(feature_renamer, x)
+            self.feature_renamer = \
+                lambda x: self._shortener(x, renamer=self._feature_renamer)
         else:
-            self.feature_renamer = lambda x: shortener(lambda y: y, x)
+            self.feature_renamer = self._shortener
 
         if predictor_config_manager is None:
             self.predictor_config_manager = PredictorConfigManager()
@@ -116,12 +145,72 @@ class BaseData(object):
 
         self.networks = NetworkerViz(self)
 
+    def _threshold(self, data, other=None):
+        """Only take features with expression greater than the threshold,
+        in at least the minimum number of samples.
+
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            The data to filter, make smaller
+        other : pandas.DataFrame, optional
+            If provided, use this DataFrame to filter data. E.g. use the
+            genes expressed in only single cells to filter the whole dataset.
+
+        Returns
+        -------
+        filtered : pandas.DataFrame
+            "data" filtered with expression values at least self.thresh
+            in least self.minimum_samples
+        """
+        if other is None:
+            other = data
+        filtered = data.ix[:, other[other > self.thresh].count() >=
+                              self.minimum_samples]
+        return filtered
+
+    def _feature_renamer(self, x):
+        if x in self.feature_renamer_series.index:
+            rename = self.feature_renamer_series[x]
+            if isinstance(rename, pd.Series):
+                return rename.values[0]
+            else:
+                return rename
+        else:
+            return x
+
+    @staticmethod
+    def _shortener(x, renamer=None):
+        if renamer is not None:
+            renamed = renamer(x)
+        else:
+            renamed = x
+
+        if isinstance(renamed, float):
+            return renamed
+        elif len(renamed) > 20:
+            return '{}...'.format(renamed[:20])
+        else:
+            return renamed
+
+    @property
+    def singles(self):
+        return self.data.ix[self.single_samples]
+
+    @property
+    def pooled(self):
+        return self.data.ix[self.pooled_samples]
+
+    @property
+    def outliers(self):
+        return self.data.ix[self.outlier_samples]
+
     @property
     def feature_renamer_series(self):
         try:
             return self.feature_data[self.feature_rename_col].dropna()
         except TypeError:
-            return pd.Series(self.data.columns,
+            return pd.Series(self.data.columns.values,
                              index=self.data.columns)
 
     def maybe_renamed_to_feature_id(self, feature_id):
@@ -176,36 +265,10 @@ class BaseData(object):
 
     @property
     def feature_subsets(self):
-        feature_subsets = {}
-        if self.feature_data is not None:
-            for col in self.feature_data:
-                if self.feature_data[col].dtype != bool:
-                    continue
-                feature_subset = self.feature_data.index[self.feature_data[col]]
-                if len(feature_subset) > 1:
-                    feature_subsets[col] = feature_subset
-            categories = [  # 'tag',
-                            'gene_type', 'splice_type']  #, 'gene_status']
-            try:
-                filtered = self.feature_data.groupby('gene_type').filter(
-                    lambda x: len(x) > 20)
-            except KeyError:
-                filtered = self.feature_data
-            for category in categories:
-                if category in filtered:
-                    feature_subsets.update(
-                        self.feature_data.groupby(category).groups)
-
-        for feature_subset in feature_subsets.keys():
-            not_feature_subset = 'not {}'.format(feature_subset)
-            if not_feature_subset not in feature_subsets:
-                in_features = self.feature_data.index.isin(feature_subsets[
-                    feature_subset])
-
-                feature_subsets[not_feature_subset] = \
-                    self.feature_data.index[~in_features]
-
-        feature_subsets['all_genes'] = self.data.columns
+        feature_subsets = subsets_from_metadata(self.feature_data,
+                                                MINIMUM_FEATURE_SUBSET,
+                                                'features',
+                                                ignore=self.feature_ignore_subset_cols)
         feature_subsets['variant'] = self.variant
         return feature_subsets
 
@@ -322,7 +385,7 @@ class BaseData(object):
                                       featurewise=False, reducer=None,
                                       label_to_color=None,
                                       label_to_marker=None,
-                                      groupby=None, order=None, color=None,
+                                      groupby=None, order=None,
                                       reduce_kwargs=None,
                                       title='', plot_violins=True,
                                       **plotting_kwargs):
@@ -349,7 +412,8 @@ class BaseData(object):
             Whether or not to make the violinplots of the top features. This
             can take a long time, so to save time you can turn it off if you
             just want a quick look at the PCA.
-
+        n_top_pc_features : int, optional
+            Number of PC features to plot
 
         Returns
         -------
@@ -360,7 +424,6 @@ class BaseData(object):
 
         """
 
-
         reduce_kwargs = {} if reduce_kwargs is None else reduce_kwargs
 
         reduced = self.reduce(sample_ids, feature_ids,
@@ -369,15 +432,18 @@ class BaseData(object):
         visualized = DecompositionViz(reduced.reduced_space,
                                       reduced.components_,
                                       reduced.explained_variance_ratio_,
+                                      singles=self.singles,
+                                      pooled=self.pooled,
+                                      outliers=self.outliers,
+                                      feature_renamer=self.feature_renamer,
                                       featurewise=featurewise,
-                                      DataModel=self,
                                       label_to_color=label_to_color,
                                       label_to_marker=label_to_marker,
-                                      groupby=groupby, order=order, color=color,
+                                      groupby=groupby, order=order,
                                       x_pc="pc_" + str(x_pc),
                                       y_pc="pc_" + str(y_pc))
         # pca(show_vectors=True,
-        #     **plotting_kwargs)
+        # **plotting_kwargs)
         return visualized(title=title,
                           plot_violins=plot_violins, **plotting_kwargs)
 
@@ -386,11 +452,11 @@ class BaseData(object):
                                                   **kwargs)
 
     @property
-    def min_samples(self):
+    def minimum_samples(self):
         return self._min_samples
 
-    @min_samples.setter
-    def min_samples(self, values):
+    @minimum_samples.setter
+    def minimum_samples(self, values):
         self._min_samples = values
 
     def _subset(self, data, sample_ids=None, feature_ids=None,
@@ -421,9 +487,6 @@ class BaseData(object):
 
         if len(sample_ids) == 1:
             sample_ids = sample_ids[0]
-            single_sample = True
-        else:
-            single_sample = False
 
         if len(feature_ids) == 1:
             feature_ids = feature_ids[0]
@@ -435,7 +498,7 @@ class BaseData(object):
         subset = subset.T.ix[feature_ids].T
 
         if require_min_samples and not single_feature:
-            subset = subset.ix[:, subset.count() >= self.min_samples]
+            subset = subset.ix[:, subset.count() >= self.minimum_samples]
 
         if subset.empty:
             raise ValueError('This data subset is empty. Please double-check '
@@ -563,7 +626,7 @@ class BaseData(object):
                         outlier_detection_method=None,
                         outlier_detection_method_kwargs=None):
 
-        default_reducer_args = {"n_components":3}
+        default_reducer_args = {"n_components": 3}
 
         if reducer_kwargs is None:
             reducer_kwargs = default_reducer_args
@@ -591,17 +654,19 @@ class BaseData(object):
         dv = DecompositionViz(reducer.reduced_space,
                               reducer.components_,
                               reducer.explained_variance_ratio_, DataModel=self,
-                              feature_renamer=feature_renamer, groupby=outlier_detector.outliers,
+                              feature_renamer=feature_renamer,
+                              groupby=outlier_detector.outliers,
                               featurewise=False,
                               color=None, order=None, violinplot_kws=None,
-                              data_type=None, label_to_color=None, label_to_marker=None,
+                              data_type=None, label_to_color=None,
+                              label_to_marker=None,
                               scale_by_variance=True, x_pc=x_pc,
                               y_pc=y_pc, n_vectors=0, distance='L1',
                               n_top_pc_features=50)
 
         dv(show_point_labels=show_point_labels, title=outlier_detector.title)
 
-    #@memoize
+    # @memoize
     def reduce(self, sample_ids=None, feature_ids=None,
                featurewise=False,
                reducer=None,
@@ -659,7 +724,6 @@ class BaseData(object):
         reducer_object.means = means
         return reducer_object
 
-    @memoize
     def classify(self, trait, sample_ids, feature_ids,
                  standardize=True,
                  data_name='expression',
@@ -672,7 +736,7 @@ class BaseData(object):
                  plotting_kwargs=None,
                  color=None, groupby=None, label_to_color=None,
                  label_to_marker=None, order=None, bins=None):
-        #Should all this be exposed to the user???
+        # Should all this be exposed to the user???
 
         """Make and memoize a predictor on a categorical trait (associated
         with samples) subset of genes
@@ -727,7 +791,8 @@ class BaseData(object):
             data_type=self.data_type, color=color,
             groupby=groupby, label_to_color=label_to_color,
             label_to_marker=label_to_marker, order=order,
-            DataModel=self, feature_renamer=self.feature_renamer,
+            feature_renamer=self.feature_renamer,
+            singles=self.singles, pooled=self.pooled, outliers=self.outliers,
             **plotting_kwargs)
         return classifier
 
@@ -765,10 +830,14 @@ class BaseData(object):
             pass
 
         renamed = self.feature_renamer(feature_id)
+        # if isinstance(self.data.columns, pd.MultiIndex):
+        # feature_id, renamed = feature_id
+        # else:
+        # renamed = self.feature_renamer(feature_id)
         title = '{}\n{}'.format(renamed, ':'.join(
             feature_id.split('@')[0].split(':')[:2]))
 
-        violinplot(singles, groupby=phenotype_groupby, color=color,
+        violinplot(singles, groupby=phenotype_groupby, color_ordered=color,
                    pooled_data=pooled, order=phenotype_order,
                    title=title, data_type=self.data_type, ax=ax,
                    label_pooled=label_pooled, outliers=outliers)
@@ -783,7 +852,8 @@ class BaseData(object):
         """
 
         """
-        data = self._subset(self.data, sample_ids, feature_ids, require_min_samples=False)
+        data = self._subset(self.data, sample_ids, feature_ids,
+                            require_min_samples=False)
         binned = self.binify(data)
         reduced = self.nmf.transform(binned.T)
         return reduced
@@ -796,7 +866,7 @@ class BaseData(object):
                      nmf_space=False):
 
         """
-        Plot the violinplot of a splicing event (should also show DataFrameNMF movement)
+        Plot the violinplot of a splicing event (should also show NMF movement)
         """
         feature_ids = self.maybe_renamed_to_feature_id(feature_id)
 
@@ -810,7 +880,7 @@ class BaseData(object):
             if not nmf_space:
                 axes = [axes]
             # if self.data_type == 'expression':
-            #     axes = [axes]
+            # axes = [axes]
 
             self._violinplot(feature_id, sample_ids=sample_ids,
                              phenotype_groupby=phenotype_groupby,
@@ -830,8 +900,10 @@ class BaseData(object):
             sns.despine()
 
     def nmf_space_positions(self, groupby, min_samples_per_group=5):
-        data = self.data.groupby(groupby).filter(lambda x: len(x) >= min_samples_per_group)
-        df = data.groupby(groupby).apply(lambda x: self.binned_nmf_reduced(sample_ids=x.index))
+        data = self.data.groupby(groupby).filter(
+            lambda x: len(x) >= min_samples_per_group)
+        df = data.groupby(groupby).apply(
+            lambda x: self.binned_nmf_reduced(sample_ids=x.index))
         df = df.swaplevel(0, 1)
         df = df.sort_index()
         return df
@@ -855,7 +927,7 @@ class BaseData(object):
             try:
                 phenotype1, phenotype2 = transition
                 norm = np.linalg.norm(df.ix[phenotype2] - df.ix[phenotype1])
-                #             print phenotype1, phenotype2, norm
+                # print phenotype1, phenotype2, norm
                 distances[transition] = norm
             except KeyError:
                 pass
@@ -887,3 +959,78 @@ class BaseData(object):
                               phenotype_to_color=phenotype_to_color,
                               phenotype_to_marker=phenotype_to_marker,
                               nmf_space=True)
+
+
+    def plot_two_samples(self, sample1, sample2, **kwargs):
+        """
+
+        Parameters
+        ----------
+        sample1 : str
+            Name of the sample to plot on the x-axis
+        sample2 : str
+            Name of the sample to plot on the y-axis
+        Any other keyword arguments valid for seaborn.jointplot
+
+        Returns
+        -------
+        jointgrid : seaborn.axisgrid.JointGrid
+            Returns a JointGrid instance
+
+        See Also
+        -------
+        seaborn.jointplot
+
+        """
+        x = self.data.ix[sample1]
+        y = self.data.ix[sample2]
+        return simple_twoway_scatter(x, y, **kwargs)
+
+
+def subsets_from_metadata(metadata, minimum, subset_type, ignore=None):
+    """
+
+    Parameters
+    ----------
+    metadata : pandas.DataFrame
+        The dataframe whose columns to use to create subsets of the rows
+    minimum : int
+        Minimum number of rows required for a column or group in the column
+        to be included
+    subset_type : str
+        The name of the kind of subset. e.g. "samples" or "features"
+    ignore : list-like
+        List of columns to ignore
+
+    Returns
+    -------
+    subsets : dict
+        A name: row_ids mapping of which samples correspond to which group
+    """
+    subsets = {}
+    ignore = () if ignore is None else ignore
+    if metadata is not None:
+        for col in metadata:
+            if col in ignore:
+                continue
+            if metadata[col].dtype == bool:
+                sample_subset = metadata.index[metadata[col]]
+                subsets[col] = sample_subset
+            else:
+                grouped = metadata.groupby(col)
+                sizes = grouped.size()
+                filtered_sizes = sizes[sizes >= minimum]
+                for group in filtered_sizes.keys():
+                    name = '{}: {}'.format(col, group)
+                    subsets[name] = grouped.groups[group]
+        for sample_subset in subsets.keys():
+            name = 'not {}'.format(sample_subset)
+            if 'False' or 'True' in name:
+                continue
+            if name not in subsets:
+                in_features = metadata.index.isin(subsets[
+                    sample_subset])
+                subsets[name] = metadata.index[~in_features]
+        subsets['all {}'.format(subset_type)] = metadata.index
+    return subsets
+

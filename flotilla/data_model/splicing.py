@@ -9,10 +9,9 @@ import seaborn as sns
 
 from .base import BaseData
 from ..compute.splicing import Modalities
-from ..compute.decomposition import DataFramePCA
 from ..visualize.color import purples
 from ..visualize.splicing import ModalitiesViz
-from ..util import memoize
+from ..util import memoize, timestamp
 from ..visualize.color import red
 from ..visualize.splicing import lavalamp, hist_single_vs_pooled_diff, \
     lavalamp_pooled_inconsistent
@@ -29,11 +28,13 @@ class SplicingData(BaseData):
     _binsize = 0.1
 
 
-    def __init__(self, data, sample_metadata=None,
-                 feature_metadata=None, binsize=0.1, outliers=None,
-                 feature_rename_col=None, excluded_max=0.2, included_min=0.8,
+    def __init__(self, data,
+                 feature_data=None, binsize=0.1, outliers=None,
+                 feature_rename_col=None,
+                 feature_ignore_subset_cols=None,
+                 excluded_max=0.2, included_min=0.8,
                  pooled=None, predictor_config_manager=None,
-                 technical_outliers=None):
+                 technical_outliers=None, minimum_samples=0):
         """Instantiate a object for percent spliced in (PSI) scores
 
         Parameters
@@ -45,24 +46,25 @@ class SplicingData(BaseData):
         binsize : float
             Value between 0 and 1, the bin size for binning the study_data
             scores
-        reducer : sklearn.decomposition object
-            An scikit-learn class that reduces the dimensionality of study_data
-            somehow. Must accept the parameter n_components, have the
-            functions fit, transform, and have the attribute components_
         excluded_max : float
             Maximum value for the "excluded" bin of psi scores. Default 0.2.
         included_max : float
             Minimum value for the "included" bin of psi scores. Default 0.8.
+
+        Notes
+        -----
+        'thresh' from BaseData is not used.
         """
-        sys.stderr.write("initializing splicing\n")
+        sys.stdout.write("{}\tInitializing splicing\n".format(timestamp()))
         super(SplicingData, self).__init__(
-            data, feature_metadata=feature_metadata,
+            data, feature_data=feature_data,
             feature_rename_col=feature_rename_col,
-            sample_metadata=sample_metadata,
+            feature_ignore_subset_cols=feature_ignore_subset_cols,
             outliers=outliers, pooled=pooled,
             technical_outliers=technical_outliers,
-            predictor_config_manager=predictor_config_manager)
-        sys.stderr.write("done initializing splicing\n")
+            predictor_config_manager=predictor_config_manager,
+            minimum_samples=minimum_samples)
+        sys.stdout.write("{}\tDone initializing splicing\n".format(timestamp()))
         self.binsize = binsize
         self.bins = np.arange(0, 1 + self.binsize, self.binsize)
 
@@ -88,7 +90,7 @@ class SplicingData(BaseData):
             event several times to get a better estimate of its true modality.
         bootstrappped_kws : dict
             Valid arguments to _bootstrapped_fit_transform. If None, default is
-            dict(n_iter=100, thresh=0.6, min_samples=10)
+            dict(n_iter=100, thresh=0.6, minimum_samples=10)
 
         Returns
         -------
@@ -116,7 +118,7 @@ class SplicingData(BaseData):
             Default False.
         bootstrappped_kws : dict
             Valid arguments to _bootstrapped_fit_transform. If None, default is
-            dict(n_iter=100, thresh=0.6, min_samples=10)
+            dict(n_iter=100, thresh=0.6, minimum_samples=10)
 
         Returns
         -------
@@ -145,7 +147,7 @@ class SplicingData(BaseData):
             Default False.
         bootstrappped_kws : dict
             Valid arguments to _bootstrapped_fit_transform. If None, default is
-            dict(n_iter=100, thresh=0.6, min_samples=10)
+            dict(n_iter=100, thresh=0.6, minimum_samples=10)
 
 
         Returns
@@ -175,7 +177,7 @@ class SplicingData(BaseData):
             Default False.
         bootstrappped_kws : dict
             Valid arguments to _bootstrapped_fit_transform. If None, default is
-            dict(n_iter=100, thresh=0.6, min_samples=10)
+            dict(n_iter=100, thresh=0.6, minimum_samples=10)
 
 
         Returns
@@ -226,7 +228,7 @@ class SplicingData(BaseData):
             Default False.
         bootstrappped_kws : dict
             Valid arguments to _bootstrapped_fit_transform. If None, default is
-            dict(n_iter=100, thresh=0.6, min_samples=10)
+            dict(n_iter=100, thresh=0.6, minimum_samples=10)
         """
 
         if use_these_modalities:

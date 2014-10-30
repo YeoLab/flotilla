@@ -7,85 +7,50 @@ import sys
 import numpy as np
 
 from .base import BaseData
-from ..util import memoize
+from ..util import memoize, timestamp
+
+EXPRESSION_THRESH = -np.inf
 
 
 class ExpressionData(BaseData):
-    _expression_thresh = 0.1
-
-    def __init__(self, data, sample_metadata=None,
-                 feature_metadata=None, expression_thresh=_expression_thresh,
-                 feature_rename_col=None, outliers=None, log_base=None,
-                 pooled=None,
+    def __init__(self, data,
+                 feature_data=None, thresh=EXPRESSION_THRESH,
+                 feature_rename_col=None, feature_ignore_subset_cols=None,
+                 outliers=None, log_base=None,
+                 pooled=None, plus_one=False, minimum_samples=0,
                  technical_outliers=None, predictor_config_manager=None):
-        """
-        Parameters
-        ----------
-        data : pandas.DataFrame
-            Expression matrix. samples (rows) x features (columns
-        feature_metadata : pandas.DataFrame
-
-
-        Returns
-        -------
-
+        """Object for holding and operating on expression data
 
 
         """
-        sys.stderr.write("initializing expression\n")
+        sys.stdout.write("{}\tInitializing expression\n".format(timestamp()))
 
         super(ExpressionData, self).__init__(
-            data, feature_metadata=feature_metadata,
-            sample_metadata=sample_metadata,
+            data, feature_data=feature_data,
             feature_rename_col=feature_rename_col,
-            outliers=outliers, pooled=pooled,
+            feature_ignore_subset_cols=feature_ignore_subset_cols,
+            thresh=thresh,
+            outliers=outliers, pooled=pooled, minimum_samples=minimum_samples,
             predictor_config_manager=predictor_config_manager,
             technical_outliers=technical_outliers)
         self.data_type = 'expression'
-        self.expression_thresh = expression_thresh
-        self.original_data = self.data
-        self.data = self.data[self.data >= self.expression_thresh]
+        self.thresh = thresh
 
-        sys.stderr.write("done initializing expression\n")
-
+        if plus_one:
+            self.data += 1
+            self.thresh += 1
+        # self.original_data = self.data
+        # import pdb; pdb.set_trace()
+        # self.data = self._threshold(data, thresh)
         self.log_base = log_base
 
         if self.log_base is not None:
-            self.log_data = np.log(self.data + .1) / np.log(self.log_base)
-        else:
-            self.log_data = self.data
+            self.data = np.log(self.data) / np.log(self.log_base)
 
-        self.data = self.log_data
-        self.feature_data = feature_metadata
+        self.feature_data = feature_data
 
-        # This may not be totally kosher.... but original data is in
-        # self.original_data
-        if outliers is not None:
-            self.outliers = self.outliers[
-                self.outliers > self.expression_thresh]
-        if pooled is not None:
-            self.pooled = self.pooled[self.pooled > self.expression_thresh]
-        self.default_feature_sets.extend(self.feature_subsets.keys())
-
-    def twoway(self, sample1, sample2, **kwargs):
-        from ..visualize.expression import TwoWayScatterViz
-
-        pCut = kwargs['p_value_cutoff']
-        this_name = "_".join([sample1, sample2, str(pCut)])
-        if this_name in self.localZ_dict:
-            vz = self.localZ_dict[this_name]
-        else:
-            df = self.data
-            df.rename_axis(self.feature_renamer(), 1)
-            vz = TwoWayScatterViz(sample1, sample2, df, **kwargs)
-            self.localZ_dict[this_name] = vz
-
-        return vz
-
-    def plot_twoway(self, sample1, sample2, **kwargs):
-        vz = self.twoway(sample1, sample2, **kwargs)
-        vz()
-        return vz
+        sys.stdout.write("{}\tDone initializing expression\n".format(
+            timestamp()))
 
     def _calculate_linkage(self, sample_ids, feature_ids, metric='euclidean',
                            linkage_method='average', standardize=True):
@@ -104,6 +69,12 @@ class ExpressionData(BaseData):
         bins = np.arange(0, 1.1, .1)
         # print 'bins:', bins
         return super(ExpressionData, self).binify(data, bins)
+
+        # def plot_two_samples(self, sample1, sample2, **kwargs):
+        # thresholded = kwargs.pop('thresholded', True)
+        # super(ExpressionData, self).plot_two_samples(sample1, sample2,
+        #                                                  thresholded=thresholded,
+        #                                                  **kwargs)
 
 
 class SpikeInData(ExpressionData):
@@ -137,4 +108,77 @@ class SpikeInData(ExpressionData):
         super(SpikeInData, self).__init__(data, feature_data,
                                           technical_outliers=technical_outliers,
                                           predictor_config_manager=predictor_config_manager)
+
+
+        # def spikeins_violinplot(self):
+        # import matplotlib.pyplot as plt
+        #     import seaborn as sns
+        #     import numpy as np
+        #
+        #     fig, axes = plt.subplots(nrows=5, figsize=(16, 20), sharex=True,
+        #                              sharey=True)
+        #     ercc_concentrations = \
+        #         ercc_controls_analysis.mix1_molecules_per_ul.copy()
+        #     ercc_concentrations.sort()
+        #
+        #     for ax, (celltype, celltype_df) in \
+        #             zip(axes.flat, tpm.ix[spikeins].groupby(
+        #                     sample_id_to_celltype_, axis=1)):
+        #         print celltype
+        #         #     fig, ax = plt.subplots(figsize=(16, 4))
+        #         x_so_far = 0
+        #         #     ax.set_yscale('log')
+        #         xticklabels = []
+        #         for spikein_type, spikein_df in celltype_df.groupby(
+        #                 spikein_to_type):
+        #             #         print spikein_df.shape
+        #             df = spikein_df.T + np.random.uniform(0, 0.01,
+        #                                                   size=spikein_df.T.shape)
+        #             df = np.log2(df)
+        #             if spikein_type == 'ERCC':
+        #                 df = df[ercc_concentrations.index]
+        #             xticklabels.extend(df.columns.tolist())
+        #             color = 'husl' if spikein_type == 'ERCC' else 'Greys_d'
+        #             sns.violinplot(df, ax=ax,
+        #                            positions=np.arange(df.shape[1])+x_so_far,
+        #                            linewidth=0, inner='none', color=color)
+        #
+        #             x_so_far += df.shape[1]
+        #
+        #         ax.set_title(celltype)
+        #         ax.set_xticks(np.arange(x_so_far))
+        #         ax.set_xticklabels(xticklabels, rotation=90, fontsize=8)
+        #         ax.set_ylabel('$\\log_2$ TPM')
+        #
+        #         xmin, xmax = -0.5, x_so_far - 0.5
+        #
+        #         ax.hlines(0, xmin, xmax)
+        #         ax.set_xlim(xmin, xmax)
+        #         sns.despine()
+        #
+        #     def samples_violinplot():
+        #         fig, axes = plt.subplots(nrows=3, figsize=(16, 6))
+        #
+        #         for ax, (spikein_type, df) in zip(axes,
+        #                                           tpm.groupby(spikein_to_type,
+        #                                                       axis=0)):
+        #             print spikein_type, df.shape
+        #             if df.shape[0] > 1:
+        #                 sns.violinplot(np.log2(df + 1), ax=ax, linewidth=0.1)
+        #                 ax.set_xticks([])
+        #                 ax.set_xlabel('')
+        #
+        #             else:
+        #                 x = np.arange(df.shape[1])
+        #                 ax.bar(np.arange(df.shape[1]),
+        #                        np.log2(df.ix[spikein_type]),
+        #                        color=green)
+        #                 ax.set_xticks(x + 0.4)
+        #                 ax.set_xticklabels(df.columns, rotation=60)
+        #                 sns.despine()
+        #
+        #             ax.set_title(spikein_type)
+        #             ax.set_xlim(0, tpm.shape[1])
+        #             ax.set_ylabel('$\\log_2$ TPM')
+        #         sns.despine()
 
