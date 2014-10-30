@@ -10,7 +10,8 @@ import pandas.util.testing as pdt
 import pytest
 import semantic_version
 
-from flotilla.datapackage import get_resource_from_name
+from flotilla.datapackage import get_resource_from_name, \
+    data_package_url_to_dict
 
 
 def name_to_resource(datapackage, name):
@@ -141,12 +142,11 @@ class TestStudy(object):
 
         with open('{}/datapackage.json'.format(save_dir)) as f:
             test_datapackage = json.load(f)
-        with open(example_datapackage_path) as f:
-            true_datapackage = json.load(f)
+        true_datapackage = data_package_url_to_dict(example_datapackage_path)
 
         assert study_name == save_dir.purebasename
 
-        resource_keys_to_ignore = ('compression', 'format', 'path')
+        resource_keys_to_ignore = ('compression', 'format', 'path', 'url')
         keys_from_study = {'splicing': [],
                            'expression': ['thresh',
                                           'log_base'],
