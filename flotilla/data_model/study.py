@@ -387,7 +387,6 @@ class Study(object):
                          'object\n'.format(timestamp()))
         dfs = {}
         kwargs = {}
-        log_base = None
         datapackage_name = datapackage['name']
 
         for resource in datapackage['resources']:
@@ -455,7 +454,6 @@ class Study(object):
                 version))
         study = Study(
             sample_metadata=sample_metadata,
-            expression_log_base=log_base,
             species=species,
             license=license,
             title=title,
