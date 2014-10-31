@@ -706,6 +706,10 @@ class Study(object):
             samplewise (default), then this labels the samples. If this is
             featurewise, then this labels the features.
         """
+
+        sample_subset = self.default_sample_subset if sample_subset is None else sample_subset
+        feature_subset = self.default_feature_subset if feature_subset is None else feature_subset
+
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
         feature_ids = self.feature_subset_to_feature_ids(data_type,
                                                          feature_subset,
