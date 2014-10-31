@@ -258,6 +258,8 @@ class BaseData(object):
         outliers = set(outliers).intersection(df.index)
         try:
             # Remove pooled samples, if there are any
+            pooled_cells = outliers.intersection(self.pooled.index)
+            sys.stderr.write("These cells are pooled, not outliers. Skipping...\n\t{}\n".format("\t\n".join(pooled_cells)))
             outliers = outliers.difference(self.pooled.index)
         except AttributeError:
             pass
