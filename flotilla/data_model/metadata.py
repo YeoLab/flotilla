@@ -69,7 +69,8 @@ class MetaData(BaseData):
         # Double-make sure that all incoming colors are stored as strings and
         # not lists
         for phenotype in self.phenotype_to_color:
-            color = self.phenotype_to_color
+            color = self.phenotype_to_color[phenotype]
+            print 'phenotype, color', phenotype, color
             if isinstance(color, list) or isinstance(color, tuple):
                 color = mpl.colors.rgb2hex(color)
                 self.phenotype_to_color[phenotype] = color
