@@ -244,18 +244,27 @@ class Study(object):
         else:
             self.technical_outliers = None
 
-        if self.species is not None and (expression_feature_data is None or
-                                                 splicing_feature_data is None):
+        if self.species is not None:
+
             sys.stdout.write('{}\tLoading species metadata from '
-                             'sauron.ucsd.edu\n'.format(timestamp()))
+                             '~/flotilla_packages\n'.format(timestamp()))
             species_kws = self.load_species_data(self.species, self.readers)
-            expression_feature_data = species_kws.pop('expression_feature_data',
-                                                      None)
-            expression_feature_rename_col = species_kws.pop(
-                'expression_feature_rename_col', None)
-            splicing_feature_data = species_kws.pop('splicing_feature_data',
-                                                    None)
-            splicing_feature_rename_col = species_kws.pop(
+
+            if expression_feature_data is None:
+                expression_feature_data = species_kws.pop('expression_feature_data',
+                    None)
+
+            if expression_feature_rename_col is None:
+                expression_feature_rename_col = species_kws.pop(
+                    'expression_feature_rename_col', None)
+
+
+            if splicing_feature_data is None:
+                splicing_feature_data = species_kws.pop('splicing_feature_data',
+                                                        None)
+
+            if splicing_feature_rename_col is None:
+                splicing_feature_rename_col = species_kws.pop(
                 'splicing_feature_rename_col', None)
 
         if expression_data is not None:
