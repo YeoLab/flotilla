@@ -312,7 +312,9 @@ class Study(object):
 
     @property
     def default_sample_subsets(self):
-        return self.metadata.sample_subsets.keys()
+        #move default_sample_subset to the front of the list, sort the rest
+        return [self.default_sample_subset] + sorted(list(set(self.metadata.sample_subsets.keys(\
+            )).difference(set(self.default_sample_subset))))
 
     @property
     def default_feature_subsets(self):
