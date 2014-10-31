@@ -20,6 +20,9 @@ class MetaData(BaseData):
                  phenotype_col=PHENOTYPE_COL,
                  pooled_col=POOLED_COL,
                  predictor_config_manager=None):
+
+        self.data_type = 'metadata'
+
         super(MetaData, self).__init__(data, outliers=None,
                                        predictor_config_manager=predictor_config_manager)
 

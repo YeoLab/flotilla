@@ -87,8 +87,11 @@ class BaseData(object):
         self.data = data
         self.thresh = thresh
         self.minimum_samples = minimum_samples
+        self.data_type = None if not hasattr(self, 'data_type') else self.data_type
 
         if technical_outliers is not None:
+            sys.stderr.write("Removing technical outliers "\
+            "from consideration in {1}:\n\t{2}\n".format(self.data_type, "\n\t".join(technical_outliers)))
             good_samples = ~self.data.index.isin(technical_outliers)
             self.data = self.data.ix[good_samples]
 
@@ -111,7 +114,7 @@ class BaseData(object):
         # self.feature_data = pd.DataFrame(index=self.data.columns)
         self.feature_rename_col = feature_rename_col
         self.default_feature_sets = []
-        self.data_type = None
+
 
         if isinstance(self.data.columns, pd.MultiIndex):
             feature_ids, renamed = zip(*self.data.columns.values)
@@ -429,6 +432,7 @@ class BaseData(object):
         reduced = self.reduce(sample_ids, feature_ids,
                               featurewise=featurewise,
                               reducer=reducer, **reduce_kwargs)
+
         visualized = DecompositionViz(reduced.reduced_space,
                                       reduced.components_,
                                       reduced.explained_variance_ratio_,

@@ -56,6 +56,9 @@ class SplicingData(BaseData):
         'thresh' from BaseData is not used.
         """
         sys.stdout.write("{}\tInitializing splicing\n".format(timestamp()))
+
+        self.data_type = 'splicing'
+
         super(SplicingData, self).__init__(
             data, feature_data=feature_data,
             feature_rename_col=feature_rename_col,
@@ -72,7 +75,6 @@ class SplicingData(BaseData):
                                                 included_min=included_min)
         self.modalities_visualizer = ModalitiesViz()
 
-        self.data_type = 'splicing'
 
     @memoize
     def modalities(self, sample_ids=None, feature_ids=None,
