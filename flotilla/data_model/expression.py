@@ -24,6 +24,7 @@ class ExpressionData(BaseData):
 
         """
         sys.stdout.write("{}\tInitializing expression\n".format(timestamp()))
+        self.data_type = 'expression'
 
         super(ExpressionData, self).__init__(
             data, feature_data=feature_data,
@@ -33,7 +34,7 @@ class ExpressionData(BaseData):
             outliers=outliers, pooled=pooled, minimum_samples=minimum_samples,
             predictor_config_manager=predictor_config_manager,
             technical_outliers=technical_outliers)
-        self.data_type = 'expression'
+
         self.thresh = thresh
 
         if plus_one:
