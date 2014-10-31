@@ -347,7 +347,8 @@ class BaseData(object):
                         data_name=None,
                         label_to_color=None,
                         label_to_marker=None,
-                        groupby=None, order=None, color=None,
+                        groupby=None, order=None,
+                        color=None,
                         **plotting_kwargs):
         """Principal component-like analysis of measurements
 
@@ -380,6 +381,7 @@ class BaseData(object):
                             groupby=groupby, label_to_marker=label_to_marker,
                             label_to_color=label_to_color, order=order,
                             color=color)
+
         if score_coefficient is not None:
             clf.score_coefficient = score_coefficient
         clf(**plotting_kwargs)
@@ -659,16 +661,31 @@ class BaseData(object):
 
         dv = DecompositionViz(reducer.reduced_space,
                               reducer.components_,
-                              reducer.explained_variance_ratio_, DataModel=self,
-                              feature_renamer=feature_renamer,
-                              groupby=outlier_detector.outliers,
+                              reducer.explained_variance_ratio_,
+                              singles=self.singles,
+                              pooled=self.pooled,
+                              outliers=self.outliers,
+                              feature_renamer=self.feature_renamer,
                               featurewise=False,
-                              color=None, order=None, violinplot_kws=None,
-                              data_type=None, label_to_color=None,
-                              label_to_marker=None,
-                              scale_by_variance=True, x_pc=x_pc,
-                              y_pc=y_pc, n_vectors=0, distance='L1',
-                              n_top_pc_features=50)
+                              label_to_color=label_to_color,
+                              label_to_marker=label_to_marker,
+                              groupby=groupby, order=order,
+                              x_pc="pc_" + str(x_pc),
+                              y_pc="pc_" + str(y_pc))
+
+        # DecompositionViz(reducer.reduced_space,
+        #                       reducer.components_,
+        #                       reducer.explained_variance_ratio_,
+        #                       DataModel=self,
+        #                       feature_renamer=feature_renamer,
+        #                       groupby=outlier_detector.outliers,
+        #                       featurewise=False,
+        #                       order=None, violinplot_kws=None,
+        #                       data_type=None, label_to_color=None,
+        #                       label_to_marker=None,
+        #                       scale_by_variance=True, x_pc=x_pc,
+        #                       y_pc=y_pc, n_vectors=0, distance='L1',
+        #                       n_top_pc_features=50)
 
         dv(show_point_labels=show_point_labels, title=outlier_detector.title)
 
