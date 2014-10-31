@@ -66,6 +66,14 @@ class MetaData(BaseData):
             colors = sns.color_palette('Dark2', n_colors=self.n_phenotypes)
             for phenotype, color in zip(self.unique_phenotypes, colors):
                 self.phenotype_to_color[phenotype] = mpl.colors.rgb2hex(color)
+        # Double-make sure that all incoming colors are stored as strings and
+        # not lists
+        for phenotype in self.phenotype_to_color:
+            color = self.phenotype_to_color[phenotype]
+            print 'phenotype, color', phenotype, color
+            if isinstance(color, list) or isinstance(color, tuple):
+                color = mpl.colors.rgb2hex(color)
+                self.phenotype_to_color[phenotype] = color
 
         self.phenotype_to_marker = phenotype_to_marker
         if self.phenotype_to_marker is not None:
