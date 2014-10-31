@@ -259,7 +259,9 @@ class BaseData(object):
         try:
             # Remove pooled samples, if there are any
             pooled_cells = outliers.intersection(self.pooled.index)
-            sys.stderr.write("These cells are pooled, not outliers. Skipping...\n\t{}\n".format("\t\n".join(pooled_cells)))
+            if len(pooled_cells) >= 1:
+                sys.stderr.write("These cells are pooled,"
+                "not outliers. Skipping...\n\t{}\n".format("\n\t".join(pooled_cells)))
             outliers = outliers.difference(self.pooled.index)
         except AttributeError:
             pass
