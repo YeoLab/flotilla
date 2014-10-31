@@ -91,7 +91,7 @@ class BaseData(object):
 
         if technical_outliers is not None:
             sys.stderr.write("Removing technical outliers "\
-            "from consideration in {1}:\n\t{2}\n".format(self.data_type, "\n\t".join(technical_outliers)))
+            "from consideration in {0}:\n\t{1}\n".format(self.data_type, "\n\t".join(technical_outliers)))
             good_samples = ~self.data.index.isin(technical_outliers)
             self.data = self.data.ix[good_samples]
 
