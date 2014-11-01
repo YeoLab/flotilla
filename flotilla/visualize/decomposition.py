@@ -400,7 +400,8 @@ class DecompositionViz(object):
         while ncols * nrows < len(vector_labels):
             nrows += 1
         self.violins_fig, axes = plt.subplots(nrows=nrows, ncols=ncols,
-                                              figsize=(4 * ncols, 4 * nrows))
+                                              figsize=(4 * ncols, 4 * nrows),
+                                              sharey=True)
 
         if self.feature_renamer is not None:
             renamed_vectors = map(self.feature_renamer, vector_labels)
@@ -416,7 +417,10 @@ class DecompositionViz(object):
                 None
             outliers = self.outliers[feature_id] if self.outliers is not None \
                 else None
-            title = '{}\n{}'.format(feature_id, renamed)
+            if feature_id != renamed:
+                title = '{}\n{}'.format(feature_id, renamed)
+            else:
+                title = feature_id
             violinplot(singles, pooled_data=pooled, outliers=outliers,
                        groupby=self.groupby, color_ordered=self.color_ordered,
                        order=self.order, title=title,
