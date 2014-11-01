@@ -49,7 +49,13 @@ after_script:
   - make lint
   - sudo pip install -r doc/requirements.txt --use-mirrors
   # Make sure README.rst is always synced with README.md
-  if [[ $TRAVIS_BRANCH == 'master' ]]
+  if [[ $TRAVIS_BRANCH == 'master' ]] || [[ $TRAVIS_BRANCH == 'dev' ]] ; then
+    if [[ $TRAVIS_BRANCH == 'feature/separate_master_dev_docs' ]] ; then
+      export DEPLOY_HTML_DIR=docs-stable
+    fi
+    if [[ $TRAVIS_BRANCH == 'dev' ]] ; then
+      export DEPLOY_HTML_DIR=docs-dev
+    fi
     cd doc
     make setup_gh_pages
     make generate
