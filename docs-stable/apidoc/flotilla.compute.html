@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>flotilla.compute package &mdash; flotilla 0.1.0 documentation</title>
+    <title>flotilla.compute package &mdash; flotilla 0.1.2 documentation</title>
     
     <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.1.0',
+        VERSION:     '0.1.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -29,7 +29,7 @@
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
-    <link rel="top" title="flotilla 0.1.0 documentation" href="../index.html" />
+    <link rel="top" title="flotilla 0.1.2 documentation" href="../index.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -49,7 +49,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           Flotilla</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.1.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.1.2</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -143,15 +143,12 @@
 <dt id="flotilla.compute.decomposition.DataFrameICA">
 <em class="property">class </em><tt class="descclassname">flotilla.compute.decomposition.</tt><tt class="descname">DataFrameICA</tt><big>(</big><em>df</em>, <em>n_components=None</em>, <em>**decomposer_kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/decomposition.html#DataFrameICA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFrameICA" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#flotilla.compute.decomposition.DataFrameReducerBase" title="flotilla.compute.decomposition.DataFrameReducerBase"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.decomposition.DataFrameReducerBase</span></tt></a>, <tt class="xref py py-class docutils literal"><span class="pre">sklearn.decomposition.fastica_.FastICA</span></tt></p>
-<p class="rubric">Attributes</p>
-<p class="rubric">Methods</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="flotilla.compute.decomposition.DataFrameNMF">
 <em class="property">class </em><tt class="descclassname">flotilla.compute.decomposition.</tt><tt class="descname">DataFrameNMF</tt><big>(</big><em>df</em>, <em>n_components=None</em>, <em>**decomposer_kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/decomposition.html#DataFrameNMF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFrameNMF" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#flotilla.compute.decomposition.DataFrameReducerBase" title="flotilla.compute.decomposition.DataFrameReducerBase"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.decomposition.DataFrameReducerBase</span></tt></a>, <tt class="xref py py-class docutils literal"><span class="pre">sklearn.decomposition.nmf.NMF</span></tt></p>
-<p class="rubric">Methods</p>
 <dl class="method">
 <dt id="flotilla.compute.decomposition.DataFrameNMF.fit">
 <tt class="descname">fit</tt><big>(</big><em>X</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/decomposition.html#DataFrameNMF.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFrameNMF.fit" title="Permalink to this definition">¶</a></dt>
@@ -174,7 +171,6 @@ return self</dd>
 <dt id="flotilla.compute.decomposition.DataFramePCA">
 <em class="property">class </em><tt class="descclassname">flotilla.compute.decomposition.</tt><tt class="descname">DataFramePCA</tt><big>(</big><em>df</em>, <em>n_components=None</em>, <em>**decomposer_kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/decomposition.html#DataFramePCA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFramePCA" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#flotilla.compute.decomposition.DataFrameReducerBase" title="flotilla.compute.decomposition.DataFrameReducerBase"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.decomposition.DataFrameReducerBase</span></tt></a>, <tt class="xref py py-class docutils literal"><span class="pre">sklearn.decomposition.pca.PCA</span></tt></p>
-<p class="rubric">Methods</p>
 </dd></dl>
 
 <dl class="class">
@@ -182,7 +178,6 @@ return self</dd>
 <em class="property">class </em><tt class="descclassname">flotilla.compute.decomposition.</tt><tt class="descname">DataFrameReducerBase</tt><big>(</big><em>df</em>, <em>n_components=None</em>, <em>**decomposer_kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/decomposition.html#DataFrameReducerBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFrameReducerBase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
 <p>Just like scikit-learn&#8217;s reducers, but with prettied up DataFrames.</p>
-<p class="rubric">Methods</p>
 <dl class="method">
 <dt id="flotilla.compute.decomposition.DataFrameReducerBase.fit">
 <tt class="descname">fit</tt><big>(</big><em>X</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/decomposition.html#DataFrameReducerBase.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFrameReducerBase.fit" title="Permalink to this definition">¶</a></dt>
@@ -212,7 +207,6 @@ return self</dd>
 <dt id="flotilla.compute.expression.TwoWayGeneComparisonLocal">
 <em class="property">class </em><tt class="descclassname">flotilla.compute.expression.</tt><tt class="descname">TwoWayGeneComparisonLocal</tt><big>(</big><em>sample1_name</em>, <em>sample2_name</em>, <em>df</em>, <em>p_value_cutoff=0.001</em>, <em>local_fraction=0.1</em>, <em>bonferroni=True</em>, <em>fdr=None</em>, <em>dtype='RPKM'</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/expression.html#TwoWayGeneComparisonLocal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.expression.TwoWayGeneComparisonLocal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
-<p class="rubric">Methods</p>
 <dl class="method">
 <dt id="flotilla.compute.expression.TwoWayGeneComparisonLocal.gstats">
 <tt class="descname">gstats</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/expression.html#TwoWayGeneComparisonLocal.gstats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.expression.TwoWayGeneComparisonLocal.gstats" title="Permalink to this definition">¶</a></dt>
@@ -430,7 +424,6 @@ and -1 for perfect negative correlation</p>
 <em class="property">class </em><tt class="descclassname">flotilla.compute.network.</tt><tt class="descname">Networker</tt><a class="reference internal" href="../_modules/flotilla/compute/network.html#Networker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.network.Networker" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
 <p>Networks (the kind with nodes and edges)</p>
-<p class="rubric">Methods</p>
 <dl class="method">
 <dt id="flotilla.compute.network.Networker.adjacency">
 <tt class="descname">adjacency</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/network.html#Networker.adjacency"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.network.Networker.adjacency" title="Permalink to this definition">¶</a></dt>
@@ -527,8 +520,6 @@ Default:
 </tr>
 </tbody>
 </table>
-<p class="rubric">Attributes</p>
-<p class="rubric">Methods</p>
 <dl class="attribute">
 <dt id="flotilla.compute.predict.Classifier.categorical">
 <tt class="descname">categorical</tt><em class="property"> = True</em><a class="headerlink" href="#flotilla.compute.predict.Classifier.categorical" title="Permalink to this definition">¶</a></dt>
@@ -542,10 +533,9 @@ Default:
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
 <p>choose the coef that makes some result most likely at all n_features
 (or some other function of the dataset)</p>
-<p class="rubric">Methods</p>
 <dl class="staticmethod">
 <dt id="flotilla.compute.predict.ConfigOptimizer.objective_average_times_seen">
-<em class="property">static </em><tt class="descname">objective_average_times_seen</tt><big>(</big><em>n_features</em>, <em>coef=2.5</em>, <em>max_feature_scaler=&lt;function max_feature_scaler at 0x2ad392d58f50&gt;</em>, <em>n_estimators_scaler=&lt;function n_estimators_scaler at 0x2ad392d5a050&gt;</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/predict.html#ConfigOptimizer.objective_average_times_seen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.ConfigOptimizer.objective_average_times_seen" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><tt class="descname">objective_average_times_seen</tt><big>(</big><em>n_features</em>, <em>coef=2.5</em>, <em>max_feature_scaler=&lt;function max_feature_scaler at 0x2b4f98af56e0&gt;</em>, <em>n_estimators_scaler=&lt;function n_estimators_scaler at 0x2b4f98af5758&gt;</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/predict.html#ConfigOptimizer.objective_average_times_seen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.ConfigOptimizer.objective_average_times_seen" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="staticmethod">
@@ -625,8 +615,6 @@ Default:
 </tr>
 </tbody>
 </table>
-<p class="rubric">Attributes</p>
-<p class="rubric">Methods</p>
 <dl class="attribute">
 <dt id="flotilla.compute.predict.PredictorBase.X">
 <tt class="descname">X</tt><a class="reference internal" href="../_modules/flotilla/compute/predict.html#PredictorBase.X"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.PredictorBase.X" title="Permalink to this definition">¶</a></dt>
@@ -719,13 +707,12 @@ Default:
 
 <dl class="class">
 <dt id="flotilla.compute.predict.PredictorConfig">
-<em class="property">class </em><tt class="descclassname">flotilla.compute.predict.</tt><tt class="descname">PredictorConfig</tt><big>(</big><em>predictor_name</em>, <em>obj=None</em>, <em>predictor_scoring_fun=&lt;function default_predictor_scoring_fun at 0x2ad392d54c80&gt;</em>, <em>score_cutoff_fun=&lt;function default_score_cutoff_fun at 0x2ad3928aff50&gt;</em>, <em>n_features_dependent_parameters=None</em>, <em>constant_parameters=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/predict.html#PredictorConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.PredictorConfig" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">flotilla.compute.predict.</tt><tt class="descname">PredictorConfig</tt><big>(</big><em>predictor_name</em>, <em>obj=None</em>, <em>predictor_scoring_fun=&lt;function default_predictor_scoring_fun at 0x2b4f98aee5f0&gt;</em>, <em>score_cutoff_fun=&lt;function default_score_cutoff_fun at 0x2b4f98af5410&gt;</em>, <em>n_features_dependent_parameters=None</em>, <em>constant_parameters=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/predict.html#PredictorConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.PredictorConfig" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
 <p>A configuration for a predictor, names and tracks/sets parameters for predictor
 Dynamically configures some args for predictor based on n_features (if this attribute exists)
 set general parameters with __init__
 yield instances, set by your parameters, with __call__</p>
-<p class="rubric">Methods</p>
 <dl class="method">
 <dt id="flotilla.compute.predict.PredictorConfig.parameters">
 <tt class="descname">parameters</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/predict.html#PredictorConfig.parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.PredictorConfig.parameters" title="Permalink to this definition">¶</a></dt>
@@ -764,8 +751,6 @@ yield instances, set by your parameters, with __call__</p>
 &#8216;verbose&#8217;: True}))</dd>
 </dl>
 </div></blockquote>
-<p class="rubric">Attributes</p>
-<p class="rubric">Methods</p>
 <dl class="attribute">
 <dt id="flotilla.compute.predict.PredictorConfigManager.builtin_predictor_configs">
 <tt class="descname">builtin_predictor_configs</tt><a class="reference internal" href="../_modules/flotilla/compute/predict.html#PredictorConfigManager.builtin_predictor_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.PredictorConfigManager.builtin_predictor_configs" title="Permalink to this definition">¶</a></dt>
@@ -795,7 +780,6 @@ yield instances, set by your parameters, with __call__</p>
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
 <p>because it&#8217;s useful to have scaling parameters for predictors
 that adjust according to the dataset size</p>
-<p class="rubric">Methods</p>
 <dl class="staticmethod">
 <dt id="flotilla.compute.predict.PredictorConfigScalers.max_feature_scaler">
 <em class="property">static </em><tt class="descname">max_feature_scaler</tt><big>(</big><em>n_features=500</em>, <em>coef=2.5</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/predict.html#PredictorConfigScalers.max_feature_scaler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.PredictorConfigScalers.max_feature_scaler" title="Permalink to this definition">¶</a></dt>
@@ -818,8 +802,6 @@ that adjust according to the dataset size</p>
 <em class="property">class </em><tt class="descclassname">flotilla.compute.predict.</tt><tt class="descname">PredictorDataSet</tt><big>(</big><em>data</em>, <em>trait</em>, <em>data_name='MyDataset'</em>, <em>categorical_trait=False</em>, <em>predictor_config_manager=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/predict.html#PredictorDataSet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.PredictorDataSet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
 <p>X and y dataset</p>
-<p class="rubric">Attributes</p>
-<p class="rubric">Methods</p>
 <dl class="attribute">
 <dt id="flotilla.compute.predict.PredictorDataSet.X">
 <tt class="descname">X</tt><a class="reference internal" href="../_modules/flotilla/compute/predict.html#PredictorDataSet.X"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.PredictorDataSet.X" title="Permalink to this definition">¶</a></dt>
@@ -862,8 +844,6 @@ that adjust according to the dataset size</p>
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
 <p>a collection of PredictorDataSet instances.
 use self.datasets for convienient retrieval of predictors.</p>
-<p class="rubric">Attributes</p>
-<p class="rubric">Methods</p>
 <dl class="method">
 <dt id="flotilla.compute.predict.PredictorDataSetManager.dataset">
 <tt class="descname">dataset</tt><big>(</big><em>data_name</em>, <em>trait_name</em>, <em>categorical_trait=False</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/predict.html#PredictorDataSetManager.dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.PredictorDataSetManager.dataset" title="Permalink to this definition">¶</a></dt>
@@ -950,8 +930,6 @@ Default:
 </tr>
 </tbody>
 </table>
-<p class="rubric">Attributes</p>
-<p class="rubric">Methods</p>
 <dl class="attribute">
 <dt id="flotilla.compute.predict.Regressor.categorical">
 <tt class="descname">categorical</tt><em class="property"> = False</em><a class="headerlink" href="#flotilla.compute.predict.Regressor.categorical" title="Permalink to this definition">¶</a></dt>
@@ -980,7 +958,6 @@ default - f(x) = mean(x) + 2 * np.std(x)</p>
 <dt id="flotilla.compute.splicing.Modalities">
 <em class="property">class </em><tt class="descclassname">flotilla.compute.splicing.</tt><tt class="descname">Modalities</tt><big>(</big><em>excluded_max=0.2</em>, <em>included_min=0.8</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/splicing.html#Modalities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.Modalities" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
-<p class="rubric">Methods</p>
 <dl class="method">
 <dt id="flotilla.compute.splicing.Modalities.assignments">
 <tt class="descname">assignments</tt><big>(</big><em>sqrt_jsd_modalities</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/splicing.html#Modalities.assignments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.Modalities.assignments" title="Permalink to this definition">¶</a></dt>
