@@ -161,10 +161,19 @@ class MetaData(BaseData):
         return merged
 
     def set_outliers_by_merging_columns(self, columns):
-        """
-        merge boolean columns of metadata listed in columns into outlier
-        set metadata.outlier
-        return the merged column
+        """Merge boolean columns of data into "outlier" column
+
+        Parameters
+        ----------
+        columns : list-like
+            Column names whose boolean attributes to merge
+
+        Returns
+        -------
+        is_ever_an_outlier : pandas.Series
+            Boolean series indicating whether this sample was ever indicated
+            as an outlier
+
         """
         UserWarning('Over-writing existing outlier columns\n')
         self.data['outlier'] = False
