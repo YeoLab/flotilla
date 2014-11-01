@@ -87,8 +87,11 @@ class BaseData(object):
         self.data = data
         self.thresh = thresh
         self.minimum_samples = minimum_samples
+        self.data_type = None if not hasattr(self, 'data_type') else self.data_type
 
         if technical_outliers is not None:
+            sys.stderr.write("Removing technical outliers "\
+            "from consideration in {0}:\n\t{1}\n".format(self.data_type, "\n\t".join(technical_outliers)))
             good_samples = ~self.data.index.isin(technical_outliers)
             self.data = self.data.ix[good_samples]
 
@@ -111,7 +114,7 @@ class BaseData(object):
         # self.feature_data = pd.DataFrame(index=self.data.columns)
         self.feature_rename_col = feature_rename_col
         self.default_feature_sets = []
-        self.data_type = None
+
 
         if isinstance(self.data.columns, pd.MultiIndex):
             feature_ids, renamed = zip(*self.data.columns.values)
@@ -252,9 +255,20 @@ class BaseData(object):
 
     def drop_outliers(self, df, outliers):
         # assert 'outlier' in self.experiment_design_data.columns
+        not_in_index = set(outliers).difference(df.index)
+        if len(not_in_index) >= 1:
+            sys.stderr.write("These samples are not in the index,"
+                             "Skipping them...\n\t{}\n".format("\n\t".join(not_in_index)))
+
         outliers = set(outliers).intersection(df.index)
         try:
             # Remove pooled samples, if there are any
+            pooled_cells = outliers.intersection(self.pooled.index)
+            if len(pooled_cells) >= 1:
+                sys.stderr.write("These samples are pooled,"
+                                 "not outliers. Skipping..."
+                                 "\n\t{}\n".format("\n\t".join(pooled_cells)))
+
             outliers = outliers.difference(self.pooled.index)
         except AttributeError:
             pass
@@ -342,7 +356,8 @@ class BaseData(object):
                         data_name=None,
                         label_to_color=None,
                         label_to_marker=None,
-                        groupby=None, order=None, color=None,
+                        groupby=None, order=None,
+                        color=None,
                         **plotting_kwargs):
         """Principal component-like analysis of measurements
 
@@ -375,6 +390,7 @@ class BaseData(object):
                             groupby=groupby, label_to_marker=label_to_marker,
                             label_to_color=label_to_color, order=order,
                             color=color)
+
         if score_coefficient is not None:
             clf.score_coefficient = score_coefficient
         clf(**plotting_kwargs)
@@ -429,6 +445,7 @@ class BaseData(object):
         reduced = self.reduce(sample_ids, feature_ids,
                               featurewise=featurewise,
                               reducer=reducer, **reduce_kwargs)
+
         visualized = DecompositionViz(reduced.reduced_space,
                                       reduced.components_,
                                       reduced.explained_variance_ratio_,
@@ -645,26 +662,27 @@ class BaseData(object):
 
         return reducer, outlier_detector
 
-    def plot_outliers(self, reducer,
-                      outlier_detector,
-                      show_point_labels=False,
-                      feature_renamer=None,
-                      x_pc='pc_1', y_pc='pc_2'):
+    def plot_outliers(self, outlier_detector,
+                      **pca_args):
 
-        dv = DecompositionViz(reducer.reduced_space,
-                              reducer.components_,
-                              reducer.explained_variance_ratio_, DataModel=self,
-                              feature_renamer=feature_renamer,
-                              groupby=outlier_detector.outliers,
-                              featurewise=False,
-                              color=None, order=None, violinplot_kws=None,
-                              data_type=None, label_to_color=None,
-                              label_to_marker=None,
-                              scale_by_variance=True, x_pc=x_pc,
-                              y_pc=y_pc, n_vectors=0, distance='L1',
-                              n_top_pc_features=50)
+        self.plot_pca(self, groupby=outlier_detector.outliers,
+                      title=outlier_detector.title,
+                      **pca_args)
 
-        dv(show_point_labels=show_point_labels, title=outlier_detector.title)
+        # DecompositionViz(reducer.reduced_space,
+        #                       reducer.components_,
+        #                       reducer.explained_variance_ratio_,
+        #                       DataModel=self,
+        #                       feature_renamer=feature_renamer,
+        #                       groupby=outlier_detector.outliers,
+        #                       featurewise=False,
+        #                       order=None, violinplot_kws=None,
+        #                       data_type=None, label_to_color=None,
+        #                       label_to_marker=None,
+        #                       scale_by_variance=True, x_pc=x_pc,
+        #                       y_pc=y_pc, n_vectors=0, distance='L1',
+        #                       n_top_pc_features=50)
+        #dv(show_point_labels=show_point_labels, title=outlier_detector.title)
 
     # @memoize
     def reduce(self, sample_ids=None, feature_ids=None,

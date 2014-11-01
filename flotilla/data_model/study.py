@@ -244,18 +244,27 @@ class Study(object):
         else:
             self.technical_outliers = None
 
-        if self.species is not None and (expression_feature_data is None or
-                                                 splicing_feature_data is None):
+        if self.species is not None:
+
             sys.stdout.write('{}\tLoading species metadata from '
-                             'sauron.ucsd.edu\n'.format(timestamp()))
+                             '~/flotilla_packages\n'.format(timestamp()))
             species_kws = self.load_species_data(self.species, self.readers)
-            expression_feature_data = species_kws.pop('expression_feature_data',
-                                                      None)
-            expression_feature_rename_col = species_kws.pop(
-                'expression_feature_rename_col', None)
-            splicing_feature_data = species_kws.pop('splicing_feature_data',
-                                                    None)
-            splicing_feature_rename_col = species_kws.pop(
+
+            if expression_feature_data is None:
+                expression_feature_data = species_kws.pop('expression_feature_data',
+                    None)
+
+            if expression_feature_rename_col is None:
+                expression_feature_rename_col = species_kws.pop(
+                    'expression_feature_rename_col', None)
+
+
+            if splicing_feature_data is None:
+                splicing_feature_data = species_kws.pop('splicing_feature_data',
+                                                        None)
+
+            if splicing_feature_rename_col is None:
+                splicing_feature_rename_col = species_kws.pop(
                 'splicing_feature_rename_col', None)
 
         if expression_data is not None:
@@ -303,7 +312,12 @@ class Study(object):
 
     @property
     def default_sample_subsets(self):
-        return self.metadata.sample_subsets.keys()
+        #move default_sample_subset to the front of the list, sort the rest
+        sorted_sample_subsets = [self.default_sample_subset] + sorted(list(set(self.metadata.sample_subsets.keys(\
+            )).difference(set(self.default_sample_subset))))
+        sample_subsets_and_logcal_nots = sorted_sample_subsets + map(lambda x: "~{}".format(x),
+                                                                     sorted_sample_subsets)
+        return sample_subsets_and_logcal_nots
 
     @property
     def default_feature_subsets(self):
@@ -387,7 +401,6 @@ class Study(object):
                          'object\n'.format(timestamp()))
         dfs = {}
         kwargs = {}
-        log_base = None
         datapackage_name = datapackage['name']
 
         for resource in datapackage['resources']:
@@ -455,7 +468,6 @@ class Study(object):
                 version))
         study = Study(
             sample_metadata=sample_metadata,
-            expression_log_base=log_base,
             species=species,
             license=license,
             title=title,
@@ -541,7 +553,7 @@ class Study(object):
         outlier_detector.predict(reducer.reduced_space)
         outlier_detector.title = "_".join(
             ['outlier', data_type, sample_subset, feature_subset])
-        print "setting outlier type:\n{}\nin metadata".format(
+        print "setting outlier type:\"{}\" in metadata".format(
             outlier_detector.title)
         if outlier_detector.title not in self.metadata.data:
             self.metadata.data[outlier_detector.title] = False
@@ -697,6 +709,10 @@ class Study(object):
             samplewise (default), then this labels the samples. If this is
             featurewise, then this labels the features.
         """
+
+        sample_subset = self.default_sample_subset if sample_subset is None else sample_subset
+        feature_subset = self.default_feature_subset if feature_subset is None else feature_subset
+
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
         feature_ids = self.feature_subset_to_feature_ids(data_type,
                                                          feature_subset,
@@ -831,10 +847,11 @@ class Study(object):
         except KeyError:
             trait_ids = self.metadata.sample_subsets[trait]
             trait_data = self.metadata.data.index.isin(trait_ids)
-        if all(trait_data) or all(~trait_data):
+        if all(trait_data == True) or all(trait_data == False) or len(set(trait_data)) <= 1:
             raise ValueError("All samples are True (or all samples are "
-                             "False), cannot classify when all samples are "
-                             "the same")
+                             "False) or all are the same, cannot classify"
+                             "when all samples are the same")
+
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
         feature_ids = self.feature_subset_to_feature_ids(data_type,
                                                          feature_subset,
@@ -1261,15 +1278,23 @@ class Study(object):
                                       version=version,
                                       flotilla_dir=flotilla_dir)
 
-    def merge_outlier_columns(self, columns_to_merge):
+    def merge_boolean_metadata_columns(self, columns_to_merge):
+        """
+        merge several boolean columns in metadata,
+        return the logical OR of these columns
+        """
         is_ever_an_outlier = self.metadata.data[columns_to_merge].any(axis=1)
         return is_ever_an_outlier
 
     def set_outlier_by_merging_outlier_columns(self, columns_to_merge):
-        """merge columns of metadata listed in columns_to_merge into outlier"""
+        """
+        merge boolean columns of metadata listed in columns_to_merge into outlier
+        set metadata.outlier
+        return the merged column
+        """
         self.metadata.data['outlier'] = False
         print "using thse columns: \n{}\n".format("\n".join(columns_to_merge))
-        is_ever_an_outlier = self.merge_outlier_columns(columns_to_merge)
+        is_ever_an_outlier = self.merge_boolean_metadata_columns(columns_to_merge)
         print "there are {} outliers".format(is_ever_an_outlier.sum())
         self.metadata.data['outlier'] = is_ever_an_outlier
         return is_ever_an_outlier

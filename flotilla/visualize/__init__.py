@@ -28,5 +28,10 @@ seaborn.set_style({'axes.axisbelow': True,
 
 seaborn.set_context('talk')
 
+try:
+    get_ipython().magic('matplotlib inline')
+except:
+    pass
+
 from .ipython_interact import Interactive
 from .predict import PredictorBaseViz
