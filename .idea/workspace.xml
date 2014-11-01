@@ -1,0 +1,3684 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="29fff548-d5ec-4811-92a8-9cfd58ebaa33" name="Default" comment="add more autosummaries to docs" />
+    <list id="75d00671-5445-4912-b464-5f9a102acb76" name="Failed commit: Default" comment="fix merge conflicts" />
+    <list id="177d347c-1f7a-4254-a4b6-15a86680d7ca" name="Failed commit: Default (2)" comment="merging dev?" />
+    <list id="166201c5-9524-4025-b40e-b1d21a158ca0" name="Failed commit: Default (3)" comment="merge violinplots of top features" />
+    <ignored path="flotilla.iws" />
+    <ignored path=".idea/workspace.xml" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
+  <component name="CoverageDataManager">
+    <SUITE FILE_PATH="coverage/flotilla$test_basedata.coverage" NAME="test_basedata Coverage Results" MODIFIED="1403108632583" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/flotilla/test" />
+    <SUITE FILE_PATH="coverage/flotilla$test_expressiondata.coverage" NAME="test_expressiondata Coverage Results" MODIFIED="1403108667050" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/flotilla/test" />
+    <SUITE FILE_PATH="coverage/flotilla$test_external.coverage" NAME="test_external Coverage Results" MODIFIED="1409935889321" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
+    <SUITE FILE_PATH="coverage/flotilla$test_study.coverage" NAME="test_study Coverage Results" MODIFIED="1403108771120" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/flotilla/test" />
+    <SUITE FILE_PATH="coverage/flotilla$Unittest_test_explicit_init.coverage" NAME="Unittest test_explicit_init Coverage Results" MODIFIED="1403061616442" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/flotilla/test" />
+    <SUITE FILE_PATH="coverage/flotilla$Unittest_TestPredictorBase_test_default_score_cutoff_fun.coverage" NAME="Unittest TestPredictorBase.test_default_score_cutoff_fun Coverage Results" MODIFIED="1403657584118" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/flotilla/test" />
+    <SUITE FILE_PATH="coverage/flotilla$Unittest_TestComputeNetwork_test_adjacency.coverage" NAME="Unittest TestComputeNetwork.test_adjacency Coverage Results" MODIFIED="1403575420048" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/flotilla/test" />
+    <SUITE FILE_PATH="coverage/flotilla$Doctest_bin_range_strings.coverage" NAME="Doctest bin_range_strings Coverage Results" MODIFIED="1408395651695" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/flotilla/compute" />
+    <SUITE FILE_PATH="coverage/flotilla$predict.coverage" NAME="predict Coverage Results" MODIFIED="1403656500923" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/flotilla/compute" />
+    <SUITE FILE_PATH="coverage/flotilla$test_study__1_.coverage" NAME="test_study (1) Coverage Results" MODIFIED="1402363336106" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/flotilla$test_splicingdata.coverage" NAME="test_splicingdata Coverage Results" MODIFIED="1403108655946" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/flotilla/test" />
+  </component>
+  <component name="CreatePatchCommitExecutor">
+    <option name="PATCH_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="DaemonCodeAnalyzer">
+    <disable_hints />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FavoritesManager">
+    <favorites_list name="flotilla" />
+  </component>
+  <component name="FileEditorManager">
+    <splitter split-orientation="horizontal" split-proportion="0.5">
+      <split-first>
+        <leaf>
+          <file leaf-file-name=".travis.yml" pinned="false" current="true" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/.travis.yml">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.68908817" vertical-offset="499" max-vertical-offset="1184">
+                  <caret line="60" column="0" selection-start-line="60" selection-start-column="0" selection-end-line="60" selection-end-column="0" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="whatsnew.rst" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/doc/whatsnew.rst">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="272">
+                  <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="create_datapackage.rst" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/doc/create_datapackage.rst">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="144">
+                  <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="conf.py" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/doc/conf.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.0" vertical-offset="672" max-vertical-offset="5856">
+                  <caret line="56" column="35" selection-start-line="56" selection-start-column="35" selection-end-line="56" selection-end-column="35" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="tutorial.rst" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/doc/tutorial.rst">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.0" vertical-offset="512" max-vertical-offset="608">
+                  <caret line="32" column="0" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="installation.rst" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/doc/installation.rst">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="112">
+                  <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="v0.1.2.txt" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/doc/releases/v0.1.2.txt">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="400">
+                  <caret line="3" column="15" selection-start-line="3" selection-start-column="10" selection-end-line="3" selection-end-column="15" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="sphinx_deployment.mk" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/doc/sphinx_deployment.mk">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="-9.555555" vertical-offset="2510" max-vertical-offset="3344">
+                  <caret line="173" column="69" selection-start-line="173" selection-start-column="69" selection-end-line="173" selection-end-column="69" />
+                  <folding />
+                </state>
+              </provider>
+              <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
+                <state />
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="index.rst" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/doc/index.rst">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="560">
+                  <caret line="29" column="0" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="metadata.py" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/flotilla/data_model/metadata.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.0" vertical-offset="2339" max-vertical-offset="3040">
+                  <caret line="163" column="50" selection-start-line="163" selection-start-column="50" selection-end-line="163" selection-end-column="50" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-first>
+      <split-second>
+        <leaf>
+          <file leaf-file-name="study.py" pinned="false" current="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/flotilla/data_model/study.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.2488336" vertical-offset="976" max-vertical-offset="20768">
+                  <caret line="74" column="21" selection-start-line="74" selection-start-column="21" selection-end-line="74" selection-end-column="21" />
+                  <folding>
+                    <element signature="e#0#113#1" expanded="false" />
+                    <element signature="e#114#125#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="expression.py" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/flotilla/data_model/expression.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.0" vertical-offset="308" max-vertical-offset="2944">
+                  <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
+                  <folding>
+                    <element signature="e#0#103#1" expanded="false" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="generic.py" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/flotilla/compute/generic.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.0" vertical-offset="4195" max-vertical-offset="4864">
+                  <caret line="296" column="7" selection-start-line="296" selection-start-column="7" selection-end-line="296" selection-end-column="7" />
+                  <folding>
+                    <marker date="1414707984000" expanded="false" signature="8140:8186" placeholder="import ..." />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="ipython_interact.py" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/flotilla/visualize/ipython_interact.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="-13.038462" vertical-offset="8973" max-vertical-offset="10160">
+                  <caret line="582" column="39" selection-start-line="582" selection-start-column="39" selection-end-line="582" selection-end-column="39" />
+                  <folding>
+                    <element signature="e#161#171#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="Makefile" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/doc/Makefile">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.0" vertical-offset="787" max-vertical-offset="2960">
+                  <caret line="178" column="0" selection-start-line="178" selection-start-column="0" selection-end-line="179" selection-end-column="0" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="decomposition.py" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/flotilla/compute/decomposition.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.0" vertical-offset="1055" max-vertical-offset="1760">
+                  <caret line="88" column="15" selection-start-line="88" selection-start-column="15" selection-end-line="88" selection-end-column="15" />
+                  <folding>
+                    <element signature="e#0#10#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="setup.py" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/setup.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.0" vertical-offset="271" max-vertical-offset="1024">
+                  <caret line="33" column="19" selection-start-line="33" selection-start-column="19" selection-end-line="33" selection-end-column="19" />
+                  <folding>
+                    <element signature="e#0#28#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="splicing.py" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/flotilla/data_model/splicing.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.0" vertical-offset="800" max-vertical-offset="10336">
+                  <caret line="59" column="0" selection-start-line="59" selection-start-column="0" selection-end-line="59" selection-end-column="0" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="network.py" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/flotilla/visualize/network.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="5424">
+                  <caret line="11" column="30" selection-start-line="11" selection-start-column="30" selection-end-line="11" selection-end-column="30" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="base.py" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/flotilla/data_model/base.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.0" vertical-offset="1312" max-vertical-offset="16960">
+                  <caret line="132" column="71" selection-start-line="132" selection-start-column="71" selection-end-line="132" selection-end-column="71" />
+                  <folding>
+                    <element signature="e#0#130#1" expanded="false" />
+                    <element signature="e#131#141#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-second>
+    </splitter>
+  </component>
+  <component name="FindManager">
+    <FindUsagesManager>
+      <setting name="OPEN_NEW_TAB" value="false" />
+    </FindUsagesManager>
+  </component>
+  <component name="Git.Push.Settings">
+    <option name="myUpdateMethod" value="REBASE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="UPDATE_TYPE" value="REBASE" />
+    <option name="PUSH_AUTO_UPDATE" value="true" />
+    <option name="SYNC_SETTING" value="DONT" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="dev" />
+      </map>
+    </option>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="changedFiles">
+      <list>
+        <option value="$PROJECT_DIR$/flotilla/data_model/quality_control.py" />
+        <option value="$PROJECT_DIR$/requirements.txt" />
+        <option value="$PROJECT_DIR$/flotilla/compute/clustering.py" />
+        <option value="$PROJECT_DIR$/test/test_external.py" />
+        <option value="$PROJECT_DIR$/test/test_ipython_interact.py" />
+        <option value="$PROJECT_DIR$/test/conftest.py" />
+        <option value="$PROJECT_DIR$/doc/create_datapackage.rst" />
+        <option value="$PROJECT_DIR$/test/test_expressiondata.py" />
+        <option value="$PROJECT_DIR$/test/test_study.py" />
+        <option value="$PROJECT_DIR$/.pypirc" />
+        <option value="$PROJECT_DIR$/setup.cfg" />
+        <option value="$PROJECT_DIR$/test/test_dataframepca.py" />
+        <option value="$PROJECT_DIR$/flotilla/visualize/expression.py" />
+        <option value="$PROJECT_DIR$/flotilla/data_model/__init__.py" />
+        <option value="$PROJECT_DIR$/flotilla/compute/generic.py" />
+        <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/flotilla/__init__.py" />
+        <option value="$PROJECT_DIR$/flotilla/visualize/color.py" />
+        <option value="$PROJECT_DIR$/setup.py" />
+        <option value="$PROJECT_DIR$/doc/installation.rst" />
+        <option value="$PROJECT_DIR$/test/test_basedata.py" />
+        <option value="$PROJECT_DIR$/flotilla/external.py" />
+        <option value="$PROJECT_DIR$/flotilla/util.py" />
+        <option value="$PROJECT_DIR$/flotilla/test/data_model/test_expressiondata.py" />
+        <option value="$PROJECT_DIR$/flotilla/compute/predict.py" />
+        <option value="$PROJECT_DIR$/flotilla/datapackage.py" />
+        <option value="$PROJECT_DIR$/flotilla/visualize/network.py" />
+        <option value="$PROJECT_DIR$/flotilla/compute/decomposition.py" />
+        <option value="$PROJECT_DIR$/.coveragerc" />
+        <option value="$PROJECT_DIR$/flotilla/test/conftest.py" />
+        <option value="$PROJECT_DIR$/flotilla/test/data_model/test_study.py" />
+        <option value="$PROJECT_DIR$/Makefile" />
+        <option value="$PROJECT_DIR$/CONTRIBUTING.md" />
+        <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/flotilla/visualize/predict.py" />
+        <option value="$PROJECT_DIR$/flotilla/visualize/decomposition.py" />
+        <option value="$PROJECT_DIR$/flotilla/visualize/generic.py" />
+        <option value="$PROJECT_DIR$/flotilla/data_model/expression.py" />
+        <option value="$PROJECT_DIR$/flotilla/data_model/splicing.py" />
+        <option value="$PROJECT_DIR$/flotilla/data_model/base.py" />
+        <option value="$PROJECT_DIR$/flotilla/data_model/study.py" />
+        <option value="$PROJECT_DIR$/flotilla/visualize/ipython_interact.py" />
+        <option value="$PROJECT_DIR$/flotilla/data_model/metadata.py" />
+        <option value="$PROJECT_DIR$/.travis.yml" />
+        <option value="$PROJECT_DIR$/doc/whats_new.rst" />
+        <option value="$PROJECT_DIR$/doc/whatsnew.rst" />
+        <option value="$PROJECT_DIR$/doc/sphinx_deployment.mk" />
+        <option value="$PROJECT_DIR$/doc/tutorial.rst" />
+        <option value="$PROJECT_DIR$/doc/index.rst" />
+        <option value="$PROJECT_DIR$/doc/releases/v0.1.2.txt" />
+        <option value="$PROJECT_DIR$/doc/conf.py" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="y" value="22" />
+    <option name="width" value="1440" />
+    <option name="height" value="874" />
+  </component>
+  <component name="ProjectInspectionProfilesVisibleTreeState">
+    <entry key="Project Default">
+      <profile-state>
+        <expanded-state>
+          <State>
+            <id />
+          </State>
+          <State>
+            <id>Python</id>
+          </State>
+        </expanded-state>
+        <selected-state>
+          <State>
+            <id>PyDocstringInspection</id>
+          </State>
+        </selected-state>
+      </profile-state>
+    </entry>
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <OptionsSetting value="true" id="Add" />
+    <OptionsSetting value="true" id="Remove" />
+    <OptionsSetting value="true" id="Checkout" />
+    <OptionsSetting value="false" id="Update" />
+    <OptionsSetting value="true" id="Status" />
+    <OptionsSetting value="true" id="Edit" />
+    <ConfirmationsSetting value="2" id="Add" />
+    <ConfirmationsSetting value="0" id="Remove" />
+  </component>
+  <component name="ProjectReloadState">
+    <option name="STATE" value="0" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+    </navigator>
+    <panes>
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="flotilla" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="flotilla" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="flotilla" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="flotilla" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="flotilla" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="talks" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="flotilla" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="flotilla" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="doc" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="flotilla" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="flotilla" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="doc" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="releases" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="SearchEverywhereHistory" value="random_state&#10;pdb&#10;link_to_list&#10;feature_data&#10;rearr&#10;networks&#10;title_size&#10;drop_outliers&#10;subs&#10;itemgetter&#10;mst&#10;plot_dimensionality_reduction&#10;make_study_&#10;make_data&#10;lavalamp&#10;__future__&#10;py&#10;property&#10;switchy&#10;print&#10;transitions&#10;_naming_fun&#10;NMF_viz&#10;cargo&#10;flotilla&#10;interactiveStudy&#10;descriptors&#10;load_transcriptome_data&#10;load_descriptors&#10;gspread" />
+    <property name="options.lastSelected" value="reference.settingsdialog.IDE.editor.colors" />
+    <property name="options.splitter.main.proportions" value="0.3" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
+    <property name="FullScreen" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../welcome" />
+    <property name="recentsLimit" value="5" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth0" value="137" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder0" value="0" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth1" value="139" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder1" value="1" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth2" value="142" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder2" value="2" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth3" value="937" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder3" value="3" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth0" value="139" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder0" value="0" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth1" value="141" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder1" value="1" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth2" value="145" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder2" value="2" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth3" value="930" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder3" value="3" />
+    <property name="SearchEverywhereHistoryKey" value="get_resource_from_name&#9;null&#9;null" />
+  </component>
+  <component name="PyConsoleOptionsProvider">
+    <option name="myPythonConsoleState">
+      <console-settings />
+    </option>
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/flotilla/src/_schooner_data_model" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/doc" />
+      <recent name="$PROJECT_DIR$/flotilla/test/compute" />
+      <recent name="$PROJECT_DIR$/flotilla/test/data_model" />
+      <recent name="$PROJECT_DIR$/flotilla" />
+      <recent name="$PROJECT_DIR$" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.test_external">
+    <configuration default="false" name="Unittest TestComputeNetwork.test_adjacency" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/flotilla/test" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="flotilla" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/flotilla/test/test_network.py" />
+      <option name="CLASS_NAME" value="TestComputeNetwork" />
+      <option name="METHOD_NAME" value="test_adjacency" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_METHOD" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PUREUNITTEST" value="true" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <configuration default="false" name="predict" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/flotilla/compute" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="flotilla" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/flotilla/compute/predict.py" />
+      <option name="PARAMETERS" value="" />
+      <RunnerSettings RunnerId="PyDebugRunner" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PyDebugRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <configuration default="false" name="Unittest TestPredictorBase.test_default_score_cutoff_fun" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/flotilla/test" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="flotilla" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/flotilla/test/test_predict.py" />
+      <option name="CLASS_NAME" value="TestPredictorBase" />
+      <option name="METHOD_NAME" value="test_default_score_cutoff_fun" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_METHOD" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PUREUNITTEST" value="true" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
+      <RunnerSettings RunnerId="PyDebugRunner" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PyDebugRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <configuration default="false" name="Doctest bin_range_strings" type="tests" factoryName="Doctests" temporary="true" nameIsGenerated="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/flotilla/compute" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="flotilla" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/flotilla/compute/infotheory.py" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="bin_range_strings" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_FUNCTION" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <configuration default="false" name="test_external" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="flotilla" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test/test_external.py" />
+      <option name="PARAMETERS" value="" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <configuration default="true" type="DjangoTestsConfigurationType" factoryName="Django tests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="flotilla" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="TARGET" value="" />
+      <option name="SETTINGS_FILE" value="" />
+      <option name="CUSTOM_SETTINGS" value="false" />
+      <option name="USE_OPTIONS" value="false" />
+      <option name="OPTIONS" value="" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="py.test">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="flotilla" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="testToRun" value="" />
+      <option name="keywords" value="" />
+      <option name="params" value="" />
+      <option name="USE_PARAM" value="false" />
+      <option name="USE_KEYWORD" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Nosetests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="flotilla" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="docs" factoryName="Docutils task">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="flotilla" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="docutils_input_file" value="" />
+      <option name="docutils_output_file" value="" />
+      <option name="docutils_params" value="" />
+      <option name="docutils_task" value="" />
+      <option name="docutils_open_in_browser" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="flotilla" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <method />
+    </configuration>
+    <configuration default="true" type="docs" factoryName="Sphinx task">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="flotilla" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="docutils_input_file" value="" />
+      <option name="docutils_output_file" value="" />
+      <option name="docutils_params" value="" />
+      <option name="docutils_task" value="" />
+      <option name="docutils_open_in_browser" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Unittests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="flotilla" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PUREUNITTEST" value="true" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug">
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Doctests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="flotilla" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Attests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="flotilla" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <method />
+    </configuration>
+    <list size="5">
+      <item index="0" class="java.lang.String" itemvalue="Python tests.Unittest TestComputeNetwork.test_adjacency" />
+      <item index="1" class="java.lang.String" itemvalue="Python.predict" />
+      <item index="2" class="java.lang.String" itemvalue="Python tests.Unittest TestPredictorBase.test_default_score_cutoff_fun" />
+      <item index="3" class="java.lang.String" itemvalue="Python tests.Doctest bin_range_strings" />
+      <item index="4" class="java.lang.String" itemvalue="Python.test_external" />
+    </list>
+    <recent_temporary>
+      <list size="5">
+        <item index="0" class="java.lang.String" itemvalue="Python.test_external" />
+        <item index="1" class="java.lang.String" itemvalue="Python tests.Doctest bin_range_strings" />
+        <item index="2" class="java.lang.String" itemvalue="Python tests.Unittest TestPredictorBase.test_default_score_cutoff_fun" />
+        <item index="3" class="java.lang.String" itemvalue="Python.predict" />
+        <item index="4" class="java.lang.String" itemvalue="Python tests.Unittest TestComputeNetwork.test_adjacency" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false" />
+  <component name="SvnConfiguration" myUseAcceleration="nothing">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="29fff548-d5ec-4811-92a8-9cfd58ebaa33" name="Default" comment="" />
+      <created>1398969108896</created>
+      <updated>1398969108896</updated>
+    </task>
+    <task id="LOCAL-00001" summary="no more pylab!!">
+      <created>1398969709228</created>
+      <updated>1398969709228</updated>
+    </task>
+    <task id="LOCAL-00002" summary="renamed boat functions to more explicitly say what they do">
+      <created>1399048593050</created>
+      <updated>1399048593050</updated>
+    </task>
+    <task id="LOCAL-00003" summary="reformat setup">
+      <created>1399049303222</created>
+      <updated>1399049303222</updated>
+    </task>
+    <task id="LOCAL-00004" summary="docstring was in weird place">
+      <created>1399049512016</created>
+      <updated>1399049512016</updated>
+    </task>
+    <task id="LOCAL-00005" summary="remove import of project params">
+      <created>1399052219875</created>
+      <updated>1399052219875</updated>
+    </task>
+    <task id="LOCAL-00006" summary="remove import of notebook_dir">
+      <created>1399052500947</created>
+      <updated>1399052500947</updated>
+    </task>
+    <task id="LOCAL-00007" summary="descriptors --&gt; metadata">
+      <created>1399076169912</created>
+      <updated>1399076169912</updated>
+    </task>
+    <task id="LOCAL-00008" summary="add modalities file (not correctly integrated yet)">
+      <created>1399173795803</created>
+      <updated>1399173795803</updated>
+    </task>
+    <task id="LOCAL-00009" summary="binify requires user to provide bins explicitly">
+      <created>1400785533536</created>
+      <updated>1400785533536</updated>
+    </task>
+    <task id="LOCAL-00010" summary="start DownsampledSplicingData">
+      <created>1402335307955</created>
+      <updated>1402335307955</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Initial SpliceJunctionData commit">
+      <created>1402343127511</created>
+      <updated>1402343127511</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Initial MappingStatsData commit">
+      <created>1402343189890</created>
+      <updated>1402343189890</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Change &quot;summary&quot; to &quot;self.df&quot; bc that's the correct variable name for this class">
+      <created>1402343295025</created>
+      <updated>1402343295025</updated>
+    </task>
+    <task id="LOCAL-00014" summary="refactor event_count to shared_events, make it a property">
+      <created>1402344511637</created>
+      <updated>1402344511637</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Add TODO for outliers">
+      <created>1402348792171</created>
+      <updated>1402348792171</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Add downsample shared events figure creation">
+      <created>1402349839928</created>
+      <updated>1402349839928</updated>
+    </task>
+    <task id="LOCAL-00017" summary="reformat">
+      <created>1402350366231</created>
+      <updated>1402350366231</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Refactor &quot;descriptors&quot; --&gt; &quot;metadata&quot; and &quot;data_dump&quot; --&gt; &quot;filename&quot; (more explicit/standard naming)">
+      <created>1402350998091</created>
+      <updated>1402350998091</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Initial SpikeInData">
+      <created>1402356291451</created>
+      <updated>1402356291451</updated>
+    </task>
+    <task id="LOCAL-00020" summary="initial test_study (broken, of course)">
+      <created>1402362931457</created>
+      <updated>1402362931457</updated>
+    </task>
+    <task id="LOCAL-00021" summary="Add description of how to create a barebones project">
+      <created>1402363656758</created>
+      <updated>1402363656758</updated>
+    </task>
+    <task id="LOCAL-00022" summary="format README">
+      <created>1402363720661</created>
+      <updated>1402363720661</updated>
+    </task>
+    <task id="LOCAL-00023" summary="Minor formatting">
+      <created>1402363744993</created>
+      <updated>1402363744993</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Change filenames to the test files created">
+      <created>1402363778009</created>
+      <updated>1402363778009</updated>
+    </task>
+    <task id="LOCAL-00025" summary="initial spikein figure making&#10;&#10;copied from IPython notebook so completely wrong and should be in submarine but wanted to add the code at least">
+      <created>1402363890210</created>
+      <updated>1402363890218</updated>
+    </task>
+    <task id="LOCAL-00026" summary="trying to fix test_study but not working">
+      <created>1402363915763</created>
+      <updated>1402363915763</updated>
+    </task>
+    <task id="LOCAL-00027" summary="begin describing the design of flotilla's data models">
+      <created>1402705196812</created>
+      <updated>1402705196812</updated>
+    </task>
+    <task id="LOCAL-00028" summary="Data --&gt; BaseData">
+      <created>1402933119880</created>
+      <updated>1402933119880</updated>
+    </task>
+    <task id="LOCAL-00029" summary="tiny whitespace space change">
+      <created>1403194406924</created>
+      <updated>1403194406924</updated>
+    </task>
+    <task id="LOCAL-00030" summary="no polish naming, ignore python3 for now">
+      <created>1403196951580</created>
+      <updated>1403196951580</updated>
+    </task>
+    <task id="LOCAL-00031" summary="print statements --&gt; sys.stdout.write">
+      <created>1403198372749</created>
+      <updated>1403198372749</updated>
+    </task>
+    <task id="LOCAL-00032" summary="no camel case variables!!">
+      <created>1403198569153</created>
+      <updated>1403198569153</updated>
+    </task>
+    <task id="LOCAL-00033" summary="initial &quot;embark&quot; commit">
+      <created>1403204266844</created>
+      <updated>1403204266844</updated>
+    </task>
+    <task id="LOCAL-00034" summary="phenotype_data --&gt; experiment_design_data, move establishing colors to Study">
+      <created>1403213502796</created>
+      <updated>1403213502796</updated>
+    </task>
+    <task id="LOCAL-00035" summary="Make interactive pca a staticmethod of Interactive">
+      <created>1403213746594</created>
+      <updated>1403213746594</updated>
+    </task>
+    <task id="LOCAL-00036" summary="add create_package to embark">
+      <created>1403214008384</created>
+      <updated>1403214008384</updated>
+    </task>
+    <task id="LOCAL-00037" summary="remove _set_plot_{colors,markers} from ExpressionData and SplicingData">
+      <created>1403214601753</created>
+      <updated>1403214601753</updated>
+    </task>
+    <task id="LOCAL-00038" summary="move embark to __init__">
+      <created>1403214703238</created>
+      <updated>1403214703238</updated>
+    </task>
+    <task id="LOCAL-00039" summary="remove embark.py">
+      <created>1403214725299</created>
+      <updated>1403214725299</updated>
+    </task>
+    <task id="LOCAL-00040" summary="remove simplejson dependency">
+      <created>1403215461726</created>
+      <updated>1403215461726</updated>
+    </task>
+    <task id="LOCAL-00041" summary="add test for embark">
+      <created>1403228936482</created>
+      <updated>1403228936482</updated>
+    </task>
+    <task id="LOCAL-00042" summary="fix tests hopefully">
+      <created>1403231608161</created>
+      <updated>1403231608161</updated>
+    </task>
+    <task id="LOCAL-00043" summary="move loading a study from a datapackage to a classmethod of Study">
+      <created>1403280553016</created>
+      <updated>1403280553016</updated>
+    </task>
+    <task id="LOCAL-00044" summary="Add imports and docstrings for Study.from_data_package_url">
+      <created>1403281250982</created>
+      <updated>1403281250982</updated>
+    </task>
+    <task id="LOCAL-00045" summary="Remove Embark object from flotilla/__init__.py">
+      <created>1403281288247</created>
+      <updated>1403281288247</updated>
+    </task>
+    <task id="LOCAL-00046" summary="add docstring for Study.from_data_package_url">
+      <created>1403281692483</created>
+      <updated>1403281692483</updated>
+    </task>
+    <task id="LOCAL-00047" summary="reformat">
+      <created>1403281707019</created>
+      <updated>1403281707019</updated>
+    </task>
+    <task id="LOCAL-00048" summary="rename phenotype_data to experiment_design_data">
+      <created>1403282244118</created>
+      <updated>1403282244118</updated>
+    </task>
+    <task id="LOCAL-00049" summary="move data_package_url reading/loading to external">
+      <created>1403291431575</created>
+      <updated>1403291431575</updated>
+    </task>
+    <task id="LOCAL-00050" summary="add code for loading external resources">
+      <created>1403308190447</created>
+      <updated>1403308190447</updated>
+    </task>
+    <task id="LOCAL-00051" summary="test  loading species resources">
+      <created>1403312304265</created>
+      <updated>1403312304265</updated>
+    </task>
+    <task id="LOCAL-00052" summary="flotilla projects not packages">
+      <created>1403313160565</created>
+      <updated>1403313160565</updated>
+    </task>
+    <task id="LOCAL-00053" summary="trying to get multiple loading types">
+      <created>1403314267823</created>
+      <updated>1403314267823</updated>
+    </task>
+    <task id="LOCAL-00054" summary="feature_renamer is now a property">
+      <created>1403315339712</created>
+      <updated>1403315339712</updated>
+    </task>
+    <task id="LOCAL-00055" summary="expression change feature renamer">
+      <created>1403315596147</created>
+      <updated>1403315596147</updated>
+    </task>
+    <task id="LOCAL-00056" summary="add mean and variant-knowing variant cutoff">
+      <created>1403315851844</created>
+      <updated>1403315851844</updated>
+    </task>
+    <task id="LOCAL-00057" summary="fix missing comma">
+      <created>1403315875507</created>
+      <updated>1403315875515</updated>
+    </task>
+    <task id="LOCAL-00058" summary="finish fixing feature_renamer">
+      <created>1403315917691</created>
+      <updated>1403315917700</updated>
+    </task>
+    <task id="LOCAL-00059" summary="remove neural lineage marker genes">
+      <created>1403316472248</created>
+      <updated>1403316472253</updated>
+    </task>
+    <task id="LOCAL-00060" summary="check if already downloaded a file, then download it">
+      <created>1403317386816</created>
+      <updated>1403317386816</updated>
+    </task>
+    <task id="LOCAL-00061" summary="downlaoding and saving data now works">
+      <created>1403318181198</created>
+      <updated>1403318181199</updated>
+    </task>
+    <task id="LOCAL-00062" summary="add compression option for reading files">
+      <created>1403400066900</created>
+      <updated>1403400066908</updated>
+    </task>
+    <task id="LOCAL-00063" summary="embark works!">
+      <created>1403457043086</created>
+      <updated>1403457043086</updated>
+    </task>
+    <task id="LOCAL-00064" summary="Fix feature renamer">
+      <created>1403460028556</created>
+      <updated>1403460028556</updated>
+    </task>
+    <task id="LOCAL-00065" summary="set min_samples as a property">
+      <created>1403465424754</created>
+      <updated>1403465424754</updated>
+    </task>
+    <task id="LOCAL-00066" summary="Remove old getter/setter/initializer code">
+      <created>1403466175452</created>
+      <updated>1403466175452</updated>
+    </task>
+    <task id="LOCAL-00067" summary="refactor reduce to only take sample_ids and feature_ids, and controlling types of inputs to Study, move default_{reducer,plot}_kwargs to Study">
+      <created>1403470418261</created>
+      <updated>1403470418261</updated>
+    </task>
+    <task id="LOCAL-00068" summary="ExpressionData.reduce works">
+      <created>1403471512566</created>
+      <updated>1403471512566</updated>
+    </task>
+    <task id="LOCAL-00069" summary="replace &quot;Frequent&quot; with pandas-friendly subsetting">
+      <created>1403471903158</created>
+      <updated>1403471903158</updated>
+    </task>
+    <task id="LOCAL-00070" summary="remove subsetting and standardizing data to a separate function">
+      <created>1403474092248</created>
+      <updated>1403474092248</updated>
+    </task>
+    <task id="LOCAL-00071" summary="move subsetting and standardizing out of classify to call a function">
+      <created>1403474244194</created>
+      <updated>1403474244194</updated>
+    </task>
+    <task id="LOCAL-00072" summary="add docstrings to reduce(), classify(), and _subset_and_standardize">
+      <created>1403495925045</created>
+      <updated>1403495925045</updated>
+    </task>
+    <task id="LOCAL-00073" summary="pcaObj --&gt; pca">
+      <created>1403496119919</created>
+      <updated>1403496119919</updated>
+    </task>
+    <task id="LOCAL-00074" summary="minor rename">
+      <created>1403496133571</created>
+      <updated>1403496133571</updated>
+    </task>
+    <task id="LOCAL-00075" summary="test__subset_and_standardize works!">
+      <created>1403539750129</created>
+      <updated>1403539750129</updated>
+    </task>
+    <task id="LOCAL-00076" summary="test_reduce works!">
+      <created>1403541013482</created>
+      <updated>1403541013482</updated>
+    </task>
+    <task id="LOCAL-00077" summary="plot_pca works!">
+      <created>1403546016713</created>
+      <updated>1403546016714</updated>
+    </task>
+    <task id="LOCAL-00078" summary="widen pca figure, add docstring">
+      <created>1403547414337</created>
+      <updated>1403547414337</updated>
+    </task>
+    <task id="LOCAL-00079" summary="interactive_pca works!!">
+      <created>1403549888352</created>
+      <updated>1403549888352</updated>
+    </task>
+    <task id="LOCAL-00080" summary="add &quot;None&quot; as first default_sample_subsets">
+      <created>1403549971345</created>
+      <updated>1403549971345</updated>
+    </task>
+    <task id="LOCAL-00081" summary="Add demo instructions to README.md">
+      <created>1403550347886</created>
+      <updated>1403550347886</updated>
+    </task>
+    <task id="LOCAL-00082" summary="Tried to increase default marker size but to no avail">
+      <created>1403550366026</created>
+      <updated>1403550366026</updated>
+    </task>
+    <task id="LOCAL-00083" summary="add testing guidelines">
+      <created>1403551296053</created>
+      <updated>1403551296053</updated>
+    </task>
+    <task id="LOCAL-00084" summary="remove a bunch of whitespace">
+      <created>1403559085775</created>
+      <updated>1403559085775</updated>
+    </task>
+    <task id="LOCAL-00085" summary="add call to StandardScaler for testing reduce()">
+      <created>1403559123810</created>
+      <updated>1403559123810</updated>
+    </task>
+    <task id="LOCAL-00086" summary="fix attribute call on study">
+      <created>1403559160650</created>
+      <updated>1403559160650</updated>
+    </task>
+    <task id="LOCAL-00087" summary="Added example code for making a datapackage.json file">
+      <created>1403559579475</created>
+      <updated>1403559579475</updated>
+    </task>
+    <task id="LOCAL-00088" summary="reformat">
+      <created>1403561310945</created>
+      <updated>1403561310945</updated>
+    </task>
+    <task id="LOCAL-00089" summary="rename reduce --&gt; decomposition (consistent with sklearn)">
+      <created>1403561346553</created>
+      <updated>1403561346553</updated>
+    </task>
+    <task id="LOCAL-00090" summary="reformat docstring">
+      <created>1403561490856</created>
+      <updated>1403561490856</updated>
+    </task>
+    <task id="LOCAL-00091" summary="minor reformatting">
+      <created>1403564789713</created>
+      <updated>1403564789713</updated>
+    </task>
+    <task id="LOCAL-00092" summary="beef up docstring and">
+      <created>1403565471201</created>
+      <updated>1403565471201</updated>
+    </task>
+    <task id="LOCAL-00093" summary="change drop_outliers to require an outliers argument">
+      <created>1403566595002</created>
+      <updated>1403566595002</updated>
+    </task>
+    <task id="LOCAL-00094" summary="move drop_outliers code to BaseData">
+      <created>1403566692527</created>
+      <updated>1403566692536</updated>
+    </task>
+    <task id="LOCAL-00095" summary="refactor _expr_cut to _expression_thresh">
+      <created>1403566718835</created>
+      <updated>1403566718835</updated>
+    </task>
+    <task id="LOCAL-00096" summary="change get_adjacency to memoized adjacency">
+      <created>1403568455244</created>
+      <updated>1403568455244</updated>
+    </task>
+    <task id="LOCAL-00097" summary="add sample_id_to_color property">
+      <created>1403569115584</created>
+      <updated>1403569115584</updated>
+    </task>
+    <task id="LOCAL-00098" summary="take out data_obj.sample_metadata requirement from NetworkerViz">
+      <created>1403569156009</created>
+      <updated>1403569156009</updated>
+    </task>
+    <task id="LOCAL-00099" summary="set default samples as 'all_samples' and add parsing of sample_subset and feature_subset to plot_graph">
+      <created>1403570180707</created>
+      <updated>1403570180707</updated>
+    </task>
+    <task id="LOCAL-00100" summary="group_id --&gt; sample_subset, list_name --&gt; feature_subset">
+      <created>1403570245991</created>
+      <updated>1403570245991</updated>
+    </task>
+    <task id="LOCAL-00101" summary="rename for readability">
+      <created>1403570312500</created>
+      <updated>1403570312500</updated>
+    </task>
+    <task id="LOCAL-00102" summary="reformat">
+      <created>1403570352725</created>
+      <updated>1403570352725</updated>
+    </task>
+    <task id="LOCAL-00103" summary="add maybe_make_directory, fix dumb typo">
+      <created>1403570579624</created>
+      <updated>1403570579624</updated>
+    </task>
+    <task id="LOCAL-00104" summary="take out trying ot make directory code and call study.maybe_make_directory">
+      <created>1403570788444</created>
+      <updated>1403570788444</updated>
+    </task>
+    <task id="LOCAL-00105" summary="wt_fun --&gt; weight_function, reformat">
+      <created>1403571178618</created>
+      <updated>1403571178618</updated>
+    </task>
+    <task id="LOCAL-00106" summary="wt_fun --&gt; weight_function">
+      <created>1403571232100</created>
+      <updated>1403571232100</updated>
+    </task>
+    <task id="LOCAL-00107" summary="reformat">
+      <created>1403571245819</created>
+      <updated>1403571245819</updated>
+    </task>
+    <task id="LOCAL-00108" summary="fix dumb typo in sample_id_to_color">
+      <created>1403571946131</created>
+      <updated>1403571946131</updated>
+    </task>
+    <task id="LOCAL-00109" summary="fix sklearn imports to &quot;from sklearn import decomposition&quot;">
+      <created>1403571974560</created>
+      <updated>1403571974560</updated>
+    </task>
+    <task id="LOCAL-00110" summary="remove all the hacky shit I had to do bc I didn't import from flotilla.compute.decomposition">
+      <created>1403572011488</created>
+      <updated>1403572011488</updated>
+    </task>
+    <task id="LOCAL-00111" summary="change cutoff plot color to green">
+      <created>1403572309645</created>
+      <updated>1403572309646</updated>
+    </task>
+    <task id="LOCAL-00112" summary="remove all the hacky shit I had to do bc I didn't import from flotilla.compute.decomposition">
+      <created>1403572752164</created>
+      <updated>1403572752164</updated>
+    </task>
+    <task id="LOCAL-00113" summary="take homebrew memoization out of Networker">
+      <created>1403573658304</created>
+      <updated>1403573658304</updated>
+    </task>
+    <task id="LOCAL-00114" summary="Remove old memoization code">
+      <created>1403574166131</created>
+      <updated>1403574166131</updated>
+    </task>
+    <task id="LOCAL-00115" summary="testComputeNetwork works!!!">
+      <created>1403576374587</created>
+      <updated>1403576374587</updated>
+    </task>
+    <task id="LOCAL-00116" summary="Add feature_data to SpikeInData">
+      <created>1403625521209</created>
+      <updated>1403625521209</updated>
+    </task>
+    <task id="LOCAL-00117" summary="Add number_mapped_col to MappingStatsData and add self.mapped_reads property">
+      <created>1403625549808</created>
+      <updated>1403625549808</updated>
+    </task>
+    <task id="LOCAL-00118" summary="Add hella doctstrings">
+      <created>1403631824737</created>
+      <updated>1403631824737</updated>
+    </task>
+    <task id="LOCAL-00119" summary="remove commented out things">
+      <created>1403631880384</created>
+      <updated>1403631880384</updated>
+    </task>
+    <task id="LOCAL-00120" summary="Add module docstring">
+      <created>1403632779590</created>
+      <updated>1403632779590</updated>
+    </task>
+    <task id="LOCAL-00121" summary="change predictor_args and plotting_args value checking logic to a 1-liner">
+      <created>1403633251205</created>
+      <updated>1403633251205</updated>
+    </task>
+    <task id="LOCAL-00122" summary="remove commented out things">
+      <created>1403633390508</created>
+      <updated>1403633390508</updated>
+    </task>
+    <task id="LOCAL-00123" summary="reformat">
+      <created>1403633409451</created>
+      <updated>1403633409451</updated>
+    </task>
+    <task id="LOCAL-00124" summary="Add note for why __init__ is how it is">
+      <created>1403633700416</created>
+      <updated>1403633700416</updated>
+    </task>
+    <task id="LOCAL-00125" summary="Move imports to top of file, move comments to their own line">
+      <created>1403634709177</created>
+      <updated>1403634709177</updated>
+    </task>
+    <task id="LOCAL-00126" summary="Move fit_{classifier,regressor}() and score_{classifier,regressor}() functions out of Predictor and into Classifier and Regressor as just fit() and score()">
+      <created>1403636938119</created>
+      <updated>1403636938119</updated>
+    </task>
+    <task id="LOCAL-00127" summary="Add show_point_labels for plot_pca arguments and docstring and started plot_classifier docstring.">
+      <created>1403636989201</created>
+      <updated>1403636989201</updated>
+    </task>
+    <task id="LOCAL-00128" summary="plt.tight_layout() --&gt; fig.tight_layout()">
+      <created>1403637007881</created>
+      <updated>1403637007881</updated>
+    </task>
+    <task id="LOCAL-00129" summary="Make fit of Classifier to be for only one trait">
+      <created>1403647319272</created>
+      <updated>1403647319272</updated>
+    </task>
+    <task id="LOCAL-00130" summary="removed &quot;fragile code&quot; warning bc not fragile anymore">
+      <created>1403647340409</created>
+      <updated>1403647340409</updated>
+    </task>
+    <task id="LOCAL-00131" summary="rename &quot;params&quot; --&gt; &quot;kwargs&quot;">
+      <created>1403647525329</created>
+      <updated>1403647525329</updated>
+    </task>
+    <task id="LOCAL-00132" summary="Add madd docstrings">
+      <created>1403649380097</created>
+      <updated>1403649380097</updated>
+    </task>
+    <task id="LOCAL-00133" summary="global rename &quot;classifier&quot; --&gt; &quot;predictor&quot;. May not always be exact, but &quot;Classifier&quot; is a child of &quot;Predictor&quot; so still true but not necessarily accurate">
+      <created>1403649451534</created>
+      <updated>1403649451535</updated>
+    </task>
+    <task id="LOCAL-00134" summary="Move fit() to PredictorBase">
+      <created>1403650516241</created>
+      <updated>1403650516241</updated>
+    </task>
+    <task id="LOCAL-00135" summary="Rename Predictor --&gt; PredictorBase">
+      <created>1403650531639</created>
+      <updated>1403650531639</updated>
+    </task>
+    <task id="LOCAL-00136" summary="Move score() to PredictorBase">
+      <created>1403650959535</created>
+      <updated>1403650959535</updated>
+    </task>
+    <task id="LOCAL-00137" summary="double check docstring for consistency (make sure Regressor docstring talks about regressors and not classifiers)">
+      <created>1403651271634</created>
+      <updated>1403651271634</updated>
+    </task>
+    <task id="LOCAL-00138" summary="fix import">
+      <created>1403651432413</created>
+      <updated>1403651432413</updated>
+    </task>
+    <task id="LOCAL-00139" summary="Fix super init and imports and error messages">
+      <created>1403651691221</created>
+      <updated>1403651691221</updated>
+    </task>
+    <task id="LOCAL-00140" summary="fix attribute errors">
+      <created>1403652749913</created>
+      <updated>1403652749913</updated>
+    </task>
+    <task id="LOCAL-00141" summary="cleanup: remove commented out code and add module docstring">
+      <created>1403653060452</created>
+      <updated>1403653060452</updated>
+    </task>
+    <task id="LOCAL-00142" summary="specified outliers into super init">
+      <created>1403653276677</created>
+      <updated>1403653276677</updated>
+    </task>
+    <task id="LOCAL-00143" summary="Fix default_predictor_scoring_fun and default_score_cutoff_fun to be staticmethods.&#10;Also now raise ValueError (not sure if this is the right exception) if try to run fit() or score() when PredictorBase.predictor is not defined">
+      <created>1403654690531</created>
+      <updated>1403654690531</updated>
+    </task>
+    <task id="LOCAL-00144" summary="Initial tests for PredictorBase">
+      <created>1403654993358</created>
+      <updated>1403654993358</updated>
+    </task>
+    <task id="LOCAL-00145" summary="add parsing of mapping stats and spikein data from datapackage">
+      <created>1403719218510</created>
+      <updated>1403719218510</updated>
+    </task>
+    <task id="LOCAL-00146" summary="add default for mapping_stats_number_mapped_col">
+      <created>1403723170257</created>
+      <updated>1403723170257</updated>
+    </task>
+    <task id="LOCAL-00147" summary="Fix bugs in SpikeInData.__init__">
+      <created>1403723190272</created>
+      <updated>1403723190272</updated>
+    </task>
+    <task id="LOCAL-00148" summary="all predictor tests work!">
+      <created>1403728679567</created>
+      <updated>1403728679568</updated>
+    </task>
+    <task id="LOCAL-00149" summary="Move code out of PredictorBaseViz and into RegressorViz and ClassifierViz">
+      <created>1403742057895</created>
+      <updated>1403742057895</updated>
+    </task>
+    <task id="LOCAL-00150" summary="study.plot_classifier works!">
+      <created>1403745054913</created>
+      <updated>1403745054913</updated>
+    </task>
+    <task id="LOCAL-00151" summary="plot_classifier works but colors don't show up">
+      <created>1403810891682</created>
+      <updated>1403810891682</updated>
+    </task>
+    <task id="LOCAL-00152" summary="plot_classifier shows colors">
+      <created>1403811623797</created>
+      <updated>1403811623797</updated>
+    </task>
+    <task id="LOCAL-00153" summary="interactive classifier works!">
+      <created>1403814580235</created>
+      <updated>1403814580235</updated>
+    </task>
+    <task id="LOCAL-00154" summary="different feature subsets on interactive_classifier work">
+      <created>1403819329444</created>
+      <updated>1403819329445</updated>
+    </task>
+    <task id="LOCAL-00155" summary="move _subset_and_standardize into BaseData (out of ExpressionData)">
+      <created>1403821784014</created>
+      <updated>1403821784014</updated>
+    </task>
+    <task id="LOCAL-00156" summary="Fix imports">
+      <created>1403822152965</created>
+      <updated>1403822152965</updated>
+    </task>
+    <task id="LOCAL-00157" summary="add outliers to init of ExpressionData and SplicingData">
+      <created>1403822173184</created>
+      <updated>1403822173184</updated>
+    </task>
+    <task id="LOCAL-00158" summary="update example url to chr22 subset">
+      <created>1403822869399</created>
+      <updated>1403822869399</updated>
+    </task>
+    <task id="LOCAL-00159" summary="pca works on splicing!">
+      <created>1403827966813</created>
+      <updated>1403827966813</updated>
+    </task>
+    <task id="LOCAL-00160" summary="fix feature_subset_to_ids">
+      <created>1403828384034</created>
+      <updated>1403828384035</updated>
+    </task>
+    <task id="LOCAL-00161" summary="add ValueError for feature_subset_to_ids">
+      <created>1403914108030</created>
+      <updated>1403914108030</updated>
+    </task>
+    <task id="LOCAL-00162" summary="Remove old cargo code">
+      <created>1404215983643</created>
+      <updated>1404215983643</updated>
+    </task>
+    <task id="LOCAL-00163" summary="Add binned option to reducer, remove commented out code">
+      <created>1404216106999</created>
+      <updated>1404216106999</updated>
+    </task>
+    <task id="LOCAL-00164" summary="trying to standardize making a datapackage">
+      <created>1404255134043</created>
+      <updated>1404255134043</updated>
+    </task>
+    <task id="LOCAL-00165" summary="take out 'all_genes' featureset out of subclasses">
+      <created>1404258093623</created>
+      <updated>1404258093623</updated>
+    </task>
+    <task id="LOCAL-00166" summary="add bin options to reduce()">
+      <created>1404258138465</created>
+      <updated>1404258138465</updated>
+    </task>
+    <task id="LOCAL-00167" summary="Splicing classifier now works! Also added plotting kwargs to get passed to ClassifierViz">
+      <created>1404259456540</created>
+      <updated>1404259456540</updated>
+    </task>
+    <task id="LOCAL-00168" summary="Removed StudyFactory from imports (do we even need it really?)">
+      <created>1404320206792</created>
+      <updated>1404320206793</updated>
+    </task>
+    <task id="LOCAL-00169" summary="Remove commented out code">
+      <created>1404335811270</created>
+      <updated>1404335811270</updated>
+    </task>
+    <task id="LOCAL-00170" summary="move tests out of source directory">
+      <created>1404338951793</created>
+      <updated>1404338951794</updated>
+    </task>
+    <task id="LOCAL-00171" summary="update binify to be compatible with bins that are lists instead of numpy arrays">
+      <created>1404339181711</created>
+      <updated>1404339181711</updated>
+    </task>
+    <task id="LOCAL-00172" summary="Start to write NMF visualizer (doesn't have loadings)">
+      <created>1404339766115</created>
+      <updated>1404339766122</updated>
+    </task>
+    <task id="LOCAL-00173" summary="changed bins to be specified as an iterable">
+      <created>1404339791703</created>
+      <updated>1404339791703</updated>
+    </task>
+    <task id="LOCAL-00174" summary="Initial creation of modalities object">
+      <created>1404339857935</created>
+      <updated>1404339857935</updated>
+    </task>
+    <task id="LOCAL-00175" summary="move binify to infotheory">
+      <created>1404340344836</created>
+      <updated>1404340344836</updated>
+    </task>
+    <task id="LOCAL-00176" summary="move test files">
+      <created>1404343921107</created>
+      <updated>1404343921107</updated>
+    </task>
+    <task id="LOCAL-00177" summary="update example data">
+      <created>1404344067107</created>
+      <updated>1404344067107</updated>
+    </task>
+    <task id="LOCAL-00178" summary="add skeletons for infotheory tests">
+      <created>1404345943797</created>
+      <updated>1404345943797</updated>
+    </task>
+    <task id="LOCAL-00179" summary="fix binify to be apply, and remove 0's from the dataframes in KLD function">
+      <created>1404346007772</created>
+      <updated>1404346007772</updated>
+    </task>
+    <task id="LOCAL-00180" summary="change test data to chr22 data so it takes less time to test">
+      <created>1404346898520</created>
+      <updated>1404346898520</updated>
+    </task>
+    <task id="LOCAL-00181" summary="cell_type --&gt; celltype">
+      <created>1404347075841</created>
+      <updated>1404347075841</updated>
+    </task>
+    <task id="LOCAL-00182" summary="move import into test function">
+      <created>1404348175822</created>
+      <updated>1404348175822</updated>
+    </task>
+    <task id="LOCAL-00183" summary="TESTS PASSSSS!">
+      <created>1404349345750</created>
+      <updated>1404349345750</updated>
+    </task>
+    <task id="LOCAL-00184" summary="remove unused arguments">
+      <created>1404349375463</created>
+      <updated>1404349375463</updated>
+    </task>
+    <task id="LOCAL-00185" summary="fix tests?">
+      <created>1404349971496</created>
+      <updated>1404349971496</updated>
+    </task>
+    <task id="LOCAL-00186" summary="add coverage testing">
+      <created>1404350967008</created>
+      <updated>1404350967008</updated>
+    </task>
+    <task id="LOCAL-00187" summary="add coverage badge to README.md">
+      <created>1404351011614</created>
+      <updated>1404351011614</updated>
+    </task>
+    <task id="LOCAL-00188" summary="add sphinx_bootstrap_theme to requirements">
+      <created>1404351442885</created>
+      <updated>1404351442885</updated>
+    </task>
+    <task id="LOCAL-00189" summary="fix build status token to be master (sorry to undo, mike)">
+      <created>1404352019276</created>
+      <updated>1404352019276</updated>
+    </task>
+    <task id="LOCAL-00190" summary="Initial roadmap">
+      <created>1404409354297</created>
+      <updated>1404409354297</updated>
+    </task>
+    <task id="LOCAL-00191" summary="add modalities/reducer binned spaces as @propertys">
+      <created>1404415322798</created>
+      <updated>1404415322798</updated>
+    </task>
+    <task id="LOCAL-00192" summary="Modalities seem to work, still need to tie to SplicingData">
+      <created>1404428071489</created>
+      <updated>1404428071489</updated>
+    </task>
+    <task id="LOCAL-00193" summary="remove binned_modalities from SplicingData, keep it in Modalities">
+      <created>1404428120660</created>
+      <updated>1404428120660</updated>
+    </task>
+    <task id="LOCAL-00194" summary="move switchy score calculation to compute.splicing">
+      <created>1404428996755</created>
+      <updated>1404428996755</updated>
+    </task>
+    <task id="LOCAL-00195" summary="modality_assignments --&gt; assignments within Modality object">
+      <created>1404429707168</created>
+      <updated>1404429707168</updated>
+    </task>
+    <task id="LOCAL-00196" summary="Add brewer2mpl nice colors">
+      <created>1404429721053</created>
+      <updated>1404429721053</updated>
+    </task>
+    <task id="LOCAL-00197" summary="explicitly set binsize, change binned and reduced space calls">
+      <created>1404431145476</created>
+      <updated>1404431145476</updated>
+    </task>
+    <task id="LOCAL-00198" summary="Add ModalitiesViz. Plots empty axes so far">
+      <created>1404431162589</created>
+      <updated>1404431162589</updated>
+    </task>
+    <task id="LOCAL-00199" summary="modalities plot!!">
+      <created>1404431430912</created>
+      <updated>1404431430912</updated>
+    </task>
+    <task id="LOCAL-00200" summary="Pretty_Reducer --&gt; PrettyReducer">
+      <created>1404495943412</created>
+      <updated>1404495943412</updated>
+    </task>
+    <task id="LOCAL-00201" summary="trying to get modality barplots+nmf space to work together">
+      <created>1404520822463</created>
+      <updated>1404520822463</updated>
+    </task>
+    <task id="LOCAL-00202" summary="renaming and aligning">
+      <created>1404520868141</created>
+      <updated>1404520868141</updated>
+    </task>
+    <task id="LOCAL-00203" summary="NMF space plotting works but bar is weird">
+      <created>1404521331357</created>
+      <updated>1404521331357</updated>
+    </task>
+    <task id="LOCAL-00204" summary="add bar plot of all samples">
+      <created>1404577527627</created>
+      <updated>1404577527627</updated>
+    </task>
+    <task id="LOCAL-00205" summary="Make sure using same NMF reducer to transform">
+      <created>1404581481172</created>
+      <updated>1404581481172</updated>
+    </task>
+    <task id="LOCAL-00206" summary="add splicing modality and events across celltypes to Study">
+      <created>1404581546101</created>
+      <updated>1404581546101</updated>
+    </task>
+    <task id="LOCAL-00207" summary="add splicing modality and events across celltypes to Study">
+      <created>1404584281051</created>
+      <updated>1404584281051</updated>
+    </task>
+    <task id="LOCAL-00208" summary="add celltype modalities to cells">
+      <created>1404588525539</created>
+      <updated>1404588525539</updated>
+    </task>
+    <task id="LOCAL-00209" summary="change nmf to work on only data with minimum number of samples">
+      <created>1404589934895</created>
+      <updated>1404589934895</updated>
+    </task>
+    <task id="LOCAL-00210" summary="Fix index changing">
+      <created>1404687378958</created>
+      <updated>1404687378958</updated>
+    </task>
+    <task id="LOCAL-00211" summary="update travis ci to the open version">
+      <created>1404687420963</created>
+      <updated>1404687420963</updated>
+    </task>
+    <task id="LOCAL-00212" summary="fix tests">
+      <created>1404688651538</created>
+      <updated>1404688651538</updated>
+    </task>
+    <task id="LOCAL-00213" summary="move __future__ import to beginning of file">
+      <created>1404689174135</created>
+      <updated>1404689174136</updated>
+    </task>
+    <task id="LOCAL-00214" summary="change coveralls service names">
+      <created>1404691331345</created>
+      <updated>1404691331345</updated>
+    </task>
+    <task id="LOCAL-00215" summary="update coverage badge to svg">
+      <created>1404692029218</created>
+      <updated>1404692029218</updated>
+    </task>
+    <task id="LOCAL-00216" summary="update coverage and travis-ci badges to be off of master">
+      <created>1404692355105</created>
+      <updated>1404692355106</updated>
+    </task>
+    <task id="LOCAL-00217" summary="Move testing into makefile and give instructions in README.md">
+      <created>1404838515682</created>
+      <updated>1404838515682</updated>
+    </task>
+    <task id="LOCAL-00218" summary="remove #drylab from Travis-CI notifications">
+      <created>1404838559965</created>
+      <updated>1404838559965</updated>
+    </task>
+    <task id="LOCAL-00219" summary="change test script for Travis to &quot;make coverage&quot;">
+      <created>1404839727158</created>
+      <updated>1404839727158</updated>
+    </task>
+    <task id="LOCAL-00220" summary="Reorganize and add docstrings to functions infotheory.py">
+      <created>1404844768354</created>
+      <updated>1404844768354</updated>
+    </task>
+    <task id="LOCAL-00221" summary="Remove .coverage file and add it to .gitignore (gets created with every run of py.test with coverage)">
+      <created>1404844832784</created>
+      <updated>1404844832784</updated>
+    </task>
+    <task id="LOCAL-00222" summary="Add docstring and remove whitespace in celltype_modalities">
+      <created>1404844854286</created>
+      <updated>1404844854286</updated>
+    </task>
+    <task id="LOCAL-00223" summary="add pooled pandas.DataFrame attribute to BaseData (and hence SplicingData and ExpressionData)">
+      <created>1404847251130</created>
+      <updated>1404847251130</updated>
+    </task>
+    <task id="LOCAL-00224" summary="move time import to top">
+      <created>1404848037366</created>
+      <updated>1404848037366</updated>
+    </task>
+    <task id="LOCAL-00225" summary="Add option for not memoizing results from modalities fit_transform">
+      <created>1404854657440</created>
+      <updated>1404854657440</updated>
+    </task>
+    <task id="LOCAL-00226" summary="rewrote lavalamp to only plot one color at a time">
+      <created>1404861200228</created>
+      <updated>1404861200228</updated>
+    </task>
+    <task id="LOCAL-00227" summary="bootstrapped modalities don't work because it's creating an array in assignments for some reason">
+      <created>1404870996759</created>
+      <updated>1404870996759</updated>
+    </task>
+    <task id="LOCAL-00228" summary="add docstring for counts">
+      <created>1404928292410</created>
+      <updated>1404928292410</updated>
+    </task>
+    <task id="LOCAL-00229" summary="add docstring for assignments and fix bootstrapped_modalities">
+      <created>1404930952058</created>
+      <updated>1404930952058</updated>
+    </task>
+    <task id="LOCAL-00230" summary="test doc building">
+      <created>1404931527291</created>
+      <updated>1404931527291</updated>
+    </task>
+    <task id="LOCAL-00231" summary="test doc building">
+      <created>1404931622750</created>
+      <updated>1404931622750</updated>
+    </task>
+    <task id="LOCAL-00232" summary="add try/except for modalities">
+      <created>1404932296531</created>
+      <updated>1404932296531</updated>
+    </task>
+    <task id="LOCAL-00233" summary="remove makefile commands and .coverage file">
+      <created>1404932509496</created>
+      <updated>1404932509496</updated>
+    </task>
+    <task id="LOCAL-00234" summary="add before_script and change running tests to makefile">
+      <created>1404932638958</created>
+      <updated>1404932638958</updated>
+    </task>
+    <task id="LOCAL-00235" summary="add makefile">
+      <created>1404932680308</created>
+      <updated>1404932680308</updated>
+    </task>
+    <task id="LOCAL-00236" summary="comment out all code which causes pyflakes errors">
+      <created>1404933586790</created>
+      <updated>1404933586790</updated>
+    </task>
+    <task id="LOCAL-00237" summary="edit lint checker to exclude DecompositionViz code">
+      <created>1404933618912</created>
+      <updated>1404933618913</updated>
+    </task>
+    <task id="LOCAL-00238" summary="remove database.py. Currently unused">
+      <created>1404933746175</created>
+      <updated>1404933746175</updated>
+    </task>
+    <task id="LOCAL-00239" summary="move datapackage example into its own file, fix pep8 standards">
+      <created>1404934043052</created>
+      <updated>1404934043052</updated>
+    </task>
+    <task id="LOCAL-00240" summary="remove unused package_data, entry_points">
+      <created>1404934167063</created>
+      <updated>1404934167063</updated>
+    </task>
+    <task id="LOCAL-00241" summary="Move around imports, pep8 fixes (lines too long)">
+      <created>1404934336397</created>
+      <updated>1404934336397</updated>
+    </task>
+    <task id="LOCAL-00242" summary="Add docstrings, fix pep8">
+      <created>1404935001948</created>
+      <updated>1404935001948</updated>
+    </task>
+    <task id="LOCAL-00243" summary="fix indenting, add space after &quot;#&quot; for comments, space after/between equals">
+      <created>1404935233858</created>
+      <updated>1404935233858</updated>
+    </task>
+    <task id="LOCAL-00244" summary="remove commented code, add newlines">
+      <created>1404935364427</created>
+      <updated>1404935364427</updated>
+    </task>
+    <task id="LOCAL-00245" summary="fix pep8 too long lines">
+      <created>1404935531113</created>
+      <updated>1404935531113</updated>
+    </task>
+    <task id="LOCAL-00246" summary="fix newline, space after comments for pep8">
+      <created>1404935724922</created>
+      <updated>1404935724922</updated>
+    </task>
+    <task id="LOCAL-00247" summary="ExperimentDesignData --&gt;Metadata8">
+      <created>1404937547575</created>
+      <updated>1404937547575</updated>
+    </task>
+    <task id="LOCAL-00248" summary="pep8 compatibility">
+      <created>1404937590601</created>
+      <updated>1404937590601</updated>
+    </task>
+    <task id="LOCAL-00249" summary="fix pep8">
+      <created>1404939316841</created>
+      <updated>1404939316841</updated>
+    </task>
+    <task id="LOCAL-00250" summary="fix various pep8 violations">
+      <created>1404940706813</created>
+      <updated>1404940706813</updated>
+    </task>
+    <task id="LOCAL-00251" summary="fix various pep8 violations">
+      <created>1404940881036</created>
+      <updated>1404940881036</updated>
+    </task>
+    <task id="LOCAL-00252" summary="Remove &quot;generic&quot; (w/ clustergram) since we'll use seaborn's instead">
+      <created>1404940896317</created>
+      <updated>1404940896317</updated>
+    </task>
+    <task id="LOCAL-00253" summary="move imports, fix pep8 violations">
+      <created>1404941089915</created>
+      <updated>1404941089915</updated>
+    </task>
+    <task id="LOCAL-00254" summary="pep8 fixes">
+      <created>1404941810664</created>
+      <updated>1404941810664</updated>
+    </task>
+    <task id="LOCAL-00255" summary="pep8 fixes, remove unused init and empty docstrings">
+      <created>1404941985059</created>
+      <updated>1404941985059</updated>
+    </task>
+    <task id="LOCAL-00256" summary="fix trailing pep8">
+      <created>1404942421910</created>
+      <updated>1404942421910</updated>
+    </task>
+    <task id="LOCAL-00257" summary="fix ExpressionData import">
+      <created>1404943626227</created>
+      <updated>1404943626227</updated>
+    </task>
+    <task id="LOCAL-00258" summary="add imports to predict">
+      <created>1404944578156</created>
+      <updated>1404944578156</updated>
+    </task>
+    <task id="LOCAL-00259" summary="various pep8 fixes">
+      <created>1404955951597</created>
+      <updated>1404955951597</updated>
+    </task>
+    <task id="LOCAL-00260" summary="fix reading path in datapacakg3e from filename">
+      <created>1405020378299</created>
+      <updated>1405020378299</updated>
+    </task>
+    <task id="LOCAL-00261" summary="fix reading path of main data in datapacckage">
+      <created>1405021168099</created>
+      <updated>1405021168099</updated>
+    </task>
+    <task id="LOCAL-00262" summary="remove Study import because it was circular and messing things up">
+      <created>1405021192436</created>
+      <updated>1405021192436</updated>
+    </task>
+    <task id="LOCAL-00263" summary="fix pycharm wrapping annoyance in .travis.yml">
+      <created>1405021794980</created>
+      <updated>1405021794980</updated>
+    </task>
+    <task id="LOCAL-00264" summary="initial work of plotting pooled vs singles splicing">
+      <created>1405049605637</created>
+      <updated>1405049605637</updated>
+    </task>
+    <task id="LOCAL-00265" summary="remove linting from .travis.yml">
+      <created>1405049618531</created>
+      <updated>1405049618531</updated>
+    </task>
+    <task id="LOCAL-00266" summary="Set singles subset to require minimum samples">
+      <created>1405050634871</created>
+      <updated>1405050634871</updated>
+    </task>
+    <task id="LOCAL-00267" summary="bootstrap resample with ALL data (instead of just 90%) this is so that events that JUST BARELY made the min_samples cutoff can still get a shot">
+      <created>1405051641159</created>
+      <updated>1405051641159</updated>
+    </task>
+    <task id="LOCAL-00268" summary="Also plot &quot;x percent&quot; in inconsistent pooled plots">
+      <created>1405052321101</created>
+      <updated>1405052321101</updated>
+    </task>
+    <task id="LOCAL-00269" summary="update readme with how to make docs">
+      <created>1405061940371</created>
+      <updated>1405061940371</updated>
+    </task>
+    <task id="LOCAL-00270" summary="add reducer option to plot_dimensionality_reduction">
+      <created>1405444510972</created>
+      <updated>1405444510972</updated>
+    </task>
+    <task id="LOCAL-00271" summary="add git credentials before pushing to gh-pages">
+      <created>1405446101169</created>
+      <updated>1405446101169</updated>
+    </task>
+    <task id="LOCAL-00272" summary="move documentation push to after_success instead of before_script">
+      <created>1405446166217</created>
+      <updated>1405446166217</updated>
+    </task>
+    <task id="LOCAL-00273" summary="Pooled samples as empty circles, change titles">
+      <created>1405449628784</created>
+      <updated>1405449628784</updated>
+    </task>
+    <task id="LOCAL-00274" summary="Add git config user.email and user.name, remove extra commands for scripts and after_success">
+      <created>1405450431159</created>
+      <updated>1405450431159</updated>
+    </task>
+    <task id="LOCAL-00275" summary="Add docstring for modalities and option for bootstrapped, remove axes from getting created in study.plot_modalities_lavalamps()">
+      <created>1405452183806</created>
+      <updated>1405452183806</updated>
+    </task>
+    <task id="LOCAL-00276" summary="add command to set the https version of the repo as the origin url">
+      <created>1405452524213</created>
+      <updated>1405452524213</updated>
+    </task>
+    <task id="LOCAL-00277" summary="add bootstrapped args to everything">
+      <created>1405453334258</created>
+      <updated>1405453334258</updated>
+    </task>
+    <task id="LOCAL-00278" summary="Move switch between bootstrapped and not, to flotilla.compute.splicing. Add docstring explaining bootstrapped_kws">
+      <created>1405454220200</created>
+      <updated>1405454220200</updated>
+    </task>
+    <task id="LOCAL-00279" summary="set modalities_names for plotting as a result of the unique, assigned modalities">
+      <created>1405469274612</created>
+      <updated>1405469274612</updated>
+    </task>
+    <task id="LOCAL-00280" summary="fix refactoring bug which changed everything to _single_fit_transform">
+      <created>1405469971955</created>
+      <updated>1405469971955</updated>
+    </task>
+    <task id="LOCAL-00281" summary="add olgabot/seaborn clustering2 fork as requirement">
+      <created>1405474966301</created>
+      <updated>1405474966301</updated>
+    </task>
+    <task id="LOCAL-00282" summary="start making clusteredheatmap">
+      <created>1405551935971</created>
+      <updated>1405551935971</updated>
+    </task>
+    <task id="LOCAL-00283" summary="plot_clusteredheatmap works!">
+      <created>1405616037719</created>
+      <updated>1405616037719</updated>
+    </task>
+    <task id="LOCAL-00284" summary="interactive_clusteredheatmap works! plus fixed colors in interactive_pooled_inconsistent">
+      <created>1405617415551</created>
+      <updated>1405617415551</updated>
+    </task>
+    <task id="LOCAL-00285" summary="fix test_expressiondata bug">
+      <created>1405617804735</created>
+      <updated>1405617804735</updated>
+    </task>
+    <task id="LOCAL-00286" summary="edit code in readme to format the whole line">
+      <created>1405618008965</created>
+      <updated>1405618008965</updated>
+    </task>
+    <task id="LOCAL-00287" summary="undo readme formatting changes">
+      <created>1405618097754</created>
+      <updated>1405618097754</updated>
+    </task>
+    <task id="LOCAL-00288" summary="git crap in .travis.yml">
+      <created>1405618154018</created>
+      <updated>1405618154018</updated>
+    </task>
+    <task id="LOCAL-00289" summary="trying to fix dependency on clustering2 fork of seaborn">
+      <created>1405619385566</created>
+      <updated>1405619385567</updated>
+    </task>
+    <task id="LOCAL-00290" summary="trying to fix dependency on clustering2 fork of seaborn">
+      <created>1405624568009</created>
+      <updated>1405624568009</updated>
+    </task>
+    <task id="LOCAL-00291" summary="take out sample subsetting code and replace with Study.sample_subset_to_sample_ids">
+      <created>1405628016617</created>
+      <updated>1405628016617</updated>
+    </task>
+    <task id="LOCAL-00292" summary="add docstring for plot_dimensionality_reduction">
+      <created>1405628040374</created>
+      <updated>1405628040374</updated>
+    </task>
+    <task id="LOCAL-00293" summary="testing diferent requirements.txt stuff">
+      <created>1405628566675</created>
+      <updated>1405628566675</updated>
+    </task>
+    <task id="LOCAL-00294" summary="remove pdb call">
+      <created>1405653223093</created>
+      <updated>1405653223093</updated>
+    </task>
+    <task id="LOCAL-00295" summary="misspelled networkx..">
+      <created>1405653394348</created>
+      <updated>1405653394348</updated>
+    </task>
+    <task id="LOCAL-00296" summary="add fastcluster to requirements">
+      <created>1405653603526</created>
+      <updated>1405653603526</updated>
+    </task>
+    <task id="LOCAL-00297" summary="fix test_expressiondata stuff, move test_subset to test_basedata and parameterized">
+      <created>1405663620251</created>
+      <updated>1405663620251</updated>
+    </task>
+    <task id="LOCAL-00298" summary="whitespace and remove random &quot;pass&quot; statement">
+      <created>1405663834041</created>
+      <updated>1405663834041</updated>
+    </task>
+    <task id="LOCAL-00299" summary="Add default feature and sample subsets to interactive_pca">
+      <created>1405958061285</created>
+      <updated>1405958061285</updated>
+    </task>
+    <task id="LOCAL-00300" summary="fix default sample and feature subsets of interactive_classifier">
+      <created>1405958532710</created>
+      <updated>1405958532710</updated>
+    </task>
+    <task id="LOCAL-00301" summary="move around imports">
+      <created>1405958575992</created>
+      <updated>1405958575992</updated>
+    </task>
+    <task id="LOCAL-00302" summary="make sure &quot;variant&quot; is first feature subset of all interactive classifiers">
+      <created>1405959619288</created>
+      <updated>1405959619288</updated>
+    </task>
+    <task id="LOCAL-00303" summary="fix PCA x- and y-label fontsizes to 10pt">
+      <created>1405959632735</created>
+      <updated>1405959632735</updated>
+    </task>
+    <task id="LOCAL-00304" summary="Add interactive_clusteredheatmap to Study">
+      <created>1405971536304</created>
+      <updated>1405971536304</updated>
+    </task>
+    <task id="LOCAL-00305" summary="fix inserting &quot;variant&quot; into feature subsets">
+      <created>1405971553966</created>
+      <updated>1405971553966</updated>
+    </task>
+    <task id="LOCAL-00306" summary="set default for std_multiplier">
+      <created>1405999671944</created>
+      <updated>1405999671945</updated>
+    </task>
+    <task id="LOCAL-00307" summary="pooled vs single difference threshold has max of 1">
+      <created>1406051508494</created>
+      <updated>1406051508494</updated>
+    </task>
+    <task id="LOCAL-00308" summary="add celltype order">
+      <created>1406051531591</created>
+      <updated>1406051531591</updated>
+    </task>
+    <task id="LOCAL-00309" summary="specify exception of IOError for embark">
+      <created>1406073110857</created>
+      <updated>1406073110857</updated>
+    </task>
+    <task id="LOCAL-00310" summary="violin plots work!">
+      <created>1406077952635</created>
+      <updated>1406077952635</updated>
+    </task>
+    <task id="LOCAL-00311" summary="Fix feature_subsets to all be the same for IPython Interactivity">
+      <created>1406249449375</created>
+      <updated>1406249449375</updated>
+    </task>
+    <task id="LOCAL-00312" summary="Made pca work for featurewise">
+      <created>1406262601526</created>
+      <updated>1406262601526</updated>
+    </task>
+    <task id="LOCAL-00313" summary="remove old PCA code">
+      <created>1406262961825</created>
+      <updated>1406262961825</updated>
+    </task>
+    <task id="LOCAL-00314" summary="pep8 fixes + remove old commented code">
+      <created>1406271795612</created>
+      <updated>1406271795612</updated>
+    </task>
+    <task id="LOCAL-00315" summary="fix trailing linting">
+      <created>1406271880521</created>
+      <updated>1406271880521</updated>
+    </task>
+    <task id="LOCAL-00316" summary="Move test into flotilla so it gets linted too">
+      <created>1406315698820</created>
+      <updated>1406315698820</updated>
+    </task>
+    <task id="LOCAL-00317" summary="Add try/except for phenotype_to_color">
+      <created>1406315723207</created>
+      <updated>1406315723207</updated>
+    </task>
+    <task id="LOCAL-00318" summary="add phenotype info to datapackage">
+      <created>1406315749216</created>
+      <updated>1406315749216</updated>
+    </task>
+    <task id="LOCAL-00319" summary="moved test back out of flotilla because it artificially bumps our test coverage">
+      <created>1406316517528</created>
+      <updated>1406316517528</updated>
+    </task>
+    <task id="LOCAL-00320" summary="Add social rule of &quot;don't accept your own pull requests&quot;">
+      <created>1406330098410</created>
+      <updated>1406330098410</updated>
+    </task>
+    <task id="LOCAL-00321" summary="Fix psi scores to not get standardized, and binned_reduced --&gt; binned_nmf">
+      <created>1406386641133</created>
+      <updated>1406386641133</updated>
+    </task>
+    <task id="LOCAL-00322" summary="hack to get around duplicate feature labels">
+      <created>1406386858474</created>
+      <updated>1406386858474</updated>
+    </task>
+    <task id="LOCAL-00323" summary="Add test directory for linting">
+      <created>1406391775667</created>
+      <updated>1406391775667</updated>
+    </task>
+    <task id="LOCAL-00324" summary="Add linting to PEP8 conventions title">
+      <created>1406391795061</created>
+      <updated>1406391795061</updated>
+    </task>
+    <task id="LOCAL-00325" summary="change experiment_design_data --&gt; metadata in tests">
+      <created>1406392215233</created>
+      <updated>1406392215234</updated>
+    </task>
+    <task id="LOCAL-00326" summary="update docs to build in ./gh-pages">
+      <created>1406392240618</created>
+      <updated>1406392240618</updated>
+    </task>
+    <task id="LOCAL-00327" summary="add test directories to linters">
+      <created>1406392262191</created>
+      <updated>1406392262191</updated>
+    </task>
+    <task id="LOCAL-00328" summary="don't exclude flotilla directory">
+      <created>1406392281524</created>
+      <updated>1406392281524</updated>
+    </task>
+    <task id="LOCAL-00329" summary="merge with dev?">
+      <created>1406392857377</created>
+      <updated>1406392857377</updated>
+    </task>
+    <task id="LOCAL-00330" summary="Move violinplot into visualize.generic with option for splicing or expression data">
+      <created>1406567068601</created>
+      <updated>1406567068601</updated>
+    </task>
+    <task id="LOCAL-00331" summary="change docc build directory ../gh-pages --&gt; ../.gh-pages">
+      <created>1406567151571</created>
+      <updated>1406567151571</updated>
+    </task>
+    <task id="LOCAL-00332" summary="comment out all of test_predict @mlovci please rewrite">
+      <created>1406567365604</created>
+      <updated>1406567365604</updated>
+    </task>
+    <task id="LOCAL-00333" summary="rewrite logic of violinplot">
+      <created>1406567393411</created>
+      <updated>1406567393411</updated>
+    </task>
+    <task id="LOCAL-00334" summary="Fix test_study tests">
+      <created>1406567925225</created>
+      <updated>1406567925225</updated>
+    </task>
+    <task id="LOCAL-00335" summary="initial reworking of visualize predict/classify/graph">
+      <created>1406570861714</created>
+      <updated>1406570861714</updated>
+    </task>
+    <task id="LOCAL-00336" summary="Got event/gene violinplots kind of working but renaming is weird with splicing">
+      <created>1406577645129</created>
+      <updated>1406577645129</updated>
+    </task>
+    <task id="LOCAL-00337" summary="add feature ID shortener into BaseData, move _calculate_linkage into BaseData">
+      <created>1406738902278</created>
+      <updated>1406738902279</updated>
+    </task>
+    <task id="LOCAL-00338" summary="Move _calculate_linkage to BaseData, so ExpressionData and SplicingData just instantiate it">
+      <created>1406738945625</created>
+      <updated>1406738945625</updated>
+    </task>
+    <task id="LOCAL-00339" summary="Add argument for original, unstandardized data to DecompositionViz for violinplots">
+      <created>1406738974871</created>
+      <updated>1406738974871</updated>
+    </task>
+    <task id="LOCAL-00340" summary="initial outliers">
+      <created>1406747961507</created>
+      <updated>1406747961507</updated>
+    </task>
+    <task id="LOCAL-00341" summary="Mahalanobis distance outliers">
+      <created>1406824332362</created>
+      <updated>1406824332362</updated>
+    </task>
+    <task id="LOCAL-00342" summary="Add reduce_kwargs to Study and BaseData.plot_dimensionality_reduction to allow for passing arguments without breaking functionality">
+      <created>1406826360099</created>
+      <updated>1406826360099</updated>
+    </task>
+    <task id="LOCAL-00343" summary="Move bins option of reduce to BaseData">
+      <created>1406827593676</created>
+      <updated>1406827593676</updated>
+    </task>
+    <task id="LOCAL-00344" summary="Add xticklabels to violin">
+      <created>1406828148410</created>
+      <updated>1406828148410</updated>
+    </task>
+    <task id="LOCAL-00345" summary="Move `plot_pooled_dot` from visualize.splicing --&gt; visualize.generic">
+      <created>1406847685501</created>
+      <updated>1406847685501</updated>
+    </task>
+    <task id="LOCAL-00346" summary="threshhold Expresssion.data so there's NaNs for data lower than the threshold">
+      <created>1406847851582</created>
+      <updated>1406847851582</updated>
+    </task>
+    <task id="LOCAL-00347" summary="Set `binify` to default to False for splicing reduction">
+      <created>1406847886466</created>
+      <updated>1406847886466</updated>
+    </task>
+    <task id="LOCAL-00348" summary="add checks for whether all the groups are present in the data, and leave an empty spot if not">
+      <created>1406847920566</created>
+      <updated>1406847920566</updated>
+    </task>
+    <task id="LOCAL-00349" summary="Move feature subset (variant, all_genes, etc) creations to a property of BaseData">
+      <created>1406911071339</created>
+      <updated>1406911071339</updated>
+    </task>
+    <task id="LOCAL-00350" summary="rename plot_feature_violins --&gt; plot_violins">
+      <created>1406911092787</created>
+      <updated>1406911092787</updated>
+    </task>
+    <task id="LOCAL-00351" summary="Add xticks to violinplots">
+      <created>1406911112161</created>
+      <updated>1406911112161</updated>
+    </task>
+    <task id="LOCAL-00352" summary="move violinplot call to BaseData, so splicing has Splicing.plot_event as a specific implementation">
+      <created>1406929907735</created>
+      <updated>1406929907735</updated>
+    </task>
+    <task id="LOCAL-00353" summary="Add outliers to violinplot">
+      <created>1406929974154</created>
+      <updated>1406929974154</updated>
+    </task>
+    <task id="LOCAL-00354" summary="Add outliers to violinplots, abstract out actual violniplot making">
+      <created>1406938595523</created>
+      <updated>1406938595523</updated>
+    </task>
+    <task id="LOCAL-00355" summary="Fix subset_pooled_and_single to handle sample_ids=None">
+      <created>1406938630924</created>
+      <updated>1406938630924</updated>
+    </task>
+    <task id="LOCAL-00356" summary="Pass DataModel to reducer for access to _violinplot, change violinplot calls to use the DataModel's">
+      <created>1406938662274</created>
+      <updated>1406938662274</updated>
+    </task>
+    <task id="LOCAL-00357" summary="Add code to save violins figure">
+      <created>1407178283002</created>
+      <updated>1407178283002</updated>
+    </task>
+    <task id="LOCAL-00358" summary="Clean up reduce code now that we send over the DataModel too">
+      <created>1407178310261</created>
+      <updated>1407178310261</updated>
+    </task>
+    <task id="LOCAL-00359" summary="Remove old reduce code, and save the reduced space and violins fig separately as part of DecompositionViz">
+      <created>1407178353369</created>
+      <updated>1407178353369</updated>
+    </task>
+    <task id="LOCAL-00360" summary="Save the expression threshold">
+      <created>1407178370543</created>
+      <updated>1407178370544</updated>
+    </task>
+    <task id="LOCAL-00361" summary="Fix docstring">
+      <created>1407178382428</created>
+      <updated>1407178382428</updated>
+    </task>
+    <task id="LOCAL-00362" summary="violinplot: Fix offset of pooled dot, xlimits, and rename making violins of single sets of data">
+      <created>1407190298457</created>
+      <updated>1407190298457</updated>
+    </task>
+    <task id="LOCAL-00363" summary="Fix set union and specify when plot_violins must be added">
+      <created>1407190324923</created>
+      <updated>1407190324923</updated>
+    </task>
+    <task id="LOCAL-00364" summary="Move __call__ to top of PredictorViz for clarity">
+      <created>1407190384495</created>
+      <updated>1407190384495</updated>
+    </task>
+    <task id="LOCAL-00365" summary="Add defaults for plot_classifier">
+      <created>1407200541381</created>
+      <updated>1407200541381</updated>
+    </task>
+    <task id="LOCAL-00366" summary="fix predictor viz">
+      <created>1407359183530</created>
+      <updated>1407359183530</updated>
+    </task>
+    <task id="LOCAL-00367" summary="update example data">
+      <created>1407448694749</created>
+      <updated>1407448694749</updated>
+    </task>
+    <task id="LOCAL-00368" summary="Test fixes">
+      <created>1407448718767</created>
+      <updated>1407448718767</updated>
+    </task>
+    <task id="LOCAL-00369" summary="add datapackage directory for appending to path, data_package --&gt; datapackage">
+      <created>1407448781684</created>
+      <updated>1407448781684</updated>
+    </task>
+    <task id="LOCAL-00370" summary="fix violinplot to dropna and if there's only one dot for a single color">
+      <created>1407448813996</created>
+      <updated>1407448813996</updated>
+    </task>
+    <task id="LOCAL-00371" summary="fix embark to check if the &quot;study_name&quot; is really a link to a datapackage file">
+      <created>1407448841234</created>
+      <updated>1407448841234</updated>
+    </task>
+    <task id="LOCAL-00372" summary="Move Study properties to MetaData">
+      <created>1407455011013</created>
+      <updated>1407455011013</updated>
+    </task>
+    <task id="LOCAL-00373" summary="plot_classifier works with colors!">
+      <created>1407461100665</created>
+      <updated>1407461100665</updated>
+    </task>
+    <task id="LOCAL-00374" summary="Add metadata/spikein/mapping stats files">
+      <created>1407461131247</created>
+      <updated>1407461131247</updated>
+    </task>
+    <task id="LOCAL-00375" summary="Add sample_id_to_color back">
+      <created>1407511050857</created>
+      <updated>1407511050857</updated>
+    </task>
+    <task id="LOCAL-00376" summary="Fix feature subsets of interactive_*">
+      <created>1407511079396</created>
+      <updated>1407511079397</updated>
+    </task>
+    <task id="LOCAL-00377" summary="fix data types in feature subsets">
+      <created>1407515827279</created>
+      <updated>1407515827279</updated>
+    </task>
+    <task id="LOCAL-00378" summary="move plot_nmf_transitions to BaseData, remove pooled label in violinplot (make it not the default), remove NMFViz __call__">
+      <created>1407526523006</created>
+      <updated>1407526523007</updated>
+    </task>
+    <task id="LOCAL-00379" summary="Fix docstring of binify">
+      <created>1407526542719</created>
+      <updated>1407526542719</updated>
+    </task>
+    <task id="LOCAL-00380" summary="Add check for whether bins is None">
+      <created>1407780499501</created>
+      <updated>1407780499501</updated>
+    </task>
+    <task id="LOCAL-00381" summary="min samlpes to 5, change feature subsets to have at least 10 feature ids in each category, edit binify to dropna, add xlabel/ylabel to violinplot, add NMF space transitions">
+      <created>1407780588103</created>
+      <updated>1407780588103</updated>
+    </task>
+    <task id="LOCAL-00382" summary="Make custom binify for expression data">
+      <created>1407780606215</created>
+      <updated>1407780606215</updated>
+    </task>
+    <task id="LOCAL-00383" summary="Fix xlabel/ylabel for violinplots in plot_feature">
+      <created>1407780633486</created>
+      <updated>1407780633486</updated>
+    </task>
+    <task id="LOCAL-00384" summary="Add plot_big_nmf_space_transitions">
+      <created>1407780649286</created>
+      <updated>1407780649286</updated>
+    </task>
+    <task id="LOCAL-00385" summary="data_obj --&gt; DataModel, and add feature_renamer if featurewise">
+      <created>1407796305533</created>
+      <updated>1407796305533</updated>
+    </task>
+    <task id="LOCAL-00386" summary="Move renamed_to_feature_id to a property">
+      <created>1407796330590</created>
+      <updated>1407796330590</updated>
+    </task>
+    <task id="LOCAL-00387" summary="Fix featurewise for plot_graph, make phenotype_subset_to_sample_ids be able to take just a list of ids, and move default_sample_subsets to a property">
+      <created>1407796409802</created>
+      <updated>1407796409802</updated>
+    </task>
+    <task id="LOCAL-00388" summary="Remove samples with less than a minimum number of mapped reads (default 1 million)">
+      <created>1407805408414</created>
+      <updated>1407805408414</updated>
+    </task>
+    <task id="LOCAL-00389" summary="experiment_design_data --&gt; metadata">
+      <created>1407805421750</created>
+      <updated>1407805421750</updated>
+    </task>
+    <task id="LOCAL-00390" summary="remove commented out code, make technical_outliers an attribute of Study">
+      <created>1407805647630</created>
+      <updated>1407805647630</updated>
+    </task>
+    <task id="LOCAL-00391" summary="uncomment predictor_config_manager stuff">
+      <created>1407806036540</created>
+      <updated>1407806036540</updated>
+    </task>
+    <task id="LOCAL-00392" summary="add natural sort function">
+      <created>1407866762888</created>
+      <updated>1407866762888</updated>
+    </task>
+    <task id="LOCAL-00393" summary="sort the feature subsets with natural sort">
+      <created>1407866792984</created>
+      <updated>1407866792984</updated>
+    </task>
+    <task id="LOCAL-00394" summary="remove import of PCAViz in compute">
+      <created>1407866826163</created>
+      <updated>1407866826163</updated>
+    </task>
+    <task id="LOCAL-00395" summary="add technical outliers to ExpressionData and SplicingData, comment out config manager stuff">
+      <created>1407866855314</created>
+      <updated>1407866855314</updated>
+    </task>
+    <task id="LOCAL-00396" summary="fix setup.py?">
+      <created>1407867067369</created>
+      <updated>1407867067369</updated>
+    </task>
+    <task id="LOCAL-00397" summary="Add fuzzy feature acceptance for `plot_feature`">
+      <created>1407885907345</created>
+      <updated>1407885907345</updated>
+    </task>
+    <task id="LOCAL-00398" summary="add option for phenotype_subset to just be a list of samples">
+      <created>1407885974807</created>
+      <updated>1407885974807</updated>
+    </task>
+    <task id="LOCAL-00399" summary="add logic for not removing outliers if they're not there">
+      <created>1407889177451</created>
+      <updated>1407889177451</updated>
+    </task>
+    <task id="LOCAL-00400" summary="Fix returning samples with too few mapped">
+      <created>1408032556421</created>
+      <updated>1408032556421</updated>
+    </task>
+    <task id="LOCAL-00401" summary="comment out predictor config managers">
+      <created>1408032582012</created>
+      <updated>1408032582012</updated>
+    </task>
+    <task id="LOCAL-00402" summary="fix DecompositionViz to not inherit from PCA ands such">
+      <created>1408053271573</created>
+      <updated>1408053271573</updated>
+    </task>
+    <task id="LOCAL-00403" summary="add logic for not removing outliers if they're not there">
+      <created>1408378909092</created>
+      <updated>1408378909092</updated>
+    </task>
+    <task id="LOCAL-00404" summary="{PCA,NMF}Viz -&gt; DataFrame{PCA,NMF} call">
+      <created>1408378952954</created>
+      <updated>1408378952954</updated>
+    </task>
+    <task id="LOCAL-00405" summary="Add PredictorConfigManager back in, fix self._subset_singles_and_pooled, fix plot_feature to fail gracefully if there's no NMF  space transitions for that event">
+      <created>1408379111358</created>
+      <updated>1408379111358</updated>
+    </task>
+    <task id="LOCAL-00406" summary="Edit ExpressionData.binify to normalize all features from 0 to 1">
+      <created>1408379306373</created>
+      <updated>1408379306373</updated>
+    </task>
+    <task id="LOCAL-00407" summary="Fix pooled vs singles inconsistent to drop not measured in pooled">
+      <created>1408379399712</created>
+      <updated>1408379399712</updated>
+    </task>
+    <task id="LOCAL-00408" summary="Fix lavalamp pooled inconsistent in study">
+      <created>1408379464023</created>
+      <updated>1408379464023</updated>
+    </task>
+    <task id="LOCAL-00409" summary="update requirements, setup.py, version bump to 0.1.0">
+      <created>1408379708766</created>
+      <updated>1408379708767</updated>
+    </task>
+    <task id="LOCAL-00410" summary="Fix tests">
+      <created>1408379869290</created>
+      <updated>1408379869290</updated>
+    </task>
+    <task id="LOCAL-00411" summary="Trying to use https://github.com/teracy-official/sphinx-deployment for sphinx doc building">
+      <created>1408381294218</created>
+      <updated>1408381294218</updated>
+    </task>
+    <task id="LOCAL-00412" summary="add files from https://github.com/teracy-official/sphinx-deployment">
+      <created>1408381342354</created>
+      <updated>1408381342354</updated>
+    </task>
+    <task id="LOCAL-00413" summary="trying to fix tests again">
+      <created>1408381350291</created>
+      <updated>1408381350291</updated>
+    </task>
+    <task id="LOCAL-00414" summary="fix travis.yml">
+      <created>1408381571095</created>
+      <updated>1408381571095</updated>
+    </task>
+    <task id="LOCAL-00415" summary="Add comment on using gitflow">
+      <created>1408381989272</created>
+      <updated>1408381989272</updated>
+    </task>
+    <task id="LOCAL-00416" summary="add comment for using coveralls">
+      <created>1408382006030</created>
+      <updated>1408382006030</updated>
+    </task>
+    <task id="LOCAL-00417" summary="remove doc-only installs from requirements.txt">
+      <created>1408382097631</created>
+      <updated>1408382097631</updated>
+    </task>
+    <task id="LOCAL-00418" summary="add exception for if you can't download species datapackage">
+      <created>1408394162727</created>
+      <updated>1408394162728</updated>
+    </task>
+    <task id="LOCAL-00419" summary="add exception for filtering on gene type">
+      <created>1408395464957</created>
+      <updated>1408395464957</updated>
+    </task>
+    <task id="LOCAL-00420" summary="Add &quot;not&quot; features for feature subsets">
+      <created>1408395767100</created>
+      <updated>1408395767100</updated>
+    </task>
+    <task id="LOCAL-00421" summary="remove plot_clusteredheatmap from options">
+      <created>1408395861331</created>
+      <updated>1408395861331</updated>
+    </task>
+    <task id="LOCAL-00422" summary="Fix feature_subsets from increasing in dict size during loop">
+      <created>1408396626968</created>
+      <updated>1408396626968</updated>
+    </task>
+    <task id="LOCAL-00423" summary="Add &quot;Agg&quot; backend for matplotlib so travis-ci won't complain about the DISPLAY variable">
+      <created>1408396901425</created>
+      <updated>1408396901426</updated>
+    </task>
+    <task id="LOCAL-00424" summary="Remove interactive_localZ">
+      <created>1408397609548</created>
+      <updated>1408397609548</updated>
+    </task>
+    <task id="LOCAL-00425" summary="bunch of fixes for Decomposition viz, pooled samples, and saving datapackages">
+      <created>1408398676216</created>
+      <updated>1408398676216</updated>
+    </task>
+    <task id="LOCAL-00426" summary="gracefully fail for feature_renamer_series">
+      <created>1408404808227</created>
+      <updated>1408404808227</updated>
+    </task>
+    <task id="LOCAL-00427" summary="remove pdb set_trace">
+      <created>1408406470393</created>
+      <updated>1408406470393</updated>
+    </task>
+    <task id="LOCAL-00428" summary="add link for flotilla image??">
+      <created>1408406482350</created>
+      <updated>1408406482350</updated>
+    </task>
+    <task id="LOCAL-00429" summary="switch around order of README.rst and flotilla.png">
+      <created>1408406548888</created>
+      <updated>1408406548888</updated>
+    </task>
+    <task id="LOCAL-00430" summary="re-fix feature_renamer_series">
+      <created>1408407978853</created>
+      <updated>1408407978853</updated>
+    </task>
+    <task id="LOCAL-00431" summary="travis order fixes">
+      <created>1408408841837</created>
+      <updated>1408408841837</updated>
+    </task>
+    <task id="LOCAL-00432" summary="add feature_of_interest=None for plot graph so it doesn't complain about RBFOX2">
+      <created>1408410272574</created>
+      <updated>1408410272574</updated>
+    </task>
+    <task id="LOCAL-00433" summary="add more graceful failures for plotting a feature_of_interest">
+      <created>1408410356385</created>
+      <updated>1408410356385</updated>
+    </task>
+    <task id="LOCAL-00434" summary="change &quot;--set-upstream&quot; --&gt; &quot;--set-upstream-to&quot;">
+      <created>1408476631633</created>
+      <updated>1408476631633</updated>
+    </task>
+    <task id="LOCAL-00435" summary="fix defaults for metadata so don't need to specify &quot;pooled&quot; or &quot;phenotype&quot; column">
+      <created>1408641290670</created>
+      <updated>1408641290670</updated>
+    </task>
+    <task id="LOCAL-00436" summary="add and fix tests for study if columns in the datapackage aren't specified">
+      <created>1408733841726</created>
+      <updated>1408733841726</updated>
+    </task>
+    <task id="LOCAL-00437" summary="fix toy init tests">
+      <created>1408838318677</created>
+      <updated>1408838318678</updated>
+    </task>
+    <task id="LOCAL-00438" summary="fix &quot;make setup_gh_pages&quot; ?">
+      <created>1408854682450</created>
+      <updated>1408854682450</updated>
+    </task>
+    <task id="LOCAL-00439" summary="Add DataFrame ICA">
+      <created>1408981844062</created>
+      <updated>1408981844063</updated>
+    </task>
+    <task id="LOCAL-00440" summary="fix violinplot of decomposition to plot ALL top features">
+      <created>1408982054480</created>
+      <updated>1408982054480</updated>
+    </task>
+    <task id="LOCAL-00441" summary="add a list to test with for interactive_pca">
+      <created>1408982895190</created>
+      <updated>1408982895190</updated>
+    </task>
+    <task id="LOCAL-00442" summary="initial commit of properly saving datapackages">
+      <created>1408983755125</created>
+      <updated>1408983755125</updated>
+    </task>
+    <task id="LOCAL-00443" summary="mapped_reads --&gt; number_mapped&#10;">
+      <created>1409038268567</created>
+      <updated>1409038268567</updated>
+    </task>
+    <task id="LOCAL-00444" summary="remove pdb/set_trace()">
+      <created>1409038305331</created>
+      <updated>1409038305331</updated>
+    </task>
+    <task id="LOCAL-00445" summary="remove pooled samples from data">
+      <created>1409156060195</created>
+      <updated>1409156060195</updated>
+    </task>
+    <task id="LOCAL-00446" summary="add all datapackage parameters to study object">
+      <created>1409156096205</created>
+      <updated>1409156096205</updated>
+    </task>
+    <task id="LOCAL-00447" summary="Add option to not load species data">
+      <created>1409156120421</created>
+      <updated>1409156120421</updated>
+    </task>
+    <task id="LOCAL-00448" summary="add more datapackage attributes to reading the datapackage">
+      <created>1409157850920</created>
+      <updated>1409157850920</updated>
+    </task>
+    <task id="LOCAL-00449" summary="fixing up datapackage stuf">
+      <created>1409157874427</created>
+      <updated>1409157874427</updated>
+    </task>
+    <task id="LOCAL-00450" summary="fix subsetting with a single feature ID">
+      <created>1409158334253</created>
+      <updated>1409158334253</updated>
+    </task>
+    <task id="LOCAL-00451" summary="test Study.save() works!!!">
+      <created>1409162619264</created>
+      <updated>1409162619264</updated>
+    </task>
+    <task id="LOCAL-00452" summary="test passing??">
+      <created>1409163561181</created>
+      <updated>1409163561181</updated>
+    </task>
+    <task id="LOCAL-00453" summary="fix typo">
+      <created>1409243233842</created>
+      <updated>1409243233842</updated>
+    </task>
+    <task id="LOCAL-00454" summary="Assign colors in the init, fix % variance explained to actually show percentage and not fraction">
+      <created>1409539796016</created>
+      <updated>1409539796016</updated>
+    </task>
+    <task id="LOCAL-00455" summary="add explained variance ratio to call for decompositionviz">
+      <created>1409541374284</created>
+      <updated>1409541374284</updated>
+    </task>
+    <task id="LOCAL-00456" summary="Add categorical groupby coloring for predictor and explained variance ratio call">
+      <created>1409541435003</created>
+      <updated>1409541435003</updated>
+    </task>
+    <task id="LOCAL-00457" summary="move init to first function of PredictorConfigManager">
+      <created>1409771747856</created>
+      <updated>1409771747856</updated>
+    </task>
+    <task id="LOCAL-00458" summary="add categorical columns to classifier, except for &quot;outlier&quot;">
+      <created>1409793561394</created>
+      <updated>1409793561394</updated>
+    </task>
+    <task id="LOCAL-00459" summary="reformat for pep8">
+      <created>1409849913287</created>
+      <updated>1409849913287</updated>
+    </task>
+    <task id="LOCAL-00460" summary="don't memoize pca/nmf for classifier, since self.subset_ can change with different parameters">
+      <created>1409850914964</created>
+      <updated>1409850914964</updated>
+    </task>
+    <task id="LOCAL-00461" summary="reformatting (&lt;80 column lines)">
+      <created>1409850948567</created>
+      <updated>1409850948567</updated>
+    </task>
+    <task id="LOCAL-00462" summary="remove pdb call">
+      <created>1409851430352</created>
+      <updated>1409851430353</updated>
+    </task>
+    <task id="LOCAL-00463" summary="Fix classifier plotting bug">
+      <created>1409947172784</created>
+      <updated>1409947172784</updated>
+    </task>
+    <task id="LOCAL-00464" summary="Add whether or not the decomposition is featurewise to the call, to know whether or not to draw violinplots">
+      <created>1409947209346</created>
+      <updated>1409947209347</updated>
+    </task>
+    <task id="LOCAL-00465" summary="Add tests for list_link, and pca with list subsets">
+      <created>1409947246896</created>
+      <updated>1409947246896</updated>
+    </task>
+    <task id="LOCAL-00466" summary="Add official version">
+      <created>1409956298920</created>
+      <updated>1409956298920</updated>
+    </task>
+    <task id="LOCAL-00467" summary="Add official version">
+      <created>1409956369146</created>
+      <updated>1409956369147</updated>
+    </task>
+    <task id="LOCAL-00468" summary="fix test_external, remove test_ipython_interact">
+      <created>1409956987674</created>
+      <updated>1409956987674</updated>
+    </task>
+    <task id="LOCAL-00469" summary="add test gene list">
+      <created>1409957462100</created>
+      <updated>1409957462100</updated>
+    </task>
+    <task id="LOCAL-00470" summary="fix feature_subset fixture for plot_pca test">
+      <created>1409958187813</created>
+      <updated>1409958187813</updated>
+    </task>
+    <task id="LOCAL-00471" summary="Made &quot;version&quot; a required argument to Study (so &quot;save&quot; of a study bumps the version number correctly)">
+      <created>1409961968895</created>
+      <updated>1409961968895</updated>
+    </task>
+    <task id="LOCAL-00472" summary="move expression threshold to be on the raw data, not hte logged data">
+      <created>1409963470103</created>
+      <updated>1409963470103</updated>
+    </task>
+    <task id="LOCAL-00473" summary="move expression threshold cutoff to before log-transforming data">
+      <created>1409963564692</created>
+      <updated>1409963564692</updated>
+    </task>
+    <task id="LOCAL-00474" summary="actually move expression threshold">
+      <created>1409963636814</created>
+      <updated>1409963636814</updated>
+    </task>
+    <task id="LOCAL-00475" summary="fix expressiondata and study tests">
+      <created>1409973467004</created>
+      <updated>1409973467004</updated>
+    </task>
+    <task id="LOCAL-00476" summary="make plotting NMF space optional (saves plotting time)">
+      <created>1410256848083</created>
+      <updated>1410256848083</updated>
+    </task>
+    <task id="LOCAL-00477" summary="if feature_data is None, make an empty DataFrame for feature subsetting">
+      <created>1411516119819</created>
+      <updated>1411516119819</updated>
+    </task>
+    <task id="LOCAL-00478" summary="remove big block of commented code">
+      <created>1411578206886</created>
+      <updated>1411578206886</updated>
+    </task>
+    <task id="LOCAL-00479" summary="Never standardize SplicingData, since it's already standardized from 0 to 1">
+      <created>1411578450844</created>
+      <updated>1411578450845</updated>
+    </task>
+    <task id="LOCAL-00480" summary="Add option to turn off creation of violinplots in plot_pca because it can take a long time">
+      <created>1412103131880</created>
+      <updated>1412103131880</updated>
+    </task>
+    <task id="LOCAL-00481" summary="Add NumFOCUS logo to README">
+      <created>1412104939512</created>
+      <updated>1412104939512</updated>
+    </task>
+    <task id="LOCAL-00482" summary="whitespace fixes">
+      <created>1412279690270</created>
+      <updated>1412279690270</updated>
+    </task>
+    <task id="LOCAL-00483" summary="Use vanilla PCA instead of RandomizedPCA, which takes forever">
+      <created>1412287498370</created>
+      <updated>1412287498370</updated>
+    </task>
+    <task id="LOCAL-00484" summary="remove random_state from DataFramePCA call">
+      <created>1412289104255</created>
+      <updated>1412289104255</updated>
+    </task>
+    <task id="LOCAL-00485" summary="version bump for https://github.com/YeoLab/flotilla/issues/111">
+      <created>1412295386246</created>
+      <updated>1412295386246</updated>
+    </task>
+    <task id="LOCAL-00486" summary="refactor of BaseData, Study, ExpressionData.&#10;&#10;&quot;self.pooled&quot; and &quot;self.outliers&quot; and &quot;self.singles&quot; are now properties">
+      <created>1412711035515</created>
+      <updated>1412711035515</updated>
+    </task>
+    <task id="LOCAL-00487" summary="refactor of the backend way that data is stored">
+      <created>1412740155018</created>
+      <updated>1412740155019</updated>
+    </task>
+    <task id="LOCAL-00488" summary="define github repo, at --set-upstream for deploy_gh_pages">
+      <created>1412740248970</created>
+      <updated>1412740248970</updated>
+    </task>
+    <task id="LOCAL-00489" summary="be more specific to specify github upstream branches">
+      <created>1412740842691</created>
+      <updated>1412740842691</updated>
+    </task>
+    <task id="LOCAL-00490" summary="add another git pull command because why not">
+      <created>1412742007777</created>
+      <updated>1412742007777</updated>
+    </task>
+    <task id="LOCAL-00491" summary="restore original sphinx_deployment.mk commands">
+      <created>1412881462969</created>
+      <updated>1412881462969</updated>
+    </task>
+    <task id="LOCAL-00492" summary="set git config to push to the matching branch">
+      <created>1412882902135</created>
+      <updated>1412882902135</updated>
+    </task>
+    <task id="LOCAL-00493" summary="add git config to pull to the matching repo">
+      <created>1412883487648</created>
+      <updated>1412883487648</updated>
+    </task>
+    <task id="LOCAL-00494" summary="add more verbose debugging to docs deployment">
+      <created>1412883774165</created>
+      <updated>1412883774165</updated>
+    </task>
+    <task id="LOCAL-00495" summary="remove &quot;@&quot; symbols fom makefile, change --set-upstream (deprecated) --&gt; --track">
+      <created>1412884196223</created>
+      <updated>1412884196223</updated>
+    </task>
+    <task id="LOCAL-00496" summary="remove -d (verbose debugging) from makefile">
+      <created>1412884209944</created>
+      <updated>1412884209944</updated>
+    </task>
+    <task id="LOCAL-00497" summary="fix git branching, remove DEPLOY_HTML_DIR">
+      <created>1412886500940</created>
+      <updated>1412886500941</updated>
+    </task>
+    <task id="LOCAL-00498" summary="spaces --&gt; tabs for Makefile indentation">
+      <created>1412888148998</created>
+      <updated>1412888148998</updated>
+    </task>
+    <task id="LOCAL-00499" summary="get rid of StudyFactory, revamp internals with pooled/singled/data">
+      <created>1413406889033</created>
+      <updated>1413406889033</updated>
+    </task>
+    <task id="LOCAL-00500" summary="Update developement instructions">
+      <created>1413408144580</created>
+      <updated>1413408144580</updated>
+    </task>
+    <task id="LOCAL-00501" summary="fix ipython_interact and subsets">
+      <created>1414174194083</created>
+      <updated>1414174194083</updated>
+    </task>
+    <task id="LOCAL-00502" summary="add spearmanr_series and spearmanr_dataframe">
+      <created>1414174451061</created>
+      <updated>1414174451061</updated>
+    </task>
+    <task id="LOCAL-00503" summary="rename metadata kwargs to be prepended with &quot;metadata_&quot;">
+      <created>1414447478022</created>
+      <updated>1414447478022</updated>
+    </task>
+    <task id="LOCAL-00504" summary="add timestamps to stdout ouptuts">
+      <created>1414454571659</created>
+      <updated>1414454571659</updated>
+    </task>
+    <task id="LOCAL-00505" summary="move thresholding into BaseData">
+      <created>1414461413901</created>
+      <updated>1414461413901</updated>
+    </task>
+    <task id="LOCAL-00506" summary="decontaminate DataModel from DecompositionViz">
+      <created>1414466591266</created>
+      <updated>1414466591266</updated>
+    </task>
+    <task id="LOCAL-00507" summary="docs cleanup and add installation, what's new">
+      <created>1414466638273</created>
+      <updated>1414466638273</updated>
+    </task>
+    <task id="LOCAL-00508" summary="make feature_renamer compatible with multiindexes">
+      <created>1414468030385</created>
+      <updated>1414468030385</updated>
+    </task>
+    <task id="LOCAL-00509" summary="speed up feature data selection">
+      <created>1414471185737</created>
+      <updated>1414471185738</updated>
+    </task>
+    <task id="LOCAL-00510" summary="move test dir to flotilla">
+      <created>1414471229046</created>
+      <updated>1414471229046</updated>
+    </task>
+    <task id="LOCAL-00511" summary="remove &quot;color_ordered&quot; from plot pca input">
+      <created>1414471378062</created>
+      <updated>1414471378062</updated>
+    </task>
+    <task id="LOCAL-00512" summary="reorganize external/util files">
+      <created>1414472333512</created>
+      <updated>1414472333513</updated>
+    </task>
+    <task id="LOCAL-00513" summary="move tests to flotilla">
+      <created>1414472367138</created>
+      <updated>1414472367138</updated>
+    </task>
+    <task id="LOCAL-00514" summary="Don't add to the feature_data column if the &quot;gene_name&quot; column is already there">
+      <created>1414472435650</created>
+      <updated>1414472435651</updated>
+    </task>
+    <task id="LOCAL-00515" summary="adjustments to reorg of external/util, add feature data to saved datapackage">
+      <created>1414472500281</created>
+      <updated>1414472500281</updated>
+    </task>
+    <task id="LOCAL-00516" summary="Save feature data with a datapackage">
+      <created>1414520091624</created>
+      <updated>1414520091624</updated>
+    </task>
+    <task id="LOCAL-00517" summary="change default colors to Dark2 instead of Set1">
+      <created>1414522020082</created>
+      <updated>1414522020082</updated>
+    </task>
+    <task id="LOCAL-00518" summary="fix loading of species data, and make all resource dfs kwargs">
+      <created>1414522044415</created>
+      <updated>1414522044415</updated>
+    </task>
+    <task id="LOCAL-00519" summary="plot pooled and outliers  on PCA :)">
+      <created>1414522075290</created>
+      <updated>1414522075290</updated>
+    </task>
+    <task id="LOCAL-00520" summary="don't try to plot pooled, outliers on PCA if the dataframe is empty">
+      <created>1414522219815</created>
+      <updated>1414522219816</updated>
+    </task>
+    <task id="LOCAL-00521" summary="Make PCA figure smaller (and thus text bigger)">
+      <created>1414522410599</created>
+      <updated>1414522410599</updated>
+    </task>
+    <task id="LOCAL-00522" summary="fix makefile for new test dir location">
+      <created>1414522560910</created>
+      <updated>1414522560915</updated>
+    </task>
+    <task id="LOCAL-00523" summary="Change default sample subset to be calculated in MetaData">
+      <created>1414525984699</created>
+      <updated>1414525984699</updated>
+    </task>
+    <task id="LOCAL-00524" summary="some pep8 fixes">
+      <created>1414526001634</created>
+      <updated>1414526001634</updated>
+    </task>
+    <task id="LOCAL-00525" summary="add global variable for minimum feature subset size">
+      <created>1414526020400</created>
+      <updated>1414526020400</updated>
+    </task>
+    <task id="LOCAL-00526" summary="add columns to ignore in the feature data when creating subsets (e.g. gencode_id, etc)">
+      <created>1414529598258</created>
+      <updated>1414529598258</updated>
+    </task>
+    <task id="LOCAL-00527" summary="update example data for testing to shalek2013 because it loads super fast">
+      <created>1414531939243</created>
+      <updated>1414531939243</updated>
+    </task>
+    <task id="LOCAL-00528" summary="add datapackage for shalek2013">
+      <created>1414531958540</created>
+      <updated>1414531958540</updated>
+    </task>
+    <task id="LOCAL-00529" summary="remove thresholded property from ExpressionData since its in BaseData">
+      <created>1414534747362</created>
+      <updated>1414534747362</updated>
+    </task>
+    <task id="LOCAL-00530" summary="tests pass!!">
+      <created>1414556974285</created>
+      <updated>1414556974285</updated>
+    </task>
+    <task id="LOCAL-00531" summary="fixing classifier violinplot colors">
+      <created>1414601455022</created>
+      <updated>1414601455022</updated>
+    </task>
+    <task id="LOCAL-00532" summary="omit test directory from coverage counts">
+      <created>1414601714590</created>
+      <updated>1414601714590</updated>
+    </task>
+    <task id="LOCAL-00533" summary="Save datapackages to ~/flotilla_projects/datapackage_name">
+      <created>1414691523800</created>
+      <updated>1414691523800</updated>
+    </task>
+    <task id="LOCAL-00534" summary="update datapackage base url">
+      <created>1414691541815</created>
+      <updated>1414691541815</updated>
+    </task>
+    <task id="LOCAL-00535" summary="whitespace fixes">
+      <created>1414692407162</created>
+      <updated>1414692407162</updated>
+    </task>
+    <task id="LOCAL-00536" summary="use non-gzipped csvs over the internet because pandas is stupid">
+      <created>1414692432932</created>
+      <updated>1414692432932</updated>
+    </task>
+    <task id="LOCAL-00537" summary="cleanup commented code">
+      <created>1414693079717</created>
+      <updated>1414693079717</updated>
+    </task>
+    <task id="LOCAL-00538" summary="update TestStudy.test_save to work with url datapackages">
+      <created>1414693520940</created>
+      <updated>1414693520940</updated>
+    </task>
+    <task id="LOCAL-00539" summary="update matplotlib backend, and move example_datapackage to conftest.py for consistency in opening urls">
+      <created>1414694721831</created>
+      <updated>1414694721844</updated>
+    </task>
+    <task id="LOCAL-00540" summary="add DISPLAY variable to before_install">
+      <created>1414695869044</created>
+      <updated>1414695869044</updated>
+    </task>
+    <task id="LOCAL-00541" summary="Fix type of single_fit_transform">
+      <created>1414697587430</created>
+      <updated>1414697587430</updated>
+    </task>
+    <task id="LOCAL-00542" summary="Fixup travis script??">
+      <created>1414697598773</created>
+      <updated>1414697598774</updated>
+    </task>
+    <task id="LOCAL-00543" summary="fix make coverage line, also test branching">
+      <created>1414697706611</created>
+      <updated>1414697706611</updated>
+    </task>
+    <task id="LOCAL-00544" summary="set mpl.use(&quot;Agg&quot;) before &quot;import matplotlib.pyplot as plt&quot;">
+      <created>1414699106649</created>
+      <updated>1414699106649</updated>
+    </task>
+    <task id="LOCAL-00545" summary="add matplotlibrc with &quot;backend : Agg&quot; for Travis-CI testing">
+      <created>1414699500979</created>
+      <updated>1414699500980</updated>
+    </task>
+    <task id="LOCAL-00546" summary="actually add matplotlibrc file">
+      <created>1414699987413</created>
+      <updated>1414699987413</updated>
+    </task>
+    <task id="LOCAL-00547" summary="change theme to paper">
+      <created>1414703848808</created>
+      <updated>1414703848808</updated>
+    </task>
+    <task id="LOCAL-00548" summary="violinplot: add docstring, and check all data types for the order">
+      <created>1414869452934</created>
+      <updated>1414869452934</updated>
+    </task>
+    <task id="LOCAL-00549" summary="sharey axis between all violinplots, and don't plot the renamed ID if it's the same as the original feature ID">
+      <created>1414869493197</created>
+      <updated>1414869493197</updated>
+    </task>
+    <task id="LOCAL-00550" summary="move data_type definition into BaseData">
+      <created>1414870311121</created>
+      <updated>1414870311121</updated>
+    </task>
+    <task id="LOCAL-00551" summary="Warn user that samples are being removed for having too few reads">
+      <created>1414871733580</created>
+      <updated>1414871733580</updated>
+    </task>
+    <task id="LOCAL-00552" summary="fix parens in output message for too few mapped reads">
+      <created>1414871867164</created>
+      <updated>1414871867164</updated>
+    </task>
+    <task id="LOCAL-00553" summary="change saved data to always be the original data">
+      <created>1414872289533</created>
+      <updated>1414872289533</updated>
+    </task>
+    <task id="LOCAL-00554" summary="Move set_outliers_by_mergin_columns and merge_boolean_metadata_columns to MetaData">
+      <created>1414874001001</created>
+      <updated>1414874001001</updated>
+    </task>
+    <task id="LOCAL-00555" summary="add docstring to set_outliers_by_merging_columns">
+      <created>1414874418430</created>
+      <updated>1414874418430</updated>
+    </task>
+    <task id="LOCAL-00556" summary="Add DEPLOY_HTML_DIR back to setup_gh_pages_deploy command">
+      <created>1414876206717</created>
+      <updated>1414876206717</updated>
+    </task>
+    <task id="LOCAL-00557" summary="add releases text files">
+      <created>1414876231363</created>
+      <updated>1414876231363</updated>
+    </task>
+    <task id="LOCAL-00558" summary="Fix &quot;unterminated quoted string&quot;">
+      <created>1414877491004</created>
+      <updated>1414877491004</updated>
+    </task>
+    <task id="LOCAL-00559" summary="start writing release notes">
+      <created>1414877504875</created>
+      <updated>1414877504875</updated>
+    </task>
+    <task id="LOCAL-00560" summary="fix whats new link">
+      <created>1414877512926</created>
+      <updated>1414877512926</updated>
+    </task>
+    <task id="LOCAL-00561" summary="add matplotlib use &quot;agg&quot;">
+      <created>1414878304754</created>
+      <updated>1414878304754</updated>
+    </task>
+    <task id="LOCAL-00562" summary="add overview of what should be in the tutorial">
+      <created>1414878958548</created>
+      <updated>1414878958548</updated>
+    </task>
+    <task id="LOCAL-00563" summary="trying to get whatsnew to get linked properly">
+      <created>1414879067424</created>
+      <updated>1414879067424</updated>
+    </task>
+    <task id="LOCAL-00564" summary="Add more explanation in release notes">
+      <created>1414879089294</created>
+      <updated>1414879089294</updated>
+    </task>
+    <task id="LOCAL-00565" summary="Add links to tutorial and Yeolab@ucsd to navbar">
+      <created>1414879113157</created>
+      <updated>1414879113158</updated>
+    </task>
+    <task id="LOCAL-00566" summary="add more autosummaries to docs">
+      <created>1414879989764</created>
+      <updated>1414879989765</updated>
+    </task>
+    <option name="localTasksCounter" value="567" />
+    <servers />
+  </component>
+  <component name="TodoView" selected-index="0">
+    <todo-panel id="selected-file">
+      <are-packages-shown value="false" />
+      <are-modules-shown value="false" />
+      <flatten-packages value="false" />
+      <is-autoscroll-to-source value="false" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="false" />
+      <are-modules-shown value="false" />
+      <flatten-packages value="false" />
+      <is-autoscroll-to-source value="false" />
+    </todo-panel>
+    <todo-panel id="default-changelist">
+      <are-packages-shown value="false" />
+      <are-modules-shown value="false" />
+      <flatten-packages value="false" />
+      <is-autoscroll-to-source value="false" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="0" y="22" width="1440" height="874" extended-state="6" />
+    <editor active="true" />
+    <layout>
+      <window_info id="Documentation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" x="100" y="122" width="1240" height="674" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32936507" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32936507" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32804233" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.007936508" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32936507" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2067239" sideWeight="0.09920635" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32936507" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32936507" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.17857143" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2532189" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18240343" sideWeight="0.9007937" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32936507" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+    </layout>
+    <layout-to-restore>
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Documentation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" x="100" y="122" width="1240" height="674" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32936507" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32936507" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32849604" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.007936508" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2067239" sideWeight="0.09920635" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32936507" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32936507" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.17857143" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2532189" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18025751" sideWeight="0.9007937" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32936507" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+    </layout-to-restore>
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.gitignore" />
+  </component>
+  <component name="Vcs.Log.UiProperties">
+    <option name="RECENTLY_FILTERED_USER_GROUPS">
+      <collection />
+    </option>
+    <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+      <collection />
+    </option>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="OFFER_MOVE_TO_ANOTHER_CHANGELIST_ON_PARTIAL_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
+    <option name="myTodoPanelSettings">
+      <TodoPanelSettings />
+    </option>
+    <confirmMoveToFailedCommit value="2" />
+    <MESSAGE value="fix make coverage line, also test branching" />
+    <MESSAGE value="set mpl.use(&quot;Agg&quot;) before &quot;import matplotlib.pyplot as plt&quot;" />
+    <MESSAGE value="add matplotlibrc with &quot;backend : Agg&quot; for Travis-CI testing" />
+    <MESSAGE value="actually add matplotlibrc file" />
+    <MESSAGE value="fix merge conflicts on shalek2013_figures" />
+    <MESSAGE value="change theme to paper" />
+    <MESSAGE value="violinplot: add docstring, and check all data types for the order" />
+    <MESSAGE value="sharey axis between all violinplots, and don't plot the renamed ID if it's the same as the original feature ID" />
+    <MESSAGE value="move data_type definition into BaseData" />
+    <MESSAGE value="Warn user that samples are being removed for having too few reads" />
+    <MESSAGE value="fix parens in output message for too few mapped reads" />
+    <MESSAGE value="change saved data to always be the original data" />
+    <MESSAGE value="Move set_outliers_by_mergin_columns and merge_boolean_metadata_columns to MetaData" />
+    <MESSAGE value="add docstring to set_outliers_by_merging_columns" />
+    <MESSAGE value="Add DEPLOY_HTML_DIR back to setup_gh_pages_deploy command" />
+    <MESSAGE value="add releases text files" />
+    <MESSAGE value="Fix &quot;unterminated quoted string&quot;" />
+    <MESSAGE value="start writing release notes" />
+    <MESSAGE value="fix whats new link" />
+    <MESSAGE value="add matplotlib use &quot;agg&quot;" />
+    <MESSAGE value="add overview of what should be in the tutorial" />
+    <MESSAGE value="trying to get whatsnew to get linked properly" />
+    <MESSAGE value="Add more explanation in release notes" />
+    <MESSAGE value="Add links to tutorial and Yeolab@ucsd to navbar" />
+    <MESSAGE value="add more autosummaries to docs" />
+    <option name="LAST_COMMIT_MESSAGE" value="add more autosummaries to docs" />
+    <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
+    <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <option name="time" value="18" />
+    </breakpoint-manager>
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file:///usr/local/lib/python2.7/site-packages/_pytest/pdb.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.68609864" vertical-offset="983" max-vertical-offset="1652">
+          <caret line="104" column="10" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/LICENSE">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="655">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+      <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/flotilla/data_model/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="182">
+          <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/flotilla/compute/splicing.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2786">
+          <caret line="46" column="37" selection-start-line="46" selection-start-column="37" selection-end-line="46" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/flotilla/visualize/expression.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.18768328" vertical-offset="0" max-vertical-offset="682">
+          <caret line="12" column="11" selection-start-line="12" selection-start-column="10" selection-end-line="12" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/flotilla/compute/network.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1488">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#21#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/flotilla/visualize/color.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="48" max-vertical-offset="496">
+          <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/flotilla/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="720">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#9#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/flotilla/setup.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1024">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#28#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/flotilla/compute/expression.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2752">
+          <caret line="7" column="19" selection-start-line="7" selection-start-column="19" selection-end-line="7" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/flotilla/util.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="4419" max-vertical-offset="5120">
+          <caret line="314" column="20" selection-start-line="314" selection-start-column="20" selection-end-line="314" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/flotilla/compute/predict.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3280">
+          <caret line="4" column="15" selection-start-line="4" selection-start-column="15" selection-end-line="4" selection-end-column="15" />
+          <folding>
+            <element signature="e#0#66#1" expanded="false" />
+            <element signature="e#690#857#0" expanded="false" />
+            <element signature="e#941#1115#0" expanded="false" />
+            <element signature="e#1153#4698#0" expanded="false" />
+            <element signature="e#1153#1446#1" expanded="false" />
+            <element signature="e#3489#3993#0" expanded="false" />
+            <element signature="e#3489#3699#1" expanded="false" />
+            <element signature="e#4044#4698#0" expanded="false" />
+            <element signature="e#4743#5548#0" expanded="false" />
+            <element signature="e#5017#5142#0" expanded="false" />
+            <element signature="e#5250#5357#0" expanded="false" />
+            <element signature="e#5439#5548#0" expanded="false" />
+            <element signature="e#5586#6563#0" expanded="false" />
+            <element signature="e#6063#6199#0" expanded="false" />
+            <element signature="e#6608#11816#0" expanded="false" />
+            <element signature="e#6608#7480#1" expanded="false" />
+            <element signature="e#7545#7581#0" expanded="false" />
+            <element signature="e#7638#7741#0" expanded="false" />
+            <element signature="e#7800#8109#0" expanded="false" />
+            <element signature="e#8422#9966#0" expanded="false" />
+            <element signature="e#10002#11816#0" expanded="false" />
+            <element signature="e#11855#14702#0" expanded="false" />
+            <element signature="e#11855#11886#1" expanded="false" />
+            <element signature="e#11927#12016#0" expanded="false" />
+            <element signature="e#12057#12146#0" expanded="false" />
+            <element signature="e#12195#12338#0" expanded="false" />
+            <element signature="e#12195#12265#1" expanded="false" />
+            <element signature="e#12389#12582#0" expanded="false" />
+            <element signature="e#12647#12892#0" expanded="false" />
+            <element signature="e#13070#14310#0" expanded="false" />
+            <element signature="e#13070#13245#1" expanded="false" />
+            <element signature="e#14383#14702#0" expanded="false" />
+            <element signature="e#14748#17996#0" expanded="false" />
+            <element signature="e#14748#14872#1" expanded="false" />
+            <element signature="e#14937#15091#0" expanded="false" />
+            <element signature="e#15139#15408#0" expanded="false" />
+            <element signature="e#15515#16669#0" expanded="false" />
+            <element signature="e#16882#17996#0" expanded="false" />
+            <element signature="e#18032#19521#1" expanded="false" />
+            <element signature="e#22158#22335#0" expanded="false" />
+            <element signature="e#22376#22453#0" expanded="false" />
+            <element signature="e#22494#22580#0" expanded="false" />
+            <element signature="e#22668#23138#0" expanded="false" />
+            <element signature="e#23167#23851#0" expanded="false" />
+            <element signature="e#23904#24434#0" expanded="false" />
+            <element signature="e#24484#24516#0" expanded="false" />
+            <element signature="e#24568#24602#0" expanded="false" />
+            <element signature="e#24672#24707#0" expanded="false" />
+            <element signature="e#24762#24799#0" expanded="false" />
+            <element signature="e#24875#24913#0" expanded="false" />
+            <element signature="e#24970#25010#0" expanded="false" />
+            <element signature="e#25090#25131#0" expanded="false" />
+            <element signature="e#25178#25207#0" expanded="false" />
+            <element signature="e#25267#25787#0" expanded="false" />
+            <element signature="e#25840#25963#0" expanded="false" />
+            <element signature="e#26022#26062#0" expanded="false" />
+            <element signature="e#26109#26152#0" expanded="false" />
+            <element signature="e#26208#26247#0" expanded="false" />
+            <element signature="e#26364#26397#0" expanded="false" />
+            <element signature="e#26688#26944#0" expanded="false" />
+            <element signature="e#27221#27479#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/flotilla/visualize/network.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="5392">
+          <caret line="11" column="30" selection-start-line="11" selection-start-column="30" selection-end-line="11" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/setup.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="271" max-vertical-offset="1024">
+          <caret line="33" column="19" selection-start-line="33" selection-start-column="19" selection-end-line="33" selection-end-column="19" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/setup.cfg">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="682">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="16" max-vertical-offset="320">
+          <caret line="14" column="6" selection-start-line="14" selection-start-column="6" selection-end-line="14" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.coveralls.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="112">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Makefile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="64" max-vertical-offset="336">
+          <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CONTRIBUTING.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="42.592594" vertical-offset="1614" max-vertical-offset="2144">
+          <caret line="29" column="0" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="MarkdownPreviewEditor">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-20.222221" vertical-offset="1438" max-vertical-offset="2080">
+          <caret line="124" column="0" selection-start-line="124" selection-start-column="0" selection-end-line="124" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="MarkdownPreviewEditor">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/doc/LICENSE_sphinx_deployment">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="642">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/flotilla/compute/generic.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="4195" max-vertical-offset="4864">
+          <caret line="296" column="7" selection-start-line="296" selection-start-column="7" selection-end-line="296" selection-end-column="7" />
+          <folding>
+            <marker date="1414707984000" expanded="false" signature="8140:8186" placeholder="import ..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/flotilla/visualize/predict.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="288" max-vertical-offset="3088">
+          <caret line="136" column="0" selection-start-line="136" selection-start-column="0" selection-end-line="136" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/flotilla/compute/decomposition.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1055" max-vertical-offset="1760">
+          <caret line="88" column="15" selection-start-line="88" selection-start-column="15" selection-end-line="88" selection-end-column="15" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/flotilla/visualize/decomposition.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="6230" max-vertical-offset="7056">
+          <caret line="408" column="43" selection-start-line="408" selection-start-column="43" selection-end-line="408" selection-end-column="43" />
+          <folding>
+            <element signature="e#0#35#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/flotilla/visualize/generic.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4544">
+          <caret line="151" column="0" selection-start-line="151" selection-start-column="0" selection-end-line="151" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#16#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/flotilla/data_model/expression.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="308" max-vertical-offset="2944">
+          <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#103#1" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/flotilla/data_model/splicing.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="800" max-vertical-offset="10336">
+          <caret line="59" column="0" selection-start-line="59" selection-start-column="0" selection-end-line="59" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/flotilla/data_model/base.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1696" max-vertical-offset="16960">
+          <caret line="132" column="71" selection-start-line="132" selection-start-column="71" selection-end-line="132" selection-end-column="71" />
+          <folding>
+            <element signature="e#0#130#1" expanded="false" />
+            <element signature="e#131#141#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/flotilla/data_model/metadata.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="2339" max-vertical-offset="3040">
+          <caret line="163" column="50" selection-start-line="163" selection-start-column="50" selection-end-line="163" selection-end-column="50" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/flotilla/visualize/ipython_interact.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-13.038462" vertical-offset="8973" max-vertical-offset="10160">
+          <caret line="582" column="39" selection-start-line="582" selection-start-column="39" selection-end-line="582" selection-end-column="39" />
+          <folding>
+            <element signature="e#161#171#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/doc/Makefile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="787" max-vertical-offset="2960">
+          <caret line="178" column="0" selection-start-line="178" selection-start-column="0" selection-end-line="179" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/doc/sphinx_deployment.mk">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-9.555555" vertical-offset="2510" max-vertical-offset="3344">
+          <caret line="173" column="69" selection-start-line="173" selection-start-column="69" selection-end-line="173" selection-end-column="69" />
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/doc/whatsnew.rst">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="272">
+          <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/doc/create_datapackage.rst">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="144">
+          <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/doc/tutorial.rst">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="608">
+          <caret line="32" column="0" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/doc/installation.rst">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="682">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/doc/index.rst">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="560">
+          <caret line="29" column="0" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/flotilla/data_model/study.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.2488336" vertical-offset="976" max-vertical-offset="20768">
+          <caret line="74" column="21" selection-start-line="74" selection-start-column="21" selection-end-line="74" selection-end-column="21" />
+          <folding>
+            <element signature="e#0#113#1" expanded="false" />
+            <element signature="e#114#125#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/doc/releases/v0.1.2.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="400">
+          <caret line="3" column="15" selection-start-line="3" selection-start-column="10" selection-end-line="3" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/doc/conf.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="672" max-vertical-offset="5856">
+          <caret line="56" column="35" selection-start-line="56" selection-start-column="35" selection-end-line="56" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.travis.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.68908817" vertical-offset="499" max-vertical-offset="1184">
+          <caret line="60" column="0" selection-start-line="60" selection-start-column="0" selection-end-line="60" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ScopeChooserConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>
+

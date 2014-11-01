@@ -1,0 +1,14 @@
+*.pyc
+*egg-info
+build
+dist
+.idea*
+.idea/*
+*DS_store
+
+virtualenv
+
+# emacs
+*~
+.coverage
+.ipynb_checkpoints
