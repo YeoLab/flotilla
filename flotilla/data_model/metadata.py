@@ -141,3 +141,36 @@ class MetaData(BaseData):
     def sample_subsets(self):
         return subsets_from_metadata(self.data, MINIMUM_SAMPLE_SUBSET,
                                      'samples')
+
+    def merge_boolean_columns(self, columns):
+        """Merge boolean columns in data and return logical OR
+
+        Parameters
+        ----------
+        columns : list-like
+            Boolean columns whose attributes to merge
+
+        Returns
+        -------
+        merged : pandas.Series
+            A single boolean column, with True for each row that had True in
+            any column
+
+        """
+        merged = self.data[columns].any(axis=1)
+        return merged
+
+    def set_outliers_by_merging_columns(self, columns):
+        """
+        merge boolean columns of metadata listed in columns into outlier
+        set metadata.outlier
+        return the merged column
+        """
+        UserWarning('Over-writing existing outlier columns\n')
+        self.data['outlier'] = False
+        print "using thse columns: \n{}\n".format("\n".join(columns))
+        is_ever_an_outlier = self.merge_boolean_columns(
+            columns)
+        print "there are {} outliers".format(is_ever_an_outlier.sum())
+        self.data['outlier'] = is_ever_an_outlier
+        return is_ever_an_outlier
