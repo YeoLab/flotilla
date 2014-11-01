@@ -20,6 +20,9 @@ class MetaData(BaseData):
                  phenotype_col=PHENOTYPE_COL,
                  pooled_col=POOLED_COL,
                  predictor_config_manager=None):
+
+        self.data_type = 'metadata'
+
         super(MetaData, self).__init__(data, outliers=None,
                                        predictor_config_manager=predictor_config_manager)
 
@@ -66,6 +69,13 @@ class MetaData(BaseData):
             colors = sns.color_palette('Dark2', n_colors=self.n_phenotypes)
             for phenotype, color in zip(self.unique_phenotypes, colors):
                 self.phenotype_to_color[phenotype] = mpl.colors.rgb2hex(color)
+        # Double-make sure that all incoming colors are stored as strings and
+        # not lists
+        for phenotype in self.phenotype_to_color:
+            color = self.phenotype_to_color[phenotype]
+            if isinstance(color, list) or isinstance(color, tuple):
+                color = mpl.colors.rgb2hex(color)
+                self.phenotype_to_color[phenotype] = color
 
         self.phenotype_to_marker = phenotype_to_marker
         if self.phenotype_to_marker is not None:
