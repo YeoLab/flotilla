@@ -171,8 +171,7 @@ prepare_gh_pages_deployment:
 	echo "Pulling any updates from Github Pages..."
 	cd $(DEPLOY_DIR); git pull;
 	mkdir -p $(DEPLOY_DIR)/
-	echo "Copying files from '$(BUILDDIR)/html/.' to '$(DEPLOY_DIR)/$
-	(DEPLOY_HTML_DIR)'"
+	echo "Copying files from '$(BUILDDIR)/html/.' to '$(DEPLOY_DIR)/$(DEPLOY_HTML_DIR)'"
 	cp -r $(BUILDDIR)/html/. $(DEPLOY_DIR)/$(DEPLOY_HTML_DIR)
 
 deploy_gh_pages: prepare_gh_pages_deployment
