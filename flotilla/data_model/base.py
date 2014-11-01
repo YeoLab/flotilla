@@ -255,13 +255,20 @@ class BaseData(object):
 
     def drop_outliers(self, df, outliers):
         # assert 'outlier' in self.experiment_design_data.columns
+        not_in_index = set(outliers).difference(df.index)
+        if len(not_in_index) >= 1:
+            sys.stderr.write("These samples are not in the index,"
+                             "Skipping them...\n\t{}\n".format("\n\t".join(not_in_index)))
+
         outliers = set(outliers).intersection(df.index)
         try:
             # Remove pooled samples, if there are any
             pooled_cells = outliers.intersection(self.pooled.index)
             if len(pooled_cells) >= 1:
-                sys.stderr.write("These cells are pooled,"
-                "not outliers. Skipping...\n\t{}\n".format("\n\t".join(pooled_cells)))
+                sys.stderr.write("These samples are pooled,"
+                                 "not outliers. Skipping..."
+                                 "\n\t{}\n".format("\n\t".join(pooled_cells)))
+
             outliers = outliers.difference(self.pooled.index)
         except AttributeError:
             pass
@@ -655,25 +662,12 @@ class BaseData(object):
 
         return reducer, outlier_detector
 
-    def plot_outliers(self, reducer,
-                      outlier_detector,
-                      show_point_labels=False,
-                      feature_renamer=None,
-                      x_pc='pc_1', y_pc='pc_2'):
+    def plot_outliers(self, outlier_detector,
+                      **pca_args):
 
-        dv = DecompositionViz(reducer.reduced_space,
-                              reducer.components_,
-                              reducer.explained_variance_ratio_,
-                              singles=self.singles,
-                              pooled=self.pooled,
-                              outliers=self.outliers,
-                              feature_renamer=self.feature_renamer,
-                              featurewise=False,
-                              label_to_color=label_to_color,
-                              label_to_marker=label_to_marker,
-                              groupby=groupby, order=order,
-                              x_pc="pc_" + str(x_pc),
-                              y_pc="pc_" + str(y_pc))
+        self.plot_pca(self, groupby=outlier_detector.outliers,
+                      title=outlier_detector.title,
+                      **pca_args)
 
         # DecompositionViz(reducer.reduced_space,
         #                       reducer.components_,
@@ -688,8 +682,7 @@ class BaseData(object):
         #                       scale_by_variance=True, x_pc=x_pc,
         #                       y_pc=y_pc, n_vectors=0, distance='L1',
         #                       n_top_pc_features=50)
-
-        dv(show_point_labels=show_point_labels, title=outlier_detector.title)
+        #dv(show_point_labels=show_point_labels, title=outlier_detector.title)
 
     # @memoize
     def reduce(self, sample_ids=None, feature_ids=None,
