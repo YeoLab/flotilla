@@ -1,4 +1,22 @@
-v0.1.2 (November 1st, 2014)
+v0.2.0 (November 1st, 2014)
 ---------------------------
 
-This is a minor release from
+This is a minor release, with some breaking changes from v0.1.1.
+
+New features
+~~~~~~~~~~~~
+
+- Plot the expression or splicing of two *samples* with :func:`study.plot_two_samples`
+- Plot the expression or splicing of two *features* with :func:`study.plot_two_features`
+- Detect outliers with ...
+- :class:`Study` doesn't
+
+API changes
+~~~~~~~~~~~
+
+- :class:`BaseData`
+- :class:`BaseData` now has the attributes :func:`BaseData.singles`,
+:func:`BaseData.pooled`, and :func:`BaseData.outliers` which are
+on-the-fly subsets of ``BaseData.data``. This is to maintain datameaning if
+"outliers" is
+chan
