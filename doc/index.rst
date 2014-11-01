@@ -14,10 +14,10 @@ Contents:
    :maxdepth: 4
 
        flotilla
-       whats_new.rst
-       installation.rst
+              whatsnew.rst
+              installation.rst
 
-.. _what's new: whats_new.rst
+.. _what's new: whatsnew.rst
 
 
 Indices and tables
