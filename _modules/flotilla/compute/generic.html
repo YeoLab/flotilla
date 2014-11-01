@@ -362,7 +362,68 @@
 
 </div>
 <div class="viewcode-block" id="dropna_mean"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.generic.dropna_mean">[docs]</a><span class="k">def</span> <span class="nf">dropna_mean</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span></div>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="spearmanr_series"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.generic.spearmanr_series">[docs]</a><span class="k">def</span> <span class="nf">spearmanr_series</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate spearman r (with p-values) between two pandas series</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : pandas.Series</span>
+<span class="sd">        One of the two series you&#39;d like to correlate</span>
+<span class="sd">    y : pandas.Series</span>
+<span class="sd">        The other series you&#39;d like to correlate</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    r_value : float</span>
+<span class="sd">        The R-value of the correlation. 1 for perfect positive correlation,</span>
+<span class="sd">        and -1 for perfect negative correlation</span>
+<span class="sd">    p_value : float</span>
+<span class="sd">        The p-value of the correlation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">dropna</span><span class="p">(),</span> <span class="s">&#39;inner&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">stats</span><span class="o">.</span><span class="n">spearmanr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="spearmanr_dataframe"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.generic.spearmanr_dataframe">[docs]</a><span class="k">def</span> <span class="nf">spearmanr_dataframe</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate spearman correlations between dataframes A and B</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    A : pandas.DataFrame</span>
+<span class="sd">        A n_samples x n_features1 dataframe. Must have the same number of rows</span>
+<span class="sd">        as &quot;B&quot;</span>
+<span class="sd">    B : pandas.DataFrame</span>
+<span class="sd">        A n_samples x n_features2 Dataframe. Must have the same number of rows</span>
+<span class="sd">        as &quot;A&quot;</span>
+<span class="sd">    axis : int</span>
+<span class="sd">        Which axis to compare. If 0, calculate correlations between all the</span>
+<span class="sd">        columns of A vs te columns of B. If 1, calculate between rows.</span>
+<span class="sd">        (default 0)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    correlations : pandas.DataFrame</span>
+<span class="sd">        A n_features2 x n_features1 DataFrame of (spearman_r, spearman_p) tuples</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Use &quot;applymap&quot; to get just the R- and p-values of the resulting dataframe</span>
+
+<span class="sd">    &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; A = pd.DataFrame(np.random.randn(100).reshape(5, 20))</span>
+<span class="sd">    &gt;&gt;&gt; B = pd.DataFrame(np.random.randn(55).reshape(5, 11))</span>
+<span class="sd">    &gt;&gt;&gt; correls = spearmanr_dataframe(A, B)</span>
+<span class="sd">    &gt;&gt;&gt; correls.shape</span>
+<span class="sd">    (11, 20)</span>
+<span class="sd">    &gt;&gt;&gt; spearman_r = correls.applymap(lambda x: x[0])</span>
+<span class="sd">    &gt;&gt;&gt; spearman_p = correls.applymap(lambda x: x[1])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">A</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">B</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">spearmanr_series</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span>
+                                     <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">),</span>
+                   <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span></div>
 </pre></div>
 
     </div>

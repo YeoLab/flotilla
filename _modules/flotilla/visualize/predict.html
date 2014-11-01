@@ -256,13 +256,13 @@
 
         <span class="n">pcaviz</span> <span class="o">=</span> <span class="n">DecompositionViz</span><span class="p">(</span><span class="n">pca</span><span class="o">.</span><span class="n">reduced_space</span><span class="p">,</span> <span class="n">pca</span><span class="o">.</span><span class="n">components_</span><span class="p">,</span>
                                   <span class="n">pca</span><span class="o">.</span><span class="n">explained_variance_ratio_</span><span class="p">,</span>
-                                  <span class="bp">self</span><span class="o">.</span><span class="n">DataModel</span><span class="p">,</span>
+                                  <span class="n">feature_renamer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_renamer</span><span class="p">,</span>
                                   <span class="n">groupby</span><span class="o">=</span><span class="n">groupby</span><span class="p">,</span>
+                                  <span class="n">singles</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">singles</span><span class="p">,</span>
+                                  <span class="n">pooled</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pooled</span><span class="p">,</span>
+                                  <span class="n">outliers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">outliers</span><span class="p">,</span>
                                   <span class="c"># label_to_color=self.label_to_color,</span>
                                   <span class="c"># label_to_marker=self.label_to_marker,</span>
-                                  <span class="c"># groupby=self.groupby,</span>
-                                  <span class="c"># color=self.color,</span>
-                                  <span class="c"># order=self.order</span>
         <span class="p">)</span>
         <span class="n">pcaviz</span><span class="p">(</span><span class="o">**</span><span class="n">local_plotting_kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">pcaviz</span>

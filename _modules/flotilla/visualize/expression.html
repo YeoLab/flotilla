@@ -120,7 +120,7 @@
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">.color</span> <span class="kn">import</span> <span class="n">red</span><span class="p">,</span> <span class="n">green</span><span class="p">,</span> <span class="n">blue</span>
+<span class="kn">from</span> <span class="nn">.color</span> <span class="kn">import</span> <span class="n">blue</span>
 <span class="kn">from</span> <span class="nn">..compute.expression</span> <span class="kn">import</span> <span class="n">TwoWayGeneComparisonLocal</span>
 
 
@@ -129,36 +129,32 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TwoWayScatterViz.plot"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.expression.TwoWayScatterViz.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-
-        <span class="n">co</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c"># colors container</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_</span><span class="o">.</span><span class="n">get</span><span class="p">([</span><span class="s">&quot;pValue&quot;</span><span class="p">,</span> <span class="s">&quot;log2_ratio&quot;</span><span class="p">,</span> <span class="s">&quot;isSig&quot;</span><span class="p">])</span>
-        <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="p">(</span><span class="n">pVal</span><span class="p">,</span> <span class="n">logratio</span><span class="p">,</span> <span class="n">isSig</span><span class="p">)</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">pVal</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_value_cutoff</span><span class="p">)</span> <span class="ow">and</span> <span class="n">isSig</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">logratio</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">co</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">red</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">logratio</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">co</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">green</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">Exception</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">co</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">blue</span><span class="p">)</span>
-
+        <span class="c"># co = []  # colors container</span>
+        <span class="c"># results = self.result_.get([&quot;pValue&quot;, &quot;log2_ratio&quot;, &quot;isSig&quot;])</span>
+        <span class="c"># for label, (pVal, logratio, isSig) in results.iterrows():</span>
+        <span class="c"># if (pVal &lt; self.p_value_cutoff) and isSig:</span>
+        <span class="c">#         if logratio &gt; 0:</span>
+        <span class="c">#             co.append(red)</span>
+        <span class="c">#         elif logratio &lt; 0:</span>
+        <span class="c">#             co.append(green)</span>
+        <span class="c">#         else:</span>
+        <span class="c">#             raise Exception</span>
+        <span class="c">#     else:</span>
+        <span class="c">#         co.append(blue)</span>
+        <span class="c">#</span>
         <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
 
         <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s">&#39;equal&#39;</span><span class="p">)</span>
         <span class="n">vmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sample1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample2</span><span class="p">])</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample2</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">co</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
-                   <span class="n">edgecolor</span><span class="o">=</span><span class="s">&#39;none&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample2</span><span class="p">,</span> <span class="s">&#39;o&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">blue</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
+                <span class="n">markeredgewidth</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_names</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_names</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s">&#39;log&#39;</span><span class="p">,</span> <span class="n">basey</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s">&#39;log&#39;</span><span class="p">,</span> <span class="n">basex</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">xmin</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">ymin</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>
-
-        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span></div></div>
+        <span class="c"># ax.set_yscale(&#39;log&#39;, basey=2)</span>
+        <span class="c"># ax.set_xscale(&#39;log&#39;, basex=2)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">xmin</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">ymin</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span></div></div>
 </pre></div>
 
     </div>

@@ -146,11 +146,18 @@
 <span id="flotilla-visualize-decomposition-module"></span><h2>flotilla.visualize.decomposition module<a class="headerlink" href="#module-flotilla.visualize.decomposition" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="flotilla.visualize.decomposition.DecompositionViz">
-<em class="property">class </em><tt class="descclassname">flotilla.visualize.decomposition.</tt><tt class="descname">DecompositionViz</tt><big>(</big><em>reduced_space</em>, <em>components_</em>, <em>explained_variance_ratio_</em>, <em>DataModel=None</em>, <em>feature_renamer=None</em>, <em>groupby=None</em>, <em>featurewise=False</em>, <em>color=None</em>, <em>order=None</em>, <em>violinplot_kws=None</em>, <em>data_type=None</em>, <em>label_to_color=None</em>, <em>label_to_marker=None</em>, <em>scale_by_variance=True</em>, <em>x_pc='pc_1'</em>, <em>y_pc='pc_2'</em>, <em>n_vectors=20</em>, <em>distance='L1'</em>, <em>n_top_pc_features=50</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/decomposition.html#DecompositionViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.decomposition.DecompositionViz" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">flotilla.visualize.decomposition.</tt><tt class="descname">DecompositionViz</tt><big>(</big><em>reduced_space</em>, <em>components_</em>, <em>explained_variance_ratio_</em>, <em>feature_renamer=None</em>, <em>groupby=None</em>, <em>singles=None</em>, <em>pooled=None</em>, <em>outliers=None</em>, <em>featurewise=False</em>, <em>order=None</em>, <em>violinplot_kws=None</em>, <em>data_type='expression'</em>, <em>label_to_color=None</em>, <em>label_to_marker=None</em>, <em>scale_by_variance=True</em>, <em>x_pc='pc_1'</em>, <em>y_pc='pc_2'</em>, <em>n_vectors=20</em>, <em>distance='L1'</em>, <em>n_top_pc_features=50</em>, <em>max_char_width=30</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/decomposition.html#DecompositionViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.decomposition.DecompositionViz" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
 <p>Plots the reduced space from a decomposed dataset. Does not perform any
 reductions of its own</p>
 <p class="rubric">Methods</p>
+<dl class="method">
+<dt id="flotilla.visualize.decomposition.DecompositionViz.plot_explained_variance">
+<tt class="descname">plot_explained_variance</tt><big>(</big><em>title='PCA explained variance'</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/decomposition.html#DecompositionViz.plot_explained_variance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.decomposition.DecompositionViz.plot_explained_variance" title="Permalink to this definition">¶</a></dt>
+<dd><p>If the reducer is a form of PCA, then plot the explained variance
+ratio by the components.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="flotilla.visualize.decomposition.DecompositionViz.plot_loadings">
 <tt class="descname">plot_loadings</tt><big>(</big><em>pc='pc_1'</em>, <em>n_features=50</em>, <em>ax=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/decomposition.html#DecompositionViz.plot_loadings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.decomposition.DecompositionViz.plot_loadings" title="Permalink to this definition">¶</a></dt>
@@ -226,6 +233,11 @@ principal components</p>
 of the &#8220;self.magnitudes&#8221; attribute.</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="flotilla.visualize.decomposition.DecompositionViz.shorten">
+<tt class="descname">shorten</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/decomposition.html#DecompositionViz.shorten"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.decomposition.DecompositionViz.shorten" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </div>
@@ -273,21 +285,90 @@ of the &#8220;self.magnitudes&#8221; attribute.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="flotilla.visualize.generic.simple_twoway_scatter">
+<tt class="descclassname">flotilla.visualize.generic.</tt><tt class="descname">simple_twoway_scatter</tt><big>(</big><em>sample1</em>, <em>sample2</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/generic.html#simple_twoway_scatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.generic.simple_twoway_scatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot a two-dimensional scatterplot between two samples</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>sample1</strong> : pandas.Series</p>
+<blockquote>
+<div><p>Data to plot on the x-axis</p>
+</div></blockquote>
+<p><strong>sample2</strong> : pandas.Series</p>
+<blockquote>
+<div><p>Data to plot on the y-axis</p>
+</div></blockquote>
+<p><strong>Any other keyword arguments valid for seaborn.jointplot</strong></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>jointgrid</strong> : seaborn.axisgrid.JointGrid</p>
+<blockquote>
+<div><p>Returns a JointGrid instance</p>
+</div></blockquote>
+<p>See Also</p>
+<p class="last">seaborn.jointplot</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="flotilla.visualize.generic.violinplot">
-<tt class="descclassname">flotilla.visualize.generic.</tt><tt class="descname">violinplot</tt><big>(</big><em>data</em>, <em>groupby=None</em>, <em>color=None</em>, <em>ax=None</em>, <em>pooled_data=None</em>, <em>order=None</em>, <em>violinplot_kws=None</em>, <em>title=None</em>, <em>label_pooled=False</em>, <em>outliers=None</em>, <em>data_type=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/generic.html#violinplot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.generic.violinplot" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">flotilla.visualize.generic.</tt><tt class="descname">violinplot</tt><big>(</big><em>data</em>, <em>groupby=None</em>, <em>color_ordered=None</em>, <em>ax=None</em>, <em>pooled_data=None</em>, <em>order=None</em>, <em>violinplot_kws=None</em>, <em>title=None</em>, <em>label_pooled=False</em>, <em>outliers=None</em>, <em>data_type=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/generic.html#violinplot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.generic.violinplot" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> : pandas.Series</p>
 <blockquote>
-<div><p>The main data to plot</p>
+<div><p>The main data to plot as violins</p>
 </div></blockquote>
-<p><strong>groupby</strong> : dict-like</p>
+<p><strong>groupby</strong> : dict-like, optional</p>
 <blockquote>
 <div><p>How to group the samples (e.g. by phenotype)</p>
 </div></blockquote>
-<p class="last"><strong>color</strong> : list</p>
+<p><strong>color_ordered</strong> : list, optional</p>
+<blockquote>
+<div><p>List of colors, in the order you want to plot</p>
+</div></blockquote>
+<p><strong>ax</strong> : matplotlib.Axes, optional</p>
+<blockquote>
+<div><p>Where to plot the violins. If None, get the current axes</p>
+</div></blockquote>
+<p><strong>pooled_data</strong> : pandas.Series, optional</p>
+<blockquote>
+<div><p>Pooled samples. Will be plotted as black dots</p>
+</div></blockquote>
+<p><strong>order</strong> : list, optional</p>
+<blockquote>
+<div><p>The order in which to plot the phenotypes, e.g. if the data is
+form a differentiation time course</p>
+</div></blockquote>
+<p><strong>violinplot_kws</strong> : dict, optional</p>
+<blockquote>
+<div><p>Other keywords to pass to seaborn.violinplot</p>
+</div></blockquote>
+<p><strong>title</strong> : str, optional</p>
+<blockquote>
+<div><p>Title of the plot</p>
+</div></blockquote>
+<p><strong>label_pooled</strong> : bool, optional</p>
+<blockquote>
+<div><p>If True, label the sample id of the pooled samples</p>
+</div></blockquote>
+<p><strong>outliers</strong> : pandas.Series</p>
+<blockquote>
+<div><p>Outlier samples. Will be plotted in their phenotype category,
+as a grey shadow</p>
+</div></blockquote>
+<p><strong>data_type</strong> : &#8216;expression&#8217; | &#8216;splicing&#8217; | None</p>
+<blockquote class="last">
+<div><p>If &#8216;splicing&#8217;, then force the y-axis to be from 0 to 1. If
+&#8216;expression&#8217; or None, don&#8217;t mess with the y-axis</p>
+</div></blockquote>
 </td>
 </tr>
 </tbody>
@@ -324,6 +405,11 @@ subsets</p>
 </dd></dl>
 
 <dl class="staticmethod">
+<dt id="flotilla.visualize.ipython_interact.Interactive.interactive_choose_outliers">
+<em class="property">static </em><tt class="descname">interactive_choose_outliers</tt><big>(</big><em>data_types=('expression'</em>, <em>'splicing')</em>, <em>sample_subsets=None</em>, <em>feature_subsets=None</em>, <em>featurewise=False</em>, <em>x_pc=(1</em>, <em>3)</em>, <em>y_pc=(1</em>, <em>3)</em>, <em>show_point_labels=False</em>, <em>nu=(0.1</em>, <em>9.9)</em>, <em>gamma=(0</em>, <em>25)</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_choose_outliers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.ipython_interact.Interactive.interactive_choose_outliers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
 <dt id="flotilla.visualize.ipython_interact.Interactive.interactive_classifier">
 <em class="property">static </em><tt class="descname">interactive_classifier</tt><big>(</big><em>data_types=('expression'</em>, <em>'splicing')</em>, <em>sample_subsets=None</em>, <em>feature_subsets=None</em>, <em>categorical_variables=None</em>, <em>predictor_types=None</em>, <em>score_coefficient=(0.1</em>, <em>20)</em>, <em>draw_labels=False</em>, <em>savefile='data/last.clf.pdf'</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_classifier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.ipython_interact.Interactive.interactive_classifier" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -345,13 +431,20 @@ subsets</p>
 
 <dl class="staticmethod">
 <dt id="flotilla.visualize.ipython_interact.Interactive.interactive_pca">
-<em class="property">static </em><tt class="descname">interactive_pca</tt><big>(</big><em>data_types=('expression'</em>, <em>'splicing')</em>, <em>sample_subsets=None</em>, <em>feature_subsets=None</em>, <em>featurewise=False</em>, <em>x_pc=(1</em>, <em>10)</em>, <em>y_pc=(1</em>, <em>10)</em>, <em>show_point_labels=False</em>, <em>list_link=''</em>, <em>plot_violins=True</em>, <em>savefile='data/last.pca.pdf'</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_pca"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.ipython_interact.Interactive.interactive_pca" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><tt class="descname">interactive_pca</tt><big>(</big><em>data_types=('expression'</em>, <em>'splicing')</em>, <em>sample_subsets=None</em>, <em>feature_subsets=None</em>, <em>featurewise=False</em>, <em>x_pc=(1</em>, <em>10)</em>, <em>y_pc=(1</em>, <em>10)</em>, <em>show_point_labels=False</em>, <em>list_link=''</em>, <em>plot_violins=False</em>, <em>savefile='data/last.pca.pdf'</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_pca"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.ipython_interact.Interactive.interactive_pca" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="staticmethod">
 <dt id="flotilla.visualize.ipython_interact.Interactive.interactive_plot_modalities_lavalamps">
 <em class="property">static </em><tt class="descname">interactive_plot_modalities_lavalamps</tt><big>(</big><em>sample_subsets=None</em>, <em>feature_subsets=None</em>, <em>color=u'#e41a1c'</em>, <em>x_offset=0</em>, <em>use_these_modalities=True</em>, <em>bootstrapped=False</em>, <em>bootstrapped_kws=None</em>, <em>savefile=''</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_plot_modalities_lavalamps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.ipython_interact.Interactive.interactive_plot_modalities_lavalamps" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="flotilla.visualize.ipython_interact.Interactive.interactive_reset_outliers">
+<em class="property">static </em><tt class="descname">interactive_reset_outliers</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_reset_outliers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.ipython_interact.Interactive.interactive_reset_outliers" title="Permalink to this definition">¶</a></dt>
+<dd><p>User selects from columns that start with &#8216;<a href="#id1"><span class="problematic" id="id2">outlier_</span></a>&#8216; to merge
+multiple outlier classifications</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -519,7 +612,7 @@ sets</p>
 
 <dl class="class">
 <dt id="flotilla.visualize.predict.PredictorBaseViz">
-<em class="property">class </em><tt class="descclassname">flotilla.visualize.predict.</tt><tt class="descname">PredictorBaseViz</tt><big>(</big><em>predictor_name</em>, <em>data_name</em>, <em>trait_name</em>, <em>X_data=None</em>, <em>trait=None</em>, <em>predictor_obj=None</em>, <em>predictor_scoring_fun=None</em>, <em>score_cutoff_fun=None</em>, <em>n_features_dependent_parameters=None</em>, <em>constant_parameters=None</em>, <em>is_categorical_trait=None</em>, <em>predictor_dataset_manager=None</em>, <em>predictor_config_manager=None</em>, <em>feature_renamer=None</em>, <em>groupby=None</em>, <em>color=None</em>, <em>pooled=None</em>, <em>order=None</em>, <em>violinplot_kws=None</em>, <em>data_type=None</em>, <em>DataModel=None</em>, <em>label_to_color=None</em>, <em>label_to_marker=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/predict.html#PredictorBaseViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.predict.PredictorBaseViz" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">flotilla.visualize.predict.</tt><tt class="descname">PredictorBaseViz</tt><big>(</big><em>predictor_name</em>, <em>data_name</em>, <em>trait_name</em>, <em>X_data=None</em>, <em>trait=None</em>, <em>predictor_obj=None</em>, <em>predictor_scoring_fun=None</em>, <em>score_cutoff_fun=None</em>, <em>n_features_dependent_parameters=None</em>, <em>constant_parameters=None</em>, <em>is_categorical_trait=None</em>, <em>predictor_dataset_manager=None</em>, <em>predictor_config_manager=None</em>, <em>feature_renamer=None</em>, <em>groupby=None</em>, <em>color=None</em>, <em>pooled=None</em>, <em>order=None</em>, <em>violinplot_kws=None</em>, <em>data_type=None</em>, <em>label_to_color=None</em>, <em>label_to_marker=None</em>, <em>singles=None</em>, <em>outliers=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/predict.html#PredictorBaseViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.predict.PredictorBaseViz" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="flotilla.compute.html#flotilla.compute.predict.PredictorBase" title="flotilla.compute.predict.PredictorBase"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.predict.PredictorBase</span></tt></a></p>
 <p class="rubric">Attributes</p>
 <p class="rubric">Methods</p>

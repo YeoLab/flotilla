@@ -120,7 +120,6 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Compute predictors on data, i.e. regressors or classifiers</span>
 <span class="sd">&quot;&quot;&quot;</span>
-
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
@@ -133,12 +132,9 @@
 <span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">LabelEncoder</span>
 <span class="kn">from</span> <span class="nn">pandas.util.testing</span> <span class="kn">import</span> <span class="n">assert_frame_equal</span><span class="p">,</span> <span class="n">assert_series_equal</span>
 
-<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">memoize</span>
-
-
-
-<span class="c"># from ..visualize.decomposition import PCAViz, NMFViz</span>
+<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">memoize</span><span class="p">,</span> <span class="n">timestamp</span>
 <span class="kn">from</span> <span class="nn">.decomposition</span> <span class="kn">import</span> <span class="n">DataFramePCA</span><span class="p">,</span> <span class="n">DataFrameNMF</span>
+
 
 <span class="n">default_classifier</span> <span class="o">=</span> <span class="s">&#39;ExtraTreesClassifier&#39;</span>
 <span class="n">default_regressor</span> <span class="o">=</span> <span class="s">&#39;ExtraTreesRegressor&#39;</span>
@@ -172,10 +168,8 @@
                  <span class="n">n_features_dependent_parameters</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">constant_parameters</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-
-
 <span class="sd">        Parameters</span>
-<span class="sd">        ==========</span>
+<span class="sd">        ----------</span>
 
 
 <span class="sd">        predictor_name - a name for this predictor</span>
@@ -205,12 +199,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">predictor_scoring_fun</span> <span class="o">=</span> <span class="n">predictor_scoring_fun</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">score_cutoff_fun</span> <span class="o">=</span> <span class="n">score_cutoff_fun</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">predictor_name</span> <span class="o">=</span> <span class="n">predictor_name</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
-            <span class="s">&quot;predictor {} is of type {}</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predictor_name</span><span class="p">,</span> <span class="n">obj</span><span class="p">))</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+            <span class="s">&quot;{}</span><span class="se">\t</span><span class="s">Predictor {} is of type {}</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">timestamp</span><span class="p">(),</span>
+                                                      <span class="bp">self</span><span class="o">.</span><span class="n">predictor_name</span><span class="p">,</span> <span class="n">obj</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="n">obj</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__doc__</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">__doc__</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
-            <span class="s">&quot;added {} to default predictors</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predictor_name</span><span class="p">))</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+            <span class="s">&quot;{}</span><span class="se">\t</span><span class="s">Added {} to default predictors</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">timestamp</span><span class="p">(),</span>
+                                                          <span class="bp">self</span><span class="o">.</span><span class="n">predictor_name</span><span class="p">))</span>
 
     <span class="nd">@memoize</span>
 <div class="viewcode-block" id="PredictorConfig.parameters"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.predict.PredictorConfig.parameters">[docs]</a>    <span class="k">def</span> <span class="nf">parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_features</span><span class="p">):</span>
@@ -218,11 +214,11 @@
 
 <span class="sd">        recommended parameters for this classifier for n_features-sized dataset</span>
 
-<span class="sd">         Parameters:</span>
-<span class="sd">         ===========</span>
-<span class="sd">         n_features - int is used to scale appropriate kwargs to predictor</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        n_features - int is used to scale appropriate kwargs to predictor</span>
 
-<span class="sd">         &quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">parameters</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">parameter</span><span class="p">,</span> <span class="n">setter</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_features_dependent_parameters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">parameters</span><span class="p">[</span><span class="n">parameter</span><span class="p">]</span> <span class="o">=</span> <span class="n">setter</span><span class="p">(</span><span class="n">n_features</span><span class="p">)</span>
@@ -238,9 +234,9 @@
             <span class="k">raise</span> <span class="ne">Exception</span>
         <span class="n">parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">(</span><span class="n">n_features</span><span class="p">)</span>
 
-        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
-            <span class="s">&quot;configuring predictor type: {} with {} features&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">predictor_name</span><span class="p">,</span> <span class="n">n_features</span><span class="p">))</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+            <span class="s">&quot;{} Configuring predictor type: {} with {} features&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">timestamp</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictor_name</span><span class="p">,</span> <span class="n">n_features</span><span class="p">))</span>
 
         <span class="n">prd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="p">(</span><span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
         <span class="n">prd</span><span class="o">.</span><span class="n">score_cutoff_fun</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_cutoff_fun</span>
@@ -296,7 +292,7 @@
         <span class="sd">&quot;&quot;&quot;choose the  coefficient that optimizes the result of some</span>
 <span class="sd">        objective function of a predictor&#39;s parameters to return a user-chosen target value&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-        <span class="k">return</span> <span class="n">PredictorConfigScalers</span><span class="p">(</span><span class="n">coef</span><span class="o">=</span><span class="n">optimized_coef</span><span class="p">)</span>
+        <span class="c"># return PredictorConfigScalers(coef=optimized_coef)</span>
         <span class="c">#scipy.optimize(.....)</span>
 
 </div></div>
@@ -662,8 +658,9 @@
                  <span class="n">predictor_config_manager</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">feature_renamer</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">groupby</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">pooled</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                 <span class="n">violinplot_kws</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">DataModel</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                 <span class="n">label_to_color</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">label_to_marker</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+                 <span class="n">violinplot_kws</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">label_to_color</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">label_to_marker</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">singles</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">outliers</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">predictor_name</span> <span class="o">=</span> <span class="n">predictor_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data_name</span> <span class="o">=</span> <span class="n">data_name</span>
@@ -673,10 +670,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">groupby</span> <span class="o">=</span> <span class="n">groupby</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">color</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pooled</span> <span class="o">=</span> <span class="n">pooled</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">singles</span> <span class="o">=</span> <span class="n">singles</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outliers</span> <span class="o">=</span> <span class="n">outliers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="n">order</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">violinplot_kws</span> <span class="o">=</span> <span class="n">violinplot_kws</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data_type</span> <span class="o">=</span> <span class="n">data_type</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">DataModel</span> <span class="o">=</span> <span class="n">DataModel</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">label_to_color</span> <span class="o">=</span> <span class="n">label_to_color</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">label_to_marker</span> <span class="o">=</span> <span class="n">label_to_marker</span>
 

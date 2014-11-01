@@ -128,10 +128,9 @@
 
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseData</span>
 <span class="kn">from</span> <span class="nn">..compute.splicing</span> <span class="kn">import</span> <span class="n">Modalities</span>
-<span class="kn">from</span> <span class="nn">..compute.decomposition</span> <span class="kn">import</span> <span class="n">DataFramePCA</span>
 <span class="kn">from</span> <span class="nn">..visualize.color</span> <span class="kn">import</span> <span class="n">purples</span>
 <span class="kn">from</span> <span class="nn">..visualize.splicing</span> <span class="kn">import</span> <span class="n">ModalitiesViz</span>
-<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">memoize</span>
+<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">memoize</span><span class="p">,</span> <span class="n">timestamp</span>
 <span class="kn">from</span> <span class="nn">..visualize.color</span> <span class="kn">import</span> <span class="n">red</span>
 <span class="kn">from</span> <span class="nn">..visualize.splicing</span> <span class="kn">import</span> <span class="n">lavalamp</span><span class="p">,</span> <span class="n">hist_single_vs_pooled_diff</span><span class="p">,</span> \
     <span class="n">lavalamp_pooled_inconsistent</span>
@@ -147,13 +146,14 @@
     <span class="n">n_components</span> <span class="o">=</span> <span class="mi">2</span>
     <span class="n">_binsize</span> <span class="o">=</span> <span class="mf">0.1</span>
 
-    <span class="n">_last_reducer_accessed</span> <span class="o">=</span> <span class="bp">None</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span>
-                 <span class="n">metadata</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">binsize</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">outliers</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                 <span class="n">feature_rename_col</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">excluded_max</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">included_min</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+                 <span class="n">feature_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">binsize</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">outliers</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">feature_rename_col</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">feature_ignore_subset_cols</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">excluded_max</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">included_min</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
                  <span class="n">pooled</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">predictor_config_manager</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                 <span class="n">technical_outliers</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+                 <span class="n">technical_outliers</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">minimum_samples</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Instantiate a object for percent spliced in (PSI) scores</span>
 
 <span class="sd">        Parameters</span>
@@ -165,30 +165,32 @@
 <span class="sd">        binsize : float</span>
 <span class="sd">            Value between 0 and 1, the bin size for binning the study_data</span>
 <span class="sd">            scores</span>
-<span class="sd">        reducer : sklearn.decomposition object</span>
-<span class="sd">            An scikit-learn class that reduces the dimensionality of study_data</span>
-<span class="sd">            somehow. Must accept the parameter n_components, have the</span>
-<span class="sd">            functions fit, transform, and have the attribute components_</span>
 <span class="sd">        excluded_max : float</span>
 <span class="sd">            Maximum value for the &quot;excluded&quot; bin of psi scores. Default 0.2.</span>
 <span class="sd">        included_max : float</span>
 <span class="sd">            Minimum value for the &quot;included&quot; bin of psi scores. Default 0.8.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        &#39;thresh&#39; from BaseData is not used.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;initializing splicing</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{}</span><span class="se">\t</span><span class="s">Initializing splicing</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">timestamp</span><span class="p">()))</span>
+
         <span class="nb">super</span><span class="p">(</span><span class="n">SplicingData</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span>
-            <span class="n">data</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span> <span class="n">feature_rename_col</span><span class="o">=</span><span class="n">feature_rename_col</span><span class="p">,</span>
+            <span class="n">data</span><span class="p">,</span> <span class="n">feature_data</span><span class="o">=</span><span class="n">feature_data</span><span class="p">,</span>
+            <span class="n">feature_rename_col</span><span class="o">=</span><span class="n">feature_rename_col</span><span class="p">,</span>
+            <span class="n">feature_ignore_subset_cols</span><span class="o">=</span><span class="n">feature_ignore_subset_cols</span><span class="p">,</span>
             <span class="n">outliers</span><span class="o">=</span><span class="n">outliers</span><span class="p">,</span> <span class="n">pooled</span><span class="o">=</span><span class="n">pooled</span><span class="p">,</span>
             <span class="n">technical_outliers</span><span class="o">=</span><span class="n">technical_outliers</span><span class="p">,</span>
-            <span class="n">predictor_config_manager</span><span class="o">=</span><span class="n">predictor_config_manager</span><span class="p">)</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;done initializing splicing</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+            <span class="n">predictor_config_manager</span><span class="o">=</span><span class="n">predictor_config_manager</span><span class="p">,</span>
+            <span class="n">minimum_samples</span><span class="o">=</span><span class="n">minimum_samples</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s">&#39;splicing&#39;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{}</span><span class="se">\t</span><span class="s">Done initializing splicing</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">timestamp</span><span class="p">()))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">binsize</span> <span class="o">=</span> <span class="n">binsize</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">binsize</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">binsize</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">modalities_calculator</span> <span class="o">=</span> <span class="n">Modalities</span><span class="p">(</span><span class="n">excluded_max</span><span class="o">=</span><span class="n">excluded_max</span><span class="p">,</span>
                                                 <span class="n">included_min</span><span class="o">=</span><span class="n">included_min</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">modalities_visualizer</span> <span class="o">=</span> <span class="n">ModalitiesViz</span><span class="p">()</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">data_type</span> <span class="o">=</span> <span class="s">&#39;splicing&#39;</span>
 
     <span class="nd">@memoize</span>
 <div class="viewcode-block" id="SplicingData.modalities"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.splicing.SplicingData.modalities">[docs]</a>    <span class="k">def</span> <span class="nf">modalities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">feature_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
@@ -206,7 +208,7 @@
 <span class="sd">            event several times to get a better estimate of its true modality.</span>
 <span class="sd">        bootstrappped_kws : dict</span>
 <span class="sd">            Valid arguments to _bootstrapped_fit_transform. If None, default is</span>
-<span class="sd">            dict(n_iter=100, thresh=0.6, min_samples=10)</span>
+<span class="sd">            dict(n_iter=100, thresh=0.6, minimum_samples=10)</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -234,7 +236,7 @@
 <span class="sd">            Default False.</span>
 <span class="sd">        bootstrappped_kws : dict</span>
 <span class="sd">            Valid arguments to _bootstrapped_fit_transform. If None, default is</span>
-<span class="sd">            dict(n_iter=100, thresh=0.6, min_samples=10)</span>
+<span class="sd">            dict(n_iter=100, thresh=0.6, minimum_samples=10)</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -263,7 +265,7 @@
 <span class="sd">            Default False.</span>
 <span class="sd">        bootstrappped_kws : dict</span>
 <span class="sd">            Valid arguments to _bootstrapped_fit_transform. If None, default is</span>
-<span class="sd">            dict(n_iter=100, thresh=0.6, min_samples=10)</span>
+<span class="sd">            dict(n_iter=100, thresh=0.6, minimum_samples=10)</span>
 
 
 <span class="sd">        Returns</span>
@@ -293,7 +295,7 @@
 <span class="sd">            Default False.</span>
 <span class="sd">        bootstrappped_kws : dict</span>
 <span class="sd">            Valid arguments to _bootstrapped_fit_transform. If None, default is</span>
-<span class="sd">            dict(n_iter=100, thresh=0.6, min_samples=10)</span>
+<span class="sd">            dict(n_iter=100, thresh=0.6, minimum_samples=10)</span>
 
 
 <span class="sd">        Returns</span>
@@ -344,7 +346,7 @@
 <span class="sd">            Default False.</span>
 <span class="sd">        bootstrappped_kws : dict</span>
 <span class="sd">            Valid arguments to _bootstrapped_fit_transform. If None, default is</span>
-<span class="sd">            dict(n_iter=100, thresh=0.6, min_samples=10)</span>
+<span class="sd">            dict(n_iter=100, thresh=0.6, minimum_samples=10)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">use_these_modalities</span><span class="p">:</span>
@@ -552,12 +554,24 @@
 
 <div class="viewcode-block" id="SplicingData.reduce"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.splicing.SplicingData.reduce">[docs]</a>    <span class="k">def</span> <span class="nf">reduce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">feature_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                <span class="n">featurewise</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-               <span class="n">reducer</span><span class="o">=</span><span class="n">DataFramePCA</span><span class="p">,</span>
-               <span class="n">standardize</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+               <span class="n">reducer</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+               <span class="n">standardize</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
                <span class="n">reducer_kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param sample_ids: list of sample ids</span>
+<span class="sd">        :param feature_ids: list of features</span>
+<span class="sd">        :param featurewise: reduce transpose (feature X sample) instead of sample X feature</span>
+<span class="sd">        :param reducer: DataFrameReducer object, defaults to DataFramePCA</span>
+<span class="sd">        :param standardize: standardize columns before reduction</span>
+<span class="sd">        :param reducer_kwargs: kwargs for reducer</span>
+<span class="sd">        :param bins: bins to use for binify</span>
+<span class="sd">        :return: reducer object</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">SplicingData</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">sample_ids</span><span class="p">,</span> <span class="n">feature_ids</span><span class="p">,</span>
                                                 <span class="n">featurewise</span><span class="p">,</span> <span class="n">reducer</span><span class="p">,</span>
-                                                <span class="n">standardize</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                                                <span class="n">standardize</span><span class="o">=</span><span class="n">standardize</span><span class="p">,</span>
                                                 <span class="n">reducer_kwargs</span><span class="o">=</span><span class="n">reducer_kwargs</span><span class="p">,</span>
                                                 <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">)</span>
 

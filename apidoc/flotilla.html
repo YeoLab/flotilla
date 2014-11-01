@@ -85,8 +85,8 @@
 <li><a class="reference internal" href="#">flotilla package</a><ul>
 <li><a class="reference internal" href="#subpackages">Subpackages</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-flotilla.database">flotilla.database module</a></li>
-<li><a class="reference internal" href="#module-flotilla.external">flotilla.external module</a></li>
+<li><a class="reference internal" href="#flotilla-database-module">flotilla.database module</a></li>
+<li><a class="reference internal" href="#flotilla-external-module">flotilla.external module</a></li>
 <li><a class="reference internal" href="#flotilla-setup-module">flotilla.setup module</a></li>
 <li><a class="reference internal" href="#module-flotilla.util">flotilla.util module</a></li>
 <li><a class="reference internal" href="#module-flotilla">Module contents</a></li>
@@ -178,154 +178,25 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-flotilla.database">
-<span id="flotilla-database-module"></span><h2>flotilla.database module<a class="headerlink" href="#module-flotilla.database" title="Permalink to this headline">¶</a></h2>
-<p>handles database connection, performs operations as a slave if run as a script.</p>
-<dl class="function">
-<dt id="flotilla.database.begin">
-<tt class="descclassname">flotilla.database.</tt><tt class="descname">begin</tt><big>(</big><em>flotilla_project='http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22'</em><big>)</big><a class="reference internal" href="../_modules/flotilla/database.html#begin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.database.begin" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="flotilla.database.fill_database">
-<tt class="descclassname">flotilla.database.</tt><tt class="descname">fill_database</tt><big>(</big><em>mongodb, predictor, target, verbose=False, letters=['P', 'N', 'M', 'S']</em><big>)</big><a class="reference internal" href="../_modules/flotilla/database.html#fill_database"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.database.fill_database" title="Permalink to this definition">¶</a></dt>
-<dd><p>mongodb - mongo database connection object
-predictor - X values, i.e. RPKMs.  Rows == cell ids, cols == gene ids
-target - Y values, i.e. PSIs.  Rows == cell ids, cols == exon ids</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="flotilla.database.get_mongo_db">
-<tt class="descclassname">flotilla.database.</tt><tt class="descname">get_mongo_db</tt><big>(</big><em>db</em>, <em>mongoHost='sauron.ucsd.edu'</em>, <em>mongoPort=8838</em><big>)</big><a class="reference internal" href="../_modules/flotilla/database.html#get_mongo_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.database.get_mongo_db" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="flotilla.database.get_unstarted_events">
-<tt class="descclassname">flotilla.database.</tt><tt class="descname">get_unstarted_events</tt><big>(</big><em>mongodb</em><big>)</big><a class="reference internal" href="../_modules/flotilla/database.html#get_unstarted_events"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.database.get_unstarted_events" title="Permalink to this definition">¶</a></dt>
-<dd><p>get events that have not been started yet.
-generator sets started to True before returning an event</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="flotilla.database.load_event_list">
-<tt class="descclassname">flotilla.database.</tt><tt class="descname">load_event_list</tt><big>(</big><em>mongo</em>, <em>target</em>, <em>target_type='SE'</em><big>)</big><a class="reference internal" href="../_modules/flotilla/database.html#load_event_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.database.load_event_list" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="flotilla.database.poll">
-<tt class="descclassname">flotilla.database.</tt><tt class="descname">poll</tt><big>(</big><em>mongodb</em><big>)</big><a class="reference internal" href="../_modules/flotilla/database.html#poll"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.database.poll" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="flotilla.database.reset_event_data">
-<tt class="descclassname">flotilla.database.</tt><tt class="descname">reset_event_data</tt><big>(</big><em>mongodb</em><big>)</big><a class="reference internal" href="../_modules/flotilla/database.html#reset_event_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.database.reset_event_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="flotilla.database.reset_event_list">
-<tt class="descclassname">flotilla.database.</tt><tt class="descname">reset_event_list</tt><big>(</big><em>mongodb</em><big>)</big><a class="reference internal" href="../_modules/flotilla/database.html#reset_event_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.database.reset_event_list" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<div class="section" id="flotilla-database-module">
+<h2>flotilla.database module<a class="headerlink" href="#flotilla-database-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-flotilla.external">
-<span id="flotilla-external-module"></span><h2>flotilla.external module<a class="headerlink" href="#module-flotilla.external" title="Permalink to this headline">¶</a></h2>
-<p>interface with external data sources i.e. GO files, web</p>
-<dl class="class">
-<dt id="flotilla.external.GO">
-<em class="property">class </em><tt class="descclassname">flotilla.external.</tt><tt class="descname">GO</tt><big>(</big><em>GOFile</em><big>)</big><a class="reference internal" href="../_modules/flotilla/external.html#GO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.external.GO" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
-<p>gene ontology tool</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">go</span> <span class="o">=</span> <span class="n">hg19GO</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">go</span><span class="o">.</span><span class="n">geneXref</span><span class="p">[</span><span class="s">&#39;ENSG00000100320&#39;</span><span class="p">]</span>
-<span class="go">&#39;RBFOX2&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">enrichment</span><span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">background</span><span class="p">)</span>
-</pre></div>
-</div>
-<p class="rubric">Methods</p>
-<dl class="method">
-<dt id="flotilla.external.GO.enrichment">
-<tt class="descname">enrichment</tt><big>(</big><em>geneList</em>, <em>background=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/external.html#GO.enrichment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.external.GO.enrichment" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="flotilla.external.GO.geneNames">
-<tt class="descname">geneNames</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="../_modules/flotilla/external.html#GO.geneNames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.external.GO.geneNames" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="flotilla.external.GO.link_to_geneNames">
-<tt class="descname">link_to_geneNames</tt><big>(</big><em>list_link</em><big>)</big><a class="reference internal" href="../_modules/flotilla/external.html#GO.link_to_geneNames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.external.GO.link_to_geneNames" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="flotilla.external.GO_enrichment">
-<tt class="descclassname">flotilla.external.</tt><tt class="descname">GO_enrichment</tt><big>(</big><em>geneList</em>, <em>ontology</em>, <em>expressedGenes=None</em>, <em>printIt=False</em>, <em>pCut=1000000</em>, <em>xRef={}</em><big>)</big><a class="reference internal" href="../_modules/flotilla/external.html#GO_enrichment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.external.GO_enrichment" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="flotilla.external.check_if_already_downloaded">
-<tt class="descclassname">flotilla.external.</tt><tt class="descname">check_if_already_downloaded</tt><big>(</big><em>url</em>, <em>download_dir='/home/travis/flotilla_projects'</em><big>)</big><a class="reference internal" href="../_modules/flotilla/external.html#check_if_already_downloaded"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.external.check_if_already_downloaded" title="Permalink to this definition">¶</a></dt>
-<dd><p>If a url filename has already been downloaded, don&#8217;t download it again.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>url</strong> : str</p>
-<blockquote>
-<div><p>HTTP url of a file you want to downlaod</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
-<blockquote class="last">
-<div><p>Location of the file on your system</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="flotilla.external.data_package_url_to_dict">
-<tt class="descclassname">flotilla.external.</tt><tt class="descname">data_package_url_to_dict</tt><big>(</big><em>data_package_url</em><big>)</big><a class="reference internal" href="../_modules/flotilla/external.html#data_package_url_to_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.external.data_package_url_to_dict" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="flotilla.external.generateOntology">
-<tt class="descclassname">flotilla.external.</tt><tt class="descname">generateOntology</tt><big>(</big><em>df</em><big>)</big><a class="reference internal" href="../_modules/flotilla/external.html#generateOntology"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.external.generateOntology" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="flotilla.external.get_resource_from_name">
-<tt class="descclassname">flotilla.external.</tt><tt class="descname">get_resource_from_name</tt><big>(</big><em>datapackage</em>, <em>name</em><big>)</big><a class="reference internal" href="../_modules/flotilla/external.html#get_resource_from_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.external.get_resource_from_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="flotilla.external.link_to_list">
-<tt class="descclassname">flotilla.external.</tt><tt class="descname">link_to_list</tt><big>(</big><em>link</em><big>)</big><a class="reference internal" href="../_modules/flotilla/external.html#link_to_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.external.link_to_list" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="flotilla.external.make_feature_datapackage">
-<tt class="descclassname">flotilla.external.</tt><tt class="descname">make_feature_datapackage</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/flotilla/external.html#make_feature_datapackage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.external.make_feature_datapackage" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="flotilla.external.make_study_datapackage">
-<tt class="descclassname">flotilla.external.</tt><tt class="descname">make_study_datapackage</tt><big>(</big><em>name</em>, <em>metadata</em>, <em>expression_data=None</em>, <em>splicing_data=None</em>, <em>spikein_data=None</em>, <em>mapping_stats_data=None</em>, <em>title=''</em>, <em>sources=''</em>, <em>license=None</em>, <em>species=None</em>, <em>flotilla_dir='/home/travis/flotilla_projects'</em>, <em>metadata_kws=None</em>, <em>expression_kws=None</em>, <em>splicing_kws=None</em>, <em>spikein_kws=None</em>, <em>mapping_stats_kws=None</em>, <em>version=None</em>, <em>host='sauron.ucsd.edu'</em>, <em>host_destination='/zfs/www/flotilla_packages/'</em><big>)</big><a class="reference internal" href="../_modules/flotilla/external.html#make_study_datapackage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.external.make_study_datapackage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Example code for making a datapackage for a Study</p>
-</dd></dl>
-
+<div class="section" id="flotilla-external-module">
+<h2>flotilla.external module<a class="headerlink" href="#flotilla-external-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="flotilla-setup-module">
 <h2>flotilla.setup module<a class="headerlink" href="#flotilla-setup-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-flotilla.util">
 <span id="flotilla-util-module"></span><h2>flotilla.util module<a class="headerlink" href="#module-flotilla.util" title="Permalink to this headline">¶</a></h2>
-<p>general utilities</p>
+<p>General use utilities</p>
+<dl class="exception">
+<dt id="flotilla.util.AssertionError">
+<em class="property">exception </em><tt class="descclassname">flotilla.util.</tt><tt class="descname">AssertionError</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#AssertionError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.AssertionError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/exceptions.html#exceptions.StandardError" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">exceptions.StandardError</span></tt></a></p>
+<p>Assertion failed.</p>
+</dd></dl>
+
 <dl class="exception">
 <dt id="flotilla.util.TimeoutError">
 <em class="property">exception </em><tt class="descclassname">flotilla.util.</tt><tt class="descname">TimeoutError</tt><a class="reference internal" href="../_modules/flotilla/util.html#TimeoutError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.TimeoutError" title="Permalink to this definition">¶</a></dt>
@@ -333,6 +204,11 @@ generator sets started to True before returning an event</p>
 <p>From:
 <a class="reference external" href="http://stackoverflow.com/questions/2281850/timeout-function-if-it-takes-too-long-to-finish">http://stackoverflow.com/questions/2281850/timeout-function-if-it-takes-too-long-to-finish</a></p>
 </dd></dl>
+
+<dl class="function">
+<dt id="flotilla.util.add_package_data_resource">
+<tt class="descclassname">flotilla.util.</tt><tt class="descname">add_package_data_resource</tt><big>(</big><em>self</em>, <em>file_name</em>, <em>data_df</em>, <em>toplevel_package_dir</em>, <em>file_write_mode='tsv'</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#add_package_data_resource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.add_package_data_resource" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="function">
 <dt id="flotilla.util.as_numpy">
@@ -383,14 +259,71 @@ zero for the cached value to never expire.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="flotilla.util.get_loading_method">
+<tt class="descclassname">flotilla.util.</tt><tt class="descname">get_loading_method</tt><big>(</big><em>self</em>, <em>file_name</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#get_loading_method"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.get_loading_method" title="Permalink to this definition">¶</a></dt>
+<dd><p>loading_methods for loading from file</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="flotilla.util.install_development_package">
 <tt class="descclassname">flotilla.util.</tt><tt class="descname">install_development_package</tt><big>(</big><em>package_location</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#install_development_package"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.install_development_package" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
+<dt id="flotilla.util.link_to_list">
+<tt class="descclassname">flotilla.util.</tt><tt class="descname">link_to_list</tt><big>(</big><em>link</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#link_to_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.link_to_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="flotilla.util.load">
+<tt class="descclassname">flotilla.util.</tt><tt class="descname">load</tt><big>(</big><em>self</em>, <em>file_name</em>, <em>file_type='pickle_df'</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.load" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="flotilla.util.load_csv">
+<tt class="descclassname">flotilla.util.</tt><tt class="descname">load_csv</tt><big>(</big><em>file_name</em>, <em>compression=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#load_csv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.load_csv" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="flotilla.util.load_gzip_pickle_df">
+<tt class="descclassname">flotilla.util.</tt><tt class="descname">load_gzip_pickle_df</tt><big>(</big><em>file_name</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#load_gzip_pickle_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.load_gzip_pickle_df" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="flotilla.util.load_json">
+<tt class="descclassname">flotilla.util.</tt><tt class="descname">load_json</tt><big>(</big><em>filename</em>, <em>compression=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#load_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.load_json" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
+<blockquote>
+<div><p>Name of the json file toread</p>
+</div></blockquote>
+<p><strong>compression</strong> : str</p>
+<blockquote class="last">
+<div><p>Not used, only for  compatibility with other load functions</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.util.load_pickle_df">
+<tt class="descclassname">flotilla.util.</tt><tt class="descname">load_pickle_df</tt><big>(</big><em>file_name</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#load_pickle_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.load_pickle_df" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="flotilla.util.load_tsv">
+<tt class="descclassname">flotilla.util.</tt><tt class="descname">load_tsv</tt><big>(</big><em>file_name</em>, <em>compression=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#load_tsv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.load_tsv" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="flotilla.util.memoize">
 <tt class="descclassname">flotilla.util.</tt><tt class="descname">memoize</tt><big>(</big><em>obj</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#memoize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.memoize" title="Permalink to this definition">¶</a></dt>
-<dd><p>&#8216;memoize&#8217; aka remember the output from a function and return that,
+<dd><p>&#8216;Memoize&#8217; aka remember the output from a function and return that,
 rather than recalculating</p>
 <p>Stolen from:
 <a class="reference external" href="https://wiki.python.org/moin/PythonDecoratorLibrary#CA-237e205c0d5bd1459c3663a3feb7f78236085e0a_1">https://wiki.python.org/moin/PythonDecoratorLibrary#CA-237e205c0d5bd1459c3663a3feb7f78236085e0a_1</a></p>
@@ -416,6 +349,43 @@ then just evaluate the function and don&#8217;t memoize it.</dd>
 <dl class="function">
 <dt id="flotilla.util.timeout">
 <tt class="descclassname">flotilla.util.</tt><tt class="descname">timeout</tt><big>(</big><em>seconds=10</em>, <em>error_message='Timer expired'</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#timeout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.timeout" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="flotilla.util.timestamp">
+<tt class="descclassname">flotilla.util.</tt><tt class="descname">timestamp</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#timestamp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="flotilla.util.to_base_file_tuple">
+<tt class="descclassname">flotilla.util.</tt><tt class="descname">to_base_file_tuple</tt><big>(</big><em>tup</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#to_base_file_tuple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.to_base_file_tuple" title="Permalink to this definition">¶</a></dt>
+<dd><p>for making new packages, auto-loadable data!</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.util.validate_params">
+<tt class="descclassname">flotilla.util.</tt><tt class="descname">validate_params</tt><big>(</big><em>self</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#validate_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.validate_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>make sure that all necessary attributes are present</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.util.write_csv">
+<tt class="descclassname">flotilla.util.</tt><tt class="descname">write_csv</tt><big>(</big><em>df</em>, <em>file_name</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#write_csv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.write_csv" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="flotilla.util.write_gzip_pickle_df">
+<tt class="descclassname">flotilla.util.</tt><tt class="descname">write_gzip_pickle_df</tt><big>(</big><em>df</em>, <em>file_name</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#write_gzip_pickle_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.write_gzip_pickle_df" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="flotilla.util.write_pickle_df">
+<tt class="descclassname">flotilla.util.</tt><tt class="descname">write_pickle_df</tt><big>(</big><em>df</em>, <em>file_name</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#write_pickle_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.write_pickle_df" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="flotilla.util.write_tsv">
+<tt class="descclassname">flotilla.util.</tt><tt class="descname">write_tsv</tt><big>(</big><em>df</em>, <em>file_name</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#write_tsv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.write_tsv" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>

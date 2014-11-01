@@ -117,30 +117,46 @@
     <div class="col-md-12">
       
   <h1>Source code for flotilla.visualize.generic</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">itertools</span>
+
 <span class="kn">import</span> <span class="nn">matplotlib</span> <span class="kn">as</span> <span class="nn">mpl</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">seaborn</span> <span class="kn">as</span> <span class="nn">sns</span>
 
 
-<div class="viewcode-block" id="violinplot"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.generic.violinplot">[docs]</a><span class="k">def</span> <span class="nf">violinplot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">groupby</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">pooled_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+<div class="viewcode-block" id="violinplot"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.generic.violinplot">[docs]</a><span class="k">def</span> <span class="nf">violinplot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">groupby</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">color_ordered</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+               <span class="n">pooled_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                <span class="n">order</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">violinplot_kws</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                <span class="n">label_pooled</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">outliers</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    data : pandas.Series</span>
-<span class="sd">        The main data to plot</span>
-<span class="sd">    groupby : dict-like</span>
+<span class="sd">        The main data to plot as violins</span>
+<span class="sd">    groupby : dict-like, optional</span>
 <span class="sd">        How to group the samples (e.g. by phenotype)</span>
-<span class="sd">    color : list</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-
-
-<span class="sd">    Raises</span>
-<span class="sd">    ------</span>
+<span class="sd">    color_ordered : list, optional</span>
+<span class="sd">        List of colors, in the order you want to plot</span>
+<span class="sd">    ax : matplotlib.Axes, optional</span>
+<span class="sd">        Where to plot the violins. If None, get the current axes</span>
+<span class="sd">    pooled_data : pandas.Series, optional</span>
+<span class="sd">        Pooled samples. Will be plotted as black dots</span>
+<span class="sd">    order : list, optional</span>
+<span class="sd">        The order in which to plot the phenotypes, e.g. if the data is</span>
+<span class="sd">        form a differentiation time course</span>
+<span class="sd">    violinplot_kws : dict, optional</span>
+<span class="sd">        Other keywords to pass to seaborn.violinplot</span>
+<span class="sd">    title : str, optional</span>
+<span class="sd">        Title of the plot</span>
+<span class="sd">    label_pooled : bool, optional</span>
+<span class="sd">        If True, label the sample id of the pooled samples</span>
+<span class="sd">    outliers : pandas.Series</span>
+<span class="sd">        Outlier samples. Will be plotted in their phenotype category,</span>
+<span class="sd">        as a grey shadow</span>
+<span class="sd">    data_type : &#39;expression&#39; | &#39;splicing&#39; | None</span>
+<span class="sd">        If &#39;splicing&#39;, then force the y-axis to be from 0 to 1. If</span>
+<span class="sd">        &#39;expression&#39; or None, don&#39;t mess with the y-axis</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">data_type</span> <span class="o">=</span> <span class="s">&#39;none&#39;</span> <span class="k">if</span> <span class="n">data_type</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">data_type</span>
     <span class="n">splicing</span> <span class="o">=</span> <span class="s">&#39;splicing&#39;</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">data_type</span><span class="p">)</span>
@@ -151,8 +167,19 @@
     <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
 
-    <span class="n">_violinplot_single_dataset</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">groupby</span><span class="o">=</span><span class="n">groupby</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span>
-                     <span class="n">violinplot_kws</span><span class="o">=</span><span class="n">violinplot_kws</span><span class="p">,</span> <span class="n">splicing</span><span class="o">=</span><span class="n">splicing</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">order</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">data_grouped</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">groupby</span><span class="p">)</span>
+        <span class="n">outliers_grouped</span> <span class="o">=</span> <span class="n">outliers</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">groupby</span><span class="p">)</span>
+        <span class="n">pooled_grouped</span> <span class="o">=</span> <span class="n">pooled_data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">groupby</span><span class="p">)</span>
+        <span class="n">all_groups</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="n">data_grouped</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span>
+                                         <span class="n">pooled_grouped</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span>
+                                         <span class="n">outliers_grouped</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">all_groups</span><span class="p">)</span>
+
+
+    <span class="n">_violinplot_single_dataset</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">groupby</span><span class="o">=</span><span class="n">groupby</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color_ordered</span><span class="p">,</span>
+                               <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span>
+                               <span class="n">violinplot_kws</span><span class="o">=</span><span class="n">violinplot_kws</span><span class="p">,</span> <span class="n">splicing</span><span class="o">=</span><span class="n">splicing</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">pooled_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">groupby</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">grouped</span> <span class="o">=</span> <span class="n">pooled_data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">groupby</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">order</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
@@ -170,9 +197,11 @@
 
         <span class="c"># make sure this is behind the non outlier data</span>
         <span class="n">outlier_violinplot_kws</span><span class="p">[</span><span class="s">&#39;zorder&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-        <span class="n">_violinplot_single_dataset</span><span class="p">(</span><span class="n">outliers</span><span class="p">,</span> <span class="n">groupby</span><span class="o">=</span><span class="n">groupby</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;lightgrey&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
-                         <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span> <span class="n">violinplot_kws</span><span class="o">=</span><span class="n">outlier_violinplot_kws</span><span class="p">,</span>
-                         <span class="n">splicing</span><span class="o">=</span><span class="n">splicing</span><span class="p">)</span>
+        <span class="n">_violinplot_single_dataset</span><span class="p">(</span><span class="n">outliers</span><span class="p">,</span> <span class="n">groupby</span><span class="o">=</span><span class="n">groupby</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;lightgrey&#39;</span><span class="p">,</span>
+                                   <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+                                   <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span>
+                                   <span class="n">violinplot_kws</span><span class="o">=</span><span class="n">outlier_violinplot_kws</span><span class="p">,</span>
+                                   <span class="n">splicing</span><span class="o">=</span><span class="n">splicing</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">splicing</span><span class="p">:</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -204,6 +233,8 @@
 <span class="sd">    Separated out so real data plotting and outlier plotting works the same</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+        <span class="k">return</span>
 
     <span class="n">single_points</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">groupby</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">groupby</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
@@ -321,7 +352,50 @@
         <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([])</span>
     <span class="k">if</span> <span class="n">ylabel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ylabel</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([])</span></div>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([])</span>
+
+</div>
+<div class="viewcode-block" id="simple_twoway_scatter"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.generic.simple_twoway_scatter">[docs]</a><span class="k">def</span> <span class="nf">simple_twoway_scatter</span><span class="p">(</span><span class="n">sample1</span><span class="p">,</span> <span class="n">sample2</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plot a two-dimensional scatterplot between two samples</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sample1 : pandas.Series</span>
+<span class="sd">        Data to plot on the x-axis</span>
+<span class="sd">    sample2 : pandas.Series</span>
+<span class="sd">        Data to plot on the y-axis</span>
+<span class="sd">    Any other keyword arguments valid for seaborn.jointplot</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    jointgrid : seaborn.axisgrid.JointGrid</span>
+<span class="sd">        Returns a JointGrid instance</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    -------</span>
+<span class="sd">    seaborn.jointplot</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">joint_kws</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;joint_kws&#39;</span><span class="p">,</span> <span class="p">{})</span>
+
+    <span class="n">kind</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;kind&#39;</span><span class="p">,</span> <span class="s">&#39;scatter&#39;</span><span class="p">)</span>
+    <span class="n">marginal_kws</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;marginal_kws&#39;</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s">&#39;scatter&#39;</span><span class="p">:</span>
+        <span class="n">vmin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">sample1</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">sample2</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
+        <span class="n">vmax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">sample1</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">sample2</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+        <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+        <span class="n">marginal_kws</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s">&#39;bins&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">kind</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;reg&#39;</span><span class="p">,</span> <span class="s">&#39;resid&#39;</span><span class="p">):</span>
+        <span class="n">joint_kws</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s">&#39;alpha&#39;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+
+    <span class="n">jointgrid</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">jointplot</span><span class="p">(</span><span class="n">sample1</span><span class="p">,</span> <span class="n">sample2</span><span class="p">,</span> <span class="n">joint_kws</span><span class="o">=</span><span class="n">joint_kws</span><span class="p">,</span>
+                              <span class="n">marginal_kws</span><span class="o">=</span><span class="n">marginal_kws</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span> <span class="o">=</span> <span class="n">jointgrid</span><span class="o">.</span><span class="n">ax_joint</span><span class="o">.</span><span class="n">axis</span><span class="p">()</span>
+
+    <span class="n">xmin</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">sample1</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">-</span> <span class="o">.</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">ymin</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="n">sample2</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">-</span> <span class="o">.</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">jointgrid</span><span class="o">.</span><span class="n">ax_joint</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">)</span>
+    <span class="n">jointgrid</span><span class="o">.</span><span class="n">ax_joint</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">)</span></div>
 </pre></div>
 
     </div>
