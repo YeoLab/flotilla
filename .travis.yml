@@ -36,8 +36,7 @@ before_script:
   - echo $DEPLOY_HTML_DIR
 
 # command to run tests
-#script: make coverage
-script: echo 'very quick test :)'
+script: make coverage
 
 after_script:
   - coveralls
@@ -49,7 +48,7 @@ after_script:
   - pip install .
   - make lint
   - sudo pip install -r doc/requirements.txt --use-mirrors
-  - MASTER=feature/separate_master_dev_docs
+  - MASTER=master
   - if [[ $TRAVIS_BRANCH == "$MASTER" ]] ; then export DEPLOY_HTML_DIR=docs-stable ; fi
   - if [[ $TRAVIS_BRANCH == 'dev' ]] ; then export DEPLOY_HTML_DIR=docs-dev ; fi
   - if [[ $TRAVIS_BRANCH == "$MASTER" ]] || [[ $TRAVIS_BRANCH == 'dev' ]] ; then cd doc ; make setup_gh_pages ; make generate ; make deploy ; fi
