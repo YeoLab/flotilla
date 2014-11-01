@@ -70,7 +70,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'flotilla'
-copyright = u'2014, Olga Botvinnik, Michael Lovci, Patrick Liu, Yan Song'
+copyright = u'2014, Olga Botvinnik, Michael Lovci, Patrick Liu, Yan Song, ' \
+            u'and Gene Yeo'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
