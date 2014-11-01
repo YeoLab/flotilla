@@ -18,6 +18,7 @@ import os
 import matplotlib as mpl
 import sphinx_bootstrap_theme
 
+
 mpl.use('Agg')
 
 
@@ -148,8 +149,8 @@ html_theme_options = {
     # Note the "1" or "True" value above as the third argument to indicate
     # an arbitrary url.
     'navbar_links': [
-        ("Examples", "examples"),
-        ("Link", "http://example.com", True),
+        ("Tutorial", "tutorial"),
+        ("YeoLab@UCSD", "http://yeolab.ucsd.edu", True),
     ],
 
     # Render the next and previous page links in navbar. (Default: true)
