@@ -111,7 +111,7 @@ class NetworkerViz(Networker):
                 node_color_mapper = lambda x: sample_id_to_color[x]
             else:
                 node_color_mapper = lambda x: blue
-            node_size_mapper = lambda x: 75
+            node_size_mapper = lambda x: 95
 
         ax_pev.plot(pca.explained_variance_ratio_ * 100.)
         ax_pev.axvline(n_pcs, label='cutoff', color=green)
