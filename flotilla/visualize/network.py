@@ -178,8 +178,10 @@ class NetworkerViz(Networker):
         ax_degree.set_xlabel("degree")
         ax_degree.set_ylabel("density")
         try:
-            ax_degree.axvline(x=degree[feature_of_interest],
-                              label=feature_of_interest)
+            feature_id = self.DataModel.maybe_renamed_to_feature_id(
+                feature_of_interest)[0]
+            ax_degree.axvline(x=degree[feature_id],
+                              label=feature_id)
             ax_degree.legend()
 
         except Exception as e:
