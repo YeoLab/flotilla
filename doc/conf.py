@@ -15,8 +15,10 @@
 import sys
 import os
 
+import matplotlib as mpl
 import sphinx_bootstrap_theme
 
+mpl.use('Agg')
 
 
 
