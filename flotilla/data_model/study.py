@@ -242,7 +242,7 @@ class Study(object):
                 min_reads=mapping_stats_min_reads)
             self.technical_outliers = self.mapping_stats.too_few_mapped
             sys.stderr.write('samples had too few mapped reads (<{'
-                             ':e}:\n\t{})\n'.format(
+                             ':.1e} reads):\n\t{}\n'.format(
                 mapping_stats_min_reads, ', '.join(self.technical_outliers)))
         else:
             self.technical_outliers = None
