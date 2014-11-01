@@ -1,7 +1,3 @@
 What's New
 ==========
 
-v0.1.2 (November 1st, 2014)
----------------------------
-
-This is a minor release from
