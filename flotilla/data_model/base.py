@@ -92,12 +92,10 @@ class BaseData(object):
         self.data_type = data_type
 
         if technical_outliers is not None:
-            sys.stderr.write("Removing technical outliers "\
-            "from consideration in {0}:\n\t{1}\n".format(self.data_type, "\n\t".join(technical_outliers)))
+            sys.stderr.write("Removing technical outliers from consideration "
+                             "in {0}:\n\t{1}\n".format(
+                self.data_type, ", ".join(technical_outliers)))
             good_samples = ~self.data.index.isin(technical_outliers)
-            sys.stdout.write('Removing {} samples as technical '
-                             'outliers in {}'.format(','.join(
-                technical_outliers), self.data_type))
             self.data = self.data.ix[good_samples]
 
         self.pooled_samples = pooled if pooled is not None else []

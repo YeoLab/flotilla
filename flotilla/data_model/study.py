@@ -241,6 +241,9 @@ class Study(object):
                 predictor_config_manager=self.predictor_config_manager,
                 min_reads=mapping_stats_min_reads)
             self.technical_outliers = self.mapping_stats.too_few_mapped
+            sys.stderr.write('samples had too few mapped reads (<{'
+                             ':e}:\n\t{})\n'.format(
+                mapping_stats_min_reads, ', '.join(self.technical_outliers)))
         else:
             self.technical_outliers = None
 

@@ -57,8 +57,6 @@ class SplicingData(BaseData):
         """
         sys.stdout.write("{}\tInitializing splicing\n".format(timestamp()))
 
-        self.data_type = 'splicing'
-
         super(SplicingData, self).__init__(
             data, feature_data=feature_data,
             feature_rename_col=feature_rename_col,
