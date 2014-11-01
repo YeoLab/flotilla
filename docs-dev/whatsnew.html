@@ -56,8 +56,8 @@
           <ul class="nav navbar-nav">
             <li class="divider-vertical"></li>
             
-                <li><a href="examples.html">Examples</a></li>
-                <li><a href="http://example.com">Link</a></li>
+                <li><a href="tutorial.html">Tutorial</a></li>
+                <li><a href="http://yeolab.ucsd.edu">YeoLab@UCSD</a></li>
             
             
               <li class="dropdown globaltoc-container">
@@ -141,19 +141,17 @@
 <li>Plot the expression or splicing of two <em>samples</em> with <tt class="xref py py-func docutils literal"><span class="pre">study.plot_two_samples()</span></tt></li>
 <li>Plot the expression or splicing of two <em>features</em> with <tt class="xref py py-func docutils literal"><span class="pre">study.plot_two_features()</span></tt></li>
 <li>Detect outliers with ...</li>
-<li><tt class="xref py py-class docutils literal"><span class="pre">Study</span></tt> doesn&#8217;t</li>
+<li><tt class="xref py py-class docutils literal"><span class="pre">Study</span></tt> doesn&#8217;t filter out the pooled or outlier samples from the data, only technical outliers with fewer reads than specified in the  argument <tt class="docutils literal"><span class="pre">mapping_stats_min_reads</span></tt>.</li>
+<li>To filter expression or splicing data</li>
 </ul>
 </div>
 <div class="section" id="api-changes">
 <h3>API changes<a class="headerlink" href="#api-changes" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><tt class="xref py py-class docutils literal"><span class="pre">BaseData</span></tt></li>
-<li><tt class="xref py py-class docutils literal"><span class="pre">BaseData</span></tt> now has the attributes <tt class="xref py py-func docutils literal"><span class="pre">BaseData.singles()</span></tt>,</li>
+<li>The attribute <tt class="docutils literal"><span class="pre">data</span></tt> in <tt class="xref py py-class docutils literal"><span class="pre">BaseData</span></tt> now contains ALL the data, including pooled, singles, and outliers</li>
+<li>The attribute <tt class="docutils literal"><span class="pre">data_original</span></tt> in <tt class="xref py py-class docutils literal"><span class="pre">BaseData</span></tt> contains the original, unfiltered data. For example, before removing features detected in fewer  than 10 samples with expression &gt; 1.</li>
+<li><tt class="xref py py-class docutils literal"><span class="pre">BaseData</span></tt> now has the attributes <tt class="xref py py-func docutils literal"><span class="pre">BaseData.singles()</span></tt>, <tt class="xref py py-func docutils literal"><span class="pre">BaseData.pooled()</span></tt>, and <tt class="xref py py-func docutils literal"><span class="pre">BaseData.outliers()</span></tt> which are on-the-fly subsets of <tt class="docutils literal"><span class="pre">BaseData.data</span></tt>. This is to maintain datameaning if &#8220;outliers&#8221; is changed, this is also changed.</li>
 </ul>
-<p><tt class="xref py py-func docutils literal"><span class="pre">BaseData.pooled()</span></tt>, and <tt class="xref py py-func docutils literal"><span class="pre">BaseData.outliers()</span></tt> which are
-on-the-fly subsets of <tt class="docutils literal"><span class="pre">BaseData.data</span></tt>. This is to maintain datameaning if
-&#8220;outliers&#8221; is
-chan</p>
 </div>
 </div>
 </div>
