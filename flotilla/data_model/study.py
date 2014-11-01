@@ -1210,7 +1210,7 @@ class Study(object):
                         'minimum_samples': self.metadata.minimum_samples}
 
         try:
-            expression = self.expression.data
+            expression = self.expression.data_original
             expression_kws = {
                 'log_base': self.expression.log_base,
                 'thresh': self.expression.thresh}
@@ -1229,7 +1229,7 @@ class Study(object):
             expression_feature_kws = None
 
         try:
-            splicing = self.splicing.data
+            splicing = self.splicing.data_original
             splicing_kws = {}
         except AttributeError:
             splicing = None
@@ -1246,12 +1246,12 @@ class Study(object):
             splicing_feature_kws = None
 
         try:
-            spikein = self.spikein.data
+            spikein = self.spikein.data_original
         except AttributeError:
             spikein = None
 
         try:
-            mapping_stats = self.mapping_stats.data
+            mapping_stats = self.mapping_stats.data_original
             mapping_stats_kws = {'number_mapped_col':
                                      self.mapping_stats.number_mapped_col}
         except AttributeError:
