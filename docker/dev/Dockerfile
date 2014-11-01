@@ -7,14 +7,14 @@ RUN adduser --disabled-password --gecos '' --home=/home/flotilla flotilla
 
 WORKDIR /usr/bin
 
-ADD https://github.com/YeoLab/flotilla/tree/dev/docker/scripts/run_notebook.sh /usr/bin/run_notebook.sh
+ADD https://raw.githubusercontent.com/YeoLab/flotilla/dev/docker/scripts/run_notebook.sh /usr/bin/run_notebook.sh
 RUN chmod 755 run_notebook.sh
 
 RUN apt-get install -y r-base
 RUN pip install --upgrade rpy2
 
 WORKDIR /home/root
-ADD https://github.com/YeoLab/flotilla/tree/dev/docker/scripts/monocle_deps_installer.R /home/root/monocle_deps_installer.R
+ADD https://raw.githubusercontent.com/YeoLab/flotilla/dev/docker/scripts/monocole_deps_installer.R /home/root/monocle_deps_installer.R
 RUN Rscript /home/root/monocle_deps_installer.R
 
 ADD http://monocle-bio.sourceforge.net/downloads/monocle_0.99.0.tar.gz /home/root/monocle_0.99.0.tar.gz
