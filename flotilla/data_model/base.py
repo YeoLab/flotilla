@@ -37,7 +37,8 @@ class BaseData(object):
                  technical_outliers=None,
                  outliers=None,
                  pooled=None,
-                 predictor_config_manager=None):
+                 predictor_config_manager=None,
+                 data_type=None):
         """Abstract base class for biological measurements
 
         Parameters
@@ -85,14 +86,18 @@ class BaseData(object):
 
         """
         self.data = data
+        self.data_original = self.data
         self.thresh = thresh
         self.minimum_samples = minimum_samples
-        self.data_type = None if not hasattr(self, 'data_type') else self.data_type
+        self.data_type = data_type
 
         if technical_outliers is not None:
             sys.stderr.write("Removing technical outliers "\
             "from consideration in {0}:\n\t{1}\n".format(self.data_type, "\n\t".join(technical_outliers)))
             good_samples = ~self.data.index.isin(technical_outliers)
+            sys.stdout.write('Removing {} samples as technical '
+                             'outliers in {}'.format(','.join(
+                technical_outliers), self.data_type))
             self.data = self.data.ix[good_samples]
 
         self.pooled_samples = pooled if pooled is not None else []

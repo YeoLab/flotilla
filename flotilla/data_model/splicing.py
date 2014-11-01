@@ -66,7 +66,7 @@ class SplicingData(BaseData):
             outliers=outliers, pooled=pooled,
             technical_outliers=technical_outliers,
             predictor_config_manager=predictor_config_manager,
-            minimum_samples=minimum_samples)
+            minimum_samples=minimum_samples, data_type='splicing')
         sys.stdout.write("{}\tDone initializing splicing\n".format(timestamp()))
         self.binsize = binsize
         self.bins = np.arange(0, 1 + self.binsize, self.binsize)
@@ -74,7 +74,6 @@ class SplicingData(BaseData):
         self.modalities_calculator = Modalities(excluded_max=excluded_max,
                                                 included_min=included_min)
         self.modalities_visualizer = ModalitiesViz()
-
 
     @memoize
     def modalities(self, sample_ids=None, feature_ids=None,
