@@ -13,11 +13,11 @@ Contents:
 .. toctree::
    :maxdepth: 4
 
-       flotilla
-       whats_new.rst
-       installation.rst
+          flotilla
+          whatsnew
+          installation
 
-.. _what's new: whats_new.rst
+.. _what's new: whatsnew
 
 
 Indices and tables

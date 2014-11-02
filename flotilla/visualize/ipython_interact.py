@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 
 
 
+
 # from ..compute.predict import default_classifier
 from flotilla.util import link_to_list
 from ..visualize.color import red
@@ -554,7 +555,8 @@ class Interactive(object):
 
     @staticmethod
     def interactive_reset_outliers(self):
-        """ user selects from columns that start with 'outlier_' to merge multiple outlier classifications"""
+        """User selects from columns that start with 'outlier_' to merge
+        multiple outlier classifications"""
         outlier_columns = dict()
 
         for column in self.metadata.data.columns:
@@ -564,9 +566,9 @@ class Interactive(object):
         def do_interact(**columns):
             if len(columns.keys()) == 0:
                 print "You have not specified any 'outlier_' columns in study.metadata.data... \n" \
-                      "This will be quite boring until you do."
+                      "This function will do nothing to your data."
             else:
-                self.set_outlier_by_merging_outlier_columns(
+                self.metadata.set_outliers_by_merging_columns(
                     [k for (k, v) in columns.items() if v])
 
         interact(do_interact, **outlier_columns)
