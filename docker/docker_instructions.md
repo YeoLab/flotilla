@@ -5,9 +5,9 @@ Here are instructions to get an active docker image. These instructions have not
 Note: On Mac OS X and Windows you will need to start docker through the “boot2docker” application before you can use docker.
 
   1. Install docker ( ≥ version 1.3) according to the [instructions appropriate for your system](https://docs.docker.com/installation/#installation).<br>
-  2. Then start flotilla with magic web-start:
+  2. Then start flotilla on the command line (OS X `Terminal` application):
   
 
-    curl https://raw.githubusercontent.com/YeoLab/flotilla/dev/docker/start_docker.py | python
+    <code>curl https://raw.githubusercontent.com/YeoLab/flotilla/dev/docker/start_docker.py | python</code>
 
 
