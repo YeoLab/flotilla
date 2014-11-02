@@ -36,7 +36,8 @@ class CommandLine(object):
         parser.add_argument('--flotilla_packages', required=False,
                             type=str, action='store',
                             default=DEFAULT_FLOTILLA_PROJECTS_DIR,
-                            help="local directory to place/read flotilla packages:{}".format(DEFAULT_FLOTILLA_PROJECTS_DIR))
+                            help="local directory to place/read "
+                            "flotilla packages:{}".format(DEFAULT_FLOTILLA_PROJECTS_DIR))
 
         parser.add_argument('--memory_request', required=False,
                             type=int, action='store',
@@ -118,7 +119,8 @@ class Boot2DockerRunner(object):
     def initialize_boot2docker(self, memory=DEFAULT_MEMORY_REQUIREMENT):
         """set docker VM with memory allocation"""
 
-        sys.stderr.write('initializing boot2docker VM with {}MB memory (yah, it needs a lot)\nplease wait...\n'.format(memory))
+        sys.stderr.write("initializing boot2docker VM with {}MB memory (yah, it needs a lot)\n\"\
+        \"please wait...\n".format(memory))
         p = subprocess.Popen("boot2docker init -m {}".format(memory), shell=True)
         p.wait()
 
@@ -189,9 +191,9 @@ class FlotillaRunner(object):
                                "-v {1}:/root/ipython " \
                                "-d -P -p 8888 " \
                                "mlovci/flotilla:{2}".format(self.flotilla_packages_dir,
-                                                              self.notebook_dir,
-                                                              self.flotilla_version,
-                                                              self.memory_request)
+                                                            self.notebook_dir,
+                                                            self.flotilla_version,
+                                                            self.memory_request)
         sys.stderr.write("running: {}\n".format(docker_runner))
         self.flotilla_process = subprocess.Popen(docker_runner,
                                                  shell=True, stdout=subprocess.PIPE)
@@ -228,7 +230,8 @@ def main(flotilla_branch, flotilla_notebooks, flotilla_projects, memory_request)
 if __name__ == '__main__':
     try:
         cl = CommandLine()
-        main(cl.args['branch'], cl.args['notebook_dir'], cl.args['flotilla_packages'], cl.args['memory_request'])
+        main(cl.args['branch'], cl.args['notebook_dir'],
+             cl.args['flotilla_packages'], cl.args['memory_request'])
 
     except Usage, err:
         cl.do_usage_and_die()
