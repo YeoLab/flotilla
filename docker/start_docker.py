@@ -136,7 +136,7 @@ class FlotillaRunner(object):
         subprocess.call("docker pull mlovci/flotilla:%s" % flotilla_version, shell=True)
 
     def __enter__(self):
-        docker_runner = "docker run -v {0}:/root/flotilla_projects " \
+        docker_runner = "docker run -m 8g -v {0}:/root/flotilla_projects " \
                                "-v {1}:/root/ipython " \
                                "-d -P -p 8888 " \
                                "mlovci/flotilla:{2}".format(self.flotilla_packages_dir,
