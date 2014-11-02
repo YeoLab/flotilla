@@ -1281,26 +1281,7 @@ class Study(object):
                                       version=version,
                                       flotilla_dir=flotilla_dir)
 
-    def merge_boolean_metadata_columns(self, columns_to_merge):
-        """
-        merge several boolean columns in metadata,
-        return the logical OR of these columns
-        """
-        is_ever_an_outlier = self.metadata.data[columns_to_merge].any(axis=1)
-        return is_ever_an_outlier
 
-    def set_outlier_by_merging_outlier_columns(self, columns_to_merge):
-        """
-        merge boolean columns of metadata listed in columns_to_merge into outlier
-        set metadata.outlier
-        return the merged column
-        """
-        self.metadata.data['outlier'] = False
-        print "using thse columns: \n{}\n".format("\n".join(columns_to_merge))
-        is_ever_an_outlier = self.merge_boolean_metadata_columns(columns_to_merge)
-        print "there are {} outliers".format(is_ever_an_outlier.sum())
-        self.metadata.data['outlier'] = is_ever_an_outlier
-        return is_ever_an_outlier
 
 # Add interactive visualizations
 Study.interactive_classifier = Interactive.interactive_classifier
