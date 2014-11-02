@@ -1,8 +1,18 @@
+Docker Installation Instructions
+================================
 
-Installation instructions
-=========================
+[Docker](https://www.docker.com/whatisdocker/) is the preferred method to obtain the most up-to-date
+version of `flotilla`. Every change we make to the source code triggers a new build of a virtual
+ machine that contains flotilla and all its dependencies.
+ 
+Please follow instructions [here](docker/docker_instructions.md) to get, install, and run the `flotilla` image.
 
-From a clean install of Mavericks 10.9.4, follow these steps.
+
+
+OS X Installation instructions
+==============================
+
+The following steps have been tested on a clean install of Mavericks 10.9.4.
 
 All others must fend for themselves to install matplotlib, scipy and their third-party dependencies.
 
@@ -78,7 +88,3 @@ conda create -n flotilla_env pip numpy scipy cython matplotlib nose six scikit-l
 
  * create a new notebook by clicking `New Notebook`
  * rename your notebook from "Untitled" to something more informative by clicking the title panel.
- * load matplotlib backend using every notebook must use this to display inline output
-
-
-    `%matplotlib inline`
