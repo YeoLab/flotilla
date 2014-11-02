@@ -125,7 +125,7 @@ class Boot2DockerRunner(object):
         if not self.assert_minimum_memory_allocated(self.memory_req):
             self.reinitialize_boot2docker(self.memory_req)
 
-        boot2docker_cmd = "boot2docker -m up".format(self.memory_req)
+        boot2docker_cmd = "boot2docker -m {} up".format(self.memory_req)
         sys.stderr.write("starting boot2docker with: {}".format(boot2docker_cmd))
         p = subprocess.Popen(boot2docker_cmd, shell=True, stdout=subprocess.PIPE)
         output = p.stdout.readlines()
