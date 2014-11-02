@@ -121,8 +121,8 @@ class Boot2DockerRunner(object):
     def initialize_boot2docker(self, memory=DEFAULT_MEMORY_REQUIREMENT):
         """set docker VM with memory allocation"""
 
-        sys.stderr.write("initializing boot2docker VM with {}MB memory (yah, it needs a lot)\n\"\
-        \"please wait...\n".format(memory))
+        sys.stderr.write("initializing boot2docker VM with {}MB memory (yah, it needs a lot)\n"
+                         "please wait...\n".format(memory))
         p = subprocess.Popen("boot2docker init -m {}".format(memory), shell=True)
         p.wait()
 
