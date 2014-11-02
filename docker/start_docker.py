@@ -136,13 +136,13 @@ class FlotillaRunner(object):
         subprocess.call("docker pull mlovci/flotilla:%s" % flotilla_version, shell=True)
 
     def __enter__(self):
-        docker_runner = "docker run -m 8g -v {0}:/root/flotilla_projects " \
+        docker_runner = "docker run -m \"8g\" -v {0}:/root/flotilla_projects " \
                                "-v {1}:/root/ipython " \
                                "-d -P -p 8888 " \
                                "mlovci/flotilla:{2}".format(self.flotilla_packages_dir,
                                                               self.notebook_dir,
                                                               self.flotilla_version)
-        sys.stderr.write("running: {}".format(docker_runner))
+        sys.stderr.write("running: {}\n".format(docker_runner))
         self.flotilla_process = subprocess.Popen(docker_runner,
                                                  shell=True, stdout=subprocess.PIPE)
         self.flotilla_container = self.flotilla_process.stdout.readlines()[0].strip()
