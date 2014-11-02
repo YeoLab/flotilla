@@ -105,7 +105,7 @@ class Boot2DockerRunner(object):
     def reinitialize_boot2docker(self, memory=8000):
         """reset docker VM with memory allocation"""
 
-        sys.stderr.write('re-initializing boot2docker VM with {}MB memory, please wait...\n'.format(memory))
+        sys.stderr.write('re-initializing boot2docker VM with {}MB memory (yah, it needs a lot)\n, please wait...\n'.format(memory))
         p = subprocess.Popen("boot2docker delete", shell=True)
         p.wait()
         p = subprocess.Popen("boot2docker init -m {}".format(memory), shell=True)
