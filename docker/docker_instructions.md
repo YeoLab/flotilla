@@ -19,8 +19,7 @@ Then start flotilla with:
 
 Or, magic web-start (I think this works, at least it does on local tests):
 
-    curl 
-
+    curl https://raw.githubusercontent.com/YeoLab/flotilla/dev/docker/start_docker.py | python
 
 
 This command will cross-mount directories on your computer to a location available for reading 
