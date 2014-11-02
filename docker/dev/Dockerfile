@@ -30,15 +30,15 @@ WORKDIR /home/root/ipython
 #USER flotilla
 #ENV HOME /home/flotilla
 #VOLUME /home/flotilla/ipython
-#VOLUME /home/flotilla/flotilla_packages
+#VOLUME /home/flotilla/flotilla_projects
 
 RUN pip install -e git://github.com/YeoLab/flotilla.git@dev#egg=flotilla
 
 ENV HOME /root
 #user should use -v option to mount a host directory here
 VOLUME /root/ipython
-#user should use -v option to mount ~/flotilla_packages here
-VOLUME /root/flotilla_packages
+#user should use -v option to mount ~/flotilla_projects here
+VOLUME /root/flotilla_projects
 
 EXPOSE 8888
 ENTRYPOINT run_notebook.sh
