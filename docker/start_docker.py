@@ -17,8 +17,10 @@ DEFAULT_FLOTILLA_NOTEBOOK_DIR = "~/flotilla_notebooks"
 DEFAULT_FLOTILLA_PROJECTS_DIR = "~/flotilla_projects"
 DEFAULT_MEMORY_REQUIREMENT = 3500
 
+
 class CommandLine(object):
-    def __init__(self, inOpts=None):
+
+    def __init__(self, opts=None):
         self.parser = parser = argparse.ArgumentParser(
             description='Start flotilla with docker.')
 
@@ -44,10 +46,10 @@ class CommandLine(object):
                             default=DEFAULT_MEMORY_REQUIREMENT,
                             help="memory request for docker VM:{}".format(DEFAULT_MEMORY_REQUIREMENT))
 
-        if inOpts is None:
+        if opts is None:
             self.args = vars(self.parser.parse_args())
         else:
-            self.args = vars(self.parser.parse_args(inOpts))
+            self.args = vars(self.parser.parse_args(opts))
 
     def do_usage_and_die(self, str):
         '''
