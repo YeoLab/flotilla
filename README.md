@@ -3,14 +3,59 @@
 flotilla
 ========
 
-![flotilla Logo](https://github.com/YeoLab/flotilla/blob/master/flotilla.png)
+![flotilla Logo](flotilla.png)
+
+Getting flotilla
+================
+
+Instructions for the best way to obtain `flotilla` are [here](INSTALL.md).
+
+What is flotilla?
+=================
+
+`flotilla` is a Python package for visualizing transcriptome (RNA expression) data from hundreds of
+samples. We include utilities to perform common tasks on these large data matrices, including:
+ 
+  * Dimensionality reduction
+  * Classification and Regression
+  * Outlier detection
+  * Network graphs from covariance
+  * Hierarchical clustering
+  
+And common tasks for biological data including:
+
+  * Renaming database features to gene symbols
+  * Coloring/marking samples based on experimental phenotype
+  * Removing poor-quality samples (technical outliers)
+  
+  
+Finally, `flotilla` is a platform for active collaboration between bioinformatics scientists and 
+traditional "wet lab" scientists. Leveraging [interactive widgets](https://github.com/ipython/ipython/tree/master/examples/Interactive%20Widgets) 
+in the [iPython Notebook](http://ipython.org/notebook.html), 
+we have created tools for simple and streamlined data exploration including:
+
+  * Subsetting sample groups and feature (genes/splicing events) groups
+  * Dynamically adjusting parameters for analysis
+  * Integrating external lists of features from the web or local files
+
+These empower the "wet lab" scientists to ask questions on their own and gives bioniformatics
+scientists a platform and share their analysis tools.
 
 
-[Installation instructions.](INSTALL.md)
+What flotilla is **not**
+========================
 
+`flotilla` is not a genomics pipeline. We expect that you have already generated
+data tables for gene expression, isoform expression and metadata. `flotilla` only makes 
+it easy to integrate all those data parts together once you have the pieces.
+
+Learn how to use flotilla
+=========================
+Please refer to our [talks](talks/) or [tutorials](tutorials/) to learn more about how you can
+apply our tools to your data.
 
 Test interactive features with example data:
-------------
+============================================
 
 We have prepared a slice of the full dataset for testing and demonstration purposes.
 
@@ -32,6 +77,11 @@ Adjust parameters to explore valid parameter spaces.
 For example, you can manually select `all_genes` as the `feature_subset`
 from the drop-down menu that appears after running these interactive functions.
 
+
+Problems? Questions?
+====================
+
+We invite your input! Please leave any feedback on our [issues page](https://github.com/YeoLab/flotilla/issues).
 
 ![NumFOCUS logo](http://numfocus.org/theme/img/numfocus_logo.png)
 
