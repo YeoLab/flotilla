@@ -10,7 +10,7 @@ import os
 import sys
 import signal
 import argparse
-
+import json
 
 DEFAULT_FLOTILLA_VERSION = "dev"
 DEFAULT_FLOTILLA_NOTEBOOK_DIR = "~/flotilla_notebooks"
@@ -91,16 +91,41 @@ def is_docker_running():
 
 class Boot2DockerRunner(object):
 
-    def __init__(self, keep_docker_running=False):
+    def assert_minimum_memory_allocated(self, minimum=8000):
+        """
+        check that the boot2docker app has started with sufficient memory
+        miniumim = minimum memory required, in MB
+        """
+        p = subprocess.Popen("boot2docker info", shell=True, stdout=subprocess.PIPE)
+        boot2docker_state = json.loads("".join(p.stdout.readlines()))
+        if boot2docker_state['Memory'] < minimum:
+            sys.stderr.write("WARNING: your boot2docker VM has been initialized with insufficient memory.\n")
+        return boot2docker_state['Memory'] >= minimum
+
+    def reinitialize_boot2docker(self, memory=8000):
+        """reset docker VM with memory allocation"""
+
+        sys.stderr.write('re-initializing boot2docker VM with {}MB memory, please wait...\n'.format(memory))
+        p = subprocess.Popen("boot2docker delete", shell=True)
+        p.wait()
+        p = subprocess.Popen("boot2docker init -m {}".format(memory), shell=True)
+        p.wait()
+
+    def __init__(self, keep_docker_running=False, memory=8000):
         #keep docker open after exit
         self.keep_docker_running = keep_docker_running
+        self.memory_req = memory
 
     def __enter__(self):
 
         if is_docker_running():
             # if docker was already running, don't stop it on exit
             self.keep_docker_running = True
-        boot2docker_cmd = "boot2docker -m 8000 up"
+
+        if not self.assert_minimum_memory_allocated(self.memory_req):
+            self.reinitialize_boot2docker(self.memory_req)
+
+        boot2docker_cmd = "boot2docker -m up".format(self.memory_req)
         sys.stderr.write("starting boot2docker with: {}".format(boot2docker_cmd))
         p = subprocess.Popen(boot2docker_cmd, shell=True, stdout=subprocess.PIPE)
         output = p.stdout.readlines()
