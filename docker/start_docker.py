@@ -100,8 +100,9 @@ class Boot2DockerRunner(object):
         if is_docker_running():
             # if docker was already running, don't stop it on exit
             self.keep_docker_running = True
-
-        p = subprocess.Popen("boot2docker -m 8000 up", shell=True, stdout=subprocess.PIPE)
+        boot2docker_cmd = "boot2docker -m 8000 up"
+        sys.stderr.write("starting boot2docker with: {}".format(boot2docker_cmd))
+        p = subprocess.Popen(boot2docker_cmd, shell=True, stdout=subprocess.PIPE)
         output = p.stdout.readlines()
         for line in output:
             line = line.strip()
@@ -164,7 +165,7 @@ class FlotillaRunner(object):
 def main(flotilla_branch, flotilla_notebooks, flotilla_projects):
     with Boot2DockerRunner() as bd:
         with FlotillaRunner(flotilla_branch, flotilla_notebooks, flotilla_projects) as fr:
-            print "Use Ctrl-C to exit"
+            print "Use Ctrl-C once, and only once, to exit"
             while True:
                 try:
                     time.sleep(1)
