@@ -101,7 +101,7 @@ class Boot2DockerRunner(object):
             # if docker was already running, don't stop it on exit
             self.keep_docker_running = True
 
-        p = subprocess.Popen("boot2docker up", shell=True, stdout=subprocess.PIPE)
+        p = subprocess.Popen("boot2docker -m 8000 up", shell=True, stdout=subprocess.PIPE)
         output = p.stdout.readlines()
         for line in output:
             line = line.strip()
