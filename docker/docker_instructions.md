@@ -17,13 +17,12 @@ Then start flotilla with:
 
     ( or mlovci/flotilla:dev )
 
-Or, magic web-start (I think this works, at least it does on local tests):
-
-    curl https://raw.githubusercontent.com/YeoLab/flotilla/dev/docker/start_docker.py | python
-
-
 This command will cross-mount directories on your computer to a location available for reading 
 and writing inside the virtual machine. Any analysis you perform will be output to ${HOME}/flotilla_notebooks 
 and the data flotilla requires will be saved in ${HOME}/flotilla_projects.
+
+Or, magic web-start (I think this works, at least it does on local tests):
+
+    curl https://raw.githubusercontent.com/YeoLab/flotilla/dev/docker/start_docker.py | python
 
 
