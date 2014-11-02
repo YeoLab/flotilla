@@ -15,6 +15,7 @@ import json
 DEFAULT_FLOTILLA_VERSION = "dev"
 DEFAULT_FLOTILLA_NOTEBOOK_DIR = "~/flotilla_notebooks"
 DEFAULT_FLOTILLA_PROJECTS_DIR = "~/flotilla_projects"
+DEFAULT_MEMORY_REQUIREMENT = 3500
 
 class CommandLine(object):
     def __init__(self, inOpts=None):
@@ -36,6 +37,11 @@ class CommandLine(object):
                             type=str, action='store',
                             default=DEFAULT_FLOTILLA_PROJECTS_DIR,
                             help="local directory to place/read flotilla packages:{}".format(DEFAULT_FLOTILLA_PROJECTS_DIR))
+
+        parser.add_argument('--memory_request', required=False,
+                            type=int, action='store',
+                            default=DEFAULT_MEMORY_REQUIREMENT,
+                            help="memory request for docker VM:{}".format(DEFAULT_MEMORY_REQUIREMENT))
 
         if inOpts is None:
             self.args = vars(self.parser.parse_args())
@@ -91,7 +97,7 @@ def is_docker_running():
 
 class Boot2DockerRunner(object):
 
-    def assert_minimum_memory_allocated(self, minimum=8000):
+    def assert_minimum_memory_allocated(self, minimum=DEFAULT_MEMORY_REQUIREMENT):
         """
         check that the boot2docker app has started with sufficient memory
         miniumim = minimum memory required, in MB
@@ -109,19 +115,19 @@ class Boot2DockerRunner(object):
         p = subprocess.Popen("boot2docker delete", shell=True)
         p.wait()
 
-    def initialize_boot2docker(self, memory=8000):
+    def initialize_boot2docker(self, memory=DEFAULT_MEMORY_REQUIREMENT):
         """set docker VM with memory allocation"""
 
         sys.stderr.write('initializing boot2docker VM with {}MB memory (yah, it needs a lot)\nplease wait...\n'.format(memory))
         p = subprocess.Popen("boot2docker init -m {}".format(memory), shell=True)
         p.wait()
 
-    def reinitialize_boot2docker(self, memory=8000):
+    def reinitialize_boot2docker(self, memory=DEFAULT_MEMORY_REQUIREMENT):
         """reset docker VM with memory allocation"""
         self.remove_boot2docker_image()
         self.initialize_boot2docker(memory)
 
-    def __init__(self, keep_docker_running=False, memory=8000):
+    def __init__(self, memory=DEFAULT_MEMORY_REQUIREMENT, keep_docker_running=False):
         #keep docker open after exit
         self.keep_docker_running = keep_docker_running
         self.memory_req = memory
@@ -166,22 +172,26 @@ class FlotillaRunner(object):
     """Start docker flotilla, open the browser"""
     def __init__(self, flotilla_version=DEFAULT_FLOTILLA_VERSION,
                  notebook_dir=DEFAULT_FLOTILLA_NOTEBOOK_DIR,
-                 flotilla_packages_dir=DEFAULT_FLOTILLA_PROJECTS_DIR):
+                 flotilla_packages_dir=DEFAULT_FLOTILLA_PROJECTS_DIR,
+                 memory_request=DEFAULT_MEMORY_REQUIREMENT):
         notebook_dir =os.path.abspath(os.path.expanduser(notebook_dir))
         flotilla_packages_dir = os.path.abspath(os.path.expanduser(flotilla_packages_dir))
         self.flotilla_version = flotilla_version
         self.flotilla_process = None
         self.flotilla_packages_dir = flotilla_packages_dir
         self.notebook_dir = notebook_dir
+        self.memory_request = memory_request
+
         subprocess.call("docker pull mlovci/flotilla:%s" % flotilla_version, shell=True)
 
     def __enter__(self):
-        docker_runner = "docker run -m \"8g\" -v {0}:/root/flotilla_projects " \
+        docker_runner = "docker run -m \"{3}m\" -v {0}:/root/flotilla_projects " \
                                "-v {1}:/root/ipython " \
                                "-d -P -p 8888 " \
                                "mlovci/flotilla:{2}".format(self.flotilla_packages_dir,
                                                               self.notebook_dir,
-                                                              self.flotilla_version)
+                                                              self.flotilla_version,
+                                                              self.memory_request)
         sys.stderr.write("running: {}\n".format(docker_runner))
         self.flotilla_process = subprocess.Popen(docker_runner,
                                                  shell=True, stdout=subprocess.PIPE)
@@ -190,7 +200,9 @@ class FlotillaRunner(object):
                                        shell=True,
                                        stdout=subprocess.PIPE)
         self.flotilla_port = docker_port.stdout.readlines()[0].split(":")[-1].strip()
-        subprocess.call('open http://{}:{}'.format(os.environ['DOCKER_IP'], self.flotilla_port), shell=True)
+        flotilla_url = 'http://{}:{}'.format(os.environ['DOCKER_IP'],  self.flotilla_port)
+        sys.stderr.write("flotilla is running at: {}".format(flotilla_url))
+        subprocess.call('open {}'.format(flotilla_url), shell=True)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         p = subprocess.Popen("docker stop {0} && docker rm {0}".format(self.flotilla_container), shell=True)
@@ -201,9 +213,9 @@ class FlotillaRunner(object):
                 signal.signal(signal.SIGTERM, waiter)
 
 
-def main(flotilla_branch, flotilla_notebooks, flotilla_projects):
-    with Boot2DockerRunner() as bd:
-        with FlotillaRunner(flotilla_branch, flotilla_notebooks, flotilla_projects) as fr:
+def main(flotilla_branch, flotilla_notebooks, flotilla_projects, memory_request):
+    with Boot2DockerRunner(memory_request) as bd:
+        with FlotillaRunner(flotilla_branch, flotilla_notebooks, flotilla_projects, memory_request) as fr:
             print "Use Ctrl-C once, and only once, to exit"
             while True:
                 try:
@@ -216,7 +228,7 @@ def main(flotilla_branch, flotilla_notebooks, flotilla_projects):
 if __name__ == '__main__':
     try:
         cl = CommandLine()
-        main(cl.args['branch'], cl.args['notebook_dir'], cl.args['flotilla_packages'])
+        main(cl.args['branch'], cl.args['notebook_dir'], cl.args['flotilla_packages'], cl.args['memory_request'])
 
     except Usage, err:
         cl.do_usage_and_die()
