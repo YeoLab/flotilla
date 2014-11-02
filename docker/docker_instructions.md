@@ -1,4 +1,4 @@
-Docker is an application that runs a virtual machine that runs software on your computer.
+Docker is an application that runs a virtual machine that runs software on your computer in an isolated environment.
 
 Here are instructions to get an active docker image. These instructions have not been tested on Windows or Linux.
 
