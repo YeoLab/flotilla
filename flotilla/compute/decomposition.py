@@ -32,6 +32,28 @@ class DataFrameReducerBase(object):
         self.reduced_space = self.fit_transform(df)
 
     @staticmethod
+    def _check_dataframe(X):
+        """Check that the input is a pandas dataframe
+
+        Parameters
+        ----------
+        X : input
+            Input to check if this is a pandas dataframe.
+
+        Raises
+        ------
+        ValueError
+            If the input is not a pandas Dataframe
+
+        """
+        try:
+            assert isinstance(X, pd.DataFrame)
+        except AssertionError:
+            sys.stdout.write("Try again as a pandas DataFrame")
+            raise ValueError('Input X was not a pandas DataFrame, '
+                             'was of type {} instead'.format(str(type(X))))
+
+    @staticmethod
     def relabel_pcs(x):
         """Given a list of integers, change the name to be a 1-based
         principal component representation"""
@@ -53,13 +75,7 @@ class DataFrameReducerBase(object):
             explained_variance_, and explained_variance_ratio_ attributes
 
         """
-        try:
-            assert isinstance(X, pd.DataFrame)
-        except AssertionError:
-            sys.stdout.write("Try again as a pandas DataFrame")
-            raise ValueError('Input X was not a pandas DataFrame, '
-                             'was of type {} instead'.format(str(type(X))))
-
+        self._check_dataframe(X)
         self.X = X
         super(DataFrameReducerBase, self).fit(X)
         self.components_ = pd.DataFrame(self.components_,
@@ -93,10 +109,10 @@ class DataFrameReducerBase(object):
 
         """
         component_space = super(DataFrameReducerBase, self).transform(X)
-        if isinstance(self.X, pd.DataFrame):
-            component_space = pd.DataFrame(component_space,
-                                           index=X.index).rename_axis(
-                self.relabel_pcs, 1)
+        self._check_dataframe(X)
+        component_space = pd.DataFrame(component_space,
+                                       index=X.index).rename_axis(
+            self.relabel_pcs, 1)
         return component_space
 
     def fit_transform(self, X):
@@ -122,12 +138,7 @@ class DataFrameReducerBase(object):
             and transform
 
         """
-        try:
-            assert isinstance(X, pd.DataFrame)
-        except:
-            sys.stdout.write("Try again as a pandas DataFrame")
-            raise ValueError('Input X was not a pandas DataFrame, '
-                             'was of type {} instead'.format(str(type(X))))
+        self._check_dataframe(X)
         self.fit(X)
         return self.transform(X)
 
@@ -153,14 +164,7 @@ class DataFrameNMF(DataFrameReducerBase, decomposition.NMF):
                 self._single_fit_transform(X, **params)
                 return self
         """
-
-        try:
-            assert type(X) == pd.DataFrame
-        except:
-            sys.stdout.write("Try again as a pandas DataFrame")
-            raise ValueError('Input X was not a pandas DataFrame, '
-                             'was of type {} instead'.format(str(type(X))))
-
+        self._check_dataframe(X)
         self.X = X
         # notice this is fit_transform, not fit
         super(decomposition.NMF, self).fit_transform(X)
@@ -207,4 +211,5 @@ class DataFrameTSNE(DataFrameReducerBase):
         """
         from tsne import bh_sne
 
-        return pd.DataFrame(bh_sne(X), index=study.expression.data.index)
+        self._check_dataframe(X)
+        return pd.DataFrame(bh_sne(X), index=X.index)
