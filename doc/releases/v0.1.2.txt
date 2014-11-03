@@ -18,3 +18,10 @@ API changes
 - The attribute ``data`` in :class:`BaseData` now contains ALL the data, including pooled, singles, and outliers
 - The attribute ``data_original`` in :class:`BaseData` contains the original, unfiltered data. For example, before removing features detected in fewer  than 10 samples with expression > 1.
 - :class:`BaseData` now has the attributes :func:`BaseData.singles`, :func:`BaseData.pooled`, and :func:`BaseData.outliers` which are on-the-fly subsets of ``BaseData.data``. This is to maintain datameaning if "outliers" is changed, this is also changed.
+- In :py:class:`Study`, you now must specify `expression_feature_rename_col`, `splicing_feature_rename_col`, `mapping_stats_number_mapped_col` explicitly, they are no longer defaulting to, `{splicing,expression}_feature_rename_col="gene_name"` and `mapping_stats_number_mapped_col="Uniquely mapped reads number"`
+
+Other Changes
+-------------
+
+- Status messages in :py:func:`embark` have been moved to `stdout` instead of `stderr` to avoid confusion that something is going wrong
+- In :py:func:`embark`, user gets notified which samples are removed for having too few reads
