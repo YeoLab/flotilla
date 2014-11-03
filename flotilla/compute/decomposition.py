@@ -5,28 +5,56 @@ import pandas as pd
 
 
 class DataFrameReducerBase(object):
-    """
+    """Just like scikit-learn's reducers, but with prettied up DataFrames."""
 
-    Just like scikit-learn's reducers, but with prettied up DataFrames.
+    def __init__(self, df, n_components=None, **kwargs):
+        """Initialize and fit a dataframe to a decomposition algorithm
 
-    """
+        Parameters
+        ----------
+        df : pandas.DataFrame
+            A (samples, features) dataframe of data to fit to the reduction
+            algorithm
+        n_components : int
+            Number of components to calculate. If None, use as many
+            components as there are samples
+        kwargs : keyword arguments
+            Any other arguments to the reduction algorithm
 
-    def __init__(self, df, n_components=None, **decomposer_kwargs):
+        """
 
         # This magically initializes the reducer like DataFramePCA or DataFrameNMF
         if df.shape[1] <= 3:
             raise ValueError(
                 "Too few features (n={}) to reduce".format(df.shape[1]))
         super(DataFrameReducerBase, self).__init__(n_components=n_components,
-                                                   **decomposer_kwargs)
+                                                   **kwargs)
         self.reduced_space = self.fit_transform(df)
 
-    def relabel_pcs(self, x):
+    @staticmethod
+    def relabel_pcs(x):
+        """Given a list of integers, change the name to be a 1-based
+        principal component representation"""
         return "pc_" + str(int(x) + 1)
 
     def fit(self, X):
+        """Perform a scikit-learn fit and relabel dimensions to be
+        informative names
+
+        Parameters
+        ----------
+        X : pandas.DataFrame
+            A (n_samples, n_features) Dataframe of data to reduce
+
+        Returns
+        -------
+        self : DataFrameReducerBase
+            A instance of the data, now with components_,
+            explained_variance_, and explained_variance_ratio_ attributes
+
+        """
         try:
-            assert type(X) == pd.DataFrame
+            assert isinstance(X, pd.DataFrame)
         except AssertionError:
             sys.stdout.write("Try again as a pandas DataFrame")
             raise ValueError('Input X was not a pandas DataFrame, '
@@ -49,16 +77,53 @@ class DataFrameReducerBase(object):
         return self
 
     def transform(self, X):
+        """Transform a matrix into the compoment space
+
+        Parameters
+        ----------
+        X : pandas.DataFrame
+            A (n_samples, n_features) sized DataFrame to transform into the
+            current compoment space
+
+        Returns
+        -------
+        component_space : pandas.DataFrame
+            A (n_samples, self.n_components) sized DataFrame transformed into
+            component space
+
+        """
         component_space = super(DataFrameReducerBase, self).transform(X)
-        if type(self.X) == pd.DataFrame:
+        if isinstance(self.X, pd.DataFrame):
             component_space = pd.DataFrame(component_space,
                                            index=X.index).rename_axis(
                 self.relabel_pcs, 1)
         return component_space
 
     def fit_transform(self, X):
+        """Perform both a fit and a transform on the input data
+
+        Fit the data to the reduction algorithm, and transform the data to
+        the reduced space.
+
+        Parameters
+        ----------
+        X : pandas.DataFrame
+            A (n_samples, n_features) dataframe to both fit and transform
+
+        Returns
+        -------
+        self : DataFrameReducerBase
+            A fit and transformed instance of the object
+
+        Raises
+        ------
+        ValueError
+            If the input is not a pandas DataFrame, will not perform the fit
+            and transform
+
+        """
         try:
-            assert type(X) == pd.DataFrame
+            assert isinstance(X, pd.DataFrame)
         except:
             sys.stdout.write("Try again as a pandas DataFrame")
             raise ValueError('Input X was not a pandas DataFrame, '
@@ -68,15 +133,20 @@ class DataFrameReducerBase(object):
 
 
 class DataFramePCA(DataFrameReducerBase, decomposition.PCA):
+    """Perform Principal Components Analaysis on a DataFrame
+    """
     pass
 
 
 class DataFrameNMF(DataFrameReducerBase, decomposition.NMF):
+    """Perform Non-Negative Matrix Factorization on a DataFrame
+    """
     def fit(self, X):
-        """
-        duplicated fit code for DataFrameNMF because sklearn's NMF cheats for
-        efficiency and calls fit_transform. MRO resolves the closest
-        (in this package)
+        """Override scikit-learn's fit() for our purposes
+
+        Duplicated fit code for DataFrameNMF because sklearn's NMF cheats for
+        efficiency and calls fit_transform. Method resolution order ("MRO")
+        resolves the closest (in this package)
         _single_fit_transform first and so there's a recursion error:
 
             def fit(self, X, y=None, **params):
@@ -101,4 +171,40 @@ class DataFrameNMF(DataFrameReducerBase, decomposition.NMF):
 
 
 class DataFrameICA(DataFrameReducerBase, decomposition.FastICA):
+    """Perform Independent Comopnent Analysis on a DataFrame
+    """
     pass
+
+
+class DataFrameTSNE(DataFrameReducerBase):
+    """Perform t-Distributed Stochastic Neighbor Embedding on a DataFrame
+
+    Read more: http://homepage.tudelft.nl/19j49/t-SNE.html
+    """
+
+    def fit_transform(self, X):
+        """Perform both a fit and a transform on the input data
+
+        Fit the data to the reduction algorithm, and transform the data to
+        the reduced space.
+
+        Parameters
+        ----------
+        X : pandas.DataFrame
+            A (n_samples, n_features) dataframe to both fit and transform
+
+        Returns
+        -------
+        self : DataFrameReducerBase
+            A fit and transformed instance of the object
+
+        Raises
+        ------
+        ValueError
+            If the input is not a pandas DataFrame, will not perform the fit
+            and transform
+
+        """
+        from tsne import bh_sne
+
+        return pd.DataFrame(bh_sne(X), index=study.expression.data.index)
