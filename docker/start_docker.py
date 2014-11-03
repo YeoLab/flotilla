@@ -205,7 +205,7 @@ class FlotillaRunner(object):
                                        stdout=subprocess.PIPE)
         self.flotilla_port = docker_port.stdout.readlines()[0].split(":")[-1].strip()
         flotilla_url = 'http://{}:{}'.format(os.environ['DOCKER_IP'],  self.flotilla_port)
-        sys.stderr.write("flotilla is running at: {}".format(flotilla_url))
+        sys.stderr.write("flotilla is running at: {}\n".format(flotilla_url))
         subprocess.call('open {}'.format(flotilla_url), shell=True)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
