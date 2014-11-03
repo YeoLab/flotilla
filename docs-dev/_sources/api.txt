@@ -36,7 +36,7 @@ Machine learning plots
         Study.plot_graph
 
 Splicing-specific plots
-------------
+-----------------------
 
 .. autosummary::
 :toctree: generated/

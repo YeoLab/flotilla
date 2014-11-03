@@ -89,6 +89,7 @@
 <li><a class="reference internal" href="#api-changes">API changes</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#other-changes">Other Changes</a></li>
 </ul>
 </li>
 </ul>
@@ -152,8 +153,16 @@
 <li>The attribute <tt class="docutils literal"><span class="pre">data</span></tt> in <tt class="xref py py-class docutils literal"><span class="pre">BaseData</span></tt> now contains ALL the data, including pooled, singles, and outliers</li>
 <li>The attribute <tt class="docutils literal"><span class="pre">data_original</span></tt> in <tt class="xref py py-class docutils literal"><span class="pre">BaseData</span></tt> contains the original, unfiltered data. For example, before removing features detected in fewer  than 10 samples with expression &gt; 1.</li>
 <li><tt class="xref py py-class docutils literal"><span class="pre">BaseData</span></tt> now has the attributes <tt class="xref py py-func docutils literal"><span class="pre">BaseData.singles()</span></tt>, <tt class="xref py py-func docutils literal"><span class="pre">BaseData.pooled()</span></tt>, and <tt class="xref py py-func docutils literal"><span class="pre">BaseData.outliers()</span></tt> which are on-the-fly subsets of <tt class="docutils literal"><span class="pre">BaseData.data</span></tt>. This is to maintain datameaning if &#8220;outliers&#8221; is changed, this is also changed.</li>
+<li>In <tt class="xref py py-class docutils literal"><span class="pre">Study</span></tt>, you now must specify <cite>expression_feature_rename_col</cite>, <cite>splicing_feature_rename_col</cite>, <cite>mapping_stats_number_mapped_col</cite> explicitly, they are no longer defaulting to, <cite>{splicing,expression}_feature_rename_col=&#8221;gene_name&#8221;</cite> and <cite>mapping_stats_number_mapped_col=&#8221;Uniquely mapped reads number&#8221;</cite></li>
 </ul>
 </div>
+</div>
+<div class="section" id="other-changes">
+<h2>Other Changes<a class="headerlink" href="#other-changes" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Status messages in <a class="reference internal" href="apidoc/flotilla.html#flotilla.embark" title="flotilla.embark"><tt class="xref py py-func docutils literal"><span class="pre">embark()</span></tt></a> have been moved to <cite>stdout</cite> instead of <cite>stderr</cite> to avoid confusion that something is going wrong</li>
+<li>In <a class="reference internal" href="apidoc/flotilla.html#flotilla.embark" title="flotilla.embark"><tt class="xref py py-func docutils literal"><span class="pre">embark()</span></tt></a>, user gets notified which samples are removed for having too few reads</li>
+</ul>
 </div>
 </div>
 
