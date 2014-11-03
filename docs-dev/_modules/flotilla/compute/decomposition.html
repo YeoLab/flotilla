@@ -125,33 +125,77 @@
 
 
 <div class="viewcode-block" id="DataFrameReducerBase"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.decomposition.DataFrameReducerBase">[docs]</a><span class="k">class</span> <span class="nc">DataFrameReducerBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Just like scikit-learn&#39;s reducers, but with prettied up DataFrames.&quot;&quot;&quot;</span>
 
-<span class="sd">    Just like scikit-learn&#39;s reducers, but with prettied up DataFrames.</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize and fit a dataframe to a decomposition algorithm</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        df : pandas.DataFrame</span>
+<span class="sd">            A (samples, features) dataframe of data to fit to the reduction</span>
+<span class="sd">            algorithm</span>
+<span class="sd">        n_components : int</span>
+<span class="sd">            Number of components to calculate. If None, use as many</span>
+<span class="sd">            components as there are samples</span>
+<span class="sd">        kwargs : keyword arguments</span>
+<span class="sd">            Any other arguments to the reduction algorithm</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">decomposer_kwargs</span><span class="p">):</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c"># This magically initializes the reducer like DataFramePCA or DataFrameNMF</span>
         <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">3</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s">&quot;Too few features (n={}) to reduce&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">DataFrameReducerBase</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="n">n_components</span><span class="p">,</span>
-                                                   <span class="o">**</span><span class="n">decomposer_kwargs</span><span class="p">)</span>
+                                                   <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reduced_space</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 
-<div class="viewcode-block" id="DataFrameReducerBase.relabel_pcs"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.decomposition.DataFrameReducerBase.relabel_pcs">[docs]</a>    <span class="k">def</span> <span class="nf">relabel_pcs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s">&quot;pc_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-</div>
-<div class="viewcode-block" id="DataFrameReducerBase.fit"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.decomposition.DataFrameReducerBase.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_check_dataframe</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check that the input is a pandas dataframe</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : input</span>
+<span class="sd">            Input to check if this is a pandas dataframe.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the input is not a pandas Dataframe</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">==</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;Try again as a pandas DataFrame&quot;</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Input X was not a pandas DataFrame, &#39;</span>
                              <span class="s">&#39;was of type {} instead&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">X</span><span class="p">))))</span>
 
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="DataFrameReducerBase.relabel_pcs"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.decomposition.DataFrameReducerBase.relabel_pcs">[docs]</a>    <span class="k">def</span> <span class="nf">relabel_pcs</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Given a list of integers, change the name to be a 1-based</span>
+<span class="sd">        principal component representation&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s">&quot;pc_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="DataFrameReducerBase.fit"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.decomposition.DataFrameReducerBase.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Perform a scikit-learn fit and relabel dimensions to be</span>
+<span class="sd">        informative names</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : pandas.DataFrame</span>
+<span class="sd">            A (n_samples, n_features) Dataframe of data to reduce</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self : DataFrameReducerBase</span>
+<span class="sd">            A instance of the data, now with components_,</span>
+<span class="sd">            explained_variance_, and explained_variance_ratio_ attributes</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_dataframe</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="n">X</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">DataFrameReducerBase</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">components_</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">components_</span><span class="p">,</span>
@@ -169,48 +213,78 @@
         <span class="k">return</span> <span class="bp">self</span>
 </div>
 <div class="viewcode-block" id="DataFrameReducerBase.transform"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.decomposition.DataFrameReducerBase.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Transform a matrix into the compoment space</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : pandas.DataFrame</span>
+<span class="sd">            A (n_samples, n_features) sized DataFrame to transform into the</span>
+<span class="sd">            current compoment space</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        component_space : pandas.DataFrame</span>
+<span class="sd">            A (n_samples, self.n_components) sized DataFrame transformed into</span>
+<span class="sd">            component space</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">component_space</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">DataFrameReducerBase</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">)</span> <span class="o">==</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-            <span class="n">component_space</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">component_space</span><span class="p">,</span>
-                                           <span class="n">index</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">rename_axis</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">relabel_pcs</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_dataframe</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">component_space</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">component_space</span><span class="p">,</span>
+                                       <span class="n">index</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">rename_axis</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">relabel_pcs</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">component_space</span>
 </div>
 <div class="viewcode-block" id="DataFrameReducerBase.fit_transform"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.decomposition.DataFrameReducerBase.fit_transform">[docs]</a>    <span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">==</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
-        <span class="k">except</span><span class="p">:</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;Try again as a pandas DataFrame&quot;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Input X was not a pandas DataFrame, &#39;</span>
-                             <span class="s">&#39;was of type {} instead&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">X</span><span class="p">))))</span>
+        <span class="sd">&quot;&quot;&quot;Perform both a fit and a transform on the input data</span>
+
+<span class="sd">        Fit the data to the reduction algorithm, and transform the data to</span>
+<span class="sd">        the reduced space.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : pandas.DataFrame</span>
+<span class="sd">            A (n_samples, n_features) dataframe to both fit and transform</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self : DataFrameReducerBase</span>
+<span class="sd">            A fit and transformed instance of the object</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the input is not a pandas DataFrame, will not perform the fit</span>
+<span class="sd">            and transform</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_dataframe</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 
 </div></div>
 <div class="viewcode-block" id="DataFramePCA"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.decomposition.DataFramePCA">[docs]</a><span class="k">class</span> <span class="nc">DataFramePCA</span><span class="p">(</span><span class="n">DataFrameReducerBase</span><span class="p">,</span> <span class="n">decomposition</span><span class="o">.</span><span class="n">PCA</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Perform Principal Components Analaysis on a DataFrame</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
 
 </div>
 <div class="viewcode-block" id="DataFrameNMF"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.decomposition.DataFrameNMF">[docs]</a><span class="k">class</span> <span class="nc">DataFrameNMF</span><span class="p">(</span><span class="n">DataFrameReducerBase</span><span class="p">,</span> <span class="n">decomposition</span><span class="o">.</span><span class="n">NMF</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Perform Non-Negative Matrix Factorization on a DataFrame</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="DataFrameNMF.fit"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.decomposition.DataFrameNMF.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        duplicated fit code for DataFrameNMF because sklearn&#39;s NMF cheats for</span>
-<span class="sd">        efficiency and calls fit_transform. MRO resolves the closest</span>
-<span class="sd">        (in this package)</span>
+        <span class="sd">&quot;&quot;&quot;Override scikit-learn&#39;s fit() for our purposes</span>
+
+<span class="sd">        Duplicated fit code for DataFrameNMF because sklearn&#39;s NMF cheats for</span>
+<span class="sd">        efficiency and calls fit_transform. Method resolution order (&quot;MRO&quot;)</span>
+<span class="sd">        resolves the closest (in this package)</span>
 <span class="sd">        _single_fit_transform first and so there&#39;s a recursion error:</span>
 
 <span class="sd">            def fit(self, X, y=None, **params):</span>
 <span class="sd">                self._single_fit_transform(X, **params)</span>
 <span class="sd">                return self</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">==</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
-        <span class="k">except</span><span class="p">:</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;Try again as a pandas DataFrame&quot;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Input X was not a pandas DataFrame, &#39;</span>
-                             <span class="s">&#39;was of type {} instead&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">X</span><span class="p">))))</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_dataframe</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="n">X</span>
         <span class="c"># notice this is fit_transform, not fit</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">decomposition</span><span class="o">.</span><span class="n">NMF</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
@@ -221,7 +295,44 @@
 
 </div></div>
 <div class="viewcode-block" id="DataFrameICA"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.decomposition.DataFrameICA">[docs]</a><span class="k">class</span> <span class="nc">DataFrameICA</span><span class="p">(</span><span class="n">DataFrameReducerBase</span><span class="p">,</span> <span class="n">decomposition</span><span class="o">.</span><span class="n">FastICA</span><span class="p">):</span>
-    <span class="k">pass</span></div>
+    <span class="sd">&quot;&quot;&quot;Perform Independent Comopnent Analysis on a DataFrame</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+</div>
+<div class="viewcode-block" id="DataFrameTSNE"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.decomposition.DataFrameTSNE">[docs]</a><span class="k">class</span> <span class="nc">DataFrameTSNE</span><span class="p">(</span><span class="n">DataFrameReducerBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Perform t-Distributed Stochastic Neighbor Embedding on a DataFrame</span>
+
+<span class="sd">    Read more: http://homepage.tudelft.nl/19j49/t-SNE.html</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="DataFrameTSNE.fit_transform"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.decomposition.DataFrameTSNE.fit_transform">[docs]</a>    <span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Perform both a fit and a transform on the input data</span>
+
+<span class="sd">        Fit the data to the reduction algorithm, and transform the data to</span>
+<span class="sd">        the reduced space.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : pandas.DataFrame</span>
+<span class="sd">            A (n_samples, n_features) dataframe to both fit and transform</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self : DataFrameReducerBase</span>
+<span class="sd">            A fit and transformed instance of the object</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the input is not a pandas DataFrame, will not perform the fit</span>
+<span class="sd">            and transform</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">tsne</span> <span class="kn">import</span> <span class="n">bh_sne</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_dataframe</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">bh_sne</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">index</span><span class="p">)</span></div></div>
 </pre></div>
 
     </div>
