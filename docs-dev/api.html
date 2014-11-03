@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Flotilla tutorial &mdash; flotilla 0.2.0 documentation</title>
+    <title>API Reference &mdash; flotilla 0.2.0 documentation</title>
     
     <link rel="stylesheet" href="_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -56,7 +56,7 @@
           <ul class="nav navbar-nav">
             <li class="divider-vertical"></li>
             
-                <li><a href="#">Tutorial</a></li>
+                <li><a href="tutorial.html">Tutorial</a></li>
                 <li><a href="gallery.html">Gallery</a></li>
                 <li><a href="http://yeolab.ucsd.edu">YeoLab@UCSD</a></li>
             
@@ -83,10 +83,11 @@
   <ul class="dropdown-menu localtoc"
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">Flotilla tutorial</a><ul>
-<li><a class="reference internal" href="#create-a-datapackage">Create a datapackage</a></li>
-<li><a class="reference internal" href="#processing-data">Processing data</a></li>
-<li><a class="reference internal" href="#plotting-functions">Plotting functions</a></li>
+<li><a class="reference internal" href="#">API Reference</a><ul>
+<li><a class="reference internal" href="#general-use-plots">General use plots</a></li>
+<li><a class="reference internal" href="#interactive-plots">Interactive plots</a></li>
+<li><a class="reference internal" href="#machine-learning-plots">Machine learning plots</a></li>
+<li><a class="reference internal" href="#splicing-specific-plots">Splicing-specific plots</a></li>
 </ul>
 </li>
 </ul>
@@ -104,7 +105,7 @@
             
               <li class="hidden-sm">
 <div id="sourcelink">
-  <a href="_sources/tutorial.txt"
+  <a href="_sources/api.txt"
      rel="nofollow">Source</a>
 </div></li>
             
@@ -128,58 +129,93 @@
   <div class="row">
     <div class="col-md-12">
       
-  <div class="section" id="flotilla-tutorial">
-<span id="tutorial"></span><h1>Flotilla tutorial<a class="headerlink" href="#flotilla-tutorial" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="create-a-datapackage">
-<h2>Create a datapackage<a class="headerlink" href="#create-a-datapackage" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul class="simple">
-</ul>
-</div>
+  <div class="section" id="api-reference">
+<span id="api-ref"></span><h1>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="general-use-plots">
+<h2>General use plots<a class="headerlink" href="#general-use-plots" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+</tbody>
+</table>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">maxdepth:</th><td class="field-body"><p class="first">2</p>
-<p class="last">tutorial/datapackage</p>
+<tr class="field-odd field"><th class="field-name">toctree:</th><td class="field-body"><p class="first">generated/</p>
+<p class="last">Study.plot_gene
+Study.plot_event</p>
 </td>
 </tr>
 </tbody>
 </table>
 </div>
-<div class="section" id="processing-data">
-<h2>Processing data<a class="headerlink" href="#processing-data" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul class="simple">
-</ul>
-</div>
+<div class="section" id="interactive-plots">
+<h2>Interactive plots<a class="headerlink" href="#interactive-plots" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+</tbody>
+</table>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">maxdepth:</th><td class="field-body"><p class="first">2</p>
-<p class="last">tutorial/detect_outliers</p>
+<tr class="field-odd field"><th class="field-name">toctree:</th><td class="field-body"><p class="first">generated/</p>
+<p class="last">Study.interactive_pca
+Study.interactive_classifier
+Study.interactive_graph
+Study.interactive_pooled_inconsistent</p>
 </td>
 </tr>
 </tbody>
 </table>
 </div>
-<div class="section" id="plotting-functions">
-<h2>Plotting functions<a class="headerlink" href="#plotting-functions" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul class="simple">
-</ul>
-</div>
+<div class="section" id="machine-learning-plots">
+<h2>Machine learning plots<a class="headerlink" href="#machine-learning-plots" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+</tbody>
+</table>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">maxdepth:</th><td class="field-body"><p class="first">2</p>
-<p class="last">tutorial/pca
-tutorial/classification
-tutorial/network
-tutorial/expression_specific
-tutorial/splicing_specific</p>
+<tr class="field-odd field"><th class="field-name">toctree:</th><td class="field-body"><p class="first">generated/</p>
+<p class="last">Study.plot_pca
+Study.plot_classifier
+Study.plot_graph</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="splicing-specific-plots">
+<h2>Splicing-specific plots<a class="headerlink" href="#splicing-specific-plots" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">toctree:</th><td class="field-body"><p class="first">generated/</p>
+<p class="last">Study.plot_pooled_inconsistent</p>
 </td>
 </tr>
 </tbody>
