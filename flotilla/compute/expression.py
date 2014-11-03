@@ -11,7 +11,7 @@ import pandas as pd
 def benjamini_hochberg(p_values, fdr=0.1):
     """Benjamini-Hochberg correction for multiple hypothesis testing
 
-    from: http://udel.edu/~mcdonald/statmultcomp.html
+    From: http://udel.edu/~mcdonald/statmultcomp.html
     One good technique for controlling the false discovery rate was briefly
     mentioned by Simes (1986) and developed in detail by Benjamini and Hochberg
     (1995). Put the individual P-values in order, from smallest to largest.
@@ -25,7 +25,7 @@ def benjamini_hochberg(p_values, fdr=0.1):
     ----------
     p_values : list
         List of p-values
-    fdr : float
+    fdr : float, optional
         Desired false-discovery rate cutoff
 
     Returns
@@ -33,7 +33,6 @@ def benjamini_hochberg(p_values, fdr=0.1):
     sigs : numpy.array
         Boolean array of whether or not the provided p-values are significant
         given the FDR cutoff
-
     """
     ranks = np.argsort(np.argsort(p_values))
 
@@ -72,17 +71,18 @@ class TwoWayGeneComparisonLocal(object):
         df : pandas.DataFrame
             A samples (rows) x features (columns) pandas DataFrame of
             expression values
-        p_value_cutoff : float
+        p_value_cutoff : float, optional
             Cutoff for the p-values. Default 0.001.
-        local_fraction : float
+        local_fraction : float, optional
             What fraction of genes to use for *local* z-score calculation.
             Default 0.1
-        bonferonni : bool
+        bonferonni : bool, optional
             Whether or not to use the Bonferonni correction on p-values
-        fdr : ???
+        fdr : ???, optional
             benjamini-hochberg FDR filtering - check result, proceed with
             caution. sometimes breaks :(
-
+        dtype : str, optional
+            Data type
         """
 
         sample1 = df.ix[sample1_name]
@@ -173,7 +173,7 @@ class TwoWayGeneComparisonLocal(object):
                     raise ValueError
 
     def gstats(self):
-        """Write general statistics of the two-way comparison to standard out
+        """Write general statistics of the two-way comparison to standard output
         """
         sys.stdout.write(
             "I used a p-value cutoff of {:.2e}\n".format(self.p_value_cutoff))
