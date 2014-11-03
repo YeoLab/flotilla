@@ -9,7 +9,7 @@ Create a datapackage
 .. toctree::
 :maxdepth: 2
 
-       tutorial/datapackage
+        tutorial/datapackage
 
 Processing data
 ---------------
@@ -17,7 +17,7 @@ Processing data
 .. toctree::
 :maxdepth: 2
 
-       tutorial/detect_outliers
+        tutorial/detect_outliers
 
 Plotting functions
 ------------------
@@ -25,8 +25,8 @@ Plotting functions
 .. toctree::
 :maxdepth: 2
 
-       tutorial/pca
-       tutorial/classification
-       tutorial/network
-       tutorial/expression_specific
-       tutorial/splicing_specific
+        tutorial/pca
+        tutorial/classification
+        tutorial/network
+        tutorial/expression_specific
+        tutorial/splicing_specific
