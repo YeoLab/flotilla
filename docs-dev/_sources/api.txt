@@ -9,36 +9,36 @@ General use plots
 -----------------
 
 .. autosummary::
-:toctree: generated/
+    :toctree: generated/
 
-        Study.plot_gene
-        Study.plot_event
+    Study.plot_gene
+    Study.plot_event
 
 Interactive plots
 -----------------
 
 .. autosummary::
-:toctree: generated/
+    :toctree: generated/
 
-        Study.interactive_pca
-        Study.interactive_classifier
-        Study.interactive_graph
-        Study.interactive_pooled_inconsistent
+    Study.interactive_pca
+    Study.interactive_classifier
+    Study.interactive_graph
+    Study.interactive_pooled_inconsistent
 
 Machine learning plots
 ----------------------
 
 .. autosummary::
-:toctree: generated/
+    :toctree: generated/
 
-        Study.plot_pca
-        Study.plot_classifier
-        Study.plot_graph
+    Study.plot_pca
+    Study.plot_classifier
+    Study.plot_graph
 
 Splicing-specific plots
 -----------------------
 
 .. autosummary::
-:toctree: generated/
+    :toctree: generated/
 
-        Study.plot_pooled_inconsistent
+    Study.plot_pooled_inconsistent
