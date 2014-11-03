@@ -16,15 +16,15 @@ in touch on `twitter <https://twitter.com/olgabot>`_.
 Contents:
 
 .. toctree::
-:maxdepth: 4
+    :maxdepth: 4
 
-        flotilla
-        whatsnew
-        installation
-        api
-        create_datapackage
-        tutorial
-        apidoc/modules
+    flotilla
+    whatsnew
+    installation
+    api
+    create_datapackage
+    tutorial
+    apidoc/modules
 
 .. _what's new: whatsnew
 .. _API Reference: api
