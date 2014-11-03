@@ -1,7 +1,7 @@
 .. _tutorial:
 
 Flotilla tutorial
-================
+=================
 
 Create a datapackage
 --------------------
