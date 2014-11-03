@@ -49,9 +49,10 @@ after_script:
   - make lint
   - sudo pip install -r doc/requirements.txt --use-mirrors
   - MASTER=master
+  - DEV=feature/kickass_documentation
   - if [[ $TRAVIS_BRANCH == "$MASTER" ]] ; then export DEPLOY_HTML_DIR=docs-stable ; fi
-  - if [[ $TRAVIS_BRANCH == 'dev' ]] ; then export DEPLOY_HTML_DIR=docs-dev ; fi
-  - if [[ $TRAVIS_BRANCH == "$MASTER" ]] || [[ $TRAVIS_BRANCH == 'dev' ]] ; then cd doc ; make setup_gh_pages ; make generate ; make deploy ; fi
+  - if [[ $TRAVIS_BRANCH == "$DEV" ]] ; then export DEPLOY_HTML_DIR=docs-dev ; fi
+  - if [[ $TRAVIS_BRANCH == "$MASTER" ]] || [[ $TRAVIS_BRANCH == "$DEV" ]] ; then cd doc ; make setup_gh_pages ; make generate ; make deploy ; fi
 
 # For slack notifications
 notifications:
