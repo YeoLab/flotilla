@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>What’s new in the package &mdash; flotilla 0.2.0 documentation</title>
+    <title>What’s new in the package &mdash; flotilla 0.1.2 documentation</title>
     
     <link rel="stylesheet" href="_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.0',
+        VERSION:     '0.1.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -29,7 +29,7 @@
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
-    <link rel="top" title="flotilla 0.2.0 documentation" href="index.html" />
+    <link rel="top" title="flotilla 0.1.2 documentation" href="index.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -49,7 +49,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           Flotilla</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.1.2</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -89,7 +89,6 @@
 <li><a class="reference internal" href="#api-changes">API changes</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#other-changes">Other Changes</a></li>
 </ul>
 </li>
 </ul>
@@ -153,16 +152,8 @@
 <li>The attribute <tt class="docutils literal"><span class="pre">data</span></tt> in <tt class="xref py py-class docutils literal"><span class="pre">BaseData</span></tt> now contains ALL the data, including pooled, singles, and outliers</li>
 <li>The attribute <tt class="docutils literal"><span class="pre">data_original</span></tt> in <tt class="xref py py-class docutils literal"><span class="pre">BaseData</span></tt> contains the original, unfiltered data. For example, before removing features detected in fewer  than 10 samples with expression &gt; 1.</li>
 <li><tt class="xref py py-class docutils literal"><span class="pre">BaseData</span></tt> now has the attributes <tt class="xref py py-func docutils literal"><span class="pre">BaseData.singles()</span></tt>, <tt class="xref py py-func docutils literal"><span class="pre">BaseData.pooled()</span></tt>, and <tt class="xref py py-func docutils literal"><span class="pre">BaseData.outliers()</span></tt> which are on-the-fly subsets of <tt class="docutils literal"><span class="pre">BaseData.data</span></tt>. This is to maintain datameaning if &#8220;outliers&#8221; is changed, this is also changed.</li>
-<li>In <tt class="xref py py-class docutils literal"><span class="pre">Study</span></tt>, you now must specify <cite>expression_feature_rename_col</cite>, <cite>splicing_feature_rename_col</cite>, <cite>mapping_stats_number_mapped_col</cite> explicitly, they are no longer defaulting to, <cite>{splicing,expression}_feature_rename_col=&#8221;gene_name&#8221;</cite> and <cite>mapping_stats_number_mapped_col=&#8221;Uniquely mapped reads number&#8221;</cite></li>
 </ul>
 </div>
-</div>
-<div class="section" id="other-changes">
-<h2>Other Changes<a class="headerlink" href="#other-changes" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li>Status messages in <a class="reference internal" href="apidoc/flotilla.html#flotilla.embark" title="flotilla.embark"><tt class="xref py py-func docutils literal"><span class="pre">embark()</span></tt></a> have been moved to <cite>stdout</cite> instead of <cite>stderr</cite> to avoid confusion that something is going wrong</li>
-<li>In <a class="reference internal" href="apidoc/flotilla.html#flotilla.embark" title="flotilla.embark"><tt class="xref py py-func docutils literal"><span class="pre">embark()</span></tt></a>, user gets notified which samples are removed for having too few reads</li>
-</ul>
 </div>
 </div>
 

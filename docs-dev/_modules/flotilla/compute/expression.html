@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>flotilla.compute.expression &mdash; flotilla 0.2.0 documentation</title>
+    <title>flotilla.compute.expression &mdash; flotilla 0.1.2 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.2.0',
+        VERSION:     '0.1.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -29,7 +29,7 @@
     <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../../../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
-    <link rel="top" title="flotilla 0.2.0 documentation" href="../../../index.html" />
+    <link rel="top" title="flotilla 0.1.2 documentation" href="../../../index.html" />
     <link rel="up" title="flotilla" href="../../flotilla.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -50,7 +50,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           Flotilla</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.1.2</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -129,9 +129,13 @@
 
 
 <div class="viewcode-block" id="benjamini_hochberg"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.expression.benjamini_hochberg">[docs]</a><span class="k">def</span> <span class="nf">benjamini_hochberg</span><span class="p">(</span><span class="n">p_values</span><span class="p">,</span> <span class="n">fdr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Benjamini-Hochberg correction for multiple hypothesis testing</span>
+    <span class="sd">&quot;&quot;&quot; benjamini-hochberg correction for MHT</span>
+<span class="sd">    p_values : list</span>
+<span class="sd">        List of p-values</span>
+<span class="sd">    fdr : float</span>
+<span class="sd">        Desired false-discovery rate cutoff</span>
 
-<span class="sd">    From: http://udel.edu/~mcdonald/statmultcomp.html</span>
+<span class="sd">    from: http://udel.edu/~mcdonald/statmultcomp.html</span>
 <span class="sd">    One good technique for controlling the false discovery rate was briefly</span>
 <span class="sd">    mentioned by Simes (1986) and developed in detail by Benjamini and Hochberg</span>
 <span class="sd">    (1995). Put the individual P-values in order, from smallest to largest.</span>
@@ -140,19 +144,6 @@
 <span class="sd">    test and Q is the chosen false discovery rate. The largest P-value that</span>
 <span class="sd">    has P&lt;(i/m)Q is significant, and all P-values smaller than it are also</span>
 <span class="sd">    significant.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    p_values : list</span>
-<span class="sd">        List of p-values</span>
-<span class="sd">    fdr : float, optional</span>
-<span class="sd">        Desired false-discovery rate cutoff</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    sigs : numpy.array</span>
-<span class="sd">        Boolean array of whether or not the provided p-values are significant</span>
-<span class="sd">        given the FDR cutoff</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ranks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">p_values</span><span class="p">))</span>
 
@@ -171,8 +162,6 @@
 
 </div>
 <div class="viewcode-block" id="TwoWayGeneComparisonLocal"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.expression.TwoWayGeneComparisonLocal">[docs]</a><span class="k">class</span> <span class="nc">TwoWayGeneComparisonLocal</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Compare gene expression for two samples</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample1_name</span><span class="p">,</span> <span class="n">sample2_name</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">p_value_cutoff</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>
                  <span class="n">local_fraction</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">bonferroni</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">fdr</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">dtype</span><span class="o">=</span><span class="s">&quot;RPKM&quot;</span><span class="p">):</span>
@@ -180,8 +169,6 @@
 
 <span class="sd">        ??? Does this return anything, plot anything??? write any files...???</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
 <span class="sd">        sample1_name : str</span>
 <span class="sd">            Name of the first (control) sample. Must be a row name (index) in</span>
 <span class="sd">            df. Plotted on the x-axis.</span>
@@ -191,18 +178,16 @@
 <span class="sd">        df : pandas.DataFrame</span>
 <span class="sd">            A samples (rows) x features (columns) pandas DataFrame of</span>
 <span class="sd">            expression values</span>
-<span class="sd">        p_value_cutoff : float, optional</span>
+<span class="sd">        p_value_cutoff : float</span>
 <span class="sd">            Cutoff for the p-values. Default 0.001.</span>
-<span class="sd">        local_fraction : float, optional</span>
+<span class="sd">        local_fraction : float</span>
 <span class="sd">            What fraction of genes to use for *local* z-score calculation.</span>
 <span class="sd">            Default 0.1</span>
-<span class="sd">        bonferonni : bool, optional</span>
+<span class="sd">        bonferonni : bool</span>
 <span class="sd">            Whether or not to use the Bonferonni correction on p-values</span>
-<span class="sd">        fdr : ???, optional</span>
+<span class="sd">        fdr : ???</span>
 <span class="sd">            benjamini-hochberg FDR filtering - check result, proceed with</span>
 <span class="sd">            caution. sometimes breaks :(</span>
-<span class="sd">        dtype : str, optional</span>
-<span class="sd">            Data type</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">sample1</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">sample1_name</span><span class="p">]</span>
@@ -293,8 +278,6 @@
                     <span class="k">raise</span> <span class="ne">ValueError</span>
 
 <div class="viewcode-block" id="TwoWayGeneComparisonLocal.gstats"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.expression.TwoWayGeneComparisonLocal.gstats">[docs]</a>    <span class="k">def</span> <span class="nf">gstats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Write general statistics of the two-way comparison to standard output</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
             <span class="s">&quot;I used a p-value cutoff of {:.2e}</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p_value_cutoff</span><span class="p">))</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">There are {} up-regulated genes in {} vs {}</span><span class="se">\n</span><span class="s">&quot;</span>

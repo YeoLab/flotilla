@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>flotilla.compute package &mdash; flotilla 0.2.0 documentation</title>
+    <title>flotilla.compute package &mdash; flotilla 0.1.2 documentation</title>
     
     <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.0',
+        VERSION:     '0.1.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -29,7 +29,7 @@
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
-    <link rel="top" title="flotilla 0.2.0 documentation" href="../index.html" />
+    <link rel="top" title="flotilla 0.1.2 documentation" href="../index.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -49,7 +49,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           Flotilla</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.1.2</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -142,23 +142,20 @@
 <span id="flotilla-compute-decomposition-module"></span><h2>flotilla.compute.decomposition module<a class="headerlink" href="#module-flotilla.compute.decomposition" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="flotilla.compute.decomposition.DataFrameICA">
-<em class="property">class </em><tt class="descclassname">flotilla.compute.decomposition.</tt><tt class="descname">DataFrameICA</tt><big>(</big><em>df</em>, <em>n_components=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/decomposition.html#DataFrameICA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFrameICA" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">flotilla.compute.decomposition.</tt><tt class="descname">DataFrameICA</tt><big>(</big><em>df</em>, <em>n_components=None</em>, <em>**decomposer_kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/decomposition.html#DataFrameICA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFrameICA" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#flotilla.compute.decomposition.DataFrameReducerBase" title="flotilla.compute.decomposition.DataFrameReducerBase"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.decomposition.DataFrameReducerBase</span></tt></a>, <tt class="xref py py-class docutils literal"><span class="pre">sklearn.decomposition.fastica_.FastICA</span></tt></p>
-<p>Perform Independent Comopnent Analysis on a DataFrame</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="flotilla.compute.decomposition.DataFrameNMF">
-<em class="property">class </em><tt class="descclassname">flotilla.compute.decomposition.</tt><tt class="descname">DataFrameNMF</tt><big>(</big><em>df</em>, <em>n_components=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/decomposition.html#DataFrameNMF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFrameNMF" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">flotilla.compute.decomposition.</tt><tt class="descname">DataFrameNMF</tt><big>(</big><em>df</em>, <em>n_components=None</em>, <em>**decomposer_kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/decomposition.html#DataFrameNMF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFrameNMF" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#flotilla.compute.decomposition.DataFrameReducerBase" title="flotilla.compute.decomposition.DataFrameReducerBase"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.decomposition.DataFrameReducerBase</span></tt></a>, <tt class="xref py py-class docutils literal"><span class="pre">sklearn.decomposition.nmf.NMF</span></tt></p>
-<p>Perform Non-Negative Matrix Factorization on a DataFrame</p>
 <dl class="method">
 <dt id="flotilla.compute.decomposition.DataFrameNMF.fit">
 <tt class="descname">fit</tt><big>(</big><em>X</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/decomposition.html#DataFrameNMF.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFrameNMF.fit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Override scikit-learn&#8217;s fit() for our purposes</p>
-<p>Duplicated fit code for DataFrameNMF because sklearn&#8217;s NMF cheats for
-efficiency and calls fit_transform. Method resolution order (&#8220;MRO&#8221;)
-resolves the closest (in this package)
+<dd><p>duplicated fit code for DataFrameNMF because sklearn&#8217;s NMF cheats for
+efficiency and calls fit_transform. MRO resolves the closest
+(in this package)
 _single_fit_transform first and so there&#8217;s a recursion error:</p>
 <blockquote>
 <div><dl class="docutils">
@@ -173,148 +170,34 @@ return self</dd>
 
 <dl class="class">
 <dt id="flotilla.compute.decomposition.DataFramePCA">
-<em class="property">class </em><tt class="descclassname">flotilla.compute.decomposition.</tt><tt class="descname">DataFramePCA</tt><big>(</big><em>df</em>, <em>n_components=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/decomposition.html#DataFramePCA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFramePCA" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">flotilla.compute.decomposition.</tt><tt class="descname">DataFramePCA</tt><big>(</big><em>df</em>, <em>n_components=None</em>, <em>**decomposer_kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/decomposition.html#DataFramePCA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFramePCA" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#flotilla.compute.decomposition.DataFrameReducerBase" title="flotilla.compute.decomposition.DataFrameReducerBase"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.decomposition.DataFrameReducerBase</span></tt></a>, <tt class="xref py py-class docutils literal"><span class="pre">sklearn.decomposition.pca.PCA</span></tt></p>
-<p>Perform Principal Components Analaysis on a DataFrame</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="flotilla.compute.decomposition.DataFrameReducerBase">
-<em class="property">class </em><tt class="descclassname">flotilla.compute.decomposition.</tt><tt class="descname">DataFrameReducerBase</tt><big>(</big><em>df</em>, <em>n_components=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/decomposition.html#DataFrameReducerBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFrameReducerBase" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">flotilla.compute.decomposition.</tt><tt class="descname">DataFrameReducerBase</tt><big>(</big><em>df</em>, <em>n_components=None</em>, <em>**decomposer_kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/decomposition.html#DataFrameReducerBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFrameReducerBase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
 <p>Just like scikit-learn&#8217;s reducers, but with prettied up DataFrames.</p>
 <dl class="method">
 <dt id="flotilla.compute.decomposition.DataFrameReducerBase.fit">
 <tt class="descname">fit</tt><big>(</big><em>X</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/decomposition.html#DataFrameReducerBase.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFrameReducerBase.fit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Perform a scikit-learn fit and relabel dimensions to be
-informative names</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : pandas.DataFrame</p>
-<blockquote>
-<div><p>A (n_samples, n_features) Dataframe of data to reduce</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>self</strong> : DataFrameReducerBase</p>
-<blockquote class="last">
-<div><p>A instance of the data, now with <a href="#id5"><span class="problematic" id="id6">components_</span></a>,
-<a href="#id7"><span class="problematic" id="id8">explained_variance_</span></a>, and <a href="#id9"><span class="problematic" id="id10">explained_variance_ratio_</span></a> attributes</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="flotilla.compute.decomposition.DataFrameReducerBase.fit_transform">
 <tt class="descname">fit_transform</tt><big>(</big><em>X</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/decomposition.html#DataFrameReducerBase.fit_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFrameReducerBase.fit_transform" title="Permalink to this definition">¶</a></dt>
-<dd><p>Perform both a fit and a transform on the input data</p>
-<p>Fit the data to the reduction algorithm, and transform the data to
-the reduced space.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : pandas.DataFrame</p>
-<blockquote>
-<div><p>A (n_samples, n_features) dataframe to both fit and transform</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>self</strong> : DataFrameReducerBase</p>
-<blockquote>
-<div><p>A fit and transformed instance of the object</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><strong>ValueError</strong></p>
-<blockquote class="last">
-<div><p>If the input is not a pandas DataFrame, will not perform the fit
-and transform</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
+<dd></dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="flotilla.compute.decomposition.DataFrameReducerBase.relabel_pcs">
-<em class="property">static </em><tt class="descname">relabel_pcs</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/decomposition.html#DataFrameReducerBase.relabel_pcs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFrameReducerBase.relabel_pcs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given a list of integers, change the name to be a 1-based
-principal component representation</p>
-</dd></dl>
+<tt class="descname">relabel_pcs</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/decomposition.html#DataFrameReducerBase.relabel_pcs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFrameReducerBase.relabel_pcs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="flotilla.compute.decomposition.DataFrameReducerBase.transform">
 <tt class="descname">transform</tt><big>(</big><em>X</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/decomposition.html#DataFrameReducerBase.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFrameReducerBase.transform" title="Permalink to this definition">¶</a></dt>
-<dd><p>Transform a matrix into the compoment space</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : pandas.DataFrame</p>
-<blockquote>
-<div><p>A (n_samples, n_features) sized DataFrame to transform into the
-current compoment space</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>component_space</strong> : pandas.DataFrame</p>
-<blockquote class="last">
-<div><p>A (n_samples, self.n_components) sized DataFrame transformed into
-component space</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="flotilla.compute.decomposition.DataFrameTSNE">
-<em class="property">class </em><tt class="descclassname">flotilla.compute.decomposition.</tt><tt class="descname">DataFrameTSNE</tt><big>(</big><em>df</em>, <em>n_components=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/decomposition.html#DataFrameTSNE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFrameTSNE" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#flotilla.compute.decomposition.DataFrameReducerBase" title="flotilla.compute.decomposition.DataFrameReducerBase"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.decomposition.DataFrameReducerBase</span></tt></a></p>
-<p>Perform t-Distributed Stochastic Neighbor Embedding on a DataFrame</p>
-<p>Read more: <a class="reference external" href="http://homepage.tudelft.nl/19j49/t-SNE.html">http://homepage.tudelft.nl/19j49/t-SNE.html</a></p>
-<dl class="method">
-<dt id="flotilla.compute.decomposition.DataFrameTSNE.fit_transform">
-<tt class="descname">fit_transform</tt><big>(</big><em>X</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/decomposition.html#DataFrameTSNE.fit_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFrameTSNE.fit_transform" title="Permalink to this definition">¶</a></dt>
-<dd><p>Perform both a fit and a transform on the input data</p>
-<p>Fit the data to the reduction algorithm, and transform the data to
-the reduced space.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : pandas.DataFrame</p>
-<blockquote>
-<div><p>A (n_samples, n_features) dataframe to both fit and transform</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>self</strong> : DataFrameReducerBase</p>
-<blockquote>
-<div><p>A fit and transformed instance of the object</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><strong>ValueError</strong></p>
-<blockquote class="last">
-<div><p>If the input is not a pandas DataFrame, will not perform the fit
-and transform</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -325,20 +208,25 @@ and transform</p>
 <dt id="flotilla.compute.expression.TwoWayGeneComparisonLocal">
 <em class="property">class </em><tt class="descclassname">flotilla.compute.expression.</tt><tt class="descname">TwoWayGeneComparisonLocal</tt><big>(</big><em>sample1_name</em>, <em>sample2_name</em>, <em>df</em>, <em>p_value_cutoff=0.001</em>, <em>local_fraction=0.1</em>, <em>bonferroni=True</em>, <em>fdr=None</em>, <em>dtype='RPKM'</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/expression.html#TwoWayGeneComparisonLocal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.expression.TwoWayGeneComparisonLocal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
-<p>Compare gene expression for two samples</p>
 <dl class="method">
 <dt id="flotilla.compute.expression.TwoWayGeneComparisonLocal.gstats">
 <tt class="descname">gstats</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/expression.html#TwoWayGeneComparisonLocal.gstats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.expression.TwoWayGeneComparisonLocal.gstats" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write general statistics of the two-way comparison to standard output</p>
-</dd></dl>
+<dd></dd></dl>
 
 </dd></dl>
 
 <dl class="function">
 <dt id="flotilla.compute.expression.benjamini_hochberg">
 <tt class="descclassname">flotilla.compute.expression.</tt><tt class="descname">benjamini_hochberg</tt><big>(</big><em>p_values</em>, <em>fdr=0.1</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/expression.html#benjamini_hochberg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.expression.benjamini_hochberg" title="Permalink to this definition">¶</a></dt>
-<dd><p>Benjamini-Hochberg correction for multiple hypothesis testing</p>
-<p>From: <a class="reference external" href="http://udel.edu/~mcdonald/statmultcomp.html">http://udel.edu/~mcdonald/statmultcomp.html</a>
+<dd><p>benjamini-hochberg correction for MHT
+p_values : list</p>
+<blockquote>
+<div>List of p-values</div></blockquote>
+<dl class="docutils">
+<dt>fdr <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>Desired false-discovery rate cutoff</dd>
+</dl>
+<p>from: <a class="reference external" href="http://udel.edu/~mcdonald/statmultcomp.html">http://udel.edu/~mcdonald/statmultcomp.html</a>
 One good technique for controlling the false discovery rate was briefly
 mentioned by Simes (1986) and developed in detail by Benjamini and Hochberg
 (1995). Put the individual P-values in order, from smallest to largest.
@@ -347,29 +235,6 @@ compare each individual P-value to (i/m)Q, where m is the total number of
 test and Q is the chosen false discovery rate. The largest P-value that
 has P&lt;(i/m)Q is significant, and all P-values smaller than it are also
 significant.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>p_values</strong> : list</p>
-<blockquote>
-<div><p>List of p-values</p>
-</div></blockquote>
-<p><strong>fdr</strong> : float, optional</p>
-<blockquote>
-<div><p>Desired false-discovery rate cutoff</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>sigs</strong> : numpy.array</p>
-<blockquote class="last">
-<div><p>Boolean array of whether or not the provided p-values are significant
-given the FDR cutoff</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 </div>
@@ -378,98 +243,20 @@ given the FDR cutoff</p>
 <dl class="function">
 <dt id="flotilla.compute.generic.apply_calc_robust">
 <tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">apply_calc_robust</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#apply_calc_robust"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.apply_calc_robust" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate robust regression between the columns of X and y</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : pandas.DataFrame</p>
-<blockquote>
-<div><p>A (n_samples, n_features) Dataframe of the predictor variable</p>
-</div></blockquote>
-<p><strong>y</strong> : pandas.DataFrame</p>
-<blockquote>
-<div><p>A (n_samples, m_features) DataFrame of the response variable</p>
-</div></blockquote>
-<p><strong>verbose</strong> : bool, optional</p>
-<blockquote>
-<div><p>If True, output status messages as the calculation is happening</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out_I</strong> : pandas.Series</p>
-<blockquote>
-<div><p>Intercept of regressions</p>
-</div></blockquote>
-<p><strong>out_S</strong> : pandas.Series</p>
-<blockquote>
-<div><p>Slope of regressions</p>
-</div></blockquote>
-<p><strong>out_T</strong> : pandas.Series</p>
-<blockquote>
-<div><p>t-statistic of regressions</p>
-</div></blockquote>
-<p><strong>out_P</strong> : pandas.Series</p>
-<blockquote class="last">
-<div><p>p-values of regressions</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<dl class="last docutils">
-<dt><a class="reference internal" href="#flotilla.compute.generic.get_robust_values" title="flotilla.compute.generic.get_robust_values"><tt class="xref py py-obj docutils literal"><span class="pre">get_robust_values</span></tt></a></dt>
-<dd>This is the underlying function which calculates the slope, intercept, t-value, and p-value of the fit</dd>
-</dl>
-</div>
+<dd><p>X and y are dataframes, returns slope, t-value and p-value of robust
+regression</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="flotilla.compute.generic.apply_calc_rs">
 <tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">apply_calc_rs</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#apply_calc_rs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.apply_calc_rs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Apply R calculation method on each column of X versus the values of y</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : pandas.DataFrame</p>
-<blockquote>
-<div><p>A (n_samples, n_features) sized DataFrame, assumed to be of
-log-normal expression values</p>
-</div></blockquote>
-<p><strong>y</strong> : pandas.Series</p>
-<blockquote>
-<div><p>A (n_samples,) sized Series, assumed to be of percent spliced-in
-alternative splicing scores</p>
-</div></blockquote>
-<p><strong>method</strong> : function, optional</p>
-<blockquote>
-<div><p>Which correlation method to use on each feature in X versus the
-values in y</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>r_coefficients</strong> : pandas.Series</p>
-<blockquote>
-<div><p>Correlation coefficients</p>
-</div></blockquote>
-<p><strong>p_values</strong> : pandas.Series</p>
-<blockquote class="last">
-<div><p>Correlation significances (smaller is better)</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<dl class="last docutils">
-<dt><a class="reference internal" href="#flotilla.compute.generic.do_r" title="flotilla.compute.generic.do_r"><tt class="xref py py-obj docutils literal"><span class="pre">do_r</span></tt></a></dt>
-<dd>This is the underlying function which calculates correlation</dd>
-</dl>
-</div>
+<dd><p>apply R calculation method on each gene separately (for nan values)</p>
+<p>input:
+X - (cells X rpkms) pd.DataFrame
+y - (cells X psi) pd.Series</p>
+<p>output:
+two pd.Series of:
+R coef, p-value</p>
 </dd></dl>
 
 <dl class="function">
@@ -477,346 +264,75 @@ values in y</p>
 <tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">apply_calc_slope</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#apply_calc_slope"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.apply_calc_slope" title="Permalink to this definition">¶</a></dt>
 <dd><p>X and y are dataframes, returns slope, t-value and p-value of robust
 regression</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : pandas.DataFrame</p>
-<blockquote>
-<div><p>A (n_samples, n_features) Dataframe of predictor variable values</p>
-</div></blockquote>
-<p><strong>y</strong> : pandas.DataFrame</p>
-<blockquote>
-<div><p>A (n_samples, m_features) Dataframe of response variable values</p>
-</div></blockquote>
-<p><strong>verbose</strong> : bool, optional</p>
-<blockquote>
-<div><p>If True, output status messages</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>slope</strong> : pandas.Series</p>
-<blockquote class="last">
-<div><p>Slopes of the linear regression</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<dl class="last docutils">
-<dt><a class="reference internal" href="#flotilla.compute.generic.get_slope" title="flotilla.compute.generic.get_slope"><tt class="xref py py-obj docutils literal"><span class="pre">get_slope</span></tt></a></dt>
-<dd>This is the underlying function which calculates the slope</dd>
-</dl>
-</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="flotilla.compute.generic.apply_dcor">
 <tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">apply_dcor</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#apply_dcor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.apply_dcor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calcualte distance correlation between the columns of two dataframes</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : pandas.DataFrame</p>
-<blockquote>
-<div><p>A (n_samples, n_features) Dataframe of predictor variable values</p>
-</div></blockquote>
-<p><strong>y</strong> : pandas.DataFrame</p>
-<blockquote>
-<div><p>A (n_samples, m_features) Dataframe of response variable values</p>
-</div></blockquote>
-<p><strong>verbose</strong> : bool, optional</p>
-<blockquote>
-<div><p>If True, output status messages</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>dc</strong> : pandas.Series</p>
-<blockquote>
-<div><p>Distance covariance</p>
-</div></blockquote>
-<p><strong>dr</strong> : pandas.Series</p>
-<blockquote>
-<div><p>Distance correlation</p>
-</div></blockquote>
-<p><strong>dvx</strong> : pandas.Series</p>
-<blockquote>
-<div><p>Distance variance of x</p>
-</div></blockquote>
-<p><strong>dvy</strong> : pandas.Series</p>
-<blockquote class="last">
-<div><p>Distance variance of y</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<dl class="last docutils">
-<dt><a class="reference internal" href="#flotilla.compute.generic.get_dcor" title="flotilla.compute.generic.get_dcor"><tt class="xref py py-obj docutils literal"><span class="pre">get_dcor</span></tt></a></dt>
-<dd>This is the underlying function that gets called to calculate the distance correlation</dd>
-</dl>
-</div>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="function">
 <dt id="flotilla.compute.generic.do_r">
 <tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">do_r</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#do_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.do_r" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate correlation (&#8220;R-value&#8221;) between two vectors</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>s_1</strong> : pandas.Series</p>
-<blockquote>
-<div><p>Predictor vector</p>
-</div></blockquote>
-<p><strong>s_2</strong> : pandas.Series</p>
-<blockquote>
-<div><p>Target vector</p>
-</div></blockquote>
-<p><strong>method</strong> : function, optional</p>
-<blockquote>
-<div><p>Which correlation method to use. (default scipy.stats.pearsonr)</p>
-</div></blockquote>
-<p><strong>min_items</strong> : int, optional</p>
-<blockquote>
-<div><p>Minimum number of items occuring in both s_1 and s_2 (default 12)</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>r_value</strong> : float</p>
-<blockquote>
-<div><p>R-value of the correlation, i.e. how correlated the two inputs are</p>
-</div></blockquote>
-<p><strong>p_value</strong> : float</p>
-<blockquote class="last">
-<div><p>p-value of the correlation, i.e. how likely this correlation would
-happen given the null hypothesis that the two are not correlated</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Notes</p>
-<p>If too few items overlap, return (np.nan, np.nan)</p>
+<dd><p>do an R calculation, remove items with values missing in either</p>
+<p>input:
+x - predictor vector
+y - target vector</p>
+<p>optional:
+method - method to use (scipy.stats.pearsonr or scipy.stats.spearmanr)</p>
+<p>output:
+r, p (order as determined by the chosen method)</p>
+<p>return (nan, nan) if too few items overlap</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="flotilla.compute.generic.dropna_mean">
 <tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">dropna_mean</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#dropna_mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.dropna_mean" title="Permalink to this definition">¶</a></dt>
-<dd><p>Drop NA values and return the mean</p>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="function">
 <dt id="flotilla.compute.generic.get_boosting_regressor">
 <tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">get_boosting_regressor</tt><big>(</big><em>x</em>, <em>y</em>, <em>verbose=False</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#get_boosting_regressor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.get_boosting_regressor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate a GradientBoostingRegressor on predictor and target variables</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : numpy.array</p>
-<blockquote>
-<div><p>Predictor variable</p>
-</div></blockquote>
-<p><strong>y</strong> : numpy.array</p>
-<blockquote>
-<div><p>Target variable</p>
-</div></blockquote>
-<p><strong>verbose</strong> : bool, optional</p>
-<blockquote>
-<div><p>If True, output status messages</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>classifier</strong> : sklearn.ensemble.GradientBoostingRegressor</p>
-<blockquote class="last">
-<div><p>A fitted classifier of the predictor and target variable</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="function">
 <dt id="flotilla.compute.generic.get_dcor">
 <tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">get_dcor</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#get_dcor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.get_dcor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate distance correlation between two vectors</p>
-<p>Uses the distance correlation package from:
-<a class="reference external" href="https://github.com/andrewdyates/dcor">https://github.com/andrewdyates/dcor</a></p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : numpy.array</p>
-<blockquote>
-<div><p>1-dimensional array (aka a vector) of the independent, predictor
-variable</p>
-</div></blockquote>
-<p><strong>y</strong> : numpy.array</p>
-<blockquote>
-<div><p>1-dimensional array (aka a vector) of the dependent, target variable</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>dc</strong> : float</p>
-<blockquote>
-<div><p>Distance covariance</p>
-</div></blockquote>
-<p><strong>dr</strong> : float</p>
-<blockquote>
-<div><p>Distance correlation</p>
-</div></blockquote>
-<p><strong>dvx</strong> : float</p>
-<blockquote>
-<div><p>Distance variance on x</p>
-</div></blockquote>
-<p><strong>dvy</strong> : float</p>
-<blockquote class="last">
-<div><p>Distance variance on y</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
+<dd><p>get dcor</p>
+<p>see: <a class="reference external" href="https://github.com/andrewdyates/dcor">https://github.com/andrewdyates/dcor</a></p>
+<p>input:
+x - predictor vector
+y - target vector</p>
+<p>output:
+dc, dr, dvx, dvy</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="flotilla.compute.generic.get_regressor">
-<tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">get_regressor</tt><big>(</big><em>x</em>, <em>y</em>, <em>n_estimators=1500</em>, <em>n_tries=5</em>, <em>verbose=False</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#get_regressor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.get_regressor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate an ExtraTreesRegressor on predictor and target variables</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : numpy.array</p>
-<blockquote>
-<div><p>Predictor vector</p>
-</div></blockquote>
-<p><strong>y</strong> : numpy.array</p>
-<blockquote>
-<div><p>Target vector</p>
-</div></blockquote>
-<p><strong>n_estimators</strong> : int, optional</p>
-<blockquote>
-<div><p>Number of estimators to use</p>
-</div></blockquote>
-<p><strong>n_tries</strong> : int, optional</p>
-<blockquote>
-<div><p>Number of attempts to calculate regression</p>
-</div></blockquote>
-<p><strong>verbose</strong> : bool, optional</p>
-<blockquote>
-<div><p>If True, output progress statements</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>classifier</strong> : sklearn.ensemble.ExtraTreesRegressor</p>
-<blockquote>
-<div><p>The classifier with the highest out of bag scores of all the
-attempted &#8220;tries&#8221;</p>
-</div></blockquote>
-<p><strong>oob_scores</strong> : numpy.array</p>
-<blockquote class="last">
-<div><p>Out of bag scores of the classifier</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
+<tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">get_regressor</tt><big>(</big><em>x</em>, <em>y</em>, <em>n_estimators=1500</em>, <em>pCut=0.05</em>, <em>n_tries=5</em>, <em>verbose=False</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#get_regressor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.get_regressor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="function">
 <dt id="flotilla.compute.generic.get_robust_values">
 <tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">get_robust_values</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#get_robust_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.get_robust_values" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate robust linear regression</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : numpy.array</p>
-<blockquote>
-<div><p>Predictor vector</p>
-</div></blockquote>
-<p><strong>y</strong> : numpy.array</p>
-<blockquote>
-<div><p>Target vector</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>intercept</strong> : float</p>
-<blockquote>
-<div><p>Intercept of the fitted line</p>
-</div></blockquote>
-<p><strong>slope</strong> : float</p>
-<blockquote>
-<div><p>Slope of the fitted line</p>
-</div></blockquote>
-<p><strong>t_statistic</strong> : float</p>
-<blockquote>
-<div><p>T-statistic of the fit</p>
-</div></blockquote>
-<p><strong>p_value</strong> : float</p>
-<blockquote class="last">
-<div><p>p-value of the fit</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
+<dd><p>get robust linear regression</p>
+<p>input:
+x - predictor vector
+y - target vector</p>
+<p>output:
+intercept, slope, t-statistic, p-value</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="flotilla.compute.generic.get_slope">
 <tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">get_slope</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#get_slope"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.get_slope" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the linear regression slope of x and y</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : numpy.array</p>
-<blockquote>
-<div><p>X-values of data</p>
-</div></blockquote>
-<p><strong>y</strong> : numpy.array</p>
-<blockquote>
-<div><p>Y-values of data</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>slope</strong> : float</p>
-<blockquote class="last">
-<div><p>Scipy.stats.linregress slope</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="function">
 <dt id="flotilla.compute.generic.get_unstarted_events">
 <tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">get_unstarted_events</tt><big>(</big><em>mongodb</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#get_unstarted_events"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.get_unstarted_events" title="Permalink to this definition">¶</a></dt>
 <dd><p>get events that have not been started yet.
 generator sets started to True before returning an event</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>mongodb</strong> : pymongo.Database</p>
-<blockquote class="last">
-<div><p>A MongoDB database object</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="function">
@@ -974,8 +490,8 @@ and -1 for perfect negative correlation</p>
 <blockquote>
 <div><p>Function to get the feature scores for a scikit-learn classifier.
 This can be different for different classifiers, e.g. for a
-classifier named &#8220;x&#8221; it could be <a href="#id11"><span class="problematic" id="id12">x.scores_</span></a>, for other it&#8217;s
-<a href="#id13"><span class="problematic" id="id14">x.feature_importances_</span></a>. Default: lambda x: <a href="#id15"><span class="problematic" id="id16">x.feature_importances_</span></a></p>
+classifier named &#8220;x&#8221; it could be <a href="#id5"><span class="problematic" id="id6">x.scores_</span></a>, for other it&#8217;s
+<a href="#id7"><span class="problematic" id="id8">x.feature_importances_</span></a>. Default: lambda x: <a href="#id9"><span class="problematic" id="id10">x.feature_importances_</span></a></p>
 </div></blockquote>
 <p><strong>score_cutoff_fun</strong> : function</p>
 <blockquote>
@@ -1020,7 +536,7 @@ Default:
 (or some other function of the dataset)</p>
 <dl class="staticmethod">
 <dt id="flotilla.compute.predict.ConfigOptimizer.objective_average_times_seen">
-<em class="property">static </em><tt class="descname">objective_average_times_seen</tt><big>(</big><em>n_features</em>, <em>coef=2.5</em>, <em>max_feature_scaler=&lt;function max_feature_scaler at 0x2b7db8d7d848&gt;</em>, <em>n_estimators_scaler=&lt;function n_estimators_scaler at 0x2b7db8d7d8c0&gt;</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/predict.html#ConfigOptimizer.objective_average_times_seen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.ConfigOptimizer.objective_average_times_seen" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><tt class="descname">objective_average_times_seen</tt><big>(</big><em>n_features</em>, <em>coef=2.5</em>, <em>max_feature_scaler=&lt;function max_feature_scaler at 0x2b7138de5758&gt;</em>, <em>n_estimators_scaler=&lt;function n_estimators_scaler at 0x2b7138de57d0&gt;</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/predict.html#ConfigOptimizer.objective_average_times_seen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.ConfigOptimizer.objective_average_times_seen" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="staticmethod">
@@ -1069,8 +585,8 @@ objective function of a predictor&#8217;s parameters to return a user-chosen tar
 <blockquote>
 <div><p>Function to get the feature scores for a scikit-learn classifier.
 This can be different for different classifiers, e.g. for a
-classifier named &#8220;x&#8221; it could be <a href="#id17"><span class="problematic" id="id18">x.scores_</span></a>, for other it&#8217;s
-<a href="#id19"><span class="problematic" id="id20">x.feature_importances_</span></a>. Default: lambda x: <a href="#id21"><span class="problematic" id="id22">x.feature_importances_</span></a></p>
+classifier named &#8220;x&#8221; it could be <a href="#id11"><span class="problematic" id="id12">x.scores_</span></a>, for other it&#8217;s
+<a href="#id13"><span class="problematic" id="id14">x.feature_importances_</span></a>. Default: lambda x: <a href="#id15"><span class="problematic" id="id16">x.feature_importances_</span></a></p>
 </div></blockquote>
 <p><strong>score_cutoff_fun</strong> : function</p>
 <blockquote>
@@ -1192,7 +708,7 @@ Default:
 
 <dl class="class">
 <dt id="flotilla.compute.predict.PredictorConfig">
-<em class="property">class </em><tt class="descclassname">flotilla.compute.predict.</tt><tt class="descname">PredictorConfig</tt><big>(</big><em>predictor_name</em>, <em>obj=None</em>, <em>predictor_scoring_fun=&lt;function default_predictor_scoring_fun at 0x2b7db8d6c668&gt;</em>, <em>score_cutoff_fun=&lt;function default_score_cutoff_fun at 0x2b7db8d7d578&gt;</em>, <em>n_features_dependent_parameters=None</em>, <em>constant_parameters=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/predict.html#PredictorConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.PredictorConfig" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">flotilla.compute.predict.</tt><tt class="descname">PredictorConfig</tt><big>(</big><em>predictor_name</em>, <em>obj=None</em>, <em>predictor_scoring_fun=&lt;function default_predictor_scoring_fun at 0x2b7138ddd668&gt;</em>, <em>score_cutoff_fun=&lt;function default_score_cutoff_fun at 0x2b7138de5488&gt;</em>, <em>n_features_dependent_parameters=None</em>, <em>constant_parameters=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/predict.html#PredictorConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.PredictorConfig" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
 <p>A configuration for a predictor, names and tracks/sets parameters for predictor
 Dynamically configures some args for predictor based on n_features (if this attribute exists)
@@ -1384,8 +900,8 @@ use self.datasets for convienient retrieval of predictors.</p>
 <blockquote>
 <div><p>Function to get the feature scores for a scikit-learn classifier.
 This can be different for different classifiers, e.g. for a
-classifier named &#8220;x&#8221; it could be <a href="#id23"><span class="problematic" id="id24">x.scores_</span></a>, for other it&#8217;s
-<a href="#id25"><span class="problematic" id="id26">x.feature_importances_</span></a>. Default: lambda x: <a href="#id27"><span class="problematic" id="id28">x.feature_importances_</span></a></p>
+classifier named &#8220;x&#8221; it could be <a href="#id17"><span class="problematic" id="id18">x.scores_</span></a>, for other it&#8217;s
+<a href="#id19"><span class="problematic" id="id20">x.feature_importances_</span></a>. Default: lambda x: <a href="#id21"><span class="problematic" id="id22">x.feature_importances_</span></a></p>
 </div></blockquote>
 <p><strong>score_cutoff_fun</strong> : function</p>
 <blockquote>
@@ -1425,7 +941,7 @@ Default:
 <dl class="function">
 <dt id="flotilla.compute.predict.default_predictor_scoring_fun">
 <tt class="descclassname">flotilla.compute.predict.</tt><tt class="descname">default_predictor_scoring_fun</tt><big>(</big><em>cls</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/predict.html#default_predictor_scoring_fun"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.default_predictor_scoring_fun" title="Permalink to this definition">¶</a></dt>
-<dd><p>most predictors score output coefficients in the variable <a href="#id29"><span class="problematic" id="id30">cls.feature_importances_</span></a>
+<dd><p>most predictors score output coefficients in the variable <a href="#id23"><span class="problematic" id="id24">cls.feature_importances_</span></a>
 others may use another name for scores</p>
 </dd></dl>
 
