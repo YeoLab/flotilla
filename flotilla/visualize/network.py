@@ -13,11 +13,11 @@ import seaborn as sns
 from .color import green
 from ..compute.network import Networker
 from ..util import dict_to_str
-from ..visualize.color import blue, dark2
+from ..visualize.color import dark2
 
 
 class NetworkerViz(Networker):
-    # TODO.md: needs to be decontaminated, as it requires methods from
+    # TODO: needs to be decontaminated, as it requires methods from
     # data_object;
     # maybe this class should move to data_model.BaseData
     def __init__(self, DataModel):
