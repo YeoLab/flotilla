@@ -7,36 +7,32 @@ import pandas as pd
 
 
 class OutlierDetection(object):
-    """
-    Detect outliers. Uses OneClassSVM by default
-    """
+    """Construct an outlier detection object
 
+    Parameters
+    ----------
+    X : pandas.DataFrame
+        A (n_samples, n_features) dataframe, where the outliers will be
+        detected from the rows (the samples)
+    method : sklearn classifier, optional
+        If None, defaults to OneClassSVM. The method class must have both
+        method.fit() and method.predict() methods
+    nu : float, optional (default 0.1)
+        An upper bound on the fraction of training errors and a lower
+        bound of the fraction of support vectors. Should be in the
+        interval (0, 1]. By default 0.5 will be taken.
+    kernel : str, optional (default='rbf')
+        The kernel to be used by the outlier detection algorihthm
+    gamma : float, optional (default=0.1)
+        Kernel coefficient for 'rbf', 'poly' and 'sigmoid'. If gamma is
+        0.0 then 1/n_features will be used instead.
+    random_state : int, optional (default=0)
+        Random state of the method, for reproducibility.
+    kwargs : other keyword arguments, optional
+        All other keyword arguments are passed to method()
+    """
     def __init__(self, X, method=None, nu=0.1, kernel='rbf', gamma=0.1,
                  random_state=0, **kwargs):
-        """Construct an outlier detection object
-
-        Parameters
-        ----------
-        X : pandas.DataFrame
-            A (n_samples, n_features) dataframe, where the outliers will be
-            detected from the rows (the samples)
-        method : sklearn classifier, optional
-            If None, defaults to OneClassSVM. The method class must have both
-            method.fit() and method.predict() methods
-        nu : float, optional (default 0.1)
-            An upper bound on the fraction of training errors and a lower
-            bound of the fraction of support vectors. Should be in the
-            interval (0, 1]. By default 0.5 will be taken.
-        kernel : str, optional (default='rbf')
-            The kernel to be used by the outlier detection algorihthm
-        gamma : float, optional (default=0.1)
-            Kernel coefficient for 'rbf', 'poly' and 'sigmoid'. If gamma is
-            0.0 then 1/n_features will be used instead.
-        random_state : int, optional (default=0)
-            Random state of the method, for reproducibility.
-        kwargs : other keyword arguments, optional
-            All other keyword arguments are passed to method()
-        """
         if method is None:
             method = sklearn.svm.OneClassSVM
 

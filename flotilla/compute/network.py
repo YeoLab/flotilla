@@ -111,7 +111,7 @@ class Networker(object):
               node_color_mapper=None,
               node_size_mapper=None,
               degree_cut=2,
-              weight_function='no_weight'):
+              weight_function='no_weight', name=None):
         """Create a graph based on the adjacency matrix and other inputs
 
         Parameters
@@ -134,6 +134,8 @@ class Networker(object):
         weight_function : 'no_weight' | 'sq' | 'arctan' | 'arctan_sq', optional
             Weight function of the edges. The lower the weight, the farther
             away two nodes are drawn from each other.
+        name : str, optional (default=None)
+            For memoization purposes, not used in the function.
 
         Returns
         -------
@@ -167,6 +169,7 @@ class Networker(object):
         graph.remove_nodes_from(
             [k for k, v in graph.degree().iteritems() if v <= degree_cut])
 
+        # TODO: can we output this as a (nodes, (x, y)) DataFrame instead?
         positions = nx.spring_layout(graph)
 
         return graph, positions
