@@ -16,7 +16,7 @@ in touch on `twitter <https://twitter.com/olgabot>`_.
 Contents:
 
 .. toctree::
-    :maxdepth: 4
+    :maxdepth: 1
 
     flotilla
     whatsnew
