@@ -1,4 +1,4 @@
-.. _api_ref:
+.. _api:
 
 .. currentmodule:: flotilla
 
@@ -23,7 +23,7 @@ Interactive plots
     Study.interactive_pca
     Study.interactive_classifier
     Study.interactive_graph
-    Study.interactive_pooled_inconsistent
+    Study.interactive_lavalamp_pooled_inconsistent
 
 Machine learning plots
 ----------------------
