@@ -41,4 +41,4 @@ Splicing-specific plots
 .. autosummary::
     :toctree: generated/
 
-    Study.plot_pooled_inconsistent
+    Study.plot_lavalamp_pooled_inconsistent

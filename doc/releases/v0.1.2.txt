@@ -6,22 +6,49 @@ This is a minor release, with some breaking changes from v0.1.1.
 New features
 ~~~~~~~~~~~~
 
-- Plot the expression or splicing of two *samples* with :func:`study.plot_two_samples`
-- Plot the expression or splicing of two *features* with :func:`study.plot_two_features`
+- Plot the expression or splicing of two *samples* with
+  :py:meth:`.Study.plot_two_samples`
+- Plot the expression or splicing of two *features* with
+  :py:meth:`.Study.plot_two_features`
 - Detect outliers with ...
-- :class:`Study` doesn't filter out the pooled or outlier samples from the data, only technical outliers with fewer reads than specified in the  argument ``mapping_stats_min_reads``.
-- To filter expression or splicing data
+- :py:class:`.Study` doesn't filter out the pooled or outlier samples from the
+  data, only technical outliers with fewer reads than specified in the
+  argument ``mapping_stats_min_reads``.
+- To filter expression or splicing data on the number of samples that must
+  detect each feature, you can specify ``expression_thresh``, and
+  ``metadata_min_samples`` in the :py:class:`.Study` constructor.
+  * For example, if ``expression_thresh=1`` and ``metadata_min_samples=3``,
+    then we will only take genes which have expression values greater than
+    1 in at least 3 samples. Additionally, we will also take splicing events
+    which were detected in at least three cells, since
+    ``metadata_min_samples`` applies to *all* data types.
 
 API changes
 ~~~~~~~~~~~
 
-- The attribute ``data`` in :class:`BaseData` now contains ALL the data, including pooled, singles, and outliers
-- The attribute ``data_original`` in :class:`BaseData` contains the original, unfiltered data. For example, before removing features detected in fewer  than 10 samples with expression > 1.
-- :class:`BaseData` now has the attributes :func:`BaseData.singles`, :func:`BaseData.pooled`, and :func:`BaseData.outliers` which are on-the-fly subsets of ``BaseData.data``. This is to maintain datameaning if "outliers" is changed, this is also changed.
-- In :py:class:`Study`, you now must specify `expression_feature_rename_col`, `splicing_feature_rename_col`, `mapping_stats_number_mapped_col` explicitly, they are no longer defaulting to, `{splicing,expression}_feature_rename_col="gene_name"` and `mapping_stats_number_mapped_col="Uniquely mapped reads number"`
+- The attribute ``data`` in :py:class:`.BaseData` (i.e.
+  :py:attr:`BaseData.data`) now contains **all** the data, including pooled,
+  singles, and outliers
+- The attribute ``data_original`` in :py:class:`.BaseData` (i.e.
+  :py:attr:`.BaseData.data_original`) contains the original, unfiltered
+  data. For example, before removing features detected in fewer than 3 samples
+  with expression > 1.
+- :py:class:`.BaseData` now has the attributes
+  :py:attr:`.BaseData.singles`, :py:attr:`BaseData.pooled`, and
+  :py:attr:`.BaseData.outliers` which are on-the-fly subsets of
+  :py:attr:`.BaseData.data`. This is to maintain data, meaning if
+  "outliers" is changed, this is also changed.
+- In :py:class:`.Study`, you now must specify ``expression_feature_rename_col``,
+  ``splicing_feature_rename_col``, ``mapping_stats_number_mapped_col``
+  explicitly, they are no longer defaulting to,
+  ``{splicing,expression}_feature_rename_col="gene_name"`` and
+  ``mapping_stats_number_mapped_col="Uniquely mapped reads number"``
 
 Other Changes
--------------
+~~~~~~~~~~~~~
 
-- Status messages in :py:func:`embark` have been moved to `stdout` instead of `stderr` to avoid confusion that something is going wrong
-- In :py:func:`embark`, user gets notified which samples are removed for having too few reads
+- Status messages in :py:func:`embark` have been moved to ``stdout`` instead
+  of ``stderr`` to avoid confusion that something is going wrong
+- In :py:func:`embark`, user gets notified which samples are removed for having
+  too few reads (default minimum number of reads is :math:`5\times 10^5`, or
+  half a million reads).
