@@ -1,7 +1,8 @@
 """
 Sphinx plugin to run example scripts and create a gallery page.
 
-Lightly modified from the mpld3 project.
+Lightly modified from the seaborn project, which was modified from the mpld3
+project.
 
 """
 from __future__ import division
@@ -11,9 +12,9 @@ import glob
 import token
 import tokenize
 import shutil
-import json
 
 import matplotlib
+
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
@@ -204,6 +205,9 @@ class ExampleGenerator(object):
         match = re.search(r"sns\.(.+plot)\(", self.filetext)
         if match:
             return match.group(1)
+        match = re.search(r"sns\.(.+map)\(", self.filetext)
+        if match:
+            return match.group(1)
         match = re.search(r"sns\.(.+Grid)\(", self.filetext)
         if match:
             return match.group(1)
@@ -263,7 +267,7 @@ class ExampleGenerator(object):
         fig.canvas.draw()
         pngfile = os.path.join(self.target_dir,
                                self.pngfilename)
-        thumbfile = os.path.join("example_thumbs",
+        thumbfile = os.path.join("gallery_thumbs",
                                  self.thumbfilename)
         self.html = "<img src=../%s>" % self.pngfilename
         fig.savefig(pngfile, dpi=75)
@@ -292,11 +296,11 @@ class ExampleGenerator(object):
 
 def main(app):
     static_dir = os.path.join(app.builder.srcdir, '_static')
-    target_dir = os.path.join(app.builder.srcdir, 'examples')
-    image_dir = os.path.join(app.builder.srcdir, 'examples/_images')
+    target_dir = os.path.join(app.builder.srcdir, 'gallery')
+    image_dir = os.path.join(app.builder.srcdir, 'gallery/_images')
     thumb_dir = os.path.join(app.builder.srcdir, "example_thumbs")
     source_dir = os.path.abspath(os.path.join(app.builder.srcdir,
-                                              '..', 'examples'))
+                                              '..', 'gallery'))
     if not os.path.exists(static_dir):
         os.makedirs(static_dir)
 
@@ -324,7 +328,7 @@ def main(app):
         ex = ExampleGenerator(filename, target_dir)
 
         banner_data.append({"title": ex.pagetitle,
-                            "url": os.path.join('examples', ex.htmlfilename),
+                            "url": os.path.join('gallery', ex.htmlfilename),
                             "thumb": os.path.join(ex.thumbfilename)})
         shutil.copyfile(filename, os.path.join(target_dir, ex.pyfilename))
         output = RST_TEMPLATE.format(sphinx_tag=ex.sphinxtag,

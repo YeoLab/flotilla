@@ -4,10 +4,10 @@ from .data_model.study import Study
 import compute
 from compute.predict import PredictorConfigManager, PredictorDataSetManager
 import data_model
-from flotilla.datapackage import make_study_datapackage
+from .datapackage import make_study_datapackage
 import visualize
 
-__version__ = '0.1.2'
+__version__ = '0.2.0'
 
 
 def embark(study_name, load_species_data=True):
