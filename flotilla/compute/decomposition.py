@@ -1,3 +1,7 @@
+"""
+Perform various dimensionality reduction algorithms on data
+"""
+
 import sys
 
 from sklearn import decomposition
@@ -20,9 +24,7 @@ class DataFrameReducerBase(object):
             components as there are samples
         kwargs : keyword arguments
             Any other arguments to the reduction algorithm
-
         """
-
         # This magically initializes the reducer like DataFramePCA or DataFrameNMF
         if df.shape[1] <= 3:
             raise ValueError(

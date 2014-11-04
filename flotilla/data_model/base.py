@@ -660,7 +660,7 @@ class BaseData(object):
                               bins)
 
         outlier_detector = OutlierDetection(reducer.reduced_space,
-                                            outlier_detection_method=outlier_detection_method,
+                                            method=outlier_detection_method,
                                             outlier_detection_method_kwargs=outlier_detection_method_kwargs)
 
         return reducer, outlier_detector

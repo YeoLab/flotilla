@@ -1,5 +1,5 @@
 """
-Compute predictors on data, i.e. regressors or classifiers
+Compute predictors on data, e.g. classify or regress on features/samples
 """
 import sys
 import warnings
@@ -17,20 +17,51 @@ from ..util import memoize, timestamp
 from .decomposition import DataFramePCA, DataFrameNMF
 
 
-default_classifier = 'ExtraTreesClassifier'
-default_regressor = 'ExtraTreesRegressor'
-default_score_coefficient = 2
+CLASSIFIER = 'ExtraTreesClassifier'
+REGRESSOR = 'ExtraTreesRegressor'
+SCORE_COEFFICIENT = 2
 
 
 def default_predictor_scoring_fun(cls):
-    """most predictors score output coefficients in the variable cls.feature_importances_
-    others may use another name for scores"""
+    """Return scores of how important a feature is to the prediction
+
+    Most predictors score output coefficients in the variable
+    cls.feature_importances_ and others may use another name for scores, so
+    this function bridges the gap
+
+    Parameters
+    ----------
+    cls : sklearn predictor
+        A scikit-learn prediction class, such as ExtraTreesClassifier or
+        ExtraTreesRegressor
+
+    Returns
+    -------
+    scores : pandas.Series
+        A (n_features,) size series of how important each feature was to the
+        classification (bigger is better)
+    """
     return cls.feature_importances_
 
 
-def default_score_cutoff_fun(arr, std_multiplier=default_score_coefficient):
-    """a way of calculating which features have a high score in a predictor
-    default - f(x) = mean(x) + 2 * np.std(x)"""
+def default_score_cutoff_fun(arr, std_multiplier=SCORE_COEFFICIENT):
+    """Calculate a minimum score cutoff for the best features
+
+    By default, this function calculates: :math:`f(x) = mean(x) + 2 * std(x)`
+
+    Parameters
+    ----------
+    arr : numpy.ndarray
+        A numpy array of scores
+    std_multiplier : float, optional (default=2)
+        What to multiply the standard deviation by. E.g. if you want only
+        features that are 6 standard deviations away, set this to 6.
+
+    Returns
+    -------
+    cutoff : float
+        Minimum score of "best" features, given these parameters
+    """
     return np.mean(arr) + std_multiplier * np.std(arr)
 
 
@@ -43,40 +74,34 @@ class PredictorConfig(object):
     """
 
 
-    def __init__(self, predictor_name, obj=None,
+    def __init__(self, predictor_name, obj,
                  predictor_scoring_fun=default_predictor_scoring_fun,
                  score_cutoff_fun=default_score_cutoff_fun,
-                 n_features_dependent_parameters=None,
-                 constant_parameters=None):
-        """
+                 n_features_dependent_kwargs=None,
+                 **kwargs):
+        """Construct a predictor configuration
+
         Parameters
         ----------
-
-
-        predictor_name - a name for this predictor
-        obj - predictor object, like ExtraTreesClassifier
-        predictor_scoring_fun - a function that returns the scores
-          from predictor, like ExtraTreesClassifier.feature_importances_
-        score_cutoff_fun - a function that takes the scores from predictor_scoring_fun
-          and returns a cutoff to label features important/not important
-        constant_parameters - dict of kwargs for obj initialization
-
-        Options to set parameters by input dataset size:
-
-        n_features_dependent_parameters - dict of (key, setter) kwargs for obj
-        initialization, setter is a function that uses dataset shape to scale parameters
-
+        predictor_name : str
+            A name for this predictor
+        obj : sklearn predictor
+            A scikit-learn predictor, eg sklearn.ensemble.ExtraTreesClassifier
+        predictor_scoring_fun : function, optional
+            A function which returns the scores of a predictor. May be
+            different for different predictor objects
+        score_cutoff_fun : function, optional
+            A function which returns the minimum "good" score of a predictor
+        n_features_dependent_kwargs : dict, optional (default None)
+            A dictionary of (key, setter) arguments for the classifier, for
+            keyword arguments that are dependent on the dataset input size
+        kwargs : other keyword arguments
+            All other keyword arguments are passed along to the predictor
         """
-
-        if obj is None:
-            raise ValueError
-
-        if n_features_dependent_parameters is None:
-            n_features_dependent_parameters = {}
-        self.n_features_dependent_parameters = n_features_dependent_parameters
-        if constant_parameters is None:
-            constant_parameters = {}
-        self.constant_parameters = constant_parameters
+        if n_features_dependent_kwargs is None:
+            n_features_dependent_kwargs = {}
+        self.n_features_dependent_kwargs = n_features_dependent_kwargs
+        self.constant_kwargs = kwargs
         self.predictor_scoring_fun = predictor_scoring_fun
         self.score_cutoff_fun = score_cutoff_fun
         self.predictor_name = predictor_name
@@ -91,52 +116,83 @@ class PredictorConfig(object):
 
     @memoize
     def parameters(self, n_features):
-        """
-
-        recommended parameters for this classifier for n_features-sized dataset
+        """Given a number of features, return the appropriately scaled keyword
+        arguments
 
         Parameters
         ----------
-        n_features - int is used to scale appropriate kwargs to predictor
+        n_features : int
+            Number of features in the data to scale appropriate keyword
+            arguments to the predictor object
 
         """
-        parameters = {}
-        for parameter, setter in self.n_features_dependent_parameters.items():
-            parameters[parameter] = setter(n_features)
+        kwargs = {}
+        for parameter, setter in self.n_features_dependent_kwargs.items():
+            kwargs[parameter] = setter(n_features)
 
-        for parameter, value in self.constant_parameters.items():
-            parameters[parameter] = value
+        for parameter, value in self.constant_kwargs.items():
+            kwargs[parameter] = value
 
-        return parameters
+        return kwargs
 
-    def __call__(self, n_features=None):
-        """return an instance of this object, initialized and with extra attributes"""
-        if n_features is None:
-            raise Exception
+    def __call__(self, n_features):
+        """Initialize a predictor with this number of features
+
+        Parameters
+        ----------
+        n_features : int
+            The number of features in the data
+
+        Returns
+        -------
+        predictor : sklearn predictor
+            A scikit-learn predictor object inialized with keyword arguments
+            specified in __init__, and the
+            :py:attr:`n_feature_dependent_kwargs` scaled to this number of
+            features
+        """
         parameters = self.parameters(n_features)
 
         sys.stdout.write(
             "{} Configuring predictor type: {} with {} features".format(
                 timestamp(), self.predictor_name, n_features))
 
-        prd = self._parent(**parameters)
-        prd.score_cutoff_fun = self.score_cutoff_fun
-        prd.predictor_scoring_fun = self.predictor_scoring_fun
-        prd.has_been_fit = False
-        prd.has_been_scored = False
-        prd._score_coefficient = default_score_coefficient
-        return prd
+        predictor = self._parent(**parameters)
+        predictor.score_cutoff_fun = self.score_cutoff_fun
+        predictor.predictor_scoring_fun = self.predictor_scoring_fun
+        predictor.has_been_fit = False
+        predictor.has_been_scored = False
+        predictor._score_coefficient = SCORE_COEFFICIENT
+        return predictor
 
 
 class PredictorConfigScalers(object):
-    """because it's useful to have scaling parameters for predictors
-    that adjust according to the dataset size"""
+    """Scale parameters specified in the keyword arugments based on the
+    dataset size
+    """
 
     _default_coef = 2.5
     _default_nfeatures = 500
 
     @staticmethod
     def max_feature_scaler(n_features=_default_nfeatures, coef=_default_coef):
+        """Scale the maximum number of features per estimator
+
+        # TODO: what are the principles behind this scaler? to see each
+        feature "x" number of times?
+
+        Parameters
+        ----------
+        n_features : int, optional (default 500)
+            Number of features in the data
+        coef : float, optional (default 2.5)
+            # TODO: What does this do?
+
+        Returns
+        -------
+        n_features : int
+            Maximum number of features per estimator
+        """
         if n_features is None:
             raise Exception
         return int(math.ceil(np.sqrt(np.sqrt(n_features) ** (coef + .3))))
@@ -185,11 +241,11 @@ class PredictorConfigManager(object):
     #add a new type of predictor
     >>> pcm.new_predictor_config(ExtraTreesClassifier,
                           'ExtraTreesClassifier',
-                          n_features_dependent_parameters={'max_features': PredictorConfigScalers.max_feature_scaler,
+                          n_features_dependent_kwargs={'max_features': PredictorConfigScalers.max_feature_scaler,
                                                            'n_estimators': PredictorConfigScalers.n_estimators_scaler,
                                                            'n_jobs': PredictorConfigScalers.n_jobs_scaler},
 
-                          constant_parameters={'bootstrap': True,
+                          constant_kwargs={'bootstrap': True,
                                                'random_state': 0,
                                                'oob_score': True,
                                                'verbose': True}))
@@ -261,7 +317,7 @@ class PredictorConfigManager(object):
         return PredictorConfig(name, obj,
                                predictor_scoring_fun=predictor_scoring_fun,
                                score_cutoff_fun=score_cutoff_fun,
-                               n_features_dependent_parameters=n_features_dependent_parameters,
+                               n_features_dependent_kwargs=n_features_dependent_parameters,
                                constant_parameters=constant_parameters)
 
 
@@ -510,11 +566,11 @@ class PredictorBase(object):
     score_cutoff_fun : function
         Function to cut off insignificant scores
         Default: lambda scores: np.mean(x) + 2 * np.std(x)
-    n_features_dependent_parameters : dict
+    n_features_dependent_kwargs : dict
         kwargs to the predictor that depend on n_features
         Default:
         {}
-    constant_parameters : dict
+    constant_kwargs : dict
         kwargs to the predictor that are constant, i.e.:
         {'n_estimators': 100,
          'bootstrap': True,
@@ -728,7 +784,7 @@ class Regressor(PredictorBase):
                  predictor_name=None,
                  *args, **kwargs):
         if predictor_name is None:
-            predictor_name = default_regressor
+            predictor_name = REGRESSOR
         kwargs['is_categorical_trait'] = False
         super(Regressor, self).__init__(predictor_name, data_name, trait_name,
                                         *args, **kwargs)
@@ -743,7 +799,7 @@ class Classifier(PredictorBase):
                  predictor_name=None,
                  *args, **kwargs):
         if predictor_name is None:
-            predictor_name = default_classifier
+            predictor_name = CLASSIFIER
         kwargs['is_categorical_trait'] = True
         super(Classifier, self).__init__(predictor_name, data_name, trait_name,
                                          *args, **kwargs)

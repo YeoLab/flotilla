@@ -12,7 +12,8 @@ import matplotlib.pyplot as plt
 
 
 
-# from ..compute.predict import default_classifier
+
+# from ..compute.predict import CLASSIFIER
 from flotilla.util import link_to_list
 from ..visualize.color import red
 from .network import NetworkerViz
