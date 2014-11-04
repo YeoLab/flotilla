@@ -48,8 +48,11 @@ help:
 
 clean:
 	rm -rf $(BUILDDIR)/*
+	rm -rf flotilla*.rst
+	rm -rf modules.rst
 
 html:
+	sphinx-apidoc -l -d 4 -e --force -o . ../flotilla
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."

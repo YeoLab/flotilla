@@ -1,15 +1,19 @@
+"""
+Visualize results from :py:mod:flotilla.compute.network
+"""
+
 import sys
 
 import networkx as nx
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-import seaborn
+import seaborn as sns
 
 from .color import green
 from ..compute.network import Networker
 from ..util import dict_to_str
-from ..visualize.color import blue
+from ..visualize.color import blue, dark2
 
 
 class NetworkerViz(Networker):
@@ -38,7 +42,7 @@ class NetworkerViz(Networker):
                    label_to_marker=None, groupby=None,
                    data_type=None):
 
-        """Draw the graph (network) of these events
+        """Draw the graph of similarities between samples or features
 
         Parameters
         ----------
@@ -46,16 +50,17 @@ class NetworkerViz(Networker):
             Feature ids to subset the data. If None, all features will be used.
         sample_ids : list of str, or None
             Sample ids to subset the data. If None, all features will be used.
-        x_pc : str
-            x component for DataFramePCA, default "pc_1"
+        x_pc : str, optional
+            Which component to use for the x-axis, default "pc_1"
         y_pc :
-            y component for DataFramePCA, default "pc_2"
+            y component for PCA, default "pc_2"
         n_pcs : int???
-            n components to use for cells' covariance calculation
-        cov_std_cut : float??
-            covariance cutoff for edges
-        use_pc{1-4} use these pcs in cov calculation (default True)
-        degree_cut : int??
+            Number of components to use for cells' covariance calculation
+        cov_std_cut : float
+            Covariance cutoff for edges
+        use_pc{1-4} : bool
+            Use these pcs in cov calculation (default True)
+        degree_cut : int
             miniumum degree for a node to be included in graph display
         weight_function : ['arctan' | 'sq' | 'abs' | 'arctan_sq']
             weight function (arctan (arctan cov), sq (sq cov), abs (abs cov),
@@ -64,12 +69,10 @@ class NetworkerViz(Networker):
             map a gradient representing this gene's data onto nodes (ENSEMBL
             id or gene name???)
 
-
         Returns
         -------
-        #TODO: Mike please fill these in
-        graph : ???
-            ???
+        graph : networkx.Graph
+
         pos : ???
             ???
         """
@@ -103,14 +106,14 @@ class NetworkerViz(Networker):
             **pca_settings)
 
         if featurewise:
-            node_color_mapper = lambda x: 'r' \
+            node_color_mapper = lambda x: dark2[0] \
                 if x == feature_of_interest else 'k'
             node_size_mapper = lambda x: (pca.means.ix[x] ** 2) + 10
         else:
             if sample_id_to_color is not None:
                 node_color_mapper = lambda x: sample_id_to_color[x]
             else:
-                node_color_mapper = lambda x: blue
+                node_color_mapper = lambda x: dark2[0]
             node_size_mapper = lambda x: 95
 
         ax_pev.plot(pca.explained_variance_ratio_ * 100.)
@@ -119,7 +122,7 @@ class NetworkerViz(Networker):
         ax_pev.set_ylabel("% explained variance")
         ax_pev.set_xlabel("component")
         ax_pev.set_title("Explained variance from dim reduction")
-        seaborn.despine(ax=ax_pev)
+        sns.despine(ax=ax_pev)
 
         adjacency = self.adjacency(pca.reduced_space, **adjacency_settings)
         cov_dist = np.array(
@@ -134,12 +137,14 @@ class NetworkerViz(Networker):
                                         graph_settings]))
         graph_settings['name'] = this_graph_name
 
-        seaborn.kdeplot(cov_dist, ax=ax_cov)
+        sns.kdeplot(cov_dist, ax=ax_cov)
+        xmin, xmax = ax_cov.get_xlim()
+        ax_cov.set_xlim(0, xmax)
         ax_cov.axvline(cov_cut, label='cutoff', color=green)
-        ax_cov.set_title("covariance in dim reduction space")
-        ax_cov.set_ylabel("density")
+        ax_cov.set_title("Covariance in dim reduction space")
+        ax_cov.set_ylabel("Density")
         ax_cov.legend()
-        seaborn.despine(ax=ax_cov)
+        sns.despine(ax=ax_cov)
 
         graph, pos = self.graph(adjacency, **graph_settings)
 
@@ -174,7 +179,9 @@ class NetworkerViz(Networker):
         nx.draw_networkx_edges(graph, pos, ax=main_ax, alpha=0.1)
         main_ax.set_axis_off()
         degree = nx.degree(graph)
-        seaborn.kdeplot(np.array(degree.values()), ax=ax_degree)
+        sns.kdeplot(np.array(degree.values()), ax=ax_degree)
+        xmin, xmax = ax_degree.get_xlim()
+        ax_degree.set_xlim(0, xmax)
         ax_degree.set_xlabel("degree")
         ax_degree.set_ylabel("density")
         try:
@@ -188,7 +195,7 @@ class NetworkerViz(Networker):
             sys.stdout.write(str(e))
             pass
 
-        seaborn.despine(ax=ax_degree)
+        sns.despine(ax=ax_degree)
         if graph_file != '':
             try:
                 nx.write_gml(graph, graph_file)
@@ -210,7 +217,7 @@ class NetworkerViz(Networker):
                               compare=""):
 
         """
-                Parameters
+        Parameters
         ----------
         feature_ids : list of str, or None
             Feature ids to subset the data. If None, all features will be used.
@@ -238,9 +245,9 @@ class NetworkerViz(Networker):
         Returns
         -------
         #TODO: Mike please fill these in
-        graph : ???
+        graph : networkx.Graph
             ???
-        pos : ???
+        positions : ???
             ???
         """
         node_color_mapper = self._default_node_color_mapper
@@ -280,37 +287,39 @@ class NetworkerViz(Networker):
             map(dict_to_str, [adjacency_settings, graph_settings]))
         graph_settings['name'] = this_graph_name
 
-        seaborn.kdeplot(cov_dist, ax=ax_cov)
+        sns.kdeplot(cov_dist, ax=ax_cov)
         ax_cov.axvline(cov_cut, label='cutoff')
         ax_cov.set_title("covariance in original space")
         ax_cov.set_ylabel("density")
         ax_cov.legend()
-        seaborn.despine(ax=ax_cov)
-        g, pos = self.graph(adjacency, **graph_settings)
+        sns.despine(ax=ax_cov)
+        graph, positions = self.graph(adjacency, **graph_settings)
 
-        nx.draw_networkx_nodes(g, pos,
-                               node_color=map(node_color_mapper, g.nodes()),
-                               node_size=map(node_size_mapper, g.nodes()),
+        nx.draw_networkx_nodes(graph, positions,
+                               node_color=map(node_color_mapper,
+                                              graph.nodes()),
+                               node_size=map(node_size_mapper, graph.nodes()),
                                ax=main_ax, alpha=0.5)
         try:
             node_color = map(lambda x: data[feature_of_interest].ix[x],
-                             g.nodes())
-            nx.draw_networkx_nodes(g, pos, node_color=node_color,
+                             graph.nodes())
+            nx.draw_networkx_nodes(graph, positions, node_color=node_color,
                                    cmap=plt.cm.Greys,
                                    node_size=map(
                                        lambda x: node_size_mapper(x) * .5,
-                                       g.nodes()), ax=main_ax, alpha=1)
-        except:
+                                       graph.nodes()), ax=main_ax, alpha=1)
+        except KeyError:
             pass
 
-        nmr = lambda x: x
-        labels = dict([(nm, nmr(nm)) for nm in g.nodes()])
+        renamer = lambda x: x
+        labels = dict([(name, renamer(name)) for name in graph.nodes()])
         if draw_labels:
-            nx.draw_networkx_labels(g, pos, labels=labels, ax=main_ax)
-        nx.draw_networkx_edges(g, pos, ax=main_ax, alpha=0.1)
+            nx.draw_networkx_labels(graph, positions, labels=labels,
+                                    ax=main_ax)
+        nx.draw_networkx_edges(graph, positions, ax=main_ax, alpha=0.1)
         main_ax.set_axis_off()
-        degree = nx.degree(g)
-        seaborn.kdeplot(np.array(degree.values()), ax=ax_degree)
+        degree = nx.degree(graph)
+        sns.kdeplot(np.array(degree.values()), ax=ax_degree)
         ax_degree.set_xlabel("degree")
         ax_degree.set_ylabel("density")
         try:
@@ -322,12 +331,12 @@ class NetworkerViz(Networker):
             sys.stdout.write(str(e))
             pass
 
-        seaborn.despine(ax=ax_degree)
+        sns.despine(ax=ax_degree)
         if graph_file != '':
             try:
-                nx.write_gml(g, graph_file)
+                nx.write_gml(graph, graph_file)
             except Exception as e:
                 sys.stdout.write("error writing graph file:"
                                  "\n{}".format(str(e)))
 
-        return (g, pos)
+        return (graph, positions)

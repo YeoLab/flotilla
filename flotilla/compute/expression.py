@@ -9,13 +9,9 @@ import pandas as pd
 
 
 def benjamini_hochberg(p_values, fdr=0.1):
-    """ benjamini-hochberg correction for MHT
-    p_values : list
-        List of p-values
-    fdr : float
-        Desired false-discovery rate cutoff
+    """Benjamini-Hochberg correction for multiple hypothesis testing
 
-    from: http://udel.edu/~mcdonald/statmultcomp.html
+    From: http://udel.edu/~mcdonald/statmultcomp.html
     One good technique for controlling the false discovery rate was briefly
     mentioned by Simes (1986) and developed in detail by Benjamini and Hochberg
     (1995). Put the individual P-values in order, from smallest to largest.
@@ -24,6 +20,19 @@ def benjamini_hochberg(p_values, fdr=0.1):
     test and Q is the chosen false discovery rate. The largest P-value that
     has P<(i/m)Q is significant, and all P-values smaller than it are also
     significant.
+
+    Parameters
+    ----------
+    p_values : list
+        List of p-values
+    fdr : float, optional
+        Desired false-discovery rate cutoff
+
+    Returns
+    -------
+    sigs : numpy.array
+        Boolean array of whether or not the provided p-values are significant
+        given the FDR cutoff
     """
     ranks = np.argsort(np.argsort(p_values))
 
@@ -42,6 +51,8 @@ def benjamini_hochberg(p_values, fdr=0.1):
 
 
 class TwoWayGeneComparisonLocal(object):
+    """Compare gene expression for two samples
+    """
     def __init__(self, sample1_name, sample2_name, df, p_value_cutoff=0.001,
                  local_fraction=0.1, bonferroni=True, fdr=None,
                  dtype="RPKM"):
@@ -49,6 +60,8 @@ class TwoWayGeneComparisonLocal(object):
 
         ??? Does this return anything, plot anything??? write any files...???
 
+        Parameters
+        ----------
         sample1_name : str
             Name of the first (control) sample. Must be a row name (index) in
             df. Plotted on the x-axis.
@@ -58,16 +71,18 @@ class TwoWayGeneComparisonLocal(object):
         df : pandas.DataFrame
             A samples (rows) x features (columns) pandas DataFrame of
             expression values
-        p_value_cutoff : float
+        p_value_cutoff : float, optional
             Cutoff for the p-values. Default 0.001.
-        local_fraction : float
+        local_fraction : float, optional
             What fraction of genes to use for *local* z-score calculation.
             Default 0.1
-        bonferonni : bool
+        bonferonni : bool, optional
             Whether or not to use the Bonferonni correction on p-values
-        fdr : ???
+        fdr : ???, optional
             benjamini-hochberg FDR filtering - check result, proceed with
             caution. sometimes breaks :(
+        dtype : str, optional
+            Data type
         """
 
         sample1 = df.ix[sample1_name]
@@ -158,6 +173,8 @@ class TwoWayGeneComparisonLocal(object):
                     raise ValueError
 
     def gstats(self):
+        """Write general statistics of the two-way comparison to standard output
+        """
         sys.stdout.write(
             "I used a p-value cutoff of {:.2e}\n".format(self.p_value_cutoff))
         sys.stdout.write("\tThere are {} up-regulated genes in {} vs {}\n"
