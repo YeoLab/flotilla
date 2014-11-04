@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>flotilla.visualize.network module &mdash; flotilla 0.2.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootswatch-3.2.0/paper/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="flotilla 0.2.0 documentation" href="../index.html" />
+    <link rel="up" title="flotilla.visualize package" href="flotilla.visualize.html" />
+    <link rel="next" title="flotilla.visualize.predict module" href="flotilla.visualize.predict.html" />
+    <link rel="prev" title="flotilla.visualize.ipython_interact module" href="flotilla.visualize.ipython_interact.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          Flotilla</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
+            
+                <li><a href="../tutorial.html">Tutorial</a></li>
+                <li><a href="../gallery.html">Gallery</a></li>
+                <li><a href="http://yeolab.ucsd.edu">YeoLab@UCSD</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../flotilla.html">flotilla package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../flotilla.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flotilla.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flotilla.html#module-flotilla">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What&#8217;s new in the package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../whatsnew.html#v0-2-0-november-1st-2014">v0.2.0 (November 1st, 2014)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installing flotilla</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#general-use-plots">General use plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#interactive-plots">Interactive plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#machine-learning-plots">Machine learning plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#splicing-specific-plots">Splicing-specific plots</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../create_datapackage.html">Create your very own datapackage!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Flotilla tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#create-a-datapackage">Create a datapackage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#processing-data">Processing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#plotting-functions">Plotting functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">flotilla</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="flotilla.html">flotilla package</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">flotilla.visualize.network module</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="../_sources/apidoc/flotilla.visualize.network.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <div class="section" id="module-flotilla.visualize.network">
+<span id="flotilla-visualize-network-module"></span><h1>flotilla.visualize.network module<a class="headerlink" href="#module-flotilla.visualize.network" title="Permalink to this headline">¶</a></h1>
+<p>Visualize results from :py:mod:flotilla.compute.network</p>
+<dl class="class">
+<dt id="flotilla.visualize.network.NetworkerViz">
+<em class="property">class </em><tt class="descclassname">flotilla.visualize.network.</tt><tt class="descname">NetworkerViz</tt><big>(</big><em>DataModel</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/network.html#NetworkerViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.network.NetworkerViz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../flotilla.compute.network.html#flotilla.compute.network.Networker" title="flotilla.compute.network.Networker"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.network.Networker</span></tt></a></p>
+<dl class="method">
+<dt id="flotilla.visualize.network.NetworkerViz.draw_graph">
+<tt class="descname">draw_graph</tt><big>(</big><em>n_pcs=5</em>, <em>use_pc_1=True</em>, <em>use_pc_2=True</em>, <em>use_pc_3=True</em>, <em>use_pc_4=True</em>, <em>degree_cut=2</em>, <em>cov_std_cut=1.8</em>, <em>weight_function='no_weight'</em>, <em>featurewise=False</em>, <em>rpkms_not_events=False</em>, <em>feature_of_interest='RBFOX2'</em>, <em>draw_labels=True</em>, <em>reduction_name=None</em>, <em>feature_ids=None</em>, <em>sample_ids=None</em>, <em>graph_file=''</em>, <em>compare=''</em>, <em>sample_id_to_color=None</em>, <em>label_to_color=None</em>, <em>label_to_marker=None</em>, <em>groupby=None</em>, <em>data_type=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/network.html#NetworkerViz.draw_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.network.NetworkerViz.draw_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw the graph of similarities between samples or features</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>feature_ids</strong> : list of str, or None</p>
+<blockquote>
+<div><p>Feature ids to subset the data. If None, all features will be used.</p>
+</div></blockquote>
+<p><strong>sample_ids</strong> : list of str, or None</p>
+<blockquote>
+<div><p>Sample ids to subset the data. If None, all features will be used.</p>
+</div></blockquote>
+<p><strong>x_pc</strong> : str, optional</p>
+<blockquote>
+<div><p>Which component to use for the x-axis, default &#8220;pc_1&#8221;</p>
+</div></blockquote>
+<p><strong>y_pc :</strong></p>
+<blockquote>
+<div><p>y component for PCA, default &#8220;pc_2&#8221;</p>
+</div></blockquote>
+<p><strong>n_pcs</strong> : int???</p>
+<blockquote>
+<div><p>Number of components to use for cells&#8217; covariance calculation</p>
+</div></blockquote>
+<p><strong>cov_std_cut</strong> : float</p>
+<blockquote>
+<div><p>Covariance cutoff for edges</p>
+</div></blockquote>
+<p><strong>use_pc{1-4}</strong> : bool</p>
+<blockquote>
+<div><p>Use these pcs in cov calculation (default True)</p>
+</div></blockquote>
+<p><strong>degree_cut</strong> : int</p>
+<blockquote>
+<div><p>miniumum degree for a node to be included in graph display</p>
+</div></blockquote>
+<p><strong>weight_function</strong> : [&#8216;arctan&#8217; | &#8216;sq&#8217; | &#8216;abs&#8217; | &#8216;arctan_sq&#8217;]</p>
+<blockquote>
+<div><p>weight function (arctan (arctan cov), sq (sq cov), abs (abs cov),
+arctan_sq (sqared arctan of cov))</p>
+</div></blockquote>
+<p><strong>gene_of_interest</strong> : str</p>
+<blockquote>
+<div><p>map a gradient representing this gene&#8217;s data onto nodes (ENSEMBL
+id or gene name???)</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>graph</strong> : networkx.Graph</p>
+<p><strong>pos</strong> : ???</p>
+<blockquote class="last">
+<div><p>???</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.visualize.network.NetworkerViz.draw_nonreduced_graph">
+<tt class="descname">draw_nonreduced_graph</tt><big>(</big><em>degree_cut=2</em>, <em>cov_std_cut=1.8</em>, <em>wt_fun='abs'</em>, <em>featurewise=False</em>, <em>rpkms_not_events=False</em>, <em>feature_of_interest='RBFOX2'</em>, <em>draw_labels=True</em>, <em>feature_ids=None</em>, <em>group_id=None</em>, <em>graph_file=''</em>, <em>compare=''</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/network.html#NetworkerViz.draw_nonreduced_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.network.NetworkerViz.draw_nonreduced_graph" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>feature_ids</strong> : list of str, or None</p>
+<blockquote>
+<div><p>Feature ids to subset the data. If None, all features will be used.</p>
+</div></blockquote>
+<p><strong>sample_ids</strong> : list of str, or None</p>
+<blockquote>
+<div><p>Sample ids to subset the data. If None, all features will be used.</p>
+</div></blockquote>
+<p><strong>x_pc</strong> : str</p>
+<blockquote>
+<div><p>x component for DataFramePCA, default &#8220;pc_1&#8221;</p>
+</div></blockquote>
+<p><strong>y_pc :</strong></p>
+<blockquote>
+<div><p>y component for DataFramePCA, default &#8220;pc_2&#8221;</p>
+</div></blockquote>
+<p><strong>n_pcs</strong> : int???</p>
+<blockquote>
+<div><p>n components to use for cells&#8217; covariance calculation</p>
+</div></blockquote>
+<p><strong>cov_std_cut</strong> : float??</p>
+<blockquote>
+<div><p>covariance cutoff for edges</p>
+</div></blockquote>
+<p><strong>use_pc{1-4} use these pcs in cov calculation (default True)</strong></p>
+<p><strong>degree_cut</strong> : int??</p>
+<blockquote>
+<div><p>miniumum degree for a node to be included in graph display</p>
+</div></blockquote>
+<p><strong>weight_function</strong> : [&#8216;arctan&#8217; | &#8216;sq&#8217; | &#8216;abs&#8217; | &#8216;arctan_sq&#8217;]</p>
+<blockquote>
+<div><p>weight function (arctan (arctan cov), sq (sq cov), abs (abs cov),
+arctan_sq (sqared arctan of cov))</p>
+</div></blockquote>
+<p><strong>gene_of_interest</strong> : str</p>
+<blockquote>
+<div><p>map a gradient representing this gene&#8217;s data onto nodes (ENSEMBL
+id or gene name???)</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">#TODO: Mike please fill these in</p>
+<p><strong>graph</strong> : networkx.Graph</p>
+<blockquote>
+<div><p>???</p>
+</div></blockquote>
+<p><strong>positions</strong> : ???</p>
+<blockquote class="last">
+<div><p>???</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<div class="container">
+    
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2014, Olga Botvinnik, Michael Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
+    </p>
+  </div>
+</footer>
+    Funded by <a href="http://numfocus.org/">NumFOCUS</a> <a
+        href="http://numfocus.org/pages/john_hunter_fellowship_2014.html">John
+    Hunter Technology Fellowship</a> to <a href="http://olgabotvinnik.com/">Olga
+    Botvinnik</a>.<br/>
+    Partially funded by <a href="http://www.nih.gov/">NIH</a> grants NS075449
+    and HG004659 and <a href="http://www.cirm.ca.gov/">CIRM</a> grants RB4-06045
+    and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene
+    Yeo</a>. <br/>
+
+    
+  </body>
+</html>

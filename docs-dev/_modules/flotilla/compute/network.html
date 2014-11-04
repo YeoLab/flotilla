@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>flotilla.compute.network &mdash; flotilla 0.1.2 documentation</title>
+    <title>flotilla.compute.network &mdash; flotilla 0.2.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.1.2',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -29,7 +29,7 @@
     <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../../../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
-    <link rel="top" title="flotilla 0.1.2 documentation" href="../../../index.html" />
+    <link rel="top" title="flotilla 0.2.0 documentation" href="../../../index.html" />
     <link rel="up" title="flotilla" href="../../flotilla.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -50,7 +50,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           Flotilla</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.1.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -70,7 +70,36 @@
      href="../../../index.html">Site <b class="caret"></b></a>
   <ul class="dropdown-menu globaltoc"
       role="menu"
-      aria-labelledby="dLabelGlobalToc"><ul class="simple">
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../flotilla.html">flotilla package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#module-flotilla">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../whatsnew.html">What&#8217;s new in the package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-0-november-1st-2014">v0.2.0 (November 1st, 2014)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installing flotilla</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#general-use-plots">General use plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#interactive-plots">Interactive plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#machine-learning-plots">Machine learning plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#splicing-specific-plots">Splicing-specific plots</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../create_datapackage.html">Create your very own datapackage!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Flotilla tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#create-a-datapackage">Create a datapackage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#processing-data">Processing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#plotting-functions">Plotting functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apidoc/modules.html">flotilla</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../apidoc/flotilla.html">flotilla package</a></li>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -87,10 +116,6 @@
 </li>
               
             
-            
-              
-                
-              
             
             
             
@@ -118,28 +143,53 @@
     <div class="col-md-12">
       
   <h1>Source code for flotilla.compute.network</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Compute networks (the kind with nodes and edges) on data. Visualize with</span>
+<span class="sd">:py:mod:flotilla.visualize.network</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
 <span class="kn">import</span> <span class="nn">networkx</span> <span class="kn">as</span> <span class="nn">nx</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 
 <span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">memoize</span>
-<span class="kn">from</span> <span class="nn">..visualize.color</span> <span class="kn">import</span> <span class="n">red</span>
+<span class="kn">from</span> <span class="nn">..visualize.color</span> <span class="kn">import</span> <span class="n">dark2</span>
 
 
-<div class="viewcode-block" id="Networker"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.network.Networker">[docs]</a><span class="k">class</span> <span class="nc">Networker</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Networks (the kind with nodes and edges) &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Networker"><a class="viewcode-back" href="../../../flotilla.compute.network.html#flotilla.compute.network.Networker">[docs]</a><span class="k">class</span> <span class="nc">Networker</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Networks (the kind with nodes and edges), aka a graph</span>
+
+<span class="sd">    Calculate the edges based on similarity between rows of PCA-reduced data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">weight_funs</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;no_weight&#39;</span><span class="p">,</span> <span class="s">&#39;sq&#39;</span><span class="p">,</span> <span class="s">&#39;arctan&#39;</span><span class="p">,</span> <span class="s">&#39;arctan_sq&#39;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c"># self.adjacencies_ = defaultdict()</span>
-        <span class="c"># self.graphs_ = defaultdict()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_default_node_color_mapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">red</span>
+        <span class="sd">&quot;&quot;&quot;Construct a Networker object with default node colors (dark teal)</span>
+<span class="sd">        and sizes (all nodes at 300)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_default_node_color_mapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">dark2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_default_node_size_mapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">300</span>
-        <span class="c"># self._last_adjacency_accessed = None</span>
-        <span class="c"># self._last_graph_accessed = None</span>
 
-<div class="viewcode-block" id="Networker.get_weight_fun"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.network.Networker.get_weight_fun">[docs]</a>    <span class="k">def</span> <span class="nf">get_weight_fun</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fun_name</span><span class="o">=</span><span class="s">&#39;no_weight&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; return a function that performs a common transform on distance &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Networker.get_weight_fun"><a class="viewcode-back" href="../../../flotilla.compute.network.html#flotilla.compute.network.Networker.get_weight_fun">[docs]</a>    <span class="k">def</span> <span class="nf">get_weight_fun</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fun_name</span><span class="o">=</span><span class="s">&#39;no_weight&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Given a string, return the function</span>
+
+<span class="sd">        Used to obtain functions that perform common transforms on distance</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        fun_name : &#39;no_weight&#39; | &#39;sq&#39; | &#39;arctan&#39; | &#39;arctan_sq&#39;, optional</span>
+<span class="sd">            Name of the function to obtain (default &#39;no_weight&#39;)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        func : function</span>
+<span class="sd">            A function which transforms a number in the indicated way</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If `fun_name` is not one of the ones indicated above</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_noweight</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
         <span class="n">_sq</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span>
         <span class="n">_arctan</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -147,37 +197,97 @@
         <span class="k">if</span> <span class="n">fun_name</span> <span class="o">==</span> <span class="s">&#39;no_weight&#39;</span><span class="p">:</span>
             <span class="n">wt</span> <span class="o">=</span> <span class="n">_noweight</span>
         <span class="k">elif</span> <span class="n">fun_name</span> <span class="o">==</span> <span class="s">&#39;sq&#39;</span><span class="p">:</span>
-            <span class="n">wt</span> <span class="o">=</span> <span class="n">_sq</span>
+            <span class="n">wt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span>
         <span class="k">elif</span> <span class="n">fun_name</span> <span class="o">==</span> <span class="s">&#39;arctan&#39;</span><span class="p">:</span>
-            <span class="n">wt</span> <span class="o">=</span> <span class="n">_arctan</span>
+            <span class="n">wt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan</span>
         <span class="k">elif</span> <span class="n">fun_name</span> <span class="o">==</span> <span class="s">&#39;arctan_sq&#39;</span><span class="p">:</span>
+            <span class="c"># Can this be np.square(np.arctan()) or something? numpy&#39;s &quot;ufuncs&quot;</span>
+            <span class="c"># aka &quot;universal functions&quot; like square and arctan are more</span>
+            <span class="c"># optimized than python lambdas</span>
             <span class="n">wt</span> <span class="o">=</span> <span class="n">_arctan_sq</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span>
         <span class="k">return</span> <span class="n">wt</span>
 </div>
     <span class="nd">@memoize</span>
-<div class="viewcode-block" id="Networker.adjacency"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.network.Networker.adjacency">[docs]</a>    <span class="k">def</span> <span class="nf">adjacency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">use_pc_1</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">use_pc_2</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+<div class="viewcode-block" id="Networker.adjacency"><a class="viewcode-back" href="../../../flotilla.compute.network.html#flotilla.compute.network.Networker.adjacency">[docs]</a>    <span class="k">def</span> <span class="nf">adjacency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">use_pc_1</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">use_pc_2</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
                   <span class="n">use_pc_3</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">use_pc_4</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">n_pcs</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculate the adjacency graph, i.e. connectedness between nodes</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : pandas.DataFrame</span>
+<span class="sd">            A (n_nodes, n_pcs) sized dataframe of reduced data</span>
+<span class="sd">        use_pc1 : bool, optional</span>
+<span class="sd">            If True, use the first principal component of reduced data</span>
+<span class="sd">            (default True)</span>
+<span class="sd">        use_pc2 : bool, optional</span>
+<span class="sd">            If True, use the second principal component of reduced data</span>
+<span class="sd">            (default True)</span>
+<span class="sd">        use_pc3 : bool, optional</span>
+<span class="sd">            If True, use the third principal component of reduced data</span>
+<span class="sd">            (default True)</span>
+<span class="sd">        use_pc4 : bool, optional</span>
+<span class="sd">            If True, use the fourth principal component of reduced data</span>
+<span class="sd">            (default True)</span>
+<span class="sd">        n_pcs : int, optional</span>
+<span class="sd">            Total number of principal components to use (default 5)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        adjacency : pandas.DataFrame</span>
+<span class="sd">            A lower triangular matrix of the edge weights between the rows of</span>
+<span class="sd">            the data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">total_pcs</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">use_cols</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">total_pcs</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;bool&#39;</span><span class="p">)</span>
         <span class="n">use_cols</span><span class="p">[</span><span class="n">n_pcs</span><span class="p">:]</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="n">use_cols</span> <span class="o">=</span> <span class="n">use_cols</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
             <span class="p">[</span><span class="n">use_pc_1</span><span class="p">,</span> <span class="n">use_pc_2</span><span class="p">,</span> <span class="n">use_pc_3</span><span class="p">,</span> <span class="n">use_pc_4</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="p">]</span> <span class="o">*</span> <span class="p">(</span>
                 <span class="n">total_pcs</span> <span class="o">-</span> <span class="mi">4</span><span class="p">))</span>
-        <span class="n">selected_cols</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">use_cols</span><span class="p">]</span>
-        <span class="n">cov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">selected_cols</span><span class="p">)</span>
-        <span class="n">nrow</span><span class="p">,</span> <span class="n">ncol</span> <span class="o">=</span> <span class="n">selected_cols</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">subset</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">use_cols</span><span class="p">]</span>
+        <span class="n">cov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">subset</span><span class="p">)</span>
+        <span class="n">nrow</span><span class="p">,</span> <span class="n">ncol</span> <span class="o">=</span> <span class="n">subset</span><span class="o">.</span><span class="n">shape</span>
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">tril</span><span class="p">(</span><span class="n">cov</span> <span class="o">*</span> <span class="o">-</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">nrow</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)),</span>
-                            <span class="n">index</span><span class="o">=</span><span class="n">selected_cols</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+                            <span class="n">index</span><span class="o">=</span><span class="n">subset</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
 </div>
     <span class="nd">@memoize</span>
-<div class="viewcode-block" id="Networker.graph"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.network.Networker.graph">[docs]</a>    <span class="k">def</span> <span class="nf">graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adjacency</span><span class="p">,</span> <span class="n">cov_cut</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+<div class="viewcode-block" id="Networker.graph"><a class="viewcode-back" href="../../../flotilla.compute.network.html#flotilla.compute.network.Networker.graph">[docs]</a>    <span class="k">def</span> <span class="nf">graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adjacency</span><span class="p">,</span> <span class="n">cov_cut</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
               <span class="n">node_color_mapper</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
               <span class="n">node_size_mapper</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
               <span class="n">degree_cut</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
               <span class="n">weight_function</span><span class="o">=</span><span class="s">&#39;no_weight&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a graph based on the adjacency matrix and other inputs</span>
 
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        adjacency : pandas.DataFrame</span>
+<span class="sd">            A (n_nodes, n_nodes) square dataframe of edge weights between all</span>
+<span class="sd">            nodes in the graph</span>
+<span class="sd">        cov_cut : float, optional</span>
+<span class="sd">            Minimum covariance between two nodes for their edge to be plotted.</span>
+<span class="sd">            (default 0)</span>
+<span class="sd">        node_color_mapper : function, optional</span>
+<span class="sd">            Function to recolor the nodes for plotting, based on the node name.</span>
+<span class="sd">            If None, defaults to a dark teal. (default None)</span>
+<span class="sd">        node_size_mapper : function, optional</span>
+<span class="sd">            Function to resize the nodes for plotting, based on the node name.</span>
+<span class="sd">            If None, defaults to the same size for all nodes. (default None)</span>
+<span class="sd">        degree_cut : int</span>
+<span class="sd">            Minimum number of edges a node must have for it to be drawn on the</span>
+<span class="sd">            graph</span>
+<span class="sd">        weight_function : &#39;no_weight&#39; | &#39;sq&#39; | &#39;arctan&#39; | &#39;arctan_sq&#39;, optional</span>
+<span class="sd">            Weight function of the edges. The lower the weight, the farther</span>
+<span class="sd">            away two nodes are drawn from each other.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        graph : networkx.Graph</span>
+<span class="sd">            The graph created with all these parameters</span>
+<span class="sd">        positions : dict</span>
+<span class="sd">            A {node_name : [x, y]} mapping of all nodes and their x, y</span>
+<span class="sd">            positions</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">node_color_mapper</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">node_color_mapper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_node_color_mapper</span>
         <span class="k">if</span> <span class="n">node_size_mapper</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>

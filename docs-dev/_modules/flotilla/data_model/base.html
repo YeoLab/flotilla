@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>flotilla.data_model.base &mdash; flotilla 0.1.2 documentation</title>
+    <title>flotilla.data_model.base &mdash; flotilla 0.2.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.1.2',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -29,8 +29,8 @@
     <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../../../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
-    <link rel="top" title="flotilla 0.1.2 documentation" href="../../../index.html" />
-    <link rel="up" title="flotilla" href="../../flotilla.html" />
+    <link rel="top" title="flotilla 0.2.0 documentation" href="../../../index.html" />
+    <link rel="up" title="flotilla.data_model" href="../data_model.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -50,7 +50,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           Flotilla</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.1.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -70,7 +70,36 @@
      href="../../../index.html">Site <b class="caret"></b></a>
   <ul class="dropdown-menu globaltoc"
       role="menu"
-      aria-labelledby="dLabelGlobalToc"><ul class="simple">
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../flotilla.html">flotilla package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#module-flotilla">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../whatsnew.html">What&#8217;s new in the package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-0-november-1st-2014">v0.2.0 (November 1st, 2014)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installing flotilla</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#general-use-plots">General use plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#interactive-plots">Interactive plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#machine-learning-plots">Machine learning plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#splicing-specific-plots">Splicing-specific plots</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../create_datapackage.html">Create your very own datapackage!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Flotilla tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#create-a-datapackage">Create a datapackage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#processing-data">Processing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#plotting-functions">Plotting functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apidoc/modules.html">flotilla</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../apidoc/flotilla.html">flotilla package</a></li>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -87,10 +116,6 @@
 </li>
               
             
-            
-              
-                
-              
             
             
             
@@ -146,7 +171,7 @@
 <span class="n">default_predictor_name</span> <span class="o">=</span> <span class="s">&quot;ExtraTreesClassifier&quot;</span>
 <span class="n">MINIMUM_FEATURE_SUBSET</span> <span class="o">=</span> <span class="mi">20</span>
 
-<div class="viewcode-block" id="BaseData"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.base.BaseData">[docs]</a><span class="k">class</span> <span class="nc">BaseData</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseData"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData">[docs]</a><span class="k">class</span> <span class="nc">BaseData</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class for biological data measurements&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">thresh</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span>
@@ -320,26 +345,26 @@
             <span class="k">return</span> <span class="n">renamed</span>
 
     <span class="nd">@property</span>
-<div class="viewcode-block" id="BaseData.singles"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.base.BaseData.singles">[docs]</a>    <span class="k">def</span> <span class="nf">singles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseData.singles"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.singles">[docs]</a>    <span class="k">def</span> <span class="nf">singles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">single_samples</span><span class="p">]</span>
 </div>
     <span class="nd">@property</span>
-<div class="viewcode-block" id="BaseData.pooled"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.base.BaseData.pooled">[docs]</a>    <span class="k">def</span> <span class="nf">pooled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseData.pooled"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.pooled">[docs]</a>    <span class="k">def</span> <span class="nf">pooled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">pooled_samples</span><span class="p">]</span>
 </div>
     <span class="nd">@property</span>
-<div class="viewcode-block" id="BaseData.outliers"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.base.BaseData.outliers">[docs]</a>    <span class="k">def</span> <span class="nf">outliers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseData.outliers"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.outliers">[docs]</a>    <span class="k">def</span> <span class="nf">outliers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">outlier_samples</span><span class="p">]</span>
 </div>
     <span class="nd">@property</span>
-<div class="viewcode-block" id="BaseData.feature_renamer_series"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.base.BaseData.feature_renamer_series">[docs]</a>    <span class="k">def</span> <span class="nf">feature_renamer_series</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseData.feature_renamer_series"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.feature_renamer_series">[docs]</a>    <span class="k">def</span> <span class="nf">feature_renamer_series</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_rename_col</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
                              <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="BaseData.maybe_renamed_to_feature_id"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.base.BaseData.maybe_renamed_to_feature_id">[docs]</a>    <span class="k">def</span> <span class="nf">maybe_renamed_to_feature_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_id</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseData.maybe_renamed_to_feature_id"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.maybe_renamed_to_feature_id">[docs]</a>    <span class="k">def</span> <span class="nf">maybe_renamed_to_feature_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_id</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;To be able to give a simple gene name, e.g. &quot;RBFOX2&quot; and get the</span>
 <span class="sd">        official ENSG ids or MISO</span>
 
@@ -372,11 +397,11 @@
             <span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
 
     <span class="nd">@property</span>
-<div class="viewcode-block" id="BaseData.variant"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.base.BaseData.variant">[docs]</a>    <span class="k">def</span> <span class="nf">variant</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseData.variant"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.variant">[docs]</a>    <span class="k">def</span> <span class="nf">variant</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">var</span><span class="p">()</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
                                         <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var_cut</span><span class="p">)</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()</span> <span class="k">if</span> <span class="n">j</span><span class="p">])</span>
 </div>
-<div class="viewcode-block" id="BaseData.drop_outliers"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.base.BaseData.drop_outliers">[docs]</a>    <span class="k">def</span> <span class="nf">drop_outliers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">outliers</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseData.drop_outliers"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.drop_outliers">[docs]</a>    <span class="k">def</span> <span class="nf">drop_outliers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">outliers</span><span class="p">):</span>
         <span class="c"># assert &#39;outlier&#39; in self.experiment_design_data.columns</span>
         <span class="n">not_in_index</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">outliers</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">not_in_index</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
@@ -401,7 +426,7 @@
         <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">outlier_data</span>
 </div>
     <span class="nd">@property</span>
-<div class="viewcode-block" id="BaseData.feature_subsets"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.base.BaseData.feature_subsets">[docs]</a>    <span class="k">def</span> <span class="nf">feature_subsets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseData.feature_subsets"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.feature_subsets">[docs]</a>    <span class="k">def</span> <span class="nf">feature_subsets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">feature_subsets</span> <span class="o">=</span> <span class="n">subsets_from_metadata</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_data</span><span class="p">,</span>
                                                 <span class="n">MINIMUM_FEATURE_SUBSET</span><span class="p">,</span>
                                                 <span class="s">&#39;features&#39;</span><span class="p">,</span>
@@ -409,7 +434,7 @@
         <span class="n">feature_subsets</span><span class="p">[</span><span class="s">&#39;variant&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variant</span>
         <span class="k">return</span> <span class="n">feature_subsets</span>
 </div>
-<div class="viewcode-block" id="BaseData.feature_subset_to_feature_ids"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.base.BaseData.feature_subset_to_feature_ids">[docs]</a>    <span class="k">def</span> <span class="nf">feature_subset_to_feature_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_subset</span><span class="p">,</span> <span class="n">rename</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseData.feature_subset_to_feature_ids"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.feature_subset_to_feature_ids">[docs]</a>    <span class="k">def</span> <span class="nf">feature_subset_to_feature_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_subset</span><span class="p">,</span> <span class="n">rename</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">feature_subset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">feature_subset</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_subsets</span><span class="p">:</span>
@@ -433,7 +458,7 @@
             <span class="n">feature_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span>
         <span class="k">return</span> <span class="n">feature_ids</span>
 </div>
-<div class="viewcode-block" id="BaseData.calculate_distances"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.base.BaseData.calculate_distances">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_distances</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s">&#39;euclidean&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseData.calculate_distances"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.calculate_distances">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_distances</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s">&#39;euclidean&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Creates a squareform distance matrix for clustering fun</span>
 
 <span class="sd">        Needed for some clustering algorithms</span>
@@ -447,7 +472,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">pdist</span> <span class="o">=</span> <span class="n">squareform</span><span class="p">(</span><span class="n">pdist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">binned</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">metric</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span>
 </div>
-<div class="viewcode-block" id="BaseData.correlate"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.base.BaseData.correlate">[docs]</a>    <span class="k">def</span> <span class="nf">correlate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s">&#39;spearman&#39;</span><span class="p">,</span> <span class="n">between</span><span class="o">=</span><span class="s">&#39;features&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseData.correlate"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.correlate">[docs]</a>    <span class="k">def</span> <span class="nf">correlate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s">&#39;spearman&#39;</span><span class="p">,</span> <span class="n">between</span><span class="o">=</span><span class="s">&#39;features&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Find correlations between either splicing/expression measurements</span>
 <span class="sd">        or cells</span>
 
@@ -466,14 +491,14 @@
         <span class="k">elif</span> <span class="s">&#39;samples&#39;</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">between</span><span class="p">):</span>
             <span class="k">pass</span>
 </div>
-<div class="viewcode-block" id="BaseData.jsd"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.base.BaseData.jsd">[docs]</a>    <span class="k">def</span> <span class="nf">jsd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseData.jsd"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.jsd">[docs]</a>    <span class="k">def</span> <span class="nf">jsd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Jensen-Shannon divergence showing most varying measurements within a</span>
 <span class="sd">        celltype and between celltypes</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="c"># TODO.md: Specify dtypes in docstring</span></div>
-<div class="viewcode-block" id="BaseData.plot_classifier"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.base.BaseData.plot_classifier">[docs]</a>    <span class="k">def</span> <span class="nf">plot_classifier</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">sample_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">feature_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+<div class="viewcode-block" id="BaseData.plot_classifier"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.plot_classifier">[docs]</a>    <span class="k">def</span> <span class="nf">plot_classifier</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">sample_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">feature_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                         <span class="n">predictor_name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                         <span class="n">standardize</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">score_coefficient</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                         <span class="n">data_name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
@@ -519,7 +544,7 @@
         <span class="n">clf</span><span class="p">(</span><span class="o">**</span><span class="n">plotting_kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span>
 </div>
-<div class="viewcode-block" id="BaseData.plot_dimensionality_reduction"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.base.BaseData.plot_dimensionality_reduction">[docs]</a>    <span class="k">def</span> <span class="nf">plot_dimensionality_reduction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_pc</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y_pc</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<div class="viewcode-block" id="BaseData.plot_dimensionality_reduction"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.plot_dimensionality_reduction">[docs]</a>    <span class="k">def</span> <span class="nf">plot_dimensionality_reduction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_pc</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y_pc</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
                                       <span class="n">sample_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">feature_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                                       <span class="n">featurewise</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">reducer</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                                       <span class="n">label_to_color</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
@@ -587,7 +612,7 @@
         <span class="k">return</span> <span class="n">visualized</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
                           <span class="n">plot_violins</span><span class="o">=</span><span class="n">plot_violins</span><span class="p">,</span> <span class="o">**</span><span class="n">plotting_kwargs</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="BaseData.plot_pca"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.base.BaseData.plot_pca">[docs]</a>    <span class="k">def</span> <span class="nf">plot_pca</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseData.plot_pca"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.plot_pca">[docs]</a>    <span class="k">def</span> <span class="nf">plot_pca</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_dimensionality_reduction</span><span class="p">(</span><span class="n">reducer</span><span class="o">=</span><span class="n">DataFramePCA</span><span class="p">,</span>
                                                   <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </div>
@@ -596,7 +621,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_samples</span>
 
     <span class="nd">@minimum_samples.setter</span>
-<div class="viewcode-block" id="BaseData.minimum_samples"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.base.BaseData.minimum_samples">[docs]</a>    <span class="k">def</span> <span class="nf">minimum_samples</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseData.minimum_samples"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.minimum_samples">[docs]</a>    <span class="k">def</span> <span class="nf">minimum_samples</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_min_samples</span> <span class="o">=</span> <span class="n">values</span>
 </div>
     <span class="k">def</span> <span class="nf">_subset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">sample_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">feature_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
@@ -734,7 +759,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">subset</span>
 
-<div class="viewcode-block" id="BaseData.plot_clusteredheatmap"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.base.BaseData.plot_clusteredheatmap">[docs]</a>    <span class="k">def</span> <span class="nf">plot_clusteredheatmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_ids</span><span class="p">,</span> <span class="n">feature_ids</span><span class="p">,</span>
+<div class="viewcode-block" id="BaseData.plot_clusteredheatmap"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.plot_clusteredheatmap">[docs]</a>    <span class="k">def</span> <span class="nf">plot_clusteredheatmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_ids</span><span class="p">,</span> <span class="n">feature_ids</span><span class="p">,</span>
                               <span class="n">metric</span><span class="o">=</span><span class="s">&#39;euclidean&#39;</span><span class="p">,</span>
                               <span class="n">linkage_method</span><span class="o">=</span><span class="s">&#39;average&#39;</span><span class="p">,</span>
                               <span class="n">sample_colors</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
@@ -756,7 +781,7 @@
                                     <span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)</span>
 </div>
     <span class="nd">@memoize</span>
-<div class="viewcode-block" id="BaseData.detect_outliers"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.base.BaseData.detect_outliers">[docs]</a>    <span class="k">def</span> <span class="nf">detect_outliers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+<div class="viewcode-block" id="BaseData.detect_outliers"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.detect_outliers">[docs]</a>    <span class="k">def</span> <span class="nf">detect_outliers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                         <span class="n">sample_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">feature_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                         <span class="n">featurewise</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
                         <span class="n">reducer</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
@@ -785,7 +810,7 @@
 
         <span class="k">return</span> <span class="n">reducer</span><span class="p">,</span> <span class="n">outlier_detector</span>
 </div>
-<div class="viewcode-block" id="BaseData.plot_outliers"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.base.BaseData.plot_outliers">[docs]</a>    <span class="k">def</span> <span class="nf">plot_outliers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outlier_detector</span><span class="p">,</span>
+<div class="viewcode-block" id="BaseData.plot_outliers"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.plot_outliers">[docs]</a>    <span class="k">def</span> <span class="nf">plot_outliers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outlier_detector</span><span class="p">,</span>
                       <span class="o">**</span><span class="n">pca_args</span><span class="p">):</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">plot_pca</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">groupby</span><span class="o">=</span><span class="n">outlier_detector</span><span class="o">.</span><span class="n">outliers</span><span class="p">,</span>
@@ -808,7 +833,7 @@
         <span class="c">#dv(show_point_labels=show_point_labels, title=outlier_detector.title)</span>
 
     <span class="c"># @memoize</span></div>
-<div class="viewcode-block" id="BaseData.reduce"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.base.BaseData.reduce">[docs]</a>    <span class="k">def</span> <span class="nf">reduce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">feature_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+<div class="viewcode-block" id="BaseData.reduce"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.reduce">[docs]</a>    <span class="k">def</span> <span class="nf">reduce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">feature_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                <span class="n">featurewise</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
                <span class="n">reducer</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                <span class="n">standardize</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
@@ -865,7 +890,7 @@
         <span class="n">reducer_object</span><span class="o">.</span><span class="n">means</span> <span class="o">=</span> <span class="n">means</span>
         <span class="k">return</span> <span class="n">reducer_object</span>
 </div>
-<div class="viewcode-block" id="BaseData.classify"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.base.BaseData.classify">[docs]</a>    <span class="k">def</span> <span class="nf">classify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">sample_ids</span><span class="p">,</span> <span class="n">feature_ids</span><span class="p">,</span>
+<div class="viewcode-block" id="BaseData.classify"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.classify">[docs]</a>    <span class="k">def</span> <span class="nf">classify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">sample_ids</span><span class="p">,</span> <span class="n">feature_ids</span><span class="p">,</span>
                  <span class="n">standardize</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
                  <span class="n">data_name</span><span class="o">=</span><span class="s">&#39;expression&#39;</span><span class="p">,</span>
                  <span class="n">predictor_name</span><span class="o">=</span><span class="s">&#39;ExtraTreesClassifier&#39;</span><span class="p">,</span>
@@ -949,7 +974,7 @@
                                                   <span class="n">linkage_method</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">subset</span><span class="p">,</span> <span class="n">row_linkage</span><span class="p">,</span> <span class="n">col_linkage</span>
 
-<div class="viewcode-block" id="BaseData.binify"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.base.BaseData.binify">[docs]</a>    <span class="k">def</span> <span class="nf">binify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseData.binify"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.binify">[docs]</a>    <span class="k">def</span> <span class="nf">binify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">binify</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">bins</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">how</span><span class="o">=</span><span class="s">&#39;all&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">how</span><span class="o">=</span><span class="s">&#39;all&#39;</span><span class="p">,</span>
                                                                    <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
@@ -989,7 +1014,7 @@
         <span class="k">return</span> <span class="n">DataFrameNMF</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">binify</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
     <span class="nd">@memoize</span>
-<div class="viewcode-block" id="BaseData.binned_nmf_reduced"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.base.BaseData.binned_nmf_reduced">[docs]</a>    <span class="k">def</span> <span class="nf">binned_nmf_reduced</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">feature_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseData.binned_nmf_reduced"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.binned_nmf_reduced">[docs]</a>    <span class="k">def</span> <span class="nf">binned_nmf_reduced</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">feature_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -999,7 +1024,7 @@
         <span class="n">reduced</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nmf</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">binned</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">reduced</span>
 </div>
-<div class="viewcode-block" id="BaseData.plot_feature"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.base.BaseData.plot_feature">[docs]</a>    <span class="k">def</span> <span class="nf">plot_feature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_id</span><span class="p">,</span> <span class="n">sample_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+<div class="viewcode-block" id="BaseData.plot_feature"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.plot_feature">[docs]</a>    <span class="k">def</span> <span class="nf">plot_feature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_id</span><span class="p">,</span> <span class="n">sample_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                      <span class="n">phenotype_groupby</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                      <span class="n">phenotype_order</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                      <span class="n">phenotype_to_color</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
@@ -1040,7 +1065,7 @@
                     <span class="k">continue</span>
             <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="BaseData.nmf_space_positions"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.base.BaseData.nmf_space_positions">[docs]</a>    <span class="k">def</span> <span class="nf">nmf_space_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">groupby</span><span class="p">,</span> <span class="n">min_samples_per_group</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseData.nmf_space_positions"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.nmf_space_positions">[docs]</a>    <span class="k">def</span> <span class="nf">nmf_space_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">groupby</span><span class="p">,</span> <span class="n">min_samples_per_group</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">groupby</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
             <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">min_samples_per_group</span><span class="p">)</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">groupby</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
@@ -1049,7 +1074,7 @@
         <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">df</span>
 </div>
-<div class="viewcode-block" id="BaseData.plot_nmf_space_transitions"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.base.BaseData.plot_nmf_space_transitions">[docs]</a>    <span class="k">def</span> <span class="nf">plot_nmf_space_transitions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_id</span><span class="p">,</span> <span class="n">groupby</span><span class="p">,</span>
+<div class="viewcode-block" id="BaseData.plot_nmf_space_transitions"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.plot_nmf_space_transitions">[docs]</a>    <span class="k">def</span> <span class="nf">plot_nmf_space_transitions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_id</span><span class="p">,</span> <span class="n">groupby</span><span class="p">,</span>
                                    <span class="n">phenotype_to_color</span><span class="p">,</span>
                                    <span class="n">phenotype_to_marker</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                                    <span class="n">xlabel</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
@@ -1061,7 +1086,7 @@
                               <span class="n">ax</span><span class="p">,</span> <span class="n">xlabel</span><span class="p">,</span> <span class="n">ylabel</span><span class="p">)</span>
 </div>
     <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="BaseData.transition_distances"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.base.BaseData.transition_distances">[docs]</a>    <span class="k">def</span> <span class="nf">transition_distances</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">transitions</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseData.transition_distances"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.transition_distances">[docs]</a>    <span class="k">def</span> <span class="nf">transition_distances</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">transitions</span><span class="p">):</span>
         <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">droplevel</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">distances</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">transitions</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">transition</span> <span class="ow">in</span> <span class="n">transitions</span><span class="p">:</span>
@@ -1074,7 +1099,7 @@
                 <span class="k">pass</span>
         <span class="k">return</span> <span class="n">distances</span>
 </div>
-<div class="viewcode-block" id="BaseData.big_nmf_space_transitions"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.base.BaseData.big_nmf_space_transitions">[docs]</a>    <span class="k">def</span> <span class="nf">big_nmf_space_transitions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">groupby</span><span class="p">,</span> <span class="n">phenotype_transitions</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseData.big_nmf_space_transitions"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.big_nmf_space_transitions">[docs]</a>    <span class="k">def</span> <span class="nf">big_nmf_space_transitions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">groupby</span><span class="p">,</span> <span class="n">phenotype_transitions</span><span class="p">):</span>
         <span class="n">nmf_space_positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nmf_space_positions</span><span class="p">(</span><span class="n">groupby</span><span class="p">)</span>
         <span class="n">nmf_space_transitions</span> <span class="o">=</span> <span class="n">nmf_space_positions</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span>
             <span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">as_index</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">group_keys</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
@@ -1087,7 +1112,7 @@
             <span class="n">nmf_space_transitions</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">mean</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">std</span><span class="p">)]</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">how</span><span class="o">=</span><span class="s">&#39;all&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">big_transitions</span>
 </div>
-<div class="viewcode-block" id="BaseData.plot_big_nmf_space_transitions"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.base.BaseData.plot_big_nmf_space_transitions">[docs]</a>    <span class="k">def</span> <span class="nf">plot_big_nmf_space_transitions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phenotype_groupby</span><span class="p">,</span>
+<div class="viewcode-block" id="BaseData.plot_big_nmf_space_transitions"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.plot_big_nmf_space_transitions">[docs]</a>    <span class="k">def</span> <span class="nf">plot_big_nmf_space_transitions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phenotype_groupby</span><span class="p">,</span>
                                        <span class="n">phenotype_transitions</span><span class="p">,</span>
                                        <span class="n">phenotype_order</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span>
                                        <span class="n">phenotype_to_color</span><span class="p">,</span>
@@ -1102,7 +1127,7 @@
                               <span class="n">nmf_space</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="BaseData.plot_two_samples"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.base.BaseData.plot_two_samples">[docs]</a>    <span class="k">def</span> <span class="nf">plot_two_samples</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample1</span><span class="p">,</span> <span class="n">sample2</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseData.plot_two_samples"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.plot_two_samples">[docs]</a>    <span class="k">def</span> <span class="nf">plot_two_samples</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample1</span><span class="p">,</span> <span class="n">sample2</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        Parameters</span>
@@ -1128,7 +1153,7 @@
         <span class="k">return</span> <span class="n">simple_twoway_scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 </div></div>
-<div class="viewcode-block" id="subsets_from_metadata"><a class="viewcode-back" href="../../../apidoc/flotilla.data_model.html#flotilla.data_model.base.subsets_from_metadata">[docs]</a><span class="k">def</span> <span class="nf">subsets_from_metadata</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">minimum</span><span class="p">,</span> <span class="n">subset_type</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="subsets_from_metadata"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.subsets_from_metadata">[docs]</a><span class="k">def</span> <span class="nf">subsets_from_metadata</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">minimum</span><span class="p">,</span> <span class="n">subset_type</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    Parameters</span>

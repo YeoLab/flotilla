@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>flotilla.compute.generic &mdash; flotilla 0.1.2 documentation</title>
+    <title>flotilla.compute.generic &mdash; flotilla 0.2.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.1.2',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -29,7 +29,7 @@
     <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../../../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
-    <link rel="top" title="flotilla 0.1.2 documentation" href="../../../index.html" />
+    <link rel="top" title="flotilla 0.2.0 documentation" href="../../../index.html" />
     <link rel="up" title="flotilla" href="../../flotilla.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -50,7 +50,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           Flotilla</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.1.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -70,7 +70,36 @@
      href="../../../index.html">Site <b class="caret"></b></a>
   <ul class="dropdown-menu globaltoc"
       role="menu"
-      aria-labelledby="dLabelGlobalToc"><ul class="simple">
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../flotilla.html">flotilla package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#module-flotilla">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../whatsnew.html">What&#8217;s new in the package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-0-november-1st-2014">v0.2.0 (November 1st, 2014)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installing flotilla</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#general-use-plots">General use plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#interactive-plots">Interactive plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#machine-learning-plots">Machine learning plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#splicing-specific-plots">Splicing-specific plots</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../create_datapackage.html">Create your very own datapackage!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Flotilla tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#create-a-datapackage">Create a datapackage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#processing-data">Processing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#plotting-functions">Plotting functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apidoc/modules.html">flotilla</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../apidoc/flotilla.html">flotilla package</a></li>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -87,10 +116,6 @@
 </li>
               
             
-            
-              
-                
-              
             
             
             
@@ -128,10 +153,33 @@
 <span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">TimeoutError</span>
 
 
-<div class="viewcode-block" id="get_regressor"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.generic.get_regressor">[docs]</a><span class="k">def</span> <span class="nf">get_regressor</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_estimators</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span> <span class="n">pCut</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">n_tries</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+<div class="viewcode-block" id="get_regressor"><a class="viewcode-back" href="../../../flotilla.compute.generic.html#flotilla.compute.generic.get_regressor">[docs]</a><span class="k">def</span> <span class="nf">get_regressor</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_estimators</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span> <span class="n">n_tries</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
                   <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate an ExtraTreesRegressor on predictor and target variables</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : numpy.array</span>
+<span class="sd">        Predictor vector</span>
+<span class="sd">    y : numpy.array</span>
+<span class="sd">        Target vector</span>
+<span class="sd">    n_estimators : int, optional</span>
+<span class="sd">        Number of estimators to use</span>
+<span class="sd">    n_tries : int, optional</span>
+<span class="sd">        Number of attempts to calculate regression</span>
+<span class="sd">    verbose : bool, optional</span>
+<span class="sd">        If True, output progress statements</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    classifier : sklearn.ensemble.ExtraTreesRegressor</span>
+<span class="sd">        The classifier with the highest out of bag scores of all the</span>
+<span class="sd">        attempted &quot;tries&quot;</span>
+<span class="sd">    oob_scores : numpy.array</span>
+<span class="sd">        Out of bag scores of the classifier</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;getting regressor</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;Getting regressor</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
     <span class="n">clfs</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">oob_scores</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -151,9 +199,25 @@
     <span class="k">return</span> <span class="n">clf</span><span class="p">,</span> <span class="n">oob_scores</span>
 
 </div>
-<div class="viewcode-block" id="get_boosting_regressor"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.generic.get_boosting_regressor">[docs]</a><span class="k">def</span> <span class="nf">get_boosting_regressor</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="get_boosting_regressor"><a class="viewcode-back" href="../../../flotilla.compute.generic.html#flotilla.compute.generic.get_boosting_regressor">[docs]</a><span class="k">def</span> <span class="nf">get_boosting_regressor</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate a GradientBoostingRegressor on predictor and target variables</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : numpy.array</span>
+<span class="sd">        Predictor variable</span>
+<span class="sd">    y : numpy.array</span>
+<span class="sd">        Target variable</span>
+<span class="sd">    verbose : bool, optional</span>
+<span class="sd">        If True, output status messages</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    classifier : sklearn.ensemble.GradientBoostingRegressor</span>
+<span class="sd">        A fitted classifier of the predictor and target variable</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;getting boosting regressor</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;Getting boosting regressor</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
 
     <span class="n">clf</span> <span class="o">=</span> <span class="n">GradientBoostingRegressor</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">subsample</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
                                     <span class="n">max_features</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
@@ -163,15 +227,20 @@
     <span class="n">clf</span><span class="o">.</span><span class="n">feature_importances</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">clf</span><span class="o">.</span><span class="n">feature_importances_</span><span class="p">,</span>
                                         <span class="n">index</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;finished boosting regressor</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;Finished boosting regressor</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">clf</span>
 
 </div>
-<div class="viewcode-block" id="get_unstarted_events"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.generic.get_unstarted_events">[docs]</a><span class="k">def</span> <span class="nf">get_unstarted_events</span><span class="p">(</span><span class="n">mongodb</span><span class="p">):</span>
+<div class="viewcode-block" id="get_unstarted_events"><a class="viewcode-back" href="../../../flotilla.compute.generic.html#flotilla.compute.generic.get_unstarted_events">[docs]</a><span class="k">def</span> <span class="nf">get_unstarted_events</span><span class="p">(</span><span class="n">mongodb</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    get events that have not been started yet.</span>
 <span class="sd">    generator sets started to True before returning an event</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mongodb : pymongo.Database</span>
+<span class="sd">        A MongoDB database object</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">go_on</span> <span class="o">=</span> <span class="bp">True</span>
     <span class="k">while</span> <span class="n">go_on</span><span class="p">:</span>
@@ -186,27 +255,51 @@
 
 </div>
 <span class="nd">@timeout</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>  <span class="c"># because these sometimes hang</span>
-<div class="viewcode-block" id="get_slope"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.generic.get_slope">[docs]</a><span class="k">def</span> <span class="nf">get_slope</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<div class="viewcode-block" id="get_slope"><a class="viewcode-back" href="../../../flotilla.compute.generic.html#flotilla.compute.generic.get_slope">[docs]</a><span class="k">def</span> <span class="nf">get_slope</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get the linear regression slope of x and y</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : numpy.array</span>
+<span class="sd">        X-values of data</span>
+<span class="sd">    y : numpy.array</span>
+<span class="sd">        Y-values of data</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    slope : float</span>
+<span class="sd">        Scipy.stats.linregress slope</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">stats</span><span class="o">.</span><span class="n">linregress</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
 </div>
 <span class="nd">@timeout</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>  <span class="c"># because these sometimes hang</span>
-<div class="viewcode-block" id="do_r"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.generic.do_r">[docs]</a><span class="k">def</span> <span class="nf">do_r</span><span class="p">(</span><span class="n">s_1</span><span class="p">,</span> <span class="n">s_2</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">stats</span><span class="o">.</span><span class="n">pearsonr</span><span class="p">,</span> <span class="n">min_items</span><span class="o">=</span><span class="mi">12</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    do an R calculation, remove items with values missing in either</span>
+<div class="viewcode-block" id="do_r"><a class="viewcode-back" href="../../../flotilla.compute.generic.html#flotilla.compute.generic.do_r">[docs]</a><span class="k">def</span> <span class="nf">do_r</span><span class="p">(</span><span class="n">s_1</span><span class="p">,</span> <span class="n">s_2</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">stats</span><span class="o">.</span><span class="n">pearsonr</span><span class="p">,</span> <span class="n">min_items</span><span class="o">=</span><span class="mi">12</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate correlation (&quot;R-value&quot;) between two vectors</span>
 
-<span class="sd">    input:</span>
-<span class="sd">    x - predictor vector</span>
-<span class="sd">    y - target vector</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    s_1 : pandas.Series</span>
+<span class="sd">        Predictor vector</span>
+<span class="sd">    s_2 : pandas.Series</span>
+<span class="sd">        Target vector</span>
+<span class="sd">    method : function, optional</span>
+<span class="sd">        Which correlation method to use. (default scipy.stats.pearsonr)</span>
+<span class="sd">    min_items : int, optional</span>
+<span class="sd">        Minimum number of items occuring in both s_1 and s_2 (default 12)</span>
 
-<span class="sd">    optional:</span>
-<span class="sd">    method - method to use (scipy.stats.pearsonr or scipy.stats.spearmanr)</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    r_value : float</span>
+<span class="sd">        R-value of the correlation, i.e. how correlated the two inputs are</span>
+<span class="sd">    p_value : float</span>
+<span class="sd">        p-value of the correlation, i.e. how likely this correlation would</span>
+<span class="sd">        happen given the null hypothesis that the two are not correlated</span>
 
-<span class="sd">    output:</span>
-<span class="sd">    r, p (order as determined by the chosen method)</span>
-
-<span class="sd">    return (nan, nan) if too few items overlap</span>
-
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    If too few items overlap, return (np.nan, np.nan)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">s_1</span><span class="p">,</span> <span class="n">s_2</span> <span class="o">=</span> <span class="n">s_1</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="n">s_2</span><span class="o">.</span><span class="n">dropna</span><span class="p">(),</span> <span class="n">join</span><span class="o">=</span><span class="s">&#39;inner&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s_1</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">min_items</span><span class="p">:</span>
@@ -215,17 +308,26 @@
 
 </div>
 <span class="nd">@timeout</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>  <span class="c"># because these sometimes hang</span>
-<div class="viewcode-block" id="get_robust_values"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.generic.get_robust_values">[docs]</a><span class="k">def</span> <span class="nf">get_robust_values</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    get robust linear regression</span>
+<div class="viewcode-block" id="get_robust_values"><a class="viewcode-back" href="../../../flotilla.compute.generic.html#flotilla.compute.generic.get_robust_values">[docs]</a><span class="k">def</span> <span class="nf">get_robust_values</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate robust linear regression</span>
 
-<span class="sd">    input:</span>
-<span class="sd">    x - predictor vector</span>
-<span class="sd">    y - target vector</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : numpy.array</span>
+<span class="sd">        Predictor vector</span>
+<span class="sd">    y : numpy.array</span>
+<span class="sd">        Target vector</span>
 
-<span class="sd">    output:</span>
-<span class="sd">    intercept, slope, t-statistic, p-value</span>
-
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    intercept : float</span>
+<span class="sd">        Intercept of the fitted line</span>
+<span class="sd">    slope : float</span>
+<span class="sd">        Slope of the fitted line</span>
+<span class="sd">    t_statistic : float</span>
+<span class="sd">        T-statistic of the fit</span>
+<span class="sd">    p_value : float</span>
+<span class="sd">        p-value of the fit</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="kn">as</span> <span class="nn">sm</span>
 
@@ -235,19 +337,30 @@
 
 </div>
 <span class="nd">@timeout</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-<div class="viewcode-block" id="get_dcor"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.generic.get_dcor">[docs]</a><span class="k">def</span> <span class="nf">get_dcor</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    get dcor</span>
+<div class="viewcode-block" id="get_dcor"><a class="viewcode-back" href="../../../flotilla.compute.generic.html#flotilla.compute.generic.get_dcor">[docs]</a><span class="k">def</span> <span class="nf">get_dcor</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate distance correlation between two vectors</span>
 
-<span class="sd">    see: https://github.com/andrewdyates/dcor</span>
+<span class="sd">    Uses the distance correlation package from:</span>
+<span class="sd">    https://github.com/andrewdyates/dcor</span>
 
-<span class="sd">    input:</span>
-<span class="sd">    x - predictor vector</span>
-<span class="sd">    y - target vector</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : numpy.array</span>
+<span class="sd">        1-dimensional array (aka a vector) of the independent, predictor</span>
+<span class="sd">        variable</span>
+<span class="sd">    y : numpy.array</span>
+<span class="sd">        1-dimensional array (aka a vector) of the dependent, target variable</span>
 
-<span class="sd">    output:</span>
-<span class="sd">    dc, dr, dvx, dvy</span>
-
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dc : float</span>
+<span class="sd">        Distance covariance</span>
+<span class="sd">    dr : float</span>
+<span class="sd">        Distance correlation</span>
+<span class="sd">    dvx : float</span>
+<span class="sd">        Distance variance on x</span>
+<span class="sd">    dvy : float</span>
+<span class="sd">        Distance variance on y</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># cython version of dcor</span>
     <span class="kn">import</span> <span class="nn">dcor_cpy</span> <span class="kn">as</span> <span class="nn">dcor</span>
@@ -257,19 +370,33 @@
 
 </div>
 <span class="nd">@timeout</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
-<div class="viewcode-block" id="apply_calc_rs"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.generic.apply_calc_rs">[docs]</a><span class="k">def</span> <span class="nf">apply_calc_rs</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">stats</span><span class="o">.</span><span class="n">pearsonr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    apply R calculation method on each gene separately (for nan values)</span>
+<div class="viewcode-block" id="apply_calc_rs"><a class="viewcode-back" href="../../../flotilla.compute.generic.html#flotilla.compute.generic.apply_calc_rs">[docs]</a><span class="k">def</span> <span class="nf">apply_calc_rs</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">stats</span><span class="o">.</span><span class="n">pearsonr</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Apply R calculation method on each column of X versus the values of y</span>
 
-<span class="sd">    input:</span>
-<span class="sd">    X - (cells X rpkms) pd.DataFrame</span>
-<span class="sd">    y - (cells X psi) pd.Series</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X : pandas.DataFrame</span>
+<span class="sd">        A (n_samples, n_features) sized DataFrame, assumed to be of</span>
+<span class="sd">        log-normal expression values</span>
+<span class="sd">    y : pandas.Series</span>
+<span class="sd">        A (n_samples,) sized Series, assumed to be of percent spliced-in</span>
+<span class="sd">        alternative splicing scores</span>
+<span class="sd">    method : function, optional</span>
+<span class="sd">        Which correlation method to use on each feature in X versus the</span>
+<span class="sd">        values in y</span>
 
-<span class="sd">    output:</span>
-<span class="sd">    two pd.Series of:</span>
-<span class="sd">    R coef, p-value</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    r_coefficients : pandas.Series</span>
+<span class="sd">        Correlation coefficients</span>
+<span class="sd">    p_values : pandas.Series</span>
+<span class="sd">        Correlation significances (smaller is better)</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    do_r</span>
+<span class="sd">        This is the underlying function which calculates correlation</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="n">out_R</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">y</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
     <span class="n">out_P</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">y</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">this_id</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">X</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
@@ -287,10 +414,35 @@
 
 </div>
 <span class="nd">@timeout</span><span class="p">(</span><span class="mi">220</span><span class="p">)</span>
-<div class="viewcode-block" id="apply_calc_robust"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.generic.apply_calc_robust">[docs]</a><span class="k">def</span> <span class="nf">apply_calc_robust</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;X and y are dataframes, returns slope, t-value and p-value of robust</span>
-<span class="sd">     regression</span>
-<span class="sd">     &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="apply_calc_robust"><a class="viewcode-back" href="../../../flotilla.compute.generic.html#flotilla.compute.generic.apply_calc_robust">[docs]</a><span class="k">def</span> <span class="nf">apply_calc_robust</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate robust regression between the columns of X and y</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X : pandas.DataFrame</span>
+<span class="sd">        A (n_samples, n_features) Dataframe of the predictor variable</span>
+<span class="sd">    y : pandas.DataFrame</span>
+<span class="sd">        A (n_samples, m_features) DataFrame of the response variable</span>
+<span class="sd">    verbose : bool, optional</span>
+<span class="sd">        If True, output status messages as the calculation is happening</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    out_I : pandas.Series</span>
+<span class="sd">        Intercept of regressions</span>
+<span class="sd">    out_S : pandas.Series</span>
+<span class="sd">        Slope of regressions</span>
+<span class="sd">    out_T : pandas.Series</span>
+<span class="sd">        t-statistic of regressions</span>
+<span class="sd">    out_P : pandas.Series</span>
+<span class="sd">        p-values of regressions</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    get_robust_values</span>
+<span class="sd">        This is the underlying function which calculates the slope,</span>
+<span class="sd">        intercept, t-value, and p-value of the fit</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;getting robust regression</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
     <span class="n">out_I</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">y</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>  <span class="c"># intercept</span>
@@ -314,9 +466,28 @@
 
 </div>
 <span class="nd">@timeout</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
-<div class="viewcode-block" id="apply_calc_slope"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.generic.apply_calc_slope">[docs]</a><span class="k">def</span> <span class="nf">apply_calc_slope</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="apply_calc_slope"><a class="viewcode-back" href="../../../flotilla.compute.generic.html#flotilla.compute.generic.apply_calc_slope">[docs]</a><span class="k">def</span> <span class="nf">apply_calc_slope</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;X and y are dataframes, returns slope, t-value and p-value of robust</span>
 <span class="sd">    regression</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X : pandas.DataFrame</span>
+<span class="sd">        A (n_samples, n_features) Dataframe of predictor variable values</span>
+<span class="sd">    y : pandas.DataFrame</span>
+<span class="sd">        A (n_samples, m_features) Dataframe of response variable values</span>
+<span class="sd">    verbose : bool, optional</span>
+<span class="sd">        If True, output status messages</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    slope : pandas.Series</span>
+<span class="sd">        Slopes of the linear regression</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    get_slope</span>
+<span class="sd">        This is the underlying function which calculates the slope</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;getting slope</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
@@ -337,7 +508,35 @@
 
 </div>
 <span class="nd">@timeout</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
-<div class="viewcode-block" id="apply_dcor"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.generic.apply_dcor">[docs]</a><span class="k">def</span> <span class="nf">apply_dcor</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="apply_dcor"><a class="viewcode-back" href="../../../flotilla.compute.generic.html#flotilla.compute.generic.apply_dcor">[docs]</a><span class="k">def</span> <span class="nf">apply_dcor</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calcualte distance correlation between the columns of two dataframes</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X : pandas.DataFrame</span>
+<span class="sd">        A (n_samples, n_features) Dataframe of predictor variable values</span>
+<span class="sd">    y : pandas.DataFrame</span>
+<span class="sd">        A (n_samples, m_features) Dataframe of response variable values</span>
+<span class="sd">    verbose : bool, optional</span>
+<span class="sd">        If True, output status messages</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dc : pandas.Series</span>
+<span class="sd">        Distance covariance</span>
+<span class="sd">    dr : pandas.Series</span>
+<span class="sd">        Distance correlation</span>
+<span class="sd">    dvx : pandas.Series</span>
+<span class="sd">        Distance variance of x</span>
+<span class="sd">    dvy : pandas.Series</span>
+<span class="sd">        Distance variance of y</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    get_dcor</span>
+<span class="sd">        This is the underlying function that gets called to calculate the</span>
+<span class="sd">        distance correlation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;getting dcor</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
 
@@ -362,10 +561,13 @@
     <span class="k">return</span> <span class="n">out_DC</span><span class="p">,</span> <span class="n">out_DR</span><span class="p">,</span> <span class="n">out_DVX</span><span class="p">,</span> <span class="n">out_DVY</span>
 
 </div>
-<div class="viewcode-block" id="dropna_mean"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.generic.dropna_mean">[docs]</a><span class="k">def</span> <span class="nf">dropna_mean</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="dropna_mean"><a class="viewcode-back" href="../../../flotilla.compute.generic.html#flotilla.compute.generic.dropna_mean">[docs]</a><span class="k">def</span> <span class="nf">dropna_mean</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Drop NA values and return the mean</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
 </div>
-<div class="viewcode-block" id="spearmanr_series"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.generic.spearmanr_series">[docs]</a><span class="k">def</span> <span class="nf">spearmanr_series</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<div class="viewcode-block" id="spearmanr_series"><a class="viewcode-back" href="../../../flotilla.compute.generic.html#flotilla.compute.generic.spearmanr_series">[docs]</a><span class="k">def</span> <span class="nf">spearmanr_series</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculate spearman r (with p-values) between two pandas series</span>
 
 <span class="sd">    Parameters</span>
@@ -387,7 +589,7 @@
     <span class="k">return</span> <span class="n">stats</span><span class="o">.</span><span class="n">spearmanr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="spearmanr_dataframe"><a class="viewcode-back" href="../../../apidoc/flotilla.compute.html#flotilla.compute.generic.spearmanr_dataframe">[docs]</a><span class="k">def</span> <span class="nf">spearmanr_dataframe</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="spearmanr_dataframe"><a class="viewcode-back" href="../../../flotilla.compute.generic.html#flotilla.compute.generic.spearmanr_dataframe">[docs]</a><span class="k">def</span> <span class="nf">spearmanr_dataframe</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculate spearman correlations between dataframes A and B</span>
 
 <span class="sd">    Parameters</span>

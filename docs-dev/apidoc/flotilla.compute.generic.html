@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>flotilla.compute.generic module &mdash; flotilla 0.2.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootswatch-3.2.0/paper/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="flotilla 0.2.0 documentation" href="../index.html" />
+    <link rel="up" title="flotilla.compute package" href="flotilla.compute.html" />
+    <link rel="next" title="flotilla.compute.infotheory module" href="flotilla.compute.infotheory.html" />
+    <link rel="prev" title="flotilla.compute.expression module" href="flotilla.compute.expression.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          Flotilla</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
+            
+                <li><a href="../tutorial.html">Tutorial</a></li>
+                <li><a href="../gallery.html">Gallery</a></li>
+                <li><a href="http://yeolab.ucsd.edu">YeoLab@UCSD</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../flotilla.html">flotilla package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../flotilla.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flotilla.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flotilla.html#module-flotilla">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What&#8217;s new in the package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../whatsnew.html#v0-2-0-november-1st-2014">v0.2.0 (November 1st, 2014)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installing flotilla</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#general-use-plots">General use plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#interactive-plots">Interactive plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#machine-learning-plots">Machine learning plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#splicing-specific-plots">Splicing-specific plots</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../create_datapackage.html">Create your very own datapackage!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Flotilla tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#create-a-datapackage">Create a datapackage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#processing-data">Processing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#plotting-functions">Plotting functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">flotilla</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="flotilla.html">flotilla package</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">flotilla.compute.generic module</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="../_sources/apidoc/flotilla.compute.generic.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <div class="section" id="module-flotilla.compute.generic">
+<span id="flotilla-compute-generic-module"></span><h1>flotilla.compute.generic module<a class="headerlink" href="#module-flotilla.compute.generic" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="flotilla.compute.generic.apply_calc_robust">
+<tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">apply_calc_robust</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#apply_calc_robust"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.apply_calc_robust" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate robust regression between the columns of X and y</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A (n_samples, n_features) Dataframe of the predictor variable</p>
+</div></blockquote>
+<p><strong>y</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A (n_samples, m_features) DataFrame of the response variable</p>
+</div></blockquote>
+<p><strong>verbose</strong> : bool, optional</p>
+<blockquote>
+<div><p>If True, output status messages as the calculation is happening</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out_I</strong> : pandas.Series</p>
+<blockquote>
+<div><p>Intercept of regressions</p>
+</div></blockquote>
+<p><strong>out_S</strong> : pandas.Series</p>
+<blockquote>
+<div><p>Slope of regressions</p>
+</div></blockquote>
+<p><strong>out_T</strong> : pandas.Series</p>
+<blockquote>
+<div><p>t-statistic of regressions</p>
+</div></blockquote>
+<p><strong>out_P</strong> : pandas.Series</p>
+<blockquote class="last">
+<div><p>p-values of regressions</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="../flotilla.compute.generic.html#flotilla.compute.generic.get_robust_values" title="flotilla.compute.generic.get_robust_values"><tt class="xref py py-obj docutils literal"><span class="pre">get_robust_values</span></tt></a></dt>
+<dd>This is the underlying function which calculates the slope, intercept, t-value, and p-value of the fit</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.compute.generic.apply_calc_rs">
+<tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">apply_calc_rs</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#apply_calc_rs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.apply_calc_rs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply R calculation method on each column of X versus the values of y</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A (n_samples, n_features) sized DataFrame, assumed to be of
+log-normal expression values</p>
+</div></blockquote>
+<p><strong>y</strong> : pandas.Series</p>
+<blockquote>
+<div><p>A (n_samples,) sized Series, assumed to be of percent spliced-in
+alternative splicing scores</p>
+</div></blockquote>
+<p><strong>method</strong> : function, optional</p>
+<blockquote>
+<div><p>Which correlation method to use on each feature in X versus the
+values in y</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>r_coefficients</strong> : pandas.Series</p>
+<blockquote>
+<div><p>Correlation coefficients</p>
+</div></blockquote>
+<p><strong>p_values</strong> : pandas.Series</p>
+<blockquote class="last">
+<div><p>Correlation significances (smaller is better)</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="../flotilla.compute.generic.html#flotilla.compute.generic.do_r" title="flotilla.compute.generic.do_r"><tt class="xref py py-obj docutils literal"><span class="pre">do_r</span></tt></a></dt>
+<dd>This is the underlying function which calculates correlation</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.compute.generic.apply_calc_slope">
+<tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">apply_calc_slope</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#apply_calc_slope"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.apply_calc_slope" title="Permalink to this definition">¶</a></dt>
+<dd><p>X and y are dataframes, returns slope, t-value and p-value of robust
+regression</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A (n_samples, n_features) Dataframe of predictor variable values</p>
+</div></blockquote>
+<p><strong>y</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A (n_samples, m_features) Dataframe of response variable values</p>
+</div></blockquote>
+<p><strong>verbose</strong> : bool, optional</p>
+<blockquote>
+<div><p>If True, output status messages</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>slope</strong> : pandas.Series</p>
+<blockquote class="last">
+<div><p>Slopes of the linear regression</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="../flotilla.compute.generic.html#flotilla.compute.generic.get_slope" title="flotilla.compute.generic.get_slope"><tt class="xref py py-obj docutils literal"><span class="pre">get_slope</span></tt></a></dt>
+<dd>This is the underlying function which calculates the slope</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.compute.generic.apply_dcor">
+<tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">apply_dcor</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#apply_dcor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.apply_dcor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calcualte distance correlation between the columns of two dataframes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A (n_samples, n_features) Dataframe of predictor variable values</p>
+</div></blockquote>
+<p><strong>y</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A (n_samples, m_features) Dataframe of response variable values</p>
+</div></blockquote>
+<p><strong>verbose</strong> : bool, optional</p>
+<blockquote>
+<div><p>If True, output status messages</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>dc</strong> : pandas.Series</p>
+<blockquote>
+<div><p>Distance covariance</p>
+</div></blockquote>
+<p><strong>dr</strong> : pandas.Series</p>
+<blockquote>
+<div><p>Distance correlation</p>
+</div></blockquote>
+<p><strong>dvx</strong> : pandas.Series</p>
+<blockquote>
+<div><p>Distance variance of x</p>
+</div></blockquote>
+<p><strong>dvy</strong> : pandas.Series</p>
+<blockquote class="last">
+<div><p>Distance variance of y</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="../flotilla.compute.generic.html#flotilla.compute.generic.get_dcor" title="flotilla.compute.generic.get_dcor"><tt class="xref py py-obj docutils literal"><span class="pre">get_dcor</span></tt></a></dt>
+<dd>This is the underlying function that gets called to calculate the distance correlation</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.compute.generic.do_r">
+<tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">do_r</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#do_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.do_r" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate correlation (&#8220;R-value&#8221;) between two vectors</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>s_1</strong> : pandas.Series</p>
+<blockquote>
+<div><p>Predictor vector</p>
+</div></blockquote>
+<p><strong>s_2</strong> : pandas.Series</p>
+<blockquote>
+<div><p>Target vector</p>
+</div></blockquote>
+<p><strong>method</strong> : function, optional</p>
+<blockquote>
+<div><p>Which correlation method to use. (default scipy.stats.pearsonr)</p>
+</div></blockquote>
+<p><strong>min_items</strong> : int, optional</p>
+<blockquote>
+<div><p>Minimum number of items occuring in both s_1 and s_2 (default 12)</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>r_value</strong> : float</p>
+<blockquote>
+<div><p>R-value of the correlation, i.e. how correlated the two inputs are</p>
+</div></blockquote>
+<p><strong>p_value</strong> : float</p>
+<blockquote class="last">
+<div><p>p-value of the correlation, i.e. how likely this correlation would
+happen given the null hypothesis that the two are not correlated</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>If too few items overlap, return (np.nan, np.nan)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.compute.generic.dropna_mean">
+<tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">dropna_mean</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#dropna_mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.dropna_mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Drop NA values and return the mean</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.compute.generic.get_boosting_regressor">
+<tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">get_boosting_regressor</tt><big>(</big><em>x</em>, <em>y</em>, <em>verbose=False</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#get_boosting_regressor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.get_boosting_regressor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate a GradientBoostingRegressor on predictor and target variables</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : numpy.array</p>
+<blockquote>
+<div><p>Predictor variable</p>
+</div></blockquote>
+<p><strong>y</strong> : numpy.array</p>
+<blockquote>
+<div><p>Target variable</p>
+</div></blockquote>
+<p><strong>verbose</strong> : bool, optional</p>
+<blockquote>
+<div><p>If True, output status messages</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>classifier</strong> : sklearn.ensemble.GradientBoostingRegressor</p>
+<blockquote class="last">
+<div><p>A fitted classifier of the predictor and target variable</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.compute.generic.get_dcor">
+<tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">get_dcor</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#get_dcor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.get_dcor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate distance correlation between two vectors</p>
+<p>Uses the distance correlation package from:
+<a class="reference external" href="https://github.com/andrewdyates/dcor">https://github.com/andrewdyates/dcor</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : numpy.array</p>
+<blockquote>
+<div><p>1-dimensional array (aka a vector) of the independent, predictor
+variable</p>
+</div></blockquote>
+<p><strong>y</strong> : numpy.array</p>
+<blockquote>
+<div><p>1-dimensional array (aka a vector) of the dependent, target variable</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>dc</strong> : float</p>
+<blockquote>
+<div><p>Distance covariance</p>
+</div></blockquote>
+<p><strong>dr</strong> : float</p>
+<blockquote>
+<div><p>Distance correlation</p>
+</div></blockquote>
+<p><strong>dvx</strong> : float</p>
+<blockquote>
+<div><p>Distance variance on x</p>
+</div></blockquote>
+<p><strong>dvy</strong> : float</p>
+<blockquote class="last">
+<div><p>Distance variance on y</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.compute.generic.get_regressor">
+<tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">get_regressor</tt><big>(</big><em>x</em>, <em>y</em>, <em>n_estimators=1500</em>, <em>n_tries=5</em>, <em>verbose=False</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#get_regressor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.get_regressor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate an ExtraTreesRegressor on predictor and target variables</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : numpy.array</p>
+<blockquote>
+<div><p>Predictor vector</p>
+</div></blockquote>
+<p><strong>y</strong> : numpy.array</p>
+<blockquote>
+<div><p>Target vector</p>
+</div></blockquote>
+<p><strong>n_estimators</strong> : int, optional</p>
+<blockquote>
+<div><p>Number of estimators to use</p>
+</div></blockquote>
+<p><strong>n_tries</strong> : int, optional</p>
+<blockquote>
+<div><p>Number of attempts to calculate regression</p>
+</div></blockquote>
+<p><strong>verbose</strong> : bool, optional</p>
+<blockquote>
+<div><p>If True, output progress statements</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>classifier</strong> : sklearn.ensemble.ExtraTreesRegressor</p>
+<blockquote>
+<div><p>The classifier with the highest out of bag scores of all the
+attempted &#8220;tries&#8221;</p>
+</div></blockquote>
+<p><strong>oob_scores</strong> : numpy.array</p>
+<blockquote class="last">
+<div><p>Out of bag scores of the classifier</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.compute.generic.get_robust_values">
+<tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">get_robust_values</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#get_robust_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.get_robust_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate robust linear regression</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : numpy.array</p>
+<blockquote>
+<div><p>Predictor vector</p>
+</div></blockquote>
+<p><strong>y</strong> : numpy.array</p>
+<blockquote>
+<div><p>Target vector</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>intercept</strong> : float</p>
+<blockquote>
+<div><p>Intercept of the fitted line</p>
+</div></blockquote>
+<p><strong>slope</strong> : float</p>
+<blockquote>
+<div><p>Slope of the fitted line</p>
+</div></blockquote>
+<p><strong>t_statistic</strong> : float</p>
+<blockquote>
+<div><p>T-statistic of the fit</p>
+</div></blockquote>
+<p><strong>p_value</strong> : float</p>
+<blockquote class="last">
+<div><p>p-value of the fit</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.compute.generic.get_slope">
+<tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">get_slope</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#get_slope"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.get_slope" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the linear regression slope of x and y</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : numpy.array</p>
+<blockquote>
+<div><p>X-values of data</p>
+</div></blockquote>
+<p><strong>y</strong> : numpy.array</p>
+<blockquote>
+<div><p>Y-values of data</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>slope</strong> : float</p>
+<blockquote class="last">
+<div><p>Scipy.stats.linregress slope</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.compute.generic.get_unstarted_events">
+<tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">get_unstarted_events</tt><big>(</big><em>mongodb</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#get_unstarted_events"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.get_unstarted_events" title="Permalink to this definition">¶</a></dt>
+<dd><p>get events that have not been started yet.
+generator sets started to True before returning an event</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>mongodb</strong> : pymongo.Database</p>
+<blockquote class="last">
+<div><p>A MongoDB database object</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.compute.generic.spearmanr_dataframe">
+<tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">spearmanr_dataframe</tt><big>(</big><em>A</em>, <em>B</em>, <em>axis=0</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#spearmanr_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.spearmanr_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate spearman correlations between dataframes A and B</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>A</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A n_samples x n_features1 dataframe. Must have the same number of rows
+as &#8220;B&#8221;</p>
+</div></blockquote>
+<p><strong>B</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A n_samples x n_features2 Dataframe. Must have the same number of rows
+as &#8220;A&#8221;</p>
+</div></blockquote>
+<p><strong>axis</strong> : int</p>
+<blockquote>
+<div><p>Which axis to compare. If 0, calculate correlations between all the
+columns of A vs te columns of B. If 1, calculate between rows.
+(default 0)</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>correlations</strong> : pandas.DataFrame</p>
+<blockquote class="last">
+<div><p>A n_features2 x n_features1 DataFrame of (spearman_r, spearman_p) tuples</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>Use &#8220;applymap&#8221; to get just the R- and p-values of the resulting dataframe</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">B</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">55</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">11</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">correls</span> <span class="o">=</span> <span class="n">spearmanr_dataframe</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">correls</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(11, 20)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">spearman_r</span> <span class="o">=</span> <span class="n">correls</span><span class="o">.</span><span class="n">applymap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">spearman_p</span> <span class="o">=</span> <span class="n">correls</span><span class="o">.</span><span class="n">applymap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.compute.generic.spearmanr_series">
+<tt class="descclassname">flotilla.compute.generic.</tt><tt class="descname">spearmanr_series</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="reference internal" href="../_modules/flotilla/compute/generic.html#spearmanr_series"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.generic.spearmanr_series" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate spearman r (with p-values) between two pandas series</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : pandas.Series</p>
+<blockquote>
+<div><p>One of the two series you&#8217;d like to correlate</p>
+</div></blockquote>
+<p><strong>y</strong> : pandas.Series</p>
+<blockquote>
+<div><p>The other series you&#8217;d like to correlate</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>r_value</strong> : float</p>
+<blockquote>
+<div><p>The R-value of the correlation. 1 for perfect positive correlation,
+and -1 for perfect negative correlation</p>
+</div></blockquote>
+<p><strong>p_value</strong> : float</p>
+<blockquote class="last">
+<div><p>The p-value of the correlation.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<div class="container">
+    
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2014, Olga Botvinnik, Michael Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
+    </p>
+  </div>
+</footer>
+    Funded by <a href="http://numfocus.org/">NumFOCUS</a> <a
+        href="http://numfocus.org/pages/john_hunter_fellowship_2014.html">John
+    Hunter Technology Fellowship</a> to <a href="http://olgabotvinnik.com/">Olga
+    Botvinnik</a>.<br/>
+    Partially funded by <a href="http://www.nih.gov/">NIH</a> grants NS075449
+    and HG004659 and <a href="http://www.cirm.ca.gov/">CIRM</a> grants RB4-06045
+    and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene
+    Yeo</a>. <br/>
+
+    
+  </body>
+</html>

@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>flotilla.datapackage &mdash; flotilla 0.2.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootswatch-3.2.0/paper/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="flotilla 0.2.0 documentation" href="../../index.html" />
+    <link rel="up" title="flotilla" href="../flotilla.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          Flotilla</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
+            
+                <li><a href="../../tutorial.html">Tutorial</a></li>
+                <li><a href="../../gallery.html">Gallery</a></li>
+                <li><a href="http://yeolab.ucsd.edu">YeoLab@UCSD</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../flotilla.html">flotilla package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../flotilla.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../flotilla.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../flotilla.html#module-flotilla">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../whatsnew.html">What&#8217;s new in the package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../whatsnew.html#v0-2-0-november-1st-2014">v0.2.0 (November 1st, 2014)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installing flotilla</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#general-use-plots">General use plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#interactive-plots">Interactive plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#machine-learning-plots">Machine learning plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#splicing-specific-plots">Splicing-specific plots</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../create_datapackage.html">Create your very own datapackage!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Flotilla tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorial.html#create-a-datapackage">Create a datapackage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorial.html#processing-data">Processing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorial.html#plotting-functions">Plotting functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../apidoc/modules.html">flotilla</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../apidoc/flotilla.html">flotilla package</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <h1>Source code for flotilla.datapackage</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">gzip</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">urllib2</span>
+
+<span class="n">FLOTILLA_DOWNLOAD_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s">&#39;~/flotilla_projects&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="data_package_url_to_dict"><a class="viewcode-back" href="../../flotilla.datapackage.html#flotilla.datapackage.data_package_url_to_dict">[docs]</a><span class="k">def</span> <span class="nf">data_package_url_to_dict</span><span class="p">(</span><span class="n">data_package_url</span><span class="p">):</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">check_if_already_downloaded</span><span class="p">(</span><span class="n">data_package_url</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">data_package</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data_package</span>
+
+</div>
+<div class="viewcode-block" id="check_if_already_downloaded"><a class="viewcode-back" href="../../flotilla.datapackage.html#flotilla.datapackage.check_if_already_downloaded">[docs]</a><span class="k">def</span> <span class="nf">check_if_already_downloaded</span><span class="p">(</span><span class="n">url</span><span class="p">,</span>
+                                <span class="n">datapackage_name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                                <span class="n">download_dir</span><span class="o">=</span><span class="n">FLOTILLA_DOWNLOAD_DIR</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;If a url filename has already been downloaded, don&#39;t download it again.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    url : str</span>
+<span class="sd">        HTTP url of a file you want to downlaod</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    filename : str</span>
+<span class="sd">        Location of the file on your system</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">download_dir</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;Creating a directory for saving your flotilla &#39;</span>
+                         <span class="s">&#39;projects: {}</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">download_dir</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="k">if</span> <span class="n">datapackage_name</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">req</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="n">opener</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">build_opener</span><span class="p">()</span>
+        <span class="n">opened_url</span> <span class="o">=</span> <span class="n">opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+        <span class="n">datapackage</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">opened_url</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+        <span class="n">datapackage_name</span> <span class="o">=</span> <span class="n">datapackage</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
+
+    <span class="n">package_dir</span> <span class="o">=</span> <span class="s">&#39;{}/{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">download_dir</span><span class="p">,</span> <span class="n">datapackage_name</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">package_dir</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;Creating a directory for saving the data for this &#39;</span>
+                         <span class="s">&#39;project: {}</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">package_dir</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="n">basename</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">package_dir</span><span class="p">,</span> <span class="n">basename</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;{} has not been downloaded before.</span><span class="se">\n\t</span><span class="s">Downloading &#39;</span>
+                         <span class="s">&#39;now to {}</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span>
+        <span class="n">req</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="n">opener</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">build_opener</span><span class="p">()</span>
+        <span class="n">opened_url</span> <span class="o">=</span> <span class="n">opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">opened_url</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">filename</span>
+
+</div>
+<div class="viewcode-block" id="make_study_datapackage"><a class="viewcode-back" href="../../flotilla.datapackage.html#flotilla.datapackage.make_study_datapackage">[docs]</a><span class="k">def</span> <span class="nf">make_study_datapackage</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span>
+                           <span class="n">expression_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                           <span class="n">splicing_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                           <span class="n">spikein_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                           <span class="n">mapping_stats_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                           <span class="n">title</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span>
+                           <span class="n">sources</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">license</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">species</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                           <span class="n">flotilla_dir</span><span class="o">=</span><span class="n">FLOTILLA_DOWNLOAD_DIR</span><span class="p">,</span>
+                           <span class="n">metadata_kws</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                           <span class="n">expression_kws</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                           <span class="n">splicing_kws</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                           <span class="n">spikein_kws</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                           <span class="n">mapping_stats_kws</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                           <span class="n">version</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                           <span class="n">expression_feature_kws</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                           <span class="n">expression_feature_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                           <span class="n">splicing_feature_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                           <span class="n">splicing_feature_kws</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                           <span class="n">host</span><span class="o">=</span><span class="s">&quot;sauron.ucsd.edu&quot;</span><span class="p">,</span>
+                           <span class="n">host_destination</span><span class="o">=</span><span class="s">&#39;/zfs/www/flotilla_packages/&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Example code for making a datapackage for a Study</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s">&#39; &#39;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Datapackage name cannot have any spaces&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">uppercase</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Datapackage can only contain lowercase letters&quot;</span><span class="p">)</span>
+
+    <span class="n">datapackage_dir</span> <span class="o">=</span> <span class="s">&#39;{}/{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">flotilla_dir</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">datapackage_dir</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="n">datapackage</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">datapackage</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
+    <span class="n">datapackage</span><span class="p">[</span><span class="s">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">title</span>
+    <span class="n">datapackage</span><span class="p">[</span><span class="s">&#39;sources&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sources</span>
+    <span class="n">datapackage</span><span class="p">[</span><span class="s">&#39;licenses&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">license</span>
+    <span class="n">datapackage</span><span class="p">[</span><span class="s">&#39;datapackage_version&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">version</span>
+
+    <span class="k">if</span> <span class="n">species</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">datapackage</span><span class="p">[</span><span class="s">&#39;species&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">species</span>
+
+    <span class="n">resources</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;metadata&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">metadata_kws</span><span class="p">),</span>
+                 <span class="s">&#39;expression&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">expression_data</span><span class="p">,</span> <span class="n">expression_kws</span><span class="p">),</span>
+                 <span class="s">&#39;splicing&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">splicing_data</span><span class="p">,</span> <span class="n">splicing_kws</span><span class="p">),</span>
+                 <span class="s">&#39;spikein&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">spikein_data</span><span class="p">,</span> <span class="n">spikein_kws</span><span class="p">),</span>
+                 <span class="s">&#39;mapping_stats&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">mapping_stats_data</span><span class="p">,</span> <span class="n">mapping_stats_kws</span><span class="p">),</span>
+                 <span class="s">&#39;expression_feature&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">expression_feature_data</span><span class="p">,</span>
+                                        <span class="n">expression_feature_kws</span><span class="p">),</span>
+                 <span class="s">&#39;splicing_feature&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">splicing_feature_data</span><span class="p">,</span>
+                                      <span class="n">splicing_feature_kws</span><span class="p">)}</span>
+
+    <span class="n">datapackage</span><span class="p">[</span><span class="s">&#39;resources&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">resource_name</span><span class="p">,</span> <span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">kws</span><span class="p">)</span> <span class="ow">in</span> <span class="n">resources</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="n">datapackage</span><span class="p">[</span><span class="s">&#39;resources&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">resource_name</span><span class="p">})</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="n">datapackage</span><span class="p">[</span><span class="s">&#39;resources&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">data_filename</span> <span class="o">=</span> <span class="s">&#39;{}/{}.csv.gz&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datapackage_dir</span><span class="p">,</span> <span class="n">resource_name</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">data_filename</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="c"># try:</span>
+        <span class="c"># # TODO: only transmit data if it has been updated</span>
+        <span class="c"># subprocess.call(</span>
+        <span class="c"># &quot;scp {} {}:{}{}.&quot;.format(data_filename, host, host_destination,</span>
+        <span class="c">#                                  name), shell=True)</span>
+        <span class="c"># except Exception as e:</span>
+        <span class="c">#     sys.stderr.write(&quot;error sending data to host: {}&quot;.format(e))</span>
+
+        <span class="n">resource</span><span class="p">[</span><span class="s">&#39;path&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_filename</span>
+        <span class="n">resource</span><span class="p">[</span><span class="s">&#39;compression&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;gzip&#39;</span>
+        <span class="n">resource</span><span class="p">[</span><span class="s">&#39;format&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;csv&#39;</span>
+        <span class="k">if</span> <span class="n">kws</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kws</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                <span class="n">resource</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="n">filename</span> <span class="o">=</span> <span class="s">&#39;{}/datapackage.json&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datapackage_dir</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">datapackage</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;Wrote datapackage to {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+
+</div>
+<div class="viewcode-block" id="make_feature_datapackage"><a class="viewcode-back" href="../../flotilla.datapackage.html#flotilla.datapackage.make_feature_datapackage">[docs]</a><span class="k">def</span> <span class="nf">make_feature_datapackage</span><span class="p">():</span>
+    <span class="n">hg19</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;hg19&#39;</span><span class="p">,</span>
+            <span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="s">&#39;Metadata about genes and splicing events&#39;</span><span class="p">,</span>
+            <span class="s">&#39;licences&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
+            <span class="s">&#39;sources&#39;</span><span class="p">:</span> <span class="s">&#39;Gencode and ENSEMBL genes&#39;</span><span class="p">,</span>
+            <span class="s">&#39;datapackage_version&#39;</span><span class="p">:</span> <span class="s">&#39;0.1.0&#39;</span><span class="p">,</span>
+            <span class="s">&#39;resources&#39;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s">&#39;format&#39;</span><span class="p">:</span> <span class="s">&#39;json&#39;</span><span class="p">,</span>
+                    <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;expression_feature_data&#39;</span><span class="p">,</span>
+                    <span class="s">&#39;url&#39;</span><span class="p">:</span> <span class="s">&#39;http://sauron.ucsd.edu/flotilla_projects/hg19/&#39;</span>
+                           <span class="s">&#39;gencode.v19.annotation.gene.attributes.plus.json&#39;</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s">&#39;format&#39;</span><span class="p">:</span> <span class="s">&#39;csv&#39;</span><span class="p">,</span>
+                    <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;splicing_feature_data&#39;</span><span class="p">,</span>
+                    <span class="s">&#39;url&#39;</span><span class="p">:</span> <span class="s">&#39;http://sauron.ucsd.edu/flotilla_projects/hg19/&#39;</span>
+                           <span class="s">&#39;miso_to_ids.csv&#39;</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s">&#39;format&#39;</span><span class="p">:</span> <span class="s">&#39;json&#39;</span><span class="p">,</span>
+                    <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;gene_ontology_data&#39;</span><span class="p">,</span>
+                    <span class="s">&#39;url&#39;</span><span class="p">:</span> <span class="s">&#39;http://sauron.ucsd.edu/flotilla_projects/hg19/&#39;</span>
+                           <span class="s">&#39;ens_to_go.json&#39;</span>
+                <span class="p">}</span>
+            <span class="p">]}</span>
+
+</div>
+<div class="viewcode-block" id="get_resource_from_name"><a class="viewcode-back" href="../../flotilla.datapackage.html#flotilla.datapackage.get_resource_from_name">[docs]</a><span class="k">def</span> <span class="nf">get_resource_from_name</span><span class="p">(</span><span class="n">datapackage</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">resource</span> <span class="ow">in</span> <span class="n">datapackage</span><span class="p">[</span><span class="s">&#39;resources&#39;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">resource</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">name</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">resource</span></div>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<div class="container">
+    
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2014, Olga Botvinnik, Michael Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
+    </p>
+  </div>
+</footer>
+    Funded by <a href="http://numfocus.org/">NumFOCUS</a> <a
+        href="http://numfocus.org/pages/john_hunter_fellowship_2014.html">John
+    Hunter Technology Fellowship</a> to <a href="http://olgabotvinnik.com/">Olga
+    Botvinnik</a>.<br/>
+    Partially funded by <a href="http://www.nih.gov/">NIH</a> grants NS075449
+    and HG004659 and <a href="http://www.cirm.ca.gov/">CIRM</a> grants RB4-06045
+    and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene
+    Yeo</a>. <br/>
+
+    
+  </body>
+</html>

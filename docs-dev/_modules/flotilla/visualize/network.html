@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>flotilla.visualize.network &mdash; flotilla 0.1.2 documentation</title>
+    <title>flotilla.visualize.network &mdash; flotilla 0.2.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.1.2',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -29,7 +29,7 @@
     <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../../../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
-    <link rel="top" title="flotilla 0.1.2 documentation" href="../../../index.html" />
+    <link rel="top" title="flotilla 0.2.0 documentation" href="../../../index.html" />
     <link rel="up" title="flotilla" href="../../flotilla.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -50,7 +50,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           Flotilla</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.1.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -70,7 +70,36 @@
      href="../../../index.html">Site <b class="caret"></b></a>
   <ul class="dropdown-menu globaltoc"
       role="menu"
-      aria-labelledby="dLabelGlobalToc"><ul class="simple">
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../flotilla.html">flotilla package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#module-flotilla">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../whatsnew.html">What&#8217;s new in the package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-0-november-1st-2014">v0.2.0 (November 1st, 2014)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installing flotilla</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#general-use-plots">General use plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#interactive-plots">Interactive plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#machine-learning-plots">Machine learning plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#splicing-specific-plots">Splicing-specific plots</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../create_datapackage.html">Create your very own datapackage!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Flotilla tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#create-a-datapackage">Create a datapackage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#processing-data">Processing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#plotting-functions">Plotting functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apidoc/modules.html">flotilla</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../apidoc/flotilla.html">flotilla package</a></li>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -87,10 +116,6 @@
 </li>
               
             
-            
-              
-                
-              
             
             
             
@@ -118,21 +143,25 @@
     <div class="col-md-12">
       
   <h1>Source code for flotilla.visualize.network</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Visualize results from :py:mod:flotilla.compute.network</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
 <span class="kn">import</span> <span class="nn">sys</span>
 
 <span class="kn">import</span> <span class="nn">networkx</span> <span class="kn">as</span> <span class="nn">nx</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib</span> <span class="kn">as</span> <span class="nn">mpl</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">seaborn</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="kn">as</span> <span class="nn">sns</span>
 
 <span class="kn">from</span> <span class="nn">.color</span> <span class="kn">import</span> <span class="n">green</span>
 <span class="kn">from</span> <span class="nn">..compute.network</span> <span class="kn">import</span> <span class="n">Networker</span>
 <span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">dict_to_str</span>
-<span class="kn">from</span> <span class="nn">..visualize.color</span> <span class="kn">import</span> <span class="n">blue</span>
+<span class="kn">from</span> <span class="nn">..visualize.color</span> <span class="kn">import</span> <span class="n">blue</span><span class="p">,</span> <span class="n">dark2</span>
 
 
-<div class="viewcode-block" id="NetworkerViz"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.network.NetworkerViz">[docs]</a><span class="k">class</span> <span class="nc">NetworkerViz</span><span class="p">(</span><span class="n">Networker</span><span class="p">):</span>
+<div class="viewcode-block" id="NetworkerViz"><a class="viewcode-back" href="../../../flotilla.visualize.network.html#flotilla.visualize.network.NetworkerViz">[docs]</a><span class="k">class</span> <span class="nc">NetworkerViz</span><span class="p">(</span><span class="n">Networker</span><span class="p">):</span>
     <span class="c"># TODO.md: needs to be decontaminated, as it requires methods from</span>
     <span class="c"># data_object;</span>
     <span class="c"># maybe this class should move to data_model.BaseData</span>
@@ -140,7 +169,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">DataModel</span> <span class="o">=</span> <span class="n">DataModel</span>
         <span class="n">Networker</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-<div class="viewcode-block" id="NetworkerViz.draw_graph"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.network.NetworkerViz.draw_graph">[docs]</a>    <span class="k">def</span> <span class="nf">draw_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+<div class="viewcode-block" id="NetworkerViz.draw_graph"><a class="viewcode-back" href="../../../flotilla.visualize.network.html#flotilla.visualize.network.NetworkerViz.draw_graph">[docs]</a>    <span class="k">def</span> <span class="nf">draw_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                    <span class="n">n_pcs</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
                    <span class="n">use_pc_1</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">use_pc_2</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">use_pc_3</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">use_pc_4</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
                    <span class="n">degree_cut</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">cov_std_cut</span><span class="o">=</span><span class="mf">1.8</span><span class="p">,</span>
@@ -158,7 +187,7 @@
                    <span class="n">label_to_marker</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">groupby</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                    <span class="n">data_type</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
 
-        <span class="sd">&quot;&quot;&quot;Draw the graph (network) of these events</span>
+        <span class="sd">&quot;&quot;&quot;Draw the graph of similarities between samples or features</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -166,16 +195,17 @@
 <span class="sd">            Feature ids to subset the data. If None, all features will be used.</span>
 <span class="sd">        sample_ids : list of str, or None</span>
 <span class="sd">            Sample ids to subset the data. If None, all features will be used.</span>
-<span class="sd">        x_pc : str</span>
-<span class="sd">            x component for DataFramePCA, default &quot;pc_1&quot;</span>
+<span class="sd">        x_pc : str, optional</span>
+<span class="sd">            Which component to use for the x-axis, default &quot;pc_1&quot;</span>
 <span class="sd">        y_pc :</span>
-<span class="sd">            y component for DataFramePCA, default &quot;pc_2&quot;</span>
+<span class="sd">            y component for PCA, default &quot;pc_2&quot;</span>
 <span class="sd">        n_pcs : int???</span>
-<span class="sd">            n components to use for cells&#39; covariance calculation</span>
-<span class="sd">        cov_std_cut : float??</span>
-<span class="sd">            covariance cutoff for edges</span>
-<span class="sd">        use_pc{1-4} use these pcs in cov calculation (default True)</span>
-<span class="sd">        degree_cut : int??</span>
+<span class="sd">            Number of components to use for cells&#39; covariance calculation</span>
+<span class="sd">        cov_std_cut : float</span>
+<span class="sd">            Covariance cutoff for edges</span>
+<span class="sd">        use_pc{1-4} : bool</span>
+<span class="sd">            Use these pcs in cov calculation (default True)</span>
+<span class="sd">        degree_cut : int</span>
 <span class="sd">            miniumum degree for a node to be included in graph display</span>
 <span class="sd">        weight_function : [&#39;arctan&#39; | &#39;sq&#39; | &#39;abs&#39; | &#39;arctan_sq&#39;]</span>
 <span class="sd">            weight function (arctan (arctan cov), sq (sq cov), abs (abs cov),</span>
@@ -184,12 +214,10 @@
 <span class="sd">            map a gradient representing this gene&#39;s data onto nodes (ENSEMBL</span>
 <span class="sd">            id or gene name???)</span>
 
-
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        #TODO: Mike please fill these in</span>
-<span class="sd">        graph : ???</span>
-<span class="sd">            ???</span>
+<span class="sd">        graph : networkx.Graph</span>
+
 <span class="sd">        pos : ???</span>
 <span class="sd">            ???</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -223,14 +251,14 @@
             <span class="o">**</span><span class="n">pca_settings</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">featurewise</span><span class="p">:</span>
-            <span class="n">node_color_mapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s">&#39;r&#39;</span> \
+            <span class="n">node_color_mapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">dark2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> \
                 <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="n">feature_of_interest</span> <span class="k">else</span> <span class="s">&#39;k&#39;</span>
             <span class="n">node_size_mapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">pca</span><span class="o">.</span><span class="n">means</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">10</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">sample_id_to_color</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
                 <span class="n">node_color_mapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">sample_id_to_color</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">node_color_mapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">blue</span>
+                <span class="n">node_color_mapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">dark2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">node_size_mapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">95</span>
 
         <span class="n">ax_pev</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pca</span><span class="o">.</span><span class="n">explained_variance_ratio_</span> <span class="o">*</span> <span class="mf">100.</span><span class="p">)</span>
@@ -239,7 +267,7 @@
         <span class="n">ax_pev</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&quot;</span><span class="si">% e</span><span class="s">xplained variance&quot;</span><span class="p">)</span>
         <span class="n">ax_pev</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">&quot;component&quot;</span><span class="p">)</span>
         <span class="n">ax_pev</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s">&quot;Explained variance from dim reduction&quot;</span><span class="p">)</span>
-        <span class="n">seaborn</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax_pev</span><span class="p">)</span>
+        <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax_pev</span><span class="p">)</span>
 
         <span class="n">adjacency</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjacency</span><span class="p">(</span><span class="n">pca</span><span class="o">.</span><span class="n">reduced_space</span><span class="p">,</span> <span class="o">**</span><span class="n">adjacency_settings</span><span class="p">)</span>
         <span class="n">cov_dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
@@ -254,12 +282,14 @@
                                         <span class="n">graph_settings</span><span class="p">]))</span>
         <span class="n">graph_settings</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">this_graph_name</span>
 
-        <span class="n">seaborn</span><span class="o">.</span><span class="n">kdeplot</span><span class="p">(</span><span class="n">cov_dist</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax_cov</span><span class="p">)</span>
+        <span class="n">sns</span><span class="o">.</span><span class="n">kdeplot</span><span class="p">(</span><span class="n">cov_dist</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax_cov</span><span class="p">)</span>
+        <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span> <span class="o">=</span> <span class="n">ax_cov</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">()</span>
+        <span class="n">ax_cov</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">xmax</span><span class="p">)</span>
         <span class="n">ax_cov</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">cov_cut</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;cutoff&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">green</span><span class="p">)</span>
-        <span class="n">ax_cov</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s">&quot;covariance in dim reduction space&quot;</span><span class="p">)</span>
-        <span class="n">ax_cov</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&quot;density&quot;</span><span class="p">)</span>
+        <span class="n">ax_cov</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s">&quot;Covariance in dim reduction space&quot;</span><span class="p">)</span>
+        <span class="n">ax_cov</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&quot;Density&quot;</span><span class="p">)</span>
         <span class="n">ax_cov</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-        <span class="n">seaborn</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax_cov</span><span class="p">)</span>
+        <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax_cov</span><span class="p">)</span>
 
         <span class="n">graph</span><span class="p">,</span> <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">(</span><span class="n">adjacency</span><span class="p">,</span> <span class="o">**</span><span class="n">graph_settings</span><span class="p">)</span>
 
@@ -294,7 +324,9 @@
         <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_edges</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">main_ax</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
         <span class="n">main_ax</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
         <span class="n">degree</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">degree</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
-        <span class="n">seaborn</span><span class="o">.</span><span class="n">kdeplot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">degree</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax_degree</span><span class="p">)</span>
+        <span class="n">sns</span><span class="o">.</span><span class="n">kdeplot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">degree</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax_degree</span><span class="p">)</span>
+        <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span> <span class="o">=</span> <span class="n">ax_degree</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">()</span>
+        <span class="n">ax_degree</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">xmax</span><span class="p">)</span>
         <span class="n">ax_degree</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">&quot;degree&quot;</span><span class="p">)</span>
         <span class="n">ax_degree</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&quot;density&quot;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
@@ -308,7 +340,7 @@
             <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
             <span class="k">pass</span>
 
-        <span class="n">seaborn</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax_degree</span><span class="p">)</span>
+        <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax_degree</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">graph_file</span> <span class="o">!=</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">nx</span><span class="o">.</span><span class="n">write_gml</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">graph_file</span><span class="p">)</span>
@@ -318,7 +350,7 @@
 
         <span class="k">return</span> <span class="n">graph</span><span class="p">,</span> <span class="n">pos</span>
 </div>
-<div class="viewcode-block" id="NetworkerViz.draw_nonreduced_graph"><a class="viewcode-back" href="../../../apidoc/flotilla.visualize.html#flotilla.visualize.network.NetworkerViz.draw_nonreduced_graph">[docs]</a>    <span class="k">def</span> <span class="nf">draw_nonreduced_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+<div class="viewcode-block" id="NetworkerViz.draw_nonreduced_graph"><a class="viewcode-back" href="../../../flotilla.visualize.network.html#flotilla.visualize.network.NetworkerViz.draw_nonreduced_graph">[docs]</a>    <span class="k">def</span> <span class="nf">draw_nonreduced_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                               <span class="n">degree_cut</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">cov_std_cut</span><span class="o">=</span><span class="mf">1.8</span><span class="p">,</span>
                               <span class="n">wt_fun</span><span class="o">=</span><span class="s">&#39;abs&#39;</span><span class="p">,</span>
                               <span class="n">featurewise</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>  <span class="c"># else feature_components</span>
@@ -330,7 +362,7 @@
                               <span class="n">compare</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">):</span>
 
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">                Parameters</span>
+<span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        feature_ids : list of str, or None</span>
 <span class="sd">            Feature ids to subset the data. If None, all features will be used.</span>
@@ -358,9 +390,9 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        #TODO: Mike please fill these in</span>
-<span class="sd">        graph : ???</span>
+<span class="sd">        graph : networkx.Graph</span>
 <span class="sd">            ???</span>
-<span class="sd">        pos : ???</span>
+<span class="sd">        positions : ???</span>
 <span class="sd">            ???</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">node_color_mapper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_node_color_mapper</span>
@@ -400,37 +432,39 @@
             <span class="nb">map</span><span class="p">(</span><span class="n">dict_to_str</span><span class="p">,</span> <span class="p">[</span><span class="n">adjacency_settings</span><span class="p">,</span> <span class="n">graph_settings</span><span class="p">]))</span>
         <span class="n">graph_settings</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">this_graph_name</span>
 
-        <span class="n">seaborn</span><span class="o">.</span><span class="n">kdeplot</span><span class="p">(</span><span class="n">cov_dist</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax_cov</span><span class="p">)</span>
+        <span class="n">sns</span><span class="o">.</span><span class="n">kdeplot</span><span class="p">(</span><span class="n">cov_dist</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax_cov</span><span class="p">)</span>
         <span class="n">ax_cov</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">cov_cut</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;cutoff&#39;</span><span class="p">)</span>
         <span class="n">ax_cov</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s">&quot;covariance in original space&quot;</span><span class="p">)</span>
         <span class="n">ax_cov</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&quot;density&quot;</span><span class="p">)</span>
         <span class="n">ax_cov</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-        <span class="n">seaborn</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax_cov</span><span class="p">)</span>
-        <span class="n">g</span><span class="p">,</span> <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">(</span><span class="n">adjacency</span><span class="p">,</span> <span class="o">**</span><span class="n">graph_settings</span><span class="p">)</span>
+        <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax_cov</span><span class="p">)</span>
+        <span class="n">graph</span><span class="p">,</span> <span class="n">positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">(</span><span class="n">adjacency</span><span class="p">,</span> <span class="o">**</span><span class="n">graph_settings</span><span class="p">)</span>
 
-        <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_nodes</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span>
-                               <span class="n">node_color</span><span class="o">=</span><span class="nb">map</span><span class="p">(</span><span class="n">node_color_mapper</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">nodes</span><span class="p">()),</span>
-                               <span class="n">node_size</span><span class="o">=</span><span class="nb">map</span><span class="p">(</span><span class="n">node_size_mapper</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">nodes</span><span class="p">()),</span>
+        <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_nodes</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span>
+                               <span class="n">node_color</span><span class="o">=</span><span class="nb">map</span><span class="p">(</span><span class="n">node_color_mapper</span><span class="p">,</span>
+                                              <span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">()),</span>
+                               <span class="n">node_size</span><span class="o">=</span><span class="nb">map</span><span class="p">(</span><span class="n">node_size_mapper</span><span class="p">,</span> <span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">()),</span>
                                <span class="n">ax</span><span class="o">=</span><span class="n">main_ax</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">node_color</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="n">feature_of_interest</span><span class="p">]</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">x</span><span class="p">],</span>
-                             <span class="n">g</span><span class="o">.</span><span class="n">nodes</span><span class="p">())</span>
-            <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_nodes</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">node_color</span><span class="o">=</span><span class="n">node_color</span><span class="p">,</span>
+                             <span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">())</span>
+            <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_nodes</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">node_color</span><span class="o">=</span><span class="n">node_color</span><span class="p">,</span>
                                    <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Greys</span><span class="p">,</span>
                                    <span class="n">node_size</span><span class="o">=</span><span class="nb">map</span><span class="p">(</span>
                                        <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">node_size_mapper</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="o">.</span><span class="mi">5</span><span class="p">,</span>
-                                       <span class="n">g</span><span class="o">.</span><span class="n">nodes</span><span class="p">()),</span> <span class="n">ax</span><span class="o">=</span><span class="n">main_ax</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">except</span><span class="p">:</span>
+                                       <span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">()),</span> <span class="n">ax</span><span class="o">=</span><span class="n">main_ax</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">pass</span>
 
-        <span class="n">nmr</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
-        <span class="n">labels</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">nm</span><span class="p">,</span> <span class="n">nmr</span><span class="p">(</span><span class="n">nm</span><span class="p">))</span> <span class="k">for</span> <span class="n">nm</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">nodes</span><span class="p">()])</span>
+        <span class="n">renamer</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">name</span><span class="p">,</span> <span class="n">renamer</span><span class="p">(</span><span class="n">name</span><span class="p">))</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">()])</span>
         <span class="k">if</span> <span class="n">draw_labels</span><span class="p">:</span>
-            <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_labels</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">main_ax</span><span class="p">)</span>
-        <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_edges</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">main_ax</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+            <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_labels</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span>
+                                    <span class="n">ax</span><span class="o">=</span><span class="n">main_ax</span><span class="p">)</span>
+        <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_edges</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">main_ax</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
         <span class="n">main_ax</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
-        <span class="n">degree</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">degree</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
-        <span class="n">seaborn</span><span class="o">.</span><span class="n">kdeplot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">degree</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax_degree</span><span class="p">)</span>
+        <span class="n">degree</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">degree</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+        <span class="n">sns</span><span class="o">.</span><span class="n">kdeplot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">degree</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax_degree</span><span class="p">)</span>
         <span class="n">ax_degree</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">&quot;degree&quot;</span><span class="p">)</span>
         <span class="n">ax_degree</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&quot;density&quot;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
@@ -442,15 +476,15 @@
             <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
             <span class="k">pass</span>
 
-        <span class="n">seaborn</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax_degree</span><span class="p">)</span>
+        <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax_degree</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">graph_file</span> <span class="o">!=</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">nx</span><span class="o">.</span><span class="n">write_gml</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">graph_file</span><span class="p">)</span>
+                <span class="n">nx</span><span class="o">.</span><span class="n">write_gml</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">graph_file</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;error writing graph file:&quot;</span>
                                  <span class="s">&quot;</span><span class="se">\n</span><span class="s">{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
 
-        <span class="k">return</span> <span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">positions</span><span class="p">)</span></div></div>
 </pre></div>
 
     </div>
