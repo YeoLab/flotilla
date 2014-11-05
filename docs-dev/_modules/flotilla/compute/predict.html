@@ -463,10 +463,9 @@
 <span class="sd">    ...     {&#39;max_features&#39;: PredictorConfigScalers.max_feature_scaler,</span>
 <span class="sd">    ...      &#39;n_estimators&#39;: PredictorConfigScalers.n_estimators_scaler,</span>
 <span class="sd">    ...      &#39;n_jobs&#39;: PredictorConfigScalers.n_jobs_scaler},</span>
-<span class="sd">    ...                          constant_kwargs={&#39;bootstrap&#39;: True,</span>
-<span class="sd">    ...                                           &#39;random_state&#39;: 0,</span>
-<span class="sd">    ...                                           &#39;oob_score&#39;: True,</span>
-<span class="sd">    ...                                           &#39;verbose&#39;: True})</span>
+<span class="sd">    ...                          bootstrap=True, random_state=0,</span>
+<span class="sd">    ...                                           oob_score=True,</span>
+<span class="sd">    ...                                           verbose=True})</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -475,7 +474,7 @@
 <span class="sd">        and GradientBoostingRegressor as default predictors.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">constant_extratrees_params</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;bootstrap&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+        <span class="n">constant_extratrees_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;bootstrap&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
                                       <span class="s">&#39;random_state&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
                                       <span class="s">&#39;oob_score&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
                                       <span class="s">&#39;verbose&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">}</span>
@@ -486,7 +485,7 @@
                                   <span class="s">&#39;max_features&#39;</span><span class="p">:</span> <span class="n">PredictorConfigScalers</span><span class="o">.</span><span class="n">max_feature_scaler</span><span class="p">,</span>
                                   <span class="s">&#39;n_estimators&#39;</span><span class="p">:</span> <span class="n">PredictorConfigScalers</span><span class="o">.</span><span class="n">n_estimators_scaler</span><span class="p">,</span>
                                   <span class="s">&#39;n_jobs&#39;</span><span class="p">:</span> <span class="n">PredictorConfigScalers</span><span class="o">.</span><span class="n">n_jobs_scaler</span><span class="p">},</span>
-                              <span class="n">constant_parameters</span><span class="o">=</span><span class="n">constant_extratrees_params</span><span class="p">)</span>
+                              <span class="o">**</span><span class="n">constant_extratrees_kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">predictor_config</span><span class="p">(</span><span class="s">&#39;ExtraTreesRegressor&#39;</span><span class="p">,</span>
                               <span class="n">obj</span><span class="o">=</span><span class="n">ExtraTreesRegressor</span><span class="p">,</span>
@@ -494,18 +493,18 @@
                                   <span class="s">&#39;max_features&#39;</span><span class="p">:</span> <span class="n">PredictorConfigScalers</span><span class="o">.</span><span class="n">max_feature_scaler</span><span class="p">,</span>
                                   <span class="s">&#39;n_estimators&#39;</span><span class="p">:</span> <span class="n">PredictorConfigScalers</span><span class="o">.</span><span class="n">n_estimators_scaler</span><span class="p">,</span>
                                   <span class="s">&#39;n_jobs&#39;</span><span class="p">:</span> <span class="n">PredictorConfigScalers</span><span class="o">.</span><span class="n">n_jobs_scaler</span><span class="p">},</span>
-                              <span class="n">constant_parameters</span><span class="o">=</span><span class="n">constant_extratrees_params</span><span class="p">)</span>
+                              <span class="o">**</span><span class="n">constant_extratrees_kwargs</span><span class="p">)</span>
 
-        <span class="n">constant_boosting_params</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;n_estimators&#39;</span><span class="p">:</span> <span class="mi">80</span><span class="p">,</span> <span class="s">&#39;max_features&#39;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
+        <span class="n">constant_boosting_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;n_estimators&#39;</span><span class="p">:</span> <span class="mi">80</span><span class="p">,</span> <span class="s">&#39;max_features&#39;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
                                     <span class="s">&#39;learning_rate&#39;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span> <span class="s">&#39;subsample&#39;</span><span class="p">:</span> <span class="mf">0.6</span><span class="p">,</span> <span class="p">}</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">predictor_config</span><span class="p">(</span><span class="s">&#39;GradientBoostingClassifier&#39;</span><span class="p">,</span>
                               <span class="n">obj</span><span class="o">=</span><span class="n">GradientBoostingClassifier</span><span class="p">,</span>
-                              <span class="n">constant_parameters</span><span class="o">=</span><span class="n">constant_boosting_params</span><span class="p">)</span>
+                              <span class="o">**</span><span class="n">constant_boosting_kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">predictor_config</span><span class="p">(</span><span class="s">&#39;GradientBoostingRegressor&#39;</span><span class="p">,</span>
                               <span class="n">obj</span><span class="o">=</span><span class="n">GradientBoostingRegressor</span><span class="p">,</span>
-                              <span class="n">constant_parameters</span><span class="o">=</span><span class="n">constant_boosting_params</span><span class="p">)</span>
+                              <span class="o">**</span><span class="n">constant_boosting_kwargs</span><span class="p">)</span>
 
     <span class="nd">@property</span>
 <div class="viewcode-block" id="PredictorConfigManager.builtin_predictor_configs"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorConfigManager.builtin_predictor_configs">[docs]</a>    <span class="k">def</span> <span class="nf">builtin_predictor_configs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -568,7 +567,7 @@
 <span class="sd">            If None, get the cutoff for important features with by taking</span>
 <span class="sd">            features with scores that are 2 standard deviations away from the</span>
 <span class="sd">            mean score</span>
-<span class="sd">        n_features_dependent_parameters : dict, optional (default=None)</span>
+<span class="sd">        n_features_dependent_kwargs : dict, optional (default=None)</span>
 <span class="sd">            A (key, function) dictionary of keyword argument names and</span>
 <span class="sd">            functions which scale their values based on the dataset input size</span>
 <span class="sd">        kwargs : other keyword arguments</span>
@@ -589,6 +588,12 @@
 <span class="sd">            :py:attr:`.predictor_configs`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="c"># If obj is None, then this is probably just a &quot;name&quot; and you can&#39;t</span>
+            <span class="c"># change any of the parameters</span>
+            <span class="n">n_features_dependent_parameters</span> <span class="o">=</span> <span class="bp">None</span> <span class="k">if</span> \
+                <span class="n">n_features_dependent_parameters</span> <span class="o">==</span> <span class="p">{}</span> <span class="k">else</span> \
+                <span class="n">n_features_dependent_parameters</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">None</span> <span class="k">if</span> <span class="n">kwargs</span> <span class="o">==</span> <span class="p">{}</span> <span class="k">else</span> <span class="n">kwargs</span>
             <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">predictor_scoring_fun</span><span class="p">,</span> <span class="n">score_cutoff_fun</span><span class="p">,</span>
                     <span class="n">n_features_dependent_parameters</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">]</span>
             <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">i</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]):</span>
@@ -708,7 +713,7 @@
 
 <span class="sd">        The idea here is to keep the predictors tied to their datasets</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;_predictors&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;_predictors&#39;</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_predictors</span>
 </div>
     <span class="nd">@memoize</span>
@@ -930,8 +935,8 @@
                  <span class="n">predictor_obj</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">predictor_scoring_fun</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">score_cutoff_fun</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                 <span class="n">n_features_dependent_parameters</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                 <span class="n">constant_parameters</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">n_features_dependent_kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">constant_kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">is_categorical_trait</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">predictor_dataset_manager</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">predictor_config_manager</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
@@ -979,8 +984,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">predictor_obj</span> <span class="o">=</span> <span class="n">predictor_obj</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">predictor_scoring_fun</span> <span class="o">=</span> <span class="n">predictor_scoring_fun</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">score_cutoff_fun</span> <span class="o">=</span> <span class="n">score_cutoff_fun</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">constant_parameters</span> <span class="o">=</span> <span class="n">constant_parameters</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_features_dependent_parameters</span> <span class="o">=</span> <span class="n">n_features_dependent_parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">constant_kwargs</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">constant_kwargs</span> <span class="ow">is</span> <span class="bp">None</span> \
+            <span class="k">else</span> <span class="n">constant_kwargs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_features_dependent_kwargs</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">n_features_dependent_kwargs</span> \
+                                                 <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> \
+            <span class="n">n_features_dependent_kwargs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">categorical_trait</span> <span class="o">=</span> <span class="n">is_categorical_trait</span> <span class="k">if</span> \
             <span class="n">is_categorical_trait</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="k">else</span> <span class="bp">False</span>
 
@@ -1019,8 +1027,8 @@
                                       <span class="n">obj</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">predictor_obj</span><span class="p">,</span>
                                       <span class="n">predictor_scoring_fun</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">predictor_scoring_fun</span><span class="p">,</span>
                                       <span class="n">score_cutoff_fun</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">score_cutoff_fun</span><span class="p">,</span>
-                                      <span class="n">n_features_dependent_parameters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_features_dependent_parameters</span><span class="p">,</span>
-                                      <span class="n">constant_parameters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">constant_parameters</span><span class="p">)</span>
+                                      <span class="n">n_features_dependent_parameters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_features_dependent_kwargs</span><span class="p">,</span>
+                                      <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">constant_kwargs</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="PredictorBase.fit"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorBase.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Fit predictor to the dataset&quot;&quot;&quot;</span>

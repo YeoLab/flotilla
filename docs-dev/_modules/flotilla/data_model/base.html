@@ -897,8 +897,8 @@
                  <span class="n">predictor_obj</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">predictor_scoring_fun</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">score_cutoff_fun</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                 <span class="n">n_features_dependent_parameters</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                 <span class="n">constant_parameters</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">n_features_dependent_kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">constant_kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">plotting_kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">color</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">groupby</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">label_to_color</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">label_to_marker</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
@@ -943,16 +943,15 @@
         <span class="n">subset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subset_and_standardize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">sample_ids</span><span class="p">,</span>
                                               <span class="n">feature_ids</span><span class="p">,</span> <span class="n">standardize</span><span class="p">)</span>
         <span class="c"># subset.rename_axis(self.feature_renamer, 1, inplace=True)</span>
-        <span class="k">if</span> <span class="n">plotting_kwargs</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">plotting_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">plotting_kwargs</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">plotting_kwargs</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">plotting_kwargs</span>
 
         <span class="n">classifier</span> <span class="o">=</span> <span class="n">ClassifierViz</span><span class="p">(</span>
             <span class="n">data_name</span><span class="p">,</span> <span class="n">trait</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">predictor_name</span><span class="o">=</span><span class="n">predictor_name</span><span class="p">,</span>
             <span class="n">X_data</span><span class="o">=</span><span class="n">subset</span><span class="p">,</span> <span class="n">trait</span><span class="o">=</span><span class="n">trait</span><span class="p">,</span> <span class="n">predictor_obj</span><span class="o">=</span><span class="n">predictor_obj</span><span class="p">,</span>
             <span class="n">predictor_scoring_fun</span><span class="o">=</span><span class="n">predictor_scoring_fun</span><span class="p">,</span>
             <span class="n">score_cutoff_fun</span><span class="o">=</span><span class="n">score_cutoff_fun</span><span class="p">,</span>
-            <span class="n">n_features_dependent_parameters</span><span class="o">=</span><span class="n">n_features_dependent_parameters</span><span class="p">,</span>
-            <span class="n">constant_parameters</span><span class="o">=</span><span class="n">constant_parameters</span><span class="p">,</span>
+            <span class="n">n_features_dependent_kwargs</span><span class="o">=</span><span class="n">n_features_dependent_kwargs</span><span class="p">,</span>
+            <span class="n">constant_kwargs</span><span class="o">=</span><span class="n">constant_kwargs</span><span class="p">,</span>
             <span class="n">predictor_dataset_manager</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">predictor_dataset_manager</span><span class="p">,</span>
             <span class="n">data_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data_type</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
             <span class="n">groupby</span><span class="o">=</span><span class="n">groupby</span><span class="p">,</span> <span class="n">label_to_color</span><span class="o">=</span><span class="n">label_to_color</span><span class="p">,</span>
