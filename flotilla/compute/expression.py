@@ -56,9 +56,12 @@ class TwoWayGeneComparisonLocal(object):
     def __init__(self, sample1_name, sample2_name, df, p_value_cutoff=0.001,
                  local_fraction=0.1, bonferroni=True, fdr=None,
                  dtype="RPKM"):
-        """Run a two-sample RPKM experiment.
+        """
 
-        ??? Does this return anything, plot anything??? write any files...???
+        Plots a scatter-plot of sample1 vs sample2, taken from df.
+        Calculates differentially expressed genes with a Z-test from
+        the closest (local_fraction * 100)%  points. Stores result from
+        statistical calculations in self.result_
 
         Parameters
         ----------
