@@ -318,10 +318,9 @@ class PredictorConfigManager(object):
     ...     {'max_features': PredictorConfigScalers.max_feature_scaler,
     ...      'n_estimators': PredictorConfigScalers.n_estimators_scaler,
     ...      'n_jobs': PredictorConfigScalers.n_jobs_scaler},
-    ...                          constant_kwargs={'bootstrap': True,
-    ...                                           'random_state': 0,
-    ...                                           'oob_score': True,
-    ...                                           'verbose': True})
+    ...                          bootstrap=True, random_state=0,
+    ...                                           oob_score=True,
+    ...                                           verbose=True})
     """
 
     def __init__(self):
@@ -330,7 +329,7 @@ class PredictorConfigManager(object):
         and GradientBoostingRegressor as default predictors.
         """
 
-        constant_extratrees_params = {'bootstrap': True,
+        constant_extratrees_kwargs = {'bootstrap': True,
                                       'random_state': 0,
                                       'oob_score': True,
                                       'verbose': True}
@@ -341,7 +340,7 @@ class PredictorConfigManager(object):
                                   'max_features': PredictorConfigScalers.max_feature_scaler,
                                   'n_estimators': PredictorConfigScalers.n_estimators_scaler,
                                   'n_jobs': PredictorConfigScalers.n_jobs_scaler},
-                              constant_parameters=constant_extratrees_params)
+                              **constant_extratrees_kwargs)
 
         self.predictor_config('ExtraTreesRegressor',
                               obj=ExtraTreesRegressor,
@@ -349,18 +348,18 @@ class PredictorConfigManager(object):
                                   'max_features': PredictorConfigScalers.max_feature_scaler,
                                   'n_estimators': PredictorConfigScalers.n_estimators_scaler,
                                   'n_jobs': PredictorConfigScalers.n_jobs_scaler},
-                              constant_parameters=constant_extratrees_params)
+                              **constant_extratrees_kwargs)
 
-        constant_boosting_params = {'n_estimators': 80, 'max_features': 1000,
+        constant_boosting_kwargs = {'n_estimators': 80, 'max_features': 1000,
                                     'learning_rate': 0.2, 'subsample': 0.6, }
 
         self.predictor_config('GradientBoostingClassifier',
                               obj=GradientBoostingClassifier,
-                              constant_parameters=constant_boosting_params)
+                              **constant_boosting_kwargs)
 
         self.predictor_config('GradientBoostingRegressor',
                               obj=GradientBoostingRegressor,
-                              constant_parameters=constant_boosting_params)
+                              **constant_boosting_kwargs)
 
     @property
     def builtin_predictor_configs(self):
@@ -423,7 +422,7 @@ class PredictorConfigManager(object):
             If None, get the cutoff for important features with by taking
             features with scores that are 2 standard deviations away from the
             mean score
-        n_features_dependent_parameters : dict, optional (default=None)
+        n_features_dependent_kwargs : dict, optional (default=None)
             A (key, function) dictionary of keyword argument names and
             functions which scale their values based on the dataset input size
         kwargs : other keyword arguments
@@ -444,6 +443,12 @@ class PredictorConfigManager(object):
             :py:attr:`.predictor_configs`
         """
         if obj is None:
+            # If obj is None, then this is probably just a "name" and you can't
+            # change any of the parameters
+            n_features_dependent_parameters = None if \
+                n_features_dependent_parameters == {} else \
+                n_features_dependent_parameters
+            kwargs = None if kwargs == {} else kwargs
             args = [predictor_scoring_fun, score_cutoff_fun,
                     n_features_dependent_parameters, kwargs]
             if any([i is not None for i in args]):
@@ -563,7 +568,7 @@ class PredictorDataSet(object):
 
         The idea here is to keep the predictors tied to their datasets
         """
-        if not hasattr(self, '_predictors'):
+        if hasattr(self, '_predictors'):
             return self._predictors
 
     @memoize
@@ -785,8 +790,8 @@ class PredictorBase(object):
                  predictor_obj=None,
                  predictor_scoring_fun=None,
                  score_cutoff_fun=None,
-                 n_features_dependent_parameters=None,
-                 constant_parameters=None,
+                 n_features_dependent_kwargs=None,
+                 constant_kwargs=None,
                  is_categorical_trait=None,
                  predictor_dataset_manager=None,
                  predictor_config_manager=None,
@@ -834,8 +839,11 @@ class PredictorBase(object):
         self.predictor_obj = predictor_obj
         self.predictor_scoring_fun = predictor_scoring_fun
         self.score_cutoff_fun = score_cutoff_fun
-        self.constant_parameters = constant_parameters
-        self.n_features_dependent_parameters = n_features_dependent_parameters
+        self.constant_kwargs = {} if constant_kwargs is None \
+            else constant_kwargs
+        self.n_features_dependent_kwargs = {} if n_features_dependent_kwargs \
+                                                 is None else \
+            n_features_dependent_kwargs
         self.categorical_trait = is_categorical_trait if \
             is_categorical_trait is not None else False
 
@@ -874,8 +882,8 @@ class PredictorBase(object):
                                       obj=self.predictor_obj,
                                       predictor_scoring_fun=self.predictor_scoring_fun,
                                       score_cutoff_fun=self.score_cutoff_fun,
-                                      n_features_dependent_parameters=self.n_features_dependent_parameters,
-                                      constant_parameters=self.constant_parameters)
+                                      n_features_dependent_parameters=self.n_features_dependent_kwargs,
+                                      **self.constant_kwargs)
 
     def fit(self):
         """Fit predictor to the dataset"""
