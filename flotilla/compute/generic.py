@@ -218,7 +218,12 @@ def get_dcor(x, y):
         Distance variance on y
     """
     # cython version of dcor
-    import dcor_cpy as dcor
+    try:
+        import dcor_cpy as dcor
+    except ImportError as e:
+        sys.stderr.write("Please install dcor_cpy.")
+        raise e
+
 
     dc, dr, dvx, dvy = dcor.dcov_all(x, y)
     return dc, dr, dvx, dvy
