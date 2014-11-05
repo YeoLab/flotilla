@@ -12,9 +12,9 @@ class TestComputeNetwork:
         return Networker()
 
     def test_init(self, networker):
-        from flotilla.visualize.color import red
+        from flotilla.visualize.color import dark2
 
-        assert networker._default_node_color_mapper('x') == red
+        assert networker._default_node_color_mapper('x') == dark2[0]
         assert networker._default_node_size_mapper('x') == 300
 
     def test_adjacency(self, expression, networker):
