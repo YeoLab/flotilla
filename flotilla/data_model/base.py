@@ -635,7 +635,7 @@ class BaseData(object):
                                     pcolormesh_kws=dict(linewidth=0.01),
                                     figsize=figsize)
 
-    @memoize
+    #@memoize
     def detect_outliers(self,
                         sample_ids=None, feature_ids=None,
                         featurewise=False,
@@ -661,16 +661,23 @@ class BaseData(object):
 
         outlier_detector = OutlierDetection(reducer.reduced_space,
                                             method=outlier_detection_method,
-                                            outlier_detection_method_kwargs=outlier_detection_method_kwargs)
+                                            **outlier_detection_method_kwargs)
 
         return reducer, outlier_detector
 
-    def plot_outliers(self, outlier_detector,
-                      **pca_args):
+    def plot_outliers(self, reducer, outlier_detector, **pca_args):
+        show_point_labels = pca_args['show_point_labels']
+        del pca_args['show_point_labels']
+        dv = DecompositionViz(reducer.reduced_space,
+                              reducer.components_,
+                              reducer.explained_variance_ratio_,
+                              groupby=outlier_detector.outliers,
+                              )
 
-        self.plot_pca(self, groupby=outlier_detector.outliers,
-                      title=outlier_detector.title,
-                      **pca_args)
+        dv(show_point_labels=show_point_labels)
+        #self.plot_pca(self, groupby=outlier_detector.outliers,
+        #              title=outlier_detector.title,
+        #              **pca_args)
 
         # DecompositionViz(reducer.reduced_space,
         #                       reducer.components_,
