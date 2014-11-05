@@ -54,7 +54,7 @@ class NetworkerViz(Networker):
             Which component to use for the x-axis, default "pc_1"
         y_pc :
             y component for PCA, default "pc_2"
-        n_pcs : int???
+        n_pcs : int
             Number of components to use for cells' covariance calculation
         cov_std_cut : float
             Covariance cutoff for edges
@@ -67,14 +67,13 @@ class NetworkerViz(Networker):
             arctan_sq (sqared arctan of cov))
         gene_of_interest : str
             map a gradient representing this gene's data onto nodes (ENSEMBL
-            id or gene name???)
+            id or gene symbol)
 
         Returns
         -------
         graph : networkx.Graph
 
-        pos : ???
-            ???
+        positions : (x,y) positions of nodes
         """
         node_color_mapper = self._default_node_color_mapper
         node_size_mapper = self._default_node_color_mapper
