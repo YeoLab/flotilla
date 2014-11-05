@@ -752,8 +752,8 @@ class BaseData(object):
                  predictor_obj=None,
                  predictor_scoring_fun=None,
                  score_cutoff_fun=None,
-                 n_features_dependent_parameters=None,
-                 constant_parameters=None,
+                 n_features_dependent_kwargs=None,
+                 constant_kwargs=None,
                  plotting_kwargs=None,
                  color=None, groupby=None, label_to_color=None,
                  label_to_marker=None, order=None, bins=None):
@@ -798,16 +798,15 @@ class BaseData(object):
         subset = self._subset_and_standardize(self.data, sample_ids,
                                               feature_ids, standardize)
         # subset.rename_axis(self.feature_renamer, 1, inplace=True)
-        if plotting_kwargs is None:
-            plotting_kwargs = {}
+        plotting_kwargs = {} if plotting_kwargs is None else plotting_kwargs
 
         classifier = ClassifierViz(
             data_name, trait.name, predictor_name=predictor_name,
             X_data=subset, trait=trait, predictor_obj=predictor_obj,
             predictor_scoring_fun=predictor_scoring_fun,
             score_cutoff_fun=score_cutoff_fun,
-            n_features_dependent_parameters=n_features_dependent_parameters,
-            constant_parameters=constant_parameters,
+            n_features_dependent_kwargs=n_features_dependent_kwargs,
+            constant_kwargs=constant_kwargs,
             predictor_dataset_manager=self.predictor_dataset_manager,
             data_type=self.data_type, color=color,
             groupby=groupby, label_to_color=label_to_color,
