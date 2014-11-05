@@ -4,7 +4,7 @@ import pandas as pd
 
 class OutlierDetection(object):
     """
-    Detect outliers. Uses OneClassSVM by default
+
     """
 
 
@@ -12,13 +12,25 @@ class OutlierDetection(object):
                  outlier_detection_method=None,
                  outlier_detection_method_kwargs=None,
     ):
+        """Detect outliers. Uses OneClassSVM as the default outlier detection method.
+
+        Parameters
+        ----------
+        X : pandas.DataFrame
+            A samples x features dataframe.
+        outlier_detection_method : An object that implements fit, fit_transform and transform, or None.
+            If None, use default: sklearn.svm.OneClassSVM
+        outlier_detection_method_kwargs : kwargs to send to outlier_detection_method, or None.
+            If None, use default: {'nu': 0.1,
+                                   'kernel': "rbf",
+                                   'gamma': 0.1,
+                                   'random_state': 2014}
+
+        Returns
+        -------
+        None, but sets self.outliers
         """
 
-        :param X: data on which to detect outliers
-        :param outlier_detection_method: method for outlier detection that takes .fit(X) and has a .predict(X) method
-        :param outlier_detection_method_kwargs: a dictionary of args to be passed to outlier_detection_method
-        :return:
-        """
         if outlier_detection_method is None:
             outlier_detection_method = sklearn.svm.OneClassSVM
 
@@ -39,10 +51,14 @@ class OutlierDetection(object):
 
     def predict(self, X=None):
         """
+        Parameters
+        ----------
+        X : samples x features data to predict outliers with existing outlier_detection_method,
+            set in __init or None. If None, return outlier prediciton for input data
 
-        :param X: data to predict using outlier_detection_method established at init.
-        If X is None, return outlier prediciton for input data
-        :return: outliers
+        Returns
+        -------
+        outliers : pd.Series of predict output from outlier_detection_method.predict, with the same index as X
         """
         if X is None:
             self.outliers = pd.Series(

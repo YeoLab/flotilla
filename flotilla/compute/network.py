@@ -56,7 +56,7 @@ class Networker(object):
         elif fun_name == 'arctan':
             wt = np.arctan
         elif fun_name == 'arctan_sq':
-            # Can this be np.square(np.arctan()) or something? numpy's "ufuncs"
+            # This should be np.square(np.arctan()) or something? numpy's "ufuncs"
             # aka "universal functions" like square and arctan are more
             # optimized than python lambdas
             wt = _arctan_sq
