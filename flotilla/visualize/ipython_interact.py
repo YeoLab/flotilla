@@ -10,9 +10,6 @@ import matplotlib.pyplot as plt
 
 
 
-
-
-
 # from ..compute.predict import CLASSIFIER
 from flotilla.util import link_to_list
 from ..visualize.color import red
@@ -95,7 +92,7 @@ class Interactive(object):
                         x_pc=(1, 10), y_pc=(1, 10),
                         show_point_labels=False,
                         list_link='', plot_violins=False,
-                        savefile='data/last.pca.pdf'):
+                        savefile=''):
 
         def do_interact(data_type='expression',
                         sample_subset=self.default_sample_subsets,
@@ -105,7 +102,7 @@ class Interactive(object):
                         x_pc=1, y_pc=2,
                         plot_violins=True,
                         show_point_labels=False,
-                        savefile='data/last.pca.pdf'):
+                        savefile=''):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -178,7 +175,7 @@ class Interactive(object):
                           weight_fun=None,
                           use_pc_1=True, use_pc_2=True, use_pc_3=True,
                           use_pc_4=True,
-                          savefile='data/last.graph.pdf'):
+                          savefile=''):
 
         from IPython.html.widgets import interact
 
@@ -194,7 +191,7 @@ class Interactive(object):
                         cov_std_cut=1.8, n_pcs=5,
                         feature_of_interest="RBFOX2",
                         draw_labels=False,
-                        savefile='data/last.graph.pdf'):
+                        savefile=''):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -257,7 +254,7 @@ class Interactive(object):
                                predictor_types=None,
                                score_coefficient=(0.1, 20),
                                draw_labels=False,
-                               savefile='data/last.clf.pdf'):
+                               savefile=''):
 
         def do_interact(data_type,
                         sample_subset,
@@ -265,7 +262,7 @@ class Interactive(object):
                         predictor_type=default_classifier,
                         categorical_variable='outlier',
                         score_coefficient=2,
-                        savefile='data/last.clf.pdf'):
+                        savefile=''):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -419,7 +416,7 @@ class Interactive(object):
             bootstrapped_kws = {}
 
         return interact(do_interact,
-                        sample_subset=sample_subsets,
+                        swample_subset=sample_subsets,
                         feature_subset=feature_subsets,
                         color=color, x_offset=x_offset,
                         use_these_modalities=use_these_modalities,
@@ -483,24 +480,25 @@ class Interactive(object):
                                     featurewise=False,
                                     x_pc=(1, 3), y_pc=(1, 3),
                                     show_point_labels=False,
-                                    nu=(0.1, 9.9),
+                                    kernel=['rbf','linear','poly','sigmoid'],
                                     gamma=(0, 25),
-    ):
+                                    nu=(0.1, 9.9),
+                                    ):
 
         def do_interact(data_type='expression',
                         sample_subset=self.default_sample_subset,
                         feature_subset=self.default_feature_subset,
                         x_pc=1, y_pc=2,
                         show_point_labels=False,
+                        kernel='rbf',
                         gamma=16,
                         nu=.2,
-
-        ):
+                        ):
             print "transforming input gamma by 2^-(input): %f" % gamma
             gamma = 2 ** -float(gamma)
             print "transforming input nu by input/10: %f" % nu
             nu = float(nu) / 10
-
+            kernel = str(kernel)
             for k, v in locals().iteritems():
                 if k == 'self':
                     continue
@@ -515,15 +513,15 @@ class Interactive(object):
                               "this data type ('{}'). Falling back on all "
                               "features.".format(feature_subset, data_type))
 
-            reducer, outlier_detector = self.detect_outliers(
-                data_type=data_type,
-                sample_subset=sample_subset,
-                feature_subset=feature_subset,
-                reducer=None,
-                reducer_kwargs=None,
-                outlier_detection_method=None,
-                outlier_detection_method_kwargs={'gamma': gamma,
-                                                 'nu': nu})
+            reducer, outlier_detector = self.detect_outliers(data_type=data_type,
+                                                             sample_subset=sample_subset,
+                                                             feature_subset=feature_subset,
+                                                             reducer=None,
+                                                             reducer_kwargs=None,
+                                                             outlier_detection_method=None,
+                                                             outlier_detection_method_kwargs={'gamma': gamma,
+                                                                                              'nu': nu,
+                                                                                              'kernel': kernel})
             if data_type == "expression":
                 obj = self.expression
             if data_type == "splicing":
@@ -551,6 +549,7 @@ class Interactive(object):
                         feature_subset=feature_subsets,
                         x_pc=x_pc, y_pc=y_pc,
                         show_point_labels=show_point_labels,
+                        kernel=kernel,
                         nu=nu,
                         gamma=gamma)
 

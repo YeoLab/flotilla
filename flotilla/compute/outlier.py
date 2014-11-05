@@ -37,6 +37,7 @@ class OutlierDetection(object):
         if method is None:
             method = sklearn.svm.OneClassSVM
 
+        print kernel
 
         kwargs.update(dict(nu=nu, kernel=kernel, gamma=gamma,
                            random_state=random_state))

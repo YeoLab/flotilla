@@ -10,10 +10,9 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from .color import green
 from ..compute.network import Networker
 from ..util import dict_to_str
-from ..visualize.color import dark2
+from .color import dark2, almost_black, green
 
 
 class NetworkerViz(Networker):
@@ -104,9 +103,12 @@ class NetworkerViz(Networker):
             # groupby=groupby,
             **pca_settings)
 
+        feature_id = self.DataModel.maybe_renamed_to_feature_id(
+                feature_of_interest)[0]
+
         if featurewise:
-            node_color_mapper = lambda x: dark2[0] \
-                if x == feature_of_interest else 'k'
+            node_color_mapper = lambda x: green \
+                if (x == feature_id) else almost_black
             node_size_mapper = lambda x: (pca.means.ix[x] ** 2) + 10
         else:
             if sample_id_to_color is not None:
@@ -155,8 +157,6 @@ class NetworkerViz(Networker):
 
         try:
 
-            feature_id = self.DataModel.maybe_renamed_to_feature_id(
-                feature_of_interest)[0]
 
             node_color = map(lambda x: pca.X[feature_id].ix[x], graph.nodes())
 
@@ -184,10 +184,10 @@ class NetworkerViz(Networker):
         ax_degree.set_xlabel("degree")
         ax_degree.set_ylabel("density")
         try:
-            feature_id = self.DataModel.maybe_renamed_to_feature_id(
-                feature_of_interest)[0]
+
             ax_degree.axvline(x=degree[feature_id],
-                              label=feature_of_interest)
+                              label=feature_of_interest,
+                              color=green)
             ax_degree.legend()
 
         except Exception as e:
@@ -263,9 +263,12 @@ class NetworkerViz(Networker):
 
         data = self.DataModel.df
 
+        feature_id = self.DataModel.maybe_renamed_to_feature_id(
+                feature_of_interest)[0]
+
         if featurewise:
             node_color_mapper = lambda x: 'r' \
-                if x == feature_of_interest else 'k'
+                if x == feature_id else 'k'
             node_size_mapper = lambda x: (data.mean().ix[x] ** 2) + 10
         else:
             node_color_mapper = lambda x: \
