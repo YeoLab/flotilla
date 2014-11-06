@@ -58,7 +58,7 @@ clean:
 	rm -rf apidoc
 
 html:
-	cp ../examples/*.ipynb tutorial/
+	cp ../examples/*.ipynb tutorial/;
 	pushd tutorial ; make notebooks ; popd
 	sphinx-apidoc -l -d 4 -e --force -o . ../flotilla
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
