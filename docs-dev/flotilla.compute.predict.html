@@ -227,7 +227,7 @@ Default: {}</p>
 (or some other function of the dataset)</p>
 <dl class="staticmethod">
 <dt id="flotilla.compute.predict.ConfigOptimizer.objective_average_times_seen">
-<em class="property">static </em><tt class="descname">objective_average_times_seen</tt><big>(</big><em>n_features</em>, <em>coef=2.5</em>, <em>max_feature_scaler=&lt;function max_feature_scaler at 0x2b4eb0c54398&gt;</em>, <em>n_estimators_scaler=&lt;function n_estimators_scaler at 0x2b4eb0c54410&gt;</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/predict.html#ConfigOptimizer.objective_average_times_seen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.ConfigOptimizer.objective_average_times_seen" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><tt class="descname">objective_average_times_seen</tt><big>(</big><em>n_features</em>, <em>coef=2.5</em>, <em>max_feature_scaler=&lt;function max_feature_scaler at 0x2aaf2826d578&gt;</em>, <em>n_estimators_scaler=&lt;function n_estimators_scaler at 0x2aaf2826d5f0&gt;</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/predict.html#ConfigOptimizer.objective_average_times_seen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.ConfigOptimizer.objective_average_times_seen" title="Permalink to this definition">¶</a></dt>
 <dd><p>I have no idea what this does. &#64;mlovci</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -415,7 +415,7 @@ Default: {}</p>
 <dl class="attribute">
 <dt id="flotilla.compute.predict.PredictorBase.predictor">
 <tt class="descname">predictor</tt><a class="reference internal" href="_modules/flotilla/compute/predict.html#PredictorBase.predictor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.PredictorBase.predictor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Thin reference to dataset.predictor</p>
+<dd><p>Thin reference to <tt class="docutils literal"><span class="pre">dataset.predictor</span></tt></p>
 </dd></dl>
 
 <dl class="attribute">
@@ -453,12 +453,47 @@ Default: {}</p>
 
 <dl class="class">
 <dt id="flotilla.compute.predict.PredictorConfig">
-<em class="property">class </em><tt class="descclassname">flotilla.compute.predict.</tt><tt class="descname">PredictorConfig</tt><big>(</big><em>predictor_name</em>, <em>obj</em>, <em>predictor_scoring_fun=&lt;function default_predictor_scoring_fun at 0x2b4eb08102a8&gt;</em>, <em>score_cutoff_fun=&lt;function default_score_cutoff_fun at 0x2b4eb0c540c8&gt;</em>, <em>n_features_dependent_kwargs=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/predict.html#PredictorConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.PredictorConfig" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">flotilla.compute.predict.</tt><tt class="descname">PredictorConfig</tt><big>(</big><em>predictor_name</em>, <em>obj</em>, <em>predictor_scoring_fun=&lt;function default_predictor_scoring_fun at 0x2aaf28265488&gt;</em>, <em>score_cutoff_fun=&lt;function default_score_cutoff_fun at 0x2aaf2826d2a8&gt;</em>, <em>n_features_dependent_kwargs=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/predict.html#PredictorConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.PredictorConfig" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
 <p>A configuration for a predictor, names and tracks/sets parameters for predictor
 Dynamically configures some args for predictor based on n_features (if this attribute exists)
 set general parameters with __init__
 yield instances, set by your parameters, with __call__</p>
+<p>Construct a predictor configuration</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>predictor_name</strong> : str</p>
+<blockquote>
+<div><p>A name for this predictor</p>
+</div></blockquote>
+<p><strong>obj</strong> : sklearn predictor</p>
+<blockquote>
+<div><p>A scikit-learn predictor, eg sklearn.ensemble.ExtraTreesClassifier</p>
+</div></blockquote>
+<p><strong>predictor_scoring_fun</strong> : function, optional</p>
+<blockquote>
+<div><p>A function which returns the scores of a predictor. May be
+different for different predictor objects</p>
+</div></blockquote>
+<p><strong>score_cutoff_fun</strong> : function, optional</p>
+<blockquote>
+<div><p>A function which returns the minimum &#8220;good&#8221; score of a predictor</p>
+</div></blockquote>
+<p><strong>n_features_dependent_kwargs</strong> : dict, optional (default None)</p>
+<blockquote>
+<div><p>A dictionary of (key, function) arguments for the classifier, for
+keyword arguments that are dependent on the dataset input size</p>
+</div></blockquote>
+<p><strong>kwargs</strong> : other keyword arguments, optional</p>
+<blockquote class="last">
+<div><p>All other keyword arguments are passed along to the predictor</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="flotilla.compute.predict.PredictorConfig.parameters">
 <tt class="descname">parameters</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/predict.html#PredictorConfig.parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.PredictorConfig.parameters" title="Permalink to this definition">¶</a></dt>
@@ -566,6 +601,9 @@ What is predictor_config vs new_predictor_config? Why are they separate?</p>
 </tr>
 </tbody>
 </table>
+<p>Construct a predictor configuration manager with
+ExtraTreesClassifier, ExtraTreesRegressor, GradientBoostingClassifier,
+and GradientBoostingRegressor as default predictors.</p>
 <dl class="attribute">
 <dt id="flotilla.compute.predict.PredictorConfigManager.builtin_predictor_configs">
 <tt class="descname">builtin_predictor_configs</tt><a class="reference internal" href="_modules/flotilla/compute/predict.html#PredictorConfigManager.builtin_predictor_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.PredictorConfigManager.builtin_predictor_configs" title="Permalink to this definition">¶</a></dt>
@@ -786,6 +824,30 @@ feature &#8220;x&#8221; number of times?</p>
 <dt id="flotilla.compute.predict.PredictorDataSet">
 <em class="property">class </em><tt class="descclassname">flotilla.compute.predict.</tt><tt class="descname">PredictorDataSet</tt><big>(</big><em>data</em>, <em>trait</em>, <em>data_name='MyDataset'</em>, <em>categorical_trait=False</em>, <em>predictor_config_manager=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/predict.html#PredictorDataSet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.PredictorDataSet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<p>Store a (n_samples, n_features) matrix and (n_samples,) trait pair</p>
+<p>In scikit-learn parlance, store an X (data of independent variables)
+and y (target prediction) pair</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A (n_samples, n_features) datafarme</p>
+</div></blockquote>
+<p><strong>trait</strong> : pandas.Series</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><strong>data - X</strong></p>
+<blockquote class="last">
+<div><p>trait - y
+data_name - name to store this dataset, to be used with trait.name
+categorical_trait - is y categorical?</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="flotilla.compute.predict.PredictorDataSet.X">
 <tt class="descname">X</tt><a class="reference internal" href="_modules/flotilla/compute/predict.html#PredictorDataSet.X"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.PredictorDataSet.X" title="Permalink to this definition">¶</a></dt>

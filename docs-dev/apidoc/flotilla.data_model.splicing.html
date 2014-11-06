@@ -157,6 +157,29 @@
 <dt id="flotilla.data_model.splicing.DownsampledSplicingData">
 <em class="property">class </em><tt class="descclassname">flotilla.data_model.splicing.</tt><tt class="descname">DownsampledSplicingData</tt><big>(</big><em>df</em>, <em>sample_descriptors</em><big>)</big><a class="reference internal" href="../_modules/flotilla/data_model/splicing.html#DownsampledSplicingData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.DownsampledSplicingData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../flotilla.data_model.base.html#flotilla.data_model.base.BaseData" title="flotilla.data_model.base.BaseData"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.data_model.base.BaseData</span></tt></a></p>
+<p>Instantiate an object of downsampled splicing data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>df</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A &#8220;tall&#8221; dataframe of all miso summary events, with the usual
+MISO summary columns, and these are required: &#8216;splice_type&#8217;,
+&#8216;probability&#8217;, &#8216;iteration.&#8217; Where &#8220;probability&#8221; indicates the
+randomly sampling probability from the bam file used to generate
+these reads, and &#8220;iteration&#8221; indicates the integer iteration
+performed, e.g. if multiple resamplings were performed.</p>
+</div></blockquote>
+<p class="last"><strong>experiment_design_data: pandas.DataFrame</strong></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>Warning: this data is usually HUGE (we&#8217;re taking like 10GB raw .tsv
+files) so make sure you have the available memory for dealing with
+these.</p>
 <dl class="attribute">
 <dt id="flotilla.data_model.splicing.DownsampledSplicingData.binned_reducer">
 <tt class="descname">binned_reducer</tt><em class="property"> = None</em><a class="headerlink" href="#flotilla.data_model.splicing.DownsampledSplicingData.binned_reducer" title="Permalink to this definition">¶</a></dt>
@@ -241,12 +264,53 @@ shared by at least &#8216;min_iter_shared&#8217;</p>
 <dd><p>Bases: <a class="reference internal" href="../flotilla.data_model.splicing.html#flotilla.data_model.splicing.SplicingData" title="flotilla.data_model.splicing.SplicingData"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.data_model.splicing.SplicingData</span></tt></a></p>
 <p>Class to hold splice junction information from SJ.out.tab files from
 STAR</p>
+<p>Constructor for SpliceJunctionData</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data, experiment_design_data</strong></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="class">
 <dt id="flotilla.data_model.splicing.SplicingData">
 <em class="property">class </em><tt class="descclassname">flotilla.data_model.splicing.</tt><tt class="descname">SplicingData</tt><big>(</big><em>data</em>, <em>feature_data=None</em>, <em>binsize=0.1</em>, <em>outliers=None</em>, <em>feature_rename_col=None</em>, <em>feature_ignore_subset_cols=None</em>, <em>excluded_max=0.2</em>, <em>included_min=0.8</em>, <em>pooled=None</em>, <em>predictor_config_manager=None</em>, <em>technical_outliers=None</em>, <em>minimum_samples=0</em><big>)</big><a class="reference internal" href="../_modules/flotilla/data_model/splicing.html#SplicingData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../flotilla.data_model.base.html#flotilla.data_model.base.BaseData" title="flotilla.data_model.base.BaseData"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.data_model.base.BaseData</span></tt></a></p>
+<p>Instantiate a object for percent spliced in (PSI) scores</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A [n_events, n_samples] dataframe of data events</p>
+</div></blockquote>
+<p><strong>n_components</strong> : int</p>
+<blockquote>
+<div><p>Number of components to use in the reducer</p>
+</div></blockquote>
+<p><strong>binsize</strong> : float</p>
+<blockquote>
+<div><p>Value between 0 and 1, the bin size for binning the study_data
+scores</p>
+</div></blockquote>
+<p><strong>excluded_max</strong> : float</p>
+<blockquote>
+<div><p>Maximum value for the &#8220;excluded&#8221; bin of psi scores. Default 0.2.</p>
+</div></blockquote>
+<p><strong>included_max</strong> : float</p>
+<blockquote class="last">
+<div><p>Minimum value for the &#8220;included&#8221; bin of psi scores. Default 0.8.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>&#8216;thresh&#8217; from BaseData is not used.</p>
 <dl class="method">
 <dt id="flotilla.data_model.splicing.SplicingData.binify">
 <tt class="descname">binify</tt><big>(</big><em>data</em><big>)</big><a class="reference internal" href="../_modules/flotilla/data_model/splicing.html#SplicingData.binify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.binify" title="Permalink to this definition">¶</a></dt>

@@ -156,10 +156,39 @@
 <dt id="flotilla.compute.splicing.Modalities">
 <em class="property">class </em><tt class="descclassname">flotilla.compute.splicing.</tt><tt class="descname">Modalities</tt><big>(</big><em>excluded_max=0.2</em>, <em>included_min=0.8</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/splicing.html#Modalities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.Modalities" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<p>Estimate the modality of a splicing event</p>
+<p>This is based off of the &#8220;percent spliced-in&#8221; (PSI) score of a splicing
+event, for example in a cassette exon event, how many transcripts use the
+cassette exon gives the &#8220;PSI&#8221; (<span class="math">\(\Psi\)</span>) score of that splicing event</p>
+<p>Possible modalities include:
+- Excluded (most cells have excluded the exon)
+- Middle (most cells have both the included and excluded isoforms)
+- Included (most cells have included the exon)
+- Bimodal (approximately a 50:50 distribution of inclusoion:exclusion)
+- Uniform (uniform distribution of exon usage)</p>
+<p>The way that these modalities are calculated is by binning each splicing
+event across all cells from (0, excluded_max, included_min, 1), and finding
+the Jensen-Shannon Divergence that event, and each of the five modalities</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>excluded_max</strong> : float, optional (default=0.2)</p>
+<blockquote>
+<div><p>Maximum value of excluded bin</p>
+</div></blockquote>
+<p><strong>included_min</strong> : float, optional (default=0.8)</p>
+<blockquote class="last">
+<div><p>Minimum value of included bin</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="flotilla.compute.splicing.Modalities.assignments">
 <tt class="descname">assignments</tt><big>(</big><em>sqrt_jsd_modalities</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/splicing.html#Modalities.assignments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.Modalities.assignments" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the modality which has the smallest square root JSD to each event</p>
+<dd><p>Return the modality with the smallest square root JSD to each event</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -254,8 +283,27 @@ dict(n_iter=100, thresh=0.6, minimum_samples=10)</p>
 <dl class="method">
 <dt id="flotilla.compute.splicing.Modalities.sqrt_jsd_modalities">
 <tt class="descname">sqrt_jsd_modalities</tt><big>(</big><em>binned</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/splicing.html#Modalities.sqrt_jsd_modalities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.Modalities.sqrt_jsd_modalities" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the square root of the JSD of each splicing event versus
-all the modalities. Use square root of JSD because it&#8217;s a metric.</p>
+<dd><p>Calculate JSD between all binned splicing events and true modalities</p>
+<p>Use square root of JSD because it&#8217;s a metric.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>binned</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A (n_bins, n_events) sized DataFrame of binned splicing events</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>sqrt_jsd</strong> : pandas.DataFrame</p>
+<blockquote class="last">
+<div><p>A (n_modalities, n_events) sized DataFrame of the square root JSD
+between splicing events and all modalities</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">

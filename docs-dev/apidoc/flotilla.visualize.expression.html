@@ -157,6 +157,53 @@
 <dt id="flotilla.visualize.expression.TwoWayScatterViz">
 <em class="property">class </em><tt class="descclassname">flotilla.visualize.expression.</tt><tt class="descname">TwoWayScatterViz</tt><big>(</big><em>sample1_name</em>, <em>sample2_name</em>, <em>df</em>, <em>p_value_cutoff=0.001</em>, <em>local_fraction=0.1</em>, <em>bonferroni=True</em>, <em>fdr=None</em>, <em>dtype='RPKM'</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/expression.html#TwoWayScatterViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.expression.TwoWayScatterViz" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../flotilla.compute.expression.html#flotilla.compute.expression.TwoWayGeneComparisonLocal" title="flotilla.compute.expression.TwoWayGeneComparisonLocal"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.expression.TwoWayGeneComparisonLocal</span></tt></a></p>
+<p>Run a two-sample RPKM experiment.</p>
+<p>??? Does this return anything, plot anything??? write any files...???</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>sample1_name</strong> : str</p>
+<blockquote>
+<div><p>Name of the first (control) sample. Must be a row name (index) in
+df. Plotted on the x-axis.</p>
+</div></blockquote>
+<p><strong>sample2_name</strong> : str</p>
+<blockquote>
+<div><p>Name of the second (treatment) sample. Must be a row name (index)
+in df. Plotted on the y-axis.</p>
+</div></blockquote>
+<p><strong>df</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A samples (rows) x features (columns) pandas DataFrame of
+expression values</p>
+</div></blockquote>
+<p><strong>p_value_cutoff</strong> : float, optional</p>
+<blockquote>
+<div><p>Cutoff for the p-values. Default 0.001.</p>
+</div></blockquote>
+<p><strong>local_fraction</strong> : float, optional</p>
+<blockquote>
+<div><p>What fraction of genes to use for <em>local</em> z-score calculation.
+Default 0.1</p>
+</div></blockquote>
+<p><strong>bonferonni</strong> : bool, optional</p>
+<blockquote>
+<div><p>Whether or not to use the Bonferonni correction on p-values</p>
+</div></blockquote>
+<p><strong>fdr</strong> : ???, optional</p>
+<blockquote>
+<div><p>benjamini-hochberg FDR filtering - check result, proceed with
+caution. sometimes breaks :(</p>
+</div></blockquote>
+<p><strong>dtype</strong> : str, optional</p>
+<blockquote class="last">
+<div><p>Data type</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="flotilla.visualize.expression.TwoWayScatterViz.plot">
 <tt class="descname">plot</tt><big>(</big><em>ax=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/expression.html#TwoWayScatterViz.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.expression.TwoWayScatterViz.plot" title="Permalink to this definition">¶</a></dt>

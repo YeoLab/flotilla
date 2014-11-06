@@ -159,6 +159,121 @@
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
 <p>Plots the reduced space from a decomposed dataset. Does not perform any
 reductions of its own</p>
+<p>Plot the results of a decomposition visualization</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>reduced_space</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A (n_samples, n_dimensions) DataFrame of the post-dimensionality
+reduction data</p>
+</div></blockquote>
+<p><strong>components_</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A (n_features, n_dimensions) DataFrame of how much each feature
+contributes to the components (trailing underscore to be
+consistent with scikit-learn)</p>
+</div></blockquote>
+<p><strong>explained_variance_ratio_</strong> : pandas.Series</p>
+<blockquote>
+<div><p>A (n_dimensions,) Series of how much variance each component
+explains. (trailing underscore to be consistent with scikit-learn)</p>
+</div></blockquote>
+<p><strong>feature_renamer</strong> : function, optional</p>
+<blockquote>
+<div><p>A function which takes the name of the feature and renames it,
+e.g. from an ENSEMBL ID to a HUGO known gene symbol. If not
+provided, the original name is used.</p>
+</div></blockquote>
+<p><strong>groupby</strong> : mapping function | dict, optional</p>
+<blockquote>
+<div><p>A mapping of the samples to a label, e.g. sample IDs to
+phenotype, for the violinplots. If None, all samples are treated
+the same and are colored the same.</p>
+</div></blockquote>
+<p><strong>singles</strong> : pandas.DataFrame, optional</p>
+<blockquote>
+<div><p>For violinplots only. If provided and &#8216;plot_violins&#8217; is True,
+will plot the raw (not reduced) measurement values as violin plots.</p>
+</div></blockquote>
+<p><strong>pooled</strong> : pandas.DataFrame, optional</p>
+<blockquote>
+<div><p>For violinplots only. If provided, pooled samples are plotted as
+black dots within their label.</p>
+</div></blockquote>
+<p><strong>outliers</strong> : pandas.DataFrame, optional</p>
+<blockquote>
+<div><p>For violinplots only. If provided, outlier samples are plotted as
+a grey shadow within their label.</p>
+</div></blockquote>
+<p><strong>featurewise</strong> : bool, optional</p>
+<blockquote>
+<div><p>If True, then the &#8220;samples&#8221; are features, e.g. genes instead of
+samples, and the &#8220;features&#8221; are the samples, e.g. the cells
+instead of the gene ids. Essentially, the transpose of the
+original matrix. If True, then violins aren&#8217;t plotted. (default
+False)</p>
+</div></blockquote>
+<p><strong>order</strong> : list-like</p>
+<blockquote>
+<div><p>The order of the labels for the violinplots, e.g. if the data is
+from a differentiation timecourse, then this would be the labels
+of the phenotypes, in the differentiation order.</p>
+</div></blockquote>
+<p><strong>violinplot_kws</strong> : dict</p>
+<blockquote>
+<div><p>Any additional parameters to violinplot</p>
+</div></blockquote>
+<p><strong>data_type</strong> : &#8216;expression&#8217; | &#8216;splicing&#8217;, optional</p>
+<blockquote>
+<div><p>For violinplots only. The kind of data that was originally used
+for the reduction. (default &#8216;expression&#8217;)</p>
+</div></blockquote>
+<p><strong>label_to_color</strong> : dict, optional</p>
+<blockquote>
+<div><p>A mapping of the label, e.g. the phenotype, to the desired
+plotting color (default None, auto-assigned with the groupby)</p>
+</div></blockquote>
+<p><strong>label_to_marker</strong> : dict, optional</p>
+<blockquote>
+<div><p>A mapping of the label, e.g. the phenotype, to the desired
+plotting symbol (default None, auto-assigned with the groupby)</p>
+</div></blockquote>
+<p><strong>scale_by_variance</strong> : bool, optional</p>
+<blockquote>
+<div><p>If True, scale the x- and y-axes by their <a href="#id1"><span class="problematic" id="id2">explained_variance_ratio_</span></a>
+(default True)</p>
+</div></blockquote>
+<p><strong>{x,y}_pc</strong> : str, optional</p>
+<blockquote>
+<div><p>Principal component to plot on the x- and y-axis. (default &#8220;pc_1&#8221;
+and &#8220;pc_2&#8221;)</p>
+</div></blockquote>
+<p><strong>n_vectors</strong> : int, optional</p>
+<blockquote>
+<div><p>Number of vectors to plot of the principal components. (default 20)</p>
+</div></blockquote>
+<p><strong>distance</strong> : &#8216;L1&#8217; | &#8216;L2&#8217;, optional</p>
+<blockquote>
+<div><p>The distance metric to use to plot the vector lengths. L1 is
+&#8220;Cityblock&#8221;, i.e. the sum of the x and y coordinates, and L2 is
+the traditional Euclidean distance. (default &#8220;L1&#8221;)</p>
+</div></blockquote>
+<p><strong>n_top_pc_features</strong> : int, optional</p>
+<blockquote>
+<div><p>THe number of top features from the principal components to plot.
+(default 50)</p>
+</div></blockquote>
+<p><strong>max_char_width</strong> : int, optional</p>
+<blockquote class="last">
+<div><p>Maximum character width of a feature name. Useful for crazy long
+feature IDs like MISO IDs</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="flotilla.visualize.decomposition.DecompositionViz.plot_explained_variance">
 <tt class="descname">plot_explained_variance</tt><big>(</big><em>title='PCA explained variance'</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/decomposition.html#DecompositionViz.plot_explained_variance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.decomposition.DecompositionViz.plot_explained_variance" title="Permalink to this definition">¶</a></dt>

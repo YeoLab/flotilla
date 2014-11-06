@@ -166,29 +166,24 @@
 <p>This is a minor release, with some breaking changes from v0.1.1.</p>
 <div class="section" id="new-features">
 <h3>New features<a class="headerlink" href="#new-features" title="Permalink to this headline">¶</a></h3>
-<ul>
-<li><p class="first">Plot the expression or splicing of two <em>samples</em> with
-<a class="reference internal" href="flotilla.data_model.study.html#flotilla.data_model.study.Study.plot_two_samples" title="flotilla.data_model.study.Study.plot_two_samples"><tt class="xref py py-meth docutils literal"><span class="pre">Study.plot_two_samples()</span></tt></a></p>
-</li>
-<li><p class="first">Plot the expression or splicing of two <em>features</em> with
-<a class="reference internal" href="flotilla.data_model.study.html#flotilla.data_model.study.Study.plot_two_features" title="flotilla.data_model.study.Study.plot_two_features"><tt class="xref py py-meth docutils literal"><span class="pre">Study.plot_two_features()</span></tt></a></p>
-</li>
-<li><p class="first">Detect outliers with ...</p>
-</li>
-<li><p class="first"><a class="reference internal" href="flotilla.data_model.study.html#flotilla.data_model.study.Study" title="flotilla.data_model.study.Study"><tt class="xref py py-class docutils literal"><span class="pre">Study</span></tt></a> doesn&#8217;t filter out the pooled or outlier samples from the
+<ul class="simple">
+<li>Plot the expression or splicing of two <em>samples</em> with
+<a class="reference internal" href="flotilla.data_model.study.html#flotilla.data_model.study.Study.plot_two_samples" title="flotilla.data_model.study.Study.plot_two_samples"><tt class="xref py py-meth docutils literal"><span class="pre">Study.plot_two_samples()</span></tt></a></li>
+<li>Plot the expression or splicing of two <em>features</em> with
+<a class="reference internal" href="flotilla.data_model.study.html#flotilla.data_model.study.Study.plot_two_features" title="flotilla.data_model.study.Study.plot_two_features"><tt class="xref py py-meth docutils literal"><span class="pre">Study.plot_two_features()</span></tt></a></li>
+<li>Detect outliers with ...</li>
+<li><a class="reference internal" href="flotilla.data_model.study.html#flotilla.data_model.study.Study" title="flotilla.data_model.study.Study"><tt class="xref py py-class docutils literal"><span class="pre">Study</span></tt></a> doesn&#8217;t filter out the pooled or outlier samples from the
 data, only technical outliers with fewer reads than specified in the
-argument <tt class="docutils literal"><span class="pre">mapping_stats_min_reads</span></tt>.</p>
-</li>
-<li><p class="first">To filter expression or splicing data on the number of samples that must
+argument <tt class="docutils literal"><span class="pre">mapping_stats_min_reads</span></tt>.</li>
+<li>To filter expression or splicing data on the number of samples that must
 detect each feature, you can specify <tt class="docutils literal"><span class="pre">expression_thresh</span></tt>, and
-<tt class="docutils literal"><span class="pre">metadata_min_samples</span></tt> in the <a class="reference internal" href="flotilla.data_model.study.html#flotilla.data_model.study.Study" title="flotilla.data_model.study.Study"><tt class="xref py py-class docutils literal"><span class="pre">Study</span></tt></a> constructor.
-* For example, if <tt class="docutils literal"><span class="pre">expression_thresh=1</span></tt> and <tt class="docutils literal"><span class="pre">metadata_min_samples=3</span></tt>,</p>
-<blockquote>
-<div><p>then we will only take genes which have expression values greater than
+<tt class="docutils literal"><span class="pre">metadata_min_samples</span></tt> in the <a class="reference internal" href="flotilla.data_model.study.html#flotilla.data_model.study.Study" title="flotilla.data_model.study.Study"><tt class="xref py py-class docutils literal"><span class="pre">Study</span></tt></a> constructor.<ul>
+<li>For example, if <tt class="docutils literal"><span class="pre">expression_thresh=1</span></tt> and <tt class="docutils literal"><span class="pre">metadata_min_samples=3</span></tt>,
+then we will only take genes which have expression values greater than
 1 in at least 3 samples. Additionally, we will also take splicing events
 which were detected in at least three cells, since
-<tt class="docutils literal"><span class="pre">metadata_min_samples</span></tt> applies to <em>all</em> data types.</p>
-</div></blockquote>
+<tt class="docutils literal"><span class="pre">metadata_min_samples</span></tt> applies to <em>all</em> data types.</li>
+</ul>
 </li>
 </ul>
 </div>
@@ -203,9 +198,9 @@ singles, and outliers</li>
 data. For example, before removing features detected in fewer than 3 samples
 with expression &gt; 1.</li>
 <li><a class="reference internal" href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData" title="flotilla.data_model.base.BaseData"><tt class="xref py py-class docutils literal"><span class="pre">BaseData</span></tt></a> now has the attributes
-<a class="reference internal" href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData.singles" title="flotilla.data_model.base.BaseData.singles"><tt class="xref py py-attr docutils literal"><span class="pre">BaseData.singles</span></tt></a>, <tt class="xref py py-attr docutils literal"><span class="pre">BaseData.pooled</span></tt>, and
+<a class="reference internal" href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData.singles" title="flotilla.data_model.base.BaseData.singles"><tt class="xref py py-attr docutils literal"><span class="pre">BaseData.singles</span></tt></a>, <a class="reference internal" href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData.pooled" title="flotilla.data_model.base.BaseData.pooled"><tt class="xref py py-attr docutils literal"><span class="pre">BaseData.pooled</span></tt></a>, and
 <a class="reference internal" href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData.outliers" title="flotilla.data_model.base.BaseData.outliers"><tt class="xref py py-attr docutils literal"><span class="pre">BaseData.outliers</span></tt></a> which are on-the-fly subsets of
-<tt class="xref py py-attr docutils literal"><span class="pre">BaseData.data</span></tt>. This is to maintain data, meaning if
+<tt class="xref py py-attr docutils literal"><span class="pre">BaseData.data</span></tt>. This is to maintain data provenance, meaning if
 &#8220;outliers&#8221; is changed, this is also changed.</li>
 <li>In <a class="reference internal" href="flotilla.data_model.study.html#flotilla.data_model.study.Study" title="flotilla.data_model.study.Study"><tt class="xref py py-class docutils literal"><span class="pre">Study</span></tt></a>, you now must specify <tt class="docutils literal"><span class="pre">expression_feature_rename_col</span></tt>,
 <tt class="docutils literal"><span class="pre">splicing_feature_rename_col</span></tt>, <tt class="docutils literal"><span class="pre">mapping_stats_number_mapped_col</span></tt>

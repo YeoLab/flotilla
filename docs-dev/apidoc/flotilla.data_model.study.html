@@ -161,6 +161,127 @@ heavier in terms of data load</p>
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
 <p>A biological study, with associated metadata, expression, and splicing
 data.</p>
+<p>Construct a biological study</p>
+<p>This class only accepts data, no filenames. All data must already
+have been read in and exist as Python objects.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>sample_metadata</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>The only required parameter. Samples as the index, with features as
+columns. Required column: &#8220;phenotype&#8221;. If there is a boolean
+column &#8220;pooled&#8221;, this will be used to separate pooled from single
+cells. Similarly, the column &#8220;outliers&#8221; will also be used to
+separate outlier cells from the rest.</p>
+</div></blockquote>
+<p><strong>version</strong> : str</p>
+<blockquote>
+<div><p>A string describing the semantic version of the data. Must be in:
+major.minor.patch format, as the &#8220;patch&#8221; number will be increased
+if you change something in the study and then study.save() it.
+(default &#8220;0.1.0&#8221;)</p>
+</div></blockquote>
+<p><strong>expression_data</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>Samples x feature dataframe of gene expression measurements,
+e.g. from an RNA-Seq or a microarray experiment. Assumed to be
+log-transformed, i.e. you took the log of it. (default None)</p>
+</div></blockquote>
+<p><strong>expression_feature_data</strong> : pandas.DatFrame</p>
+<blockquote>
+<div><p>Features x annotations dataframe describing other parameters
+of the gene expression features, e.g. mapping Ensembl IDs to gene
+symbols or gene biotypes. (default None)</p>
+</div></blockquote>
+<p><strong>expression_feature_rename_col</strong> : str</p>
+<blockquote>
+<div><p>A column name in the expression_feature_data dataframe that you&#8217;d
+like to rename the expression features to, in the plots. For
+example, if your gene IDs are Ensembl IDs, but you want to plot
+UCSC IDs, make sure the column you want, e.g. &#8220;ucsc_id&#8221; is in your
+dataframe and specify that. (default &#8220;gene_name&#8221;)</p>
+</div></blockquote>
+<p><strong>expression_log_base</strong> : float</p>
+<blockquote>
+<div><p>If you want to log-transform your expression data (and it&#8217;s not
+already log-transformed), use this number as the base of the
+transform. E.g. expression_log_base=10 will take the log10 of
+your data. (default None)</p>
+</div></blockquote>
+<p><strong>thresh</strong> : float</p>
+<blockquote>
+<div><p>Minimum (non log-transformed) expression value. (default -inf)</p>
+</div></blockquote>
+<p><strong>expression_plus_one</strong> : bool</p>
+<blockquote>
+<div><p>Whether or not to add 1 to the expression data. (default False)</p>
+</div></blockquote>
+<p><strong>splicing_data</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>Samples x feature dataframe of percent spliced in scores, e.g. as
+measured by the program MISO. Assumed that these values only fall
+between 0 and 1.</p>
+</div></blockquote>
+<p><strong>splicing_feature_data</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>features x other_features dataframe describing other parameters
+of the splicing features, e.g. mapping MISO IDs to Ensembl IDs or
+gene symbols or transcript types</p>
+</div></blockquote>
+<p><strong>splicing_feature_rename_col</strong> : str</p>
+<blockquote>
+<div><p>A column name in the splicing_feature_data dataframe that you&#8217;d
+like to rename the splicing features to, in the plots. For
+example, if your splicing IDs are MISO IDs, but you want to plot
+Ensembl IDs, make sure the column you want, e.g. &#8220;ensembl_id&#8221; is
+in your dataframe and specify that. Default &#8220;gene_name&#8221;.</p>
+</div></blockquote>
+<p><strong>mapping_stats_data</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>Samples x feature dataframe of mapping stats measurements.
+Currently, this</p>
+</div></blockquote>
+<p><strong>mapping_stats_number_mapped_col</strong> : str</p>
+<blockquote>
+<div><p>A column name in the mapping_stats_data which specifies the
+number of (uniquely or not) mapped reads. Default &#8220;Uniquely
+mapped reads number&#8221;</p>
+</div></blockquote>
+<p><strong>spikein_data</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>samples x features DataFrame of spike-in expression values</p>
+</div></blockquote>
+<p><strong>spikein_feature_data</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>Features x other_features dataframe, e.g. of the molecular
+concentration of particular spikein transcripts</p>
+</div></blockquote>
+<p><strong>drop_outliers</strong> : bool</p>
+<blockquote>
+<div><p>Whether or not to drop samples indicated as outliers in the
+sample_metadata from the other data, i.e. with a column
+named &#8216;outlier&#8217; in sample_metadata, then remove those
+samples from expression_data for further analysis</p>
+</div></blockquote>
+<p><strong>species</strong> : str</p>
+<blockquote>
+<div><p>Name of the species and genome version, e.g. &#8216;hg19&#8217; or &#8216;mm10&#8217;.</p>
+</div></blockquote>
+<p><strong>gene_ontology_data</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>Gene ids x ontology categories dataframe used for GO analysis.</p>
+</div></blockquote>
+<p><strong>metadata_pooled_col</strong> : str</p>
+<blockquote class="last">
+<div><p>Column in metadata_data which specifies as a boolean
+whether or not this sample was pooled.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="flotilla.data_model.study.Study.celltype_event_counts">
 <tt class="descname">celltype_event_counts</tt><a class="reference internal" href="../_modules/flotilla/data_model/study.html#Study.celltype_event_counts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.celltype_event_counts" title="Permalink to this definition">¶</a></dt>
@@ -597,7 +718,7 @@ e.g. &#8220;ENSG00000100320&#8221;</p>
 
 <dl class="attribute">
 <dt id="flotilla.data_model.study.Study.readers">
-<tt class="descname">readers</tt><em class="property"> = {'tsv': &lt;function load_tsv at 0x2b4eb0810b18&gt;, 'json': &lt;function load_json at 0x2b4eb0810b90&gt;, 'csv': &lt;function load_csv at 0x2b4eb0810c80&gt;, 'gzip_pickle_df': &lt;function load_gzip_pickle_df at 0x2b4eb0810a28&gt;, 'pickle_df': &lt;function load_pickle_df at 0x2b4eb0810938&gt;}</em><a class="headerlink" href="#flotilla.data_model.study.Study.readers" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">readers</tt><em class="property"> = {'tsv': &lt;function load_tsv at 0x2aaf28265cf8&gt;, 'json': &lt;function load_json at 0x2aaf28265d70&gt;, 'csv': &lt;function load_csv at 0x2aaf28265e60&gt;, 'gzip_pickle_df': &lt;function load_gzip_pickle_df at 0x2aaf28265c08&gt;, 'pickle_df': &lt;function load_pickle_df at 0x2aaf28265b18&gt;}</em><a class="headerlink" href="#flotilla.data_model.study.Study.readers" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
