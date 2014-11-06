@@ -163,7 +163,7 @@ html_theme_options = {
     # an arbitrary url.
     'navbar_links': [
         ("Tutorial", "tutorial"),
-        ("Gallery", "gallery", 1),
+        ("Gallery", "gallery/index.html", 1),
         ("YeoLab@UCSD", "http://yeolab.ucsd.edu", True),
     ],
 
