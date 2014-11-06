@@ -1199,6 +1199,17 @@ class Study(object):
         Raises
         ------
         """
+        if data_type == 'expression':
+            self.expression.plot_two_features(
+                feature1, feature2, groupby=self.sample_id_to_phenotype,
+                label_to_color=self.phenotype_to_color,
+                label_to_marker=self.phenotype_to_marker)
+        if data_type == 'splicing':
+            self.splicing.plot_two_features(
+                feature1, feature2, groupby=self.sample_id_to_phenotype,
+                label_to_color=self.phenotype_to_color,
+                label_to_marker=self.phenotype_to_marker)
+
 
     def save(self, name, flotilla_dir=FLOTILLA_DOWNLOAD_DIR):
 
