@@ -10,7 +10,9 @@ New features
   :py:meth:`.Study.plot_two_samples`
 - Plot the expression or splicing of two *features* with
   :py:meth:`.Study.plot_two_features`
-- Detect outliers with ...
+- Detect outliers with :py:meth:`Study.interactive_choose_outliers` which
+  performs a ``OneClassSVM`` on the PCA-reduced space of data (either
+  expression or splicing), using the first three components
 - :py:class:`.Study` doesn't filter out the pooled or outlier samples from the
   data, only technical outliers with fewer reads than specified in the
   argument ``mapping_stats_min_reads``.
