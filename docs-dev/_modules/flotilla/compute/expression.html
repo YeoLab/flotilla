@@ -71,17 +71,12 @@
   <ul class="dropdown-menu globaltoc"
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../flotilla.html">flotilla package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#subpackages">Subpackages</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#module-flotilla">Module contents</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="../../../whatsnew.html">What&#8217;s new in the package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-0-november-1st-2014">v0.2.0 (November 1st, 2014)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installing flotilla</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Docker Installation Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html#os-x-installation-instructions">OS X Installation instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../api.html#general-use-plots">General use plots</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api.html#interactive-plots">Interactive plots</a></li>
@@ -91,6 +86,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../create_datapackage.html">Create your very own datapackage!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Flotilla tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#install-flotilla">Install flotilla</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#create-a-datapackage">Create a datapackage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#processing-data">Processing data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#plotting-functions">Plotting functions</a></li>
@@ -201,9 +197,12 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample1_name</span><span class="p">,</span> <span class="n">sample2_name</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">p_value_cutoff</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>
                  <span class="n">local_fraction</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">bonferroni</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">fdr</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">dtype</span><span class="o">=</span><span class="s">&quot;RPKM&quot;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Run a two-sample RPKM experiment.</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        ??? Does this return anything, plot anything??? write any files...???</span>
+<span class="sd">        Plots a scatter-plot of sample1 vs sample2, taken from df.</span>
+<span class="sd">        Calculates differentially expressed genes with a Z-test from</span>
+<span class="sd">        the closest (local_fraction * 100)%  points. Stores result from</span>
+<span class="sd">        statistical calculations in self.result_</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>

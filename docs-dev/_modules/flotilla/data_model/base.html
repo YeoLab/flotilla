@@ -71,17 +71,12 @@
   <ul class="dropdown-menu globaltoc"
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../flotilla.html">flotilla package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#subpackages">Subpackages</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#module-flotilla">Module contents</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="../../../whatsnew.html">What&#8217;s new in the package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-0-november-1st-2014">v0.2.0 (November 1st, 2014)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installing flotilla</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Docker Installation Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html#os-x-installation-instructions">OS X Installation instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../api.html#general-use-plots">General use plots</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api.html#interactive-plots">Interactive plots</a></li>
@@ -91,6 +86,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../create_datapackage.html">Create your very own datapackage!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Flotilla tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#install-flotilla">Install flotilla</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#create-a-datapackage">Create a datapackage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#processing-data">Processing data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#plotting-functions">Plotting functions</a></li>
@@ -430,7 +426,7 @@
         <span class="sd">&quot;&quot;&quot;A pandas Series of the original feature ids to the renamed ids&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_rename_col</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
-        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
                              <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
 </div>
@@ -459,8 +455,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;{} is not a valid feature identifier (it may &#39;</span>
                              <span class="s">&#39;not have been measured in this dataset!)&#39;</span>
-                             <span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">feature_id</span><span class="p">))</span>
+                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">feature_id</span><span class="p">))</span>
 </div>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_var_cut</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -906,7 +901,7 @@
     <span class="c">#                                 pcolormesh_kws=dict(linewidth=0.01),</span>
     <span class="c">#                                 figsize=figsize)</span>
 
-    <span class="nd">@memoize</span>
+    <span class="c">#@memoize</span>
 <div class="viewcode-block" id="BaseData.detect_outliers"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.detect_outliers">[docs]</a>    <span class="k">def</span> <span class="nf">detect_outliers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                         <span class="n">sample_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">feature_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                         <span class="n">featurewise</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
@@ -932,16 +927,23 @@
 
         <span class="n">outlier_detector</span> <span class="o">=</span> <span class="n">OutlierDetection</span><span class="p">(</span><span class="n">reducer</span><span class="o">.</span><span class="n">reduced_space</span><span class="p">,</span>
                                             <span class="n">method</span><span class="o">=</span><span class="n">outlier_detection_method</span><span class="p">,</span>
-                                            <span class="n">outlier_detection_method_kwargs</span><span class="o">=</span><span class="n">outlier_detection_method_kwargs</span><span class="p">)</span>
+                                            <span class="o">**</span><span class="n">outlier_detection_method_kwargs</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">reducer</span><span class="p">,</span> <span class="n">outlier_detector</span>
 </div>
-<div class="viewcode-block" id="BaseData.plot_outliers"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.plot_outliers">[docs]</a>    <span class="k">def</span> <span class="nf">plot_outliers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outlier_detector</span><span class="p">,</span>
-                      <span class="o">**</span><span class="n">pca_args</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseData.plot_outliers"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.plot_outliers">[docs]</a>    <span class="k">def</span> <span class="nf">plot_outliers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reducer</span><span class="p">,</span> <span class="n">outlier_detector</span><span class="p">,</span> <span class="o">**</span><span class="n">pca_args</span><span class="p">):</span>
+        <span class="n">show_point_labels</span> <span class="o">=</span> <span class="n">pca_args</span><span class="p">[</span><span class="s">&#39;show_point_labels&#39;</span><span class="p">]</span>
+        <span class="k">del</span> <span class="n">pca_args</span><span class="p">[</span><span class="s">&#39;show_point_labels&#39;</span><span class="p">]</span>
+        <span class="n">dv</span> <span class="o">=</span> <span class="n">DecompositionViz</span><span class="p">(</span><span class="n">reducer</span><span class="o">.</span><span class="n">reduced_space</span><span class="p">,</span>
+                              <span class="n">reducer</span><span class="o">.</span><span class="n">components_</span><span class="p">,</span>
+                              <span class="n">reducer</span><span class="o">.</span><span class="n">explained_variance_ratio_</span><span class="p">,</span>
+                              <span class="n">groupby</span><span class="o">=</span><span class="n">outlier_detector</span><span class="o">.</span><span class="n">outliers</span><span class="p">,</span>
+                              <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">plot_pca</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">groupby</span><span class="o">=</span><span class="n">outlier_detector</span><span class="o">.</span><span class="n">outliers</span><span class="p">,</span>
-                      <span class="n">title</span><span class="o">=</span><span class="n">outlier_detector</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
-                      <span class="o">**</span><span class="n">pca_args</span><span class="p">)</span>
+        <span class="n">dv</span><span class="p">(</span><span class="n">show_point_labels</span><span class="o">=</span><span class="n">show_point_labels</span><span class="p">)</span>
+        <span class="c">#self.plot_pca(self, groupby=outlier_detector.outliers,</span>
+        <span class="c">#              title=outlier_detector.title,</span>
+        <span class="c">#              **pca_args)</span>
 
         <span class="c"># DecompositionViz(reducer.reduced_space,</span>
         <span class="c"># reducer.components_,</span>
@@ -1028,8 +1030,6 @@
                  <span class="n">plotting_kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">color</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">groupby</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">label_to_color</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">label_to_marker</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="c"># Should all this be exposed to the user???</span>
-
         <span class="sd">&quot;&quot;&quot;Make and memoize a predictor on a categorical trait (associated</span>
 <span class="sd">        with samples) subset of genes</span>
 
@@ -1153,7 +1153,6 @@
                      <span class="n">phenotype_to_color</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                      <span class="n">phenotype_to_marker</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                      <span class="n">nmf_space</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plot the violinplot of a splicing event (should also show NMF movement)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1310,11 +1309,13 @@
                 <span class="n">sizes</span> <span class="o">=</span> <span class="n">grouped</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
                 <span class="n">filtered_sizes</span> <span class="o">=</span> <span class="n">sizes</span><span class="p">[</span><span class="n">sizes</span> <span class="o">&gt;=</span> <span class="n">minimum</span><span class="p">]</span>
                 <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">filtered_sizes</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+                        <span class="k">continue</span>
                     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;{}: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">group</span><span class="p">)</span>
                     <span class="n">subsets</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">grouped</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">group</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">sample_subset</span> <span class="ow">in</span> <span class="n">subsets</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;not {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sample_subset</span><span class="p">)</span>
-            <span class="k">if</span> <span class="s">&#39;False&#39;</span> <span class="ow">or</span> <span class="s">&#39;True&#39;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;not ({})&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sample_subset</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s">&#39;False&#39;</span> <span class="ow">in</span> <span class="n">name</span> <span class="ow">or</span> <span class="s">&#39;True&#39;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">subsets</span><span class="p">:</span>
                 <span class="n">in_features</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">subsets</span><span class="p">[</span>

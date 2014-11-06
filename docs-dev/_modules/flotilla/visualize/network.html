@@ -71,17 +71,12 @@
   <ul class="dropdown-menu globaltoc"
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../flotilla.html">flotilla package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#subpackages">Subpackages</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#module-flotilla">Module contents</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="../../../whatsnew.html">What&#8217;s new in the package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-0-november-1st-2014">v0.2.0 (November 1st, 2014)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installing flotilla</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Docker Installation Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html#os-x-installation-instructions">OS X Installation instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../api.html#general-use-plots">General use plots</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api.html#interactive-plots">Interactive plots</a></li>
@@ -91,6 +86,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../create_datapackage.html">Create your very own datapackage!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Flotilla tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#install-flotilla">Install flotilla</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#create-a-datapackage">Create a datapackage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#processing-data">Processing data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#plotting-functions">Plotting functions</a></li>
@@ -155,10 +151,9 @@
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">seaborn</span> <span class="kn">as</span> <span class="nn">sns</span>
 
-<span class="kn">from</span> <span class="nn">.color</span> <span class="kn">import</span> <span class="n">green</span>
 <span class="kn">from</span> <span class="nn">..compute.network</span> <span class="kn">import</span> <span class="n">Networker</span>
 <span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">dict_to_str</span>
-<span class="kn">from</span> <span class="nn">..visualize.color</span> <span class="kn">import</span> <span class="n">dark2</span>
+<span class="kn">from</span> <span class="nn">.color</span> <span class="kn">import</span> <span class="n">dark2</span><span class="p">,</span> <span class="n">almost_black</span><span class="p">,</span> <span class="n">green</span><span class="p">,</span> <span class="n">red</span>
 
 
 <div class="viewcode-block" id="NetworkerViz"><a class="viewcode-back" href="../../../flotilla.visualize.network.html#flotilla.visualize.network.NetworkerViz">[docs]</a><span class="k">class</span> <span class="nc">NetworkerViz</span><span class="p">(</span><span class="n">Networker</span><span class="p">):</span>
@@ -199,7 +194,7 @@
 <span class="sd">            Which component to use for the x-axis, default &quot;pc_1&quot;</span>
 <span class="sd">        y_pc :</span>
 <span class="sd">            y component for PCA, default &quot;pc_2&quot;</span>
-<span class="sd">        n_pcs : int???</span>
+<span class="sd">        n_pcs : int</span>
 <span class="sd">            Number of components to use for cells&#39; covariance calculation</span>
 <span class="sd">        cov_std_cut : float</span>
 <span class="sd">            Covariance cutoff for edges</span>
@@ -212,14 +207,13 @@
 <span class="sd">            arctan_sq (sqared arctan of cov))</span>
 <span class="sd">        gene_of_interest : str</span>
 <span class="sd">            map a gradient representing this gene&#39;s data onto nodes (ENSEMBL</span>
-<span class="sd">            id or gene name???)</span>
+<span class="sd">            id or gene symbol)</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        graph : networkx.Graph</span>
 
-<span class="sd">        pos : ???</span>
-<span class="sd">            ???</span>
+<span class="sd">        positions : (x,y) positions of nodes</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">node_color_mapper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_node_color_mapper</span>
         <span class="n">node_size_mapper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_node_color_mapper</span>
@@ -250,9 +244,15 @@
             <span class="c"># groupby=groupby,</span>
             <span class="o">**</span><span class="n">pca_settings</span><span class="p">)</span>
 
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">feature_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DataModel</span><span class="o">.</span><span class="n">maybe_renamed_to_feature_id</span><span class="p">(</span>
+                    <span class="n">feature_of_interest</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
+            <span class="n">feature_id</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+
         <span class="k">if</span> <span class="n">featurewise</span><span class="p">:</span>
-            <span class="n">node_color_mapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">dark2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> \
-                <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="n">feature_of_interest</span> <span class="k">else</span> <span class="s">&#39;k&#39;</span>
+            <span class="n">node_color_mapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">green</span> \
+                <span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="n">feature_id</span><span class="p">)</span> <span class="k">else</span> <span class="n">almost_black</span>
             <span class="n">node_size_mapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">pca</span><span class="o">.</span><span class="n">means</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">10</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">sample_id_to_color</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
@@ -301,8 +301,6 @@
 
         <span class="k">try</span><span class="p">:</span>
 
-            <span class="n">feature_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DataModel</span><span class="o">.</span><span class="n">maybe_renamed_to_feature_id</span><span class="p">(</span>
-                <span class="n">feature_of_interest</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
             <span class="n">node_color</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pca</span><span class="o">.</span><span class="n">X</span><span class="p">[</span><span class="n">feature_id</span><span class="p">]</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">x</span><span class="p">],</span> <span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">())</span>
 
@@ -330,10 +328,10 @@
         <span class="n">ax_degree</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">&quot;degree&quot;</span><span class="p">)</span>
         <span class="n">ax_degree</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&quot;density&quot;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">feature_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DataModel</span><span class="o">.</span><span class="n">maybe_renamed_to_feature_id</span><span class="p">(</span>
-                <span class="n">feature_of_interest</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
             <span class="n">ax_degree</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">degree</span><span class="p">[</span><span class="n">feature_id</span><span class="p">],</span>
-                              <span class="n">label</span><span class="o">=</span><span class="n">feature_of_interest</span><span class="p">)</span>
+                              <span class="n">label</span><span class="o">=</span><span class="n">feature_of_interest</span><span class="p">,</span>
+                              <span class="n">color</span><span class="o">=</span><span class="n">green</span><span class="p">)</span>
             <span class="n">ax_degree</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -409,9 +407,15 @@
 
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DataModel</span><span class="o">.</span><span class="n">df</span>
 
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">feature_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DataModel</span><span class="o">.</span><span class="n">maybe_renamed_to_feature_id</span><span class="p">(</span>
+                    <span class="n">feature_of_interest</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
+            <span class="n">feature_id</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+
         <span class="k">if</span> <span class="n">featurewise</span><span class="p">:</span>
-            <span class="n">node_color_mapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s">&#39;r&#39;</span> \
-                <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="n">feature_of_interest</span> <span class="k">else</span> <span class="s">&#39;k&#39;</span>
+            <span class="n">node_color_mapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">red</span> \
+                <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="n">feature_id</span> <span class="k">else</span> <span class="s">&#39;k&#39;</span>
             <span class="n">node_size_mapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">10</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">node_color_mapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> \
@@ -446,14 +450,14 @@
                                <span class="n">node_size</span><span class="o">=</span><span class="nb">map</span><span class="p">(</span><span class="n">node_size_mapper</span><span class="p">,</span> <span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">()),</span>
                                <span class="n">ax</span><span class="o">=</span><span class="n">main_ax</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">node_color</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="n">feature_of_interest</span><span class="p">]</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">x</span><span class="p">],</span>
+            <span class="n">node_color</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="n">feature_id</span><span class="p">]</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">x</span><span class="p">],</span>
                              <span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">())</span>
             <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_nodes</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">node_color</span><span class="o">=</span><span class="n">node_color</span><span class="p">,</span>
                                    <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Greys</span><span class="p">,</span>
                                    <span class="n">node_size</span><span class="o">=</span><span class="nb">map</span><span class="p">(</span>
                                        <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">node_size_mapper</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="o">.</span><span class="mi">5</span><span class="p">,</span>
                                        <span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">()),</span> <span class="n">ax</span><span class="o">=</span><span class="n">main_ax</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
             <span class="k">pass</span>
 
         <span class="n">renamer</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>

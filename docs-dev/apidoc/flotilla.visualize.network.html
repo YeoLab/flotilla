@@ -73,17 +73,12 @@
   <ul class="dropdown-menu globaltoc"
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../flotilla.html">flotilla package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../flotilla.html#subpackages">Subpackages</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../flotilla.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../flotilla.html#module-flotilla">Module contents</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What&#8217;s new in the package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../whatsnew.html#v0-2-0-november-1st-2014">v0.2.0 (November 1st, 2014)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installing flotilla</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Docker Installation Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html#os-x-installation-instructions">OS X Installation instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#general-use-plots">General use plots</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#interactive-plots">Interactive plots</a></li>
@@ -93,6 +88,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../create_datapackage.html">Create your very own datapackage!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Flotilla tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#install-flotilla">Install flotilla</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../tutorial.html#create-a-datapackage">Create a datapackage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../tutorial.html#processing-data">Processing data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../tutorial.html#plotting-functions">Plotting functions</a></li>
@@ -182,7 +178,7 @@
 <blockquote>
 <div><p>y component for PCA, default &#8220;pc_2&#8221;</p>
 </div></blockquote>
-<p><strong>n_pcs</strong> : int???</p>
+<p><strong>n_pcs</strong> : int</p>
 <blockquote>
 <div><p>Number of components to use for cells&#8217; covariance calculation</p>
 </div></blockquote>
@@ -206,15 +202,12 @@ arctan_sq (sqared arctan of cov))</p>
 <p><strong>gene_of_interest</strong> : str</p>
 <blockquote>
 <div><p>map a gradient representing this gene&#8217;s data onto nodes (ENSEMBL
-id or gene name???)</p>
+id or gene symbol)</p>
 </div></blockquote>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>graph</strong> : networkx.Graph</p>
-<p><strong>pos</strong> : ???</p>
-<blockquote class="last">
-<div><p>???</p>
-</div></blockquote>
+<p class="last"><strong>positions</strong> : (x,y) positions of nodes</p>
 </td>
 </tr>
 </tbody>
