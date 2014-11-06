@@ -15,6 +15,7 @@ import shutil
 
 import matplotlib
 
+
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
@@ -298,9 +299,9 @@ def main(app):
     static_dir = os.path.join(app.builder.srcdir, '_static')
     target_dir = os.path.join(app.builder.srcdir, 'gallery')
     image_dir = os.path.join(app.builder.srcdir, 'gallery/_images')
-    thumb_dir = os.path.join(app.builder.srcdir, "example_thumbs")
+    thumb_dir = os.path.join(app.builder.srcdir, "gallery_thumbs")
     source_dir = os.path.abspath(os.path.join(app.builder.srcdir,
-                                              '..', 'gallery'))
+                                              '..', 'examples'))
     if not os.path.exists(static_dir):
         os.makedirs(static_dir)
 

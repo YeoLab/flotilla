@@ -6,7 +6,6 @@ Submodules
 
 .. toctree::
 
-   flotilla.compute.clustering
    flotilla.compute.decomposition
    flotilla.compute.expression
    flotilla.compute.generic

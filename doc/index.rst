@@ -2,6 +2,8 @@
 Welcome to flotilla's documentation!
 ====================================
 
+.. image:: _static/flotilla.png
+
 Flotilla is a Python package for reproducible machine learning analysis on
 gene expression and alternative splicing data.
 
@@ -18,12 +20,12 @@ Contents:
 .. toctree::
     :maxdepth: 1
 
+    modules
     whatsnew
     installation
     api
     create_datapackage
     tutorial
-    apidoc/modules
 
 .. _what's new: whatsnew
 .. _API Reference: api
