@@ -1,0 +1,6 @@
+flotilla.Study.interactive_choose_outliers
+==========================================
+
+.. currentmodule:: flotilla
+
+.. automethod:: Study.interactive_choose_outliers
