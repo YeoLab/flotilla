@@ -54,6 +54,9 @@ extensions = [
     'ipython_console_highlighting',
 ]
 
+## Show both the class docstring and the __init__docstring
+autoclass_content = 'both'
+
 # Generate the API documentation when building
 autosummary_generate = True
 numpydoc_show_class_members = False
@@ -245,6 +248,7 @@ html_static_path = ['_static']
 
 # Custom sidebar templates, maps document names to template names.
 #html_sidebars = {}
+# html_sidebars = {'**': ['localtoc.html', 'sourcelink.html', 'searchbox.html']}
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
@@ -362,3 +366,6 @@ texinfo_documents = [
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'http://docs.python.org/': None}
+
+
+# ----------- Don't skip __init__
