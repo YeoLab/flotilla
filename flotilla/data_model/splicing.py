@@ -364,7 +364,7 @@ class SplicingData(BaseData):
         singles, pooled = self._subset_singles_and_pooled(sample_ids,
                                                           feature_ids)
         pooled = pooled.dropna(how='all', axis=1)
-        not_measured_in_pooled = singles.columns.diff(pooled.columns)
+        not_measured_in_pooled = singles.columns.difference(pooled.columns)
         singles, pooled = singles.align(pooled, axis=1, join='inner')
         # import pdb; pdb.set_trace()
 
