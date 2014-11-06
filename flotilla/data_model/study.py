@@ -412,14 +412,18 @@ class Study(object):
                 filename = check_if_already_downloaded(resource_url,
                                                        datapackage_name)
             else:
-                filename = resource['path']
-                # Test if the file exists, if not, then add the datapackage
-                # file
-                try:
-                    with open(filename) as f:
-                        pass
-                except IOError:
-                    filename = os.path.join(datapackage_dir, filename)
+                if resource['path'].startswith('http'):
+                    filename = check_if_already_downloaded(resource['path'],
+                                                           datapackage_name)
+                else:
+                    filename = resource['path']
+                    # Test if the file exists, if not, then add the datapackage
+                    # file
+                    try:
+                        with open(filename) as f:
+                            pass
+                    except IOError:
+                        filename = os.path.join(datapackage_dir, filename)
 
             name = resource['name']
 
