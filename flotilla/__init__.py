@@ -7,9 +7,6 @@ import data_model
 from .datapackage import make_study_datapackage
 import visualize
 
-__version__ = '0.2.0'
-
-
 def embark(study_name, load_species_data=True):
     """
     Begin your journey of data exploration.

@@ -1,10 +1,8 @@
 from setuptools import setup
 from setuptools import find_packages
 
-from flotilla import __version__
 
-
-version = __version__
+version = '0.2.0'
 
 setup(
     name='flotilla',
@@ -20,6 +18,7 @@ setup(
     install_requires=["setuptools",
                       "numpy >= 1.8.0",
                       "scipy >= 0.14",
+                      "seaborn >= 0.4.0",
                       "matplotlib >= 1.3.1",
                       "scikit-learn >= 0.13.0",
                       "gspread",
@@ -30,7 +29,6 @@ setup(
                       "patsy >= 0.2.1",
                       "pandas >= 0.13.1",
                       "statsmodels >= 0.5.0",
-                      "seaborn >= 0.3",
                       "networkx",
                       "tornado >= 3.2.1",
                       "pyzmq",
