@@ -771,7 +771,7 @@ class BaseData(object):
                         outlier_detection_method=None,
                         outlier_detection_method_kwargs=None):
 
-        default_reducer_args = {"n_components": 3}
+        default_reducer_args = {"n_components": 2}
 
         if reducer_kwargs is None:
             reducer_kwargs = default_reducer_args
