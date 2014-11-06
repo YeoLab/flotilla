@@ -996,9 +996,6 @@ class BaseData(object):
 
     @memoize
     def binned_nmf_reduced(self, sample_ids=None, feature_ids=None):
-        """
-
-        """
         data = self._subset(self.data, sample_ids, feature_ids,
                             require_min_samples=False)
         binned = self.binify(data)
