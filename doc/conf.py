@@ -163,7 +163,7 @@ html_theme_options = {
     # an arbitrary url.
     'navbar_links': [
         ("Tutorial", "tutorial"),
-        ("Gallery", "gallery"),
+        ("Gallery", "gallery", 1),
         ("YeoLab@UCSD", "http://yeolab.ucsd.edu", True),
     ],
 
@@ -231,7 +231,7 @@ html_theme_options = {
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ['_static', 'gallery_thumbs']
 
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied

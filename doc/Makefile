@@ -47,11 +47,19 @@ help:
 	@echo "  doctest    to run all doctests embedded in the documentation (if enabled)"
 
 clean:
-	rm -rf $(BUILDDIR)/*
+	rm -rf $(BUILDDIR)
 	rm -rf flotilla*.rst
 	rm -rf modules.rst
+	rm -rf tutorial/*.rst
+	rm -rf tutorial/*_files
+	rm -rf tutorial/*.ipynb
+	rm -rf gallery*
+	rm -rf generated
+	rm -rf apidoc
 
 html:
+	cp ../examples/*.ipynb tutorial/;
+	cd tutorial ; make notebooks ; cd ..
 	sphinx-apidoc -l -d 4 -e --force -o . ../flotilla
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	@echo
