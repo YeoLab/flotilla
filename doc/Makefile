@@ -59,7 +59,7 @@ clean:
 
 html:
 	cp ../examples/*.ipynb tutorial/;
-	pushd tutorial ; make notebooks ; popd
+	cd tutorial ; make notebooks ; cd ..
 	sphinx-apidoc -l -d 4 -e --force -o . ../flotilla
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	@echo
