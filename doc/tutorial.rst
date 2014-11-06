@@ -17,15 +17,8 @@ Create a datapackage
 .. toctree::
     :maxdepth: 2
 
-    tutorial/datapackage
-
-Processing data
----------------
-
-.. toctree::
-    :maxdepth: 2
-
-    tutorial/detect_outliers
+    tutorial/barebones_datapackage
+    tutorial/advanced_datapackage
 
 Plotting functions
 ------------------
@@ -38,3 +31,11 @@ Plotting functions
     tutorial/network
     tutorial/expression_specific
     tutorial/splicing_specific
+
+Recreated papers
+----------------
+
+.. toctree::
+    :maxdepth: 3
+
+    tutorial/shalek2013
