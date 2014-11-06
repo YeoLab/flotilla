@@ -24,6 +24,8 @@ Interactive plots
     Study.interactive_classifier
     Study.interactive_graph
     Study.interactive_lavalamp_pooled_inconsistent
+    Study.interactive_choose_outliers
+    Study.interactive_reset_outliers
 
 Machine learning plots
 ----------------------

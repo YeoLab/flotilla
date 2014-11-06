@@ -876,8 +876,7 @@ class PredictorBase(object):
 
     @property
     def predictor(self):
-        """Thin reference to dataset.predictor
-        """
+        """Thin reference to ``dataset.predictor``"""
         return self.dataset.predictor(self.predictor_name,
                                       obj=self.predictor_obj,
                                       predictor_scoring_fun=self.predictor_scoring_fun,
@@ -1035,7 +1034,8 @@ class Regressor(PredictorBase):
 
 
 class Classifier(PredictorBase):
-    __doc__ = "Classifier for categorical response variables.\n" + PredictorBase.__doc__
+    __doc__ = "Classifier for categorical response variables.\n" + \
+              PredictorBase.__doc__
 
     categorical = True
 
