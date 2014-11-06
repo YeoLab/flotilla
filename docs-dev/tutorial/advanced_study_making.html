@@ -118,22 +118,7 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#create-new-phenotype-groups-with-metadata">Create new phenotype groups with metadata</a></li>
-<li><a class="reference internal" href="#requirements-for-this-demonstration">Requirements for this demonstration.</a></li>
-<li><a class="reference internal" href="#our-data">Our data</a></li>
-<li><a class="reference internal" href="#study-setup">Study Setup</a></li>
-<li><a class="reference internal" href="#expression-data">Expression Data</a></li>
-<li><a class="reference internal" href="#splicing-data">Splicing Data</a></li>
-<li><a class="reference internal" href="#metadata">Metadata</a><ul>
-<li><a class="reference internal" href="#set-sample-phenotype-in-this-case-the-phenotype-is-encoded-in-the-first-letter-of-the-sample-label">Set sample &#8220;phenotype.&#8221; In this case, the phenotype is encoded in the first letter of the sample label.</a></li>
-<li><a class="reference internal" href="#get-some-help-to-choose-pleasing-colors-set1-http-matplotlib-org-examples-color-colormaps-reference-html-is-my-favoriate-color-palette">Get some help to choose pleasing colors. <tt class="docutils literal"><span class="pre">`Set1</span></tt> &lt;http://matplotlib.org/examples/color/colormaps_reference.html&gt;`_ is my favoriate color palette.</a></li>
-<li><a class="reference internal" href="#assign-colors-for-phenotypes">Assign colors for phenotypes.</a></li>
-<li><a class="reference internal" href="#create-boolean-columns-for-each-phenotype-this-will-be-useful-later">Create boolean columns for each phenotype, this will be useful later.</a></li>
-<li><a class="reference internal" href="#assemble-data-into-a-flotilla-study-object">Assemble data into a flotilla.Study object</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#save-data-and-metadata">Save data and metadata</a></li>
-<li><a class="reference internal" href="#summary">Summary</a></li>
-<li><a class="reference internal" href="#next-steps">Next steps</a></li>
+<li><a class="reference internal" href="#save-the-data">Save the data</a></li>
 </ul>
 </li>
 </ul>
@@ -206,6 +191,8 @@ ids and splicing events</li>
 <li>Motor neurons (M, MN)</li>
 <li>Stressed motor neurons (S, sMN)</li>
 </ul>
+<p>Note: This is a subset of the data, just the genes and splicing events
+on chromosome 22.</p>
 </div>
 <div class="section" id="metadata-expression-data-and-splicing-data">
 <h2>Metadata, expression data, and splicing data<a class="headerlink" href="#metadata-expression-data-and-splicing-data" title="Permalink to this headline">¶</a></h2>
@@ -922,13 +909,6 @@ a list of columns to ignore.</p>
 <span class="n">splicing_feature</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>[autoreload of flotilla.data_model.base failed: Traceback (most recent call last):
-  File &quot;/Users/olga/workspace-git/ipython/IPython/extensions/autoreload.py&quot;, line 247, in check
-    superreload(m, reload, self.old_objects)
-AttributeError: &#39;NoneType&#39; object has no attribute &#39;_subset&#39;
-]
-</pre></div>
-</div>
 <div style="max-height:1000px;max-width:1500px;overflow:auto;">
 <table border="1" class="dataframe">
   <thead>
@@ -1221,237 +1201,329 @@ stressed motor neurons (sMN)</p>
   </tbody>
 </table>
 </div><p>And let&#8217;s add a &#8220;progenitor&#8221; category with the iPSC and NPCs</p>
-</div>
-<div class="section" id="requirements-for-this-demonstration">
-<h2>Requirements for this demonstration.<a class="headerlink" href="#requirements-for-this-demonstration" title="Permalink to this headline">¶</a></h2>
-<blockquote>
-<div>* Metrics</div></blockquote>
-<div class="highlight-python"><div class="highlight"><pre>* Mapping statistics data file&lt;br&gt;
-Combined output from aligner, quantifying number of reads mapped in each sample
-&lt;br&gt;
-&lt;br&gt;
-* Expression data file&lt;br&gt;
-[Gencode](http://www.gencodegenes.org/) gene IDs
-&lt;br&gt;
-&lt;br&gt;
-* Splicing data file&lt;br&gt;[MISO](http://miso.readthedocs.org/) qunatification and ids
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">metadata</span><span class="p">[</span><span class="s">&#39;progenitor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">iPSC</span> <span class="o">|</span> <span class="n">metadata</span><span class="o">.</span><span class="n">NPC</span>
+<span class="n">metadata</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
-<ul class="simple">
-<li>Metadata</li>
-<li>Sample Colors</li>
-<li>Pooled samples vs single cells labels</li>
-<li>A <em>phenotype</em> attribute.</li>
-</ul>
-<p>We assume you already have a pipeline in place to analyze and quantify
-data. If you don&#8217;t the pipeline is available on the <tt class="docutils literal"><span class="pre">docker</span></tt> image.
-While it is possible to create custom species, that is left for another
-notebook. Here we assume you have human (hg19/GRCh37) or mouse
-(mm10/GRCm38) data.</p>
-</div>
-<div class="section" id="our-data">
-<h2>Our data<a class="headerlink" href="#our-data" title="Permalink to this headline">¶</a></h2>
-<H2 align='center'><p><em>In vitro</em> directed differentiation of Craig Venter&#8217;s fibroblasts</p>
-</H2><div align='right'><p><img alt="craig2" src="tutorial/img/craig2.jpg" /></p>
-  </div>
-  <H3><div align='right'>
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>pooled</th>
+      <th>phenotype</th>
+      <th>outlier</th>
+      <th>MN</th>
+      <th>NPC</th>
+      <th>iPSC</th>
+      <th>sMN</th>
+      <th>neuron</th>
+      <th>progenitor</th>
+    </tr>
+    <tr>
+      <th>original_name</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>M1_01</th>
+      <td> False</td>
+      <td> MN</td>
+      <td> False</td>
+      <td> True</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+      <td> True</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>M1_02</th>
+      <td> False</td>
+      <td> MN</td>
+      <td> False</td>
+      <td> True</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+      <td> True</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>M1_03</th>
+      <td> False</td>
+      <td> MN</td>
+      <td> False</td>
+      <td> True</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+      <td> True</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>M1_04</th>
+      <td> False</td>
+      <td> MN</td>
+      <td> False</td>
+      <td> True</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+      <td> True</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>M1_05</th>
+      <td> False</td>
+      <td> MN</td>
+      <td> False</td>
+      <td> True</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+      <td> True</td>
+      <td> False</td>
+    </tr>
+  </tbody>
+</table>
+</div><p>Next, let&#8217;s pick some nice colors for these samples</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">seaborn</span> <span class="kn">as</span> <span class="nn">sns</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="kn">as</span> <span class="nn">mpl</span>
 
-Induced pluripotent cells (P) Neural progenitor cells (N) Motor neurons<p>(M) Motor neurons stressed treated with sodium arenite (oxidative
-stressor) (S)</p>
-</div></H3></div>
-<div class="section" id="study-setup">
-<h2>Study Setup<a class="headerlink" href="#study-setup" title="Permalink to this headline">¶</a></h2>
-<H3 align='center'><p>Import and Save Data</p>
-</H3><div align='right'><p>Use <tt class="docutils literal"><span class="pre">pandas</span></tt> package to manipulate on-disk files.Save the data into a
-<tt class="docutils literal"><span class="pre">flotilla</span></tt> &#8216;datapackage.&#8217;</p>
-</div><div class="code python highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">flotilla</span> <span class="c">#automatically calls %matplotlib inline</span>
-<span class="kn">import</span> <span class="nn">pandas</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="n">home</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&quot;HOME&quot;</span><span class="p">]</span>
+<span class="n">palette</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">rgb2hex</span><span class="p">,</span> <span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s">&#39;Set1&#39;</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">palplot</span><span class="p">(</span><span class="n">palette</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+<div class="highlight-python"><div class="highlight"><pre>/usr/local/lib/python2.7/site-packages/matplotlib/figure.py:1644: UserWarning: This figure includes Axes that are not compatible with tight_layout, so its results might be incorrect.
+  warnings.warn(&quot;This figure includes Axes that are not &quot;
 </pre></div>
 </div>
-<div align='left'><H2><p>Technical data</p>
-</H2></div>
-<H3 align='center'><p>Mapping statistics.</p>
-</H3><div align='right'><p>Output of <a class="reference external" href="https://code.google.com/p/rna-star/">RNA-STAR</a> genome
-aligner.</p>
-</div><div class="code python highlight-python"><div class="highlight"><pre><span class="n">a</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+<img alt="../_images/advanced_study_making_30_1.png" src="../_images/advanced_study_making_30_1.png" />
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">phenotype_to_color</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;iPSC&#39;</span><span class="p">:</span> <span class="n">palette</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="c"># blue</span>
+                      <span class="s">&#39;NPC&#39;</span><span class="p">:</span> <span class="n">palette</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="c"># green</span>
+                      <span class="s">&#39;MN&#39;</span><span class="p">:</span> <span class="n">palette</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="c"># red</span>
+                      <span class="s">&#39;sMN&#39;</span><span class="p">:</span> <span class="n">palette</span><span class="p">[</span><span class="mi">4</span><span class="p">]}</span> <span class="c"># orange</span>
 </pre></div>
 </div>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="n">mapstats_data_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">home</span><span class="p">,</span> <span class="s">&quot;flotilla_projects/neural_diff/mapping_stats.tsv&quot;</span><span class="p">)</span>
-<span class="n">mapstats_data</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="n">mapstats_data_file</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="k">print</span> <span class="s">&quot;Loaded data table, size is (samples, genes):&quot;</span><span class="p">,</span> <span class="n">mapstats_data</span><span class="o">.</span><span class="n">shape</span>
+<p>One other thing we&#8217;ll need to do is to create list with the phenotypes
+in the order we want to plot them. This is particularly relevant for
+violinplots. By default, the phenotypes are plotted in alphabetical
+order. Since we have a differentiation time course, we&#8217;ll want the
+phenotype order to be the differentiation order.</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">phenotype_order</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;iPSC&#39;</span><span class="p">,</span> <span class="s">&#39;NPC&#39;</span><span class="p">,</span> <span class="s">&#39;MN&#39;</span><span class="p">,</span> <span class="s">&#39;sMN&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="n">b</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
-
-<span class="k">print</span> <span class="s">&quot;This operation took {:.5f} seconds.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="n">mapstats_data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="expression-data">
-<h2>Expression Data<a class="headerlink" href="#expression-data" title="Permalink to this headline">¶</a></h2>
-<H3><div align='center'><p>TPM - Transcripts-per-million.</p>
-</div></H3>
-<div align='right'><p>Quantified with Sailfish</p>
-</div><div class="code python highlight-python"><div class="highlight"><pre><span class="n">a</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
-</pre></div>
-</div>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="n">expression_data_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">home</span><span class="p">,</span> <span class="s">&quot;flotilla_projects/neural_diff/tpm.tsv&quot;</span><span class="p">)</span>
-<span class="n">expression_data</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="n">expression_data_file</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="k">print</span> <span class="s">&quot;Loaded data table, size is (samples, genes):&quot;</span><span class="p">,</span> <span class="n">expression_data</span><span class="o">.</span><span class="n">shape</span>
-</pre></div>
-</div>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="n">b</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
-
-<span class="k">print</span> <span class="s">&quot;This operation took {:.1f} seconds.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="n">expression_data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="splicing-data">
-<h2>Splicing Data<a class="headerlink" href="#splicing-data" title="Permalink to this headline">¶</a></h2>
-<H3 align='center'><p><span class="math">\(\psi\)</span> - Percent Spliced In.</p>
-</H3>
-<div align='right'><p>Quantified with MISO</p>
-</div><p>In this case, we filtered by <span class="math">\(\psi\)</span> confidence interval
-<span class="math">\((CI\_width &lt; 0.5)\)</span>.</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="n">a</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
-</pre></div>
-</div>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="n">splicing_data_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">home</span><span class="p">,</span> <span class="s">&quot;flotilla_projects/neural_diff/psi.tsv&quot;</span><span class="p">)</span>
-<span class="n">splicing_data</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="n">splicing_data_file</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="k">print</span> <span class="s">&quot;Loaded data table, size is (samples, genes):&quot;</span><span class="p">,</span> <span class="n">expression_data</span><span class="o">.</span><span class="n">shape</span>
-<span class="k">print</span> <span class="s">&quot;{:.2f}</span><span class="si">% o</span><span class="s">f values are not NaN&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mf">100.</span><span class="o">*</span><span class="n">splicing_data</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">splicing_data</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
-</pre></div>
-</div>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="n">b</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
-
-<span class="k">print</span> <span class="s">&quot;This operation took {:.1f} seconds.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="n">splicing_data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="metadata">
-<h2>Metadata<a class="headerlink" href="#metadata" title="Permalink to this headline">¶</a></h2>
-<H3 align='center'><p>Data about data.</p>
-</H3><div align='right'><p>This takes a few minutes the first time, but will never need to be done
-again.</p>
-</div><div class="code python highlight-python"><div class="highlight"><pre><span class="n">metadata</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span> <span class="o">=</span> <span class="n">expression_data</span><span class="o">.</span><span class="n">index</span> <span class="o">&amp;</span> <span class="n">splicing_data</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
-
-<span class="n">metadata</span><span class="p">[</span><span class="s">&#39;pooled_samples&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
-
-<span class="n">pooled</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;P_M2nd_33&#39;</span><span class="p">,</span> <span class="s">&#39;P_M2nd_34&#39;</span><span class="p">,</span> <span class="s">&#39;N_CVN_17&#39;</span><span class="p">,</span> <span class="s">&#39;N_CVN_35&#39;</span><span class="p">,</span> <span class="s">&#39;M_M2_05&#39;</span><span class="p">,</span> <span class="s">&#39;M_M2nd_13&#39;</span><span class="p">,</span> <span class="s">&#39;M_M2nd_21&#39;</span><span class="p">,</span> <span class="s">&#39;S_MSA_19&#39;</span><span class="p">,</span> <span class="s">&#39;S_MSA_29&#39;</span><span class="p">]</span>
-
-<span class="n">metadata</span><span class="p">[</span><span class="n">pooled</span><span class="p">,</span> <span class="s">&#39;pooled_samples&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
-</pre></div>
-</div>
-<div class="section" id="set-sample-phenotype-in-this-case-the-phenotype-is-encoded-in-the-first-letter-of-the-sample-label">
-<h3>Set sample &#8220;phenotype.&#8221; In this case, the phenotype is encoded in the first letter of the sample label.<a class="headerlink" href="#set-sample-phenotype-in-this-case-the-phenotype-is-encoded-in-the-first-letter-of-the-sample-label" title="Permalink to this headline">¶</a></h3>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="n">metadata</span><span class="p">[</span><span class="s">&#39;phenotype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">metadata</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="get-some-help-to-choose-pleasing-colors-set1-http-matplotlib-org-examples-color-colormaps-reference-html-is-my-favoriate-color-palette">
-<h3>Get some help to choose pleasing colors. <tt class="docutils literal"><span class="pre">`Set1</span></tt> &lt;<a class="reference external" href="http://matplotlib.org/examples/color/colormaps_reference.html">http://matplotlib.org/examples/color/colormaps_reference.html</a>&gt;`_ is my favoriate color palette.<a class="headerlink" href="#get-some-help-to-choose-pleasing-colors-set1-http-matplotlib-org-examples-color-colormaps-reference-html-is-my-favoriate-color-palette" title="Permalink to this headline">¶</a></h3>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="n">seaborn</span> <span class="o">=</span> <span class="n">flotilla</span><span class="o">.</span><span class="n">visualize</span><span class="o">.</span><span class="n">seaborn</span> <span class="c"># or import seaborn</span>
-<span class="n">mpl</span> <span class="o">=</span> <span class="n">flotilla</span><span class="o">.</span><span class="n">visualize</span><span class="o">.</span><span class="n">generic</span><span class="o">.</span><span class="n">mpl</span> <span class="c"># or import matplotlib as mpl</span>
-<span class="n">palette</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">rgb2hex</span><span class="p">,</span> <span class="n">seaborn</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s">&#39;Set1&#39;</span><span class="p">))</span>
-<span class="n">seaborn</span><span class="o">.</span><span class="n">palplot</span><span class="p">(</span><span class="n">palette</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="assign-colors-for-phenotypes">
-<h3>Assign colors for phenotypes.<a class="headerlink" href="#assign-colors-for-phenotypes" title="Permalink to this headline">¶</a></h3>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="n">color_map</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;P&#39;</span><span class="p">:</span> <span class="n">palette</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="c"># blue</span>
-             <span class="s">&#39;N&#39;</span><span class="p">:</span> <span class="n">palette</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="c"># green</span>
-             <span class="s">&#39;M&#39;</span><span class="p">:</span> <span class="n">palette</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="c"># red</span>
-             <span class="s">&#39;S&#39;</span><span class="p">:</span> <span class="n">palette</span><span class="p">[</span><span class="mi">4</span><span class="p">]}</span> <span class="c"># orange</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="create-boolean-columns-for-each-phenotype-this-will-be-useful-later">
-<h3>Create boolean columns for each phenotype, this will be useful later.<a class="headerlink" href="#create-boolean-columns-for-each-phenotype-this-will-be-useful-later" title="Permalink to this headline">¶</a></h3>
-</div>
-<div class="section" id="assemble-data-into-a-flotilla-study-object">
-<h3>Assemble data into a flotilla.Study object<a class="headerlink" href="#assemble-data-into-a-flotilla-study-object" title="Permalink to this headline">¶</a></h3>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">phenotype</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;P&#39;</span><span class="p">,</span> <span class="s">&#39;N&#39;</span><span class="p">,</span> <span class="s">&#39;M&#39;</span><span class="p">,</span> <span class="s">&#39;S&#39;</span><span class="p">]:</span>
-    <span class="n">metadata</span><span class="p">[</span><span class="n">phenotype</span> <span class="o">+</span> <span class="s">&#39;_cell&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s">&#39;phenotype&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">phenotype</span>
-</pre></div>
-</div>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="n">ignore_subset_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;ensembl_gene&quot;</span><span class="p">,</span> <span class="s">&quot;gencode_gene&quot;</span><span class="p">,</span> <span class="s">&quot;gencode_transcript&quot;</span><span class="p">,</span> <span class="s">&quot;ensembl_transcript&quot;</span><span class="p">,</span>
-                      <span class="s">&quot;gene_name&quot;</span><span class="p">,</span> <span class="s">&quot;transcript_id&quot;</span><span class="p">,</span> <span class="s">&quot;havana_gene&quot;</span><span class="p">,</span> <span class="s">&quot;gencode_id&quot;</span><span class="p">]</span>
-
-
-<span class="n">study</span> <span class="o">=</span> <span class="n">flotilla</span><span class="o">.</span><span class="n">Study</span><span class="p">(</span><span class="c">#study metadata</span>
+<p>Now we&#8217;re ready to create the study!</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">study</span> <span class="o">=</span> <span class="n">flotilla</span><span class="o">.</span><span class="n">Study</span><span class="p">(</span><span class="c"># Metadata about samples</span>
                        <span class="n">sample_metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">,</span>
-                       <span class="c">#a version for this study, to track changes</span>
+
+                       <span class="c"># Version for this study, to track changes</span>
                        <span class="n">version</span><span class="o">=</span><span class="s">&#39;0.1.0&#39;</span><span class="p">,</span>
-                       <span class="c">#pandas.DataFrame with expression data, created above</span>
-                       <span class="n">expression_data</span><span class="o">=</span><span class="n">expression_data</span><span class="p">,</span>
-                       <span class="c">#column in study.expression.feature_data to map ensg id to symbols</span>
-                       <span class="c">#(default feature_data is in flotilla_packages/&lt;species&gt;)</span>
+
+                       <span class="c"># pandas.DataFrame with expression data, created above</span>
+                       <span class="n">expression_data</span><span class="o">=</span><span class="n">expression</span><span class="p">,</span>
+
+                       <span class="c"># pandas.DataFrame with expression feature data, loaded above</span>
+                       <span class="n">expression_feature_data</span><span class="o">=</span><span class="n">expression_feature</span><span class="p">,</span>
+
+                       <span class="c"># Which column in expression_feature_data to use to rename</span>
                        <span class="n">expression_feature_rename_col</span><span class="o">=</span><span class="s">&#39;gene_name&#39;</span><span class="p">,</span>
-                       <span class="c">#pandas.DataFrame with splicing data, created above</span>
-                       <span class="n">splicing_data</span><span class="o">=</span><span class="n">splicing_data</span><span class="p">,</span>
-                       <span class="c">#column in study.splicing.feature_data to map ensg id to symbols</span>
-                       <span class="c">#(default feature_data is in flotilla_packages/&lt;species&gt;)</span>
+
+                       <span class="c"># Ignore those weird columns we don&#39;t to use as subset in our feature data</span>
+                       <span class="n">expression_feature_ignore_subset_cols</span><span class="o">=</span><span class="n">ignore_subset_cols</span><span class="p">,</span>
+
+                       <span class="c"># pandas.DataFrame with splicing data, created above</span>
+                       <span class="n">splicing_data</span><span class="o">=</span><span class="n">splicing</span><span class="p">,</span>
+
+                       <span class="c"># pandas.DataFrame of splicing feature data, loaded above</span>
+                       <span class="n">splicing_feature_data</span><span class="o">=</span><span class="n">splicing_feature</span><span class="p">,</span>
+
+                       <span class="c"># Column in feature_data to map MISO ids to symbols</span>
                        <span class="n">splicing_feature_rename_col</span><span class="o">=</span><span class="s">&#39;gene_name&#39;</span><span class="p">,</span>
+
+                       <span class="c"># Ignore those weird columns we don&#39;t to use as subset in our feature data</span>
+                       <span class="n">splicing_feature_ignore_subset_cols</span><span class="o">=</span><span class="n">ignore_subset_cols</span><span class="p">,</span>
+
                        <span class="c">#pandas.DataFrame with mapping statistics, created above</span>
-                       <span class="n">mapping_stats_data</span><span class="o">=</span><span class="n">mapstats_data</span><span class="p">,</span>
-                       <span class="c">#column with number of mapped reads</span>
+                       <span class="n">mapping_stats_data</span><span class="o">=</span><span class="n">mapping_stats</span><span class="p">,</span>
+
+                       <span class="c"># column with number of mapped reads</span>
                        <span class="n">mapping_stats_number_mapped_col</span><span class="o">=</span><span class="s">&#39;Uniquely mapped reads number&#39;</span><span class="p">,</span>
-                       <span class="c">#specify species. So far we&#39;ve built hg19/mm10 ENSEMBL data</span>
-                       <span class="n">species</span><span class="o">=</span><span class="s">&#39;hg19&#39;</span><span class="p">,</span>
-                       <span class="c">#specify which column of metadata holds phenotype information</span>
-                       <span class="n">metadata_phenotype_col</span> <span class="o">=</span><span class="s">&#39;phenotype&#39;</span><span class="p">,</span>
-                       <span class="c">#specify a dictionary mapping phenotype to colors</span>
-                       <span class="n">metadata_phenotype_to_color</span><span class="o">=</span><span class="n">color_map</span><span class="p">,</span>
-                       <span class="c">#specify the order which you would like samples to be plotted:</span>
-                       <span class="n">metadata_phenotype_order</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;P&quot;</span><span class="p">,</span> <span class="s">&quot;N&quot;</span><span class="p">,</span> <span class="s">&quot;M&quot;</span><span class="p">,</span> <span class="s">&quot;S&quot;</span><span class="p">],</span>
-                       <span class="c">#specify a column that indicates whether a sample is pooled or single-cell</span>
-                       <span class="n">metadata_pooled_col</span><span class="o">=</span><span class="s">&#39;pooled_samples&#39;</span><span class="p">,</span>
-                       <span class="n">default_sample_subset</span><span class="o">=</span><span class="s">&#39;all_samples&#39;</span><span class="p">,</span>
-                       <span class="p">)</span>
+
+                       <span class="c"># specify a dictionary mapping phenotype to colors</span>
+                       <span class="n">metadata_phenotype_to_color</span><span class="o">=</span><span class="n">phenotype_to_color</span><span class="p">,</span>
+
+                       <span class="c"># Specify the order which you would like samples to be plotted for violinplots</span>
+                       <span class="n">metadata_phenotype_order</span><span class="o">=</span><span class="n">phenotype_order</span><span class="p">,</span>
+
+                       <span class="c"># Specify to remove the outliers</span>
+                       <span class="n">drop_outliers</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-</div>
-<div class="section" id="save-data-and-metadata">
-<h2>Save data and metadata<a class="headerlink" href="#save-data-and-metadata" title="Permalink to this headline">¶</a></h2>
-<div align='center'><H3><p>To be loaded in other notebooks for analysis.</p>
-</H3></div><div class="code python highlight-python"><div class="highlight"><pre><span class="n">study</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#39;neural_diff_demo&#39;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre>2014-11-06 10:21:10 Initializing Study
+2014-11-06 10:21:10 Initializing Predictor configuration manager for Study
+2014-11-06 10:21:10 Predictor ExtraTreesClassifier is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesClassifier&#39;&gt;
+2014-11-06 10:21:10 Added ExtraTreesClassifier to default predictors
+2014-11-06 10:21:10 Predictor ExtraTreesRegressor is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesRegressor&#39;&gt;
+2014-11-06 10:21:10 Added ExtraTreesRegressor to default predictors
+2014-11-06 10:21:10 Predictor GradientBoostingClassifier is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingClassifier&#39;&gt;
+2014-11-06 10:21:10 Added GradientBoostingClassifier to default predictors
+2014-11-06 10:21:10 Predictor GradientBoostingRegressor is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingRegressor&#39;&gt;
+2014-11-06 10:21:10 Added GradientBoostingRegressor to default predictors
+2014-11-06 10:21:10 Loading metadata
+2014-11-06 10:21:10 Loading expression data
+2014-11-06 10:21:10 Initializing expression
+2014-11-06 10:21:10 Done initializing expression
+2014-11-06 10:21:10 Loading splicing data
+2014-11-06 10:21:10 Initializing splicing
+2014-11-06 10:21:10 Done initializing splicing
+2014-11-06 10:21:10 Successfully initialized a Study object!
 </pre></div>
 </div>
+<div class="highlight-python"><div class="highlight"><pre>No phenotype to marker (matplotlib plotting symbol) was provided, so each phenotype will be plotted as a circle in the PCA visualizations.
+samples had too few mapped reads (&lt;5.0e+05 reads):
+    M2nd_23, M2nd_30, M2nd_31, M2nd_32, M3_10, P4_2, P8_12, P8_3, P8_4, P8_7, P8_8, P8_9, MSA_25
+Removing technical outliers from consideration in expression:
+    M2nd_23, M2nd_30, M2nd_31, M2nd_32, M3_10, P4_2, P8_12, P8_3, P8_4, P8_7, P8_8, P8_9, MSA_25
+Removing technical outliers from consideration in splicing:
+    M2nd_23, M2nd_30, M2nd_31, M2nd_32, M3_10, P4_2, P8_12, P8_3, P8_4, P8_7, P8_8, P8_9, MSA_25
+</pre></div>
 </div>
-<div class="section" id="summary">
-<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li>Loaded data from multiple sources into a <tt class="docutils literal"><span class="pre">flotilla.Study</span></tt> object.</li>
-<li>The <tt class="docutils literal"><span class="pre">Study</span></tt> object contains mapping data, expression data, splicing
-data, sample metadata and feature (gene/splicing event) metadata.</li>
-<li>This ensures that data will be identical across multiple notebooks
-where analysis might be performed.</li>
-<li>This puts the data in one place, to be shared easily (AWS?).</li>
-</ul>
+<p>For example, here&#8217;s the gene expression of RBFOX2, plotted in the
+phenotype order that we want.</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">study</span><span class="o">.</span><span class="n">plot_gene</span><span class="p">(</span><span class="s">&#39;RBFOX2&#39;</span><span class="p">)</span>
+</pre></div>
 </div>
-<div class="section" id="next-steps">
-<h2>Next steps<a class="headerlink" href="#next-steps" title="Permalink to this headline">¶</a></h2>
-<blockquote>
-<div>Now, continue to the <a href="#id1"><span class="problematic" id="id2">`</span></a>Dimensionality</div></blockquote>
-<p>Reduction &lt;2_Dimensionality%20Reduction.ipynb&gt;`_ notebook.</p>
+<div class="highlight-python"><div class="highlight"><pre>/usr/local/lib/python2.7/site-packages/matplotlib/font_manager.py:1279: UserWarning: findfont: Font family [&#39;Helvetica&#39;] not found. Falling back to Bitstream Vera Sans
+  (prop.get_family(), self.defaultFamily[fontext]))
+</pre></div>
+</div>
+<img alt="../_images/advanced_study_making_37_1.png" src="../_images/advanced_study_making_37_1.png" />
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">study</span><span class="o">.</span><span class="n">plot_pca</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>&lt;flotilla.visualize.decomposition.DecompositionViz at 0x10de21050&gt;
+</pre></div>
+</div>
+<img alt="../_images/advanced_study_making_38_1.png" src="../_images/advanced_study_making_38_1.png" />
+<img alt="../_images/advanced_study_making_38_2.png" src="../_images/advanced_study_making_38_2.png" />
+</div>
+<div class="section" id="save-the-data">
+<h2>Save the data<a class="headerlink" href="#save-the-data" title="Permalink to this headline">¶</a></h2>
+<p>Now we can save the data with <tt class="docutils literal"><span class="pre">study.save('neural_diff_chr22')</span></tt></p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">study</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#39;neural_diff_chr22&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>Wrote datapackage to /Users/olga/flotilla_projects/neural_diff_chr22/datapackage.json
+</pre></div>
+</div>
+<p>We can take a look at the package and see what it looks like.</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">cat</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">olga</span><span class="o">/</span><span class="n">flotilla_projects</span><span class="o">/</span><span class="n">neural_diff_chr22</span><span class="o">/</span><span class="n">datapackage</span><span class="o">.</span><span class="n">json</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+  <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;neural_diff_chr22&quot;</span><span class="p">,</span>
+  <span class="s">&quot;title&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
+  <span class="s">&quot;datapackage_version&quot;</span><span class="p">:</span> <span class="s">&quot;0.1.1&quot;</span><span class="p">,</span>
+  <span class="s">&quot;sources&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
+  <span class="s">&quot;licenses&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
+  <span class="s">&quot;resources&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s">&quot;path&quot;</span><span class="p">:</span> <span class="s">&quot;/Users/olga/flotilla_projects/neural_diff_chr22/splicing.csv.gz&quot;</span><span class="p">,</span>
+      <span class="s">&quot;format&quot;</span><span class="p">:</span> <span class="s">&quot;csv&quot;</span><span class="p">,</span>
+      <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;splicing&quot;</span><span class="p">,</span>
+      <span class="s">&quot;compression&quot;</span><span class="p">:</span> <span class="s">&quot;gzip&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="s">&quot;number_mapped_col&quot;</span><span class="p">:</span> <span class="s">&quot;Uniquely mapped reads number&quot;</span><span class="p">,</span>
+      <span class="s">&quot;path&quot;</span><span class="p">:</span> <span class="s">&quot;/Users/olga/flotilla_projects/neural_diff_chr22/mapping_stats.csv.gz&quot;</span><span class="p">,</span>
+      <span class="s">&quot;format&quot;</span><span class="p">:</span> <span class="s">&quot;csv&quot;</span><span class="p">,</span>
+      <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;mapping_stats&quot;</span><span class="p">,</span>
+      <span class="s">&quot;compression&quot;</span><span class="p">:</span> <span class="s">&quot;gzip&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;expression_feature&quot;</span><span class="p">,</span>
+      <span class="s">&quot;format&quot;</span><span class="p">:</span> <span class="s">&quot;csv&quot;</span><span class="p">,</span>
+      <span class="s">&quot;rename_col&quot;</span><span class="p">:</span> <span class="s">&quot;gene_name&quot;</span><span class="p">,</span>
+      <span class="s">&quot;ignore_subset_cols&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s">&quot;ensembl_gene&quot;</span><span class="p">,</span>
+        <span class="s">&quot;gencode_gene&quot;</span><span class="p">,</span>
+        <span class="s">&quot;gencode_transcript&quot;</span><span class="p">,</span>
+        <span class="s">&quot;ensembl_transcript&quot;</span><span class="p">,</span>
+        <span class="s">&quot;gene_name&quot;</span><span class="p">,</span>
+        <span class="s">&quot;transcript_id&quot;</span><span class="p">,</span>
+        <span class="s">&quot;havana_gene&quot;</span><span class="p">,</span>
+        <span class="s">&quot;gencode_id&quot;</span>
+      <span class="p">],</span>
+      <span class="s">&quot;path&quot;</span><span class="p">:</span> <span class="s">&quot;/Users/olga/flotilla_projects/neural_diff_chr22/expression_feature.csv.gz&quot;</span><span class="p">,</span>
+      <span class="s">&quot;compression&quot;</span><span class="p">:</span> <span class="s">&quot;gzip&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;expression&quot;</span><span class="p">,</span>
+      <span class="s">&quot;log_base&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
+      <span class="s">&quot;format&quot;</span><span class="p">:</span> <span class="s">&quot;csv&quot;</span><span class="p">,</span>
+      <span class="s">&quot;thresh&quot;</span><span class="p">:</span> <span class="o">-</span><span class="n">Infinity</span><span class="p">,</span>
+      <span class="s">&quot;path&quot;</span><span class="p">:</span> <span class="s">&quot;/Users/olga/flotilla_projects/neural_diff_chr22/expression.csv.gz&quot;</span><span class="p">,</span>
+      <span class="s">&quot;compression&quot;</span><span class="p">:</span> <span class="s">&quot;gzip&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;splicing_feature&quot;</span><span class="p">,</span>
+      <span class="s">&quot;format&quot;</span><span class="p">:</span> <span class="s">&quot;csv&quot;</span><span class="p">,</span>
+      <span class="s">&quot;rename_col&quot;</span><span class="p">:</span> <span class="s">&quot;gene_name&quot;</span><span class="p">,</span>
+      <span class="s">&quot;ignore_subset_cols&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s">&quot;ensembl_gene&quot;</span><span class="p">,</span>
+        <span class="s">&quot;gencode_gene&quot;</span><span class="p">,</span>
+        <span class="s">&quot;gencode_transcript&quot;</span><span class="p">,</span>
+        <span class="s">&quot;ensembl_transcript&quot;</span><span class="p">,</span>
+        <span class="s">&quot;gene_name&quot;</span><span class="p">,</span>
+        <span class="s">&quot;transcript_id&quot;</span><span class="p">,</span>
+        <span class="s">&quot;havana_gene&quot;</span><span class="p">,</span>
+        <span class="s">&quot;gencode_id&quot;</span>
+      <span class="p">],</span>
+      <span class="s">&quot;path&quot;</span><span class="p">:</span> <span class="s">&quot;/Users/olga/flotilla_projects/neural_diff_chr22/splicing_feature.csv.gz&quot;</span><span class="p">,</span>
+      <span class="s">&quot;compression&quot;</span><span class="p">:</span> <span class="s">&quot;gzip&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="s">&quot;pooled_col&quot;</span><span class="p">:</span> <span class="s">&quot;pooled&quot;</span><span class="p">,</span>
+      <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;metadata&quot;</span><span class="p">,</span>
+      <span class="s">&quot;phenotype_to_marker&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s">&quot;iPSC&quot;</span><span class="p">:</span> <span class="s">&quot;o&quot;</span><span class="p">,</span>
+        <span class="s">&quot;MN&quot;</span><span class="p">:</span> <span class="s">&quot;o&quot;</span><span class="p">,</span>
+        <span class="s">&quot;NPC&quot;</span><span class="p">:</span> <span class="s">&quot;o&quot;</span><span class="p">,</span>
+        <span class="s">&quot;sMN&quot;</span><span class="p">:</span> <span class="s">&quot;o&quot;</span>
+      <span class="p">},</span>
+      <span class="s">&quot;format&quot;</span><span class="p">:</span> <span class="s">&quot;csv&quot;</span><span class="p">,</span>
+      <span class="s">&quot;minimum_samples&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="s">&quot;phenotype_to_color&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s">&quot;iPSC&quot;</span><span class="p">:</span> <span class="s">&quot;#377eb8&quot;</span><span class="p">,</span>
+        <span class="s">&quot;MN&quot;</span><span class="p">:</span> <span class="s">&quot;#e41a1c&quot;</span><span class="p">,</span>
+        <span class="s">&quot;NPC&quot;</span><span class="p">:</span> <span class="s">&quot;#4eae4b&quot;</span><span class="p">,</span>
+        <span class="s">&quot;sMN&quot;</span><span class="p">:</span> <span class="s">&quot;#ff8101&quot;</span>
+      <span class="p">},</span>
+      <span class="s">&quot;path&quot;</span><span class="p">:</span> <span class="s">&quot;/Users/olga/flotilla_projects/neural_diff_chr22/metadata.csv.gz&quot;</span><span class="p">,</span>
+      <span class="s">&quot;phenotype_col&quot;</span><span class="p">:</span> <span class="s">&quot;phenotype&quot;</span><span class="p">,</span>
+      <span class="s">&quot;phenotype_order&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s">&quot;iPSC&quot;</span><span class="p">,</span>
+        <span class="s">&quot;NPC&quot;</span><span class="p">,</span>
+        <span class="s">&quot;MN&quot;</span><span class="p">,</span>
+        <span class="s">&quot;sMN&quot;</span>
+      <span class="p">],</span>
+      <span class="s">&quot;compression&quot;</span><span class="p">:</span> <span class="s">&quot;gzip&quot;</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </div>
 </div>
 
