@@ -9,6 +9,11 @@ import visualize
 
 __version__ = '0.2.0'
 
+_neural_diff_chr22 = 'http://sauron.ucsd.edu/flotilla_projects/neural_diff_' \
+                     'chr22/datapackage.json'
+_shalek2013 = 'http://sauron.ucsd.edu/flotilla_projects/shalek2013' \
+                     '/datapackage.json'
+
 
 def embark(study_name, load_species_data=True):
     """
