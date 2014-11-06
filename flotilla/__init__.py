@@ -11,7 +11,7 @@ __version__ = '0.2.0'
 
 _neural_diff_chr22 = 'http://sauron.ucsd.edu/flotilla_projects/' \
                      'neural_diff_chr22/datapackage.json'
-_shalek2013 = 'http://sauron.ucsd.edu/flotilla_projects/shalek2013/' \
+_shalek2013 = 'https://raw.githubusercontent.com/YeoLab/shalek2013/master/' \
               'datapackage.json'
 
 def embark(study_name, load_species_data=True):
