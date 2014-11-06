@@ -1109,7 +1109,7 @@ class BaseData(object):
 
 
     def plot_two_samples(self, sample1, sample2, **kwargs):
-        """
+        """Plot the gene expression of two samples
 
         Parameters
         ----------
@@ -1133,6 +1133,28 @@ class BaseData(object):
         y = self.data.ix[sample2]
         return simple_twoway_scatter(x, y, **kwargs)
 
+    def plot_two_features(self, feature1, feature2, groupby=None,
+                          label_to_color=None, label_to_marker=None, **kwargs):
+        """Plot the values of two features
+        """
+        feature1s = self.maybe_renamed_to_feature_id(feature1)
+        feature2s = self.maybe_renamed_to_feature_id(feature2)
+        for f1 in feature1s:
+            for f2 in feature2s:
+                x = self.data.ix[:, f1]
+                y = self.data.ix[:, f2]
+                x, y = x.align(y, 'inner')
+
+                scatter_kws = {}
+                if groupby is not None:
+                    if label_to_color is not None:
+                        scatter_kws['color'] = [label_to_color[groupby[i]]
+                                                for i in x.index]
+                    if label_to_marker is not None:
+                        scatter_kws['marker'] = [label_to_marker[groupby[i]]
+                                                 for i in x.index]
+                joint_kws = dict(scatter_kws=scatter_kws)
+                simple_twoway_scatter(x, y, joint_kws=joint_kws)
 
 def subsets_from_metadata(metadata, minimum, subset_type, ignore=None):
     """
