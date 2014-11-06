@@ -95,7 +95,7 @@ Start using flotilla:
     `%matplotlib inline`
 
 Test interactive features with example data:
-------------
+-------------------------------------------
 
 We have prepared a slice of the full dataset for testing and demonstration purposes.
 
