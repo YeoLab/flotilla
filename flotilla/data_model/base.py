@@ -1168,13 +1168,13 @@ def subsets_from_metadata(metadata, minimum, subset_type, ignore=None):
                 sizes = grouped.size()
                 filtered_sizes = sizes[sizes >= minimum]
                 for group in filtered_sizes.keys():
-                    if 'False' or 'True' in group:
+                    if isinstance(group, bool):
                         continue
                     name = '{}: {}'.format(col, group)
                     subsets[name] = grouped.groups[group]
         for sample_subset in subsets.keys():
-            name = 'not {}'.format(sample_subset)
-            if 'False' or 'True' in name:
+            name = 'not ({})'.format(sample_subset)
+            if 'False' in name or 'True' in name:
                 continue
             if name not in subsets:
                 in_features = metadata.index.isin(subsets[
