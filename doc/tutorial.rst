@@ -3,6 +3,14 @@
 Flotilla tutorial
 =================
 
+Install flotilla
+----------------
+
+.. toctree::
+    :maxdepth: 2
+
+    installation
+
 Create a datapackage
 --------------------
 
