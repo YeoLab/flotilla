@@ -5,6 +5,9 @@ import string
 import sys
 import urllib2
 
+import pandas as pd
+
+
 FLOTILLA_DOWNLOAD_DIR = os.path.expanduser('~/flotilla_projects')
 
 
@@ -131,6 +134,10 @@ def make_study_datapackage(name, metadata,
         data_filename = '{}/{}.csv.gz'.format(datapackage_dir, resource_name)
         with gzip.open(data_filename, 'wb') as f:
             data.to_csv(f)
+
+        if isinstance(data.columns, pd.MultiIndex):
+            resource['header'] = range(len(data.columns.levels))
+
         # try:
         # # TODO: only transmit data if it has been updated
         # subprocess.call(
