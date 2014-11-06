@@ -39,4 +39,3 @@ Recreated papers
     :maxdepth: 2
 
     tutorial/shalek2013
-    tutorial/
