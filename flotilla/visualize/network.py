@@ -12,7 +12,7 @@ import seaborn as sns
 
 from ..compute.network import Networker
 from ..util import dict_to_str
-from .color import dark2, almost_black, green
+from .color import dark2, almost_black, green, red
 
 
 class NetworkerViz(Networker):
@@ -103,8 +103,11 @@ class NetworkerViz(Networker):
             # groupby=groupby,
             **pca_settings)
 
-        feature_id = self.DataModel.maybe_renamed_to_feature_id(
-                feature_of_interest)[0]
+        try:
+            feature_id = self.DataModel.maybe_renamed_to_feature_id(
+                    feature_of_interest)[0]
+        except (ValueError, KeyError):
+            feature_id = ''
 
         if featurewise:
             node_color_mapper = lambda x: green \
@@ -263,11 +266,14 @@ class NetworkerViz(Networker):
 
         data = self.DataModel.df
 
-        feature_id = self.DataModel.maybe_renamed_to_feature_id(
-                feature_of_interest)[0]
+        try:
+            feature_id = self.DataModel.maybe_renamed_to_feature_id(
+                    feature_of_interest)[0]
+        except (ValueError, KeyError):
+            feature_id = ''
 
         if featurewise:
-            node_color_mapper = lambda x: 'r' \
+            node_color_mapper = lambda x: red \
                 if x == feature_id else 'k'
             node_size_mapper = lambda x: (data.mean().ix[x] ** 2) + 10
         else:
@@ -303,14 +309,14 @@ class NetworkerViz(Networker):
                                node_size=map(node_size_mapper, graph.nodes()),
                                ax=main_ax, alpha=0.5)
         try:
-            node_color = map(lambda x: data[feature_of_interest].ix[x],
+            node_color = map(lambda x: data[feature_id].ix[x],
                              graph.nodes())
             nx.draw_networkx_nodes(graph, positions, node_color=node_color,
                                    cmap=plt.cm.Greys,
                                    node_size=map(
                                        lambda x: node_size_mapper(x) * .5,
                                        graph.nodes()), ax=main_ax, alpha=1)
-        except KeyError:
+        except (KeyError, ValueError):
             pass
 
         renamer = lambda x: x
