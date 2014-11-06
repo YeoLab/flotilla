@@ -1172,6 +1172,8 @@ def subsets_from_metadata(metadata, minimum, subset_type, ignore=None):
                 sizes = grouped.size()
                 filtered_sizes = sizes[sizes >= minimum]
                 for group in filtered_sizes.keys():
+                    if 'False' or 'True' in group:
+                        continue
                     name = '{}: {}'.format(col, group)
                     subsets[name] = grouped.groups[group]
         for sample_subset in subsets.keys():
