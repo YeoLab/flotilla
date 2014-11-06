@@ -131,7 +131,7 @@ class PredictorBaseViz(PredictorBase):
         pca = self.pca()
 
         if self.categorical:
-            groupby = self.y.map(lambda x: self.dataset.traitset[x])
+            groupby = self.dataset.trait.align(self.y, join='right')[0]
         else:
             groupby = self.y
 
