@@ -430,8 +430,10 @@ class Study(object):
             reader = cls.readers[resource['format']]
             compression = None if 'compression' not in resource else \
                 resource['compression']
+            header = resource.pop('header', 0)
 
-            dfs[name] = reader(filename, compression=compression)
+            dfs[name] = reader(filename, compression=compression,
+                               header=header)
 
             if name == 'expression':
                 if 'log_transformed' in resource:
