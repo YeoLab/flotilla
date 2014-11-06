@@ -54,8 +54,8 @@ Learn how to use flotilla
 Please refer to our [talks](talks/) or [tutorials](tutorials/) to learn more about how you can
 apply our tools to your data.
 
-Test interactive features with example data:
-============================================
+Quick Start:
+============
 
 We have prepared a slice of the full dataset for testing and demonstration purposes.
 
