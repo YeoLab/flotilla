@@ -285,7 +285,7 @@ class BaseData(object):
         """A pandas Series of the original feature ids to the renamed ids"""
         try:
             return self.feature_data[self.feature_rename_col].dropna()
-        except TypeError:
+        except (TypeError, ValueError):
             return pd.Series(self.data.columns.values,
                              index=self.data.columns)
 
@@ -314,8 +314,7 @@ class BaseData(object):
         else:
             raise ValueError('{} is not a valid feature identifier (it may '
                              'not have been measured in this dataset!)'
-                             .format(
-                feature_id))
+                             .format(feature_id))
 
     @property
     def _var_cut(self):
@@ -890,8 +889,6 @@ class BaseData(object):
                  plotting_kwargs=None,
                  color=None, groupby=None, label_to_color=None,
                  label_to_marker=None, order=None, bins=None):
-        # Should all this be exposed to the user???
-
         """Make and memoize a predictor on a categorical trait (associated
         with samples) subset of genes
 
@@ -1015,7 +1012,6 @@ class BaseData(object):
                      phenotype_to_color=None,
                      phenotype_to_marker=None, xlabel=None, ylabel=None,
                      nmf_space=False):
-
         """
         Plot the violinplot of a splicing event (should also show NMF movement)
         """
