@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>flotilla.data_model.study module &mdash; flotilla 0.2.0 documentation</title>
+    <title>flotilla.data_model.study module &mdash; flotilla 0.2.1 documentation</title>
     
     <link rel="stylesheet" href="_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.0',
+        VERSION:     '0.2.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -29,7 +29,10 @@
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
-    <link rel="top" title="flotilla 0.2.0 documentation" href="index.html" />
+    <link rel="top" title="flotilla 0.2.1 documentation" href="index.html" />
+    <link rel="up" title="flotilla.data_model package" href="flotilla.data_model.html" />
+    <link rel="next" title="flotilla.test package" href="flotilla.test.html" />
+    <link rel="prev" title="flotilla.data_model.splicing module" href="flotilla.data_model.splicing.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -49,7 +52,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           Flotilla</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.1</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -57,7 +60,7 @@
             <li class="divider-vertical"></li>
             
                 <li><a href="tutorial.html">Tutorial</a></li>
-                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="gallery/index.html">Gallery</a></li>
                 <li><a href="http://yeolab.ucsd.edu">YeoLab@UCSD</a></li>
             
             
@@ -69,9 +72,14 @@
      href="index.html">Site <b class="caret"></b></a>
   <ul class="dropdown-menu globaltoc"
       role="menu"
-      aria-labelledby="dLabelGlobalToc"><ul>
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">flotilla</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="flotilla.html">flotilla package</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What&#8217;s new in the package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-0-november-1st-2014">v0.2.0 (November 1st, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-1-november-6th-2014">v0.2.1 (November 6th, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Docker Installation Instructions</a></li>
@@ -87,12 +95,8 @@
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Flotilla tutorial</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tutorial.html#install-flotilla">Install flotilla</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorial.html#create-a-datapackage">Create a datapackage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorial.html#processing-data">Processing data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorial.html#plotting-functions">Plotting functions</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="apidoc/modules.html">flotilla</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="apidoc/flotilla.html">flotilla package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#recreated-papers">Recreated papers</a></li>
 </ul>
 </li>
 </ul>
@@ -299,7 +303,7 @@ whether or not this sample was pooled.</p>
 
 <dl class="attribute">
 <dt id="flotilla.data_model.study.Study.default_feature_set_ids">
-<tt class="descname">default_feature_set_ids</tt><em class="property"> = []</em><a class="headerlink" href="#flotilla.data_model.study.Study.default_feature_set_ids" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">default_feature_set_ids</tt><em class="property"> = ['not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_type: snoRNA)', 'gene_type: IG_V_gene', 'not (transcription_factor)', 'gene_type: IG_V_pseudogene', 'not (gene_type: snRNA)', 'gene_type: lincRNA', 'not (transcript_type: misc_RNA)', 'gene_type: snoRNA', 'transcript_type: snRNA', 'not (level: 2)', 'not (gene_status: NOVEL)', 'not (gene_type: pseudogene)', 'not (gene_type: protein_coding)', 'not (transcript_type: protein_coding)', 'not (transcript_type: sense_intronic)', 'ribosomal', 'not (gene_status: KNOWN)', 'biomark_neural_panel', 'not (gene_type: miRNA)', 'gene_type: snRNA', 'not (gene_type: sense_intronic)', 'transcript_type: IG_V_gene', 'transcript_type: pseudogene', 'not (biomark_neural_panel)', 'transcript_type: protein_coding', 'not (tag: pseudo_consens)', 'transcript_type: lincRNA', 'not (transcript_type: lincRNA)', 'not (ribosomal_subunit)', 'tag: ncRNA_host', 'not (level: 1)', 'not (transcript_status: NOVEL)', 'gene_status: NOVEL', 'transcription_factor', 'not (rbp)', 'not (gene_type: IG_V_gene)', 'not (transcript_type: snoRNA)', 'not (transcript_status: KNOWN)', 'transcript_status: NOVEL', 'not (gene_type: lincRNA)', 'gene_type: misc_RNA', 'not (transcript_type: IG_V_pseudogene)', 'transcript_type: snoRNA', 'transcript_status: KNOWN', 'confident_rbp', 'not (gene_type: IG_V_pseudogene)', 'variant', 'synapse', 'all features', 'gene_type: miRNA', 'gene_type: sense_intronic', 'not (transcript_type: IG_V_gene)', 'gene_type: antisense', 'not (transcript_type: snRNA)', 'not (tag: ncRNA_host)', 'gene_type: protein_coding', 'gene_status: KNOWN', 'transcript_type: misc_RNA', 'not (level: 3)', 'not (transcript_type: pseudogene)', 'not (transcript_type: antisense)', 'not (gene_type: antisense)', 'ribosomal_subunit', 'not (gene_type: misc_RNA)', 'level: 1', 'level: 2', 'level: 3', 'gene_type: pseudogene', 'transcript_type: antisense', 'not (transcript_type: miRNA)', 'rbp', 'not (synapse)', 'not (ribosomal)', 'not (confident_rbp)', 'transcript_type: miRNA', 'transcript_type: sense_intronic', 'tag: pseudo_consens', 'transcript_type: IG_V_pseudogene', 'not (gene_type: snoRNA)', 'gene_type: IG_V_gene', 'not (transcription_factor)', 'gene_type: IG_V_pseudogene', 'not (gene_type: snRNA)', 'gene_type: lincRNA', 'not (transcript_type: misc_RNA)', 'gene_type: snoRNA', 'transcript_type: snRNA', 'not (level: 2)', 'not (gene_status: NOVEL)', 'not (gene_type: pseudogene)', 'not (gene_type: protein_coding)', 'not (transcript_type: protein_coding)', 'not (transcript_type: sense_intronic)', 'ribosomal', 'not (gene_status: KNOWN)', 'biomark_neural_panel', 'not (gene_type: miRNA)', 'gene_type: snRNA', 'not (gene_type: sense_intronic)', 'transcript_type: IG_V_gene', 'transcript_type: pseudogene', 'not (biomark_neural_panel)', 'transcript_type: protein_coding', 'not (tag: pseudo_consens)', 'transcript_type: lincRNA', 'not (transcript_type: lincRNA)', 'not (ribosomal_subunit)', 'tag: ncRNA_host', 'not (level: 1)', 'not (transcript_status: NOVEL)', 'gene_status: NOVEL', 'transcription_factor', 'not (rbp)', 'not (gene_type: IG_V_gene)', 'not (transcript_type: snoRNA)', 'not (transcript_status: KNOWN)', 'transcript_status: NOVEL', 'not (gene_type: lincRNA)', 'gene_type: misc_RNA', 'not (transcript_type: IG_V_pseudogene)', 'transcript_type: snoRNA', 'transcript_status: KNOWN', 'confident_rbp', 'not (gene_type: IG_V_pseudogene)', 'variant', 'synapse', 'all features', 'gene_type: miRNA', 'gene_type: sense_intronic', 'not (transcript_type: IG_V_gene)', 'gene_type: antisense', 'not (transcript_type: snRNA)', 'not (tag: ncRNA_host)', 'gene_type: protein_coding', 'gene_status: KNOWN', 'transcript_type: misc_RNA', 'not (level: 3)', 'not (transcript_type: pseudogene)', 'not (transcript_type: antisense)', 'not (gene_type: antisense)', 'ribosomal_subunit', 'not (gene_type: misc_RNA)', 'level: 1', 'level: 2', 'level: 3', 'gene_type: pseudogene', 'transcript_type: antisense', 'not (transcript_type: miRNA)', 'rbp', 'not (synapse)', 'not (ribosomal)', 'not (confident_rbp)', 'transcript_type: miRNA', 'transcript_type: sense_intronic', 'tag: pseudo_consens', 'transcript_type: IG_V_pseudogene', 'not (gene_type: snoRNA)', 'gene_type: IG_V_gene', 'not (transcription_factor)', 'gene_type: IG_V_pseudogene', 'not (gene_type: snRNA)', 'gene_type: lincRNA', 'not (transcript_type: misc_RNA)', 'gene_type: snoRNA', 'transcript_type: snRNA', 'not (level: 2)', 'not (gene_status: NOVEL)', 'not (gene_type: pseudogene)', 'not (gene_type: protein_coding)', 'not (transcript_type: protein_coding)', 'not (transcript_type: sense_intronic)', 'ribosomal', 'not (gene_status: KNOWN)', 'biomark_neural_panel', 'not (gene_type: miRNA)', 'gene_type: snRNA', 'not (gene_type: sense_intronic)', 'transcript_type: IG_V_gene', 'transcript_type: pseudogene', 'not (biomark_neural_panel)', 'transcript_type: protein_coding', 'not (tag: pseudo_consens)', 'transcript_type: lincRNA', 'not (transcript_type: lincRNA)', 'not (ribosomal_subunit)', 'tag: ncRNA_host', 'not (level: 1)', 'not (transcript_status: NOVEL)', 'gene_status: NOVEL', 'transcription_factor', 'not (rbp)', 'not (gene_type: IG_V_gene)', 'not (transcript_type: snoRNA)', 'not (transcript_status: KNOWN)', 'transcript_status: NOVEL', 'not (gene_type: lincRNA)', 'gene_type: misc_RNA', 'not (transcript_type: IG_V_pseudogene)', 'transcript_type: snoRNA', 'transcript_status: KNOWN', 'confident_rbp', 'not (gene_type: IG_V_pseudogene)', 'variant', 'synapse', 'all features', 'gene_type: miRNA', 'gene_type: sense_intronic', 'not (transcript_type: IG_V_gene)', 'gene_type: antisense', 'not (transcript_type: snRNA)', 'not (tag: ncRNA_host)', 'gene_type: protein_coding', 'gene_status: KNOWN', 'transcript_type: misc_RNA', 'not (level: 3)', 'not (transcript_type: pseudogene)', 'not (transcript_type: antisense)', 'not (gene_type: antisense)', 'ribosomal_subunit', 'not (gene_type: misc_RNA)', 'level: 1', 'level: 2', 'level: 3', 'gene_type: pseudogene', 'transcript_type: antisense', 'not (transcript_type: miRNA)', 'rbp', 'not (synapse)', 'not (ribosomal)', 'not (confident_rbp)', 'transcript_type: miRNA', 'transcript_type: sense_intronic', 'tag: pseudo_consens', 'transcript_type: IG_V_pseudogene', 'not (gene_type: snoRNA)', 'gene_type: IG_V_gene', 'not (transcription_factor)', 'gene_type: IG_V_pseudogene', 'not (gene_type: snRNA)', 'gene_type: lincRNA', 'not (transcript_type: misc_RNA)', 'gene_type: snoRNA', 'transcript_type: snRNA', 'not (level: 2)', 'not (gene_status: NOVEL)', 'not (gene_type: pseudogene)', 'not (gene_type: protein_coding)', 'not (transcript_type: protein_coding)', 'not (transcript_type: sense_intronic)', 'ribosomal', 'not (gene_status: KNOWN)', 'biomark_neural_panel', 'not (gene_type: miRNA)', 'gene_type: snRNA', 'not (gene_type: sense_intronic)', 'transcript_type: IG_V_gene', 'transcript_type: pseudogene', 'not (biomark_neural_panel)', 'transcript_type: protein_coding', 'not (tag: pseudo_consens)', 'transcript_type: lincRNA', 'not (transcript_type: lincRNA)', 'not (ribosomal_subunit)', 'tag: ncRNA_host', 'not (level: 1)', 'not (transcript_status: NOVEL)', 'gene_status: NOVEL', 'transcription_factor', 'not (rbp)', 'not (gene_type: IG_V_gene)', 'not (transcript_type: snoRNA)', 'not (transcript_status: KNOWN)', 'transcript_status: NOVEL', 'not (gene_type: lincRNA)', 'gene_type: misc_RNA', 'not (transcript_type: IG_V_pseudogene)', 'transcript_type: snoRNA', 'transcript_status: KNOWN', 'confident_rbp', 'not (gene_type: IG_V_pseudogene)', 'variant', 'synapse', 'all features', 'gene_type: miRNA', 'gene_type: sense_intronic', 'not (transcript_type: IG_V_gene)', 'gene_type: antisense', 'not (transcript_type: snRNA)', 'not (tag: ncRNA_host)', 'gene_type: protein_coding', 'gene_status: KNOWN', 'transcript_type: misc_RNA', 'not (level: 3)', 'not (transcript_type: pseudogene)', 'not (transcript_type: antisense)', 'not (gene_type: antisense)', 'ribosomal_subunit', 'not (gene_type: misc_RNA)', 'level: 1', 'level: 2', 'level: 3', 'gene_type: pseudogene', 'transcript_type: antisense', 'not (transcript_type: miRNA)', 'rbp', 'not (synapse)', 'not (ribosomal)', 'not (confident_rbp)', 'transcript_type: miRNA', 'transcript_type: sense_intronic', 'tag: pseudo_consens', 'transcript_type: IG_V_pseudogene']</em><a class="headerlink" href="#flotilla.data_model.study.Study.default_feature_set_ids" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -711,7 +715,7 @@ e.g. &#8220;ENSG00000100320&#8221;</p>
 
 <dl class="attribute">
 <dt id="flotilla.data_model.study.Study.readers">
-<tt class="descname">readers</tt><em class="property"> = {'tsv': &lt;function load_tsv at 0x2b2aa462fc08&gt;, 'json': &lt;function load_json at 0x2b2aa462fc80&gt;, 'csv': &lt;function load_csv at 0x2b2aa462fd70&gt;, 'gzip_pickle_df': &lt;function load_gzip_pickle_df at 0x2b2aa462fb18&gt;, 'pickle_df': &lt;function load_pickle_df at 0x2b2aa462fa28&gt;}</em><a class="headerlink" href="#flotilla.data_model.study.Study.readers" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">readers</tt><em class="property"> = {'tsv': &lt;function load_tsv at 0x2b44176bac08&gt;, 'json': &lt;function load_json at 0x2b44176bac80&gt;, 'csv': &lt;function load_csv at 0x2b44176bad70&gt;, 'gzip_pickle_df': &lt;function load_gzip_pickle_df at 0x2b44176bab18&gt;, 'pickle_df': &lt;function load_pickle_df at 0x2b44176baa28&gt;}</em><a class="headerlink" href="#flotilla.data_model.study.Study.readers" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
