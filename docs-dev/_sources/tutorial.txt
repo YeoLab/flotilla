@@ -17,8 +17,8 @@ Create a datapackage
 .. toctree::
     :maxdepth: 2
 
-    tutorial/barebones_datapackage
-    tutorial/advanced_datapackage
+    tutorial/barebones_study_making
+    tutorial/advanced_study_making
 
 Plotting functions
 ------------------
@@ -39,3 +39,4 @@ Recreated papers
     :maxdepth: 2
 
     tutorial/shalek2013
+    tutorial/
