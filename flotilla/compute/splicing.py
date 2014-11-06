@@ -9,8 +9,36 @@ from .infotheory import jsd, binify
 
 
 class Modalities(object):
-    """
+    """Estimate the modality of a splicing event
 
+    This is based off of the "percent spliced-in" (PSI) score of a splicing
+    event, for example in a cassette exon event, how many transcripts use the
+    cassette exon gives the "PSI" (:math:`\Psi`) score of that splicing event
+
+    Possible modalities include:
+    - Excluded (most cells have excluded the exon)
+    - Middle (most cells have both the included and excluded isoforms)
+    - Included (most cells have included the exon)
+    - Bimodal (approximately a 50:50 distribution of inclusoion:exclusion)
+    - Uniform (uniform distribution of exon usage)
+
+    The way that these modalities are calculated is by binning each splicing
+    event across all cells from (0, excluded_max, included_min, 1), and finding
+    the Jensen-Shannon Divergence that event, and each of the five modalities
+
+    Parameters
+    ----------
+    excluded_max : float, optional (default=0.2)
+        Maximum value of excluded bin
+    included_min : float, optional (default=0.8)
+        Minimum value of included bin
+
+    Attributes
+    ----------
+
+
+    Methods
+    -------
     """
     modalities_bins = np.array([[1, 0, 0],  # excluded
                                 [0, 1, 0],  # middle
@@ -26,20 +54,46 @@ class Modalities(object):
     def __init__(self, excluded_max=0.2, included_min=0.8):
         self.bins = (0, excluded_max, included_min, 1)
 
-    # def __call__(self, *args, **kwargs):
-    # return self.assignments
-
     def _col_jsd_modalities(self, col):
-        return self.true_modalities.apply(lambda x: jsd(x, col), axis=0)
+        """Calculate JSD between a single binned event and true modalities
+
+        Given a column of a binned splicing event, calculate its Jensen-Shannon
+        divergence to the true modalities
+
+        Parameters
+        ----------
+        col : pandas.Series
+            A (n_bins,) sized series of a splicing event
+
+        Returns
+        -------
+        jsd : pandas.Series
+            A (n_modalities,) sized series of JSD between this event and the
+            true modalities
+        """
+        return self.true_modalities.apply(jsd, axis=0, p=col)
 
     def sqrt_jsd_modalities(self, binned):
-        """Return the square root of the JSD of each splicing event versus
-            all the modalities. Use square root of JSD because it's a metric.
+        """Calculate JSD between all binned splicing events and true modalities
+
+        Use square root of JSD because it's a metric.
+
+        Parameters
+        ----------
+        binned : pandas.DataFrame
+            A (n_bins, n_events) sized DataFrame of binned splicing events
+
+        Returns
+        -------
+        sqrt_jsd : pandas.DataFrame
+            A (n_modalities, n_events) sized DataFrame of the square root JSD
+            between splicing events and all modalities
+
         """
         return np.sqrt(binned.apply(self._col_jsd_modalities, axis=0))
 
     def assignments(self, sqrt_jsd_modalities):
-        """Return the modality which has the smallest square root JSD to each event
+        """Return the modality with the smallest square root JSD to each event
 
         Parameters
         ----------
@@ -135,6 +189,17 @@ class Modalities(object):
     def _max_assignment(x):
         """Given a pandas.Series of modalities counts, return the maximum
         value. Necessary because just np.argmax will use np.nan as the max :(
+
+        Parameters
+        ----------
+        x : pandas.Series
+            A (n_modalities,) sized pandas series of integers, which count how
+            many times this single splicing event was assigned to a modality.
+
+        Returns
+        -------
+        assignment : str
+            The modality with the largest number of counts
         """
         if np.isfinite(x).sum() == 0:
             return np.nan
