@@ -1,0 +1,6 @@
+flotilla.Study.plot_lavalamp_pooled_inconsistent
+================================================
+
+.. currentmodule:: flotilla
+
+.. automethod:: Study.plot_lavalamp_pooled_inconsistent

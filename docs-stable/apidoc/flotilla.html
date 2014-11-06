@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>flotilla package &mdash; flotilla 0.1.2 documentation</title>
+    <title>flotilla package &mdash; flotilla 0.2.0 documentation</title>
     
     <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.1.2',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -29,7 +29,10 @@
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
-    <link rel="top" title="flotilla 0.1.2 documentation" href="../index.html" />
+    <link rel="top" title="flotilla 0.2.0 documentation" href="../index.html" />
+    <link rel="up" title="flotilla" href="modules.html" />
+    <link rel="next" title="flotilla.compute package" href="flotilla.compute.html" />
+    <link rel="prev" title="flotilla" href="modules.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -49,7 +52,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           Flotilla</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.1.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -69,7 +72,36 @@
      href="../index.html">Site <b class="caret"></b></a>
   <ul class="dropdown-menu globaltoc"
       role="menu"
-      aria-labelledby="dLabelGlobalToc"><ul class="simple">
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../flotilla.html">flotilla package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../flotilla.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flotilla.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flotilla.html#module-flotilla">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What&#8217;s new in the package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../whatsnew.html#v0-2-0-november-1st-2014">v0.2.0 (November 1st, 2014)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installing flotilla</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#general-use-plots">General use plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#interactive-plots">Interactive plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#machine-learning-plots">Machine learning plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#splicing-specific-plots">Splicing-specific plots</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../create_datapackage.html">Create your very own datapackage!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Flotilla tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#create-a-datapackage">Create a datapackage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#processing-data">Processing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#plotting-functions">Plotting functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">flotilla</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="">flotilla package</a></li>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -86,10 +118,6 @@
 <li><a class="reference internal" href="#">flotilla package</a><ul>
 <li><a class="reference internal" href="#subpackages">Subpackages</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#flotilla-database-module">flotilla.database module</a></li>
-<li><a class="reference internal" href="#flotilla-external-module">flotilla.external module</a></li>
-<li><a class="reference internal" href="#flotilla-setup-module">flotilla.setup module</a></li>
-<li><a class="reference internal" href="#module-flotilla.util">flotilla.util module</a></li>
 <li><a class="reference internal" href="#module-flotilla">Module contents</a></li>
 </ul>
 </li>
@@ -98,10 +126,6 @@
 </li>
               
             
-            
-              
-                
-              
             
             
             
@@ -139,37 +163,60 @@
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="flotilla.compute.html">flotilla.compute package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="flotilla.compute.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="flotilla.compute.html#module-flotilla.compute.decomposition">flotilla.compute.decomposition module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="flotilla.compute.html#module-flotilla.compute.expression">flotilla.compute.expression module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="flotilla.compute.html#module-flotilla.compute.generic">flotilla.compute.generic module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="flotilla.compute.html#module-flotilla.compute.network">flotilla.compute.network module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="flotilla.compute.html#module-flotilla.compute.predict">flotilla.compute.predict module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="flotilla.compute.html#module-flotilla.compute.splicing">flotilla.compute.splicing module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flotilla.compute.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="flotilla.compute.clustering.html">flotilla.compute.clustering module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flotilla.compute.decomposition.html">flotilla.compute.decomposition module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flotilla.compute.expression.html">flotilla.compute.expression module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flotilla.compute.generic.html">flotilla.compute.generic module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flotilla.compute.infotheory.html">flotilla.compute.infotheory module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flotilla.compute.network.html">flotilla.compute.network module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flotilla.compute.outlier.html">flotilla.compute.outlier module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flotilla.compute.predict.html">flotilla.compute.predict module</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="flotilla.compute.splicing.html">flotilla.compute.splicing module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="flotilla.compute.html#module-flotilla.compute">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="flotilla.data_model.html">flotilla.data_model package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="flotilla.data_model.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="flotilla.data_model.html#flotilla-data-model-base-module">flotilla.data_model.base module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="flotilla.data_model.html#flotilla-data-model-experiment-design-module">flotilla.data_model.experiment_design module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="flotilla.data_model.html#module-flotilla.data_model.expression">flotilla.data_model.expression module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="flotilla.data_model.html#module-flotilla.data_model.quality_control">flotilla.data_model.quality_control module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="flotilla.data_model.html#module-flotilla.data_model.splicing">flotilla.data_model.splicing module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="flotilla.data_model.html#module-flotilla.data_model.study">flotilla.data_model.study module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flotilla.data_model.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="flotilla.data_model.base.html">flotilla.data_model.base module</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="flotilla.data_model.expression.html">flotilla.data_model.expression module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flotilla.data_model.metadata.html">flotilla.data_model.metadata module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flotilla.data_model.quality_control.html">flotilla.data_model.quality_control module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flotilla.data_model.splicing.html">flotilla.data_model.splicing module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flotilla.data_model.study.html">flotilla.data_model.study module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="flotilla.data_model.html#module-flotilla.data_model">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="flotilla.test.html">flotilla.test package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="flotilla.test.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="flotilla.test.conftest.html">flotilla.test.conftest module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flotilla.test.test_embark.html">flotilla.test.test_embark module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flotilla.test.test_util.html">flotilla.test.test_util module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="flotilla.test.html#module-flotilla.test">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="flotilla.visualize.html">flotilla.visualize package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="flotilla.visualize.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="flotilla.visualize.html#module-flotilla.visualize.color">flotilla.visualize.color module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="flotilla.visualize.html#module-flotilla.visualize.decomposition">flotilla.visualize.decomposition module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="flotilla.visualize.html#module-flotilla.visualize.expression">flotilla.visualize.expression module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="flotilla.visualize.html#module-flotilla.visualize.generic">flotilla.visualize.generic module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="flotilla.visualize.html#module-flotilla.visualize.ipython_interact">flotilla.visualize.ipython_interact module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="flotilla.visualize.html#module-flotilla.visualize.network">flotilla.visualize.network module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="flotilla.visualize.html#module-flotilla.visualize.predict">flotilla.visualize.predict module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="flotilla.visualize.html#module-flotilla.visualize.splicing">flotilla.visualize.splicing module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flotilla.visualize.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="flotilla.visualize.color.html">flotilla.visualize.color module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flotilla.visualize.decomposition.html">flotilla.visualize.decomposition module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flotilla.visualize.expression.html">flotilla.visualize.expression module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flotilla.visualize.generic.html">flotilla.visualize.generic module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flotilla.visualize.ipython_interact.html">flotilla.visualize.ipython_interact module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flotilla.visualize.network.html">flotilla.visualize.network module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flotilla.visualize.predict.html">flotilla.visualize.predict module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flotilla.visualize.splicing.html">flotilla.visualize.splicing module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="flotilla.visualize.html#module-flotilla.visualize">Module contents</a></li>
 </ul>
 </li>
@@ -178,216 +225,14 @@
 </div>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="flotilla.datapackage.html">flotilla.datapackage module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flotilla.go.html">flotilla.go module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flotilla.setup.html">flotilla.setup module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flotilla.util.html">flotilla.util module</a></li>
+</ul>
 </div>
-<div class="section" id="flotilla-database-module">
-<h2>flotilla.database module<a class="headerlink" href="#flotilla-database-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="flotilla-external-module">
-<h2>flotilla.external module<a class="headerlink" href="#flotilla-external-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="flotilla-setup-module">
-<h2>flotilla.setup module<a class="headerlink" href="#flotilla-setup-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-flotilla.util">
-<span id="flotilla-util-module"></span><h2>flotilla.util module<a class="headerlink" href="#module-flotilla.util" title="Permalink to this headline">¶</a></h2>
-<p>General use utilities</p>
-<dl class="exception">
-<dt id="flotilla.util.AssertionError">
-<em class="property">exception </em><tt class="descclassname">flotilla.util.</tt><tt class="descname">AssertionError</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#AssertionError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.AssertionError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/exceptions.html#exceptions.StandardError" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">exceptions.StandardError</span></tt></a></p>
-<p>Assertion failed.</p>
-</dd></dl>
-
-<dl class="exception">
-<dt id="flotilla.util.TimeoutError">
-<em class="property">exception </em><tt class="descclassname">flotilla.util.</tt><tt class="descname">TimeoutError</tt><a class="reference internal" href="../_modules/flotilla/util.html#TimeoutError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.TimeoutError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/exceptions.html#exceptions.Exception" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></a></p>
-<p>From:
-<a class="reference external" href="http://stackoverflow.com/questions/2281850/timeout-function-if-it-takes-too-long-to-finish">http://stackoverflow.com/questions/2281850/timeout-function-if-it-takes-too-long-to-finish</a></p>
-</dd></dl>
-
-<dl class="function">
-<dt id="flotilla.util.add_package_data_resource">
-<tt class="descclassname">flotilla.util.</tt><tt class="descname">add_package_data_resource</tt><big>(</big><em>self</em>, <em>file_name</em>, <em>data_df</em>, <em>toplevel_package_dir</em>, <em>file_write_mode='tsv'</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#add_package_data_resource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.add_package_data_resource" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="flotilla.util.as_numpy">
-<tt class="descclassname">flotilla.util.</tt><tt class="descname">as_numpy</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#as_numpy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.as_numpy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given either a pandas dataframe or a numpy array, always return a
-numpy array.</p>
-</dd></dl>
-
-<dl class="class">
-<dt id="flotilla.util.cached_property">
-<em class="property">class </em><tt class="descclassname">flotilla.util.</tt><tt class="descname">cached_property</tt><big>(</big><em>ttl=0</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#cached_property"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.cached_property" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
-<p>Decorator for read-only properties evaluated only once within TTL period.</p>
-<p>It can be used to created a cached property like this:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">random</span>
-
-<span class="c"># the class containing the property must be a new-style class</span>
-<span class="k">class</span> <span class="nc">MyClass</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="c"># create property whose value is cached for ten minutes</span>
-    <span class="nd">@cached_property</span><span class="p">(</span><span class="n">ttl</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">randint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c"># will only be evaluated every 10 min. at maximum.</span>
-        <span class="k">return</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>The value is cached  in the &#8216;_cache&#8217; attribute of the object instance that
-has the property getter method wrapped by this decorator. The &#8216;_cache&#8217;
-attribute value is a dictionary which has a key for every property of the
-object which is wrapped by this decorator. Each entry in the cache is
-created only when the property is accessed for the first time and is a
-two-element tuple with the last computed property value and the last time
-it was updated in seconds since the epoch.</p>
-<p>The default time-to-live (TTL) is 300 seconds (5 minutes). Set the TTL to
-zero for the cached value to never expire.</p>
-<p>To expire a cached property value manually just do:</p>
-<div class="highlight-python"><div class="highlight"><pre>del instance._cache[&lt;property name&gt;]
-</pre></div>
-</div>
-<p>Stolen from:
-<a class="reference external" href="https://wiki.python.org/moin/PythonDecoratorLibrary#Cached_Properties">https://wiki.python.org/moin/PythonDecoratorLibrary#Cached_Properties</a></p>
-</dd></dl>
-
-<dl class="function">
-<dt id="flotilla.util.dict_to_str">
-<tt class="descclassname">flotilla.util.</tt><tt class="descname">dict_to_str</tt><big>(</big><em>dic</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#dict_to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.dict_to_str" title="Permalink to this definition">¶</a></dt>
-<dd><p>join dictionary study_data into a string with that study_data</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="flotilla.util.get_loading_method">
-<tt class="descclassname">flotilla.util.</tt><tt class="descname">get_loading_method</tt><big>(</big><em>self</em>, <em>file_name</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#get_loading_method"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.get_loading_method" title="Permalink to this definition">¶</a></dt>
-<dd><p>loading_methods for loading from file</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="flotilla.util.install_development_package">
-<tt class="descclassname">flotilla.util.</tt><tt class="descname">install_development_package</tt><big>(</big><em>package_location</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#install_development_package"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.install_development_package" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="flotilla.util.link_to_list">
-<tt class="descclassname">flotilla.util.</tt><tt class="descname">link_to_list</tt><big>(</big><em>link</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#link_to_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.link_to_list" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="flotilla.util.load">
-<tt class="descclassname">flotilla.util.</tt><tt class="descname">load</tt><big>(</big><em>self</em>, <em>file_name</em>, <em>file_type='pickle_df'</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.load" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="flotilla.util.load_csv">
-<tt class="descclassname">flotilla.util.</tt><tt class="descname">load_csv</tt><big>(</big><em>file_name</em>, <em>compression=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#load_csv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.load_csv" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="flotilla.util.load_gzip_pickle_df">
-<tt class="descclassname">flotilla.util.</tt><tt class="descname">load_gzip_pickle_df</tt><big>(</big><em>file_name</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#load_gzip_pickle_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.load_gzip_pickle_df" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="flotilla.util.load_json">
-<tt class="descclassname">flotilla.util.</tt><tt class="descname">load_json</tt><big>(</big><em>filename</em>, <em>compression=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#load_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.load_json" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
-<blockquote>
-<div><p>Name of the json file toread</p>
-</div></blockquote>
-<p><strong>compression</strong> : str</p>
-<blockquote class="last">
-<div><p>Not used, only for  compatibility with other load functions</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="flotilla.util.load_pickle_df">
-<tt class="descclassname">flotilla.util.</tt><tt class="descname">load_pickle_df</tt><big>(</big><em>file_name</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#load_pickle_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.load_pickle_df" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="flotilla.util.load_tsv">
-<tt class="descclassname">flotilla.util.</tt><tt class="descname">load_tsv</tt><big>(</big><em>file_name</em>, <em>compression=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#load_tsv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.load_tsv" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="flotilla.util.memoize">
-<tt class="descclassname">flotilla.util.</tt><tt class="descname">memoize</tt><big>(</big><em>obj</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#memoize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.memoize" title="Permalink to this definition">¶</a></dt>
-<dd><p>&#8216;Memoize&#8217; aka remember the output from a function and return that,
-rather than recalculating</p>
-<p>Stolen from:
-<a class="reference external" href="https://wiki.python.org/moin/PythonDecoratorLibrary#CA-237e205c0d5bd1459c3663a3feb7f78236085e0a_1">https://wiki.python.org/moin/PythonDecoratorLibrary#CA-237e205c0d5bd1459c3663a3feb7f78236085e0a_1</a></p>
-<dl class="docutils">
-<dt>do_not_memoize <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd>IF this is a keyword argument (kwarg) in the function, and it is true,
-then just evaluate the function and don&#8217;t memoize it.</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="flotilla.util.natural_sort">
-<tt class="descclassname">flotilla.util.</tt><tt class="descname">natural_sort</tt><big>(</big><em>l</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#natural_sort"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.natural_sort" title="Permalink to this definition">¶</a></dt>
-<dd><p>From
-<a class="reference external" href="http://stackoverflow.com/a/4836734">http://stackoverflow.com/a/4836734</a></p>
-</dd></dl>
-
-<dl class="function">
-<dt id="flotilla.util.serve_ipython">
-<tt class="descclassname">flotilla.util.</tt><tt class="descname">serve_ipython</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#serve_ipython"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.serve_ipython" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="flotilla.util.timeout">
-<tt class="descclassname">flotilla.util.</tt><tt class="descname">timeout</tt><big>(</big><em>seconds=10</em>, <em>error_message='Timer expired'</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#timeout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.timeout" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="flotilla.util.timestamp">
-<tt class="descclassname">flotilla.util.</tt><tt class="descname">timestamp</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#timestamp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.timestamp" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="flotilla.util.to_base_file_tuple">
-<tt class="descclassname">flotilla.util.</tt><tt class="descname">to_base_file_tuple</tt><big>(</big><em>tup</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#to_base_file_tuple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.to_base_file_tuple" title="Permalink to this definition">¶</a></dt>
-<dd><p>for making new packages, auto-loadable data!</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="flotilla.util.validate_params">
-<tt class="descclassname">flotilla.util.</tt><tt class="descname">validate_params</tt><big>(</big><em>self</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#validate_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.validate_params" title="Permalink to this definition">¶</a></dt>
-<dd><p>make sure that all necessary attributes are present</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="flotilla.util.write_csv">
-<tt class="descclassname">flotilla.util.</tt><tt class="descname">write_csv</tt><big>(</big><em>df</em>, <em>file_name</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#write_csv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.write_csv" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="flotilla.util.write_gzip_pickle_df">
-<tt class="descclassname">flotilla.util.</tt><tt class="descname">write_gzip_pickle_df</tt><big>(</big><em>df</em>, <em>file_name</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#write_gzip_pickle_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.write_gzip_pickle_df" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="flotilla.util.write_pickle_df">
-<tt class="descclassname">flotilla.util.</tt><tt class="descname">write_pickle_df</tt><big>(</big><em>df</em>, <em>file_name</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#write_pickle_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.write_pickle_df" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="flotilla.util.write_tsv">
-<tt class="descclassname">flotilla.util.</tt><tt class="descname">write_tsv</tt><big>(</big><em>df</em>, <em>file_name</em><big>)</big><a class="reference internal" href="../_modules/flotilla/util.html#write_tsv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.util.write_tsv" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </div>
 <div class="section" id="module-flotilla">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-flotilla" title="Permalink to this headline">¶</a></h2>
@@ -432,15 +277,18 @@ then just evaluate the function and don&#8217;t memoize it.</dd>
       
     </p>
     <p>
-        &copy; Copyright 2014, Olga Botvinnik, Michael Lovci, Patrick Liu, Yan Song.<br/>
+        &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
     </p>
   </div>
 </footer>
-    Funded by <a href="http://numfocus.org/">NumFOCUS</a> <a
-        href="http://numfocus.org/pages/john_hunter_fellowship_2014.html">John
-    Hunter Technology Fellowship</a> to <a href="http://olgabotvinnik.com/">Olga
-    Botvinnik</a>.<br/>
+    <a href="http://olgabotvinnik.com/">Olga B. Botvinnik</a> is funded by the
+    <a href="https://ndseg.asee.org/">NDSEG</a> fellowship and is a
+    <a href="http://numfocus.org/">NumFOCUS</a>
+    <a href="http://numfocus.org/pages/john_hunter_fellowship_2014.html">John
+    Hunter Technology Fellow</a>.<br/>
+    Michael T. Lovci was partially funded by a fellowship from
+    <a href="http://www.gene.com/">Genentech</a>.</br>
     Partially funded by <a href="http://www.nih.gov/">NIH</a> grants NS075449
     and HG004659 and <a href="http://www.cirm.ca.gov/">CIRM</a> grants RB4-06045
     and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene

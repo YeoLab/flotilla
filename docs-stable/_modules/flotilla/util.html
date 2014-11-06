@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>flotilla.util &mdash; flotilla 0.1.2 documentation</title>
+    <title>flotilla.util &mdash; flotilla 0.2.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.1.2',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -29,7 +29,7 @@
     <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
-    <link rel="top" title="flotilla 0.1.2 documentation" href="../../index.html" />
+    <link rel="top" title="flotilla 0.2.0 documentation" href="../../index.html" />
     <link rel="up" title="flotilla" href="../flotilla.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -50,7 +50,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           Flotilla</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.1.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -70,7 +70,36 @@
      href="../../index.html">Site <b class="caret"></b></a>
   <ul class="dropdown-menu globaltoc"
       role="menu"
-      aria-labelledby="dLabelGlobalToc"><ul class="simple">
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../flotilla.html">flotilla package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../flotilla.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../flotilla.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../flotilla.html#module-flotilla">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../whatsnew.html">What&#8217;s new in the package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../whatsnew.html#v0-2-0-november-1st-2014">v0.2.0 (November 1st, 2014)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installing flotilla</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#general-use-plots">General use plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#interactive-plots">Interactive plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#machine-learning-plots">Machine learning plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#splicing-specific-plots">Splicing-specific plots</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../create_datapackage.html">Create your very own datapackage!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Flotilla tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorial.html#create-a-datapackage">Create a datapackage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorial.html#processing-data">Processing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorial.html#plotting-functions">Plotting functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../apidoc/modules.html">flotilla</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../apidoc/flotilla.html">flotilla package</a></li>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -87,10 +116,6 @@
 </li>
               
             
-            
-              
-                
-              
             
             
             
@@ -139,7 +164,7 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 
 
-<div class="viewcode-block" id="TimeoutError"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.util.TimeoutError">[docs]</a><span class="k">class</span> <span class="nc">TimeoutError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<div class="viewcode-block" id="TimeoutError"><a class="viewcode-back" href="../../flotilla.util.html#flotilla.util.TimeoutError">[docs]</a><span class="k">class</span> <span class="nc">TimeoutError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    From:</span>
 <span class="sd">    http://stackoverflow.com/questions/2281850/timeout-function-if-it-takes-too-long-to-finish</span>
@@ -147,7 +172,7 @@
     <span class="k">pass</span>
 
 </div>
-<div class="viewcode-block" id="timeout"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.util.timeout">[docs]</a><span class="k">def</span> <span class="nf">timeout</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">error_message</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">strerror</span><span class="p">(</span><span class="n">errno</span><span class="o">.</span><span class="n">ETIME</span><span class="p">)):</span>
+<div class="viewcode-block" id="timeout"><a class="viewcode-back" href="../../flotilla.util.html#flotilla.util.timeout">[docs]</a><span class="k">def</span> <span class="nf">timeout</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">error_message</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">strerror</span><span class="p">(</span><span class="n">errno</span><span class="o">.</span><span class="n">ETIME</span><span class="p">)):</span>
     <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
         <span class="k">def</span> <span class="nf">_handle_timeout</span><span class="p">(</span><span class="n">signum</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">TimeoutError</span><span class="p">(</span><span class="n">error_message</span><span class="p">)</span>
@@ -166,7 +191,7 @@
     <span class="k">return</span> <span class="n">decorator</span>
 
 </div>
-<div class="viewcode-block" id="serve_ipython"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.util.serve_ipython">[docs]</a><span class="k">def</span> <span class="nf">serve_ipython</span><span class="p">():</span>
+<div class="viewcode-block" id="serve_ipython"><a class="viewcode-back" href="../../flotilla.util.html#flotilla.util.serve_ipython">[docs]</a><span class="k">def</span> <span class="nf">serve_ipython</span><span class="p">():</span>
     <span class="k">try</span><span class="p">:</span>
 
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
@@ -185,19 +210,19 @@
         <span class="n">c</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
 
 </div>
-<div class="viewcode-block" id="dict_to_str"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.util.dict_to_str">[docs]</a><span class="k">def</span> <span class="nf">dict_to_str</span><span class="p">(</span><span class="n">dic</span><span class="p">):</span>
+<div class="viewcode-block" id="dict_to_str"><a class="viewcode-back" href="../../flotilla.util.html#flotilla.util.dict_to_str">[docs]</a><span class="k">def</span> <span class="nf">dict_to_str</span><span class="p">(</span><span class="n">dic</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;join dictionary study_data into a string with that study_data&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="s">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">k</span> <span class="o">+</span> <span class="s">&quot;:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="n">dic</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
 
 </div>
-<div class="viewcode-block" id="install_development_package"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.util.install_development_package">[docs]</a><span class="k">def</span> <span class="nf">install_development_package</span><span class="p">(</span><span class="n">package_location</span><span class="p">):</span>
+<div class="viewcode-block" id="install_development_package"><a class="viewcode-back" href="../../flotilla.util.html#flotilla.util.install_development_package">[docs]</a><span class="k">def</span> <span class="nf">install_development_package</span><span class="p">(</span><span class="n">package_location</span><span class="p">):</span>
     <span class="n">original_location</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
     <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">package_location</span><span class="p">)</span>
     <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="s">&#39;pip install -e </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">package_location</span><span class="p">],</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">original_location</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="memoize"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.util.memoize">[docs]</a><span class="k">def</span> <span class="nf">memoize</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+<div class="viewcode-block" id="memoize"><a class="viewcode-back" href="../../flotilla.util.html#flotilla.util.memoize">[docs]</a><span class="k">def</span> <span class="nf">memoize</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;&#39;Memoize&#39; aka remember the output from a function and return that,</span>
 <span class="sd">    rather than recalculating</span>
 
@@ -222,7 +247,7 @@
     <span class="k">return</span> <span class="n">memoizer</span>
 
 </div>
-<div class="viewcode-block" id="cached_property"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.util.cached_property">[docs]</a><span class="k">class</span> <span class="nc">cached_property</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="cached_property"><a class="viewcode-back" href="../../flotilla.util.html#flotilla.util.cached_property">[docs]</a><span class="k">class</span> <span class="nc">cached_property</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Decorator for read-only properties evaluated only once within TTL period.</span>
 
 <span class="sd">    It can be used to created a cached property like this::</span>
@@ -283,7 +308,7 @@
         <span class="k">return</span> <span class="n">value</span>
 
 </div>
-<div class="viewcode-block" id="as_numpy"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.util.as_numpy">[docs]</a><span class="k">def</span> <span class="nf">as_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="as_numpy"><a class="viewcode-back" href="../../flotilla.util.html#flotilla.util.as_numpy">[docs]</a><span class="k">def</span> <span class="nf">as_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Given either a pandas dataframe or a numpy array, always return a</span>
 <span class="sd">    numpy array.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -295,7 +320,7 @@
         <span class="k">return</span> <span class="n">x</span>
 
 </div>
-<div class="viewcode-block" id="natural_sort"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.util.natural_sort">[docs]</a><span class="k">def</span> <span class="nf">natural_sort</span><span class="p">(</span><span class="n">l</span><span class="p">):</span>
+<div class="viewcode-block" id="natural_sort"><a class="viewcode-back" href="../../flotilla.util.html#flotilla.util.natural_sort">[docs]</a><span class="k">def</span> <span class="nf">natural_sort</span><span class="p">(</span><span class="n">l</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    From</span>
 <span class="sd">    http://stackoverflow.com/a/4836734</span>
@@ -305,14 +330,14 @@
     <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">alphanum_key</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="to_base_file_tuple"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.util.to_base_file_tuple">[docs]</a><span class="k">def</span> <span class="nf">to_base_file_tuple</span><span class="p">(</span><span class="n">tup</span><span class="p">):</span>
+<div class="viewcode-block" id="to_base_file_tuple"><a class="viewcode-back" href="../../flotilla.util.html#flotilla.util.to_base_file_tuple">[docs]</a><span class="k">def</span> <span class="nf">to_base_file_tuple</span><span class="p">(</span><span class="n">tup</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;for making new packages, auto-loadable data!&quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">tup</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
     <span class="k">return</span> <span class="s">&quot;os.path.join(study_data_dir, </span><span class="si">%s</span><span class="s">)&quot;</span> <span class="o">%</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">tup</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> \
            <span class="n">tup</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
 </div>
-<div class="viewcode-block" id="add_package_data_resource"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.util.add_package_data_resource">[docs]</a><span class="k">def</span> <span class="nf">add_package_data_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">data_df</span><span class="p">,</span>
+<div class="viewcode-block" id="add_package_data_resource"><a class="viewcode-back" href="../../flotilla.util.html#flotilla.util.add_package_data_resource">[docs]</a><span class="k">def</span> <span class="nf">add_package_data_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">data_df</span><span class="p">,</span>
                               <span class="n">toplevel_package_dir</span><span class="p">,</span>
                               <span class="n">file_write_mode</span><span class="o">=</span><span class="s">&quot;tsv&quot;</span><span class="p">):</span>
     <span class="n">writer</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&quot;_write_&quot;</span> <span class="o">+</span> <span class="n">file_write_mode</span><span class="p">)</span>
@@ -323,7 +348,7 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">rsc_file</span><span class="p">,</span> <span class="n">file_write_mode</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="validate_params"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.util.validate_params">[docs]</a><span class="k">def</span> <span class="nf">validate_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="validate_params"><a class="viewcode-back" href="../../flotilla.util.html#flotilla.util.validate_params">[docs]</a><span class="k">def</span> <span class="nf">validate_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;make sure that all necessary attributes are present&quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">minimal_study_parameters</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
@@ -332,31 +357,31 @@
             <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s">&quot;Missing minimal parameter </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">param</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="load_pickle_df"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.util.load_pickle_df">[docs]</a><span class="k">def</span> <span class="nf">load_pickle_df</span><span class="p">(</span><span class="n">file_name</span><span class="p">):</span>
+<div class="viewcode-block" id="load_pickle_df"><a class="viewcode-back" href="../../flotilla.util.html#flotilla.util.load_pickle_df">[docs]</a><span class="k">def</span> <span class="nf">load_pickle_df</span><span class="p">(</span><span class="n">file_name</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_pickle</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="write_pickle_df"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.util.write_pickle_df">[docs]</a><span class="k">def</span> <span class="nf">write_pickle_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
+<div class="viewcode-block" id="write_pickle_df"><a class="viewcode-back" href="../../flotilla.util.html#flotilla.util.write_pickle_df">[docs]</a><span class="k">def</span> <span class="nf">write_pickle_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
     <span class="n">df</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="load_gzip_pickle_df"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.util.load_gzip_pickle_df">[docs]</a><span class="k">def</span> <span class="nf">load_gzip_pickle_df</span><span class="p">(</span><span class="n">file_name</span><span class="p">):</span>
+<div class="viewcode-block" id="load_gzip_pickle_df"><a class="viewcode-back" href="../../flotilla.util.html#flotilla.util.load_gzip_pickle_df">[docs]</a><span class="k">def</span> <span class="nf">load_gzip_pickle_df</span><span class="p">(</span><span class="n">file_name</span><span class="p">):</span>
     <span class="k">with</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">cPickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="write_gzip_pickle_df"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.util.write_gzip_pickle_df">[docs]</a><span class="k">def</span> <span class="nf">write_gzip_pickle_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
+<div class="viewcode-block" id="write_gzip_pickle_df"><a class="viewcode-back" href="../../flotilla.util.html#flotilla.util.write_gzip_pickle_df">[docs]</a><span class="k">def</span> <span class="nf">write_gzip_pickle_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
     <span class="n">tmpfile_h</span><span class="p">,</span> <span class="n">tmpfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkstemp</span><span class="p">()</span>
     <span class="n">df</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span><span class="n">tmpfile</span><span class="p">)</span>
     <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="s">&#39;gzip -f </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">tempfile</span><span class="p">])</span>
     <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="s">&#39;mv </span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tempfile</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)])</span>
 
 </div>
-<div class="viewcode-block" id="load_tsv"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.util.load_tsv">[docs]</a><span class="k">def</span> <span class="nf">load_tsv</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="load_tsv"><a class="viewcode-back" href="../../flotilla.util.html#flotilla.util.load_tsv">[docs]</a><span class="k">def</span> <span class="nf">load_tsv</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="n">compression</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="load_json"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.util.load_json">[docs]</a><span class="k">def</span> <span class="nf">load_json</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="load_json"><a class="viewcode-back" href="../../flotilla.util.html#flotilla.util.load_json">[docs]</a><span class="k">def</span> <span class="nf">load_json</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -375,32 +400,32 @@
     <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_json</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="write_tsv"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.util.write_tsv">[docs]</a><span class="k">def</span> <span class="nf">write_tsv</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
+<div class="viewcode-block" id="write_tsv"><a class="viewcode-back" href="../../flotilla.util.html#flotilla.util.write_tsv">[docs]</a><span class="k">def</span> <span class="nf">write_tsv</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
     <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="load_csv"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.util.load_csv">[docs]</a><span class="k">def</span> <span class="nf">load_csv</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="load_csv"><a class="viewcode-back" href="../../flotilla.util.html#flotilla.util.load_csv">[docs]</a><span class="k">def</span> <span class="nf">load_csv</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="n">compression</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="write_csv"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.util.write_csv">[docs]</a><span class="k">def</span> <span class="nf">write_csv</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
+<div class="viewcode-block" id="write_csv"><a class="viewcode-back" href="../../flotilla.util.html#flotilla.util.write_csv">[docs]</a><span class="k">def</span> <span class="nf">write_csv</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
     <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="get_loading_method"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.util.get_loading_method">[docs]</a><span class="k">def</span> <span class="nf">get_loading_method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
+<div class="viewcode-block" id="get_loading_method"><a class="viewcode-back" href="../../flotilla.util.html#flotilla.util.get_loading_method">[docs]</a><span class="k">def</span> <span class="nf">get_loading_method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;loading_methods for loading from file&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&quot;_load_&quot;</span> <span class="o">+</span> <span class="n">file_name</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="load"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.util.load">[docs]</a><span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">file_type</span><span class="o">=</span><span class="s">&#39;pickle_df&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="load"><a class="viewcode-back" href="../../flotilla.util.html#flotilla.util.load">[docs]</a><span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">file_type</span><span class="o">=</span><span class="s">&#39;pickle_df&#39;</span><span class="p">):</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_loading_method</span><span class="p">(</span><span class="n">file_type</span><span class="p">)(</span><span class="n">file_name</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="timestamp"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.util.timestamp">[docs]</a><span class="k">def</span> <span class="nf">timestamp</span><span class="p">():</span>
+<div class="viewcode-block" id="timestamp"><a class="viewcode-back" href="../../flotilla.util.html#flotilla.util.timestamp">[docs]</a><span class="k">def</span> <span class="nf">timestamp</span><span class="p">():</span>
     <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s">&#39;%Y-%m-</span><span class="si">%d</span><span class="s"> %H:%M:%S&#39;</span><span class="p">))</span>
 
 </div>
-<div class="viewcode-block" id="AssertionError"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.util.AssertionError">[docs]</a><span class="k">class</span> <span class="nc">AssertionError</span><span class="p">(</span><span class="ne">StandardError</span><span class="p">):</span>
+<div class="viewcode-block" id="AssertionError"><a class="viewcode-back" href="../../flotilla.util.html#flotilla.util.AssertionError">[docs]</a><span class="k">class</span> <span class="nc">AssertionError</span><span class="p">(</span><span class="ne">StandardError</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Assertion failed. &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c"># real signature unknown</span>
@@ -412,7 +437,7 @@
         <span class="k">pass</span>
 
 </div>
-<div class="viewcode-block" id="link_to_list"><a class="viewcode-back" href="../../apidoc/flotilla.html#flotilla.util.link_to_list">[docs]</a><span class="k">def</span> <span class="nf">link_to_list</span><span class="p">(</span><span class="n">link</span><span class="p">):</span>
+<div class="viewcode-block" id="link_to_list"><a class="viewcode-back" href="../../flotilla.util.html#flotilla.util.link_to_list">[docs]</a><span class="k">def</span> <span class="nf">link_to_list</span><span class="p">(</span><span class="n">link</span><span class="p">):</span>
     <span class="k">print</span> <span class="s">&#39;link&#39;</span><span class="p">,</span> <span class="n">link</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">assert</span> <span class="n">link</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;http&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">link</span><span class="p">))</span>
@@ -448,15 +473,18 @@
       
     </p>
     <p>
-        &copy; Copyright 2014, Olga Botvinnik, Michael Lovci, Patrick Liu, Yan Song.<br/>
+        &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
     </p>
   </div>
 </footer>
-    Funded by <a href="http://numfocus.org/">NumFOCUS</a> <a
-        href="http://numfocus.org/pages/john_hunter_fellowship_2014.html">John
-    Hunter Technology Fellowship</a> to <a href="http://olgabotvinnik.com/">Olga
-    Botvinnik</a>.<br/>
+    <a href="http://olgabotvinnik.com/">Olga B. Botvinnik</a> is funded by the
+    <a href="https://ndseg.asee.org/">NDSEG</a> fellowship and is a
+    <a href="http://numfocus.org/">NumFOCUS</a>
+    <a href="http://numfocus.org/pages/john_hunter_fellowship_2014.html">John
+    Hunter Technology Fellow</a>.<br/>
+    Michael T. Lovci was partially funded by a fellowship from
+    <a href="http://www.gene.com/">Genentech</a>.</br>
     Partially funded by <a href="http://www.nih.gov/">NIH</a> grants NS075449
     and HG004659 and <a href="http://www.cirm.ca.gov/">CIRM</a> grants RB4-06045
     and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene

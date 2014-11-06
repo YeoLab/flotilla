@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>flotilla.visualize package &mdash; flotilla 0.1.2 documentation</title>
+    <title>flotilla.visualize package &mdash; flotilla 0.2.0 documentation</title>
     
     <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.1.2',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -29,7 +29,10 @@
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
-    <link rel="top" title="flotilla 0.1.2 documentation" href="../index.html" />
+    <link rel="top" title="flotilla 0.2.0 documentation" href="../index.html" />
+    <link rel="up" title="flotilla package" href="flotilla.html" />
+    <link rel="next" title="flotilla.visualize.color module" href="flotilla.visualize.color.html" />
+    <link rel="prev" title="flotilla.test.test_util module" href="flotilla.test.test_util.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -49,7 +52,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           Flotilla</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.1.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -69,7 +72,36 @@
      href="../index.html">Site <b class="caret"></b></a>
   <ul class="dropdown-menu globaltoc"
       role="menu"
-      aria-labelledby="dLabelGlobalToc"><ul class="simple">
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../flotilla.html">flotilla package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../flotilla.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flotilla.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flotilla.html#module-flotilla">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What&#8217;s new in the package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../whatsnew.html#v0-2-0-november-1st-2014">v0.2.0 (November 1st, 2014)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installing flotilla</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#general-use-plots">General use plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#interactive-plots">Interactive plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#machine-learning-plots">Machine learning plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#splicing-specific-plots">Splicing-specific plots</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../create_datapackage.html">Create your very own datapackage!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Flotilla tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#create-a-datapackage">Create a datapackage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#processing-data">Processing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#plotting-functions">Plotting functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">flotilla</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="flotilla.html">flotilla package</a></li>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -85,14 +117,6 @@
       aria-labelledby="dLabelLocalToc"><ul>
 <li><a class="reference internal" href="#">flotilla.visualize package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-flotilla.visualize.color">flotilla.visualize.color module</a></li>
-<li><a class="reference internal" href="#module-flotilla.visualize.decomposition">flotilla.visualize.decomposition module</a></li>
-<li><a class="reference internal" href="#module-flotilla.visualize.expression">flotilla.visualize.expression module</a></li>
-<li><a class="reference internal" href="#module-flotilla.visualize.generic">flotilla.visualize.generic module</a></li>
-<li><a class="reference internal" href="#module-flotilla.visualize.ipython_interact">flotilla.visualize.ipython_interact module</a></li>
-<li><a class="reference internal" href="#module-flotilla.visualize.network">flotilla.visualize.network module</a></li>
-<li><a class="reference internal" href="#module-flotilla.visualize.predict">flotilla.visualize.predict module</a></li>
-<li><a class="reference internal" href="#module-flotilla.visualize.splicing">flotilla.visualize.splicing module</a></li>
 <li><a class="reference internal" href="#module-flotilla.visualize">Module contents</a></li>
 </ul>
 </li>
@@ -101,10 +125,6 @@
 </li>
               
             
-            
-              
-                
-              
             
             
             
@@ -139,629 +159,18 @@
 <h1>flotilla.visualize package<a class="headerlink" href="#flotilla-visualize-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="flotilla.visualize.color.html">flotilla.visualize.color module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flotilla.visualize.decomposition.html">flotilla.visualize.decomposition module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flotilla.visualize.expression.html">flotilla.visualize.expression module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flotilla.visualize.generic.html">flotilla.visualize.generic module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flotilla.visualize.ipython_interact.html">flotilla.visualize.ipython_interact module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flotilla.visualize.network.html">flotilla.visualize.network module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flotilla.visualize.predict.html">flotilla.visualize.predict module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flotilla.visualize.splicing.html">flotilla.visualize.splicing module</a></li>
+</ul>
 </div>
-<div class="section" id="module-flotilla.visualize.color">
-<span id="flotilla-visualize-color-module"></span><h2>flotilla.visualize.color module<a class="headerlink" href="#module-flotilla.visualize.color" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-flotilla.visualize.decomposition">
-<span id="flotilla-visualize-decomposition-module"></span><h2>flotilla.visualize.decomposition module<a class="headerlink" href="#module-flotilla.visualize.decomposition" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="flotilla.visualize.decomposition.DecompositionViz">
-<em class="property">class </em><tt class="descclassname">flotilla.visualize.decomposition.</tt><tt class="descname">DecompositionViz</tt><big>(</big><em>reduced_space</em>, <em>components_</em>, <em>explained_variance_ratio_</em>, <em>feature_renamer=None</em>, <em>groupby=None</em>, <em>singles=None</em>, <em>pooled=None</em>, <em>outliers=None</em>, <em>featurewise=False</em>, <em>order=None</em>, <em>violinplot_kws=None</em>, <em>data_type='expression'</em>, <em>label_to_color=None</em>, <em>label_to_marker=None</em>, <em>scale_by_variance=True</em>, <em>x_pc='pc_1'</em>, <em>y_pc='pc_2'</em>, <em>n_vectors=20</em>, <em>distance='L1'</em>, <em>n_top_pc_features=50</em>, <em>max_char_width=30</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/decomposition.html#DecompositionViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.decomposition.DecompositionViz" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
-<p>Plots the reduced space from a decomposed dataset. Does not perform any
-reductions of its own</p>
-<dl class="method">
-<dt id="flotilla.visualize.decomposition.DecompositionViz.plot_explained_variance">
-<tt class="descname">plot_explained_variance</tt><big>(</big><em>title='PCA explained variance'</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/decomposition.html#DecompositionViz.plot_explained_variance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.decomposition.DecompositionViz.plot_explained_variance" title="Permalink to this definition">¶</a></dt>
-<dd><p>If the reducer is a form of PCA, then plot the explained variance
-ratio by the components.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="flotilla.visualize.decomposition.DecompositionViz.plot_loadings">
-<tt class="descname">plot_loadings</tt><big>(</big><em>pc='pc_1'</em>, <em>n_features=50</em>, <em>ax=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/decomposition.html#DecompositionViz.plot_loadings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.decomposition.DecompositionViz.plot_loadings" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="flotilla.visualize.decomposition.DecompositionViz.plot_samples">
-<tt class="descname">plot_samples</tt><big>(</big><em>show_point_labels=True</em>, <em>title='DataFramePCA'</em>, <em>show_vectors=True</em>, <em>show_vector_labels=True</em>, <em>markersize=10</em>, <em>three_d=False</em>, <em>legend=True</em>, <em>ax=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/decomposition.html#DecompositionViz.plot_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.decomposition.DecompositionViz.plot_samples" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given a pandas dataframe, performs DataFramePCA and plots the results in a
-convenient single function.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>groupby</strong> : groupby</p>
-<blockquote>
-<div><p>How to group the samples by color/label</p>
-</div></blockquote>
-<p><strong>label_to_color</strong> : dict</p>
-<blockquote>
-<div><p>Group labels to a matplotlib color E.g. if you&#8217;ve already chosen
-specific colors to indicate a particular group. Otherwise will
-auto-assign colors</p>
-</div></blockquote>
-<p><strong>label_to_marker</strong> : dict</p>
-<blockquote>
-<div><p>Group labels to matplotlib marker</p>
-</div></blockquote>
-<p><strong>title</strong> : str</p>
-<blockquote>
-<div><p>title of the plot</p>
-</div></blockquote>
-<p><strong>show_vectors</strong> : bool</p>
-<blockquote>
-<div><p>Whether or not to draw the vectors indicating the supporting
-principal components</p>
-</div></blockquote>
-<p><strong>show_vector_labels</strong> : bool</p>
-<blockquote>
-<div><p>whether or not to draw the names of the vectors</p>
-</div></blockquote>
-<p><strong>show_point_labels</strong> : bool</p>
-<blockquote>
-<div><p>Whether or not to label the scatter points</p>
-</div></blockquote>
-<p><strong>markersize</strong> : int</p>
-<blockquote>
-<div><p>size of the scatter markers on the plot</p>
-</div></blockquote>
-<p><strong>text_group</strong> : list of str</p>
-<blockquote>
-<div><p>Group names that you want labeled with text</p>
-</div></blockquote>
-<p><strong>three_d</strong> : bool</p>
-<blockquote>
-<div><p>if you want hte plot in 3d (need to set up the axes beforehand)</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">For each vector in data:</p>
-<p class="last">x, y, marker, distance</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="flotilla.visualize.decomposition.DecompositionViz.plot_violins">
-<tt class="descname">plot_violins</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/decomposition.html#DecompositionViz.plot_violins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.decomposition.DecompositionViz.plot_violins" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make violinplots of each feature</p>
-<p>Must be called after plot_samples because it depends on the existence
-of the &#8220;self.magnitudes&#8221; attribute.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="flotilla.visualize.decomposition.DecompositionViz.shorten">
-<tt class="descname">shorten</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/decomposition.html#DecompositionViz.shorten"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.decomposition.DecompositionViz.shorten" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-flotilla.visualize.expression">
-<span id="flotilla-visualize-expression-module"></span><h2>flotilla.visualize.expression module<a class="headerlink" href="#module-flotilla.visualize.expression" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="flotilla.visualize.expression.TwoWayScatterViz">
-<em class="property">class </em><tt class="descclassname">flotilla.visualize.expression.</tt><tt class="descname">TwoWayScatterViz</tt><big>(</big><em>sample1_name</em>, <em>sample2_name</em>, <em>df</em>, <em>p_value_cutoff=0.001</em>, <em>local_fraction=0.1</em>, <em>bonferroni=True</em>, <em>fdr=None</em>, <em>dtype='RPKM'</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/expression.html#TwoWayScatterViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.expression.TwoWayScatterViz" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="flotilla.compute.html#flotilla.compute.expression.TwoWayGeneComparisonLocal" title="flotilla.compute.expression.TwoWayGeneComparisonLocal"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.expression.TwoWayGeneComparisonLocal</span></tt></a></p>
-<dl class="method">
-<dt id="flotilla.visualize.expression.TwoWayScatterViz.plot">
-<tt class="descname">plot</tt><big>(</big><em>ax=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/expression.html#TwoWayScatterViz.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.expression.TwoWayScatterViz.plot" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-flotilla.visualize.generic">
-<span id="flotilla-visualize-generic-module"></span><h2>flotilla.visualize.generic module<a class="headerlink" href="#module-flotilla.visualize.generic" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="flotilla.visualize.generic.nmf_space_transitions">
-<tt class="descclassname">flotilla.visualize.generic.</tt><tt class="descname">nmf_space_transitions</tt><big>(</big><em>nmf_space_positions</em>, <em>feature_id</em>, <em>phenotype_to_color</em>, <em>phenotype_to_marker</em>, <em>order</em>, <em>ax=None</em>, <em>xlabel=None</em>, <em>ylabel=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/generic.html#nmf_space_transitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.generic.nmf_space_transitions" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="flotilla.visualize.generic.plot_pooled_dot">
-<tt class="descclassname">flotilla.visualize.generic.</tt><tt class="descname">plot_pooled_dot</tt><big>(</big><em>ax</em>, <em>pooled</em>, <em>x_offset=0</em>, <em>label=False</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/generic.html#plot_pooled_dot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.generic.plot_pooled_dot" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ax</strong> : matplotlib.axes.Axes</p>
-<blockquote>
-<div><p>Axes object to plot on</p>
-</div></blockquote>
-<p><strong>pooled</strong> : pandas.Series</p>
-<blockquote class="last">
-<div><p>Pooled data of this gene</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="flotilla.visualize.generic.simple_twoway_scatter">
-<tt class="descclassname">flotilla.visualize.generic.</tt><tt class="descname">simple_twoway_scatter</tt><big>(</big><em>sample1</em>, <em>sample2</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/generic.html#simple_twoway_scatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.generic.simple_twoway_scatter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot a two-dimensional scatterplot between two samples</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>sample1</strong> : pandas.Series</p>
-<blockquote>
-<div><p>Data to plot on the x-axis</p>
-</div></blockquote>
-<p><strong>sample2</strong> : pandas.Series</p>
-<blockquote>
-<div><p>Data to plot on the y-axis</p>
-</div></blockquote>
-<p><strong>Any other keyword arguments valid for seaborn.jointplot</strong></p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>jointgrid</strong> : seaborn.axisgrid.JointGrid</p>
-<blockquote>
-<div><p>Returns a JointGrid instance</p>
-</div></blockquote>
-<p>See Also</p>
-<p class="last">seaborn.jointplot</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="flotilla.visualize.generic.violinplot">
-<tt class="descclassname">flotilla.visualize.generic.</tt><tt class="descname">violinplot</tt><big>(</big><em>data</em>, <em>groupby=None</em>, <em>color_ordered=None</em>, <em>ax=None</em>, <em>pooled_data=None</em>, <em>order=None</em>, <em>violinplot_kws=None</em>, <em>title=None</em>, <em>label_pooled=False</em>, <em>outliers=None</em>, <em>data_type=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/generic.html#violinplot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.generic.violinplot" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> : pandas.Series</p>
-<blockquote>
-<div><p>The main data to plot as violins</p>
-</div></blockquote>
-<p><strong>groupby</strong> : dict-like, optional</p>
-<blockquote>
-<div><p>How to group the samples (e.g. by phenotype)</p>
-</div></blockquote>
-<p><strong>color_ordered</strong> : list, optional</p>
-<blockquote>
-<div><p>List of colors, in the order you want to plot</p>
-</div></blockquote>
-<p><strong>ax</strong> : matplotlib.Axes, optional</p>
-<blockquote>
-<div><p>Where to plot the violins. If None, get the current axes</p>
-</div></blockquote>
-<p><strong>pooled_data</strong> : pandas.Series, optional</p>
-<blockquote>
-<div><p>Pooled samples. Will be plotted as black dots</p>
-</div></blockquote>
-<p><strong>order</strong> : list, optional</p>
-<blockquote>
-<div><p>The order in which to plot the phenotypes, e.g. if the data is
-form a differentiation time course</p>
-</div></blockquote>
-<p><strong>violinplot_kws</strong> : dict, optional</p>
-<blockquote>
-<div><p>Other keywords to pass to seaborn.violinplot</p>
-</div></blockquote>
-<p><strong>title</strong> : str, optional</p>
-<blockquote>
-<div><p>Title of the plot</p>
-</div></blockquote>
-<p><strong>label_pooled</strong> : bool, optional</p>
-<blockquote>
-<div><p>If True, label the sample id of the pooled samples</p>
-</div></blockquote>
-<p><strong>outliers</strong> : pandas.Series</p>
-<blockquote>
-<div><p>Outlier samples. Will be plotted in their phenotype category,
-as a grey shadow</p>
-</div></blockquote>
-<p><strong>data_type</strong> : &#8216;expression&#8217; | &#8216;splicing&#8217; | None</p>
-<blockquote class="last">
-<div><p>If &#8216;splicing&#8217;, then force the y-axis to be from 0 to 1. If
-&#8216;expression&#8217; or None, don&#8217;t mess with the y-axis</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
-<div class="section" id="module-flotilla.visualize.ipython_interact">
-<span id="flotilla-visualize-ipython-interact-module"></span><h2>flotilla.visualize.ipython_interact module<a class="headerlink" href="#module-flotilla.visualize.ipython_interact" title="Permalink to this headline">¶</a></h2>
-<p>Named <cite>ipython_interact.py</cite> rather than just <cite>interact.py</cite> to differentiate
-between IPython interactive visualizations vs D3 interactive visualizations.</p>
-<dl class="class">
-<dt id="flotilla.visualize.ipython_interact.Interactive">
-<em class="property">class </em><tt class="descclassname">flotilla.visualize.ipython_interact.</tt><tt class="descname">Interactive</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/ipython_interact.html#Interactive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.ipython_interact.Interactive" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
-<dl class="staticmethod">
-<dt id="flotilla.visualize.ipython_interact.Interactive.get_feature_subsets">
-<em class="property">static </em><tt class="descname">get_feature_subsets</tt><big>(</big><em>study</em>, <em>data_types</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/ipython_interact.html#Interactive.get_feature_subsets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.ipython_interact.Interactive.get_feature_subsets" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given a study and list of data types, get the relevant feature
-subsets</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>study</strong> : flotilla.Study</p>
-<blockquote class="last">
-<div><p>A study object which</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="flotilla.visualize.ipython_interact.Interactive.interactive_choose_outliers">
-<em class="property">static </em><tt class="descname">interactive_choose_outliers</tt><big>(</big><em>data_types=('expression'</em>, <em>'splicing')</em>, <em>sample_subsets=None</em>, <em>feature_subsets=None</em>, <em>featurewise=False</em>, <em>x_pc=(1</em>, <em>3)</em>, <em>y_pc=(1</em>, <em>3)</em>, <em>show_point_labels=False</em>, <em>nu=(0.1</em>, <em>9.9)</em>, <em>gamma=(0</em>, <em>25)</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_choose_outliers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.ipython_interact.Interactive.interactive_choose_outliers" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="staticmethod">
-<dt id="flotilla.visualize.ipython_interact.Interactive.interactive_classifier">
-<em class="property">static </em><tt class="descname">interactive_classifier</tt><big>(</big><em>data_types=('expression'</em>, <em>'splicing')</em>, <em>sample_subsets=None</em>, <em>feature_subsets=None</em>, <em>categorical_variables=None</em>, <em>predictor_types=None</em>, <em>score_coefficient=(0.1</em>, <em>20)</em>, <em>draw_labels=False</em>, <em>savefile='data/last.clf.pdf'</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_classifier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.ipython_interact.Interactive.interactive_classifier" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="staticmethod">
-<dt id="flotilla.visualize.ipython_interact.Interactive.interactive_graph">
-<em class="property">static </em><tt class="descname">interactive_graph</tt><big>(</big><em>data_types=('expression'</em>, <em>'splicing')</em>, <em>sample_subsets=None</em>, <em>feature_subsets=None</em>, <em>featurewise=False</em>, <em>cov_std_cut=(0.1</em>, <em>3)</em>, <em>degree_cut=(0</em>, <em>10)</em>, <em>n_pcs=(2</em>, <em>100)</em>, <em>draw_labels=False</em>, <em>feature_of_interest='RBFOX2'</em>, <em>weight_fun=None</em>, <em>use_pc_1=True</em>, <em>use_pc_2=True</em>, <em>use_pc_3=True</em>, <em>use_pc_4=True</em>, <em>savefile='data/last.graph.pdf'</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.ipython_interact.Interactive.interactive_graph" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="staticmethod">
-<dt id="flotilla.visualize.ipython_interact.Interactive.interactive_lavalamp_pooled_inconsistent">
-<em class="property">static </em><tt class="descname">interactive_lavalamp_pooled_inconsistent</tt><big>(</big><em>sample_subsets=None, feature_subsets=None, difference_threshold=(0.001, 1.0), colors=['red', 'green', 'blue', 'purple', 'yellow'], savefile=''</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_lavalamp_pooled_inconsistent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.ipython_interact.Interactive.interactive_lavalamp_pooled_inconsistent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="staticmethod">
-<dt id="flotilla.visualize.ipython_interact.Interactive.interactive_localZ">
-<em class="property">static </em><tt class="descname">interactive_localZ</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_localZ"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.ipython_interact.Interactive.interactive_localZ" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="staticmethod">
-<dt id="flotilla.visualize.ipython_interact.Interactive.interactive_pca">
-<em class="property">static </em><tt class="descname">interactive_pca</tt><big>(</big><em>data_types=('expression'</em>, <em>'splicing')</em>, <em>sample_subsets=None</em>, <em>feature_subsets=None</em>, <em>featurewise=False</em>, <em>x_pc=(1</em>, <em>10)</em>, <em>y_pc=(1</em>, <em>10)</em>, <em>show_point_labels=False</em>, <em>list_link=''</em>, <em>plot_violins=False</em>, <em>savefile='data/last.pca.pdf'</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_pca"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.ipython_interact.Interactive.interactive_pca" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="staticmethod">
-<dt id="flotilla.visualize.ipython_interact.Interactive.interactive_plot_modalities_lavalamps">
-<em class="property">static </em><tt class="descname">interactive_plot_modalities_lavalamps</tt><big>(</big><em>sample_subsets=None</em>, <em>feature_subsets=None</em>, <em>color=u'#e41a1c'</em>, <em>x_offset=0</em>, <em>use_these_modalities=True</em>, <em>bootstrapped=False</em>, <em>bootstrapped_kws=None</em>, <em>savefile=''</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_plot_modalities_lavalamps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.ipython_interact.Interactive.interactive_plot_modalities_lavalamps" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="staticmethod">
-<dt id="flotilla.visualize.ipython_interact.Interactive.interactive_reset_outliers">
-<em class="property">static </em><tt class="descname">interactive_reset_outliers</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_reset_outliers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.ipython_interact.Interactive.interactive_reset_outliers" title="Permalink to this definition">¶</a></dt>
-<dd><p>User selects from columns that start with &#8216;<a href="#id1"><span class="problematic" id="id2">outlier_</span></a>&#8216; to merge
-multiple outlier classifications</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-flotilla.visualize.network">
-<span id="flotilla-visualize-network-module"></span><h2>flotilla.visualize.network module<a class="headerlink" href="#module-flotilla.visualize.network" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="flotilla.visualize.network.NetworkerViz">
-<em class="property">class </em><tt class="descclassname">flotilla.visualize.network.</tt><tt class="descname">NetworkerViz</tt><big>(</big><em>DataModel</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/network.html#NetworkerViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.network.NetworkerViz" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="flotilla.compute.html#flotilla.compute.network.Networker" title="flotilla.compute.network.Networker"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.network.Networker</span></tt></a></p>
-<dl class="method">
-<dt id="flotilla.visualize.network.NetworkerViz.draw_graph">
-<tt class="descname">draw_graph</tt><big>(</big><em>n_pcs=5</em>, <em>use_pc_1=True</em>, <em>use_pc_2=True</em>, <em>use_pc_3=True</em>, <em>use_pc_4=True</em>, <em>degree_cut=2</em>, <em>cov_std_cut=1.8</em>, <em>weight_function='no_weight'</em>, <em>featurewise=False</em>, <em>rpkms_not_events=False</em>, <em>feature_of_interest='RBFOX2'</em>, <em>draw_labels=True</em>, <em>reduction_name=None</em>, <em>feature_ids=None</em>, <em>sample_ids=None</em>, <em>graph_file=''</em>, <em>compare=''</em>, <em>sample_id_to_color=None</em>, <em>label_to_color=None</em>, <em>label_to_marker=None</em>, <em>groupby=None</em>, <em>data_type=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/network.html#NetworkerViz.draw_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.network.NetworkerViz.draw_graph" title="Permalink to this definition">¶</a></dt>
-<dd><p>Draw the graph (network) of these events</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>feature_ids</strong> : list of str, or None</p>
-<blockquote>
-<div><p>Feature ids to subset the data. If None, all features will be used.</p>
-</div></blockquote>
-<p><strong>sample_ids</strong> : list of str, or None</p>
-<blockquote>
-<div><p>Sample ids to subset the data. If None, all features will be used.</p>
-</div></blockquote>
-<p><strong>x_pc</strong> : str</p>
-<blockquote>
-<div><p>x component for DataFramePCA, default &#8220;pc_1&#8221;</p>
-</div></blockquote>
-<p><strong>y_pc :</strong></p>
-<blockquote>
-<div><p>y component for DataFramePCA, default &#8220;pc_2&#8221;</p>
-</div></blockquote>
-<p><strong>n_pcs</strong> : int???</p>
-<blockquote>
-<div><p>n components to use for cells&#8217; covariance calculation</p>
-</div></blockquote>
-<p><strong>cov_std_cut</strong> : float??</p>
-<blockquote>
-<div><p>covariance cutoff for edges</p>
-</div></blockquote>
-<p><strong>use_pc{1-4} use these pcs in cov calculation (default True)</strong></p>
-<p><strong>degree_cut</strong> : int??</p>
-<blockquote>
-<div><p>miniumum degree for a node to be included in graph display</p>
-</div></blockquote>
-<p><strong>weight_function</strong> : [&#8216;arctan&#8217; | &#8216;sq&#8217; | &#8216;abs&#8217; | &#8216;arctan_sq&#8217;]</p>
-<blockquote>
-<div><p>weight function (arctan (arctan cov), sq (sq cov), abs (abs cov),
-arctan_sq (sqared arctan of cov))</p>
-</div></blockquote>
-<p><strong>gene_of_interest</strong> : str</p>
-<blockquote>
-<div><p>map a gradient representing this gene&#8217;s data onto nodes (ENSEMBL
-id or gene name???)</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">#TODO: Mike please fill these in</p>
-<p><strong>graph</strong> : ???</p>
-<blockquote>
-<div><p>???</p>
-</div></blockquote>
-<p><strong>pos</strong> : ???</p>
-<blockquote class="last">
-<div><p>???</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="flotilla.visualize.network.NetworkerViz.draw_nonreduced_graph">
-<tt class="descname">draw_nonreduced_graph</tt><big>(</big><em>degree_cut=2</em>, <em>cov_std_cut=1.8</em>, <em>wt_fun='abs'</em>, <em>featurewise=False</em>, <em>rpkms_not_events=False</em>, <em>feature_of_interest='RBFOX2'</em>, <em>draw_labels=True</em>, <em>feature_ids=None</em>, <em>group_id=None</em>, <em>graph_file=''</em>, <em>compare=''</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/network.html#NetworkerViz.draw_nonreduced_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.network.NetworkerViz.draw_nonreduced_graph" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>feature_ids</strong> : list of str, or None</p>
-<blockquote>
-<div><p>Feature ids to subset the data. If None, all features will be used.</p>
-</div></blockquote>
-<p><strong>sample_ids</strong> : list of str, or None</p>
-<blockquote>
-<div><p>Sample ids to subset the data. If None, all features will be used.</p>
-</div></blockquote>
-<p><strong>x_pc</strong> : str</p>
-<blockquote>
-<div><p>x component for DataFramePCA, default &#8220;pc_1&#8221;</p>
-</div></blockquote>
-<p><strong>y_pc :</strong></p>
-<blockquote>
-<div><p>y component for DataFramePCA, default &#8220;pc_2&#8221;</p>
-</div></blockquote>
-<p><strong>n_pcs</strong> : int???</p>
-<blockquote>
-<div><p>n components to use for cells&#8217; covariance calculation</p>
-</div></blockquote>
-<p><strong>cov_std_cut</strong> : float??</p>
-<blockquote>
-<div><p>covariance cutoff for edges</p>
-</div></blockquote>
-<p><strong>use_pc{1-4} use these pcs in cov calculation (default True)</strong></p>
-<p><strong>degree_cut</strong> : int??</p>
-<blockquote>
-<div><p>miniumum degree for a node to be included in graph display</p>
-</div></blockquote>
-<p><strong>weight_function</strong> : [&#8216;arctan&#8217; | &#8216;sq&#8217; | &#8216;abs&#8217; | &#8216;arctan_sq&#8217;]</p>
-<blockquote>
-<div><p>weight function (arctan (arctan cov), sq (sq cov), abs (abs cov),
-arctan_sq (sqared arctan of cov))</p>
-</div></blockquote>
-<p><strong>gene_of_interest</strong> : str</p>
-<blockquote>
-<div><p>map a gradient representing this gene&#8217;s data onto nodes (ENSEMBL
-id or gene name???)</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">#TODO: Mike please fill these in</p>
-<p><strong>graph</strong> : ???</p>
-<blockquote>
-<div><p>???</p>
-</div></blockquote>
-<p><strong>pos</strong> : ???</p>
-<blockquote class="last">
-<div><p>???</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-flotilla.visualize.predict">
-<span id="flotilla-visualize-predict-module"></span><h2>flotilla.visualize.predict module<a class="headerlink" href="#module-flotilla.visualize.predict" title="Permalink to this headline">¶</a></h2>
-<p>Visualize the result of a classifcation or regression algorithm on the data.</p>
-<dl class="class">
-<dt id="flotilla.visualize.predict.ClassifierViz">
-<em class="property">class </em><tt class="descclassname">flotilla.visualize.predict.</tt><tt class="descname">ClassifierViz</tt><big>(</big><em>data_name</em>, <em>trait_name</em>, <em>predictor_name=None</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/predict.html#ClassifierViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.predict.ClassifierViz" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="flotilla.compute.html#flotilla.compute.predict.Classifier" title="flotilla.compute.predict.Classifier"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.predict.Classifier</span></tt></a>, <a class="reference internal" href="#flotilla.visualize.predict.PredictorBaseViz" title="flotilla.visualize.predict.PredictorBaseViz"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.visualize.predict.PredictorBaseViz</span></tt></a></p>
-<p>Visualize results from classification</p>
-<dl class="method">
-<dt id="flotilla.visualize.predict.ClassifierViz.check_a_feature">
-<tt class="descname">check_a_feature</tt><big>(</big><em>feature_name</em>, <em>**violinplot_kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/predict.html#ClassifierViz.check_a_feature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.predict.ClassifierViz.check_a_feature" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make Violin Plots for a gene/probe&#8217;s value in the sets defined in
-sets</p>
-<p>feature_name - gene/probe id. must be in the index of self._parent.X
-sets - list of sample ids
-violinplot_kwargs - extra parameters for violinplot</p>
-<p>returns a list of lists with values for feature_name in each set of
-sets</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="flotilla.visualize.predict.PredictorBaseViz">
-<em class="property">class </em><tt class="descclassname">flotilla.visualize.predict.</tt><tt class="descname">PredictorBaseViz</tt><big>(</big><em>predictor_name</em>, <em>data_name</em>, <em>trait_name</em>, <em>X_data=None</em>, <em>trait=None</em>, <em>predictor_obj=None</em>, <em>predictor_scoring_fun=None</em>, <em>score_cutoff_fun=None</em>, <em>n_features_dependent_parameters=None</em>, <em>constant_parameters=None</em>, <em>is_categorical_trait=None</em>, <em>predictor_dataset_manager=None</em>, <em>predictor_config_manager=None</em>, <em>feature_renamer=None</em>, <em>groupby=None</em>, <em>color=None</em>, <em>pooled=None</em>, <em>order=None</em>, <em>violinplot_kws=None</em>, <em>data_type=None</em>, <em>label_to_color=None</em>, <em>label_to_marker=None</em>, <em>singles=None</em>, <em>outliers=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/predict.html#PredictorBaseViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.predict.PredictorBaseViz" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="flotilla.compute.html#flotilla.compute.predict.PredictorBase" title="flotilla.compute.predict.PredictorBase"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.predict.PredictorBase</span></tt></a></p>
-<dl class="method">
-<dt id="flotilla.visualize.predict.PredictorBaseViz.do_pca">
-<tt class="descname">do_pca</tt><big>(</big><em>**plotting_kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/predict.html#PredictorBaseViz.do_pca"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.predict.PredictorBaseViz.do_pca" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="flotilla.visualize.predict.PredictorBaseViz.generate_scatter_table">
-<tt class="descname">generate_scatter_table</tt><big>(</big><em>excel_out=None</em>, <em>external_xref=[]</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/predict.html#PredictorBaseViz.generate_scatter_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.predict.PredictorBaseViz.generate_scatter_table" title="Permalink to this definition">¶</a></dt>
-<dd><p>make a table to make scatterplots... maybe for plot.ly
-excelOut: full path to an excel output location for scatter data
-external_xref: list of tuples containing (attribute name, function to
-map row index -&gt; an attribute)</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="flotilla.visualize.predict.PredictorBaseViz.plot_scores">
-<tt class="descname">plot_scores</tt><big>(</big><em>ax=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/predict.html#PredictorBaseViz.plot_scores"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.predict.PredictorBaseViz.plot_scores" title="Permalink to this definition">¶</a></dt>
-<dd><p>plot kernel density of predictor scores and draw a vertical line where
-the cutoff was selected
-ax - ax to plot on. if None: plt.gca()</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="flotilla.visualize.predict.PredictorBaseViz.set_reducer_plotting_args">
-<tt class="descname">set_reducer_plotting_args</tt><big>(</big><em>rpa</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/predict.html#PredictorBaseViz.set_reducer_plotting_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.predict.PredictorBaseViz.set_reducer_plotting_args" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="flotilla.visualize.predict.RegressorViz">
-<em class="property">class </em><tt class="descclassname">flotilla.visualize.predict.</tt><tt class="descname">RegressorViz</tt><big>(</big><em>data_name</em>, <em>trait_name</em>, <em>predictor_name=None</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/predict.html#RegressorViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.predict.RegressorViz" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="flotilla.compute.html#flotilla.compute.predict.Regressor" title="flotilla.compute.predict.Regressor"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.predict.Regressor</span></tt></a>, <a class="reference internal" href="#flotilla.visualize.predict.PredictorBaseViz" title="flotilla.visualize.predict.PredictorBaseViz"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.visualize.predict.PredictorBaseViz</span></tt></a></p>
-</dd></dl>
-
-</div>
-<div class="section" id="module-flotilla.visualize.splicing">
-<span id="flotilla-visualize-splicing-module"></span><h2>flotilla.visualize.splicing module<a class="headerlink" href="#module-flotilla.visualize.splicing" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="flotilla.visualize.splicing.ModalitiesViz">
-<em class="property">class </em><tt class="descclassname">flotilla.visualize.splicing.</tt><tt class="descname">ModalitiesViz</tt><a class="reference internal" href="../_modules/flotilla/visualize/splicing.html#ModalitiesViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
-<p>Visualize results of modality assignments</p>
-<dl class="method">
-<dt id="flotilla.visualize.splicing.ModalitiesViz.bar">
-<tt class="descname">bar</tt><big>(</big><em>modalities_counts</em>, <em>ax=None</em>, <em>i=0</em>, <em>normed=True</em>, <em>legend=True</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/splicing.html#ModalitiesViz.bar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.bar" title="Permalink to this definition">¶</a></dt>
-<dd><p>Draw the barplot of a single modalities_count</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="flotilla.visualize.splicing.ModalitiesViz.colors">
-<tt class="descname">colors</tt><em class="property"> = [u'#377eb8', u'#999999', u'#984ea3', u'#4daf4a', u'#e41a1c', 'k']</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.colors" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="flotilla.visualize.splicing.ModalitiesViz.event">
-<tt class="descname">event</tt><big>(</big><em>feature_id</em>, <em>sample_groupby</em>, <em>group_colors</em>, <em>group_order</em>, <em>ax=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/splicing.html#ModalitiesViz.event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.event" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot a single splicing event&#8217;s changes in DataFrameNMF space, and its
-violin plots</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="flotilla.visualize.splicing.ModalitiesViz.modalities_colors">
-<tt class="descname">modalities_colors</tt><em class="property"> = {'bimodal': u'#984ea3', 'uniform': u'#999999', 'middle': u'#4daf4a', 'unassigned': 'k', 'excluded': u'#377eb8', 'included': u'#e41a1c'}</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.modalities_colors" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="flotilla.visualize.splicing.ModalitiesViz.modalities_order">
-<tt class="descname">modalities_order</tt><em class="property"> = ['excluded', 'uniform', 'bimodal', 'middle', 'included', 'unassigned']</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.modalities_order" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="flotilla.visualize.splicing.ModalitiesViz.modality">
-<tt class="descname">modality</tt><em class="property"> = 'unassigned'</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.modality" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="flotilla.visualize.splicing.ModalitiesViz.plot_reduced_space">
-<tt class="descname">plot_reduced_space</tt><big>(</big><em>binned_reduced</em>, <em>modalities_assignments</em>, <em>ax=None</em>, <em>title=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/splicing.html#ModalitiesViz.plot_reduced_space"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.plot_reduced_space" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="flotilla.visualize.splicing.hist_single_vs_pooled_diff">
-<tt class="descclassname">flotilla.visualize.splicing.</tt><tt class="descname">hist_single_vs_pooled_diff</tt><big>(</big><em>diff_from_singles</em>, <em>diff_from_singles_scaled</em>, <em>color=None</em>, <em>title=''</em>, <em>nbins=50</em>, <em>hist_kws=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/splicing.html#hist_single_vs_pooled_diff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.hist_single_vs_pooled_diff" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot a histogram of both the original difference difference of psi
-scores from the pooled to the singles, and the scaled difference</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="flotilla.visualize.splicing.lavalamp">
-<tt class="descclassname">flotilla.visualize.splicing.</tt><tt class="descname">lavalamp</tt><big>(</big><em>psi</em>, <em>color=None</em>, <em>x_offset=0</em>, <em>title=''</em>, <em>ax=None</em>, <em>switchy_score_psi=None</em>, <em>marker='d'</em>, <em>plot_kws=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/splicing.html#lavalamp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.lavalamp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make a &#8216;lavalamp&#8217; scatter plot of many splicing events</p>
-<p>Useful for visualizing many splicing events at once.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>TODO.md: (n_events, n_samples).transpose()</strong></p>
-<p><strong>psi</strong> : array</p>
-<blockquote>
-<div><p>A (n_events, n_samples) matrix either as a numpy array or as a pandas
-DataFrame</p>
-</div></blockquote>
-<p><strong>color</strong> : matplotlib color</p>
-<blockquote>
-<div><p>Color of the scatterplot. Defaults to a dark teal</p>
-</div></blockquote>
-<p><strong>x_offset</strong> : numeric or None</p>
-<blockquote>
-<div><p>How much to offset the x-values off of 1. Useful for plotting several
-celltypes at once.</p>
-</div></blockquote>
-<p><strong>title</strong> : str</p>
-<blockquote>
-<div><p>Title of the plot. Default &#8216;&#8217;</p>
-</div></blockquote>
-<p><strong>ax</strong> : matplotlib.Axes object</p>
-<blockquote>
-<div><p>The axes to plot on. If not provided, will be created</p>
-</div></blockquote>
-<p><strong>switchy_score_psi</strong> : pandas.DataFrame</p>
-<blockquote>
-<div><p>The psi scores to sort on for the plotting order. By default use the
-psi provided, but sometimes you want to plot multiple psi scores on
-the same plot, with the same events.</p>
-</div></blockquote>
-<p><strong>marker</strong> : str</p>
-<blockquote>
-<div><p>A valid matplotlib marker. Default is &#8216;d&#8217; (thin diamond)</p>
-</div></blockquote>
-<p><strong>plot_kws</strong> : dict</p>
-<blockquote>
-<div><p>Keyword arguments to supply to plot()</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>fig</strong> : matplotlib.Figure</p>
-<blockquote class="last">
-<div><p>A figure object for saving.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="flotilla.visualize.splicing.lavalamp_pooled_inconsistent">
-<tt class="descclassname">flotilla.visualize.splicing.</tt><tt class="descname">lavalamp_pooled_inconsistent</tt><big>(</big><em>singles</em>, <em>pooled</em>, <em>pooled_inconsistent</em>, <em>color=None</em>, <em>percent=None</em><big>)</big><a class="reference internal" href="../_modules/flotilla/visualize/splicing.html#lavalamp_pooled_inconsistent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.lavalamp_pooled_inconsistent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </div>
 <div class="section" id="module-flotilla.visualize">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-flotilla.visualize" title="Permalink to this headline">¶</a></h2>
@@ -783,15 +192,18 @@ the same plot, with the same events.</p>
       
     </p>
     <p>
-        &copy; Copyright 2014, Olga Botvinnik, Michael Lovci, Patrick Liu, Yan Song.<br/>
+        &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
     </p>
   </div>
 </footer>
-    Funded by <a href="http://numfocus.org/">NumFOCUS</a> <a
-        href="http://numfocus.org/pages/john_hunter_fellowship_2014.html">John
-    Hunter Technology Fellowship</a> to <a href="http://olgabotvinnik.com/">Olga
-    Botvinnik</a>.<br/>
+    <a href="http://olgabotvinnik.com/">Olga B. Botvinnik</a> is funded by the
+    <a href="https://ndseg.asee.org/">NDSEG</a> fellowship and is a
+    <a href="http://numfocus.org/">NumFOCUS</a>
+    <a href="http://numfocus.org/pages/john_hunter_fellowship_2014.html">John
+    Hunter Technology Fellow</a>.<br/>
+    Michael T. Lovci was partially funded by a fellowship from
+    <a href="http://www.gene.com/">Genentech</a>.</br>
     Partially funded by <a href="http://www.nih.gov/">NIH</a> grants NS075449
     and HG004659 and <a href="http://www.cirm.ca.gov/">CIRM</a> grants RB4-06045
     and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene

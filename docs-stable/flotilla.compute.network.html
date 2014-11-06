@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>flotilla.compute.network module &mdash; flotilla 0.2.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootswatch-3.2.0/paper/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="flotilla 0.2.0 documentation" href="index.html" />
+    <link rel="up" title="flotilla.compute package" href="flotilla.compute.html" />
+    <link rel="next" title="flotilla.compute.outlier module" href="flotilla.compute.outlier.html" />
+    <link rel="prev" title="flotilla.compute.infotheory module" href="flotilla.compute.infotheory.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          Flotilla</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
+            
+                <li><a href="tutorial.html">Tutorial</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="http://yeolab.ucsd.edu">YeoLab@UCSD</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="flotilla.html">flotilla package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="flotilla.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flotilla.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flotilla.html#module-flotilla">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What&#8217;s new in the package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-0-november-1st-2014">v0.2.0 (November 1st, 2014)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installing flotilla</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api.html#general-use-plots">General use plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#interactive-plots">Interactive plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#machine-learning-plots">Machine learning plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#splicing-specific-plots">Splicing-specific plots</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="create_datapackage.html">Create your very own datapackage!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Flotilla tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#create-a-datapackage">Create a datapackage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#processing-data">Processing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#plotting-functions">Plotting functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="apidoc/modules.html">flotilla</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="apidoc/flotilla.html">flotilla package</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">flotilla.compute.network module</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="_sources/flotilla.compute.network.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <div class="section" id="module-flotilla.compute.network">
+<span id="flotilla-compute-network-module"></span><h1>flotilla.compute.network module<a class="headerlink" href="#module-flotilla.compute.network" title="Permalink to this headline">¶</a></h1>
+<p>Compute networks (the kind with nodes and edges) on data. Visualize with
+:py:mod:flotilla.visualize.network</p>
+<dl class="class">
+<dt id="flotilla.compute.network.Networker">
+<em class="property">class </em><tt class="descclassname">flotilla.compute.network.</tt><tt class="descname">Networker</tt><a class="reference internal" href="_modules/flotilla/compute/network.html#Networker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.network.Networker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<p>Networks (the kind with nodes and edges), aka a graph</p>
+<p>Calculate the edges based on similarity between rows of PCA-reduced data</p>
+<p>Construct a Networker object with default node colors (dark teal)
+and sizes (all nodes at 300)</p>
+<dl class="method">
+<dt id="flotilla.compute.network.Networker.adjacency">
+<tt class="descname">adjacency</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/network.html#Networker.adjacency"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.network.Networker.adjacency" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the adjacency graph, i.e. connectedness between nodes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A (n_nodes, n_pcs) sized dataframe of reduced data</p>
+</div></blockquote>
+<p><strong>use_pc1</strong> : bool, optional</p>
+<blockquote>
+<div><p>If True, use the first principal component of reduced data
+(default True)</p>
+</div></blockquote>
+<p><strong>use_pc2</strong> : bool, optional</p>
+<blockquote>
+<div><p>If True, use the second principal component of reduced data
+(default True)</p>
+</div></blockquote>
+<p><strong>use_pc3</strong> : bool, optional</p>
+<blockquote>
+<div><p>If True, use the third principal component of reduced data
+(default True)</p>
+</div></blockquote>
+<p><strong>use_pc4</strong> : bool, optional</p>
+<blockquote>
+<div><p>If True, use the fourth principal component of reduced data
+(default True)</p>
+</div></blockquote>
+<p><strong>n_pcs</strong> : int, optional</p>
+<blockquote>
+<div><p>Total number of principal components to use (default 5)</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>adjacency</strong> : pandas.DataFrame</p>
+<blockquote class="last">
+<div><p>A lower triangular matrix of the edge weights between the rows of
+the data</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.compute.network.Networker.get_weight_fun">
+<tt class="descname">get_weight_fun</tt><big>(</big><em>fun_name='no_weight'</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/network.html#Networker.get_weight_fun"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.network.Networker.get_weight_fun" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a string, return the function</p>
+<p>Used to obtain functions that perform common transforms on distance</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>fun_name</strong> : &#8216;no_weight&#8217; | &#8216;sq&#8217; | &#8216;arctan&#8217; | &#8216;arctan_sq&#8217;, optional</p>
+<blockquote>
+<div><p>Name of the function to obtain (default &#8216;no_weight&#8217;)</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>func</strong> : function</p>
+<blockquote>
+<div><p>A function which transforms a number in the indicated way</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><strong>ValueError</strong></p>
+<blockquote class="last">
+<div><p>If <cite>fun_name</cite> is not one of the ones indicated above</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.compute.network.Networker.graph">
+<tt class="descname">graph</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/network.html#Networker.graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.network.Networker.graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a graph based on the adjacency matrix and other inputs</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>adjacency</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A (n_nodes, n_nodes) square dataframe of edge weights between all
+nodes in the graph</p>
+</div></blockquote>
+<p><strong>cov_cut</strong> : float, optional</p>
+<blockquote>
+<div><p>Minimum covariance between two nodes for their edge to be plotted.
+(default 0)</p>
+</div></blockquote>
+<p><strong>node_color_mapper</strong> : function, optional</p>
+<blockquote>
+<div><p>Function to recolor the nodes for plotting, based on the node name.
+If None, defaults to a dark teal. (default None)</p>
+</div></blockquote>
+<p><strong>node_size_mapper</strong> : function, optional</p>
+<blockquote>
+<div><p>Function to resize the nodes for plotting, based on the node name.
+If None, defaults to the same size for all nodes. (default None)</p>
+</div></blockquote>
+<p><strong>degree_cut</strong> : int</p>
+<blockquote>
+<div><p>Minimum number of edges a node must have for it to be drawn on the
+graph</p>
+</div></blockquote>
+<p><strong>weight_function</strong> : &#8216;no_weight&#8217; | &#8216;sq&#8217; | &#8216;arctan&#8217; | &#8216;arctan_sq&#8217;, optional</p>
+<blockquote>
+<div><p>Weight function of the edges. The lower the weight, the farther
+away two nodes are drawn from each other.</p>
+</div></blockquote>
+<p><strong>name</strong> : str, optional (default=None)</p>
+<blockquote>
+<div><p>For memoization purposes, not used in the function.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>graph</strong> : networkx.Graph</p>
+<blockquote>
+<div><p>The graph created with all these parameters</p>
+</div></blockquote>
+<p><strong>positions</strong> : dict</p>
+<blockquote class="last">
+<div><p>A {node_name : [x, y]} mapping of all nodes and their x, y
+positions</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.compute.network.Networker.weight_funs">
+<tt class="descname">weight_funs</tt><em class="property"> = ['no_weight', 'sq', 'arctan', 'arctan_sq']</em><a class="headerlink" href="#flotilla.compute.network.Networker.weight_funs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<div class="container">
+    
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
+    </p>
+  </div>
+</footer>
+    <a href="http://olgabotvinnik.com/">Olga B. Botvinnik</a> is funded by the
+    <a href="https://ndseg.asee.org/">NDSEG</a> fellowship and is a
+    <a href="http://numfocus.org/">NumFOCUS</a>
+    <a href="http://numfocus.org/pages/john_hunter_fellowship_2014.html">John
+    Hunter Technology Fellow</a>.<br/>
+    Michael T. Lovci was partially funded by a fellowship from
+    <a href="http://www.gene.com/">Genentech</a>.</br>
+    Partially funded by <a href="http://www.nih.gov/">NIH</a> grants NS075449
+    and HG004659 and <a href="http://www.cirm.ca.gov/">CIRM</a> grants RB4-06045
+    and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene
+    Yeo</a>. <br/>
+
+    
+  </body>
+</html>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>flotilla.compute.outlier module &mdash; flotilla 0.2.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootswatch-3.2.0/paper/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="flotilla 0.2.0 documentation" href="index.html" />
+    <link rel="up" title="flotilla.compute package" href="flotilla.compute.html" />
+    <link rel="next" title="flotilla.compute.predict module" href="flotilla.compute.predict.html" />
+    <link rel="prev" title="flotilla.compute.network module" href="flotilla.compute.network.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          Flotilla</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
+            
+                <li><a href="tutorial.html">Tutorial</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="http://yeolab.ucsd.edu">YeoLab@UCSD</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="flotilla.html">flotilla package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="flotilla.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flotilla.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flotilla.html#module-flotilla">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What&#8217;s new in the package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-0-november-1st-2014">v0.2.0 (November 1st, 2014)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installing flotilla</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api.html#general-use-plots">General use plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#interactive-plots">Interactive plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#machine-learning-plots">Machine learning plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#splicing-specific-plots">Splicing-specific plots</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="create_datapackage.html">Create your very own datapackage!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Flotilla tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#create-a-datapackage">Create a datapackage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#processing-data">Processing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#plotting-functions">Plotting functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="apidoc/modules.html">flotilla</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="apidoc/flotilla.html">flotilla package</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">flotilla.compute.outlier module</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="_sources/flotilla.compute.outlier.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <div class="section" id="module-flotilla.compute.outlier">
+<span id="flotilla-compute-outlier-module"></span><h1>flotilla.compute.outlier module<a class="headerlink" href="#module-flotilla.compute.outlier" title="Permalink to this headline">¶</a></h1>
+<p>Detect outlier samples in data</p>
+<dl class="class">
+<dt id="flotilla.compute.outlier.OutlierDetection">
+<em class="property">class </em><tt class="descclassname">flotilla.compute.outlier.</tt><tt class="descname">OutlierDetection</tt><big>(</big><em>X</em>, <em>method=None</em>, <em>nu=0.1</em>, <em>kernel='rbf'</em>, <em>gamma=0.1</em>, <em>random_state=0</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/outlier.html#OutlierDetection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.outlier.OutlierDetection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<p>Construct an outlier detection object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A (n_samples, n_features) dataframe, where the outliers will be
+detected from the rows (the samples)</p>
+</div></blockquote>
+<p><strong>method</strong> : sklearn classifier, optional</p>
+<blockquote>
+<div><p>If None, defaults to OneClassSVM. The method class must have both
+method.fit() and method.predict() methods</p>
+</div></blockquote>
+<p><strong>nu</strong> : float, optional (default 0.1)</p>
+<blockquote>
+<div><p>An upper bound on the fraction of training errors and a lower
+bound of the fraction of support vectors. Should be in the
+interval (0, 1]. By default 0.5 will be taken.</p>
+</div></blockquote>
+<p><strong>kernel</strong> : str, optional (default=&#8217;rbf&#8217;)</p>
+<blockquote>
+<div><p>The kernel to be used by the outlier detection algorihthm</p>
+</div></blockquote>
+<p><strong>gamma</strong> : float, optional (default=0.1)</p>
+<blockquote>
+<div><p>Kernel coefficient for &#8216;rbf&#8217;, &#8216;poly&#8217; and &#8216;sigmoid&#8217;. If gamma is
+0.0 then 1/n_features will be used instead.</p>
+</div></blockquote>
+<p><strong>random_state</strong> : int, optional (default=0)</p>
+<blockquote>
+<div><p>Random state of the method, for reproducibility.</p>
+</div></blockquote>
+<p><strong>kwargs</strong> : other keyword arguments, optional</p>
+<blockquote class="last">
+<div><p>All other keyword arguments are passed to method()</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="flotilla.compute.outlier.OutlierDetection.predict">
+<tt class="descname">predict</tt><big>(</big><em>X=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/outlier.html#OutlierDetection.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.outlier.OutlierDetection.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predict which samples are outliers</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : pandas.DataFrame, optional (default None)</p>
+<blockquote>
+<div><p>A (n_samples, n_features) Dataframe. If None, predict outliers of
+the original input data, where the new data has the same number of
+features as the original data. Otherwise, use the original input
+data to detect outliers on this new data.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>outliers</strong> : pandas.Series</p>
+<blockquote class="last">
+<div><p>A boolean</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<div class="container">
+    
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
+    </p>
+  </div>
+</footer>
+    <a href="http://olgabotvinnik.com/">Olga B. Botvinnik</a> is funded by the
+    <a href="https://ndseg.asee.org/">NDSEG</a> fellowship and is a
+    <a href="http://numfocus.org/">NumFOCUS</a>
+    <a href="http://numfocus.org/pages/john_hunter_fellowship_2014.html">John
+    Hunter Technology Fellow</a>.<br/>
+    Michael T. Lovci was partially funded by a fellowship from
+    <a href="http://www.gene.com/">Genentech</a>.</br>
+    Partially funded by <a href="http://www.nih.gov/">NIH</a> grants NS075449
+    and HG004659 and <a href="http://www.cirm.ca.gov/">CIRM</a> grants RB4-06045
+    and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene
+    Yeo</a>. <br/>
+
+    
+  </body>
+</html>
