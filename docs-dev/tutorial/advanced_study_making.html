@@ -110,12 +110,14 @@
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
 <li><a class="reference internal" href="#">Create an advanced datapackage</a><ul>
+<li><a class="reference internal" href="#the-data-a-neural-induction-protocol">The data: a neural induction protocol</a></li>
 <li><a class="reference internal" href="#metadata-expression-data-and-splicing-data">Metadata, expression data, and splicing data</a></li>
 <li><a class="reference internal" href="#feature-data">Feature data</a><ul>
 <li><a class="reference internal" href="#expression-feature-data">Expression feature data</a></li>
 <li><a class="reference internal" href="#splicing-feature-data">Splicing feature data</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#create-new-phenotype-groups-with-metadata">Create new phenotype groups with metadata</a></li>
 <li><a class="reference internal" href="#requirements-for-this-demonstration">Requirements for this demonstration.</a></li>
 <li><a class="reference internal" href="#our-data">Our data</a></li>
 <li><a class="reference internal" href="#study-setup">Study Setup</a></li>
@@ -192,6 +194,18 @@ ids and splicing events</li>
 </div>
 <div class="highlight-python"><div class="highlight"><pre>Couldn&#39;t import dot_parser, loading of dot files will not be possible.
 </pre></div>
+</div>
+<div class="section" id="the-data-a-neural-induction-protocol">
+<h2>The data: a neural induction protocol<a class="headerlink" href="#the-data-a-neural-induction-protocol" title="Permalink to this headline">¶</a></h2>
+<div class="figure align-center">
+<img alt="" src="http://i.imgur.com/37xpJvi.png" />
+</div>
+<ul class="simple">
+<li>Induced pluripotent cells (P, iPSC)</li>
+<li>Neural progenitor cells (N, NPC)</li>
+<li>Motor neurons (M, MN)</li>
+<li>Stressed motor neurons (S, sMN)</li>
+</ul>
 </div>
 <div class="section" id="metadata-expression-data-and-splicing-data">
 <h2>Metadata, expression data, and splicing data<a class="headerlink" href="#metadata-expression-data-and-splicing-data" title="Permalink to this headline">¶</a></h2>
@@ -1024,7 +1038,189 @@ AttributeError: &#39;NoneType&#39; object has no attribute &#39;_subset&#39;
     </tr>
   </tbody>
 </table>
-</div></div>
+</div><p>Again, there&#8217;s a lot of columns here! Looks like we want to use
+<strong>gene_name</strong> to convert the crazy MISO ids to a known gene name</p>
+</div>
+</div>
+<div class="section" id="create-new-phenotype-groups-with-metadata">
+<h2>Create new phenotype groups with metadata<a class="headerlink" href="#create-new-phenotype-groups-with-metadata" title="Permalink to this headline">¶</a></h2>
+<p>Now that we have all the data that we want, let&#8217;s manipulate the
+<tt class="docutils literal"><span class="pre">metadata</span></tt> DataFrame to have some more informative data columns. Let&#8217;s
+add individual columns of each phenotype.</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">phenotype</span><span class="p">,</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">metadata</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">&#39;phenotype&#39;</span><span class="p">):</span>
+    <span class="n">metadata</span><span class="p">[</span><span class="n">phenotype</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="n">metadata</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">phenotype</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="n">metadata</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>pooled</th>
+      <th>phenotype</th>
+      <th>outlier</th>
+      <th>MN</th>
+      <th>NPC</th>
+      <th>iPSC</th>
+      <th>sMN</th>
+    </tr>
+    <tr>
+      <th>original_name</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>M1_01</th>
+      <td> False</td>
+      <td> MN</td>
+      <td> False</td>
+      <td> True</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>M1_02</th>
+      <td> False</td>
+      <td> MN</td>
+      <td> False</td>
+      <td> True</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>M1_03</th>
+      <td> False</td>
+      <td> MN</td>
+      <td> False</td>
+      <td> True</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>M1_04</th>
+      <td> False</td>
+      <td> MN</td>
+      <td> False</td>
+      <td> True</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>M1_05</th>
+      <td> False</td>
+      <td> MN</td>
+      <td> False</td>
+      <td> True</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+    </tr>
+  </tbody>
+</table>
+</div><p>Now, let&#8217;s create the &#8220;neuron&#8221; group from the motor neurons (MN) and
+stressed motor neurons (sMN)</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">metadata</span><span class="p">[</span><span class="s">&#39;neuron&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">MN</span> <span class="o">|</span> <span class="n">metadata</span><span class="o">.</span><span class="n">sMN</span>
+<span class="n">metadata</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>pooled</th>
+      <th>phenotype</th>
+      <th>outlier</th>
+      <th>MN</th>
+      <th>NPC</th>
+      <th>iPSC</th>
+      <th>sMN</th>
+      <th>neuron</th>
+    </tr>
+    <tr>
+      <th>original_name</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>M1_01</th>
+      <td> False</td>
+      <td> MN</td>
+      <td> False</td>
+      <td> True</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+      <td> True</td>
+    </tr>
+    <tr>
+      <th>M1_02</th>
+      <td> False</td>
+      <td> MN</td>
+      <td> False</td>
+      <td> True</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+      <td> True</td>
+    </tr>
+    <tr>
+      <th>M1_03</th>
+      <td> False</td>
+      <td> MN</td>
+      <td> False</td>
+      <td> True</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+      <td> True</td>
+    </tr>
+    <tr>
+      <th>M1_04</th>
+      <td> False</td>
+      <td> MN</td>
+      <td> False</td>
+      <td> True</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+      <td> True</td>
+    </tr>
+    <tr>
+      <th>M1_05</th>
+      <td> False</td>
+      <td> MN</td>
+      <td> False</td>
+      <td> True</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+      <td> True</td>
+    </tr>
+  </tbody>
+</table>
+</div><p>And let&#8217;s add a &#8220;progenitor&#8221; category with the iPSC and NPCs</p>
 </div>
 <div class="section" id="requirements-for-this-demonstration">
 <h2>Requirements for this demonstration.<a class="headerlink" href="#requirements-for-this-demonstration" title="Permalink to this headline">¶</a></h2>

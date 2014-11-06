@@ -28,6 +28,18 @@ Let's start by importing the packages we'll need.
     Couldn't import dot_parser, loading of dot files will not be possible.
 
 
+The data: a neural induction protocol
+-------------------------------------
+
+.. figure:: http://i.imgur.com/37xpJvi.png
+   :align: center
+   :alt: 
+
+-  Induced pluripotent cells (P, iPSC)
+-  Neural progenitor cells (N, NPC)
+-  Motor neurons (M, MN)
+-  Stressed motor neurons (S, sMN)
+
 Metadata, expression data, and splicing data
 --------------------------------------------
 
@@ -922,6 +934,210 @@ Next, let's get the metadata about the splicing events.
     </div>
 
 
+
+Again, there's a lot of columns here! Looks like we want to use
+**gene\_name** to convert the crazy MISO ids to a known gene name
+
+Create new phenotype groups with metadata
+-----------------------------------------
+
+Now that we have all the data that we want, let's manipulate the
+``metadata`` DataFrame to have some more informative data columns. Let's
+add individual columns of each phenotype.
+
+.. code:: python
+
+    for phenotype, df in metadata.groupby('phenotype'):
+        metadata[phenotype] = False
+        metadata.ix[df.index, phenotype] = True
+    metadata.head()
+
+
+
+.. raw:: html
+
+    <div style="max-height:1000px;max-width:1500px;overflow:auto;">
+    <table border="1" class="dataframe">
+      <thead>
+        <tr style="text-align: right;">
+          <th></th>
+          <th>pooled</th>
+          <th>phenotype</th>
+          <th>outlier</th>
+          <th>MN</th>
+          <th>NPC</th>
+          <th>iPSC</th>
+          <th>sMN</th>
+        </tr>
+        <tr>
+          <th>original_name</th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>M1_01</th>
+          <td> False</td>
+          <td> MN</td>
+          <td> False</td>
+          <td> True</td>
+          <td> False</td>
+          <td> False</td>
+          <td> False</td>
+        </tr>
+        <tr>
+          <th>M1_02</th>
+          <td> False</td>
+          <td> MN</td>
+          <td> False</td>
+          <td> True</td>
+          <td> False</td>
+          <td> False</td>
+          <td> False</td>
+        </tr>
+        <tr>
+          <th>M1_03</th>
+          <td> False</td>
+          <td> MN</td>
+          <td> False</td>
+          <td> True</td>
+          <td> False</td>
+          <td> False</td>
+          <td> False</td>
+        </tr>
+        <tr>
+          <th>M1_04</th>
+          <td> False</td>
+          <td> MN</td>
+          <td> False</td>
+          <td> True</td>
+          <td> False</td>
+          <td> False</td>
+          <td> False</td>
+        </tr>
+        <tr>
+          <th>M1_05</th>
+          <td> False</td>
+          <td> MN</td>
+          <td> False</td>
+          <td> True</td>
+          <td> False</td>
+          <td> False</td>
+          <td> False</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+
+
+Now, let's create the "neuron" group from the motor neurons (MN) and
+stressed motor neurons (sMN)
+
+.. code:: python
+
+    metadata['neuron'] = metadata.MN | metadata.sMN
+    metadata.head()
+
+
+
+.. raw:: html
+
+    <div style="max-height:1000px;max-width:1500px;overflow:auto;">
+    <table border="1" class="dataframe">
+      <thead>
+        <tr style="text-align: right;">
+          <th></th>
+          <th>pooled</th>
+          <th>phenotype</th>
+          <th>outlier</th>
+          <th>MN</th>
+          <th>NPC</th>
+          <th>iPSC</th>
+          <th>sMN</th>
+          <th>neuron</th>
+        </tr>
+        <tr>
+          <th>original_name</th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>M1_01</th>
+          <td> False</td>
+          <td> MN</td>
+          <td> False</td>
+          <td> True</td>
+          <td> False</td>
+          <td> False</td>
+          <td> False</td>
+          <td> True</td>
+        </tr>
+        <tr>
+          <th>M1_02</th>
+          <td> False</td>
+          <td> MN</td>
+          <td> False</td>
+          <td> True</td>
+          <td> False</td>
+          <td> False</td>
+          <td> False</td>
+          <td> True</td>
+        </tr>
+        <tr>
+          <th>M1_03</th>
+          <td> False</td>
+          <td> MN</td>
+          <td> False</td>
+          <td> True</td>
+          <td> False</td>
+          <td> False</td>
+          <td> False</td>
+          <td> True</td>
+        </tr>
+        <tr>
+          <th>M1_04</th>
+          <td> False</td>
+          <td> MN</td>
+          <td> False</td>
+          <td> True</td>
+          <td> False</td>
+          <td> False</td>
+          <td> False</td>
+          <td> True</td>
+        </tr>
+        <tr>
+          <th>M1_05</th>
+          <td> False</td>
+          <td> MN</td>
+          <td> False</td>
+          <td> True</td>
+          <td> False</td>
+          <td> False</td>
+          <td> False</td>
+          <td> True</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+
+
+And let's add a "progenitor" category with the iPSC and NPCs
 
 
 Requirements for this demonstration.
