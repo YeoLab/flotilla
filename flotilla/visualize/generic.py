@@ -49,12 +49,17 @@ def violinplot(data, groupby=None, color_ordered=None, ax=None,
         ax = plt.gca()
 
     if order is None:
-        data_grouped = data.groupby(groupby)
-        outliers_grouped = outliers.groupby(groupby)
-        pooled_grouped = pooled_data.groupby(groupby)
-        all_groups = set(itertools.chain(data_grouped.groups.keys(),
-                                         pooled_grouped.groups.keys(),
-                                         outliers_grouped.groups.keys()))
+        data_groups = data.groupby(groupby).groups.keys()
+        if outliers is not None:
+            outliers_groups = outliers.groupby(groupby).groups.keys()
+        else:
+            outliers_groups = []
+        if pooled_data is not None:
+            pooled_groups = pooled_data.groupby(groupby).groups.keys()
+        else:
+            pooled_groups = []
+        all_groups = set(itertools.chain(data_groups, pooled_groups,
+                                         outliers_groups))
         order = sorted(all_groups)
 
 
