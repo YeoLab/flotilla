@@ -146,8 +146,7 @@ class DataFrameReducerBase(object):
 
 
 class DataFramePCA(DataFrameReducerBase, decomposition.PCA):
-    """Perform Principal Components Analaysis on a DataFrame
-    """
+    """Perform Principal Components Analaysis on a DataFrame"""
     pass
 
 
