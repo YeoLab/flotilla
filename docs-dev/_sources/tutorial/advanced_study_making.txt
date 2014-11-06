@@ -1,0 +1,1283 @@
+
+Create an advanced datapackage
+==============================
+
+In this notebook, we will create a new ``flotilla`` Study with a few
+more parameters than we had in the `barebones <barebones>`_ one. We wil
+cover:
+
+-  Using the ``metadata_phenotype_order``,
+   ``metadata_phenotype_to_color``, and ``metadata_phenotype_to_marker``
+   arguments to tell flotilla in what order you want your data plotted
+   for violinplots, the color, and the plotting symbol
+-  Using unique ENSEMBL ids for gene ids, and MISO ids for splicing
+   events
+-  Using larger ``{expression,splicing}_feature_data`` to rename gene
+   ids and splicing events
+
+Let's start by importing the packages we'll need.
+
+.. code:: python
+
+    import pandas as pd
+    import numpy as np
+    import flotilla
+
+.. parsed-literal::
+
+    Couldn't import dot_parser, loading of dot files will not be possible.
+
+
+Metadata, expression data, and splicing data
+--------------------------------------------
+
+Load in metadata about the samples, expression data, and their splicing
+data.
+
+.. code:: python
+
+    metadata = pd.read_csv('http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22/metadata.csv', index_col=0)
+    metadata.head()
+
+
+
+.. raw:: html
+
+    <div style="max-height:1000px;max-width:1500px;overflow:auto;">
+    <table border="1" class="dataframe">
+      <thead>
+        <tr style="text-align: right;">
+          <th></th>
+          <th>pooled</th>
+          <th>phenotype</th>
+          <th>outlier</th>
+        </tr>
+        <tr>
+          <th>original_name</th>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>M1_01</th>
+          <td> False</td>
+          <td> MN</td>
+          <td> False</td>
+        </tr>
+        <tr>
+          <th>M1_02</th>
+          <td> False</td>
+          <td> MN</td>
+          <td> False</td>
+        </tr>
+        <tr>
+          <th>M1_03</th>
+          <td> False</td>
+          <td> MN</td>
+          <td> False</td>
+        </tr>
+        <tr>
+          <th>M1_04</th>
+          <td> False</td>
+          <td> MN</td>
+          <td> False</td>
+        </tr>
+        <tr>
+          <th>M1_05</th>
+          <td> False</td>
+          <td> MN</td>
+          <td> False</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+
+
+.. code:: python
+
+    expression = pd.read_csv('http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22/expression.csv', index_col=0)
+    expression.head()
+
+
+
+.. raw:: html
+
+    <div style="max-height:1000px;max-width:1500px;overflow:auto;">
+    <table border="1" class="dataframe">
+      <thead>
+        <tr style="text-align: right;">
+          <th></th>
+          <th>ENSG00000233866</th>
+          <th>ENSG00000229286</th>
+          <th>ENSG00000235265</th>
+          <th>ENSG00000223875</th>
+          <th>ENSG00000215270</th>
+          <th>ENSG00000206195</th>
+          <th>ENSG00000271672</th>
+          <th>ENSG00000272872</th>
+          <th>ENSG00000232775</th>
+          <th>ENSG00000271127</th>
+          <th>...</th>
+          <th>ENSG00000100299</th>
+          <th>ENSG00000212569</th>
+          <th>ENSG00000251322</th>
+          <th>ENSG00000206841</th>
+          <th>ENSG00000225929</th>
+          <th>ENSG00000100312</th>
+          <th>ENSG00000254499</th>
+          <th>ENSG00000213683</th>
+          <th>ENSG00000184319</th>
+          <th>ENSG00000079974</th>
+        </tr>
+        <tr>
+          <th>sample_id</th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>CVN_01</th>
+          <td> 0.380964</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td> 0.988765</td>
+          <td>NaN</td>
+          <td> 0</td>
+          <td>NaN</td>
+          <td> 0.000000</td>
+          <td>...</td>
+          <td> 1.041467</td>
+          <td>NaN</td>
+          <td> 0</td>
+          <td>NaN</td>
+          <td> 0.745853</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td> 3.026128</td>
+        </tr>
+        <tr>
+          <th>CVN_02</th>
+          <td> 0.678509</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td> 1.324344</td>
+          <td>NaN</td>
+          <td> 0</td>
+          <td>NaN</td>
+          <td> 0.000000</td>
+          <td>...</td>
+          <td> 1.347575</td>
+          <td>NaN</td>
+          <td> 0</td>
+          <td>NaN</td>
+          <td> 0.168166</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td> 2.871832</td>
+        </tr>
+        <tr>
+          <th>CVN_03</th>
+          <td> 1.625612</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td> 0.000000</td>
+          <td>NaN</td>
+          <td> 0</td>
+          <td>NaN</td>
+          <td> 0.000000</td>
+          <td>...</td>
+          <td> 0.000000</td>
+          <td>NaN</td>
+          <td> 0</td>
+          <td>NaN</td>
+          <td> 0.266781</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td> 3.536874</td>
+        </tr>
+        <tr>
+          <th>CVN_04</th>
+          <td> 1.172500</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td> 1.921577</td>
+          <td>NaN</td>
+          <td> 0</td>
+          <td>NaN</td>
+          <td> 0.000000</td>
+          <td>...</td>
+          <td> 0.954419</td>
+          <td>NaN</td>
+          <td> 0</td>
+          <td>NaN</td>
+          <td> 0.204180</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td> 2.675213</td>
+        </tr>
+        <tr>
+          <th>CVN_05</th>
+          <td> 1.993928</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td> 0.000000</td>
+          <td>NaN</td>
+          <td> 0</td>
+          <td>NaN</td>
+          <td> 1.925453</td>
+          <td>...</td>
+          <td> 1.683804</td>
+          <td>NaN</td>
+          <td> 0</td>
+          <td>NaN</td>
+          <td> 0.313015</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td> 4.263993</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>5 rows × 1263 columns</p>
+    </div>
+
+
+
+.. code:: python
+
+    splicing = pd.read_csv('http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22/splicing.csv', index_col=0)
+    splicing.head()
+
+
+
+.. raw:: html
+
+    <div style="max-height:1000px;max-width:1500px;overflow:auto;">
+    <table border="1" class="dataframe">
+      <thead>
+        <tr style="text-align: right;">
+          <th></th>
+          <th>chr22:16187165:16187302:-@chr22:16186946|16186953:16186811:-</th>
+          <th>chr22:16189032:16189143:-@chr22:16187278|16187302:16187165:-</th>
+          <th>chr22:16190681:16190791:-@chr22:16189378|16189411:16189264:-</th>
+          <th>chr22:16455250:16455438:-@chr22:16454933:16455249:-</th>
+          <th>chr22:16598138:16598344:-@chr22:16596905:16598137:-</th>
+          <th>chr22:16950841:16951225:+@chr22:16951226:16952202:+</th>
+          <th>chr22:17565849:17566119:+@chr22:17577952:17577976:+@chr22:17578687:17578833:+</th>
+          <th>chr22:17602485:17602929:+@chr22:17603459:17603628:+@chr22:17605545:17605661:+</th>
+          <th>chr22:17621949:17622123:-@chr22:17619440:17619628:-@chr22:17618410:17619247:-</th>
+          <th>chr22:17639347:17640058:-@chr22:17630432:17630635:-@chr22:17629338:17629450:-</th>
+          <th>...</th>
+          <th>chr22:51207980:51207853|51207883:-@chr22:51207469:51207552:-</th>
+          <th>chr22:51208333:51208444:-@chr22:51207977|51207980:51207883:-</th>
+          <th>chr22:51214200:51214279:-@chr22:51208333:51208444:-@chr22:51207883:51207980:-</th>
+          <th>chr22:51215098:51215177:-@chr22:51214200:51214279:-@chr22:51207883:51207980:-</th>
+          <th>chr22:51220616:51220779:-@chr22:51219041:51219146:-@chr22:51216380:51216409:-</th>
+          <th>chr22:51221714:51221467|51221473:-@chr22:51220616:51220779:-</th>
+          <th>chr22:51221929:51222087:-@chr22:51220775|51220779:51220616:-</th>
+          <th>chr22:51221929:51222087:-@chr22:51221319:51221473:-@chr22:51220616:51220779:-</th>
+          <th>chr22:51221929:51222087:-@chr22:51221467:51221714:-@chr22:51220616:51220779:-</th>
+          <th>chr22:51222225:51222292|51222449:+@chr22:51223601:51223721:+</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>CVN_01</th>
+          <td>NaN</td>
+          <td>  NaN</td>
+          <td>NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>  NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>...</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+        </tr>
+        <tr>
+          <th>CVN_02</th>
+          <td>NaN</td>
+          <td>  NaN</td>
+          <td>NaN</td>
+          <td> 0.96</td>
+          <td> 0.02</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>  NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>...</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+        </tr>
+        <tr>
+          <th>CVN_03</th>
+          <td>NaN</td>
+          <td>  NaN</td>
+          <td>NaN</td>
+          <td> 0.99</td>
+          <td>  NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>  NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>...</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+        </tr>
+        <tr>
+          <th>CVN_04</th>
+          <td>NaN</td>
+          <td> 0.07</td>
+          <td>NaN</td>
+          <td> 0.93</td>
+          <td>  NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>  NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>...</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+        </tr>
+        <tr>
+          <th>CVN_05</th>
+          <td>NaN</td>
+          <td>  NaN</td>
+          <td>NaN</td>
+          <td> 0.98</td>
+          <td> 0.09</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td> 0.01</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>...</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>5 rows × 1307 columns</p>
+    </div>
+
+
+
+.. code:: python
+
+    mapping_stats = pd.read_csv('http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22/mapping_stats.csv', index_col=0)
+    mapping_stats.head()
+
+
+
+.. raw:: html
+
+    <div style="max-height:1000px;max-width:1500px;overflow:auto;">
+    <table border="1" class="dataframe">
+      <thead>
+        <tr style="text-align: right;">
+          <th></th>
+          <th>Started job on</th>
+          <th>Started mapping on</th>
+          <th>Finished on</th>
+          <th>Mapping speed, Million of reads per hour</th>
+          <th>Number of input reads</th>
+          <th>Average input read length</th>
+          <th>Uniquely mapped reads number</th>
+          <th>Uniquely mapped reads %</th>
+          <th>Average mapped length</th>
+          <th>Number of splices: Total</th>
+          <th>...</th>
+          <th>Number of reads mapped to too many loci</th>
+          <th>% of reads mapped to too many loci</th>
+          <th>% of reads unmapped: too many mismatches</th>
+          <th>% of reads unmapped: too short</th>
+          <th>% of reads unmapped: other</th>
+          <th>% splices: Annotated (sjdb)</th>
+          <th>% splices: GT/AG</th>
+          <th>% splices: GC/AG</th>
+          <th>% splices: AT/AC</th>
+          <th>% splices: Non-canonical</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>M1_01</th>
+          <td> Apr 29 19:58:18</td>
+          <td> Apr 29 19:58:40</td>
+          <td> Apr 29 20:01:22</td>
+          <td> 274.58</td>
+          <td> 12356210</td>
+          <td> 184</td>
+          <td> 10684874</td>
+          <td> 86.47</td>
+          <td> 181.36</td>
+          <td> 4629200</td>
+          <td>...</td>
+          <td> 19107</td>
+          <td> 0.15</td>
+          <td> 0</td>
+          <td> 11.02</td>
+          <td> 0.07</td>
+          <td> 98.500238</td>
+          <td> 99.251836</td>
+          <td> 0.516029</td>
+          <td> 0.109112</td>
+          <td> 0.123023</td>
+        </tr>
+        <tr>
+          <th>M1_02</th>
+          <td> Apr 29 17:59:28</td>
+          <td> Apr 29 18:01:21</td>
+          <td> Apr 29 18:19:15</td>
+          <td>  41.62</td>
+          <td> 12416854</td>
+          <td> 184</td>
+          <td> 11235549</td>
+          <td> 90.49</td>
+          <td> 181.70</td>
+          <td> 2706035</td>
+          <td>...</td>
+          <td> 15330</td>
+          <td> 0.12</td>
+          <td> 0</td>
+          <td>  7.59</td>
+          <td> 0.04</td>
+          <td> 98.155715</td>
+          <td> 99.029318</td>
+          <td> 0.766213</td>
+          <td> 0.077013</td>
+          <td> 0.127456</td>
+        </tr>
+        <tr>
+          <th>M1_03</th>
+          <td> Apr 29 19:35:13</td>
+          <td> Apr 29 19:35:39</td>
+          <td> Apr 29 19:39:41</td>
+          <td> 294.61</td>
+          <td> 19804563</td>
+          <td> 184</td>
+          <td> 17584862</td>
+          <td> 88.79</td>
+          <td> 181.38</td>
+          <td> 8496381</td>
+          <td>...</td>
+          <td> 22134</td>
+          <td> 0.11</td>
+          <td> 0</td>
+          <td>  8.55</td>
+          <td> 0.04</td>
+          <td> 98.976329</td>
+          <td> 99.134149</td>
+          <td> 0.632493</td>
+          <td> 0.117073</td>
+          <td> 0.116285</td>
+        </tr>
+        <tr>
+          <th>M1_04</th>
+          <td> Apr 29 18:30:05</td>
+          <td> Apr 29 18:30:31</td>
+          <td> Apr 29 18:32:29</td>
+          <td> 263.10</td>
+          <td>  8623786</td>
+          <td> 184</td>
+          <td>  7599917</td>
+          <td> 88.13</td>
+          <td> 181.29</td>
+          <td> 4547233</td>
+          <td>...</td>
+          <td> 12917</td>
+          <td> 0.15</td>
+          <td> 0</td>
+          <td>  8.93</td>
+          <td> 0.04</td>
+          <td> 99.004713</td>
+          <td> 99.043924</td>
+          <td> 0.717161</td>
+          <td> 0.105801</td>
+          <td> 0.133114</td>
+        </tr>
+        <tr>
+          <th>M1_05</th>
+          <td> Apr 29 19:19:31</td>
+          <td> Apr 29 19:19:53</td>
+          <td> Apr 29 19:22:28</td>
+          <td> 267.28</td>
+          <td> 11507835</td>
+          <td> 184</td>
+          <td>  9726225</td>
+          <td> 84.52</td>
+          <td> 181.33</td>
+          <td> 3429570</td>
+          <td>...</td>
+          <td> 11731</td>
+          <td> 0.10</td>
+          <td> 0</td>
+          <td> 13.28</td>
+          <td> 0.04</td>
+          <td> 98.303490</td>
+          <td> 98.887120</td>
+          <td> 0.901192</td>
+          <td> 0.117478</td>
+          <td> 0.094210</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>5 rows × 32 columns</p>
+    </div>
+
+
+
+Feature data
+------------
+
+Now we'll get to the more interesting part, where we have to deal with
+the data about the features and splicing events.
+
+Expression feature data
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code:: python
+
+    expression_feature = pd.read_csv('http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22/expression_feature.csv', 
+                                     index_col=0)
+    expression_feature.head()
+
+
+
+.. raw:: html
+
+    <div style="max-height:1000px;max-width:1500px;overflow:auto;">
+    <table border="1" class="dataframe">
+      <thead>
+        <tr style="text-align: right;">
+          <th></th>
+          <th>biomark_neural_panel</th>
+          <th>confident_rbp</th>
+          <th>gencode_id</th>
+          <th>gene_name</th>
+          <th>gene_status</th>
+          <th>gene_type</th>
+          <th>havana_gene</th>
+          <th>level</th>
+          <th>rbp</th>
+          <th>ribosomal</th>
+          <th>ribosomal_subunit</th>
+          <th>synapse</th>
+          <th>tag</th>
+          <th>transcript_id</th>
+          <th>transcript_name</th>
+          <th>transcript_status</th>
+          <th>transcript_type</th>
+          <th>transcription_factor</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>ENSG00000233866</th>
+          <td> False</td>
+          <td> False</td>
+          <td> ENSG00000233866.1</td>
+          <td>  LA16c-4G1.3</td>
+          <td> KNOWN</td>
+          <td>    lincRNA</td>
+          <td> OTTHUMG00000140195.1</td>
+          <td> 2</td>
+          <td> False</td>
+          <td> False</td>
+          <td> False</td>
+          <td> False</td>
+          <td>            NaN</td>
+          <td> ENSG00000233866.1</td>
+          <td>  LA16c-4G1.3</td>
+          <td> KNOWN</td>
+          <td>    lincRNA</td>
+          <td> False</td>
+        </tr>
+        <tr>
+          <th>ENSG00000229286</th>
+          <td> False</td>
+          <td> False</td>
+          <td> ENSG00000229286.1</td>
+          <td>  LA16c-4G1.4</td>
+          <td> KNOWN</td>
+          <td> pseudogene</td>
+          <td> OTTHUMG00000140193.1</td>
+          <td> 2</td>
+          <td> False</td>
+          <td> False</td>
+          <td> False</td>
+          <td> False</td>
+          <td>            NaN</td>
+          <td> ENSG00000229286.1</td>
+          <td>  LA16c-4G1.4</td>
+          <td> KNOWN</td>
+          <td> pseudogene</td>
+          <td> False</td>
+        </tr>
+        <tr>
+          <th>ENSG00000235265</th>
+          <td> False</td>
+          <td> False</td>
+          <td> ENSG00000235265.1</td>
+          <td>  LA16c-4G1.5</td>
+          <td> KNOWN</td>
+          <td> pseudogene</td>
+          <td> OTTHUMG00000140197.1</td>
+          <td> 2</td>
+          <td> False</td>
+          <td> False</td>
+          <td> False</td>
+          <td> False</td>
+          <td>            NaN</td>
+          <td> ENSG00000235265.1</td>
+          <td>  LA16c-4G1.5</td>
+          <td> KNOWN</td>
+          <td> pseudogene</td>
+          <td> False</td>
+        </tr>
+        <tr>
+          <th>ENSG00000223875</th>
+          <td> False</td>
+          <td> False</td>
+          <td> ENSG00000223875.1</td>
+          <td>       NBEAP3</td>
+          <td> KNOWN</td>
+          <td> pseudogene</td>
+          <td> OTTHUMG00000140196.1</td>
+          <td> 2</td>
+          <td> False</td>
+          <td> False</td>
+          <td> False</td>
+          <td> False</td>
+          <td>            NaN</td>
+          <td> ENSG00000223875.1</td>
+          <td>       NBEAP3</td>
+          <td> KNOWN</td>
+          <td> pseudogene</td>
+          <td> False</td>
+        </tr>
+        <tr>
+          <th>ENSG00000215270</th>
+          <td> False</td>
+          <td> False</td>
+          <td> ENSG00000215270.3</td>
+          <td> LA16c-60H5.7</td>
+          <td> KNOWN</td>
+          <td> pseudogene</td>
+          <td> OTTHUMG00000140200.1</td>
+          <td> 1</td>
+          <td> False</td>
+          <td> False</td>
+          <td> False</td>
+          <td> False</td>
+          <td> pseudo_consens</td>
+          <td> ENSG00000215270.3</td>
+          <td> LA16c-60H5.7</td>
+          <td> KNOWN</td>
+          <td> pseudogene</td>
+          <td> False</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+
+
+Notice that the index, or row names of this dataframe contains the ids
+from ``expression``, and has a bunch of columns indicating whether this
+feature belongs to a group, like ``confident_rbp`` for "confident
+RNA-binding proteins", or a category such as the ``gene_type``. All of
+these will be used, but I don't want to use *all* of them, so let's make
+a list of columns to ignore.
+
+.. code:: python
+
+    ignore_subset_cols = ["ensembl_gene", "gencode_gene", "gencode_transcript", "ensembl_transcript", 
+                          "gene_name", "transcript_id", "havana_gene", "gencode_id"]
+
+Also, we'll want to remember that we want to rename genes using the
+**gene\_name** column.
+
+Splicing feature data
+~~~~~~~~~~~~~~~~~~~~~
+
+Next, let's get the metadata about the splicing events.
+
+.. code:: python
+
+    splicing_feature = pd.read_csv('http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22/splicing_feature.csv', 
+                                     index_col=0)
+    splicing_feature.head()
+
+.. parsed-literal::
+
+    [autoreload of flotilla.data_model.base failed: Traceback (most recent call last):
+      File "/Users/olga/workspace-git/ipython/IPython/extensions/autoreload.py", line 247, in check
+        superreload(m, reload, self.old_objects)
+    AttributeError: 'NoneType' object has no attribute '_subset'
+    ]
+
+
+
+
+.. raw:: html
+
+    <div style="max-height:1000px;max-width:1500px;overflow:auto;">
+    <table border="1" class="dataframe">
+      <thead>
+        <tr style="text-align: right;">
+          <th></th>
+          <th>gene_type</th>
+          <th>gene_name</th>
+          <th>gencode_transcript</th>
+          <th>ensembl_transcript</th>
+          <th>ensembl_gene</th>
+          <th>gencode_gene</th>
+          <th>splice_type</th>
+          <th>biomark_neural_panel</th>
+          <th>confident_rbp</th>
+          <th>rbp</th>
+          <th>ribosomal</th>
+          <th>ribosomal_subunit</th>
+          <th>synapse</th>
+          <th>transcription_factor</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>chr22:16187165:16187302:-@chr22:16186946|16186953:16186811:-</th>
+          <td> processed_transcript</td>
+          <td> AP000525.9</td>
+          <td> ENST00000458623.1,ENST00000383038.3,ENST000004...</td>
+          <td> ENST00000447898,ENST00000383038,ENST0000043778...</td>
+          <td> ENSG00000206195</td>
+          <td> ENSG00000206195.6</td>
+          <td>      A3SS</td>
+          <td> False</td>
+          <td> False</td>
+          <td> False</td>
+          <td> False</td>
+          <td> False</td>
+          <td> False</td>
+          <td> False</td>
+        </tr>
+        <tr>
+          <th>chr22:16189032:16189143:-@chr22:16187278|16187302:16187165:-</th>
+          <td> processed_transcript</td>
+          <td> AP000525.9</td>
+          <td> ENST00000383038.3,ENST00000447898.1,ENST000004...</td>
+          <td> ENST00000447898,ENST00000383038,ENST0000043778...</td>
+          <td> ENSG00000206195</td>
+          <td> ENSG00000206195.6</td>
+          <td>      A3SS</td>
+          <td> False</td>
+          <td> False</td>
+          <td> False</td>
+          <td> False</td>
+          <td> False</td>
+          <td> False</td>
+          <td> False</td>
+        </tr>
+        <tr>
+          <th>chr22:16190681:16190791:-@chr22:16189378|16189411:16189264:-</th>
+          <td> processed_transcript</td>
+          <td> AP000525.9</td>
+          <td> ENST00000383038.3,ENST00000447898.1,ENST000004...</td>
+          <td> ENST00000447898,ENST00000383038,ENST0000043778...</td>
+          <td> ENSG00000206195</td>
+          <td> ENSG00000206195.6</td>
+          <td>      A3SS</td>
+          <td> False</td>
+          <td> False</td>
+          <td> False</td>
+          <td> False</td>
+          <td> False</td>
+          <td> False</td>
+          <td> False</td>
+        </tr>
+        <tr>
+          <th>chr22:16455250:16455438:-@chr22:16454933:16455249:-</th>
+          <td>                  NaN</td>
+          <td>        NaN</td>
+          <td>                                               NaN</td>
+          <td>                                               NaN</td>
+          <td>             NaN</td>
+          <td>               NaN</td>
+          <td> TANDEMUTR</td>
+          <td>   NaN</td>
+          <td>   NaN</td>
+          <td>   NaN</td>
+          <td>   NaN</td>
+          <td>   NaN</td>
+          <td>   NaN</td>
+          <td>   NaN</td>
+        </tr>
+        <tr>
+          <th>chr22:16598138:16598344:-@chr22:16596905:16598137:-</th>
+          <td>                  NaN</td>
+          <td>        NaN</td>
+          <td>                                               NaN</td>
+          <td>                                               NaN</td>
+          <td>             NaN</td>
+          <td>               NaN</td>
+          <td> TANDEMUTR</td>
+          <td>   NaN</td>
+          <td>   NaN</td>
+          <td>   NaN</td>
+          <td>   NaN</td>
+          <td>   NaN</td>
+          <td>   NaN</td>
+          <td>   NaN</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+
+
+
+Requirements for this demonstration.
+------------------------------------
+
+ \* Metrics
+
+::
+
+    * Mapping statistics data file<br>
+    Combined output from aligner, quantifying number of reads mapped in each sample
+    <br>
+    <br>
+    * Expression data file<br>
+    [Gencode](http://www.gencodegenes.org/) gene IDs
+    <br>
+    <br>
+    * Splicing data file<br>[MISO](http://miso.readthedocs.org/) qunatification and ids
+
+-  Metadata
+
+-  Sample Colors
+
+-  Pooled samples vs single cells labels
+
+-  A *phenotype* attribute.
+
+We assume you already have a pipeline in place to analyze and quantify
+data. If you don't the pipeline is available on the ``docker`` image.
+While it is possible to create custom species, that is left for another
+notebook. Here we assume you have human (hg19/GRCh37) or mouse
+(mm10/GRCm38) data.
+
+Our data
+--------
+
+.. raw:: html
+
+   <H2 align='center'>
+
+*In vitro* directed differentiation of Craig Venter's fibroblasts
+
+.. raw:: html
+
+   </H2>
+
+.. raw:: html
+
+   <div align='right'>
+
+|craig2|
+
+.. raw:: html
+
+   </div>
+   <H3><div align='right'>
+
+ Induced pluripotent cells (P) Neural progenitor cells (N) Motor neurons
+(M) Motor neurons stressed treated with sodium arenite (oxidative
+stressor) (S)
+
+.. raw:: html
+
+   </div></H3>
+
+.. |craig2| image:: img/craig2.jpg
+
+
+
+Study Setup
+-----------
+
+.. raw:: html
+
+   <H3 align='center'>
+
+Import and Save Data
+
+.. raw:: html
+
+   </H3>
+
+.. raw:: html
+
+   <div align='right'>
+
+Use ``pandas`` package to manipulate on-disk files.Save the data into a
+``flotilla`` 'datapackage.'
+
+.. raw:: html
+
+   </div>
+
+.. code:: python
+
+    import flotilla #automatically calls %matplotlib inline
+    import pandas
+    import os
+    from time import time
+    import numpy as np
+    home = os.environ["HOME"]
+.. code:: python
+
+    start_time = time()
+.. raw:: html
+
+   <div align='left'><H2>
+
+Technical data
+
+.. raw:: html
+
+   </H2></div>
+   <H3 align='center'>
+
+Mapping statistics.
+
+.. raw:: html
+
+   </H3>
+
+.. raw:: html
+
+   <div align='right'>
+
+Output of `RNA-STAR <https://code.google.com/p/rna-star/>`_ genome
+aligner.
+
+.. raw:: html
+
+   </div>
+
+.. code:: python
+
+    a = time()
+
+.. code:: python
+
+    mapstats_data_file = os.path.join(home, "flotilla_projects/neural_diff/mapping_stats.tsv")
+    mapstats_data = pandas.read_table(mapstats_data_file, index_col=0)
+    print "Loaded data table, size is (samples, genes):", mapstats_data.shape
+.. code:: python
+
+    b = time()
+    
+    print "This operation took {:.5f} seconds.".format(b - a)
+.. code:: python
+
+    mapstats_data.head()
+Expression Data
+---------------
+
+.. raw:: html
+
+   <H3><div align='center'>
+
+TPM - Transcripts-per-million.
+
+.. raw:: html
+
+   </div></H3>
+   <div align='right'>
+
+Quantified with Sailfish
+
+.. raw:: html
+
+   </div>
+
+.. code:: python
+
+    a = time()
+.. code:: python
+
+    expression_data_file = os.path.join(home, "flotilla_projects/neural_diff/tpm.tsv")
+    expression_data = pandas.read_table(expression_data_file, index_col=0)
+    print "Loaded data table, size is (samples, genes):", expression_data.shape
+.. code:: python
+
+    b = time()
+    
+    print "This operation took {:.1f} seconds.".format(b - a)
+.. code:: python
+
+    expression_data.head()
+Splicing Data
+-------------
+
+.. raw:: html
+
+   <H3 align='center'> 
+
+:math:`\psi` - Percent Spliced In.
+
+.. raw:: html
+
+   </H3>
+   <div align='right'>
+
+Quantified with MISO
+
+.. raw:: html
+
+   </div>
+
+In this case, we filtered by :math:`\psi` confidence interval
+:math:`(CI\_width < 0.5)`\ .
+
+.. code:: python
+
+    a = time()
+.. code:: python
+
+    splicing_data_file = os.path.join(home, "flotilla_projects/neural_diff/psi.tsv")
+    splicing_data = pandas.read_table(splicing_data_file, index_col=0)
+    print "Loaded data table, size is (samples, genes):", expression_data.shape
+    print "{:.2f}% of values are not NaN".format(100.*splicing_data.count().sum() / np.product(splicing_data.shape))
+.. code:: python
+
+    b = time()
+    
+    print "This operation took {:.1f} seconds.".format(b - a)
+.. code:: python
+
+    splicing_data.head()
+Metadata
+--------
+
+.. raw:: html
+
+   <H3 align='center'> 
+
+Data about data.
+
+.. raw:: html
+
+   </H3>
+
+.. raw:: html
+
+   <div align='right'>
+
+This takes a few minutes the first time, but will never need to be done
+again.
+
+.. raw:: html
+
+   </div>
+
+.. code:: python
+
+    metadata = pandas.DataFrame(index = expression_data.index & splicing_data.index)
+    
+    metadata['pooled_samples'] = False
+    
+    pooled = ['P_M2nd_33', 'P_M2nd_34', 'N_CVN_17', 'N_CVN_35', 'M_M2_05', 'M_M2nd_13', 'M_M2nd_21', 'S_MSA_19', 'S_MSA_29']
+    
+    metadata[pooled, 'pooled_samples'] = True
+Set sample "phenotype." In this case, the phenotype is encoded in the first letter of the sample label.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code:: python
+
+    metadata['phenotype'] = [x[0] for x in metadata.index]
+Get some help to choose pleasing colors. ```Set1`` <http://matplotlib.org/examples/color/colormaps_reference.html>`_ is my favoriate color palette.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code:: python
+
+    seaborn = flotilla.visualize.seaborn # or import seaborn
+    mpl = flotilla.visualize.generic.mpl # or import matplotlib as mpl
+    palette = map(mpl.colors.rgb2hex, seaborn.color_palette('Set1'))
+    seaborn.palplot(palette)
+Assign colors for phenotypes.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code:: python
+
+    color_map = {'P': palette[1], # blue
+                 'N': palette[2], # green
+                 'M': palette[0], # red
+                 'S': palette[4]} # orange
+Create boolean columns for each phenotype, this will be useful later.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Assemble data into a flotilla.Study object
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code:: python
+
+    for phenotype in ['P', 'N', 'M', 'S']:
+        metadata[phenotype + '_cell'] = metadata['phenotype'] == phenotype
+.. code:: python
+
+    ignore_subset_cols = ["ensembl_gene", "gencode_gene", "gencode_transcript", "ensembl_transcript", 
+                          "gene_name", "transcript_id", "havana_gene", "gencode_id"]
+    
+    
+    study = flotilla.Study(#study metadata
+                           sample_metadata=metadata,
+                           #a version for this study, to track changes
+                           version='0.1.0',
+                           #pandas.DataFrame with expression data, created above
+                           expression_data=expression_data, 
+                           #column in study.expression.feature_data to map ensg id to symbols
+                           #(default feature_data is in flotilla_packages/<species>)
+                           expression_feature_rename_col='gene_name',
+                           #pandas.DataFrame with splicing data, created above
+                           splicing_data=splicing_data,
+                           #column in study.splicing.feature_data to map ensg id to symbols 
+                           #(default feature_data is in flotilla_packages/<species>)
+                           splicing_feature_rename_col='gene_name',
+                           #pandas.DataFrame with mapping statistics, created above
+                           mapping_stats_data=mapstats_data,
+                           #column with number of mapped reads
+                           mapping_stats_number_mapped_col='Uniquely mapped reads number',
+                           #specify species. So far we've built hg19/mm10 ENSEMBL data
+                           species='hg19',
+                           #specify which column of metadata holds phenotype information
+                           metadata_phenotype_col ='phenotype',
+                           #specify a dictionary mapping phenotype to colors
+                           metadata_phenotype_to_color=color_map,
+                           #specify the order which you would like samples to be plotted:
+                           metadata_phenotype_order=["P", "N", "M", "S"],
+                           #specify a column that indicates whether a sample is pooled or single-cell
+                           metadata_pooled_col='pooled_samples',
+                           default_sample_subset='all_samples',
+                           )
+Save data and metadata
+----------------------
+
+.. raw:: html
+
+   <div align='center'><H3>
+
+To be loaded in other notebooks for analysis.
+
+.. raw:: html
+
+   </H3></div>
+
+.. code:: python
+
+    study.save('neural_diff_demo')
+Summary
+-------
+
+-  Loaded data from multiple sources into a ``flotilla.Study`` object.
+-  The ``Study`` object contains mapping data, expression data, splicing
+   data, sample metadata and feature (gene/splicing event) metadata.
+-  This ensures that data will be identical across multiple notebooks
+   where analysis might be performed.
+-  This puts the data in one place, to be shared easily (AWS?).
+
+Next steps
+----------
+
+ Now, continue to the `Dimensionality
+Reduction <2_Dimensionality%20Reduction.ipynb>`_ notebook.

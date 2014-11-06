@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Create an advanced datapackage &mdash; flotilla 0.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootswatch-3.2.0/paper/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="flotilla 0.2.1 documentation" href="../index.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          Flotilla</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
+            
+                <li><a href="../tutorial.html">Tutorial</a></li>
+                <li><a href="../gallery/index.html">Gallery</a></li>
+                <li><a href="http://yeolab.ucsd.edu">YeoLab@UCSD</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">flotilla</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../flotilla.html">flotilla package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What&#8217;s new in the package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../whatsnew.html#v0-2-1-november-6th-2014">v0.2.1 (November 6th, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Docker Installation Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html#os-x-installation-instructions">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#general-use-plots">General use plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#interactive-plots">Interactive plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#machine-learning-plots">Machine learning plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#splicing-specific-plots">Splicing-specific plots</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../create_datapackage.html">Create your very own datapackage!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Flotilla tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#install-flotilla">Install flotilla</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#create-a-datapackage">Create a datapackage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#plotting-functions">Plotting functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#recreated-papers">Recreated papers</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Create an advanced datapackage</a><ul>
+<li><a class="reference internal" href="#metadata-expression-data-and-splicing-data">Metadata, expression data, and splicing data</a></li>
+<li><a class="reference internal" href="#feature-data">Feature data</a><ul>
+<li><a class="reference internal" href="#expression-feature-data">Expression feature data</a></li>
+<li><a class="reference internal" href="#splicing-feature-data">Splicing feature data</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#requirements-for-this-demonstration">Requirements for this demonstration.</a></li>
+<li><a class="reference internal" href="#our-data">Our data</a></li>
+<li><a class="reference internal" href="#study-setup">Study Setup</a></li>
+<li><a class="reference internal" href="#expression-data">Expression Data</a></li>
+<li><a class="reference internal" href="#splicing-data">Splicing Data</a></li>
+<li><a class="reference internal" href="#metadata">Metadata</a><ul>
+<li><a class="reference internal" href="#set-sample-phenotype-in-this-case-the-phenotype-is-encoded-in-the-first-letter-of-the-sample-label">Set sample &#8220;phenotype.&#8221; In this case, the phenotype is encoded in the first letter of the sample label.</a></li>
+<li><a class="reference internal" href="#get-some-help-to-choose-pleasing-colors-set1-http-matplotlib-org-examples-color-colormaps-reference-html-is-my-favoriate-color-palette">Get some help to choose pleasing colors. <tt class="docutils literal"><span class="pre">`Set1</span></tt> &lt;http://matplotlib.org/examples/color/colormaps_reference.html&gt;`_ is my favoriate color palette.</a></li>
+<li><a class="reference internal" href="#assign-colors-for-phenotypes">Assign colors for phenotypes.</a></li>
+<li><a class="reference internal" href="#create-boolean-columns-for-each-phenotype-this-will-be-useful-later">Create boolean columns for each phenotype, this will be useful later.</a></li>
+<li><a class="reference internal" href="#assemble-data-into-a-flotilla-study-object">Assemble data into a flotilla.Study object</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#save-data-and-metadata">Save data and metadata</a></li>
+<li><a class="reference internal" href="#summary">Summary</a></li>
+<li><a class="reference internal" href="#next-steps">Next steps</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="../_sources/tutorial/advanced_study_making.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <div class="section" id="create-an-advanced-datapackage">
+<h1>Create an advanced datapackage<a class="headerlink" href="#create-an-advanced-datapackage" title="Permalink to this headline">¶</a></h1>
+<p>In this notebook, we will create a new <tt class="docutils literal"><span class="pre">flotilla</span></tt> Study with a few
+more parameters than we had in the <a class="reference external" href="barebones">barebones</a> one. We wil
+cover:</p>
+<ul class="simple">
+<li>Using the <tt class="docutils literal"><span class="pre">metadata_phenotype_order</span></tt>,
+<tt class="docutils literal"><span class="pre">metadata_phenotype_to_color</span></tt>, and <tt class="docutils literal"><span class="pre">metadata_phenotype_to_marker</span></tt>
+arguments to tell flotilla in what order you want your data plotted
+for violinplots, the color, and the plotting symbol</li>
+<li>Using unique ENSEMBL ids for gene ids, and MISO ids for splicing
+events</li>
+<li>Using larger <tt class="docutils literal"><span class="pre">{expression,splicing}_feature_data</span></tt> to rename gene
+ids and splicing events</li>
+</ul>
+<p>Let&#8217;s start by importing the packages we&#8217;ll need.</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">flotilla</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>Couldn&#39;t import dot_parser, loading of dot files will not be possible.
+</pre></div>
+</div>
+<div class="section" id="metadata-expression-data-and-splicing-data">
+<h2>Metadata, expression data, and splicing data<a class="headerlink" href="#metadata-expression-data-and-splicing-data" title="Permalink to this headline">¶</a></h2>
+<p>Load in metadata about the samples, expression data, and their splicing
+data.</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">metadata</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22/metadata.csv&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">metadata</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>pooled</th>
+      <th>phenotype</th>
+      <th>outlier</th>
+    </tr>
+    <tr>
+      <th>original_name</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>M1_01</th>
+      <td> False</td>
+      <td> MN</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>M1_02</th>
+      <td> False</td>
+      <td> MN</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>M1_03</th>
+      <td> False</td>
+      <td> MN</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>M1_04</th>
+      <td> False</td>
+      <td> MN</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>M1_05</th>
+      <td> False</td>
+      <td> MN</td>
+      <td> False</td>
+    </tr>
+  </tbody>
+</table>
+</div><div class="code python highlight-python"><div class="highlight"><pre><span class="n">expression</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22/expression.csv&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">expression</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ENSG00000233866</th>
+      <th>ENSG00000229286</th>
+      <th>ENSG00000235265</th>
+      <th>ENSG00000223875</th>
+      <th>ENSG00000215270</th>
+      <th>ENSG00000206195</th>
+      <th>ENSG00000271672</th>
+      <th>ENSG00000272872</th>
+      <th>ENSG00000232775</th>
+      <th>ENSG00000271127</th>
+      <th>...</th>
+      <th>ENSG00000100299</th>
+      <th>ENSG00000212569</th>
+      <th>ENSG00000251322</th>
+      <th>ENSG00000206841</th>
+      <th>ENSG00000225929</th>
+      <th>ENSG00000100312</th>
+      <th>ENSG00000254499</th>
+      <th>ENSG00000213683</th>
+      <th>ENSG00000184319</th>
+      <th>ENSG00000079974</th>
+    </tr>
+    <tr>
+      <th>sample_id</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>CVN_01</th>
+      <td> 0.380964</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td> 0.988765</td>
+      <td>NaN</td>
+      <td> 0</td>
+      <td>NaN</td>
+      <td> 0.000000</td>
+      <td>...</td>
+      <td> 1.041467</td>
+      <td>NaN</td>
+      <td> 0</td>
+      <td>NaN</td>
+      <td> 0.745853</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td> 3.026128</td>
+    </tr>
+    <tr>
+      <th>CVN_02</th>
+      <td> 0.678509</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td> 1.324344</td>
+      <td>NaN</td>
+      <td> 0</td>
+      <td>NaN</td>
+      <td> 0.000000</td>
+      <td>...</td>
+      <td> 1.347575</td>
+      <td>NaN</td>
+      <td> 0</td>
+      <td>NaN</td>
+      <td> 0.168166</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td> 2.871832</td>
+    </tr>
+    <tr>
+      <th>CVN_03</th>
+      <td> 1.625612</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td> 0.000000</td>
+      <td>NaN</td>
+      <td> 0</td>
+      <td>NaN</td>
+      <td> 0.000000</td>
+      <td>...</td>
+      <td> 0.000000</td>
+      <td>NaN</td>
+      <td> 0</td>
+      <td>NaN</td>
+      <td> 0.266781</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td> 3.536874</td>
+    </tr>
+    <tr>
+      <th>CVN_04</th>
+      <td> 1.172500</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td> 1.921577</td>
+      <td>NaN</td>
+      <td> 0</td>
+      <td>NaN</td>
+      <td> 0.000000</td>
+      <td>...</td>
+      <td> 0.954419</td>
+      <td>NaN</td>
+      <td> 0</td>
+      <td>NaN</td>
+      <td> 0.204180</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td> 2.675213</td>
+    </tr>
+    <tr>
+      <th>CVN_05</th>
+      <td> 1.993928</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td> 0.000000</td>
+      <td>NaN</td>
+      <td> 0</td>
+      <td>NaN</td>
+      <td> 1.925453</td>
+      <td>...</td>
+      <td> 1.683804</td>
+      <td>NaN</td>
+      <td> 0</td>
+      <td>NaN</td>
+      <td> 0.313015</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td> 4.263993</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 1263 columns</p>
+</div><div class="code python highlight-python"><div class="highlight"><pre><span class="n">splicing</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22/splicing.csv&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">splicing</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>chr22:16187165:16187302:-@chr22:16186946|16186953:16186811:-</th>
+      <th>chr22:16189032:16189143:-@chr22:16187278|16187302:16187165:-</th>
+      <th>chr22:16190681:16190791:-@chr22:16189378|16189411:16189264:-</th>
+      <th>chr22:16455250:16455438:-@chr22:16454933:16455249:-</th>
+      <th>chr22:16598138:16598344:-@chr22:16596905:16598137:-</th>
+      <th>chr22:16950841:16951225:+@chr22:16951226:16952202:+</th>
+      <th>chr22:17565849:17566119:+@chr22:17577952:17577976:+@chr22:17578687:17578833:+</th>
+      <th>chr22:17602485:17602929:+@chr22:17603459:17603628:+@chr22:17605545:17605661:+</th>
+      <th>chr22:17621949:17622123:-@chr22:17619440:17619628:-@chr22:17618410:17619247:-</th>
+      <th>chr22:17639347:17640058:-@chr22:17630432:17630635:-@chr22:17629338:17629450:-</th>
+      <th>...</th>
+      <th>chr22:51207980:51207853|51207883:-@chr22:51207469:51207552:-</th>
+      <th>chr22:51208333:51208444:-@chr22:51207977|51207980:51207883:-</th>
+      <th>chr22:51214200:51214279:-@chr22:51208333:51208444:-@chr22:51207883:51207980:-</th>
+      <th>chr22:51215098:51215177:-@chr22:51214200:51214279:-@chr22:51207883:51207980:-</th>
+      <th>chr22:51220616:51220779:-@chr22:51219041:51219146:-@chr22:51216380:51216409:-</th>
+      <th>chr22:51221714:51221467|51221473:-@chr22:51220616:51220779:-</th>
+      <th>chr22:51221929:51222087:-@chr22:51220775|51220779:51220616:-</th>
+      <th>chr22:51221929:51222087:-@chr22:51221319:51221473:-@chr22:51220616:51220779:-</th>
+      <th>chr22:51221929:51222087:-@chr22:51221467:51221714:-@chr22:51220616:51220779:-</th>
+      <th>chr22:51222225:51222292|51222449:+@chr22:51223601:51223721:+</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>CVN_01</th>
+      <td>NaN</td>
+      <td>  NaN</td>
+      <td>NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>  NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>CVN_02</th>
+      <td>NaN</td>
+      <td>  NaN</td>
+      <td>NaN</td>
+      <td> 0.96</td>
+      <td> 0.02</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>  NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>CVN_03</th>
+      <td>NaN</td>
+      <td>  NaN</td>
+      <td>NaN</td>
+      <td> 0.99</td>
+      <td>  NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>  NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>CVN_04</th>
+      <td>NaN</td>
+      <td> 0.07</td>
+      <td>NaN</td>
+      <td> 0.93</td>
+      <td>  NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>  NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>CVN_05</th>
+      <td>NaN</td>
+      <td>  NaN</td>
+      <td>NaN</td>
+      <td> 0.98</td>
+      <td> 0.09</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td> 0.01</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 1307 columns</p>
+</div><div class="code python highlight-python"><div class="highlight"><pre><span class="n">mapping_stats</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22/mapping_stats.csv&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">mapping_stats</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Started job on</th>
+      <th>Started mapping on</th>
+      <th>Finished on</th>
+      <th>Mapping speed, Million of reads per hour</th>
+      <th>Number of input reads</th>
+      <th>Average input read length</th>
+      <th>Uniquely mapped reads number</th>
+      <th>Uniquely mapped reads %</th>
+      <th>Average mapped length</th>
+      <th>Number of splices: Total</th>
+      <th>...</th>
+      <th>Number of reads mapped to too many loci</th>
+      <th>% of reads mapped to too many loci</th>
+      <th>% of reads unmapped: too many mismatches</th>
+      <th>% of reads unmapped: too short</th>
+      <th>% of reads unmapped: other</th>
+      <th>% splices: Annotated (sjdb)</th>
+      <th>% splices: GT/AG</th>
+      <th>% splices: GC/AG</th>
+      <th>% splices: AT/AC</th>
+      <th>% splices: Non-canonical</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>M1_01</th>
+      <td> Apr 29 19:58:18</td>
+      <td> Apr 29 19:58:40</td>
+      <td> Apr 29 20:01:22</td>
+      <td> 274.58</td>
+      <td> 12356210</td>
+      <td> 184</td>
+      <td> 10684874</td>
+      <td> 86.47</td>
+      <td> 181.36</td>
+      <td> 4629200</td>
+      <td>...</td>
+      <td> 19107</td>
+      <td> 0.15</td>
+      <td> 0</td>
+      <td> 11.02</td>
+      <td> 0.07</td>
+      <td> 98.500238</td>
+      <td> 99.251836</td>
+      <td> 0.516029</td>
+      <td> 0.109112</td>
+      <td> 0.123023</td>
+    </tr>
+    <tr>
+      <th>M1_02</th>
+      <td> Apr 29 17:59:28</td>
+      <td> Apr 29 18:01:21</td>
+      <td> Apr 29 18:19:15</td>
+      <td>  41.62</td>
+      <td> 12416854</td>
+      <td> 184</td>
+      <td> 11235549</td>
+      <td> 90.49</td>
+      <td> 181.70</td>
+      <td> 2706035</td>
+      <td>...</td>
+      <td> 15330</td>
+      <td> 0.12</td>
+      <td> 0</td>
+      <td>  7.59</td>
+      <td> 0.04</td>
+      <td> 98.155715</td>
+      <td> 99.029318</td>
+      <td> 0.766213</td>
+      <td> 0.077013</td>
+      <td> 0.127456</td>
+    </tr>
+    <tr>
+      <th>M1_03</th>
+      <td> Apr 29 19:35:13</td>
+      <td> Apr 29 19:35:39</td>
+      <td> Apr 29 19:39:41</td>
+      <td> 294.61</td>
+      <td> 19804563</td>
+      <td> 184</td>
+      <td> 17584862</td>
+      <td> 88.79</td>
+      <td> 181.38</td>
+      <td> 8496381</td>
+      <td>...</td>
+      <td> 22134</td>
+      <td> 0.11</td>
+      <td> 0</td>
+      <td>  8.55</td>
+      <td> 0.04</td>
+      <td> 98.976329</td>
+      <td> 99.134149</td>
+      <td> 0.632493</td>
+      <td> 0.117073</td>
+      <td> 0.116285</td>
+    </tr>
+    <tr>
+      <th>M1_04</th>
+      <td> Apr 29 18:30:05</td>
+      <td> Apr 29 18:30:31</td>
+      <td> Apr 29 18:32:29</td>
+      <td> 263.10</td>
+      <td>  8623786</td>
+      <td> 184</td>
+      <td>  7599917</td>
+      <td> 88.13</td>
+      <td> 181.29</td>
+      <td> 4547233</td>
+      <td>...</td>
+      <td> 12917</td>
+      <td> 0.15</td>
+      <td> 0</td>
+      <td>  8.93</td>
+      <td> 0.04</td>
+      <td> 99.004713</td>
+      <td> 99.043924</td>
+      <td> 0.717161</td>
+      <td> 0.105801</td>
+      <td> 0.133114</td>
+    </tr>
+    <tr>
+      <th>M1_05</th>
+      <td> Apr 29 19:19:31</td>
+      <td> Apr 29 19:19:53</td>
+      <td> Apr 29 19:22:28</td>
+      <td> 267.28</td>
+      <td> 11507835</td>
+      <td> 184</td>
+      <td>  9726225</td>
+      <td> 84.52</td>
+      <td> 181.33</td>
+      <td> 3429570</td>
+      <td>...</td>
+      <td> 11731</td>
+      <td> 0.10</td>
+      <td> 0</td>
+      <td> 13.28</td>
+      <td> 0.04</td>
+      <td> 98.303490</td>
+      <td> 98.887120</td>
+      <td> 0.901192</td>
+      <td> 0.117478</td>
+      <td> 0.094210</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 32 columns</p>
+</div></div>
+<div class="section" id="feature-data">
+<h2>Feature data<a class="headerlink" href="#feature-data" title="Permalink to this headline">¶</a></h2>
+<p>Now we&#8217;ll get to the more interesting part, where we have to deal with
+the data about the features and splicing events.</p>
+<div class="section" id="expression-feature-data">
+<h3>Expression feature data<a class="headerlink" href="#expression-feature-data" title="Permalink to this headline">¶</a></h3>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">expression_feature</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22/expression_feature.csv&#39;</span><span class="p">,</span>
+                                 <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">expression_feature</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>biomark_neural_panel</th>
+      <th>confident_rbp</th>
+      <th>gencode_id</th>
+      <th>gene_name</th>
+      <th>gene_status</th>
+      <th>gene_type</th>
+      <th>havana_gene</th>
+      <th>level</th>
+      <th>rbp</th>
+      <th>ribosomal</th>
+      <th>ribosomal_subunit</th>
+      <th>synapse</th>
+      <th>tag</th>
+      <th>transcript_id</th>
+      <th>transcript_name</th>
+      <th>transcript_status</th>
+      <th>transcript_type</th>
+      <th>transcription_factor</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>ENSG00000233866</th>
+      <td> False</td>
+      <td> False</td>
+      <td> ENSG00000233866.1</td>
+      <td>  LA16c-4G1.3</td>
+      <td> KNOWN</td>
+      <td>    lincRNA</td>
+      <td> OTTHUMG00000140195.1</td>
+      <td> 2</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+      <td>            NaN</td>
+      <td> ENSG00000233866.1</td>
+      <td>  LA16c-4G1.3</td>
+      <td> KNOWN</td>
+      <td>    lincRNA</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>ENSG00000229286</th>
+      <td> False</td>
+      <td> False</td>
+      <td> ENSG00000229286.1</td>
+      <td>  LA16c-4G1.4</td>
+      <td> KNOWN</td>
+      <td> pseudogene</td>
+      <td> OTTHUMG00000140193.1</td>
+      <td> 2</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+      <td>            NaN</td>
+      <td> ENSG00000229286.1</td>
+      <td>  LA16c-4G1.4</td>
+      <td> KNOWN</td>
+      <td> pseudogene</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>ENSG00000235265</th>
+      <td> False</td>
+      <td> False</td>
+      <td> ENSG00000235265.1</td>
+      <td>  LA16c-4G1.5</td>
+      <td> KNOWN</td>
+      <td> pseudogene</td>
+      <td> OTTHUMG00000140197.1</td>
+      <td> 2</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+      <td>            NaN</td>
+      <td> ENSG00000235265.1</td>
+      <td>  LA16c-4G1.5</td>
+      <td> KNOWN</td>
+      <td> pseudogene</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>ENSG00000223875</th>
+      <td> False</td>
+      <td> False</td>
+      <td> ENSG00000223875.1</td>
+      <td>       NBEAP3</td>
+      <td> KNOWN</td>
+      <td> pseudogene</td>
+      <td> OTTHUMG00000140196.1</td>
+      <td> 2</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+      <td>            NaN</td>
+      <td> ENSG00000223875.1</td>
+      <td>       NBEAP3</td>
+      <td> KNOWN</td>
+      <td> pseudogene</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>ENSG00000215270</th>
+      <td> False</td>
+      <td> False</td>
+      <td> ENSG00000215270.3</td>
+      <td> LA16c-60H5.7</td>
+      <td> KNOWN</td>
+      <td> pseudogene</td>
+      <td> OTTHUMG00000140200.1</td>
+      <td> 1</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+      <td> pseudo_consens</td>
+      <td> ENSG00000215270.3</td>
+      <td> LA16c-60H5.7</td>
+      <td> KNOWN</td>
+      <td> pseudogene</td>
+      <td> False</td>
+    </tr>
+  </tbody>
+</table>
+</div><p>Notice that the index, or row names of this dataframe contains the ids
+from <tt class="docutils literal"><span class="pre">expression</span></tt>, and has a bunch of columns indicating whether this
+feature belongs to a group, like <tt class="docutils literal"><span class="pre">confident_rbp</span></tt> for &#8220;confident
+RNA-binding proteins&#8221;, or a category such as the <tt class="docutils literal"><span class="pre">gene_type</span></tt>. All of
+these will be used, but I don&#8217;t want to use <em>all</em> of them, so let&#8217;s make
+a list of columns to ignore.</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">ignore_subset_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;ensembl_gene&quot;</span><span class="p">,</span> <span class="s">&quot;gencode_gene&quot;</span><span class="p">,</span> <span class="s">&quot;gencode_transcript&quot;</span><span class="p">,</span> <span class="s">&quot;ensembl_transcript&quot;</span><span class="p">,</span>
+                      <span class="s">&quot;gene_name&quot;</span><span class="p">,</span> <span class="s">&quot;transcript_id&quot;</span><span class="p">,</span> <span class="s">&quot;havana_gene&quot;</span><span class="p">,</span> <span class="s">&quot;gencode_id&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Also, we&#8217;ll want to remember that we want to rename genes using the
+<strong>gene_name</strong> column.</p>
+</div>
+<div class="section" id="splicing-feature-data">
+<h3>Splicing feature data<a class="headerlink" href="#splicing-feature-data" title="Permalink to this headline">¶</a></h3>
+<p>Next, let&#8217;s get the metadata about the splicing events.</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">splicing_feature</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22/splicing_feature.csv&#39;</span><span class="p">,</span>
+                                 <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">splicing_feature</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>[autoreload of flotilla.data_model.base failed: Traceback (most recent call last):
+  File &quot;/Users/olga/workspace-git/ipython/IPython/extensions/autoreload.py&quot;, line 247, in check
+    superreload(m, reload, self.old_objects)
+AttributeError: &#39;NoneType&#39; object has no attribute &#39;_subset&#39;
+]
+</pre></div>
+</div>
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>gene_type</th>
+      <th>gene_name</th>
+      <th>gencode_transcript</th>
+      <th>ensembl_transcript</th>
+      <th>ensembl_gene</th>
+      <th>gencode_gene</th>
+      <th>splice_type</th>
+      <th>biomark_neural_panel</th>
+      <th>confident_rbp</th>
+      <th>rbp</th>
+      <th>ribosomal</th>
+      <th>ribosomal_subunit</th>
+      <th>synapse</th>
+      <th>transcription_factor</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>chr22:16187165:16187302:-@chr22:16186946|16186953:16186811:-</th>
+      <td> processed_transcript</td>
+      <td> AP000525.9</td>
+      <td> ENST00000458623.1,ENST00000383038.3,ENST000004...</td>
+      <td> ENST00000447898,ENST00000383038,ENST0000043778...</td>
+      <td> ENSG00000206195</td>
+      <td> ENSG00000206195.6</td>
+      <td>      A3SS</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>chr22:16189032:16189143:-@chr22:16187278|16187302:16187165:-</th>
+      <td> processed_transcript</td>
+      <td> AP000525.9</td>
+      <td> ENST00000383038.3,ENST00000447898.1,ENST000004...</td>
+      <td> ENST00000447898,ENST00000383038,ENST0000043778...</td>
+      <td> ENSG00000206195</td>
+      <td> ENSG00000206195.6</td>
+      <td>      A3SS</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>chr22:16190681:16190791:-@chr22:16189378|16189411:16189264:-</th>
+      <td> processed_transcript</td>
+      <td> AP000525.9</td>
+      <td> ENST00000383038.3,ENST00000447898.1,ENST000004...</td>
+      <td> ENST00000447898,ENST00000383038,ENST0000043778...</td>
+      <td> ENSG00000206195</td>
+      <td> ENSG00000206195.6</td>
+      <td>      A3SS</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>chr22:16455250:16455438:-@chr22:16454933:16455249:-</th>
+      <td>                  NaN</td>
+      <td>        NaN</td>
+      <td>                                               NaN</td>
+      <td>                                               NaN</td>
+      <td>             NaN</td>
+      <td>               NaN</td>
+      <td> TANDEMUTR</td>
+      <td>   NaN</td>
+      <td>   NaN</td>
+      <td>   NaN</td>
+      <td>   NaN</td>
+      <td>   NaN</td>
+      <td>   NaN</td>
+      <td>   NaN</td>
+    </tr>
+    <tr>
+      <th>chr22:16598138:16598344:-@chr22:16596905:16598137:-</th>
+      <td>                  NaN</td>
+      <td>        NaN</td>
+      <td>                                               NaN</td>
+      <td>                                               NaN</td>
+      <td>             NaN</td>
+      <td>               NaN</td>
+      <td> TANDEMUTR</td>
+      <td>   NaN</td>
+      <td>   NaN</td>
+      <td>   NaN</td>
+      <td>   NaN</td>
+      <td>   NaN</td>
+      <td>   NaN</td>
+      <td>   NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="section" id="requirements-for-this-demonstration">
+<h2>Requirements for this demonstration.<a class="headerlink" href="#requirements-for-this-demonstration" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div>* Metrics</div></blockquote>
+<div class="highlight-python"><div class="highlight"><pre>* Mapping statistics data file&lt;br&gt;
+Combined output from aligner, quantifying number of reads mapped in each sample
+&lt;br&gt;
+&lt;br&gt;
+* Expression data file&lt;br&gt;
+[Gencode](http://www.gencodegenes.org/) gene IDs
+&lt;br&gt;
+&lt;br&gt;
+* Splicing data file&lt;br&gt;[MISO](http://miso.readthedocs.org/) qunatification and ids
+</pre></div>
+</div>
+<ul class="simple">
+<li>Metadata</li>
+<li>Sample Colors</li>
+<li>Pooled samples vs single cells labels</li>
+<li>A <em>phenotype</em> attribute.</li>
+</ul>
+<p>We assume you already have a pipeline in place to analyze and quantify
+data. If you don&#8217;t the pipeline is available on the <tt class="docutils literal"><span class="pre">docker</span></tt> image.
+While it is possible to create custom species, that is left for another
+notebook. Here we assume you have human (hg19/GRCh37) or mouse
+(mm10/GRCm38) data.</p>
+</div>
+<div class="section" id="our-data">
+<h2>Our data<a class="headerlink" href="#our-data" title="Permalink to this headline">¶</a></h2>
+<H2 align='center'><p><em>In vitro</em> directed differentiation of Craig Venter&#8217;s fibroblasts</p>
+</H2><div align='right'><p><img alt="craig2" src="tutorial/img/craig2.jpg" /></p>
+  </div>
+  <H3><div align='right'>
+
+Induced pluripotent cells (P) Neural progenitor cells (N) Motor neurons<p>(M) Motor neurons stressed treated with sodium arenite (oxidative
+stressor) (S)</p>
+</div></H3></div>
+<div class="section" id="study-setup">
+<h2>Study Setup<a class="headerlink" href="#study-setup" title="Permalink to this headline">¶</a></h2>
+<H3 align='center'><p>Import and Save Data</p>
+</H3><div align='right'><p>Use <tt class="docutils literal"><span class="pre">pandas</span></tt> package to manipulate on-disk files.Save the data into a
+<tt class="docutils literal"><span class="pre">flotilla</span></tt> &#8216;datapackage.&#8217;</p>
+</div><div class="code python highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">flotilla</span> <span class="c">#automatically calls %matplotlib inline</span>
+<span class="kn">import</span> <span class="nn">pandas</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="n">home</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&quot;HOME&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+</pre></div>
+</div>
+<div align='left'><H2><p>Technical data</p>
+</H2></div>
+<H3 align='center'><p>Mapping statistics.</p>
+</H3><div align='right'><p>Output of <a class="reference external" href="https://code.google.com/p/rna-star/">RNA-STAR</a> genome
+aligner.</p>
+</div><div class="code python highlight-python"><div class="highlight"><pre><span class="n">a</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">mapstats_data_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">home</span><span class="p">,</span> <span class="s">&quot;flotilla_projects/neural_diff/mapping_stats.tsv&quot;</span><span class="p">)</span>
+<span class="n">mapstats_data</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="n">mapstats_data_file</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">print</span> <span class="s">&quot;Loaded data table, size is (samples, genes):&quot;</span><span class="p">,</span> <span class="n">mapstats_data</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">b</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+
+<span class="k">print</span> <span class="s">&quot;This operation took {:.5f} seconds.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">mapstats_data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="expression-data">
+<h2>Expression Data<a class="headerlink" href="#expression-data" title="Permalink to this headline">¶</a></h2>
+<H3><div align='center'><p>TPM - Transcripts-per-million.</p>
+</div></H3>
+<div align='right'><p>Quantified with Sailfish</p>
+</div><div class="code python highlight-python"><div class="highlight"><pre><span class="n">a</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">expression_data_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">home</span><span class="p">,</span> <span class="s">&quot;flotilla_projects/neural_diff/tpm.tsv&quot;</span><span class="p">)</span>
+<span class="n">expression_data</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="n">expression_data_file</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">print</span> <span class="s">&quot;Loaded data table, size is (samples, genes):&quot;</span><span class="p">,</span> <span class="n">expression_data</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">b</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+
+<span class="k">print</span> <span class="s">&quot;This operation took {:.1f} seconds.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">expression_data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="splicing-data">
+<h2>Splicing Data<a class="headerlink" href="#splicing-data" title="Permalink to this headline">¶</a></h2>
+<H3 align='center'><p><span class="math">\(\psi\)</span> - Percent Spliced In.</p>
+</H3>
+<div align='right'><p>Quantified with MISO</p>
+</div><p>In this case, we filtered by <span class="math">\(\psi\)</span> confidence interval
+<span class="math">\((CI\_width &lt; 0.5)\)</span>.</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">a</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">splicing_data_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">home</span><span class="p">,</span> <span class="s">&quot;flotilla_projects/neural_diff/psi.tsv&quot;</span><span class="p">)</span>
+<span class="n">splicing_data</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="n">splicing_data_file</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">print</span> <span class="s">&quot;Loaded data table, size is (samples, genes):&quot;</span><span class="p">,</span> <span class="n">expression_data</span><span class="o">.</span><span class="n">shape</span>
+<span class="k">print</span> <span class="s">&quot;{:.2f}</span><span class="si">% o</span><span class="s">f values are not NaN&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mf">100.</span><span class="o">*</span><span class="n">splicing_data</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">splicing_data</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">b</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+
+<span class="k">print</span> <span class="s">&quot;This operation took {:.1f} seconds.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">splicing_data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="metadata">
+<h2>Metadata<a class="headerlink" href="#metadata" title="Permalink to this headline">¶</a></h2>
+<H3 align='center'><p>Data about data.</p>
+</H3><div align='right'><p>This takes a few minutes the first time, but will never need to be done
+again.</p>
+</div><div class="code python highlight-python"><div class="highlight"><pre><span class="n">metadata</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span> <span class="o">=</span> <span class="n">expression_data</span><span class="o">.</span><span class="n">index</span> <span class="o">&amp;</span> <span class="n">splicing_data</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+<span class="n">metadata</span><span class="p">[</span><span class="s">&#39;pooled_samples&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
+
+<span class="n">pooled</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;P_M2nd_33&#39;</span><span class="p">,</span> <span class="s">&#39;P_M2nd_34&#39;</span><span class="p">,</span> <span class="s">&#39;N_CVN_17&#39;</span><span class="p">,</span> <span class="s">&#39;N_CVN_35&#39;</span><span class="p">,</span> <span class="s">&#39;M_M2_05&#39;</span><span class="p">,</span> <span class="s">&#39;M_M2nd_13&#39;</span><span class="p">,</span> <span class="s">&#39;M_M2nd_21&#39;</span><span class="p">,</span> <span class="s">&#39;S_MSA_19&#39;</span><span class="p">,</span> <span class="s">&#39;S_MSA_29&#39;</span><span class="p">]</span>
+
+<span class="n">metadata</span><span class="p">[</span><span class="n">pooled</span><span class="p">,</span> <span class="s">&#39;pooled_samples&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+</pre></div>
+</div>
+<div class="section" id="set-sample-phenotype-in-this-case-the-phenotype-is-encoded-in-the-first-letter-of-the-sample-label">
+<h3>Set sample &#8220;phenotype.&#8221; In this case, the phenotype is encoded in the first letter of the sample label.<a class="headerlink" href="#set-sample-phenotype-in-this-case-the-phenotype-is-encoded-in-the-first-letter-of-the-sample-label" title="Permalink to this headline">¶</a></h3>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">metadata</span><span class="p">[</span><span class="s">&#39;phenotype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">metadata</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="get-some-help-to-choose-pleasing-colors-set1-http-matplotlib-org-examples-color-colormaps-reference-html-is-my-favoriate-color-palette">
+<h3>Get some help to choose pleasing colors. <tt class="docutils literal"><span class="pre">`Set1</span></tt> &lt;<a class="reference external" href="http://matplotlib.org/examples/color/colormaps_reference.html">http://matplotlib.org/examples/color/colormaps_reference.html</a>&gt;`_ is my favoriate color palette.<a class="headerlink" href="#get-some-help-to-choose-pleasing-colors-set1-http-matplotlib-org-examples-color-colormaps-reference-html-is-my-favoriate-color-palette" title="Permalink to this headline">¶</a></h3>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">seaborn</span> <span class="o">=</span> <span class="n">flotilla</span><span class="o">.</span><span class="n">visualize</span><span class="o">.</span><span class="n">seaborn</span> <span class="c"># or import seaborn</span>
+<span class="n">mpl</span> <span class="o">=</span> <span class="n">flotilla</span><span class="o">.</span><span class="n">visualize</span><span class="o">.</span><span class="n">generic</span><span class="o">.</span><span class="n">mpl</span> <span class="c"># or import matplotlib as mpl</span>
+<span class="n">palette</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">rgb2hex</span><span class="p">,</span> <span class="n">seaborn</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s">&#39;Set1&#39;</span><span class="p">))</span>
+<span class="n">seaborn</span><span class="o">.</span><span class="n">palplot</span><span class="p">(</span><span class="n">palette</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="assign-colors-for-phenotypes">
+<h3>Assign colors for phenotypes.<a class="headerlink" href="#assign-colors-for-phenotypes" title="Permalink to this headline">¶</a></h3>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">color_map</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;P&#39;</span><span class="p">:</span> <span class="n">palette</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="c"># blue</span>
+             <span class="s">&#39;N&#39;</span><span class="p">:</span> <span class="n">palette</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="c"># green</span>
+             <span class="s">&#39;M&#39;</span><span class="p">:</span> <span class="n">palette</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="c"># red</span>
+             <span class="s">&#39;S&#39;</span><span class="p">:</span> <span class="n">palette</span><span class="p">[</span><span class="mi">4</span><span class="p">]}</span> <span class="c"># orange</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="create-boolean-columns-for-each-phenotype-this-will-be-useful-later">
+<h3>Create boolean columns for each phenotype, this will be useful later.<a class="headerlink" href="#create-boolean-columns-for-each-phenotype-this-will-be-useful-later" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="assemble-data-into-a-flotilla-study-object">
+<h3>Assemble data into a flotilla.Study object<a class="headerlink" href="#assemble-data-into-a-flotilla-study-object" title="Permalink to this headline">¶</a></h3>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">phenotype</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;P&#39;</span><span class="p">,</span> <span class="s">&#39;N&#39;</span><span class="p">,</span> <span class="s">&#39;M&#39;</span><span class="p">,</span> <span class="s">&#39;S&#39;</span><span class="p">]:</span>
+    <span class="n">metadata</span><span class="p">[</span><span class="n">phenotype</span> <span class="o">+</span> <span class="s">&#39;_cell&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s">&#39;phenotype&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">phenotype</span>
+</pre></div>
+</div>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">ignore_subset_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;ensembl_gene&quot;</span><span class="p">,</span> <span class="s">&quot;gencode_gene&quot;</span><span class="p">,</span> <span class="s">&quot;gencode_transcript&quot;</span><span class="p">,</span> <span class="s">&quot;ensembl_transcript&quot;</span><span class="p">,</span>
+                      <span class="s">&quot;gene_name&quot;</span><span class="p">,</span> <span class="s">&quot;transcript_id&quot;</span><span class="p">,</span> <span class="s">&quot;havana_gene&quot;</span><span class="p">,</span> <span class="s">&quot;gencode_id&quot;</span><span class="p">]</span>
+
+
+<span class="n">study</span> <span class="o">=</span> <span class="n">flotilla</span><span class="o">.</span><span class="n">Study</span><span class="p">(</span><span class="c">#study metadata</span>
+                       <span class="n">sample_metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">,</span>
+                       <span class="c">#a version for this study, to track changes</span>
+                       <span class="n">version</span><span class="o">=</span><span class="s">&#39;0.1.0&#39;</span><span class="p">,</span>
+                       <span class="c">#pandas.DataFrame with expression data, created above</span>
+                       <span class="n">expression_data</span><span class="o">=</span><span class="n">expression_data</span><span class="p">,</span>
+                       <span class="c">#column in study.expression.feature_data to map ensg id to symbols</span>
+                       <span class="c">#(default feature_data is in flotilla_packages/&lt;species&gt;)</span>
+                       <span class="n">expression_feature_rename_col</span><span class="o">=</span><span class="s">&#39;gene_name&#39;</span><span class="p">,</span>
+                       <span class="c">#pandas.DataFrame with splicing data, created above</span>
+                       <span class="n">splicing_data</span><span class="o">=</span><span class="n">splicing_data</span><span class="p">,</span>
+                       <span class="c">#column in study.splicing.feature_data to map ensg id to symbols</span>
+                       <span class="c">#(default feature_data is in flotilla_packages/&lt;species&gt;)</span>
+                       <span class="n">splicing_feature_rename_col</span><span class="o">=</span><span class="s">&#39;gene_name&#39;</span><span class="p">,</span>
+                       <span class="c">#pandas.DataFrame with mapping statistics, created above</span>
+                       <span class="n">mapping_stats_data</span><span class="o">=</span><span class="n">mapstats_data</span><span class="p">,</span>
+                       <span class="c">#column with number of mapped reads</span>
+                       <span class="n">mapping_stats_number_mapped_col</span><span class="o">=</span><span class="s">&#39;Uniquely mapped reads number&#39;</span><span class="p">,</span>
+                       <span class="c">#specify species. So far we&#39;ve built hg19/mm10 ENSEMBL data</span>
+                       <span class="n">species</span><span class="o">=</span><span class="s">&#39;hg19&#39;</span><span class="p">,</span>
+                       <span class="c">#specify which column of metadata holds phenotype information</span>
+                       <span class="n">metadata_phenotype_col</span> <span class="o">=</span><span class="s">&#39;phenotype&#39;</span><span class="p">,</span>
+                       <span class="c">#specify a dictionary mapping phenotype to colors</span>
+                       <span class="n">metadata_phenotype_to_color</span><span class="o">=</span><span class="n">color_map</span><span class="p">,</span>
+                       <span class="c">#specify the order which you would like samples to be plotted:</span>
+                       <span class="n">metadata_phenotype_order</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;P&quot;</span><span class="p">,</span> <span class="s">&quot;N&quot;</span><span class="p">,</span> <span class="s">&quot;M&quot;</span><span class="p">,</span> <span class="s">&quot;S&quot;</span><span class="p">],</span>
+                       <span class="c">#specify a column that indicates whether a sample is pooled or single-cell</span>
+                       <span class="n">metadata_pooled_col</span><span class="o">=</span><span class="s">&#39;pooled_samples&#39;</span><span class="p">,</span>
+                       <span class="n">default_sample_subset</span><span class="o">=</span><span class="s">&#39;all_samples&#39;</span><span class="p">,</span>
+                       <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="save-data-and-metadata">
+<h2>Save data and metadata<a class="headerlink" href="#save-data-and-metadata" title="Permalink to this headline">¶</a></h2>
+<div align='center'><H3><p>To be loaded in other notebooks for analysis.</p>
+</H3></div><div class="code python highlight-python"><div class="highlight"><pre><span class="n">study</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#39;neural_diff_demo&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Loaded data from multiple sources into a <tt class="docutils literal"><span class="pre">flotilla.Study</span></tt> object.</li>
+<li>The <tt class="docutils literal"><span class="pre">Study</span></tt> object contains mapping data, expression data, splicing
+data, sample metadata and feature (gene/splicing event) metadata.</li>
+<li>This ensures that data will be identical across multiple notebooks
+where analysis might be performed.</li>
+<li>This puts the data in one place, to be shared easily (AWS?).</li>
+</ul>
+</div>
+<div class="section" id="next-steps">
+<h2>Next steps<a class="headerlink" href="#next-steps" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div>Now, continue to the <a href="#id1"><span class="problematic" id="id2">`</span></a>Dimensionality</div></blockquote>
+<p>Reduction &lt;2_Dimensionality%20Reduction.ipynb&gt;`_ notebook.</p>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<div class="container">
+    
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
+    </p>
+  </div>
+</footer>
+    <a href="http://olgabotvinnik.com/">Olga B. Botvinnik</a> is funded by the
+    <a href="https://ndseg.asee.org/">NDSEG</a> fellowship and is a
+    <a href="http://numfocus.org/">NumFOCUS</a>
+    <a href="http://numfocus.org/pages/john_hunter_fellowship_2014.html">John
+    Hunter Technology Fellow</a>.<br/>
+    Michael T. Lovci was partially funded by a fellowship from
+    <a href="http://www.gene.com/">Genentech</a>.</br>
+    Partially funded by <a href="http://www.nih.gov/">NIH</a> grants NS075449
+    and HG004659 and <a href="http://www.cirm.ca.gov/">CIRM</a> grants RB4-06045
+    and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene
+    Yeo</a>. <br/>
+
+    
+  </body>
+</html>
