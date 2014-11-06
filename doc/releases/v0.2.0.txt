@@ -10,13 +10,16 @@ New features
   :py:meth:`.Study.plot_two_samples`
 - Plot the expression or splicing of two *features* with
   :py:meth:`.Study.plot_two_features`
-- Detect outliers with ...
+- Detect outliers with :py:meth:`Study.interactive_choose_outliers` which
+  performs a ``OneClassSVM`` on the PCA-reduced space of data (either
+  expression or splicing), using the first three components
 - :py:class:`.Study` doesn't filter out the pooled or outlier samples from the
   data, only technical outliers with fewer reads than specified in the
   argument ``mapping_stats_min_reads``.
 - To filter expression or splicing data on the number of samples that must
   detect each feature, you can specify ``expression_thresh``, and
   ``metadata_min_samples`` in the :py:class:`.Study` constructor.
+
   * For example, if ``expression_thresh=1`` and ``metadata_min_samples=3``,
     then we will only take genes which have expression values greater than
     1 in at least 3 samples. Additionally, we will also take splicing events
@@ -27,16 +30,16 @@ API changes
 ~~~~~~~~~~~
 
 - The attribute ``data`` in :py:class:`.BaseData` (i.e.
-  :py:attr:`BaseData.data`) now contains **all** the data, including pooled,
+  :py:attr:`.BaseData.data`) now contains **all** the data, including pooled,
   singles, and outliers
 - The attribute ``data_original`` in :py:class:`.BaseData` (i.e.
   :py:attr:`.BaseData.data_original`) contains the original, unfiltered
   data. For example, before removing features detected in fewer than 3 samples
   with expression > 1.
 - :py:class:`.BaseData` now has the attributes
-  :py:attr:`.BaseData.singles`, :py:attr:`BaseData.pooled`, and
+  :py:attr:`.BaseData.singles`, :py:attr:`.BaseData.pooled`, and
   :py:attr:`.BaseData.outliers` which are on-the-fly subsets of
-  :py:attr:`.BaseData.data`. This is to maintain data, meaning if
+  :py:attr:`.BaseData.data`. This is to maintain data provenance, meaning if
   "outliers" is changed, this is also changed.
 - In :py:class:`.Study`, you now must specify ``expression_feature_rename_col``,
   ``splicing_feature_rename_col``, ``mapping_stats_number_mapped_col``
