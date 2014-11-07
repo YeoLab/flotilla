@@ -1,10 +1,10 @@
 from setuptools import setup
 from setuptools import find_packages
 
-from flotilla import __version__
+#from flotilla import __version__
 
-
-version = __version__
+#version = __version__
+version = "0.2.2"
 
 setup(
     name='flotilla',
