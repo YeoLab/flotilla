@@ -1,0 +1,14 @@
+
+.. _plot_two_samples:
+
+
+Compare gene expression in two samples
+======================================
+
+
+.. image:: _images/plot_two_samples.png
+
+**Python source code:** :download:`[download source: plot_two_samples.py]<plot_two_samples.py>`
+
+.. literalinclude:: plot_two_samples.py
+    :lines: 5-

@@ -1,0 +1,14 @@
+
+.. _plot_two_features:
+
+
+Compare gene expression in two samples
+======================================
+
+
+.. image:: _images/plot_two_features.png
+
+**Python source code:** :download:`[download source: plot_two_features.py]<plot_two_features.py>`
+
+.. literalinclude:: plot_two_features.py
+    :lines: 5-

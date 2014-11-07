@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Flotilla tutorial &mdash; flotilla 0.2.0 documentation</title>
+    <title>Flotilla tutorial &mdash; flotilla 0.2.1 documentation</title>
     
     <link rel="stylesheet" href="_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.0',
+        VERSION:     '0.2.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -29,8 +29,8 @@
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
-    <link rel="top" title="flotilla 0.2.0 documentation" href="index.html" />
-    <link rel="next" title="flotilla" href="apidoc/modules.html" />
+    <link rel="top" title="flotilla 0.2.1 documentation" href="index.html" />
+    <link rel="next" title="Docker Installation Instructions" href="installation.html" />
     <link rel="prev" title="Create your very own datapackage!" href="create_datapackage.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -51,7 +51,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           Flotilla</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.1</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -59,7 +59,7 @@
             <li class="divider-vertical"></li>
             
                 <li><a href="#">Tutorial</a></li>
-                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="gallery/index.html">Gallery</a></li>
                 <li><a href="http://yeolab.ucsd.edu">YeoLab@UCSD</a></li>
             
             
@@ -72,17 +72,17 @@
   <ul class="dropdown-menu globaltoc"
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="flotilla.html">flotilla package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="flotilla.html#subpackages">Subpackages</a></li>
-<li class="toctree-l2"><a class="reference internal" href="flotilla.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="flotilla.html#module-flotilla">Module contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">flotilla</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="flotilla.html">flotilla package</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What&#8217;s new in the package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-0-november-1st-2014">v0.2.0 (November 1st, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-1-november-6th-2014">v0.2.1 (November 6th, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installing flotilla</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Docker Installation Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#os-x-installation-instructions">OS X Installation instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api.html#general-use-plots">General use plots</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api.html#interactive-plots">Interactive plots</a></li>
@@ -92,13 +92,10 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="create_datapackage.html">Create your very own datapackage!</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">Flotilla tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#install-flotilla">Install flotilla</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#create-a-datapackage">Create a datapackage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#processing-data">Processing data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#plotting-functions">Plotting functions</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="apidoc/modules.html">flotilla</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="apidoc/flotilla.html">flotilla package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#recreated-papers">Recreated papers</a></li>
 </ul>
 </li>
 </ul>
@@ -115,9 +112,10 @@
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
 <li><a class="reference internal" href="#">Flotilla tutorial</a><ul>
+<li><a class="reference internal" href="#install-flotilla">Install flotilla</a></li>
 <li><a class="reference internal" href="#create-a-datapackage">Create a datapackage</a></li>
-<li><a class="reference internal" href="#processing-data">Processing data</a></li>
 <li><a class="reference internal" href="#plotting-functions">Plotting functions</a></li>
+<li><a class="reference internal" href="#recreated-papers">Recreated papers</a></li>
 </ul>
 </li>
 </ul>
@@ -157,17 +155,37 @@
       
   <div class="section" id="flotilla-tutorial">
 <span id="tutorial"></span><h1>Flotilla tutorial<a class="headerlink" href="#flotilla-tutorial" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="create-a-datapackage">
-<h2>Create a datapackage<a class="headerlink" href="#create-a-datapackage" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="install-flotilla">
+<h2>Install flotilla<a class="headerlink" href="#install-flotilla" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
-<ul class="simple">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Docker Installation Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#os-x-installation-instructions">OS X Installation instructions</a></li>
 </ul>
 </div>
 </div>
-<div class="section" id="processing-data">
-<h2>Processing data<a class="headerlink" href="#processing-data" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="create-a-datapackage">
+<h2>Create a datapackage<a class="headerlink" href="#create-a-datapackage" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
-<ul class="simple">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/barebones_study_making.html">Create a barebones datapackage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/barebones_study_making.html#shalek-and-sujita-et-al-2013">Shalek and Sujita, <em>et al</em> (2013)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/barebones_study_making.html#expression-data">Expression data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/barebones_study_making.html#expression-feature-data">Expression feature data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/barebones_study_making.html#splicing-data">Splicing Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/barebones_study_making.html#metadata">Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/barebones_study_making.html#mapping-stats-data">Mapping stats data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/barebones_study_making.html#create-a-flotilla-study">Create a <tt class="docutils literal"><span class="pre">flotilla</span></tt> Study!</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/advanced_study_making.html">Create an advanced datapackage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/advanced_study_making.html#the-data-a-neural-induction-protocol">The data: a neural induction protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/advanced_study_making.html#metadata-expression-data-and-splicing-data">Metadata, expression data, and splicing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/advanced_study_making.html#feature-data">Feature data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/advanced_study_making.html#create-new-phenotype-groups-with-metadata">Create new phenotype groups with metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/advanced_study_making.html#save-the-data">Save the data</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -175,6 +193,28 @@
 <h2>Plotting functions<a class="headerlink" href="#plotting-functions" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul class="simple">
+</ul>
+</div>
+</div>
+<div class="section" id="recreated-papers">
+<h2>Recreated papers<a class="headerlink" href="#recreated-papers" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/shalek2013.html">Shalek and Sujita, <em>et al</em> (2013)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/shalek2013.html#expression-data">Expression data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/shalek2013.html#expression-feature-data">Expression feature data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/shalek2013.html#splicing-data">Splicing Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/shalek2013.html#metadata">Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/shalek2013.html#mapping-stats-data">Mapping stats data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/shalek2013.html#create-a-flotilla-study">Create a <tt class="docutils literal"><span class="pre">flotilla</span></tt> Study!</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/shalek2013.html#figure-1">Figure 1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/shalek2013.html#figure-2">Figure 2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/shalek2013.html#figure-3">Figure 3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/shalek2013.html#figure-4">Figure 4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/shalek2013.html#supplementary-figures">Supplementary figures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/shalek2013.html#conclusions">Conclusions</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>

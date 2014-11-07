@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>flotilla.test.conftest &mdash; flotilla 0.2.0 documentation</title>
+    <title>flotilla.test.conftest &mdash; flotilla 0.2.1 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.2.0',
+        VERSION:     '0.2.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -29,7 +29,7 @@
     <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../../../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
-    <link rel="top" title="flotilla 0.2.0 documentation" href="../../../index.html" />
+    <link rel="top" title="flotilla 0.2.1 documentation" href="../../../index.html" />
     <link rel="up" title="flotilla" href="../../flotilla.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -50,7 +50,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           Flotilla</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.1</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -58,7 +58,7 @@
             <li class="divider-vertical"></li>
             
                 <li><a href="../../../tutorial.html">Tutorial</a></li>
-                <li><a href="../../../gallery.html">Gallery</a></li>
+                <li><a href="../../../gallery/index.html">Gallery</a></li>
                 <li><a href="http://yeolab.ucsd.edu">YeoLab@UCSD</a></li>
             
             
@@ -71,17 +71,17 @@
   <ul class="dropdown-menu globaltoc"
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../flotilla.html">flotilla package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#subpackages">Subpackages</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html#module-flotilla">Module contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">flotilla</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html">flotilla package</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../whatsnew.html">What&#8217;s new in the package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-0-november-1st-2014">v0.2.0 (November 1st, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-1-november-6th-2014">v0.2.1 (November 6th, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installing flotilla</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Docker Installation Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html#os-x-installation-instructions">OS X Installation instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../api.html#general-use-plots">General use plots</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api.html#interactive-plots">Interactive plots</a></li>
@@ -91,13 +91,10 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../create_datapackage.html">Create your very own datapackage!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Flotilla tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#install-flotilla">Install flotilla</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#create-a-datapackage">Create a datapackage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#processing-data">Processing data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#plotting-functions">Plotting functions</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../../apidoc/modules.html">flotilla</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../apidoc/flotilla.html">flotilla package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#recreated-papers">Recreated papers</a></li>
 </ul>
 </li>
 </ul>
@@ -161,10 +158,9 @@
 <span class="kn">from</span> <span class="nn">flotilla.util</span> <span class="kn">import</span> <span class="n">link_to_list</span>
 <span class="kn">from</span> <span class="nn">flotilla.datapackage</span> <span class="kn">import</span> <span class="n">data_package_url_to_dict</span>
 
-
-
 <span class="n">CURRENT_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span>
-<span class="n">DATA_BASE_URL</span> <span class="o">=</span> <span class="s">&#39;https://raw.githubusercontent.com/YeoLab/shalek2013/master&#39;</span>
+<span class="c"># DATA_BASE_URL = &#39;https://raw.githubusercontent.com/YeoLab/shalek2013/master&#39;</span>
+<span class="n">DATA_BASE_URL</span> <span class="o">=</span> <span class="s">&#39;http://sauron.ucsd.edu/flotilla_projects/shalek2013&#39;</span>
 
 <div class="viewcode-block" id="ExampleData"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.ExampleData">[docs]</a><span class="k">class</span> <span class="nc">ExampleData</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;metadata&#39;</span><span class="p">,</span> <span class="s">&#39;expression&#39;</span><span class="p">,</span> <span class="s">&#39;splicing&#39;</span><span class="p">,</span> <span class="s">&#39;data&#39;</span><span class="p">)</span>
@@ -185,7 +181,7 @@
     <span class="n">expression</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;{}/expression.csv&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">DATA_BASE_URL</span><span class="p">),</span>
                              <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">splicing</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;{}/splicing.csv&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">DATA_BASE_URL</span><span class="p">),</span>
-                           <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                           <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
     <span class="n">metadata</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;{}/metadata.csv&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">DATA_BASE_URL</span><span class="p">),</span>
                            <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ExampleData</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">expression</span><span class="p">,</span> <span class="n">splicing</span><span class="p">)</span>
