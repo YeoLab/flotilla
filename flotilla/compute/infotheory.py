@@ -1,3 +1,7 @@
+"""
+Information-theoretic calculations
+"""
+
 import numpy as np
 import pandas as pd
 
@@ -27,8 +31,8 @@ def binify(df, bins):
     Parameters
     ----------
     data : pandas.DataFrame
-        A samples x features dataframe. Each feature will be binned into the
-        provided bins
+        A samples x features dataframe. Each feature (column) will be binned
+        into the provided bins
     bins : iterable
         Bins you would like to use for this data. Must include the final bin
         value, e.g. (0, 0.5, 1) for the two bins (0, 0.5) and (0.5, 1).
@@ -66,6 +70,11 @@ def kld(p, q):
         Kullback-Lieber divergence of the common columns between the
         dataframe. E.g. between 1st column in p and 1st column in q, and 2nd
         column in p and 2nd column in q.
+
+    Notes
+    -----
+    The input to this function must be probability distributions, not raw
+    values. Otherwise, the output makes no sense.
     """
     # If one of them is zero, then the other should be considered to be 0.
     # In this problem formulation, log0 = 0
@@ -108,7 +117,8 @@ def entropy(binned, base=2):
     Parameters
     ----------
     binned : pandas.DataFrame
-        A nbins x features DataFrame
+        A nbins x features DataFrame of probability distributions, where each
+        column sums to 1
     base : numeric
         The log-base of the entropy. Default is 2, so the resulting entropy
         is in bits.

@@ -1,3 +1,8 @@
+"""
+Convenience functions for obtaining reasonable plotting colors
+"""
+
+
 import matplotlib as mpl
 import seaborn as sns
 import brewer2mpl
