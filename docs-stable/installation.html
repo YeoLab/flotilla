@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>OS X Installation instructions &mdash; flotilla 0.2.1 documentation</title>
+    <title>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD &mdash; flotilla 0.2.1 documentation</title>
     
     <link rel="stylesheet" href="_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -82,7 +82,8 @@
 <li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">OS X Installation instructions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#docker-installation-instructions">Docker Installation Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#docker-instructions">Docker Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api.html#general-use-plots">General use plots</a></li>
@@ -112,7 +113,8 @@
   <ul class="dropdown-menu localtoc"
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">OS X Installation instructions</a></li>
+<li><a class="reference internal" href="#">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</a></li>
+<li><a class="reference internal" href="#docker-installation-instructions">Docker Installation Instructions</a></li>
 <li><a class="reference internal" href="#docker-instructions">Docker Instructions</a></li>
 </ul>
 </ul>
@@ -149,8 +151,20 @@
   <div class="row">
     <div class="col-md-12">
       
-  <div class="section" id="os-x-installation-instructions">
-<h1>OS X Installation instructions<a class="headerlink" href="#os-x-installation-instructions" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="head">
+<h1>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD<a class="headerlink" href="#head" title="Permalink to this headline">¶</a></h1>
+</div>
+<div class="section" id="docker-installation-instructions">
+<h1>Docker Installation Instructions<a class="headerlink" href="#docker-installation-instructions" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference external" href="https://www.docker.com/whatisdocker/">Docker</a> is the preferred
+method to obtain the most up-to-date version of <tt class="docutils literal"><span class="pre">flotilla</span></tt>. Every
+change we make to the source code triggers a new build of a virtual
+machine that contains flotilla and all its dependencies.</p>
+<p>Please follow instructions <a class="reference external" href="docker/docker_instructions.md">here</a> to
+get, install, and run the <tt class="docutils literal"><span class="pre">flotilla</span></tt> image.</p>
+<p>&gt;&gt;&gt;&gt;&gt;&gt;&gt; dev
+OS X Installation instructions
+==============================</p>
 <p>The following steps have been tested on a clean install of Mavericks
 10.9.4.</p>
 <p>All others must fend for themselves to install matplotlib, scipy and
@@ -233,11 +247,10 @@ application):</p>
 </ol>
 <p>After the ipython notebook interface opens, test the installation with
 our test dataset by running the following commands in a new notebook:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">flotilla</span>
-<span class="n">study</span> <span class="o">=</span> <span class="n">flotilla</span><span class="o">.</span><span class="n">embark</span><span class="p">(</span><span class="s">&quot;http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22/datapackage.json&quot;</span><span class="p">)</span>
-<span class="n">study</span><span class="o">.</span><span class="n">interactive_pca</span><span class="p">()</span>
-</pre></div>
-</div>
+<blockquote>
+<div>import flotilla
+study = flotilla.embark(&#8220;<a class="reference external" href="http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22/datapackage.json">http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22/datapackage.json</a>&#8221;)
+study.interactive_pca()</div></blockquote>
 <p>Thanks for using flotilla!</p>
 </div>
 
