@@ -1,4 +1,4 @@
-v0.2.0 (November 1st, 2014)
+v0.2.0 (November 5th, 2014)
 ---------------------------
 
 This is a minor release, with some breaking changes from v0.1.1.

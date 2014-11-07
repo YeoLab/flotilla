@@ -3,21 +3,22 @@
 Flotilla tutorial
 =================
 
+Install flotilla
+----------------
+
+.. toctree::
+    :maxdepth: 2
+
+    installation
+
 Create a datapackage
 --------------------
 
 .. toctree::
     :maxdepth: 2
 
-    tutorial/datapackage
-
-Processing data
----------------
-
-.. toctree::
-    :maxdepth: 2
-
-    tutorial/detect_outliers
+    tutorial/barebones_study_making
+    tutorial/advanced_study_making
 
 Plotting functions
 ------------------
@@ -30,3 +31,11 @@ Plotting functions
     tutorial/network
     tutorial/expression_specific
     tutorial/splicing_specific
+
+Recreated papers
+----------------
+
+.. toctree::
+    :maxdepth: 2
+
+    tutorial/shalek2013
