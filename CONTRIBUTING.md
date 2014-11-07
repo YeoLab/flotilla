@@ -85,8 +85,7 @@ We will attempt to stick to the [`numpy` docstring specification](https://github
 
 To make this easier, I use ["Live Templates" in PyCharm]
 (http://peter-hoffmann.com/2010/python-live-templates-for-pycharm.html),
-check out the instructions [here](https://github
-.com/YeoLab/PyCharm-Python-Templates) for how to install and use them.
+check out the instructions [here](https://github.com/YeoLab/PyCharm-Python-Templates) for how to install and use them.
 
 Testing
 =======
@@ -117,12 +116,3 @@ To run `pep8` and `pyflakes` over the code, make sure you have [this fork]
 
     make lint
 
-
-
-What flotilla is not
-====================
-
-Flotilla does not claim to solve the data management problem of biology,
-i.e. how you store all the data associated with a particular study that was
-investigating a specific biological question. Flotilla only makes it easy to
-integrate all those data parts together.
