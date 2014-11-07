@@ -1,0 +1,10 @@
+v0.2.2 (November 7th, 2014)
+---------------------------
+
+This is a patch release, with non-breaking changes from v0.2.0.
+
+Documentation updates
+~~~~~~~~~~~~~~~~~~~~~
+
+ - Update documentation
+ - Fixed `issue with pip install reported by @roryk <https://github.com/YeoLab/flotilla/pull/142>`__
