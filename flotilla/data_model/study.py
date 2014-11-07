@@ -412,22 +412,28 @@ class Study(object):
                 filename = check_if_already_downloaded(resource_url,
                                                        datapackage_name)
             else:
-                filename = resource['path']
-                # Test if the file exists, if not, then add the datapackage
-                # file
-                try:
-                    with open(filename) as f:
-                        pass
-                except IOError:
-                    filename = os.path.join(datapackage_dir, filename)
+                if resource['path'].startswith('http'):
+                    filename = check_if_already_downloaded(resource['path'],
+                                                           datapackage_name)
+                else:
+                    filename = resource['path']
+                    # Test if the file exists, if not, then add the datapackage
+                    # file
+                    try:
+                        with open(filename) as f:
+                            pass
+                    except IOError:
+                        filename = os.path.join(datapackage_dir, filename)
 
             name = resource['name']
 
             reader = cls.readers[resource['format']]
             compression = None if 'compression' not in resource else \
                 resource['compression']
+            header = resource.pop('header', 0)
 
-            dfs[name] = reader(filename, compression=compression)
+            dfs[name] = reader(filename, compression=compression,
+                               header=header)
 
             if name == 'expression':
                 if 'log_transformed' in resource:
@@ -1195,6 +1201,15 @@ class Study(object):
         Raises
         ------
         """
+        if data_type == 'expression':
+            self.expression.plot_two_features(
+                feature1, feature2, groupby=self.sample_id_to_phenotype,
+                label_to_color=self.phenotype_to_color, **kwargs)
+        if data_type == 'splicing':
+            self.splicing.plot_two_features(
+                feature1, feature2, groupby=self.sample_id_to_phenotype,
+                label_to_color=self.phenotype_to_color, **kwargs)
+
 
     def save(self, name, flotilla_dir=FLOTILLA_DOWNLOAD_DIR):
 

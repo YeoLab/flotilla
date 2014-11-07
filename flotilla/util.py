@@ -232,8 +232,9 @@ def write_gzip_pickle_df(df, file_name):
     subprocess.call(['mv %s %s' % (tempfile, file_name)])
 
 
-def load_tsv(file_name, compression=None):
-    return pd.read_table(file_name, index_col=0, compression=compression)
+def load_tsv(file_name, compression=None, header=0):
+    return pd.read_table(file_name, index_col=0, compression=compression,
+                         header=header)
 
 
 def load_json(filename, compression=None):
@@ -259,8 +260,9 @@ def write_tsv(df, file_name):
     df.to_csv(file_name, sep='\t')
 
 
-def load_csv(file_name, compression=None):
-    return pd.read_csv(file_name, index_col=0, compression=compression)
+def load_csv(file_name, compression=None, header=0):
+    return pd.read_csv(file_name, index_col=0, compression=compression,
+                       header=header)
 
 
 def write_csv(df, file_name):

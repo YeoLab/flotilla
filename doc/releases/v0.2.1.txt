@@ -1,0 +1,13 @@
+v0.2.1 (November 6th, 2014)
+---------------------------
+
+This is a patch release, with non-breaking changes from v0.2.0.
+
+Documentation updates
+~~~~~~~~~~~~~~~~~~~~~
+
+- Update gallery_
+- Update tutorial for `advanced study making`_
+
+.. _gallery: ../gallery
+.. _advanced study making: ../tutorial/addvanced_study_making.ipynb

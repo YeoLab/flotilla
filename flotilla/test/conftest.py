@@ -16,10 +16,9 @@ import pandas as pd
 from flotilla.util import link_to_list
 from flotilla.datapackage import data_package_url_to_dict
 
-
-
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
-DATA_BASE_URL = 'https://raw.githubusercontent.com/YeoLab/shalek2013/master'
+# DATA_BASE_URL = 'https://raw.githubusercontent.com/YeoLab/shalek2013/master'
+DATA_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects/shalek2013'
 
 class ExampleData(object):
     __slots__ = ('metadata', 'expression', 'splicing', 'data')
@@ -40,7 +39,7 @@ def example_data():
     expression = pd.read_csv('{}/expression.csv'.format(DATA_BASE_URL),
                              index_col=0)
     splicing = pd.read_csv('{}/splicing.csv'.format(DATA_BASE_URL),
-                           index_col=0)
+                           index_col=0, header=[0, 1])
     metadata = pd.read_csv('{}/metadata.csv'.format(DATA_BASE_URL),
                            index_col=0)
     return ExampleData(metadata, expression, splicing)
