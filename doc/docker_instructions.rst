@@ -2,7 +2,7 @@ Docker Instructions
 ===================
 
 
-Docker <https://www.docker.com/whatisdocker/>`__ is the preferred
+`Docker <https://www.docker.com/whatisdocker/>`__ is the preferred
 method to obtain the most up-to-date version of ``flotilla``. Every
 change we make to the source code triggers a new build of a virtual
 machine that contains flotilla and all its dependencies.
