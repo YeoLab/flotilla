@@ -9,6 +9,7 @@ import seaborn as sns
 
 from .base import BaseData
 from ..compute.splicing import Modalities
+from ..compute.decomposition import DataFramePCA
 from ..visualize.color import purples
 from ..visualize.splicing import ModalitiesViz
 from ..util import memoize, timestamp
@@ -27,6 +28,7 @@ class SplicingData(BaseData):
     n_components = 2
     _binsize = 0.1
 
+    _last_reducer_accessed = None
 
     def __init__(self, data,
                  feature_data=None, binsize=0.1, outliers=None,
@@ -56,7 +58,6 @@ class SplicingData(BaseData):
         'thresh' from BaseData is not used.
         """
         sys.stdout.write("{}\tInitializing splicing\n".format(timestamp()))
-
         super(SplicingData, self).__init__(
             data, feature_data=feature_data,
             feature_rename_col=feature_rename_col,
@@ -64,7 +65,7 @@ class SplicingData(BaseData):
             outliers=outliers, pooled=pooled,
             technical_outliers=technical_outliers,
             predictor_config_manager=predictor_config_manager,
-            minimum_samples=minimum_samples, data_type='splicing')
+            minimum_samples=minimum_samples)
         sys.stdout.write("{}\tDone initializing splicing\n".format(timestamp()))
         self.binsize = binsize
         self.bins = np.arange(0, 1 + self.binsize, self.binsize)
@@ -72,6 +73,8 @@ class SplicingData(BaseData):
         self.modalities_calculator = Modalities(excluded_max=excluded_max,
                                                 included_min=included_min)
         self.modalities_visualizer = ModalitiesViz()
+
+        self.data_type = 'splicing'
 
     @memoize
     def modalities(self, sample_ids=None, feature_ids=None,
@@ -435,24 +438,12 @@ class SplicingData(BaseData):
 
     def reduce(self, sample_ids=None, feature_ids=None,
                featurewise=False,
-               reducer=None,
-               standardize=False,
+               reducer=DataFramePCA,
+               standardize=True,
                reducer_kwargs=None, bins=None):
-        """
-        :param sample_ids: list of sample ids
-        :param feature_ids: list of features
-        :param featurewise: reduce transpose (feature X sample) instead of sample X feature
-        :param reducer: DataFrameReducer object, defaults to DataFramePCA
-        :param standardize: standardize columns before reduction
-        :param reducer_kwargs: kwargs for reducer
-        :param bins: bins to use for binify
-        :return: reducer object
-
-        """
-
         return super(SplicingData, self).reduce(sample_ids, feature_ids,
                                                 featurewise, reducer,
-                                                standardize=standardize,
+                                                standardize=False,
                                                 reducer_kwargs=reducer_kwargs,
                                                 bins=bins)
 
