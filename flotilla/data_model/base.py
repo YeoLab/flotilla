@@ -592,28 +592,91 @@ class BaseData(object):
         else:
             return subset
 
-    def plot_clusteredheatmap(self, sample_ids, feature_ids,
-                              metric='euclidean',
-                              linkage_method='average',
-                              sample_colors=None,
-                              feature_colors=None, figsize=None,
-                              require_min_samples=True):
-        subset, row_linkage, col_linkage = self._calculate_linkage(
-            sample_ids, feature_ids, linkage_method=linkage_method,
-            metric=metric)
 
-        if figsize is None:
-            figsize = reversed(subset.shape)
-            figsize = map(lambda x: max(.25 * x, 1000), figsize)
+    # def plot_clusteredheatmap(self, sample_ids, feature_ids,
+    #                           metric='euclidean',
+    #                           linkage_method='average',
+    #                           sample_colors=None,
+    #                           feature_colors=None, figsize=None,
+    #                           require_min_samples=True):
+    #     """
+    #
+    #     """
+    #     subset, row_linkage, col_linkage = self._calculate_linkage(
+    #         sample_ids, feature_ids, linkage_method=linkage_method,
+    #         metric=metric)
+    #
+    #     if figsize is None:
+    #         figsize = reversed(subset.shape)
+    #         figsize = map(lambda x: max(.25 * x, 1000), figsize)
+    #
+    #     col_kws = dict(linkage_matrix=col_linkage, side_colors=feature_colors,
+    #                    label=map(self.feature_renamer, subset.columns))
+    #     row_kws = dict(linkage_matrix=row_linkage, side_colors=sample_colors)
+    #     return sns.clusteredheatmap(subset, row_kws=row_kws, col_kws=col_kws,
+    #                                 pcolormesh_kws=dict(linewidth=0.01),
+    #                                 figsize=figsize)
 
-        col_kws = dict(linkage_matrix=col_linkage, side_colors=feature_colors,
-                       label=map(self.feature_renamer, subset.columns))
-        row_kws = dict(linkage_matrix=row_linkage, side_colors=sample_colors)
-        return sns.clusteredheatmap(subset, row_kws=row_kws, col_kws=col_kws,
-                                    pcolormesh_kws=dict(linewidth=0.01),
-                                    figsize=figsize)
+    #@memoize
+    def detect_outliers(self,
+                        sample_ids=None, feature_ids=None,
+                        featurewise=False,
+                        reducer=None,
+                        standardize=True,
+                        reducer_kwargs=None,
+                        bins=None,
+                        outlier_detection_method=None,
+                        outlier_detection_method_kwargs=None):
 
-    @memoize
+        default_reducer_args = {"n_components": 2}
+
+        if reducer_kwargs is None:
+            reducer_kwargs = default_reducer_args
+        else:
+            default_reducer_args.update(reducer_kwargs)
+            reducer_kwargs = default_reducer_args
+
+        reducer = self.reduce(sample_ids, feature_ids,
+                              featurewise, reducer,
+                              standardize, reducer_kwargs,
+                              bins)
+
+        outlier_detector = OutlierDetection(reducer.reduced_space,
+                                            method=outlier_detection_method,
+                                            **outlier_detection_method_kwargs)
+
+        return reducer, outlier_detector
+
+    def plot_outliers(self, reducer, outlier_detector, **pca_args):
+        show_point_labels = pca_args['show_point_labels']
+        del pca_args['show_point_labels']
+        dv = DecompositionViz(reducer.reduced_space,
+                              reducer.components_,
+                              reducer.explained_variance_ratio_,
+                              groupby=outlier_detector.outliers,
+                              )
+
+        dv(show_point_labels=show_point_labels)
+        #self.plot_pca(self, groupby=outlier_detector.outliers,
+        #              title=outlier_detector.title,
+        #              **pca_args)
+
+        # DecompositionViz(reducer.reduced_space,
+        # reducer.components_,
+        #                       reducer.explained_variance_ratio_,
+        #                       DataModel=self,
+        #                       feature_renamer=feature_renamer,
+        #                       groupby=outlier_detector.outliers,
+        #                       featurewise=False,
+        #                       order=None, violinplot_kws=None,
+        #                       data_type=None, label_to_color=None,
+        #                       label_to_marker=None,
+        #                       scale_by_variance=True, x_pc=x_pc,
+        #                       y_pc=y_pc, n_vectors=0, distance='L1',
+        #                       n_top_pc_features=50)
+        #dv(show_point_labels=show_point_labels, title=outlier_detector.title)
+
+    # @memoize
     def reduce(self, sample_ids=None, feature_ids=None,
                featurewise=False,
                reducer=DataFramePCA,
@@ -929,6 +992,27 @@ class BaseData(object):
         y = self.data.ix[sample2]
         return simple_twoway_scatter(x, y, **kwargs)
 
+    def plot_two_features(self, feature1, feature2, groupby=None,
+                          label_to_color=None, **kwargs):
+        """Plot the values of two features
+        """
+        feature1s = self.maybe_renamed_to_feature_id(feature1)
+        feature2s = self.maybe_renamed_to_feature_id(feature2)
+        for f1 in feature1s:
+            for f2 in feature2s:
+                x = self.data.ix[:, f1].copy()
+                y = self.data.ix[:, f2].copy()
+
+                x.name = feature1
+                y.name = feature2
+                x, y = x.align(y, 'inner')
+
+                joint_kws = {}
+                if groupby is not None:
+                    if label_to_color is not None:
+                        joint_kws['color'] = [label_to_color[groupby[i]]
+                                              for i in x.index]
+                simple_twoway_scatter(x, y, joint_kws=joint_kws, **kwargs)
 
 def subsets_from_metadata(metadata, minimum, subset_type, ignore=None):
     """

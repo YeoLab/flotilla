@@ -271,6 +271,7 @@ class ExampleGenerator(object):
         thumbfile = os.path.join("gallery_thumbs",
                                  self.thumbfilename)
         self.html = "<img src=../%s>" % self.pngfilename
+        fig.tight_layout()
         fig.savefig(pngfile, dpi=75)
 
         cx, cy = self.thumbloc

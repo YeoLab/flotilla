@@ -45,16 +45,12 @@ after_script:
   - pip install https://github.com/dcramer/pyflakes/tarball/master
   - pip install .
   - make lint
-  - sudo pip install -r doc/requirements.txt --use-mirrors # change this to the right project path
-  # Make sure README.rst is always synced with README.md
-  - pandoc -f markdown README.md -t rst > README.rst
-  - cd doc
-  - make setup_gh_pages
-  - make generate
-  - make deploy
-#
-#after_success:
-#  coveralls
+  - sudo pip install -r doc/requirements.txt --use-mirrors
+  - MASTER=master
+  - DEV=dev
+  - if [[ $TRAVIS_BRANCH == "$MASTER" ]] ; then export DEPLOY_HTML_DIR=docs-stable ; fi
+  - if [[ $TRAVIS_BRANCH == "$DEV" ]] ; then export DEPLOY_HTML_DIR=docs-dev ; fi
+  - if [[ $TRAVIS_BRANCH == "$MASTER" ]] || [[ $TRAVIS_BRANCH == "$DEV" ]] ; then cd doc ; make setup_gh_pages ; make generate ; make deploy ; fi
 
 # For slack notifications
 notifications:
