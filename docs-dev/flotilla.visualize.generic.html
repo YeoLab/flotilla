@@ -216,51 +216,13 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> : pandas.Series</p>
 <blockquote>
-<div><p>The main data to plot as violins</p>
+<div><p>The main data to plot</p>
 </div></blockquote>
-<p><strong>groupby</strong> : dict-like, optional</p>
+<p><strong>groupby</strong> : dict-like</p>
 <blockquote>
 <div><p>How to group the samples (e.g. by phenotype)</p>
 </div></blockquote>
-<p><strong>color_ordered</strong> : list, optional</p>
-<blockquote>
-<div><p>List of colors, in the order you want to plot</p>
-</div></blockquote>
-<p><strong>ax</strong> : matplotlib.Axes, optional</p>
-<blockquote>
-<div><p>Where to plot the violins. If None, get the current axes</p>
-</div></blockquote>
-<p><strong>pooled_data</strong> : pandas.Series, optional</p>
-<blockquote>
-<div><p>Pooled samples. Will be plotted as black dots</p>
-</div></blockquote>
-<p><strong>order</strong> : list, optional</p>
-<blockquote>
-<div><p>The order in which to plot the phenotypes, e.g. if the data is
-form a differentiation time course</p>
-</div></blockquote>
-<p><strong>violinplot_kws</strong> : dict, optional</p>
-<blockquote>
-<div><p>Other keywords to pass to seaborn.violinplot</p>
-</div></blockquote>
-<p><strong>title</strong> : str, optional</p>
-<blockquote>
-<div><p>Title of the plot</p>
-</div></blockquote>
-<p><strong>label_pooled</strong> : bool, optional</p>
-<blockquote>
-<div><p>If True, label the sample id of the pooled samples</p>
-</div></blockquote>
-<p><strong>outliers</strong> : pandas.Series</p>
-<blockquote>
-<div><p>Outlier samples. Will be plotted in their phenotype category,
-as a grey shadow</p>
-</div></blockquote>
-<p><strong>data_type</strong> : &#8216;expression&#8217; | &#8216;splicing&#8217; | None</p>
-<blockquote class="last">
-<div><p>If &#8216;splicing&#8217;, then force the y-axis to be from 0 to 1. If
-&#8216;expression&#8217; or None, don&#8217;t mess with the y-axis</p>
-</div></blockquote>
+<p class="last"><strong>color_ordered</strong> : list</p>
 </td>
 </tr>
 </tbody>
