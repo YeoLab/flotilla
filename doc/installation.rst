@@ -1,5 +1,7 @@
 <<<<<<< HEAD
 =======
+<<<<<<< HEAD
+=======
 Docker Installation Instructions
 ================================
 
@@ -12,6 +14,7 @@ Please follow instructions `here <docker/docker_instructions.md>`__ to
 get, install, and run the ``flotilla`` image.
 
 >>>>>>> dev
+>>>>>>> master
 OS X Installation instructions
 ==============================
 
@@ -78,4 +81,3 @@ their third-party dependencies.
    clicking the title panel.
 
 .. include:: docker_instructions.rst
-
