@@ -2,6 +2,7 @@
 This tests whether the Study object was created correctly. No
 computation or visualization tests yet.
 """
+import copy
 import json
 import os
 import copy
@@ -204,16 +205,3 @@ class TestStudy(object):
 
         pdt.assert_dict_equal(test_datapackage,
                               true_datapackage)
-
-
-# def test_write_package(tmpdir):
-# from flotilla.data_model import StudyFactory
-#
-#     new_study = StudyFactory()
-#     new_study.experiment_design_data = None
-#     new_study.event_metadata = None
-#     new_study.expression_metadata = None
-#     new_study.expression_df = None
-#     new_study.splicing_df = None
-#     new_study.event_metadata = None
-#     new_study.write_package('test_package', where=tmpdir, install=False)
