@@ -17,8 +17,8 @@ from flotilla.util import link_to_list
 from flotilla.datapackage import data_package_url_to_dict
 
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
-# DATA_BASE_URL = 'https://raw.githubusercontent.com/YeoLab/shalek2013/master'
-DATA_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects/shalek2013'
+DATA_BASE_URL = 'https://raw.githubusercontent.com/YeoLab/shalek2013/master'
+# DATA_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects/shalek2013'
 
 class ExampleData(object):
     __slots__ = ('metadata', 'expression', 'splicing', 'data')
