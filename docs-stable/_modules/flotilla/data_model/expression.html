@@ -80,8 +80,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Docker Installation Instructions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../installation.html#os-x-installation-instructions">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html#docker-instructions">Docker Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../api.html#general-use-plots">General use plots</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api.html#interactive-plots">Interactive plots</a></li>
@@ -166,6 +166,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{}</span><span class="se">\t</span><span class="s">Initializing expression</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">timestamp</span><span class="p">()))</span>
+
         <span class="nb">super</span><span class="p">(</span><span class="n">ExpressionData</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span>
             <span class="n">data</span><span class="p">,</span> <span class="n">feature_data</span><span class="o">=</span><span class="n">feature_data</span><span class="p">,</span>
             <span class="n">feature_rename_col</span><span class="o">=</span><span class="n">feature_rename_col</span><span class="p">,</span>
@@ -173,7 +174,9 @@
             <span class="n">thresh</span><span class="o">=</span><span class="n">thresh</span><span class="p">,</span>
             <span class="n">outliers</span><span class="o">=</span><span class="n">outliers</span><span class="p">,</span> <span class="n">pooled</span><span class="o">=</span><span class="n">pooled</span><span class="p">,</span> <span class="n">minimum_samples</span><span class="o">=</span><span class="n">minimum_samples</span><span class="p">,</span>
             <span class="n">predictor_config_manager</span><span class="o">=</span><span class="n">predictor_config_manager</span><span class="p">,</span>
-            <span class="n">technical_outliers</span><span class="o">=</span><span class="n">technical_outliers</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s">&#39;expression&#39;</span><span class="p">)</span>
+            <span class="n">technical_outliers</span><span class="o">=</span><span class="n">technical_outliers</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_type</span> <span class="o">=</span> <span class="s">&#39;expression&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thresh</span> <span class="o">=</span> <span class="n">thresh</span>
 
         <span class="k">if</span> <span class="n">plus_one</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -248,7 +251,6 @@
                                           <span class="n">technical_outliers</span><span class="o">=</span><span class="n">technical_outliers</span><span class="p">,</span>
                                           <span class="n">predictor_config_manager</span><span class="o">=</span><span class="n">predictor_config_manager</span><span class="p">)</span>
 
-
         <span class="c"># def spikeins_violinplot(self):</span>
         <span class="c"># import matplotlib.pyplot as plt</span>
         <span class="c">#     import seaborn as sns</span>
@@ -319,8 +321,8 @@
         <span class="c">#             ax.set_title(spikein_type)</span>
         <span class="c">#             ax.set_xlim(0, tpm.shape[1])</span>
         <span class="c">#             ax.set_ylabel(&#39;$\\log_2$ TPM&#39;)</span>
-        <span class="c">#         sns.despine()</span>
-</pre></div></div>
+        <span class="c">#         sns.despine()</span></div>
+</pre></div>
 
     </div>
       

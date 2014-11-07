@@ -82,8 +82,8 @@
 <li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Docker Installation Instructions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html#os-x-installation-instructions">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#docker-instructions">Docker Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api.html#general-use-plots">General use plots</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api.html#interactive-plots">Interactive plots</a></li>
@@ -568,28 +568,8 @@ the fraction diff thresh</p>
 
 <dl class="method">
 <dt id="flotilla.data_model.splicing.SplicingData.reduce">
-<tt class="descname">reduce</tt><big>(</big><em>sample_ids=None</em>, <em>feature_ids=None</em>, <em>featurewise=False</em>, <em>reducer=None</em>, <em>standardize=False</em>, <em>reducer_kwargs=None</em>, <em>bins=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData.reduce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.reduce" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>sample_ids</strong> &#8211; list of sample ids</li>
-<li><strong>feature_ids</strong> &#8211; list of features</li>
-<li><strong>featurewise</strong> &#8211; reduce transpose (feature X sample) instead of sample X feature</li>
-<li><strong>reducer</strong> &#8211; DataFrameReducer object, defaults to DataFramePCA</li>
-<li><strong>standardize</strong> &#8211; standardize columns before reduction</li>
-<li><strong>reducer_kwargs</strong> &#8211; kwargs for reducer</li>
-<li><strong>bins</strong> &#8211; bins to use for binify</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">reducer object</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
+<tt class="descname">reduce</tt><big>(</big><em>sample_ids=None</em>, <em>feature_ids=None</em>, <em>featurewise=False</em>, <em>reducer=&lt;class 'flotilla.compute.decomposition.DataFramePCA'&gt;</em>, <em>standardize=True</em>, <em>reducer_kwargs=None</em>, <em>bins=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData.reduce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.reduce" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 

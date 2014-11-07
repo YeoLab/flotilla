@@ -1,8 +1,12 @@
 Docker Instructions
 ===================
 
-Docker is an application that runs a virtual machine that runs software
-on your computer in an isolated environment.
+
+`Docker <https://www.docker.com/whatisdocker/>`__ is the preferred
+method to obtain the most up-to-date version of ``flotilla``. Every
+change we make to the source code triggers a new build of a virtual
+machine that contains flotilla and all its dependencies.
+
 
 Here are instructions to get an active docker image. These instructions
 have not been tested on Windows or Linux.

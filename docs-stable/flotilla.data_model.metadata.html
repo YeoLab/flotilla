@@ -82,8 +82,8 @@
 <li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Docker Installation Instructions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html#os-x-installation-instructions">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#docker-instructions">Docker Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api.html#general-use-plots">General use plots</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api.html#interactive-plots">Interactive plots</a></li>
@@ -154,31 +154,6 @@
 <dt id="flotilla.data_model.metadata.MetaData">
 <em class="property">class </em><tt class="descclassname">flotilla.data_model.metadata.</tt><tt class="descname">MetaData</tt><big>(</big><em>data</em>, <em>phenotype_order=None</em>, <em>phenotype_to_color=None</em>, <em>phenotype_to_marker=None</em>, <em>phenotype_col='phenotype'</em>, <em>pooled_col='pooled'</em>, <em>predictor_config_manager=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/metadata.html#MetaData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.metadata.MetaData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData" title="flotilla.data_model.base.BaseData"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.data_model.base.BaseData</span></tt></a></p>
-<dl class="method">
-<dt id="flotilla.data_model.metadata.MetaData.merge_boolean_columns">
-<tt class="descname">merge_boolean_columns</tt><big>(</big><em>columns</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/metadata.html#MetaData.merge_boolean_columns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.metadata.MetaData.merge_boolean_columns" title="Permalink to this definition">¶</a></dt>
-<dd><p>Merge boolean columns in data and return logical OR</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>columns</strong> : list-like</p>
-<blockquote>
-<div><p>Boolean columns whose attributes to merge</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>merged</strong> : pandas.Series</p>
-<blockquote class="last">
-<div><p>A single boolean column, with True for each row that had True in
-any column</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 <dl class="attribute">
 <dt id="flotilla.data_model.metadata.MetaData.n_phenotypes">
 <tt class="descname">n_phenotypes</tt><a class="reference internal" href="_modules/flotilla/data_model/metadata.html#MetaData.n_phenotypes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.metadata.MetaData.n_phenotypes" title="Permalink to this definition">¶</a></dt>
@@ -213,31 +188,6 @@ any column</p>
 <dt id="flotilla.data_model.metadata.MetaData.sample_subsets">
 <tt class="descname">sample_subsets</tt><a class="reference internal" href="_modules/flotilla/data_model/metadata.html#MetaData.sample_subsets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.metadata.MetaData.sample_subsets" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-
-<dl class="method">
-<dt id="flotilla.data_model.metadata.MetaData.set_outliers_by_merging_columns">
-<tt class="descname">set_outliers_by_merging_columns</tt><big>(</big><em>columns</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/metadata.html#MetaData.set_outliers_by_merging_columns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.metadata.MetaData.set_outliers_by_merging_columns" title="Permalink to this definition">¶</a></dt>
-<dd><p>Merge boolean columns of data into &#8220;outlier&#8221; column</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>columns</strong> : list-like</p>
-<blockquote>
-<div><p>Column names whose boolean attributes to merge</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>is_ever_an_outlier</strong> : pandas.Series</p>
-<blockquote class="last">
-<div><p>Boolean series indicating whether this sample was ever indicated
-as an outlier</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
 
 <dl class="attribute">
 <dt id="flotilla.data_model.metadata.MetaData.unique_phenotypes">

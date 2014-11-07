@@ -80,8 +80,8 @@
 <li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Docker Installation Instructions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html#os-x-installation-instructions">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#docker-instructions">Docker Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api.html#general-use-plots">General use plots</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api.html#interactive-plots">Interactive plots</a></li>
@@ -285,6 +285,10 @@
   </dt>
 
       
+  <dt><a href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData.calculate_distances">calculate_distances() (flotilla.data_model.base.BaseData method)</a>
+  </dt>
+
+      
   <dt><a href="flotilla.compute.predict.html#flotilla.compute.predict.Classifier.categorical">categorical (flotilla.compute.predict.Classifier attribute)</a>
   </dt>
 
@@ -345,6 +349,10 @@
   </dt>
 
       
+  <dt><a href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData.correlate">correlate() (flotilla.data_model.base.BaseData method)</a>
+  </dt>
+
+      
   <dt><a href="flotilla.compute.splicing.html#flotilla.compute.splicing.Modalities.counts">counts() (flotilla.compute.splicing.Modalities method)</a>
   </dt>
 
@@ -383,10 +391,6 @@
   </dt>
 
       
-  <dt><a href="flotilla.compute.decomposition.html#flotilla.compute.decomposition.DataFrameTSNE">DataFrameTSNE (class in flotilla.compute.decomposition)</a>
-  </dt>
-
-      
   <dt><a href="flotilla.compute.predict.html#flotilla.compute.predict.PredictorBase.dataset">dataset (flotilla.compute.predict.PredictorBase attribute)</a>
   </dt>
 
@@ -406,12 +410,12 @@
   <dt><a href="flotilla.data_model.study.html#flotilla.data_model.study.Study.default_feature_set_ids">default_feature_set_ids (flotilla.data_model.study.Study attribute)</a>
   </dt>
 
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="flotilla.data_model.study.html#flotilla.data_model.study.Study.default_feature_subsets">default_feature_subsets (flotilla.data_model.study.Study attribute)</a>
   </dt>
 
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="flotilla.compute.predict.html#flotilla.compute.predict.default_predictor_scoring_fun">default_predictor_scoring_fun() (in module flotilla.compute.predict)</a>
   </dt>
@@ -462,12 +466,6 @@
   <dt><a href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData.drop_outliers">drop_outliers() (flotilla.data_model.base.BaseData method)</a>
   </dt>
 
-      <dd><dl>
-        
-  <dt><a href="flotilla.data_model.study.html#flotilla.data_model.study.Study.drop_outliers">(flotilla.data_model.study.Study method)</a>
-  </dt>
-
-      </dl></dd>
       
   <dt><a href="flotilla.compute.generic.html#flotilla.compute.generic.dropna_mean">dropna_mean() (in module flotilla.compute.generic)</a>
   </dt>
@@ -575,10 +573,6 @@
   </dt>
 
       <dd><dl>
-        
-  <dt><a href="flotilla.compute.decomposition.html#flotilla.compute.decomposition.DataFrameTSNE.fit_transform">(flotilla.compute.decomposition.DataFrameTSNE method)</a>
-  </dt>
-
         
   <dt><a href="flotilla.compute.splicing.html#flotilla.compute.splicing.Modalities.fit_transform">(flotilla.compute.splicing.Modalities method)</a>
   </dt>
@@ -865,20 +859,6 @@
   </dt>
 
       
-  <dt><a href="flotilla.data_model.study.html#flotilla.data_model.study.Study.interactive_choose_outliers">interactive_choose_outliers() (flotilla.data_model.study.Study method)</a>
-  </dt>
-
-      <dd><dl>
-        
-  <dt><a href="generated/flotilla.Study.interactive_choose_outliers.html#flotilla.Study.interactive_choose_outliers">(flotilla.Study method)</a>
-  </dt>
-
-        
-  <dt><a href="flotilla.visualize.ipython_interact.html#flotilla.visualize.ipython_interact.Interactive.interactive_choose_outliers">(flotilla.visualize.ipython_interact.Interactive static method)</a>
-  </dt>
-
-      </dl></dd>
-      
   <dt><a href="flotilla.data_model.study.html#flotilla.data_model.study.Study.interactive_classifier">interactive_classifier() (flotilla.data_model.study.Study method)</a>
   </dt>
 
@@ -944,20 +924,6 @@
   <dt><a href="flotilla.visualize.ipython_interact.html#flotilla.visualize.ipython_interact.Interactive.interactive_plot_modalities_lavalamps">interactive_plot_modalities_lavalamps() (flotilla.visualize.ipython_interact.Interactive static method)</a>
   </dt>
 
-      
-  <dt><a href="flotilla.data_model.study.html#flotilla.data_model.study.Study.interactive_reset_outliers">interactive_reset_outliers() (flotilla.data_model.study.Study method)</a>
-  </dt>
-
-      <dd><dl>
-        
-  <dt><a href="generated/flotilla.Study.interactive_reset_outliers.html#flotilla.Study.interactive_reset_outliers">(flotilla.Study method)</a>
-  </dt>
-
-        
-  <dt><a href="flotilla.visualize.ipython_interact.html#flotilla.visualize.ipython_interact.Interactive.interactive_reset_outliers">(flotilla.visualize.ipython_interact.Interactive static method)</a>
-  </dt>
-
-      </dl></dd>
   </dl></td>
 </tr></table>
 
@@ -965,10 +931,14 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="flotilla.data_model.study.html#flotilla.data_model.study.Study.jsd">jsd() (flotilla.data_model.study.Study method)</a>
+  <dt><a href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData.jsd">jsd() (flotilla.data_model.base.BaseData method)</a>
   </dt>
 
       <dd><dl>
+        
+  <dt><a href="flotilla.data_model.study.html#flotilla.data_model.study.Study.jsd">(flotilla.data_model.study.Study method)</a>
+  </dt>
+
         
   <dt><a href="flotilla.compute.infotheory.html#flotilla.compute.infotheory.jsd">(in module flotilla.compute.infotheory)</a>
   </dt>
@@ -1071,15 +1041,15 @@
   </dt>
 
       
-  <dt><a href="flotilla.data_model.metadata.html#flotilla.data_model.metadata.MetaData.merge_boolean_columns">merge_boolean_columns() (flotilla.data_model.metadata.MetaData method)</a>
-  </dt>
-
-      
   <dt><a href="flotilla.data_model.metadata.html#flotilla.data_model.metadata.MetaData">MetaData (class in flotilla.data_model.metadata)</a>
   </dt>
 
       
   <dt><a href="flotilla.test.conftest.html#flotilla.test.conftest.ExampleData.metadata">metadata (flotilla.test.conftest.ExampleData attribute)</a>
+  </dt>
+
+      
+  <dt><a href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData.minimum_samples">minimum_samples (flotilla.data_model.base.BaseData attribute)</a>
   </dt>
 
   </dl></td>
@@ -1212,6 +1182,10 @@
 
       
   <dt><a href="flotilla.compute.predict.html#flotilla.compute.predict.PredictorBase.oob_score_">oob_score_ (flotilla.compute.predict.PredictorBase attribute)</a>
+  </dt>
+
+      
+  <dt><a href="flotilla.compute.predict.html#flotilla.compute.predict.ConfigOptimizer.optimize_target">optimize_target() (flotilla.compute.predict.ConfigOptimizer static method)</a>
   </dt>
 
   </dl></td>
@@ -1563,7 +1537,7 @@
   </dt>
 
       
-  <dt><a href="flotilla.compute.decomposition.html#flotilla.compute.decomposition.DataFrameReducerBase.relabel_pcs">relabel_pcs() (flotilla.compute.decomposition.DataFrameReducerBase static method)</a>
+  <dt><a href="flotilla.compute.decomposition.html#flotilla.compute.decomposition.DataFrameReducerBase.relabel_pcs">relabel_pcs() (flotilla.compute.decomposition.DataFrameReducerBase method)</a>
   </dt>
 
   </dl></td>
@@ -1606,10 +1580,6 @@
 
       
   <dt><a href="flotilla.util.html#flotilla.util.serve_ipython">serve_ipython() (in module flotilla.util)</a>
-  </dt>
-
-      
-  <dt><a href="flotilla.data_model.metadata.html#flotilla.data_model.metadata.MetaData.set_outliers_by_merging_columns">set_outliers_by_merging_columns() (flotilla.data_model.metadata.MetaData method)</a>
   </dt>
 
       

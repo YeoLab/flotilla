@@ -80,8 +80,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Docker Installation Instructions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../installation.html#os-x-installation-instructions">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html#docker-instructions">Docker Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../api.html#general-use-plots">General use plots</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api.html#interactive-plots">Interactive plots</a></li>
@@ -156,14 +156,14 @@
 <span class="c"># Any informational data goes here</span>
 
 <div class="viewcode-block" id="MetaData"><a class="viewcode-back" href="../../../flotilla.data_model.metadata.html#flotilla.data_model.metadata.MetaData">[docs]</a><span class="k">class</span> <span class="nc">MetaData</span><span class="p">(</span><span class="n">BaseData</span><span class="p">):</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">phenotype_order</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">phenotype_to_color</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">phenotype_to_marker</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">phenotype_col</span><span class="o">=</span><span class="n">PHENOTYPE_COL</span><span class="p">,</span>
                  <span class="n">pooled_col</span><span class="o">=</span><span class="n">POOLED_COL</span><span class="p">,</span>
                  <span class="n">predictor_config_manager</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">MetaData</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">outliers</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                                       <span class="n">predictor_config_manager</span><span class="o">=</span><span class="n">predictor_config_manager</span><span class="p">,</span>
-                                       <span class="n">data_type</span><span class="o">=</span><span class="s">&#39;metadata&#39;</span><span class="p">)</span>
+                                       <span class="n">predictor_config_manager</span><span class="o">=</span><span class="n">predictor_config_manager</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">phenotype_col</span> <span class="o">=</span> <span class="n">phenotype_col</span> <span class="k">if</span> <span class="n">phenotype_col</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="k">else</span> \
             <span class="bp">self</span><span class="o">.</span><span class="n">_default_phenotype_col</span>
@@ -171,8 +171,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">phenotype_to_color</span> <span class="o">=</span> <span class="n">phenotype_to_color</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pooled_col</span> <span class="o">=</span> <span class="n">pooled_col</span>
 
-        <span class="n">phenotypes_not_in_order</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_phenotypes</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span>
-            <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phenotype_order</span><span class="p">))</span>
+        <span class="n">phenotypes_not_in_order</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_phenotypes</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phenotype_order</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">phenotypes_not_in_order</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">phenotype_order</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">phenotypes_not_in_order</span><span class="p">)</span>
@@ -189,15 +188,13 @@
 
         <span class="c"># Convert color strings to non-default matplotlib colors</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">phenotype_to_color</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">colors</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span>
-                <span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s">&#39;Dark2&#39;</span><span class="p">,</span> <span class="n">n_colors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_phenotypes</span><span class="p">))</span>
+            <span class="n">colors</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s">&#39;Dark2&#39;</span><span class="p">,</span> <span class="n">n_colors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_phenotypes</span><span class="p">))</span>
             <span class="k">for</span> <span class="n">phenotype</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_phenotypes</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">phenotype_to_color</span><span class="p">[</span><span class="n">phenotype</span><span class="p">]</span>
                 <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                    <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
-                        <span class="s">&#39;No color was assigned to the phenotype {}, &#39;</span>
-                        <span class="s">&#39;assigning a random color&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">phenotype</span><span class="p">))</span>
+                    <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;No color was assigned to the phenotype {}, &#39;</span>
+                                  <span class="s">&#39;assigning a random color&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">phenotype</span><span class="p">))</span>
                     <span class="n">color</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">rgb2hex</span><span class="p">(</span><span class="n">colors</span><span class="o">.</span><span class="n">next</span><span class="p">())</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">color</span> <span class="o">=</span> <span class="n">str_to_color</span><span class="p">[</span><span class="n">color</span><span class="p">]</span>
@@ -211,13 +208,6 @@
             <span class="n">colors</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s">&#39;Dark2&#39;</span><span class="p">,</span> <span class="n">n_colors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_phenotypes</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">phenotype</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_phenotypes</span><span class="p">,</span> <span class="n">colors</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">phenotype_to_color</span><span class="p">[</span><span class="n">phenotype</span><span class="p">]</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">rgb2hex</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
-        <span class="c"># Double-make sure that all incoming colors are stored as strings and</span>
-        <span class="c"># not lists</span>
-        <span class="k">for</span> <span class="n">phenotype</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">phenotype_to_color</span><span class="p">:</span>
-            <span class="n">color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">phenotype_to_color</span><span class="p">[</span><span class="n">phenotype</span><span class="p">]</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">color</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">color</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
-                <span class="n">color</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">rgb2hex</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">phenotype_to_color</span><span class="p">[</span><span class="n">phenotype</span><span class="p">]</span> <span class="o">=</span> <span class="n">color</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">phenotype_to_marker</span> <span class="o">=</span> <span class="n">phenotype_to_marker</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">phenotype_to_marker</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
@@ -282,49 +272,7 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="MetaData.sample_subsets"><a class="viewcode-back" href="../../../flotilla.data_model.metadata.html#flotilla.data_model.metadata.MetaData.sample_subsets">[docs]</a>    <span class="k">def</span> <span class="nf">sample_subsets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">subsets_from_metadata</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">MINIMUM_SAMPLE_SUBSET</span><span class="p">,</span>
-                                     <span class="s">&#39;samples&#39;</span><span class="p">)</span>
-</div>
-<div class="viewcode-block" id="MetaData.merge_boolean_columns"><a class="viewcode-back" href="../../../flotilla.data_model.metadata.html#flotilla.data_model.metadata.MetaData.merge_boolean_columns">[docs]</a>    <span class="k">def</span> <span class="nf">merge_boolean_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">columns</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Merge boolean columns in data and return logical OR</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        columns : list-like</span>
-<span class="sd">            Boolean columns whose attributes to merge</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        merged : pandas.Series</span>
-<span class="sd">            A single boolean column, with True for each row that had True in</span>
-<span class="sd">            any column</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">merged</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">columns</span><span class="p">]</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">merged</span>
-</div>
-<div class="viewcode-block" id="MetaData.set_outliers_by_merging_columns"><a class="viewcode-back" href="../../../flotilla.data_model.metadata.html#flotilla.data_model.metadata.MetaData.set_outliers_by_merging_columns">[docs]</a>    <span class="k">def</span> <span class="nf">set_outliers_by_merging_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">columns</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Merge boolean columns of data into &quot;outlier&quot; column</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        columns : list-like</span>
-<span class="sd">            Column names whose boolean attributes to merge</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        is_ever_an_outlier : pandas.Series</span>
-<span class="sd">            Boolean series indicating whether this sample was ever indicated</span>
-<span class="sd">            as an outlier</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="ne">UserWarning</span><span class="p">(</span><span class="s">&#39;Over-writing existing outlier columns</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;outlier&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
-        <span class="k">print</span> <span class="s">&quot;using thse columns: </span><span class="se">\n</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">columns</span><span class="p">))</span>
-        <span class="n">is_ever_an_outlier</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge_boolean_columns</span><span class="p">(</span>
-            <span class="n">columns</span><span class="p">)</span>
-        <span class="k">print</span> <span class="s">&quot;there are {} outliers&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">is_ever_an_outlier</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;outlier&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">is_ever_an_outlier</span>
-        <span class="k">return</span> <span class="n">is_ever_an_outlier</span></div></div>
+                                     <span class="s">&#39;samples&#39;</span><span class="p">)</span></div></div>
 </pre></div>
 
     </div>
