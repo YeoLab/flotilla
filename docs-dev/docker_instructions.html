@@ -165,6 +165,13 @@ application):</p>
 <p>curl <a class="reference external" href="https://raw.githubusercontent.com/YeoLab/flotilla/master/docker/start_docker.py">https://raw.githubusercontent.com/YeoLab/flotilla/master/docker/start_docker.py</a> | python</p>
 </li>
 </ol>
+<p>After the ipython notebook interface opens, test the installation with
+our test dataset by running the following commands in a new notebook:</p>
+<blockquote>
+<div>import flotilla
+study = flotilla.embark(&#8220;<a class="reference external" href="http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22/datapackage.json">http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22/datapackage.json</a>&#8221;)
+study.interactive_pca()</div></blockquote>
+<p>Thanks for using flotilla!</p>
 </div>
 
 
