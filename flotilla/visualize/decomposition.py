@@ -191,7 +191,7 @@ class DecompositionViz(object):
             self.pc_loadings_labels[pc] = labels
             self.top_features.update(labels)
 
-    def __call__(self, ax=None, title='', plot_violins=False,
+    def __call__(self, ax=None, title='', plot_violins=True,
                  show_point_labels=False,
                  show_vectors=True,
                  show_vector_labels=True,
@@ -397,13 +397,10 @@ class DecompositionViz(object):
         nrows = 1
         vector_labels = list(set(self.magnitudes[:self.n_vectors].index.union(
             pd.Index(self.top_features))))
-
-
         while ncols * nrows < len(vector_labels):
             nrows += 1
         self.violins_fig, axes = plt.subplots(nrows=nrows, ncols=ncols,
-                                              figsize=(4 * ncols, 4 * nrows),
-                                              sharey=False)
+                                              figsize=(4 * ncols, 4 * nrows))
 
         if self.feature_renamer is not None:
             renamed_vectors = map(self.feature_renamer, vector_labels)
@@ -419,10 +416,7 @@ class DecompositionViz(object):
                 None
             outliers = self.outliers[feature_id] if self.outliers is not None \
                 else None
-            if feature_id != renamed:
-                title = '{}\n{}'.format(feature_id, renamed)
-            else:
-                title = feature_id
+            title = '{}\n{}'.format(feature_id, renamed)
             violinplot(singles, pooled_data=pooled, outliers=outliers,
                        groupby=self.groupby, color_ordered=self.color_ordered,
                        order=self.order, title=title,

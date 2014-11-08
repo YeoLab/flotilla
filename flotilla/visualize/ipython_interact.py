@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 
 
 
-# from ..compute.predict import CLASSIFIER
+# from ..compute.predict import default_classifier
 from flotilla.util import link_to_list
 from ..visualize.color import red
 from .network import NetworkerViz
@@ -91,8 +91,8 @@ class Interactive(object):
                         featurewise=False,
                         x_pc=(1, 10), y_pc=(1, 10),
                         show_point_labels=False,
-                        list_link='', plot_violins=False,
-                        savefile=''):
+                        list_link='', plot_violins=True,
+                        savefile='data/last.pca.pdf'):
 
         def do_interact(data_type='expression',
                         sample_subset=self.default_sample_subsets,
@@ -102,7 +102,7 @@ class Interactive(object):
                         x_pc=1, y_pc=2,
                         plot_violins=True,
                         show_point_labels=False,
-                        savefile=''):
+                        savefile='data/last.pca.pdf'):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -146,6 +146,9 @@ class Interactive(object):
                 if plot_violins:
                     pca.violins_fig.savefig(violins_file)
 
+
+        # self.plot_study_sample_legend()
+
         if feature_subsets is None:
             feature_subsets = Interactive.get_feature_subsets(self, data_types)
 
@@ -175,7 +178,7 @@ class Interactive(object):
                           weight_fun=None,
                           use_pc_1=True, use_pc_2=True, use_pc_3=True,
                           use_pc_4=True,
-                          savefile=''):
+                          savefile='data/last.graph.pdf'):
 
         from IPython.html.widgets import interact
 
@@ -191,7 +194,7 @@ class Interactive(object):
                         cov_std_cut=1.8, n_pcs=5,
                         feature_of_interest="RBFOX2",
                         draw_labels=False,
-                        savefile=''):
+                        savefile='data/last.graph.pdf'):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -254,7 +257,7 @@ class Interactive(object):
                                predictor_types=None,
                                score_coefficient=(0.1, 20),
                                draw_labels=False,
-                               savefile=''):
+                               savefile='data/last.clf.pdf'):
 
         def do_interact(data_type,
                         sample_subset,
@@ -262,7 +265,7 @@ class Interactive(object):
                         predictor_type=default_classifier,
                         categorical_variable='outlier',
                         score_coefficient=2,
-                        savefile=''):
+                        savefile='data/last.clf.pdf'):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -416,7 +419,7 @@ class Interactive(object):
             bootstrapped_kws = {}
 
         return interact(do_interact,
-                        swample_subset=sample_subsets,
+                        sample_subset=sample_subsets,
                         feature_subset=feature_subsets,
                         color=color, x_offset=x_offset,
                         use_these_modalities=use_these_modalities,
@@ -472,113 +475,11 @@ class Interactive(object):
                         color=colors,
                         savefile='')
 
-    @staticmethod
-    def interactive_choose_outliers(self,
-                                    data_types=('expression', 'splicing'),
-                                    sample_subsets=None,
-                                    feature_subsets=None,
-                                    featurewise=False,
-                                    x_pc=(1, 3), y_pc=(1, 3),
-                                    show_point_labels=False,
-                                    kernel=['rbf','linear','poly','sigmoid'],
-                                    gamma=(0, 25),
-                                    nu=(0.1, 9.9),
-                                    ):
-
-        def do_interact(data_type='expression',
-                        sample_subset=self.default_sample_subset,
-                        feature_subset=self.default_feature_subset,
-                        x_pc=1, y_pc=2,
-                        show_point_labels=False,
-                        kernel='rbf',
-                        gamma=16,
-                        nu=.2,
-                        ):
-            print "transforming input gamma by 2^-(input): %f" % gamma
-            gamma = 2 ** -float(gamma)
-            print "transforming input nu by input/10: %f" % nu
-            nu = float(nu) / 10
-            kernel = str(kernel)
-            for k, v in locals().iteritems():
-                if k == 'self':
-                    continue
-                sys.stdout.write('{} : {}\n'.format(k, v))
-
-            else:
-                renamer = lambda x: x
-                data_model = None
-
-            if feature_subset not in self.default_feature_subsets[data_type]:
-                warnings.warn("This feature_subset ('{}') is not available in "
-                              "this data type ('{}'). Falling back on all "
-                              "features.".format(feature_subset, data_type))
-
-            reducer, outlier_detector = self.detect_outliers(data_type=data_type,
-                                                             sample_subset=sample_subset,
-                                                             feature_subset=feature_subset,
-                                                             reducer=None,
-                                                             reducer_kwargs=None,
-                                                             outlier_detection_method=None,
-                                                             outlier_detection_method_kwargs={'gamma': gamma,
-                                                                                              'nu': nu,
-                                                                                              'kernel': kernel})
-            if data_type == "expression":
-                obj = self.expression
-            if data_type == "splicing":
-                obj = self.splicing
-
-            obj.plot_outliers(reducer, outlier_detector,
-                              feature_renamer=renamer,
-                              show_point_labels=show_point_labels,
-                              x_pc="pc_" + str(x_pc),
-                              y_pc="pc_" + str(y_pc))
-
-            print "total samples:", len(outlier_detector.outliers)
-            print "outlier samples:", outlier_detector.outliers.sum()
-            print "metadata column name:", outlier_detector.title
-
-        if feature_subsets is None:
-            feature_subsets = Interactive.get_feature_subsets(self, data_types)
-
-        if sample_subsets is None:
-            sample_subsets = self.default_sample_subsets
-
-        return interact(do_interact,
-                        data_type=data_types,
-                        sample_subset=sample_subsets,
-                        feature_subset=feature_subsets,
-                        x_pc=x_pc, y_pc=y_pc,
-                        show_point_labels=show_point_labels,
-                        kernel=kernel,
-                        nu=nu,
-                        gamma=gamma)
-
-    @staticmethod
-    def interactive_reset_outliers(self):
-        """User selects from columns that start with 'outlier_' to merge
-        multiple outlier classifications"""
-        outlier_columns = dict()
-
-        for column in self.metadata.data.columns:
-            if column.startswith("outlier_"):
-                outlier_columns[column] = False
-
-        def do_interact(**columns):
-            if len(columns.keys()) == 0:
-                print "You have not specified any 'outlier_' columns in study.metadata.data... \n" \
-                      "This function will do nothing to your data."
-            else:
-                self.metadata.set_outliers_by_merging_columns(
-                    [k for (k, v) in columns.items() if v])
-
-        interact(do_interact, **outlier_columns)
-
-
         # @staticmethod
         # def interactive_clusteredheatmap(self):
         # def do_interact(data_type='expression',
-        #                     sample_subset=self.default_sample_subsets,
-        #                     feature_subset=self.default_feature_subset,
+        # sample_subset=self.default_sample_subsets,
+        # feature_subset=self.default_feature_subset,
         #                     metric='euclidean',
         #                     linkage_method='median',
         #                     list_link='',
