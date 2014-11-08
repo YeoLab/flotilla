@@ -48,9 +48,9 @@ after_script:
   - sudo pip install -r doc/requirements.txt --use-mirrors
   - RELEASE=release
   - MASTER=master
-  - if [[ $TRAVIS_BRANCH == "v*.*.*" ]] ; then export DEPLOY_HTML_DIR=docs ; fi
+  - if [[ $TRAVIS_BRANCH == v*.*.* ]] ; then export DEPLOY_HTML_DIR=docs ; fi
   - if [[ $TRAVIS_BRANCH == "$MASTER" ]] ; then export DEPLOY_HTML_DIR=docs-dev ; fi
-  - if [[ $TRAVIS_BRANCH == "v*.*.*" ]] || [[ $TRAVIS_BRANCH == "$MASTER" ]] ; then cd doc ; make setup_gh_pages ; make generate ; make deploy ; fi
+  - if [[ $TRAVIS_BRANCH == v*.*.* ]] || [[ $TRAVIS_BRANCH == "$MASTER" ]] ; then cd doc ; make setup_gh_pages ; make generate ; make deploy ; fi
 
 # For slack notifications
 notifications:
