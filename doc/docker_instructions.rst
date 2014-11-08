@@ -20,12 +20,3 @@ Note: On Mac OS X and Windows you will need to start docker through the
    application):
 
    curl https://raw.githubusercontent.com/YeoLab/flotilla/master/docker/start_docker.py | python
-
-After the ipython notebook interface opens, test the installation with
-our test dataset by running the following commands in a new notebook:
-
-    import flotilla
-    study = flotilla.embark("http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22/datapackage.json")
-    study.interactive_pca()
-
-Thanks for using flotilla!
