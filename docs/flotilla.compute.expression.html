@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>flotilla.compute.expression module &mdash; flotilla 0.2.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootswatch-3.2.0/paper/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="flotilla 0.2.2 documentation" href="index.html" />
+    <link rel="up" title="flotilla.compute package" href="flotilla.compute.html" />
+    <link rel="next" title="flotilla.compute.generic module" href="flotilla.compute.generic.html" />
+    <link rel="prev" title="flotilla.compute.decomposition module" href="flotilla.compute.decomposition.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          Flotilla</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.2</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
+            
+                <li><a href="tutorial.html">Tutorial</a></li>
+                <li><a href="gallery/index.html">Gallery</a></li>
+                <li><a href="http://yeolab.ucsd.edu">YeoLab@UCSD</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">flotilla</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="flotilla.html">flotilla package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What&#8217;s new in the package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-1-november-6th-2014">v0.2.1 (November 6th, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#docker-instructions">Docker Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api.html#general-use-plots">General use plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#interactive-plots">Interactive plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#machine-learning-plots">Machine learning plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#splicing-specific-plots">Splicing-specific plots</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="create_datapackage.html">Create your very own datapackage!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Flotilla tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#install-flotilla">Install flotilla</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#create-a-datapackage">Create a datapackage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#plotting-functions">Plotting functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#recreated-papers">Recreated papers</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">flotilla.compute.expression module</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="_sources/flotilla.compute.expression.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <div class="section" id="module-flotilla.compute.expression">
+<span id="flotilla-compute-expression-module"></span><h1>flotilla.compute.expression module<a class="headerlink" href="#module-flotilla.compute.expression" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="flotilla.compute.expression.TwoWayGeneComparisonLocal">
+<em class="property">class </em><tt class="descclassname">flotilla.compute.expression.</tt><tt class="descname">TwoWayGeneComparisonLocal</tt><big>(</big><em>sample1_name</em>, <em>sample2_name</em>, <em>df</em>, <em>p_value_cutoff=0.001</em>, <em>local_fraction=0.1</em>, <em>bonferroni=True</em>, <em>fdr=None</em>, <em>dtype='RPKM'</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/expression.html#TwoWayGeneComparisonLocal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.expression.TwoWayGeneComparisonLocal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<p>Compare gene expression for two samples</p>
+<p>Plots a scatter-plot of sample1 vs sample2, taken from df.
+Calculates differentially expressed genes with a Z-test from
+the closest (local_fraction * 100)%  points. Stores result from
+statistical calculations in <a href="#id1"><span class="problematic" id="id2">self.result_</span></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>sample1_name</strong> : str</p>
+<blockquote>
+<div><p>Name of the first (control) sample. Must be a row name (index) in
+df. Plotted on the x-axis.</p>
+</div></blockquote>
+<p><strong>sample2_name</strong> : str</p>
+<blockquote>
+<div><p>Name of the second (treatment) sample. Must be a row name (index)
+in df. Plotted on the y-axis.</p>
+</div></blockquote>
+<p><strong>df</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A samples (rows) x features (columns) pandas DataFrame of
+expression values</p>
+</div></blockquote>
+<p><strong>p_value_cutoff</strong> : float, optional</p>
+<blockquote>
+<div><p>Cutoff for the p-values. Default 0.001.</p>
+</div></blockquote>
+<p><strong>local_fraction</strong> : float, optional</p>
+<blockquote>
+<div><p>What fraction of genes to use for <em>local</em> z-score calculation.
+Default 0.1</p>
+</div></blockquote>
+<p><strong>bonferonni</strong> : bool, optional</p>
+<blockquote>
+<div><p>Whether or not to use the Bonferonni correction on p-values</p>
+</div></blockquote>
+<p><strong>fdr</strong> : ???, optional</p>
+<blockquote>
+<div><p>benjamini-hochberg FDR filtering - check result, proceed with
+caution. sometimes breaks :(</p>
+</div></blockquote>
+<p><strong>dtype</strong> : str, optional</p>
+<blockquote class="last">
+<div><p>Data type</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="flotilla.compute.expression.TwoWayGeneComparisonLocal.gstats">
+<tt class="descname">gstats</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flotilla/compute/expression.html#TwoWayGeneComparisonLocal.gstats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.expression.TwoWayGeneComparisonLocal.gstats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write general statistics of the two-way comparison to standard output</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.compute.expression.benjamini_hochberg">
+<tt class="descclassname">flotilla.compute.expression.</tt><tt class="descname">benjamini_hochberg</tt><big>(</big><em>p_values</em>, <em>fdr=0.1</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/expression.html#benjamini_hochberg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.expression.benjamini_hochberg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Benjamini-Hochberg correction for multiple hypothesis testing</p>
+<p>From: <a class="reference external" href="http://udel.edu/~mcdonald/statmultcomp.html">http://udel.edu/~mcdonald/statmultcomp.html</a>
+One good technique for controlling the false discovery rate was briefly
+mentioned by Simes (1986) and developed in detail by Benjamini and Hochberg
+(1995). Put the individual P-values in order, from smallest to largest.
+The smallest P-value has a rank of i=1, the next has i=2, etc. Then
+compare each individual P-value to (i/m)Q, where m is the total number of
+test and Q is the chosen false discovery rate. The largest P-value that
+has P&lt;(i/m)Q is significant, and all P-values smaller than it are also
+significant.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>p_values</strong> : list</p>
+<blockquote>
+<div><p>List of p-values</p>
+</div></blockquote>
+<p><strong>fdr</strong> : float, optional</p>
+<blockquote>
+<div><p>Desired false-discovery rate cutoff</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>sigs</strong> : numpy.array</p>
+<blockquote class="last">
+<div><p>Boolean array of whether or not the provided p-values are significant
+given the FDR cutoff</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<div class="container">
+    
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
+    </p>
+  </div>
+</footer>
+    <a href="http://olgabotvinnik.com/">Olga B. Botvinnik</a> is funded by the
+    <a href="https://ndseg.asee.org/">NDSEG</a> fellowship and is a
+    <a href="http://numfocus.org/">NumFOCUS</a>
+    <a href="http://numfocus.org/pages/john_hunter_fellowship_2014.html">John
+    Hunter Technology Fellow</a>.<br/>
+    Michael T. Lovci was partially funded by a fellowship from
+    <a href="http://www.gene.com/">Genentech</a>.</br>
+    Partially funded by <a href="http://www.nih.gov/">NIH</a> grants NS075449
+    and HG004659 and <a href="http://www.cirm.ca.gov/">CIRM</a> grants RB4-06045
+    and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene
+    Yeo</a>. <br/>
+
+    
+  </body>
+</html>

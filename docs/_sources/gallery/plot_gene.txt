@@ -1,0 +1,18 @@
+
+.. _plot_gene:
+
+
+Plot expression of a gene in all phenotypes
+==========================================
+
+In each column of the phenotype, the pooled samples are plotted as black dots
+and the outliers are plotted as grey shadows.
+
+
+
+.. image:: _images/plot_gene.png
+
+**Python source code:** :download:`[download source: plot_gene.py]<plot_gene.py>`
+
+.. literalinclude:: plot_gene.py
+    :lines: 9-

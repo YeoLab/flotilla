@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>What’s new in the package &mdash; flotilla 0.2.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootswatch-3.2.0/paper/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="flotilla 0.2.2 documentation" href="index.html" />
+    <link rel="next" title="OS X Installation instructions" href="installation.html" />
+    <link rel="prev" title="flotilla.util module" href="flotilla.util.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          Flotilla</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.2</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
+            
+                <li><a href="tutorial.html">Tutorial</a></li>
+                <li><a href="gallery/index.html">Gallery</a></li>
+                <li><a href="http://yeolab.ucsd.edu">YeoLab@UCSD</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="modules.html">flotilla</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="flotilla.html">flotilla package</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">What&#8217;s new in the package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#v0-2-1-november-6th-2014">v0.2.1 (November 6th, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#docker-instructions">Docker Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api.html#general-use-plots">General use plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#interactive-plots">Interactive plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#machine-learning-plots">Machine learning plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#splicing-specific-plots">Splicing-specific plots</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="create_datapackage.html">Create your very own datapackage!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Flotilla tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#install-flotilla">Install flotilla</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#create-a-datapackage">Create a datapackage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#plotting-functions">Plotting functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#recreated-papers">Recreated papers</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">What&#8217;s new in the package</a><ul>
+<li><a class="reference internal" href="#v0-2-1-november-6th-2014">v0.2.1 (November 6th, 2014)</a><ul>
+<li><a class="reference internal" href="#documentation-updates">Documentation updates</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a><ul>
+<li><a class="reference internal" href="#new-features">New features</a></li>
+<li><a class="reference internal" href="#api-changes">API changes</a></li>
+<li><a class="reference internal" href="#other-changes">Other Changes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="_sources/whatsnew.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <div class="section" id="what-s-new-in-the-package">
+<span id="whatsnew"></span><h1>What&#8217;s new in the package<a class="headerlink" href="#what-s-new-in-the-package" title="Permalink to this headline">¶</a></h1>
+<p>A catalog of new features, improvements, and bug-fixes in each release.</p>
+<div class="section" id="v0-2-1-november-6th-2014">
+<h2>v0.2.1 (November 6th, 2014)<a class="headerlink" href="#v0-2-1-november-6th-2014" title="Permalink to this headline">¶</a></h2>
+<p>This is a patch release, with non-breaking changes from v0.2.0.</p>
+<div class="section" id="documentation-updates">
+<h3>Documentation updates<a class="headerlink" href="#documentation-updates" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Update <a class="reference external" href="../gallery">gallery</a></li>
+<li>Update tutorial for <a class="reference external" href="../tutorial/addvanced_study_making.ipynb">advanced study making</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="v0-2-0-november-5th-2014">
+<h2>v0.2.0 (November 5th, 2014)<a class="headerlink" href="#v0-2-0-november-5th-2014" title="Permalink to this headline">¶</a></h2>
+<p>This is a minor release, with some breaking changes from v0.1.1.</p>
+<div class="section" id="new-features">
+<h3>New features<a class="headerlink" href="#new-features" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Plot the expression or splicing of two <em>samples</em> with
+<a class="reference internal" href="flotilla.data_model.study.html#flotilla.data_model.study.Study.plot_two_samples" title="flotilla.data_model.study.Study.plot_two_samples"><tt class="xref py py-meth docutils literal"><span class="pre">Study.plot_two_samples()</span></tt></a></li>
+<li>Plot the expression or splicing of two <em>features</em> with
+<a class="reference internal" href="flotilla.data_model.study.html#flotilla.data_model.study.Study.plot_two_features" title="flotilla.data_model.study.Study.plot_two_features"><tt class="xref py py-meth docutils literal"><span class="pre">Study.plot_two_features()</span></tt></a></li>
+<li>Detect outliers with <tt class="xref py py-meth docutils literal"><span class="pre">Study.interactive_choose_outliers()</span></tt> which
+performs a <tt class="docutils literal"><span class="pre">OneClassSVM</span></tt> on the PCA-reduced space of data (either
+expression or splicing), using the first three components</li>
+<li><a class="reference internal" href="flotilla.data_model.study.html#flotilla.data_model.study.Study" title="flotilla.data_model.study.Study"><tt class="xref py py-class docutils literal"><span class="pre">Study</span></tt></a> doesn&#8217;t filter out the pooled or outlier samples from the
+data, only technical outliers with fewer reads than specified in the
+argument <tt class="docutils literal"><span class="pre">mapping_stats_min_reads</span></tt>.</li>
+<li>To filter expression or splicing data on the number of samples that must
+detect each feature, you can specify <tt class="docutils literal"><span class="pre">expression_thresh</span></tt>, and
+<tt class="docutils literal"><span class="pre">metadata_min_samples</span></tt> in the <a class="reference internal" href="flotilla.data_model.study.html#flotilla.data_model.study.Study" title="flotilla.data_model.study.Study"><tt class="xref py py-class docutils literal"><span class="pre">Study</span></tt></a> constructor.<ul>
+<li>For example, if <tt class="docutils literal"><span class="pre">expression_thresh=1</span></tt> and <tt class="docutils literal"><span class="pre">metadata_min_samples=3</span></tt>,
+then we will only take genes which have expression values greater than
+1 in at least 3 samples. Additionally, we will also take splicing events
+which were detected in at least three cells, since
+<tt class="docutils literal"><span class="pre">metadata_min_samples</span></tt> applies to <em>all</em> data types.</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="api-changes">
+<h3>API changes<a class="headerlink" href="#api-changes" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The attribute <tt class="docutils literal"><span class="pre">data</span></tt> in <a class="reference internal" href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData" title="flotilla.data_model.base.BaseData"><tt class="xref py py-class docutils literal"><span class="pre">BaseData</span></tt></a> (i.e.
+<tt class="xref py py-attr docutils literal"><span class="pre">BaseData.data</span></tt>) now contains <strong>all</strong> the data, including pooled,
+singles, and outliers</li>
+<li>The attribute <tt class="docutils literal"><span class="pre">data_original</span></tt> in <a class="reference internal" href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData" title="flotilla.data_model.base.BaseData"><tt class="xref py py-class docutils literal"><span class="pre">BaseData</span></tt></a> (i.e.
+<tt class="xref py py-attr docutils literal"><span class="pre">BaseData.data_original</span></tt>) contains the original, unfiltered
+data. For example, before removing features detected in fewer than 3 samples
+with expression &gt; 1.</li>
+<li><a class="reference internal" href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData" title="flotilla.data_model.base.BaseData"><tt class="xref py py-class docutils literal"><span class="pre">BaseData</span></tt></a> now has the attributes
+<a class="reference internal" href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData.singles" title="flotilla.data_model.base.BaseData.singles"><tt class="xref py py-attr docutils literal"><span class="pre">BaseData.singles</span></tt></a>, <a class="reference internal" href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData.pooled" title="flotilla.data_model.base.BaseData.pooled"><tt class="xref py py-attr docutils literal"><span class="pre">BaseData.pooled</span></tt></a>, and
+<a class="reference internal" href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData.outliers" title="flotilla.data_model.base.BaseData.outliers"><tt class="xref py py-attr docutils literal"><span class="pre">BaseData.outliers</span></tt></a> which are on-the-fly subsets of
+<tt class="xref py py-attr docutils literal"><span class="pre">BaseData.data</span></tt>. This is to maintain data provenance, meaning if
+&#8220;outliers&#8221; is changed, this is also changed.</li>
+<li>In <a class="reference internal" href="flotilla.data_model.study.html#flotilla.data_model.study.Study" title="flotilla.data_model.study.Study"><tt class="xref py py-class docutils literal"><span class="pre">Study</span></tt></a>, you now must specify <tt class="docutils literal"><span class="pre">expression_feature_rename_col</span></tt>,
+<tt class="docutils literal"><span class="pre">splicing_feature_rename_col</span></tt>, <tt class="docutils literal"><span class="pre">mapping_stats_number_mapped_col</span></tt>
+explicitly, they are no longer defaulting to,
+<tt class="docutils literal"><span class="pre">{splicing,expression}_feature_rename_col=&quot;gene_name&quot;</span></tt> and
+<tt class="docutils literal"><span class="pre">mapping_stats_number_mapped_col=&quot;Uniquely</span> <span class="pre">mapped</span> <span class="pre">reads</span> <span class="pre">number&quot;</span></tt></li>
+</ul>
+</div>
+<div class="section" id="other-changes">
+<h3>Other Changes<a class="headerlink" href="#other-changes" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Status messages in <a class="reference internal" href="flotilla.html#flotilla.embark" title="flotilla.embark"><tt class="xref py py-func docutils literal"><span class="pre">embark()</span></tt></a> have been moved to <tt class="docutils literal"><span class="pre">stdout</span></tt> instead
+of <tt class="docutils literal"><span class="pre">stderr</span></tt> to avoid confusion that something is going wrong</li>
+<li>In <a class="reference internal" href="flotilla.html#flotilla.embark" title="flotilla.embark"><tt class="xref py py-func docutils literal"><span class="pre">embark()</span></tt></a>, user gets notified which samples are removed for having
+too few reads (default minimum number of reads is <span class="math">\(5\times 10^5\)</span>, or
+half a million reads).</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<div class="container">
+    
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
+    </p>
+  </div>
+</footer>
+    <a href="http://olgabotvinnik.com/">Olga B. Botvinnik</a> is funded by the
+    <a href="https://ndseg.asee.org/">NDSEG</a> fellowship and is a
+    <a href="http://numfocus.org/">NumFOCUS</a>
+    <a href="http://numfocus.org/pages/john_hunter_fellowship_2014.html">John
+    Hunter Technology Fellow</a>.<br/>
+    Michael T. Lovci was partially funded by a fellowship from
+    <a href="http://www.gene.com/">Genentech</a>.</br>
+    Partially funded by <a href="http://www.nih.gov/">NIH</a> grants NS075449
+    and HG004659 and <a href="http://www.cirm.ca.gov/">CIRM</a> grants RB4-06045
+    and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene
+    Yeo</a>. <br/>
+
+    
+  </body>
+</html>

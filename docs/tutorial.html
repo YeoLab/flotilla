@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Flotilla tutorial &mdash; flotilla 0.2.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootswatch-3.2.0/paper/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="flotilla 0.2.2 documentation" href="index.html" />
+    <link rel="next" title="OS X Installation instructions" href="installation.html" />
+    <link rel="prev" title="Create your very own datapackage!" href="create_datapackage.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          Flotilla</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.2</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
+            
+                <li><a href="#">Tutorial</a></li>
+                <li><a href="gallery/index.html">Gallery</a></li>
+                <li><a href="http://yeolab.ucsd.edu">YeoLab@UCSD</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="modules.html">flotilla</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="flotilla.html">flotilla package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What&#8217;s new in the package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-1-november-6th-2014">v0.2.1 (November 6th, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#docker-instructions">Docker Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api.html#general-use-plots">General use plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#interactive-plots">Interactive plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#machine-learning-plots">Machine learning plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#splicing-specific-plots">Splicing-specific plots</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="create_datapackage.html">Create your very own datapackage!</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Flotilla tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#install-flotilla">Install flotilla</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#create-a-datapackage">Create a datapackage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plotting-functions">Plotting functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#recreated-papers">Recreated papers</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Flotilla tutorial</a><ul>
+<li><a class="reference internal" href="#install-flotilla">Install flotilla</a></li>
+<li><a class="reference internal" href="#create-a-datapackage">Create a datapackage</a></li>
+<li><a class="reference internal" href="#plotting-functions">Plotting functions</a></li>
+<li><a class="reference internal" href="#recreated-papers">Recreated papers</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="_sources/tutorial.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <div class="section" id="flotilla-tutorial">
+<span id="tutorial"></span><h1>Flotilla tutorial<a class="headerlink" href="#flotilla-tutorial" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="install-flotilla">
+<h2>Install flotilla<a class="headerlink" href="#install-flotilla" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#docker-instructions">Docker Instructions</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="create-a-datapackage">
+<h2>Create a datapackage<a class="headerlink" href="#create-a-datapackage" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/barebones_study_making.html">Create a barebones datapackage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/barebones_study_making.html#shalek-and-sujita-et-al-2013">Shalek and Sujita, <em>et al</em> (2013)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/barebones_study_making.html#expression-data">Expression data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/barebones_study_making.html#expression-feature-data">Expression feature data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/barebones_study_making.html#splicing-data">Splicing Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/barebones_study_making.html#metadata">Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/barebones_study_making.html#mapping-stats-data">Mapping stats data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/barebones_study_making.html#create-a-flotilla-study">Create a <tt class="docutils literal"><span class="pre">flotilla</span></tt> Study!</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="plotting-functions">
+<h2>Plotting functions<a class="headerlink" href="#plotting-functions" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul class="simple">
+</ul>
+</div>
+</div>
+<div class="section" id="recreated-papers">
+<h2>Recreated papers<a class="headerlink" href="#recreated-papers" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/shalek2013.html">Shalek and Sujita, <em>et al</em> (2013)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/shalek2013.html#expression-data">Expression data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/shalek2013.html#expression-feature-data">Expression feature data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/shalek2013.html#splicing-data">Splicing Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/shalek2013.html#metadata">Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/shalek2013.html#mapping-stats-data">Mapping stats data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/shalek2013.html#create-a-flotilla-study">Create a <tt class="docutils literal"><span class="pre">flotilla</span></tt> Study!</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/shalek2013.html#figure-1">Figure 1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/shalek2013.html#figure-2">Figure 2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/shalek2013.html#figure-3">Figure 3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/shalek2013.html#figure-4">Figure 4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/shalek2013.html#supplementary-figures">Supplementary figures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/shalek2013.html#conclusions">Conclusions</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<div class="container">
+    
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
+    </p>
+  </div>
+</footer>
+    <a href="http://olgabotvinnik.com/">Olga B. Botvinnik</a> is funded by the
+    <a href="https://ndseg.asee.org/">NDSEG</a> fellowship and is a
+    <a href="http://numfocus.org/">NumFOCUS</a>
+    <a href="http://numfocus.org/pages/john_hunter_fellowship_2014.html">John
+    Hunter Technology Fellow</a>.<br/>
+    Michael T. Lovci was partially funded by a fellowship from
+    <a href="http://www.gene.com/">Genentech</a>.</br>
+    Partially funded by <a href="http://www.nih.gov/">NIH</a> grants NS075449
+    and HG004659 and <a href="http://www.cirm.ca.gov/">CIRM</a> grants RB4-06045
+    and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene
+    Yeo</a>. <br/>
+
+    
+  </body>
+</html>

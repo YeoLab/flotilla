@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>flotilla.visualize.network &mdash; flotilla 0.2.2 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootswatch-3.2.0/paper/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.2.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="flotilla 0.2.2 documentation" href="../../../index.html" />
+    <link rel="up" title="flotilla" href="../../flotilla.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html">
+          Flotilla</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.2</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
+            
+                <li><a href="../../../tutorial.html">Tutorial</a></li>
+                <li><a href="../../../gallery/index.html">Gallery</a></li>
+                <li><a href="http://yeolab.ucsd.edu">YeoLab@UCSD</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">flotilla</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html">flotilla package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../whatsnew.html">What&#8217;s new in the package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-1-november-6th-2014">v0.2.1 (November 6th, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html#docker-instructions">Docker Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#general-use-plots">General use plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#interactive-plots">Interactive plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#machine-learning-plots">Machine learning plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#splicing-specific-plots">Splicing-specific plots</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../create_datapackage.html">Create your very own datapackage!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Flotilla tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#install-flotilla">Install flotilla</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#create-a-datapackage">Create a datapackage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#plotting-functions">Plotting functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#recreated-papers">Recreated papers</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <h1>Source code for flotilla.visualize.network</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Visualize results from :py:mod:flotilla.compute.network</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="kn">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="kn">as</span> <span class="nn">mpl</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="kn">as</span> <span class="nn">sns</span>
+
+<span class="kn">from</span> <span class="nn">..compute.network</span> <span class="kn">import</span> <span class="n">Networker</span>
+<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">dict_to_str</span>
+<span class="kn">from</span> <span class="nn">.color</span> <span class="kn">import</span> <span class="n">dark2</span><span class="p">,</span> <span class="n">almost_black</span><span class="p">,</span> <span class="n">green</span><span class="p">,</span> <span class="n">red</span>
+
+
+<div class="viewcode-block" id="NetworkerViz"><a class="viewcode-back" href="../../../flotilla.visualize.network.html#flotilla.visualize.network.NetworkerViz">[docs]</a><span class="k">class</span> <span class="nc">NetworkerViz</span><span class="p">(</span><span class="n">Networker</span><span class="p">):</span>
+    <span class="c"># TODO: needs to be decontaminated, as it requires methods from</span>
+    <span class="c"># data_object;</span>
+    <span class="c"># maybe this class should move to data_model.BaseData</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">DataModel</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DataModel</span> <span class="o">=</span> <span class="n">DataModel</span>
+        <span class="n">Networker</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+<div class="viewcode-block" id="NetworkerViz.draw_graph"><a class="viewcode-back" href="../../../flotilla.visualize.network.html#flotilla.visualize.network.NetworkerViz.draw_graph">[docs]</a>    <span class="k">def</span> <span class="nf">draw_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                   <span class="n">n_pcs</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                   <span class="n">use_pc_1</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">use_pc_2</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">use_pc_3</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">use_pc_4</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                   <span class="n">degree_cut</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">cov_std_cut</span><span class="o">=</span><span class="mf">1.8</span><span class="p">,</span>
+                   <span class="n">weight_function</span><span class="o">=</span><span class="s">&#39;no_weight&#39;</span><span class="p">,</span>
+                   <span class="n">featurewise</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>  <span class="c"># else feature_components</span>
+                   <span class="n">rpkms_not_events</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>  <span class="c"># else event features</span>
+                   <span class="n">feature_of_interest</span><span class="o">=</span><span class="s">&#39;RBFOX2&#39;</span><span class="p">,</span> <span class="n">draw_labels</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                   <span class="n">reduction_name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                   <span class="n">feature_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                   <span class="n">sample_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                   <span class="n">graph_file</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span>
+                   <span class="n">compare</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span>
+                   <span class="n">sample_id_to_color</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                   <span class="n">label_to_color</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                   <span class="n">label_to_marker</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">groupby</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                   <span class="n">data_type</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Draw the graph of similarities between samples or features</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        feature_ids : list of str, or None</span>
+<span class="sd">            Feature ids to subset the data. If None, all features will be used.</span>
+<span class="sd">        sample_ids : list of str, or None</span>
+<span class="sd">            Sample ids to subset the data. If None, all features will be used.</span>
+<span class="sd">        x_pc : str, optional</span>
+<span class="sd">            Which component to use for the x-axis, default &quot;pc_1&quot;</span>
+<span class="sd">        y_pc :</span>
+<span class="sd">            y component for PCA, default &quot;pc_2&quot;</span>
+<span class="sd">        n_pcs : int</span>
+<span class="sd">            Number of components to use for cells&#39; covariance calculation</span>
+<span class="sd">        cov_std_cut : float</span>
+<span class="sd">            Covariance cutoff for edges</span>
+<span class="sd">        use_pc{1-4} : bool</span>
+<span class="sd">            Use these pcs in cov calculation (default True)</span>
+<span class="sd">        degree_cut : int</span>
+<span class="sd">            miniumum degree for a node to be included in graph display</span>
+<span class="sd">        weight_function : [&#39;arctan&#39; | &#39;sq&#39; | &#39;abs&#39; | &#39;arctan_sq&#39;]</span>
+<span class="sd">            weight function (arctan (arctan cov), sq (sq cov), abs (abs cov),</span>
+<span class="sd">            arctan_sq (sqared arctan of cov))</span>
+<span class="sd">        gene_of_interest : str</span>
+<span class="sd">            map a gradient representing this gene&#39;s data onto nodes (ENSEMBL</span>
+<span class="sd">            id or gene symbol)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        graph : networkx.Graph</span>
+
+<span class="sd">        positions : (x,y) positions of nodes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">node_color_mapper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_node_color_mapper</span>
+        <span class="n">node_size_mapper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_node_color_mapper</span>
+        <span class="n">settings</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="c"># not pertinent to the graph, these are what we want to be able to</span>
+        <span class="c"># re-apply to the same graph if it exists</span>
+        <span class="n">pca_settings</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">pca_settings</span><span class="p">[</span><span class="s">&#39;sample_ids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sample_ids</span>
+        <span class="n">pca_settings</span><span class="p">[</span><span class="s">&#39;featurewise&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">featurewise</span>
+        <span class="n">pca_settings</span><span class="p">[</span><span class="s">&#39;feature_ids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">feature_ids</span>
+        <span class="c"># pca_settings[&#39;obj_id&#39;] = reduction_name</span>
+
+        <span class="n">adjacency_settings</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">settings</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span>
+                                  <span class="p">[</span><span class="s">&#39;use_pc_1&#39;</span><span class="p">,</span> <span class="s">&#39;use_pc_2&#39;</span><span class="p">,</span> <span class="s">&#39;use_pc_3&#39;</span><span class="p">,</span>
+                                   <span class="s">&#39;use_pc_4&#39;</span><span class="p">,</span> <span class="s">&#39;n_pcs&#39;</span><span class="p">,</span> <span class="p">])</span>
+
+        <span class="n">f</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">((</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">))</span>
+        <span class="n">main_ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+        <span class="n">ax_pev</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="o">.</span><span class="mi">8</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="o">.</span><span class="mi">15</span><span class="p">])</span>
+        <span class="n">ax_cov</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="o">.</span><span class="mi">15</span><span class="p">])</span>
+        <span class="n">ax_degree</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">([</span><span class="mf">0.9</span><span class="p">,</span> <span class="o">.</span><span class="mi">8</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="o">.</span><span class="mi">15</span><span class="p">])</span>
+
+        <span class="n">pca</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DataModel</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span>
+            <span class="c"># label_to_color=label_to_color,</span>
+            <span class="c"># label_to_marker=label_to_marker,</span>
+            <span class="c"># groupby=groupby,</span>
+            <span class="o">**</span><span class="n">pca_settings</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">feature_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DataModel</span><span class="o">.</span><span class="n">maybe_renamed_to_feature_id</span><span class="p">(</span>
+                    <span class="n">feature_of_interest</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
+            <span class="n">feature_id</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+
+        <span class="k">if</span> <span class="n">featurewise</span><span class="p">:</span>
+            <span class="n">node_color_mapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">green</span> \
+                <span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="n">feature_id</span><span class="p">)</span> <span class="k">else</span> <span class="n">almost_black</span>
+            <span class="n">node_size_mapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">pca</span><span class="o">.</span><span class="n">means</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">10</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">sample_id_to_color</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">node_color_mapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">sample_id_to_color</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">node_color_mapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">dark2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">node_size_mapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">95</span>
+
+        <span class="n">ax_pev</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pca</span><span class="o">.</span><span class="n">explained_variance_ratio_</span> <span class="o">*</span> <span class="mf">100.</span><span class="p">)</span>
+        <span class="n">ax_pev</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">n_pcs</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;cutoff&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">green</span><span class="p">)</span>
+        <span class="n">ax_pev</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+        <span class="n">ax_pev</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&quot;</span><span class="si">% e</span><span class="s">xplained variance&quot;</span><span class="p">)</span>
+        <span class="n">ax_pev</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">&quot;component&quot;</span><span class="p">)</span>
+        <span class="n">ax_pev</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s">&quot;Explained variance from dim reduction&quot;</span><span class="p">)</span>
+        <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax_pev</span><span class="p">)</span>
+
+        <span class="n">adjacency</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjacency</span><span class="p">(</span><span class="n">pca</span><span class="o">.</span><span class="n">reduced_space</span><span class="p">,</span> <span class="o">**</span><span class="n">adjacency_settings</span><span class="p">)</span>
+        <span class="n">cov_dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">adjacency</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="n">cov_cut</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">cov_dist</span><span class="p">)</span> <span class="o">+</span> <span class="n">cov_std_cut</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">cov_dist</span><span class="p">)</span>
+
+        <span class="n">graph_settings</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">settings</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;weight_function&#39;</span><span class="p">,</span> <span class="s">&#39;degree_cut&#39;</span><span class="p">,</span> <span class="p">])</span>
+        <span class="n">graph_settings</span><span class="p">[</span><span class="s">&#39;cov_cut&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cov_cut</span>
+        <span class="n">this_graph_name</span> <span class="o">=</span> <span class="s">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">dict_to_str</span><span class="p">,</span>
+                                       <span class="p">[</span><span class="n">pca_settings</span><span class="p">,</span> <span class="n">adjacency_settings</span><span class="p">,</span>
+                                        <span class="n">graph_settings</span><span class="p">]))</span>
+        <span class="n">graph_settings</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">this_graph_name</span>
+
+        <span class="n">sns</span><span class="o">.</span><span class="n">kdeplot</span><span class="p">(</span><span class="n">cov_dist</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax_cov</span><span class="p">)</span>
+        <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span> <span class="o">=</span> <span class="n">ax_cov</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">()</span>
+        <span class="n">ax_cov</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">xmax</span><span class="p">)</span>
+        <span class="n">ax_cov</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">cov_cut</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;cutoff&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">green</span><span class="p">)</span>
+        <span class="n">ax_cov</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s">&quot;Covariance in dim reduction space&quot;</span><span class="p">)</span>
+        <span class="n">ax_cov</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&quot;Density&quot;</span><span class="p">)</span>
+        <span class="n">ax_cov</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+        <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax_cov</span><span class="p">)</span>
+
+        <span class="n">graph</span><span class="p">,</span> <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">(</span><span class="n">adjacency</span><span class="p">,</span> <span class="o">**</span><span class="n">graph_settings</span><span class="p">)</span>
+
+        <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_nodes</span><span class="p">(</span>
+            <span class="n">graph</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span>
+            <span class="n">node_color</span><span class="o">=</span><span class="nb">map</span><span class="p">(</span><span class="n">node_color_mapper</span><span class="p">,</span> <span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">()),</span>
+            <span class="n">node_size</span><span class="o">=</span><span class="nb">map</span><span class="p">(</span><span class="n">node_size_mapper</span><span class="p">,</span> <span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">()),</span>
+            <span class="n">ax</span><span class="o">=</span><span class="n">main_ax</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+
+
+            <span class="n">node_color</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pca</span><span class="o">.</span><span class="n">X</span><span class="p">[</span><span class="n">feature_id</span><span class="p">]</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">x</span><span class="p">],</span> <span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">())</span>
+
+            <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_nodes</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">node_color</span><span class="o">=</span><span class="n">node_color</span><span class="p">,</span>
+                                   <span class="n">cmap</span><span class="o">=</span><span class="n">mpl</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Greys</span><span class="p">,</span>
+                                   <span class="n">node_size</span><span class="o">=</span><span class="nb">map</span><span class="p">(</span>
+                                       <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">node_size_mapper</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="o">.</span><span class="mi">5</span><span class="p">,</span>
+                                       <span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">()),</span> <span class="n">ax</span><span class="o">=</span><span class="n">main_ax</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="k">pass</span>
+
+        <span class="k">if</span> <span class="n">featurewise</span><span class="p">:</span>
+            <span class="n">namer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DataModel</span><span class="o">.</span><span class="n">feature_renamer</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">namer</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">name</span><span class="p">,</span> <span class="n">namer</span><span class="p">(</span><span class="n">name</span><span class="p">))</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">()])</span>
+        <span class="k">if</span> <span class="n">draw_labels</span><span class="p">:</span>
+            <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_labels</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">main_ax</span><span class="p">)</span>
+        <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_edges</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">main_ax</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">main_ax</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
+        <span class="n">degree</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">degree</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+        <span class="n">sns</span><span class="o">.</span><span class="n">kdeplot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">degree</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax_degree</span><span class="p">)</span>
+        <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span> <span class="o">=</span> <span class="n">ax_degree</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">()</span>
+        <span class="n">ax_degree</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">xmax</span><span class="p">)</span>
+        <span class="n">ax_degree</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">&quot;degree&quot;</span><span class="p">)</span>
+        <span class="n">ax_degree</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&quot;density&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+
+            <span class="n">ax_degree</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">degree</span><span class="p">[</span><span class="n">feature_id</span><span class="p">],</span>
+                              <span class="n">label</span><span class="o">=</span><span class="n">feature_of_interest</span><span class="p">,</span>
+                              <span class="n">color</span><span class="o">=</span><span class="n">green</span><span class="p">)</span>
+            <span class="n">ax_degree</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="k">pass</span>
+
+        <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax_degree</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">graph_file</span> <span class="o">!=</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">nx</span><span class="o">.</span><span class="n">write_gml</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">graph_file</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;error writing graph file:&quot;</span>
+                                 <span class="s">&quot;</span><span class="se">\n</span><span class="s">{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
+
+        <span class="k">return</span> <span class="n">graph</span><span class="p">,</span> <span class="n">pos</span>
+</div>
+<div class="viewcode-block" id="NetworkerViz.draw_nonreduced_graph"><a class="viewcode-back" href="../../../flotilla.visualize.network.html#flotilla.visualize.network.NetworkerViz.draw_nonreduced_graph">[docs]</a>    <span class="k">def</span> <span class="nf">draw_nonreduced_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                              <span class="n">degree_cut</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">cov_std_cut</span><span class="o">=</span><span class="mf">1.8</span><span class="p">,</span>
+                              <span class="n">wt_fun</span><span class="o">=</span><span class="s">&#39;abs&#39;</span><span class="p">,</span>
+                              <span class="n">featurewise</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>  <span class="c"># else feature_components</span>
+                              <span class="n">rpkms_not_events</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>  <span class="c"># else event features</span>
+                              <span class="n">feature_of_interest</span><span class="o">=</span><span class="s">&#39;RBFOX2&#39;</span><span class="p">,</span> <span class="n">draw_labels</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                              <span class="n">feature_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                              <span class="n">group_id</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                              <span class="n">graph_file</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span>
+                              <span class="n">compare</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        feature_ids : list of str, or None</span>
+<span class="sd">            Feature ids to subset the data. If None, all features will be used.</span>
+<span class="sd">        sample_ids : list of str, or None</span>
+<span class="sd">            Sample ids to subset the data. If None, all features will be used.</span>
+<span class="sd">        x_pc : str</span>
+<span class="sd">            x component for DataFramePCA, default &quot;pc_1&quot;</span>
+<span class="sd">        y_pc :</span>
+<span class="sd">            y component for DataFramePCA, default &quot;pc_2&quot;</span>
+<span class="sd">        n_pcs : int???</span>
+<span class="sd">            n components to use for cells&#39; covariance calculation</span>
+<span class="sd">        cov_std_cut : float??</span>
+<span class="sd">            covariance cutoff for edges</span>
+<span class="sd">        use_pc{1-4} use these pcs in cov calculation (default True)</span>
+<span class="sd">        degree_cut : int??</span>
+<span class="sd">            miniumum degree for a node to be included in graph display</span>
+<span class="sd">        weight_function : [&#39;arctan&#39; | &#39;sq&#39; | &#39;abs&#39; | &#39;arctan_sq&#39;]</span>
+<span class="sd">            weight function (arctan (arctan cov), sq (sq cov), abs (abs cov),</span>
+<span class="sd">            arctan_sq (sqared arctan of cov))</span>
+<span class="sd">        gene_of_interest : str</span>
+<span class="sd">            map a gradient representing this gene&#39;s data onto nodes (ENSEMBL</span>
+<span class="sd">            id or gene name???)</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        #TODO: Mike please fill these in</span>
+<span class="sd">        graph : networkx.Graph</span>
+<span class="sd">            ???</span>
+<span class="sd">        positions : ???</span>
+<span class="sd">            ???</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">node_color_mapper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_node_color_mapper</span>
+        <span class="n">node_size_mapper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_node_color_mapper</span>
+        <span class="n">settings</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">adjacency_settings</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="s">&#39;non_reduced&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">))</span>
+
+        <span class="n">f</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">((</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">))</span>
+        <span class="n">main_ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+        <span class="n">ax_cov</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="o">.</span><span class="mi">15</span><span class="p">])</span>
+        <span class="n">ax_degree</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">([</span><span class="mf">0.9</span><span class="p">,</span> <span class="o">.</span><span class="mi">8</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="o">.</span><span class="mi">15</span><span class="p">])</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DataModel</span><span class="o">.</span><span class="n">df</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">feature_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DataModel</span><span class="o">.</span><span class="n">maybe_renamed_to_feature_id</span><span class="p">(</span>
+                    <span class="n">feature_of_interest</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
+            <span class="n">feature_id</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+
+        <span class="k">if</span> <span class="n">featurewise</span><span class="p">:</span>
+            <span class="n">node_color_mapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">red</span> \
+                <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="n">feature_id</span> <span class="k">else</span> <span class="s">&#39;k&#39;</span>
+            <span class="n">node_size_mapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">10</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">node_color_mapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">DataModel</span><span class="o">.</span><span class="n">sample_metadata</span><span class="o">.</span><span class="n">color</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+            <span class="n">node_size_mapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">75</span>
+
+        <span class="n">adjacency_name</span> <span class="o">=</span> <span class="s">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">dict_to_str</span><span class="p">(</span><span class="n">adjacency_settings</span><span class="p">)])</span>
+        <span class="n">adjacency</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjacency</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">adjacency_name</span><span class="p">,</span>
+                                   <span class="o">**</span><span class="n">adjacency_settings</span><span class="p">)</span>
+        <span class="n">cov_dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">adjacency</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="n">cov_cut</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">cov_dist</span><span class="p">)</span> <span class="o">+</span> <span class="n">cov_std_cut</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">cov_dist</span><span class="p">)</span>
+
+        <span class="n">graph_settings</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">settings</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;wt_fun&#39;</span><span class="p">,</span> <span class="s">&#39;degree_cut&#39;</span><span class="p">,</span> <span class="p">])</span>
+        <span class="n">graph_settings</span><span class="p">[</span><span class="s">&#39;cov_cut&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cov_cut</span>
+        <span class="n">this_graph_name</span> <span class="o">=</span> <span class="s">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="nb">map</span><span class="p">(</span><span class="n">dict_to_str</span><span class="p">,</span> <span class="p">[</span><span class="n">adjacency_settings</span><span class="p">,</span> <span class="n">graph_settings</span><span class="p">]))</span>
+        <span class="n">graph_settings</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">this_graph_name</span>
+
+        <span class="n">sns</span><span class="o">.</span><span class="n">kdeplot</span><span class="p">(</span><span class="n">cov_dist</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax_cov</span><span class="p">)</span>
+        <span class="n">ax_cov</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">cov_cut</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;cutoff&#39;</span><span class="p">)</span>
+        <span class="n">ax_cov</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s">&quot;covariance in original space&quot;</span><span class="p">)</span>
+        <span class="n">ax_cov</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&quot;density&quot;</span><span class="p">)</span>
+        <span class="n">ax_cov</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+        <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax_cov</span><span class="p">)</span>
+        <span class="n">graph</span><span class="p">,</span> <span class="n">positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">(</span><span class="n">adjacency</span><span class="p">,</span> <span class="o">**</span><span class="n">graph_settings</span><span class="p">)</span>
+
+        <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_nodes</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span>
+                               <span class="n">node_color</span><span class="o">=</span><span class="nb">map</span><span class="p">(</span><span class="n">node_color_mapper</span><span class="p">,</span>
+                                              <span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">()),</span>
+                               <span class="n">node_size</span><span class="o">=</span><span class="nb">map</span><span class="p">(</span><span class="n">node_size_mapper</span><span class="p">,</span> <span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">()),</span>
+                               <span class="n">ax</span><span class="o">=</span><span class="n">main_ax</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">node_color</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="n">feature_id</span><span class="p">]</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">x</span><span class="p">],</span>
+                             <span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">())</span>
+            <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_nodes</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">node_color</span><span class="o">=</span><span class="n">node_color</span><span class="p">,</span>
+                                   <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Greys</span><span class="p">,</span>
+                                   <span class="n">node_size</span><span class="o">=</span><span class="nb">map</span><span class="p">(</span>
+                                       <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">node_size_mapper</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="o">.</span><span class="mi">5</span><span class="p">,</span>
+                                       <span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">()),</span> <span class="n">ax</span><span class="o">=</span><span class="n">main_ax</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="k">pass</span>
+
+        <span class="n">renamer</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">name</span><span class="p">,</span> <span class="n">renamer</span><span class="p">(</span><span class="n">name</span><span class="p">))</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">()])</span>
+        <span class="k">if</span> <span class="n">draw_labels</span><span class="p">:</span>
+            <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_labels</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span>
+                                    <span class="n">ax</span><span class="o">=</span><span class="n">main_ax</span><span class="p">)</span>
+        <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_edges</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">main_ax</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">main_ax</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
+        <span class="n">degree</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">degree</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+        <span class="n">sns</span><span class="o">.</span><span class="n">kdeplot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">degree</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax_degree</span><span class="p">)</span>
+        <span class="n">ax_degree</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">&quot;degree&quot;</span><span class="p">)</span>
+        <span class="n">ax_degree</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&quot;density&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ax_degree</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">degree</span><span class="p">[</span><span class="n">feature_of_interest</span><span class="p">],</span>
+                              <span class="n">label</span><span class="o">=</span><span class="n">feature_of_interest</span><span class="p">)</span>
+            <span class="n">ax_degree</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="k">pass</span>
+
+        <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax_degree</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">graph_file</span> <span class="o">!=</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">nx</span><span class="o">.</span><span class="n">write_gml</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">graph_file</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;error writing graph file:&quot;</span>
+                                 <span class="s">&quot;</span><span class="se">\n</span><span class="s">{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">positions</span><span class="p">)</span></div></div>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<div class="container">
+    
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
+    </p>
+  </div>
+</footer>
+    <a href="http://olgabotvinnik.com/">Olga B. Botvinnik</a> is funded by the
+    <a href="https://ndseg.asee.org/">NDSEG</a> fellowship and is a
+    <a href="http://numfocus.org/">NumFOCUS</a>
+    <a href="http://numfocus.org/pages/john_hunter_fellowship_2014.html">John
+    Hunter Technology Fellow</a>.<br/>
+    Michael T. Lovci was partially funded by a fellowship from
+    <a href="http://www.gene.com/">Genentech</a>.</br>
+    Partially funded by <a href="http://www.nih.gov/">NIH</a> grants NS075449
+    and HG004659 and <a href="http://www.cirm.ca.gov/">CIRM</a> grants RB4-06045
+    and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene
+    Yeo</a>. <br/>
+
+    
+  </body>
+</html>

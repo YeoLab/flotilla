@@ -1,0 +1,17 @@
+
+.. _plot_lavalamp_pooled_inconsistent:
+
+
+Visualize splicing events whose PSI in singles doesn't match pooled
+===================================================================
+
+The colored points are the percent spliced in (PSI) scores of single cells,
+and the black-outlined circles are the PSI scores of the pooled samples.
+
+
+.. image:: _images/plot_lavalamp_pooled_inconsistent.png
+
+**Python source code:** :download:`[download source: plot_lavalamp_pooled_inconsistent.py]<plot_lavalamp_pooled_inconsistent.py>`
+
+.. literalinclude:: plot_lavalamp_pooled_inconsistent.py
+    :lines: 8-
