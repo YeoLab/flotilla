@@ -63,4 +63,4 @@ their third-party dependencies.
 -  rename your notebook from "Untitled" to something more informative by
    clicking the title panel.
 
-.. include:: docker_instructions.rst 
+.. include:: docker_instructions.rst
