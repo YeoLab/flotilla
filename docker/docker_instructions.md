@@ -8,7 +8,7 @@ Note: On Mac OS X and Windows you will need to start docker through the “boot2
   2. Then start flotilla on the command line (OS X `Terminal` application):
   
 
-    <code>curl https://github.com/YeoLab/flotilla/blob/master/docker/start_docker.py | python</code>
+    <code>curl https://raw.githubusercontent.com/YeoLab/flotilla/master/docker/start_docker.py | python</code>
 
 
 After the ipython notebook interface opens, test the installation with our test dataset by running the following commands in a new notebook:
