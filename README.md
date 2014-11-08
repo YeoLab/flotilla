@@ -51,7 +51,8 @@ it easy to integrate all those data parts together once you have the pieces.
 
 Learn how to use flotilla
 =========================
-Please refer to our [talks](talks/) or [tutorials](tutorials/) to learn more about how you can
+Please refer to our [talks](talks.md) to learn more
+ about how you can
 apply our tools to your data.
 
 Quick Start:
@@ -76,6 +77,7 @@ IMPORTANT NOTE: for this test,several failures are expected since the test set i
 Adjust parameters to explore valid parameter spaces.
 For example, you can manually select `all_genes` as the `feature_subset`
 from the drop-down menu that appears after running these interactive functions.
+
 
 
 Problems? Questions?
