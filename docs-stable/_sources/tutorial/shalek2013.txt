@@ -23,7 +23,11 @@ Before we begin, let's import everything we need.
 
 .. parsed-literal::
 
-    Couldn't import dot_parser, loading of dot files will not be possible.
+    [autoreload of flotilla.data_model.base failed: Traceback (most recent call last):
+      File "/Users/olga/workspace-git/ipython/IPython/extensions/autoreload.py", line 247, in check
+        superreload(m, reload, self.old_objects)
+    AttributeError: 'NoneType' object has no attribute '_subset'
+    ]
 
 
 Shalek and Sujita, *et al* (2013)
@@ -58,72 +62,188 @@ We will also compare to the supplementary table 2 data, obtained using
     expression = pd.read_table("GSE41265_allGenesTPM.txt.gz", compression="gzip", index_col=0)
     expression.head()
 
-::
 
 
-    ---------------------------------------------------------------------------
-    IOError                                   Traceback (most recent call last)
+.. raw:: html
 
-    <ipython-input-3-b45e9120e279> in <module>()
-    ----> 1 expression = pd.read_table("GSE41265_allGenesTPM.txt.gz", compression="gzip", index_col=0)
-          2 expression.head()
+    <div style="max-height:1000px;max-width:1500px;overflow:auto;">
+    <table border="1" class="dataframe">
+      <thead>
+        <tr style="text-align: right;">
+          <th></th>
+          <th>S1</th>
+          <th>S2</th>
+          <th>S3</th>
+          <th>S4</th>
+          <th>S5</th>
+          <th>S6</th>
+          <th>S7</th>
+          <th>S8</th>
+          <th>S9</th>
+          <th>S10</th>
+          <th>...</th>
+          <th>S12</th>
+          <th>S13</th>
+          <th>S14</th>
+          <th>S15</th>
+          <th>S16</th>
+          <th>S17</th>
+          <th>S18</th>
+          <th>P1</th>
+          <th>P2</th>
+          <th>P3</th>
+        </tr>
+        <tr>
+          <th>GENE</th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>XKR4</th>
+          <td>  0.000000</td>
+          <td> 0.000000</td>
+          <td>   0.000000</td>
+          <td> 0.000000</td>
+          <td> 0.000000</td>
+          <td> 0.000000</td>
+          <td>   0.000000</td>
+          <td>   0.000000</td>
+          <td> 0.000000</td>
+          <td> 0.000000</td>
+          <td>...</td>
+          <td> 0.000000</td>
+          <td> 0.000000</td>
+          <td> 0.000000</td>
+          <td> 0.000000</td>
+          <td> 0.000000</td>
+          <td> 0.000000</td>
+          <td>  0.000000</td>
+          <td> 0.000000</td>
+          <td> 0.019906</td>
+          <td>  0.000000</td>
+        </tr>
+        <tr>
+          <th>AB338584</th>
+          <td>  0.000000</td>
+          <td> 0.000000</td>
+          <td>   0.000000</td>
+          <td> 0.000000</td>
+          <td> 0.000000</td>
+          <td> 0.000000</td>
+          <td>   0.000000</td>
+          <td>   0.000000</td>
+          <td> 0.000000</td>
+          <td> 0.000000</td>
+          <td>...</td>
+          <td> 0.000000</td>
+          <td> 0.000000</td>
+          <td> 0.000000</td>
+          <td> 0.000000</td>
+          <td> 0.000000</td>
+          <td> 0.000000</td>
+          <td>  0.000000</td>
+          <td> 0.000000</td>
+          <td> 0.000000</td>
+          <td>  0.000000</td>
+        </tr>
+        <tr>
+          <th>B3GAT2</th>
+          <td>  0.000000</td>
+          <td> 0.000000</td>
+          <td>   0.023441</td>
+          <td> 0.000000</td>
+          <td> 0.000000</td>
+          <td> 0.029378</td>
+          <td>   0.000000</td>
+          <td>   0.055452</td>
+          <td> 0.000000</td>
+          <td> 0.029448</td>
+          <td>...</td>
+          <td> 0.000000</td>
+          <td> 0.000000</td>
+          <td> 0.031654</td>
+          <td> 0.000000</td>
+          <td> 0.000000</td>
+          <td> 0.000000</td>
+          <td> 42.150208</td>
+          <td> 0.680327</td>
+          <td> 0.022996</td>
+          <td>  0.110236</td>
+        </tr>
+        <tr>
+          <th>NPL</th>
+          <td> 72.008590</td>
+          <td> 0.000000</td>
+          <td> 128.062012</td>
+          <td> 0.095082</td>
+          <td> 0.000000</td>
+          <td> 0.000000</td>
+          <td> 112.310234</td>
+          <td> 104.329122</td>
+          <td> 0.119230</td>
+          <td> 0.000000</td>
+          <td>...</td>
+          <td> 0.000000</td>
+          <td> 0.116802</td>
+          <td> 0.104200</td>
+          <td> 0.106188</td>
+          <td> 0.229197</td>
+          <td> 0.110582</td>
+          <td>  0.000000</td>
+          <td> 7.109356</td>
+          <td> 6.727028</td>
+          <td> 14.525447</td>
+        </tr>
+        <tr>
+          <th>T2</th>
+          <td>  0.109249</td>
+          <td> 0.172009</td>
+          <td>   0.000000</td>
+          <td> 0.000000</td>
+          <td> 0.182703</td>
+          <td> 0.076012</td>
+          <td>   0.078698</td>
+          <td>   0.000000</td>
+          <td> 0.093698</td>
+          <td> 0.076583</td>
+          <td>...</td>
+          <td> 0.693459</td>
+          <td> 0.010137</td>
+          <td> 0.081936</td>
+          <td> 0.000000</td>
+          <td> 0.000000</td>
+          <td> 0.086879</td>
+          <td>  0.068174</td>
+          <td> 0.062063</td>
+          <td> 0.000000</td>
+          <td>  0.050605</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>5 rows × 21 columns</p>
+    </div>
 
-
-    /usr/local/lib/python2.7/site-packages/pandas/io/parsers.pyc in parser_f(filepath_or_buffer, sep, dialect, compression, doublequote, escapechar, quotechar, quoting, skipinitialspace, lineterminator, header, index_col, names, prefix, skiprows, skipfooter, skip_footer, na_values, na_fvalues, true_values, false_values, delimiter, converters, dtype, usecols, engine, delim_whitespace, as_recarray, na_filter, compact_ints, use_unsigned, low_memory, buffer_lines, warn_bad_lines, error_bad_lines, keep_default_na, thousands, comment, decimal, parse_dates, keep_date_col, dayfirst, date_parser, memory_map, float_precision, nrows, iterator, chunksize, verbose, encoding, squeeze, mangle_dupe_cols, tupleize_cols, infer_datetime_format, skip_blank_lines)
-        461                     skip_blank_lines=skip_blank_lines)
-        462 
-    --> 463         return _read(filepath_or_buffer, kwds)
-        464 
-        465     parser_f.__name__ = name
-
-
-    /usr/local/lib/python2.7/site-packages/pandas/io/parsers.pyc in _read(filepath_or_buffer, kwds)
-        237 
-        238     # Create the parser.
-    --> 239     parser = TextFileReader(filepath_or_buffer, **kwds)
-        240 
-        241     if (nrows is not None) and (chunksize is not None):
-
-
-    /usr/local/lib/python2.7/site-packages/pandas/io/parsers.pyc in __init__(self, f, engine, **kwds)
-        551             self.options['has_index_names'] = kwds['has_index_names']
-        552 
-    --> 553         self._make_engine(self.engine)
-        554 
-        555     def _get_options_with_defaults(self, engine):
-
-
-    /usr/local/lib/python2.7/site-packages/pandas/io/parsers.pyc in _make_engine(self, engine)
-        688     def _make_engine(self, engine='c'):
-        689         if engine == 'c':
-    --> 690             self._engine = CParserWrapper(self.f, **self.options)
-        691         else:
-        692             if engine == 'python':
-
-
-    /usr/local/lib/python2.7/site-packages/pandas/io/parsers.pyc in __init__(self, src, **kwds)
-       1050         kwds['allow_leading_cols'] = self.index_col is not False
-       1051 
-    -> 1052         self._reader = _parser.TextReader(src, **kwds)
-       1053 
-       1054         # XXX
-
-
-    /usr/local/lib/python2.7/site-packages/pandas/parser.so in pandas.parser.TextReader.__cinit__ (pandas/parser.c:3128)()
-
-
-    /usr/local/lib/python2.7/site-packages/pandas/parser.so in pandas.parser.TextReader._setup_parser_source (pandas/parser.c:5315)()
-
-
-    /usr/local/Cellar/python/2.7.6/Frameworks/Python.framework/Versions/2.7/lib/python2.7/gzip.pyc in __init__(self, filename, mode, compresslevel, fileobj, mtime)
-         92             mode += 'b'
-         93         if fileobj is None:
-    ---> 94             fileobj = self.myfileobj = __builtin__.open(filename, mode or 'rb')
-         95         if filename is None:
-         96             # Issue #13781: os.fdopen() creates a fileobj with a bogus name
-
-
-    IOError: [Errno 2] No such file or directory: 'GSE41265_allGenesTPM.txt.gz'
 
 
 These data are in the "transcripts per million," aka TPM unit. See
@@ -142,18 +262,164 @@ each gene is a feature. So we will simply transpose this.
     expression = expression.T
     expression.head()
 
-::
 
 
-    ---------------------------------------------------------------------------
-    NameError                                 Traceback (most recent call last)
+.. raw:: html
 
-    <ipython-input-4-7fdc90570fae> in <module>()
-    ----> 1 expression = expression.T
-          2 expression.head()
+    <div style="max-height:1000px;max-width:1500px;overflow:auto;">
+    <table border="1" class="dataframe">
+      <thead>
+        <tr style="text-align: right;">
+          <th>GENE</th>
+          <th>XKR4</th>
+          <th>AB338584</th>
+          <th>B3GAT2</th>
+          <th>NPL</th>
+          <th>T2</th>
+          <th>T</th>
+          <th>PDE10A</th>
+          <th>1700010I14RIK</th>
+          <th>6530411M01RIK</th>
+          <th>PABPC6</th>
+          <th>...</th>
+          <th>AK085062</th>
+          <th>DHX9</th>
+          <th>RNASET2B</th>
+          <th>FGFR1OP</th>
+          <th>CCR6</th>
+          <th>BRP44L</th>
+          <th>AK014435</th>
+          <th>AK015714</th>
+          <th>SFT2D1</th>
+          <th>PRR18</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>S1</th>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0.000000</td>
+          <td>  72.008590</td>
+          <td> 0.109249</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td>...</td>
+          <td> 0</td>
+          <td> 0.774638</td>
+          <td> 23.520936</td>
+          <td>   0.000000</td>
+          <td> 0</td>
+          <td>  460.316773</td>
+          <td> 0</td>
+          <td> 0.000000</td>
+          <td> 39.442566</td>
+          <td> 0</td>
+        </tr>
+        <tr>
+          <th>S2</th>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0.000000</td>
+          <td>   0.000000</td>
+          <td> 0.172009</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td>...</td>
+          <td> 0</td>
+          <td> 0.367391</td>
+          <td>  1.887873</td>
+          <td>   0.000000</td>
+          <td> 0</td>
+          <td>  823.890290</td>
+          <td> 0</td>
+          <td> 0.000000</td>
+          <td>  4.967412</td>
+          <td> 0</td>
+        </tr>
+        <tr>
+          <th>S3</th>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0.023441</td>
+          <td> 128.062012</td>
+          <td> 0.000000</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td>...</td>
+          <td> 0</td>
+          <td> 0.249858</td>
+          <td>  0.313510</td>
+          <td>   0.166772</td>
+          <td> 0</td>
+          <td> 1002.354241</td>
+          <td> 0</td>
+          <td> 0.000000</td>
+          <td>  0.000000</td>
+          <td> 0</td>
+        </tr>
+        <tr>
+          <th>S4</th>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0.000000</td>
+          <td>   0.095082</td>
+          <td> 0.000000</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td>...</td>
+          <td> 0</td>
+          <td> 0.354157</td>
+          <td>  0.000000</td>
+          <td>   0.887003</td>
+          <td> 0</td>
+          <td> 1230.766795</td>
+          <td> 0</td>
+          <td> 0.000000</td>
+          <td>  0.131215</td>
+          <td> 0</td>
+        </tr>
+        <tr>
+          <th>S5</th>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0.000000</td>
+          <td>   0.000000</td>
+          <td> 0.182703</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td>...</td>
+          <td> 0</td>
+          <td> 0.039263</td>
+          <td>  0.000000</td>
+          <td> 131.077131</td>
+          <td> 0</td>
+          <td> 1614.749122</td>
+          <td> 0</td>
+          <td> 0.242179</td>
+          <td> 95.485743</td>
+          <td> 0</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>5 rows × 27723 columns</p>
+    </div>
 
-
-    NameError: name 'expression' is not defined
 
 
 The authors filtered the expression data based on having at least 3
@@ -176,6 +442,20 @@ or not that sample id begins with the letter "S".
     expression_filtered = expression.ix[:, singles[singles > 1].count() >= 3]
     expression_filtered = np.log(expression_filtered + 1)
     expression_filtered.shape
+
+.. parsed-literal::
+
+    ('number of single cells:', 18)
+
+
+
+
+.. parsed-literal::
+
+    (21, 6312)
+
+
+
 Hmm, that's strange. The paper states that they had 6313 genes after
 filtering, but I get 6312. Even using "``singles >= 1``" doesn't help.
 
@@ -217,67 +497,188 @@ as a ``csv`` for maximum portability and compatibility.
     expression2 = expression2.T
     expression2.head()
 
-::
 
 
-    ---------------------------------------------------------------------------
-    IOError                                   Traceback (most recent call last)
+.. raw:: html
 
-    <ipython-input-5-623c304ac226> in <module>()
-          2                             # Need to specify the index column as both the first and the last columns,
-          3                             # Because the last column is the "Gene Category"
-    ----> 4                             index_col=[0, -1], parse_dates=False, infer_datetime_format=False)
-          5 
-          6 # This was also in features x samples format, so we need to transpose
+    <div style="max-height:1000px;max-width:1500px;overflow:auto;">
+    <table border="1" class="dataframe">
+      <thead>
+        <tr>
+          <th>'GENE</th>
+          <th>'0610007L01RIK</th>
+          <th>'0610007P14RIK</th>
+          <th>'0610007P22RIK</th>
+          <th>'0610008F07RIK</th>
+          <th>'0610009B22RIK</th>
+          <th>'0610009D07RIK</th>
+          <th>'0610009O20RIK</th>
+          <th>'0610010B08RIK</th>
+          <th>'0610010F05RIK</th>
+          <th>'0610010K06RIK</th>
+          <th>...</th>
+          <th>'ZWILCH</th>
+          <th>'ZWINT</th>
+          <th>'ZXDA</th>
+          <th>'ZXDB</th>
+          <th>'ZXDC</th>
+          <th>'ZYG11A</th>
+          <th>'ZYG11B</th>
+          <th>'ZYX</th>
+          <th>'ZZEF1</th>
+          <th>'ZZZ3</th>
+        </tr>
+        <tr>
+          <th>Gene Category</th>
+          <th>NaN</th>
+          <th>NaN</th>
+          <th>NaN</th>
+          <th>NaN</th>
+          <th>NaN</th>
+          <th>NaN</th>
+          <th>NaN</th>
+          <th>NaN</th>
+          <th>NaN</th>
+          <th>NaN</th>
+          <th>...</th>
+          <th>NaN</th>
+          <th>NaN</th>
+          <th>NaN</th>
+          <th>NaN</th>
+          <th>NaN</th>
+          <th>NaN</th>
+          <th>NaN</th>
+          <th>NaN</th>
+          <th>NaN</th>
+          <th>NaN</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>S1</th>
+          <td> 27.181570</td>
+          <td>  0.166794</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td>   0.000000</td>
+          <td> 178.852732</td>
+          <td> 0</td>
+          <td> 0.962417</td>
+          <td> 0.000000</td>
+          <td> 143.359550</td>
+          <td>...</td>
+          <td> 0.000000</td>
+          <td> 302.361227</td>
+          <td> 0.000000</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0.027717</td>
+          <td> 297.918756</td>
+          <td> 37.685501</td>
+          <td> 0.000000</td>
+        </tr>
+        <tr>
+          <th>S2</th>
+          <td> 37.682691</td>
+          <td>  0.263962</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td>   0.207921</td>
+          <td>   0.141099</td>
+          <td> 0</td>
+          <td> 0.000000</td>
+          <td> 0.000000</td>
+          <td>   0.255617</td>
+          <td>...</td>
+          <td> 0.000000</td>
+          <td>  96.033724</td>
+          <td> 0.020459</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0.042430</td>
+          <td>   0.242888</td>
+          <td>  0.000000</td>
+          <td> 0.000000</td>
+        </tr>
+        <tr>
+          <th>S3</th>
+          <td>  0.056916</td>
+          <td> 78.622459</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td>   0.145680</td>
+          <td>   0.396363</td>
+          <td> 0</td>
+          <td> 0.000000</td>
+          <td> 0.024692</td>
+          <td>  72.775846</td>
+          <td>...</td>
+          <td> 0.000000</td>
+          <td> 427.915555</td>
+          <td> 0.000000</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0.040407</td>
+          <td>   6.753530</td>
+          <td>  0.132011</td>
+          <td> 0.017615</td>
+        </tr>
+        <tr>
+          <th>S4</th>
+          <td> 55.649250</td>
+          <td>  0.228866</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td>   0.000000</td>
+          <td>  88.798158</td>
+          <td> 0</td>
+          <td> 0.000000</td>
+          <td> 0.000000</td>
+          <td>  93.825442</td>
+          <td>...</td>
+          <td> 0.000000</td>
+          <td>   9.788557</td>
+          <td> 0.017787</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0.013452</td>
+          <td>   0.274689</td>
+          <td>  9.724890</td>
+          <td> 0.000000</td>
+        </tr>
+        <tr>
+          <th>S5</th>
+          <td>  0.000000</td>
+          <td>  0.093117</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 131.326008</td>
+          <td> 155.936361</td>
+          <td> 0</td>
+          <td> 0.000000</td>
+          <td> 0.000000</td>
+          <td>   0.031029</td>
+          <td>...</td>
+          <td> 0.204522</td>
+          <td>  26.575760</td>
+          <td> 0.000000</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 1.101589</td>
+          <td>  59.256094</td>
+          <td> 44.430726</td>
+          <td> 0.000000</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>5 rows × 27723 columns</p>
+    </div>
 
-
-    /usr/local/lib/python2.7/site-packages/pandas/io/parsers.pyc in parser_f(filepath_or_buffer, sep, dialect, compression, doublequote, escapechar, quotechar, quoting, skipinitialspace, lineterminator, header, index_col, names, prefix, skiprows, skipfooter, skip_footer, na_values, na_fvalues, true_values, false_values, delimiter, converters, dtype, usecols, engine, delim_whitespace, as_recarray, na_filter, compact_ints, use_unsigned, low_memory, buffer_lines, warn_bad_lines, error_bad_lines, keep_default_na, thousands, comment, decimal, parse_dates, keep_date_col, dayfirst, date_parser, memory_map, float_precision, nrows, iterator, chunksize, verbose, encoding, squeeze, mangle_dupe_cols, tupleize_cols, infer_datetime_format, skip_blank_lines)
-        461                     skip_blank_lines=skip_blank_lines)
-        462 
-    --> 463         return _read(filepath_or_buffer, kwds)
-        464 
-        465     parser_f.__name__ = name
-
-
-    /usr/local/lib/python2.7/site-packages/pandas/io/parsers.pyc in _read(filepath_or_buffer, kwds)
-        237 
-        238     # Create the parser.
-    --> 239     parser = TextFileReader(filepath_or_buffer, **kwds)
-        240 
-        241     if (nrows is not None) and (chunksize is not None):
-
-
-    /usr/local/lib/python2.7/site-packages/pandas/io/parsers.pyc in __init__(self, f, engine, **kwds)
-        551             self.options['has_index_names'] = kwds['has_index_names']
-        552 
-    --> 553         self._make_engine(self.engine)
-        554 
-        555     def _get_options_with_defaults(self, engine):
-
-
-    /usr/local/lib/python2.7/site-packages/pandas/io/parsers.pyc in _make_engine(self, engine)
-        688     def _make_engine(self, engine='c'):
-        689         if engine == 'c':
-    --> 690             self._engine = CParserWrapper(self.f, **self.options)
-        691         else:
-        692             if engine == 'python':
-
-
-    /usr/local/lib/python2.7/site-packages/pandas/io/parsers.pyc in __init__(self, src, **kwds)
-       1050         kwds['allow_leading_cols'] = self.index_col is not False
-       1051 
-    -> 1052         self._reader = _parser.TextReader(src, **kwds)
-       1053 
-       1054         # XXX
-
-
-    /usr/local/lib/python2.7/site-packages/pandas/parser.so in pandas.parser.TextReader.__cinit__ (pandas/parser.c:3128)()
-
-
-    /usr/local/lib/python2.7/site-packages/pandas/parser.so in pandas.parser.TextReader._setup_parser_source (pandas/parser.c:5759)()
-
-
-    IOError: File nature12172-s1/Supplementary_Table2.csv does not exist
 
 
 Now we need to strip the single-quote I added to all the gene names:
@@ -287,6 +688,191 @@ Now we need to strip the single-quote I added to all the gene names:
     new_index, indexer = expression2.columns.reindex(map(lambda x: (x[0].lstrip("'"), x[1]), expression2.columns.values))
     expression2.columns = new_index
     expression2.head()
+
+
+
+.. raw:: html
+
+    <div style="max-height:1000px;max-width:1500px;overflow:auto;">
+    <table border="1" class="dataframe">
+      <thead>
+        <tr>
+          <th>'GENE</th>
+          <th>0610007L01RIK</th>
+          <th>0610007P14RIK</th>
+          <th>0610007P22RIK</th>
+          <th>0610008F07RIK</th>
+          <th>0610009B22RIK</th>
+          <th>0610009D07RIK</th>
+          <th>0610009O20RIK</th>
+          <th>0610010B08RIK</th>
+          <th>0610010F05RIK</th>
+          <th>0610010K06RIK</th>
+          <th>...</th>
+          <th>ZWILCH</th>
+          <th>ZWINT</th>
+          <th>ZXDA</th>
+          <th>ZXDB</th>
+          <th>ZXDC</th>
+          <th>ZYG11A</th>
+          <th>ZYG11B</th>
+          <th>ZYX</th>
+          <th>ZZEF1</th>
+          <th>ZZZ3</th>
+        </tr>
+        <tr>
+          <th>Gene Category</th>
+          <th>NaN</th>
+          <th>NaN</th>
+          <th>NaN</th>
+          <th>NaN</th>
+          <th>NaN</th>
+          <th>NaN</th>
+          <th>NaN</th>
+          <th>NaN</th>
+          <th>NaN</th>
+          <th>NaN</th>
+          <th>...</th>
+          <th>NaN</th>
+          <th>NaN</th>
+          <th>NaN</th>
+          <th>NaN</th>
+          <th>NaN</th>
+          <th>NaN</th>
+          <th>NaN</th>
+          <th>NaN</th>
+          <th>NaN</th>
+          <th>NaN</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>S1</th>
+          <td> 27.181570</td>
+          <td>  0.166794</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td>   0.000000</td>
+          <td> 178.852732</td>
+          <td> 0</td>
+          <td> 0.962417</td>
+          <td> 0.000000</td>
+          <td> 143.359550</td>
+          <td>...</td>
+          <td> 0.000000</td>
+          <td> 302.361227</td>
+          <td> 0.000000</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0.027717</td>
+          <td> 297.918756</td>
+          <td> 37.685501</td>
+          <td> 0.000000</td>
+        </tr>
+        <tr>
+          <th>S2</th>
+          <td> 37.682691</td>
+          <td>  0.263962</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td>   0.207921</td>
+          <td>   0.141099</td>
+          <td> 0</td>
+          <td> 0.000000</td>
+          <td> 0.000000</td>
+          <td>   0.255617</td>
+          <td>...</td>
+          <td> 0.000000</td>
+          <td>  96.033724</td>
+          <td> 0.020459</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0.042430</td>
+          <td>   0.242888</td>
+          <td>  0.000000</td>
+          <td> 0.000000</td>
+        </tr>
+        <tr>
+          <th>S3</th>
+          <td>  0.056916</td>
+          <td> 78.622459</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td>   0.145680</td>
+          <td>   0.396363</td>
+          <td> 0</td>
+          <td> 0.000000</td>
+          <td> 0.024692</td>
+          <td>  72.775846</td>
+          <td>...</td>
+          <td> 0.000000</td>
+          <td> 427.915555</td>
+          <td> 0.000000</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0.040407</td>
+          <td>   6.753530</td>
+          <td>  0.132011</td>
+          <td> 0.017615</td>
+        </tr>
+        <tr>
+          <th>S4</th>
+          <td> 55.649250</td>
+          <td>  0.228866</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td>   0.000000</td>
+          <td>  88.798158</td>
+          <td> 0</td>
+          <td> 0.000000</td>
+          <td> 0.000000</td>
+          <td>  93.825442</td>
+          <td>...</td>
+          <td> 0.000000</td>
+          <td>   9.788557</td>
+          <td> 0.017787</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0.013452</td>
+          <td>   0.274689</td>
+          <td>  9.724890</td>
+          <td> 0.000000</td>
+        </tr>
+        <tr>
+          <th>S5</th>
+          <td>  0.000000</td>
+          <td>  0.093117</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 131.326008</td>
+          <td> 155.936361</td>
+          <td> 0</td>
+          <td> 0.000000</td>
+          <td> 0.000000</td>
+          <td>   0.031029</td>
+          <td>...</td>
+          <td> 0.204522</td>
+          <td>  26.575760</td>
+          <td> 0.000000</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 1.101589</td>
+          <td>  59.256094</td>
+          <td> 44.430726</td>
+          <td> 0.000000</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>5 rows × 27723 columns</p>
+    </div>
+
+
+
 We want to create a ``pandas.DataFrame`` from the "Gene Category" row
 for our ``expression_feature_data``, which we will do via:
 
@@ -296,25 +882,89 @@ for our ``expression_feature_data``, which we will do via:
     gene_categories = pd.Series(gene_category, index=gene_ids, name='gene_category')
     gene_categories
 
-::
 
 
-    ---------------------------------------------------------------------------
-    NameError                                 Traceback (most recent call last)
+.. parsed-literal::
 
-    <ipython-input-6-e614b69586d0> in <module>()
-    ----> 1 gene_ids, gene_category = zip(*expression2.columns.values)
-          2 gene_categories = pd.Series(gene_category, index=gene_ids, name='gene_category')
-          3 gene_categories
+    0610007L01RIK    NaN
+    0610007P14RIK    NaN
+    0610007P22RIK    NaN
+    0610008F07RIK    NaN
+    0610009B22RIK    NaN
+    0610009D07RIK    NaN
+    0610009O20RIK    NaN
+    0610010B08RIK    NaN
+    0610010F05RIK    NaN
+    0610010K06RIK    NaN
+    0610010K14RIK    NaN
+    0610010O12RIK    NaN
+    0610011F06RIK    NaN
+    0610011L14RIK    NaN
+    0610012G03RIK    NaN
+    ...
+    ZSWIM5             NaN
+    ZSWIM6             NaN
+    ZSWIM7             NaN
+    ZUFSP     LPS Response
+    ZW10               NaN
+    ZWILCH             NaN
+    ZWINT              NaN
+    ZXDA               NaN
+    ZXDB               NaN
+    ZXDC               NaN
+    ZYG11A             NaN
+    ZYG11B             NaN
+    ZYX                NaN
+    ZZEF1              NaN
+    ZZZ3               NaN
+    Name: gene_category, Length: 27723, dtype: object
 
-
-    NameError: name 'expression2' is not defined
 
 
 .. code:: python
 
     expression_feature_data = pd.DataFrame(gene_categories)
     expression_feature_data.head()
+
+
+
+.. raw:: html
+
+    <div style="max-height:1000px;max-width:1500px;overflow:auto;">
+    <table border="1" class="dataframe">
+      <thead>
+        <tr style="text-align: right;">
+          <th></th>
+          <th>gene_category</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>0610007L01RIK</th>
+          <td> NaN</td>
+        </tr>
+        <tr>
+          <th>0610007P14RIK</th>
+          <td> NaN</td>
+        </tr>
+        <tr>
+          <th>0610007P22RIK</th>
+          <td> NaN</td>
+        </tr>
+        <tr>
+          <th>0610008F07RIK</th>
+          <td> NaN</td>
+        </tr>
+        <tr>
+          <th>0610009B22RIK</th>
+          <td> NaN</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+
+
 Splicing Data
 -------------
 
@@ -326,48 +976,738 @@ information, specifically the ``Supplementary_Table4.xls``
     splicing = pd.read_excel('nature12172-s1/Supplementary_Table4.xls', 'splicingTable.txt', index_col=(0,1))
     splicing.head()
 
-::
 
 
-    ---------------------------------------------------------------------------
-    IOError                                   Traceback (most recent call last)
+.. raw:: html
 
-    <ipython-input-7-6956dd3a6ad6> in <module>()
-    ----> 1 splicing = pd.read_excel('nature12172-s1/Supplementary_Table4.xls', 'splicingTable.txt', index_col=(0,1))
-          2 splicing.head()
+    <div style="max-height:1000px;max-width:1500px;overflow:auto;">
+    <table border="1" class="dataframe">
+      <thead>
+        <tr style="text-align: right;">
+          <th></th>
+          <th></th>
+          <th>S1</th>
+          <th>S2</th>
+          <th>S3</th>
+          <th>S4</th>
+          <th>S5</th>
+          <th>S6</th>
+          <th>S7</th>
+          <th>S8</th>
+          <th>S9</th>
+          <th>S10</th>
+          <th>S11</th>
+          <th>S13</th>
+          <th>S14</th>
+          <th>S15</th>
+          <th>S16</th>
+          <th>S17</th>
+          <th>S18</th>
+          <th>10,000 cell Rep1 (P1)</th>
+          <th>10,000 cell Rep2 (P2)</th>
+          <th>10,000 cell Rep3 (P3)</th>
+        </tr>
+        <tr>
+          <th>Event name</th>
+          <th>gene</th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>chr10:126534988:126535177:-@chr10:126533971:126534135:-@chr10:126533686:126533798:-</th>
+          <th>Os9</th>
+          <td> 0.84</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td> 0.01</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>NaN</td>
+          <td> 0.03</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td> 0.02</td>
+          <td>NaN</td>
+          <td> 0.01</td>
+          <td>NaN</td>
+          <td> 0.27</td>
+          <td> 0.37</td>
+          <td> 0.31</td>
+        </tr>
+        <tr>
+          <th>chr10:14403870:14403945:-@chr10:14395740:14395848:-@chr10:14387738:14387914:-</th>
+          <th>Vta1</th>
+          <td> 0.95</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td> 0.84</td>
+          <td> 0.95</td>
+          <td> 0.91</td>
+          <td> 0.87</td>
+          <td> 0.86</td>
+          <td>  NaN</td>
+          <td>NaN</td>
+          <td> 0.93</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td> 0.96</td>
+          <td>NaN</td>
+          <td>  NaN</td>
+          <td>NaN</td>
+          <td> 0.83</td>
+          <td> 0.85</td>
+          <td> 0.64</td>
+        </tr>
+        <tr>
+          <th>chr10:20051892:20052067:+@chr10:20052202:20052363:+@chr10:20053198:20053697:+</th>
+          <th>Bclaf1</th>
+          <td>  NaN</td>
+          <td> 0.04</td>
+          <td> 0.02</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td> 0.14</td>
+          <td>  NaN</td>
+          <td> 0.02</td>
+          <td>  NaN</td>
+          <td>NaN</td>
+          <td>  NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td> 0.01</td>
+          <td>NaN</td>
+          <td>  NaN</td>
+          <td>NaN</td>
+          <td> 0.40</td>
+          <td> 0.49</td>
+          <td> 0.59</td>
+        </tr>
+        <tr>
+          <th>chr10:20052864:20053378:+@chr10:20054305:20054451:+@chr10:20059515:20059727:+</th>
+          <th>Bclaf1</th>
+          <td> 0.02</td>
+          <td> 0.98</td>
+          <td> 0.55</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td> 0.98</td>
+          <td>  NaN</td>
+          <td>NaN</td>
+          <td>  NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td> 0.06</td>
+          <td>NaN</td>
+          <td>  NaN</td>
+          <td>NaN</td>
+          <td> 0.62</td>
+          <td> 0.63</td>
+          <td> 0.70</td>
+        </tr>
+        <tr>
+          <th>chr10:58814831:58815007:+@chr10:58817088:58817158:+@chr10:58818098:58818168:+@chr10:58824609:58824708:+</th>
+          <th>P4ha1</th>
+          <td> 0.42</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td> 0.94</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td> 0.03</td>
+          <td> 0.97</td>
+          <td>NaN</td>
+          <td>  NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>  NaN</td>
+          <td>NaN</td>
+          <td>  NaN</td>
+          <td>NaN</td>
+          <td> 0.43</td>
+          <td> 0.36</td>
+          <td> 0.52</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
 
-
-    /usr/local/lib/python2.7/site-packages/pandas/io/excel.pyc in read_excel(io, sheetname, **kwds)
-        125     engine = kwds.pop('engine', None)
-        126 
-    --> 127     return ExcelFile(io, engine=engine).parse(sheetname=sheetname, **kwds)
-        128 
-        129 
-
-
-    /usr/local/lib/python2.7/site-packages/pandas/io/excel.pyc in __init__(self, io, **kwds)
-        162                 self.book = xlrd.open_workbook(file_contents=data)
-        163             else:
-    --> 164                 self.book = xlrd.open_workbook(io)
-        165         elif engine == 'xlrd' and isinstance(io, xlrd.Book):
-        166             self.book = io
-
-
-    /usr/local/lib/python2.7/site-packages/xlrd/__init__.pyc in open_workbook(filename, logfile, verbosity, use_mmap, file_contents, encoding_override, formatting_info, on_demand, ragged_rows)
-        392         peek = file_contents[:peeksz]
-        393     else:
-    --> 394         f = open(filename, "rb")
-        395         peek = f.read(peeksz)
-        396         f.close()
-
-
-    IOError: [Errno 2] No such file or directory: 'nature12172-s1/Supplementary_Table4.xls'
 
 
 .. code:: python
 
     splicing = splicing.T
     splicing
+
+
+
+.. raw:: html
+
+    <div style="max-height:1000px;max-width:1500px;overflow:auto;">
+    <table border="1" class="dataframe">
+      <thead>
+        <tr>
+          <th>Event name</th>
+          <th>chr10:126534988:126535177:-@chr10:126533971:126534135:-@chr10:126533686:126533798:-</th>
+          <th>chr10:14403870:14403945:-@chr10:14395740:14395848:-@chr10:14387738:14387914:-</th>
+          <th>chr10:20051892:20052067:+@chr10:20052202:20052363:+@chr10:20053198:20053697:+</th>
+          <th>chr10:20052864:20053378:+@chr10:20054305:20054451:+@chr10:20059515:20059727:+</th>
+          <th>chr10:58814831:58815007:+@chr10:58817088:58817158:+@chr10:58818098:58818168:+@chr10:58824609:58824708:+</th>
+          <th>chr10:79173370:79173665:+@chr10:79174001:79174029:+@chr10:79174239:79174726:+</th>
+          <th>chr10:79322526:79322700:+@chr10:79322862:79322939:+@chr10:79323569:79323862:+</th>
+          <th>chr10:87376364:87376545:+@chr10:87378043:87378094:+@chr10:87393420:87399792:+</th>
+          <th>chr10:92747514:92747722:-@chr10:92727625:92728425:-@chr10:92717434:92717556:-</th>
+          <th>chr11:101438508:101438565:+@chr11:101439246:101439351:+@chr11:101441899:101443267:+</th>
+          <th>...</th>
+          <th>chr8:126022488:126022598:+@chr8:126023892:126024007:+@chr8:126025133:126025333:+</th>
+          <th>chr14:51455667:51455879:-@chr14:51453589:51453752:-@chr14:51453129:51453242:-</th>
+          <th>chr17:29497858:29498102:+@chr17:29500656:29500887:+@chr17:29501856:29502226:+</th>
+          <th>chr2:94198908:94199094:-@chr2:94182784:94182954:-@chr2:94172950:94173209:-</th>
+          <th>chr9:21314438:21314697:-@chr9:21313375:21313558:-@chr9:21311823:21312835:-</th>
+          <th>chr9:21314438:21314697:-@chr9:21313375:21313795:-@chr9:21311823:21312835:-</th>
+          <th>chr10:79545360:79545471:-@chr10:79542698:79544127:-@chr10:79533365:79535263:-</th>
+          <th>chr17:5975579:5975881:+@chr17:5985972:5986242:+@chr17:5990136:5990361:+</th>
+          <th>chr2:29997782:29997941:+@chr2:30002172:30002382:+@chr2:30002882:30003045:+</th>
+          <th>chr7:119221306:119221473:+@chr7:119223686:119223745:+@chr7:119225944:119226075:+</th>
+        </tr>
+        <tr>
+          <th>gene</th>
+          <th>Os9</th>
+          <th>Vta1</th>
+          <th>Bclaf1</th>
+          <th>Bclaf1</th>
+          <th>P4ha1</th>
+          <th>Bsg</th>
+          <th>Ptbp1</th>
+          <th>Igf1</th>
+          <th>Elk3</th>
+          <th>Nbr1</th>
+          <th>...</th>
+          <th>Afg3l1</th>
+          <th>Tep1</th>
+          <th>Fgd2</th>
+          <th>Ttc17</th>
+          <th>Tmed1</th>
+          <th>Tmed1</th>
+          <th>Sbno2</th>
+          <th>Synj2</th>
+          <th>Tbc1d13</th>
+          <th>Usp47</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>S1</th>
+          <td> 0.84</td>
+          <td> 0.95</td>
+          <td>  NaN</td>
+          <td> 0.02</td>
+          <td> 0.42</td>
+          <td>  NaN</td>
+          <td> 0.57</td>
+          <td> 0.31</td>
+          <td> 0.93</td>
+          <td> 0.57</td>
+          <td>...</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+        </tr>
+        <tr>
+          <th>S2</th>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td> 0.04</td>
+          <td> 0.98</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>...</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+        </tr>
+        <tr>
+          <th>S3</th>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td> 0.02</td>
+          <td> 0.55</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td> 0.20</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>...</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+        </tr>
+        <tr>
+          <th>S4</th>
+          <td>  NaN</td>
+          <td> 0.84</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td> 0.95</td>
+          <td>  NaN</td>
+          <td> 0.04</td>
+          <td>...</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+        </tr>
+        <tr>
+          <th>S5</th>
+          <td>  NaN</td>
+          <td> 0.95</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td> 0.94</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td> 0.73</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>...</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+        </tr>
+        <tr>
+          <th>S6</th>
+          <td> 0.01</td>
+          <td> 0.91</td>
+          <td> 0.14</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td> 0.61</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>...</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+        </tr>
+        <tr>
+          <th>S7</th>
+          <td>  NaN</td>
+          <td> 0.87</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td> 0.62</td>
+          <td>  NaN</td>
+          <td> 0.85</td>
+          <td> 0.73</td>
+          <td> 0.55</td>
+          <td>...</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+        </tr>
+        <tr>
+          <th>S8</th>
+          <td>  NaN</td>
+          <td> 0.86</td>
+          <td> 0.02</td>
+          <td> 0.98</td>
+          <td> 0.03</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td> 0.89</td>
+          <td> 0.82</td>
+          <td> 0.83</td>
+          <td>...</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+        </tr>
+        <tr>
+          <th>S9</th>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td> 0.97</td>
+          <td>  NaN</td>
+          <td> 0.97</td>
+          <td>  NaN</td>
+          <td> 0.90</td>
+          <td>  NaN</td>
+          <td>...</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+        </tr>
+        <tr>
+          <th>S10</th>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td> 0.06</td>
+          <td> 0.98</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>...</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+        </tr>
+        <tr>
+          <th>S11</th>
+          <td> 0.03</td>
+          <td> 0.93</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td> 0.97</td>
+          <td>  NaN</td>
+          <td>...</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+        </tr>
+        <tr>
+          <th>S13</th>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>...</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+        </tr>
+        <tr>
+          <th>S14</th>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td> 0.88</td>
+          <td>...</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+        </tr>
+        <tr>
+          <th>S15</th>
+          <td> 0.02</td>
+          <td> 0.96</td>
+          <td> 0.01</td>
+          <td> 0.06</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td> 0.44</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>...</td>
+          <td> 0.91</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+        </tr>
+        <tr>
+          <th>S16</th>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>...</td>
+          <td>  NaN</td>
+          <td> 0.27</td>
+          <td> 0.99</td>
+          <td> 0.99</td>
+          <td> 0.98</td>
+          <td> 0.98</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+        </tr>
+        <tr>
+          <th>S17</th>
+          <td> 0.01</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>...</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td> 0.96</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td> 0.99</td>
+          <td> 0.98</td>
+          <td> 0.67</td>
+          <td> 0.07</td>
+        </tr>
+        <tr>
+          <th>S18</th>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>...</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+        </tr>
+        <tr>
+          <th>10,000 cell Rep1 (P1)</th>
+          <td> 0.27</td>
+          <td> 0.83</td>
+          <td> 0.40</td>
+          <td> 0.62</td>
+          <td> 0.43</td>
+          <td> 0.78</td>
+          <td>  NaN</td>
+          <td> 0.60</td>
+          <td> 0.76</td>
+          <td> 0.52</td>
+          <td>...</td>
+          <td> 0.92</td>
+          <td>  NaN</td>
+          <td> 0.81</td>
+          <td> 0.77</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td> 0.84</td>
+          <td> 0.50</td>
+          <td> 0.56</td>
+          <td>  NaN</td>
+        </tr>
+        <tr>
+          <th>10,000 cell Rep2 (P2)</th>
+          <td> 0.37</td>
+          <td> 0.85</td>
+          <td> 0.49</td>
+          <td> 0.63</td>
+          <td> 0.36</td>
+          <td> 0.72</td>
+          <td> 0.47</td>
+          <td> 0.60</td>
+          <td> 0.73</td>
+          <td> 0.68</td>
+          <td>...</td>
+          <td> 0.67</td>
+          <td> 0.15</td>
+          <td> 0.52</td>
+          <td> 0.67</td>
+          <td> 0.63</td>
+          <td> 0.73</td>
+          <td> 0.82</td>
+          <td> 0.90</td>
+          <td> 0.71</td>
+          <td> 0.55</td>
+        </tr>
+        <tr>
+          <th>10,000 cell Rep3 (P3)</th>
+          <td> 0.31</td>
+          <td> 0.64</td>
+          <td> 0.59</td>
+          <td> 0.70</td>
+          <td> 0.52</td>
+          <td> 0.79</td>
+          <td>  NaN</td>
+          <td> 0.65</td>
+          <td> 0.42</td>
+          <td> 0.64</td>
+          <td>...</td>
+          <td> 0.58</td>
+          <td> 0.79</td>
+          <td> 0.74</td>
+          <td> 0.85</td>
+          <td> 0.73</td>
+          <td> 0.39</td>
+          <td> 0.56</td>
+          <td>  NaN</td>
+          <td> 0.64</td>
+          <td>  NaN</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>20 rows × 352 columns</p>
+    </div>
+
+
+
 The three pooled samples aren't named consistently with the expression
 data, so we have to fix that.
 
@@ -375,17 +1715,12 @@ data, so we have to fix that.
 
     splicing.index[splicing.index.map(lambda x: 'P' in x)]
 
-::
 
 
-    ---------------------------------------------------------------------------
-    NameError                                 Traceback (most recent call last)
+.. parsed-literal::
 
-    <ipython-input-8-1b6ff48cd9a9> in <module>()
-    ----> 1 splicing.index[splicing.index.map(lambda x: 'P' in x)]
-    
+    Index([u'10,000 cell Rep1 (P1)', u'10,000 cell Rep2 (P2)', u'10,000 cell Rep3 (P3)'], dtype='object')
 
-    NameError: name 'splicing' is not defined
 
 
 Since the pooled sample IDs are inconsistent with the ``expression``
@@ -397,6 +1732,15 @@ library, e.g.:
 
     import re
     re.search(r'P\d', '10,000 cell Rep1 (P1)').group()
+
+
+
+.. parsed-literal::
+
+    'P1'
+
+
+
 .. code:: python
 
     def long_pooled_name_to_short(x):
@@ -407,6 +1751,17 @@ library, e.g.:
     
     
     splicing.index.map(long_pooled_name_to_short)
+
+
+
+.. parsed-literal::
+
+    array([u'S1', u'S2', u'S3', u'S4', u'S5', u'S6', u'S7', u'S8', u'S9',
+           u'S10', u'S11', u'S13', u'S14', u'S15', u'S16', u'S17', u'S18',
+           u'P1', u'P2', u'P3'], dtype=object)
+
+
+
 And now we assign this new index as our index to the ``splicing``
 dataframe
 
@@ -414,6 +1769,191 @@ dataframe
 
     splicing.index = splicing.index.map(long_pooled_name_to_short)
     splicing.head()
+
+
+
+.. raw:: html
+
+    <div style="max-height:1000px;max-width:1500px;overflow:auto;">
+    <table border="1" class="dataframe">
+      <thead>
+        <tr>
+          <th>Event name</th>
+          <th>chr10:126534988:126535177:-@chr10:126533971:126534135:-@chr10:126533686:126533798:-</th>
+          <th>chr10:14403870:14403945:-@chr10:14395740:14395848:-@chr10:14387738:14387914:-</th>
+          <th>chr10:20051892:20052067:+@chr10:20052202:20052363:+@chr10:20053198:20053697:+</th>
+          <th>chr10:20052864:20053378:+@chr10:20054305:20054451:+@chr10:20059515:20059727:+</th>
+          <th>chr10:58814831:58815007:+@chr10:58817088:58817158:+@chr10:58818098:58818168:+@chr10:58824609:58824708:+</th>
+          <th>chr10:79173370:79173665:+@chr10:79174001:79174029:+@chr10:79174239:79174726:+</th>
+          <th>chr10:79322526:79322700:+@chr10:79322862:79322939:+@chr10:79323569:79323862:+</th>
+          <th>chr10:87376364:87376545:+@chr10:87378043:87378094:+@chr10:87393420:87399792:+</th>
+          <th>chr10:92747514:92747722:-@chr10:92727625:92728425:-@chr10:92717434:92717556:-</th>
+          <th>chr11:101438508:101438565:+@chr11:101439246:101439351:+@chr11:101441899:101443267:+</th>
+          <th>...</th>
+          <th>chr8:126022488:126022598:+@chr8:126023892:126024007:+@chr8:126025133:126025333:+</th>
+          <th>chr14:51455667:51455879:-@chr14:51453589:51453752:-@chr14:51453129:51453242:-</th>
+          <th>chr17:29497858:29498102:+@chr17:29500656:29500887:+@chr17:29501856:29502226:+</th>
+          <th>chr2:94198908:94199094:-@chr2:94182784:94182954:-@chr2:94172950:94173209:-</th>
+          <th>chr9:21314438:21314697:-@chr9:21313375:21313558:-@chr9:21311823:21312835:-</th>
+          <th>chr9:21314438:21314697:-@chr9:21313375:21313795:-@chr9:21311823:21312835:-</th>
+          <th>chr10:79545360:79545471:-@chr10:79542698:79544127:-@chr10:79533365:79535263:-</th>
+          <th>chr17:5975579:5975881:+@chr17:5985972:5986242:+@chr17:5990136:5990361:+</th>
+          <th>chr2:29997782:29997941:+@chr2:30002172:30002382:+@chr2:30002882:30003045:+</th>
+          <th>chr7:119221306:119221473:+@chr7:119223686:119223745:+@chr7:119225944:119226075:+</th>
+        </tr>
+        <tr>
+          <th>gene</th>
+          <th>Os9</th>
+          <th>Vta1</th>
+          <th>Bclaf1</th>
+          <th>Bclaf1</th>
+          <th>P4ha1</th>
+          <th>Bsg</th>
+          <th>Ptbp1</th>
+          <th>Igf1</th>
+          <th>Elk3</th>
+          <th>Nbr1</th>
+          <th>...</th>
+          <th>Afg3l1</th>
+          <th>Tep1</th>
+          <th>Fgd2</th>
+          <th>Ttc17</th>
+          <th>Tmed1</th>
+          <th>Tmed1</th>
+          <th>Sbno2</th>
+          <th>Synj2</th>
+          <th>Tbc1d13</th>
+          <th>Usp47</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>S1</th>
+          <td> 0.84</td>
+          <td> 0.95</td>
+          <td>  NaN</td>
+          <td> 0.02</td>
+          <td> 0.42</td>
+          <td>NaN</td>
+          <td> 0.57</td>
+          <td> 0.31</td>
+          <td> 0.93</td>
+          <td> 0.57</td>
+          <td>...</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+        </tr>
+        <tr>
+          <th>S2</th>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td> 0.04</td>
+          <td> 0.98</td>
+          <td>  NaN</td>
+          <td>NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>...</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+        </tr>
+        <tr>
+          <th>S3</th>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td> 0.02</td>
+          <td> 0.55</td>
+          <td>  NaN</td>
+          <td>NaN</td>
+          <td>  NaN</td>
+          <td> 0.20</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>...</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+        </tr>
+        <tr>
+          <th>S4</th>
+          <td>  NaN</td>
+          <td> 0.84</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>NaN</td>
+          <td>  NaN</td>
+          <td> 0.95</td>
+          <td>  NaN</td>
+          <td> 0.04</td>
+          <td>...</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+        </tr>
+        <tr>
+          <th>S5</th>
+          <td>  NaN</td>
+          <td> 0.95</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td> 0.94</td>
+          <td>NaN</td>
+          <td>  NaN</td>
+          <td> 0.73</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>...</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>5 rows × 352 columns</p>
+    </div>
+
+
+
 Metadata
 --------
 
@@ -431,21 +1971,129 @@ this sample is pooled or not.
     
     metadata
 
-::
 
 
-    ---------------------------------------------------------------------------
-    NameError                                 Traceback (most recent call last)
+.. raw:: html
 
-    <ipython-input-9-af3589c05db2> in <module>()
-    ----> 1 metadata = pd.DataFrame(index=expression_filtered.index)
-          2 metadata['phenotype'] = 'BDMC'
-          3 metadata['pooled'] = metadata.index.map(lambda x: x.startswith('P'))
-          4 
-          5 metadata
+    <div style="max-height:1000px;max-width:1500px;overflow:auto;">
+    <table border="1" class="dataframe">
+      <thead>
+        <tr style="text-align: right;">
+          <th></th>
+          <th>phenotype</th>
+          <th>pooled</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>S1</th>
+          <td> BDMC</td>
+          <td> False</td>
+        </tr>
+        <tr>
+          <th>S2</th>
+          <td> BDMC</td>
+          <td> False</td>
+        </tr>
+        <tr>
+          <th>S3</th>
+          <td> BDMC</td>
+          <td> False</td>
+        </tr>
+        <tr>
+          <th>S4</th>
+          <td> BDMC</td>
+          <td> False</td>
+        </tr>
+        <tr>
+          <th>S5</th>
+          <td> BDMC</td>
+          <td> False</td>
+        </tr>
+        <tr>
+          <th>S6</th>
+          <td> BDMC</td>
+          <td> False</td>
+        </tr>
+        <tr>
+          <th>S7</th>
+          <td> BDMC</td>
+          <td> False</td>
+        </tr>
+        <tr>
+          <th>S8</th>
+          <td> BDMC</td>
+          <td> False</td>
+        </tr>
+        <tr>
+          <th>S9</th>
+          <td> BDMC</td>
+          <td> False</td>
+        </tr>
+        <tr>
+          <th>S10</th>
+          <td> BDMC</td>
+          <td> False</td>
+        </tr>
+        <tr>
+          <th>S11</th>
+          <td> BDMC</td>
+          <td> False</td>
+        </tr>
+        <tr>
+          <th>S12</th>
+          <td> BDMC</td>
+          <td> False</td>
+        </tr>
+        <tr>
+          <th>S13</th>
+          <td> BDMC</td>
+          <td> False</td>
+        </tr>
+        <tr>
+          <th>S14</th>
+          <td> BDMC</td>
+          <td> False</td>
+        </tr>
+        <tr>
+          <th>S15</th>
+          <td> BDMC</td>
+          <td> False</td>
+        </tr>
+        <tr>
+          <th>S16</th>
+          <td> BDMC</td>
+          <td> False</td>
+        </tr>
+        <tr>
+          <th>S17</th>
+          <td> BDMC</td>
+          <td> False</td>
+        </tr>
+        <tr>
+          <th>S18</th>
+          <td> BDMC</td>
+          <td> False</td>
+        </tr>
+        <tr>
+          <th>P1</th>
+          <td> BDMC</td>
+          <td>  True</td>
+        </tr>
+        <tr>
+          <th>P2</th>
+          <td> BDMC</td>
+          <td>  True</td>
+        </tr>
+        <tr>
+          <th>P3</th>
+          <td> BDMC</td>
+          <td>  True</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
 
-
-    NameError: name 'expression_filtered' is not defined
 
 
 Mapping stats data
@@ -2653,9 +4301,6 @@ We can get the principal components using ``reduced.components_``
 .. image:: shalek2013_files/shalek2013_101_1.png
 
 
-This looks pretty similar, maybe just rearranged cluster order. Let's
-check what their data looks like when you plot this.
-
 Their PC scores and clusters for the genes
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -2760,7 +4405,7 @@ Their PC scores and clusters for the genes
 
 
 
-.. image:: shalek2013_files/shalek2013_105_1.png
+.. image:: shalek2013_files/shalek2013_104_1.png
 
 
 Sure enough, if I use their annotations, I get exactly that. Though
@@ -2775,13 +4420,21 @@ there were two genes in their file that I didn't have in the
 
 
     ---------------------------------------------------------------------------
-    NameError                                 Traceback (most recent call last)
+    TypeError                                 Traceback (most recent call last)
 
-    <ipython-input-1-f11acbabb21a> in <module>()
+    <ipython-input-160-f11acbabb21a> in <module>()
     ----> 1 gene_pc_clusters.index.difference(lps_response_corr.index)
     
 
-    NameError: name 'gene_pc_clusters' is not defined
+    /usr/local/lib/python2.7/site-packages/pandas/core/index.pyc in difference(self, other)
+       1325             result_name = self.name if self.name == other.name else None
+       1326 
+    -> 1327         theDiff = sorted(set(self) - set(other))
+       1328         return Index(theDiff, name=result_name)
+       1329 
+
+
+    TypeError: can't compare datetime.datetime to unicode
 
 
 Oh joy, another ``datetime`` error, just like we had with
@@ -3101,7 +4754,7 @@ Supplementary Figure 1
     sns.despine()
 
 
-.. image:: shalek2013_files/shalek2013_119_0.png
+.. image:: shalek2013_files/shalek2013_118_0.png
 
 
 Notice that this is mostly red, while in the figure from the paper, it
@@ -3956,7 +5609,7 @@ Now we can use the convenient linear model plot (``lmplot``) in
 
 
 
-.. image:: shalek2013_files/shalek2013_149_1.png
+.. image:: shalek2013_files/shalek2013_148_1.png
 
 
 Supplementary Figures 6-20

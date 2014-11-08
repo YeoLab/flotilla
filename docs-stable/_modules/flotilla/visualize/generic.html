@@ -140,6 +140,8 @@
     <div class="col-md-12">
       
   <h1>Source code for flotilla.visualize.generic</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">itertools</span>
+
 <span class="kn">import</span> <span class="nn">matplotlib</span> <span class="kn">as</span> <span class="nn">mpl</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
@@ -154,19 +156,31 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    data : pandas.Series</span>
-<span class="sd">        The main data to plot</span>
-<span class="sd">    groupby : dict-like</span>
+<span class="sd">        The main data to plot as violins</span>
+<span class="sd">    groupby : dict-like, optional</span>
 <span class="sd">        How to group the samples (e.g. by phenotype)</span>
-<span class="sd">    color_ordered : list</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-
-
-<span class="sd">    Raises</span>
-<span class="sd">    ------</span>
+<span class="sd">    color_ordered : list, optional</span>
+<span class="sd">        List of colors, in the order you want to plot</span>
+<span class="sd">    ax : matplotlib.Axes, optional</span>
+<span class="sd">        Where to plot the violins. If None, get the current axes</span>
+<span class="sd">    pooled_data : pandas.Series, optional</span>
+<span class="sd">        Pooled samples. Will be plotted as black dots</span>
+<span class="sd">    order : list, optional</span>
+<span class="sd">        The order in which to plot the phenotypes, e.g. if the data is</span>
+<span class="sd">        form a differentiation time course</span>
+<span class="sd">    violinplot_kws : dict, optional</span>
+<span class="sd">        Other keywords to pass to seaborn.violinplot</span>
+<span class="sd">    title : str, optional</span>
+<span class="sd">        Title of the plot</span>
+<span class="sd">    label_pooled : bool, optional</span>
+<span class="sd">        If True, label the sample id of the pooled samples</span>
+<span class="sd">    outliers : pandas.Series</span>
+<span class="sd">        Outlier samples. Will be plotted in their phenotype category,</span>
+<span class="sd">        as a grey shadow</span>
+<span class="sd">    data_type : &#39;expression&#39; | &#39;splicing&#39; | None</span>
+<span class="sd">        If &#39;splicing&#39;, then force the y-axis to be from 0 to 1. If</span>
+<span class="sd">        &#39;expression&#39; or None, don&#39;t mess with the y-axis</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c"># import pdb; pdb.set_trace()</span>
     <span class="n">data_type</span> <span class="o">=</span> <span class="s">&#39;none&#39;</span> <span class="k">if</span> <span class="n">data_type</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">data_type</span>
     <span class="n">splicing</span> <span class="o">=</span> <span class="s">&#39;splicing&#39;</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">data_type</span><span class="p">)</span>
 
@@ -175,6 +189,21 @@
 
     <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">order</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">data_groups</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">groupby</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">outliers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">outliers_groups</span> <span class="o">=</span> <span class="n">outliers</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">groupby</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">outliers_groups</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">pooled_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">pooled_groups</span> <span class="o">=</span> <span class="n">pooled_data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">groupby</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pooled_groups</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">all_groups</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="n">data_groups</span><span class="p">,</span> <span class="n">pooled_groups</span><span class="p">,</span>
+                                         <span class="n">outliers_groups</span><span class="p">))</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">all_groups</span><span class="p">)</span>
+
 
     <span class="n">_violinplot_single_dataset</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">groupby</span><span class="o">=</span><span class="n">groupby</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color_ordered</span><span class="p">,</span>
                                <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span>
@@ -266,12 +295,6 @@
 
         <span class="n">single_positions</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="n">single_color</span> <span class="o">=</span> <span class="bp">None</span>
-
-    <span class="k">print</span> <span class="n">data</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span>
-    <span class="k">print</span> <span class="s">&#39;verified_color&#39;</span><span class="p">,</span> <span class="n">verified_color</span>
-    <span class="k">print</span> <span class="s">&#39;verified_order&#39;</span><span class="p">,</span> <span class="n">verified_order</span>
-    <span class="k">print</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">groupby</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-    <span class="k">print</span>
 
     <span class="n">violinplot_kws</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">violinplot_kws</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">violinplot_kws</span>
 

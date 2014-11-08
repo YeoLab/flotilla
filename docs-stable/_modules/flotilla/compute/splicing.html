@@ -151,8 +151,36 @@
 
 
 <div class="viewcode-block" id="Modalities"><a class="viewcode-back" href="../../../flotilla.compute.splicing.html#flotilla.compute.splicing.Modalities">[docs]</a><span class="k">class</span> <span class="nc">Modalities</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Estimate the modality of a splicing event</span>
 
+<span class="sd">    This is based off of the &quot;percent spliced-in&quot; (PSI) score of a splicing</span>
+<span class="sd">    event, for example in a cassette exon event, how many transcripts use the</span>
+<span class="sd">    cassette exon gives the &quot;PSI&quot; (:math:`\Psi`) score of that splicing event</span>
+
+<span class="sd">    Possible modalities include:</span>
+<span class="sd">    - Excluded (most cells have excluded the exon)</span>
+<span class="sd">    - Middle (most cells have both the included and excluded isoforms)</span>
+<span class="sd">    - Included (most cells have included the exon)</span>
+<span class="sd">    - Bimodal (approximately a 50:50 distribution of inclusoion:exclusion)</span>
+<span class="sd">    - Uniform (uniform distribution of exon usage)</span>
+
+<span class="sd">    The way that these modalities are calculated is by binning each splicing</span>
+<span class="sd">    event across all cells from (0, excluded_max, included_min, 1), and finding</span>
+<span class="sd">    the Jensen-Shannon Divergence that event, and each of the five modalities</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    excluded_max : float, optional (default=0.2)</span>
+<span class="sd">        Maximum value of excluded bin</span>
+<span class="sd">    included_min : float, optional (default=0.8)</span>
+<span class="sd">        Minimum value of included bin</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+
+
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">modalities_bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>  <span class="c"># excluded</span>
                                 <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>  <span class="c"># middle</span>
@@ -168,20 +196,46 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">excluded_max</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">included_min</span><span class="o">=</span><span class="mf">0.8</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bins</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">excluded_max</span><span class="p">,</span> <span class="n">included_min</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
-    <span class="c"># def __call__(self, *args, **kwargs):</span>
-    <span class="c"># return self.assignments</span>
-
     <span class="k">def</span> <span class="nf">_col_jsd_modalities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">col</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">true_modalities</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">jsd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">col</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;Calculate JSD between a single binned event and true modalities</span>
+
+<span class="sd">        Given a column of a binned splicing event, calculate its Jensen-Shannon</span>
+<span class="sd">        divergence to the true modalities</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        col : pandas.Series</span>
+<span class="sd">            A (n_bins,) sized series of a splicing event</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        jsd : pandas.Series</span>
+<span class="sd">            A (n_modalities,) sized series of JSD between this event and the</span>
+<span class="sd">            true modalities</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">true_modalities</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">jsd</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">col</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Modalities.sqrt_jsd_modalities"><a class="viewcode-back" href="../../../flotilla.compute.splicing.html#flotilla.compute.splicing.Modalities.sqrt_jsd_modalities">[docs]</a>    <span class="k">def</span> <span class="nf">sqrt_jsd_modalities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">binned</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the square root of the JSD of each splicing event versus</span>
-<span class="sd">            all the modalities. Use square root of JSD because it&#39;s a metric.</span>
+        <span class="sd">&quot;&quot;&quot;Calculate JSD between all binned splicing events and true modalities</span>
+
+<span class="sd">        Use square root of JSD because it&#39;s a metric.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        binned : pandas.DataFrame</span>
+<span class="sd">            A (n_bins, n_events) sized DataFrame of binned splicing events</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        sqrt_jsd : pandas.DataFrame</span>
+<span class="sd">            A (n_modalities, n_events) sized DataFrame of the square root JSD</span>
+<span class="sd">            between splicing events and all modalities</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">binned</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_col_jsd_modalities</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
 </div>
 <div class="viewcode-block" id="Modalities.assignments"><a class="viewcode-back" href="../../../flotilla.compute.splicing.html#flotilla.compute.splicing.Modalities.assignments">[docs]</a>    <span class="k">def</span> <span class="nf">assignments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sqrt_jsd_modalities</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the modality which has the smallest square root JSD to each event</span>
+        <span class="sd">&quot;&quot;&quot;Return the modality with the smallest square root JSD to each event</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -277,6 +331,17 @@
     <span class="k">def</span> <span class="nf">_max_assignment</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Given a pandas.Series of modalities counts, return the maximum</span>
 <span class="sd">        value. Necessary because just np.argmax will use np.nan as the max :(</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : pandas.Series</span>
+<span class="sd">            A (n_modalities,) sized pandas series of integers, which count how</span>
+<span class="sd">            many times this single splicing event was assigned to a modality.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        assignment : str</span>
+<span class="sd">            The modality with the largest number of counts</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>

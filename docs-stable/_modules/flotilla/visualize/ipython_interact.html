@@ -152,7 +152,7 @@
 
 
 
-<span class="c"># from ..compute.predict import default_classifier</span>
+<span class="c"># from ..compute.predict import CLASSIFIER</span>
 <span class="kn">from</span> <span class="nn">flotilla.util</span> <span class="kn">import</span> <span class="n">link_to_list</span>
 <span class="kn">from</span> <span class="nn">..visualize.color</span> <span class="kn">import</span> <span class="n">red</span>
 <span class="kn">from</span> <span class="nn">.network</span> <span class="kn">import</span> <span class="n">NetworkerViz</span>
@@ -233,8 +233,8 @@
                         <span class="n">featurewise</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
                         <span class="n">x_pc</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">y_pc</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
                         <span class="n">show_point_labels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                        <span class="n">list_link</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">plot_violins</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-                        <span class="n">savefile</span><span class="o">=</span><span class="s">&#39;data/last.pca.pdf&#39;</span><span class="p">):</span>
+                        <span class="n">list_link</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">plot_violins</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                        <span class="n">savefile</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
 
         <span class="k">def</span> <span class="nf">do_interact</span><span class="p">(</span><span class="n">data_type</span><span class="o">=</span><span class="s">&#39;expression&#39;</span><span class="p">,</span>
                         <span class="n">sample_subset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_sample_subsets</span><span class="p">,</span>
@@ -244,7 +244,7 @@
                         <span class="n">x_pc</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y_pc</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
                         <span class="n">plot_violins</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
                         <span class="n">show_point_labels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                        <span class="n">savefile</span><span class="o">=</span><span class="s">&#39;data/last.pca.pdf&#39;</span><span class="p">):</span>
+                        <span class="n">savefile</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
 
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s">&#39;self&#39;</span><span class="p">:</span>
@@ -288,9 +288,6 @@
                 <span class="k">if</span> <span class="n">plot_violins</span><span class="p">:</span>
                     <span class="n">pca</span><span class="o">.</span><span class="n">violins_fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">violins_file</span><span class="p">)</span>
 
-
-        <span class="c"># self.plot_study_sample_legend()</span>
-
         <span class="k">if</span> <span class="n">feature_subsets</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">feature_subsets</span> <span class="o">=</span> <span class="n">Interactive</span><span class="o">.</span><span class="n">get_feature_subsets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_types</span><span class="p">)</span>
 
@@ -320,7 +317,7 @@
                           <span class="n">weight_fun</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                           <span class="n">use_pc_1</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">use_pc_2</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">use_pc_3</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
                           <span class="n">use_pc_4</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-                          <span class="n">savefile</span><span class="o">=</span><span class="s">&#39;data/last.graph.pdf&#39;</span><span class="p">):</span>
+                          <span class="n">savefile</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
 
         <span class="kn">from</span> <span class="nn">IPython.html.widgets</span> <span class="kn">import</span> <span class="n">interact</span>
 
@@ -336,7 +333,7 @@
                         <span class="n">cov_std_cut</span><span class="o">=</span><span class="mf">1.8</span><span class="p">,</span> <span class="n">n_pcs</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
                         <span class="n">feature_of_interest</span><span class="o">=</span><span class="s">&quot;RBFOX2&quot;</span><span class="p">,</span>
                         <span class="n">draw_labels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                        <span class="n">savefile</span><span class="o">=</span><span class="s">&#39;data/last.graph.pdf&#39;</span><span class="p">):</span>
+                        <span class="n">savefile</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
 
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s">&#39;self&#39;</span><span class="p">:</span>
@@ -399,7 +396,7 @@
                                <span class="n">predictor_types</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                                <span class="n">score_coefficient</span><span class="o">=</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>
                                <span class="n">draw_labels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                               <span class="n">savefile</span><span class="o">=</span><span class="s">&#39;data/last.clf.pdf&#39;</span><span class="p">):</span>
+                               <span class="n">savefile</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
 
         <span class="k">def</span> <span class="nf">do_interact</span><span class="p">(</span><span class="n">data_type</span><span class="p">,</span>
                         <span class="n">sample_subset</span><span class="p">,</span>
@@ -407,7 +404,7 @@
                         <span class="n">predictor_type</span><span class="o">=</span><span class="n">default_classifier</span><span class="p">,</span>
                         <span class="n">categorical_variable</span><span class="o">=</span><span class="s">&#39;outlier&#39;</span><span class="p">,</span>
                         <span class="n">score_coefficient</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-                        <span class="n">savefile</span><span class="o">=</span><span class="s">&#39;data/last.clf.pdf&#39;</span><span class="p">):</span>
+                        <span class="n">savefile</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
 
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s">&#39;self&#39;</span><span class="p">:</span>
@@ -561,7 +558,7 @@
             <span class="n">bootstrapped_kws</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="k">return</span> <span class="n">interact</span><span class="p">(</span><span class="n">do_interact</span><span class="p">,</span>
-                        <span class="n">sample_subset</span><span class="o">=</span><span class="n">sample_subsets</span><span class="p">,</span>
+                        <span class="n">swample_subset</span><span class="o">=</span><span class="n">sample_subsets</span><span class="p">,</span>
                         <span class="n">feature_subset</span><span class="o">=</span><span class="n">feature_subsets</span><span class="p">,</span>
                         <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">x_offset</span><span class="o">=</span><span class="n">x_offset</span><span class="p">,</span>
                         <span class="n">use_these_modalities</span><span class="o">=</span><span class="n">use_these_modalities</span><span class="p">,</span>
@@ -616,12 +613,114 @@
                         <span class="n">difference_threshold</span><span class="o">=</span><span class="n">difference_threshold</span><span class="p">,</span>
                         <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">,</span>
                         <span class="n">savefile</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+</div>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Interactive.interactive_choose_outliers"><a class="viewcode-back" href="../../../flotilla.visualize.ipython_interact.html#flotilla.visualize.ipython_interact.Interactive.interactive_choose_outliers">[docs]</a>    <span class="k">def</span> <span class="nf">interactive_choose_outliers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                                    <span class="n">data_types</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;expression&#39;</span><span class="p">,</span> <span class="s">&#39;splicing&#39;</span><span class="p">),</span>
+                                    <span class="n">sample_subsets</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                                    <span class="n">feature_subsets</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                                    <span class="n">featurewise</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                                    <span class="n">x_pc</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">y_pc</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+                                    <span class="n">show_point_labels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                                    <span class="n">kernel</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;rbf&#39;</span><span class="p">,</span><span class="s">&#39;linear&#39;</span><span class="p">,</span><span class="s">&#39;poly&#39;</span><span class="p">,</span><span class="s">&#39;sigmoid&#39;</span><span class="p">],</span>
+                                    <span class="n">gamma</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">),</span>
+                                    <span class="n">nu</span><span class="o">=</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">9.9</span><span class="p">),</span>
+                                    <span class="p">):</span>
+
+        <span class="k">def</span> <span class="nf">do_interact</span><span class="p">(</span><span class="n">data_type</span><span class="o">=</span><span class="s">&#39;expression&#39;</span><span class="p">,</span>
+                        <span class="n">sample_subset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_sample_subset</span><span class="p">,</span>
+                        <span class="n">feature_subset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_feature_subset</span><span class="p">,</span>
+                        <span class="n">x_pc</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y_pc</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                        <span class="n">show_point_labels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                        <span class="n">kernel</span><span class="o">=</span><span class="s">&#39;rbf&#39;</span><span class="p">,</span>
+                        <span class="n">gamma</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
+                        <span class="n">nu</span><span class="o">=.</span><span class="mi">2</span><span class="p">,</span>
+                        <span class="p">):</span>
+            <span class="k">print</span> <span class="s">&quot;transforming input gamma by 2^-(input): </span><span class="si">%f</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">gamma</span>
+            <span class="n">gamma</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">**</span> <span class="o">-</span><span class="nb">float</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span>
+            <span class="k">print</span> <span class="s">&quot;transforming input nu by input/10: </span><span class="si">%f</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">nu</span>
+            <span class="n">nu</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">nu</span><span class="p">)</span> <span class="o">/</span> <span class="mi">10</span>
+            <span class="n">kernel</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s">&#39;self&#39;</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;{} : {}</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">renamer</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
+                <span class="n">data_model</span> <span class="o">=</span> <span class="bp">None</span>
+
+            <span class="k">if</span> <span class="n">feature_subset</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_feature_subsets</span><span class="p">[</span><span class="n">data_type</span><span class="p">]:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;This feature_subset (&#39;{}&#39;) is not available in &quot;</span>
+                              <span class="s">&quot;this data type (&#39;{}&#39;). Falling back on all &quot;</span>
+                              <span class="s">&quot;features.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">feature_subset</span><span class="p">,</span> <span class="n">data_type</span><span class="p">))</span>
+
+            <span class="n">reducer</span><span class="p">,</span> <span class="n">outlier_detector</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detect_outliers</span><span class="p">(</span><span class="n">data_type</span><span class="o">=</span><span class="n">data_type</span><span class="p">,</span>
+                                                             <span class="n">sample_subset</span><span class="o">=</span><span class="n">sample_subset</span><span class="p">,</span>
+                                                             <span class="n">feature_subset</span><span class="o">=</span><span class="n">feature_subset</span><span class="p">,</span>
+                                                             <span class="n">reducer</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                                                             <span class="n">reducer_kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                                                             <span class="n">outlier_detection_method</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                                                             <span class="n">outlier_detection_method_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;gamma&#39;</span><span class="p">:</span> <span class="n">gamma</span><span class="p">,</span>
+                                                                                              <span class="s">&#39;nu&#39;</span><span class="p">:</span> <span class="n">nu</span><span class="p">,</span>
+                                                                                              <span class="s">&#39;kernel&#39;</span><span class="p">:</span> <span class="n">kernel</span><span class="p">})</span>
+            <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s">&quot;expression&quot;</span><span class="p">:</span>
+                <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">expression</span>
+            <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s">&quot;splicing&quot;</span><span class="p">:</span>
+                <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">splicing</span>
+
+            <span class="n">obj</span><span class="o">.</span><span class="n">plot_outliers</span><span class="p">(</span><span class="n">reducer</span><span class="p">,</span> <span class="n">outlier_detector</span><span class="p">,</span>
+                              <span class="n">feature_renamer</span><span class="o">=</span><span class="n">renamer</span><span class="p">,</span>
+                              <span class="n">show_point_labels</span><span class="o">=</span><span class="n">show_point_labels</span><span class="p">,</span>
+                              <span class="n">x_pc</span><span class="o">=</span><span class="s">&quot;pc_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">x_pc</span><span class="p">),</span>
+                              <span class="n">y_pc</span><span class="o">=</span><span class="s">&quot;pc_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">y_pc</span><span class="p">))</span>
+
+            <span class="k">print</span> <span class="s">&quot;total samples:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">outlier_detector</span><span class="o">.</span><span class="n">outliers</span><span class="p">)</span>
+            <span class="k">print</span> <span class="s">&quot;outlier samples:&quot;</span><span class="p">,</span> <span class="n">outlier_detector</span><span class="o">.</span><span class="n">outliers</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="k">print</span> <span class="s">&quot;metadata column name:&quot;</span><span class="p">,</span> <span class="n">outlier_detector</span><span class="o">.</span><span class="n">title</span>
+
+        <span class="k">if</span> <span class="n">feature_subsets</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">feature_subsets</span> <span class="o">=</span> <span class="n">Interactive</span><span class="o">.</span><span class="n">get_feature_subsets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_types</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">sample_subsets</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">sample_subsets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_sample_subsets</span>
+
+        <span class="k">return</span> <span class="n">interact</span><span class="p">(</span><span class="n">do_interact</span><span class="p">,</span>
+                        <span class="n">data_type</span><span class="o">=</span><span class="n">data_types</span><span class="p">,</span>
+                        <span class="n">sample_subset</span><span class="o">=</span><span class="n">sample_subsets</span><span class="p">,</span>
+                        <span class="n">feature_subset</span><span class="o">=</span><span class="n">feature_subsets</span><span class="p">,</span>
+                        <span class="n">x_pc</span><span class="o">=</span><span class="n">x_pc</span><span class="p">,</span> <span class="n">y_pc</span><span class="o">=</span><span class="n">y_pc</span><span class="p">,</span>
+                        <span class="n">show_point_labels</span><span class="o">=</span><span class="n">show_point_labels</span><span class="p">,</span>
+                        <span class="n">kernel</span><span class="o">=</span><span class="n">kernel</span><span class="p">,</span>
+                        <span class="n">nu</span><span class="o">=</span><span class="n">nu</span><span class="p">,</span>
+                        <span class="n">gamma</span><span class="o">=</span><span class="n">gamma</span><span class="p">)</span>
+</div>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Interactive.interactive_reset_outliers"><a class="viewcode-back" href="../../../flotilla.visualize.ipython_interact.html#flotilla.visualize.ipython_interact.Interactive.interactive_reset_outliers">[docs]</a>    <span class="k">def</span> <span class="nf">interactive_reset_outliers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;User selects from columns that start with &#39;outlier_&#39; to merge</span>
+<span class="sd">        multiple outlier classifications&quot;&quot;&quot;</span>
+        <span class="n">outlier_columns</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">column</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;outlier_&quot;</span><span class="p">):</span>
+                <span class="n">outlier_columns</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
+
+        <span class="k">def</span> <span class="nf">do_interact</span><span class="p">(</span><span class="o">**</span><span class="n">columns</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">print</span> <span class="s">&quot;You have not specified any &#39;outlier_&#39; columns in study.metadata.data... </span><span class="se">\n</span><span class="s">&quot;</span> \
+                      <span class="s">&quot;This function will do nothing to your data.&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">set_outliers_by_merging_columns</span><span class="p">(</span>
+                    <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="n">columns</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="p">])</span>
+
+        <span class="n">interact</span><span class="p">(</span><span class="n">do_interact</span><span class="p">,</span> <span class="o">**</span><span class="n">outlier_columns</span><span class="p">)</span>
+
 
         <span class="c"># @staticmethod</span>
         <span class="c"># def interactive_clusteredheatmap(self):</span>
         <span class="c"># def do_interact(data_type=&#39;expression&#39;,</span>
-        <span class="c"># sample_subset=self.default_sample_subsets,</span>
-        <span class="c"># feature_subset=self.default_feature_subset,</span>
+        <span class="c">#                     sample_subset=self.default_sample_subsets,</span>
+        <span class="c">#                     feature_subset=self.default_feature_subset,</span>
         <span class="c">#                     metric=&#39;euclidean&#39;,</span>
         <span class="c">#                     linkage_method=&#39;median&#39;,</span>
         <span class="c">#                     list_link=&#39;&#39;,</span>
