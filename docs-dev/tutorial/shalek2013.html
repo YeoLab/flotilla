@@ -31,7 +31,7 @@
     <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
     <link rel="top" title="flotilla 0.2.2 documentation" href="../index.html" />
     <link rel="up" title="Flotilla tutorial" href="../tutorial.html" />
-    <link rel="prev" title="Create a barebones datapackage" href="barebones_study_making.html" />
+    <link rel="prev" title="Create an advanced datapackage" href="advanced_study_making.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -194,7 +194,13 @@
   <div class="row">
     <div class="col-md-12">
       
-  <p>Before we begin, let&#8217;s import everything we need.</p>
+  <p>In the interest of reproducibility, and to showcase our new package
+<tt class="docutils literal"><span class="pre">`flotilla</span></tt> &lt;<a class="reference external" href="http://github.com/yeolab/flotilla">http://github.com/yeolab/flotilla</a>&gt;`_, I&#8217;ve reproduced
+many figures from the landmark single-cell paper, <a class="reference external" href="http://www.ncbi.nlm.nih.gov/pubmed/23685454">Single-cell
+transcriptomics reveals bimodality in expression and splicing in immune
+cells</a> by Shalek and
+Sujita, <em>et al</em>. <em>Nature</em> (2013).</p>
+<p>Before we begin, let&#8217;s import everything we need.</p>
 <div class="code python highlight-python"><div class="highlight"><pre># Import the flotilla package for biological data analysis
 import flotilla
 
@@ -229,84 +235,233 @@ in addition to 3 pooled samples.</p>
 <h2>Expression data<a class="headerlink" href="#expression-data" title="Permalink to this headline">¶</a></h2>
 <p>First, we will read in the expression data. These data were obtained
 using,</p>
-<div class="highlight-python"><div class="highlight"><pre>wget ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE41nnn/GSE41265/suppl/GSE41265_allGenesTPM.txt.gz
+<div class="code python highlight-python"><div class="highlight"><pre>! wget ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE41nnn/GSE41265/suppl/GSE41265_allGenesTPM.txt.gz
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>--2014-11-10 12:35:20--  ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE41nnn/GSE41265/suppl/GSE41265_allGenesTPM.txt.gz
+           =&gt; &#39;GSE41265_allGenesTPM.txt.gz.1&#39;
+Resolving ftp.ncbi.nlm.nih.gov... 130.14.250.7, 2607:f220:41e:250::11
+Connecting to ftp.ncbi.nlm.nih.gov|130.14.250.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==&gt; SYST ... done.    ==&gt; PWD ... done.
+==&gt; TYPE I ... done.  ==&gt; CWD (1) /geo/series/GSE41nnn/GSE41265/suppl ... done.
+==&gt; SIZE GSE41265_allGenesTPM.txt.gz ... 1099290
+==&gt; PASV ... done.    ==&gt; RETR GSE41265_allGenesTPM.txt.gz ... done.
+Length: 1099290 (1.0M) (unauthoritative)
+
+100%[======================================&gt;] 1,099,290   6.28MB/s   in 0.2s
+
+2014-11-10 12:35:21 (6.28 MB/s) - &#39;GSE41265_allGenesTPM.txt.gz.1&#39; saved [1099290]
 </pre></div>
 </div>
 <p>We will also compare to the supplementary table 2 data, obtained using</p>
-<div class="highlight-python"><div class="highlight"><pre>wget http://www.nature.com/nature/journal/v498/n7453/extref/nature12172-s1.zip
-unzip nature12172-s1.zip
+<div class="code python highlight-python"><div class="highlight"><pre>! wget http://www.nature.com/nature/journal/v498/n7453/extref/nature12172-s1.zip
+! unzip nature12172-s1.zip
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>--2014-11-10 12:35:22--  http://www.nature.com/nature/journal/v498/n7453/extref/nature12172-s1.zip
+Resolving www.nature.com... 23.62.97.233, 23.62.97.227
+Connecting to www.nature.com|23.62.97.233|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 4634226 (4.4M) [application/zip]
+Saving to: &#39;nature12172-s1.zip&#39;
+
+100%[======================================&gt;] 4,634,226   1.17MB/s   in 3.8s
+
+2014-11-10 12:35:26 (1.16 MB/s) - &#39;nature12172-s1.zip&#39; saved [4634226/4634226]
+
+Archive:  nature12172-s1.zip
+   creating: nature12172-s1/
+  inflating: nature12172-s1/Supplementary_Table1.xls
+  inflating: nature12172-s1/Supplementary_Table2.xlsx
+  inflating: nature12172-s1/Supplementary_Table3.xls
+  inflating: nature12172-s1/Supplementary_Table4.xls
+  inflating: nature12172-s1/Supplementary_Table5.xls
+  inflating: nature12172-s1/Supplementary_Table6.xls
+  inflating: nature12172-s1/Supplementary_Table7.xlsx
 </pre></div>
 </div>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">expression</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="s">&quot;GSE41265_allGenesTPM.txt.gz&quot;</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s">&quot;gzip&quot;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">expression</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>---------------------------------------------------------------------------
-IOError                                   Traceback (most recent call last)
-
-&lt;ipython-input-3-b45e9120e279&gt; in &lt;module&gt;()
-----&gt; 1 expression = pd.read_table(&quot;GSE41265_allGenesTPM.txt.gz&quot;, compression=&quot;gzip&quot;, index_col=0)
-      2 expression.head()
-
-
-/usr/local/lib/python2.7/site-packages/pandas/io/parsers.pyc in parser_f(filepath_or_buffer, sep, dialect, compression, doublequote, escapechar, quotechar, quoting, skipinitialspace, lineterminator, header, index_col, names, prefix, skiprows, skipfooter, skip_footer, na_values, na_fvalues, true_values, false_values, delimiter, converters, dtype, usecols, engine, delim_whitespace, as_recarray, na_filter, compact_ints, use_unsigned, low_memory, buffer_lines, warn_bad_lines, error_bad_lines, keep_default_na, thousands, comment, decimal, parse_dates, keep_date_col, dayfirst, date_parser, memory_map, float_precision, nrows, iterator, chunksize, verbose, encoding, squeeze, mangle_dupe_cols, tupleize_cols, infer_datetime_format, skip_blank_lines)
-    461                     skip_blank_lines=skip_blank_lines)
-    462
---&gt; 463         return _read(filepath_or_buffer, kwds)
-    464
-    465     parser_f.__name__ = name
-
-
-/usr/local/lib/python2.7/site-packages/pandas/io/parsers.pyc in _read(filepath_or_buffer, kwds)
-    237
-    238     # Create the parser.
---&gt; 239     parser = TextFileReader(filepath_or_buffer, **kwds)
-    240
-    241     if (nrows is not None) and (chunksize is not None):
-
-
-/usr/local/lib/python2.7/site-packages/pandas/io/parsers.pyc in __init__(self, f, engine, **kwds)
-    551             self.options[&#39;has_index_names&#39;] = kwds[&#39;has_index_names&#39;]
-    552
---&gt; 553         self._make_engine(self.engine)
-    554
-    555     def _get_options_with_defaults(self, engine):
-
-
-/usr/local/lib/python2.7/site-packages/pandas/io/parsers.pyc in _make_engine(self, engine)
-    688     def _make_engine(self, engine=&#39;c&#39;):
-    689         if engine == &#39;c&#39;:
---&gt; 690             self._engine = CParserWrapper(self.f, **self.options)
-    691         else:
-    692             if engine == &#39;python&#39;:
-
-
-/usr/local/lib/python2.7/site-packages/pandas/io/parsers.pyc in __init__(self, src, **kwds)
-   1050         kwds[&#39;allow_leading_cols&#39;] = self.index_col is not False
-   1051
--&gt; 1052         self._reader = _parser.TextReader(src, **kwds)
-   1053
-   1054         # XXX
-
-
-/usr/local/lib/python2.7/site-packages/pandas/parser.so in pandas.parser.TextReader.__cinit__ (pandas/parser.c:3128)()
-
-
-/usr/local/lib/python2.7/site-packages/pandas/parser.so in pandas.parser.TextReader._setup_parser_source (pandas/parser.c:5315)()
-
-
-/usr/local/Cellar/python/2.7.6/Frameworks/Python.framework/Versions/2.7/lib/python2.7/gzip.pyc in __init__(self, filename, mode, compresslevel, fileobj, mtime)
-     92             mode += &#39;b&#39;
-     93         if fileobj is None:
----&gt; 94             fileobj = self.myfileobj = __builtin__.open(filename, mode or &#39;rb&#39;)
-     95         if filename is None:
-     96             # Issue #13781: os.fdopen() creates a fileobj with a bogus name
-
-
-IOError: [Errno 2] No such file or directory: &#39;GSE41265_allGenesTPM.txt.gz&#39;
-</pre></div>
-</div>
-<p>These data are in the &#8220;transcripts per million,&#8221; aka TPM unit. See
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>S1</th>
+      <th>S2</th>
+      <th>S3</th>
+      <th>S4</th>
+      <th>S5</th>
+      <th>S6</th>
+      <th>S7</th>
+      <th>S8</th>
+      <th>S9</th>
+      <th>S10</th>
+      <th>...</th>
+      <th>S12</th>
+      <th>S13</th>
+      <th>S14</th>
+      <th>S15</th>
+      <th>S16</th>
+      <th>S17</th>
+      <th>S18</th>
+      <th>P1</th>
+      <th>P2</th>
+      <th>P3</th>
+    </tr>
+    <tr>
+      <th>GENE</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>XKR4</th>
+      <td>  0.000000</td>
+      <td> 0.000000</td>
+      <td>   0.000000</td>
+      <td> 0.000000</td>
+      <td> 0.000000</td>
+      <td> 0.000000</td>
+      <td>   0.000000</td>
+      <td>   0.000000</td>
+      <td> 0.000000</td>
+      <td> 0.000000</td>
+      <td>...</td>
+      <td> 0.000000</td>
+      <td> 0.000000</td>
+      <td> 0.000000</td>
+      <td> 0.000000</td>
+      <td> 0.000000</td>
+      <td> 0.000000</td>
+      <td>  0.000000</td>
+      <td> 0.000000</td>
+      <td> 0.019906</td>
+      <td>  0.000000</td>
+    </tr>
+    <tr>
+      <th>AB338584</th>
+      <td>  0.000000</td>
+      <td> 0.000000</td>
+      <td>   0.000000</td>
+      <td> 0.000000</td>
+      <td> 0.000000</td>
+      <td> 0.000000</td>
+      <td>   0.000000</td>
+      <td>   0.000000</td>
+      <td> 0.000000</td>
+      <td> 0.000000</td>
+      <td>...</td>
+      <td> 0.000000</td>
+      <td> 0.000000</td>
+      <td> 0.000000</td>
+      <td> 0.000000</td>
+      <td> 0.000000</td>
+      <td> 0.000000</td>
+      <td>  0.000000</td>
+      <td> 0.000000</td>
+      <td> 0.000000</td>
+      <td>  0.000000</td>
+    </tr>
+    <tr>
+      <th>B3GAT2</th>
+      <td>  0.000000</td>
+      <td> 0.000000</td>
+      <td>   0.023441</td>
+      <td> 0.000000</td>
+      <td> 0.000000</td>
+      <td> 0.029378</td>
+      <td>   0.000000</td>
+      <td>   0.055452</td>
+      <td> 0.000000</td>
+      <td> 0.029448</td>
+      <td>...</td>
+      <td> 0.000000</td>
+      <td> 0.000000</td>
+      <td> 0.031654</td>
+      <td> 0.000000</td>
+      <td> 0.000000</td>
+      <td> 0.000000</td>
+      <td> 42.150208</td>
+      <td> 0.680327</td>
+      <td> 0.022996</td>
+      <td>  0.110236</td>
+    </tr>
+    <tr>
+      <th>NPL</th>
+      <td> 72.008590</td>
+      <td> 0.000000</td>
+      <td> 128.062012</td>
+      <td> 0.095082</td>
+      <td> 0.000000</td>
+      <td> 0.000000</td>
+      <td> 112.310234</td>
+      <td> 104.329122</td>
+      <td> 0.119230</td>
+      <td> 0.000000</td>
+      <td>...</td>
+      <td> 0.000000</td>
+      <td> 0.116802</td>
+      <td> 0.104200</td>
+      <td> 0.106188</td>
+      <td> 0.229197</td>
+      <td> 0.110582</td>
+      <td>  0.000000</td>
+      <td> 7.109356</td>
+      <td> 6.727028</td>
+      <td> 14.525447</td>
+    </tr>
+    <tr>
+      <th>T2</th>
+      <td>  0.109249</td>
+      <td> 0.172009</td>
+      <td>   0.000000</td>
+      <td> 0.000000</td>
+      <td> 0.182703</td>
+      <td> 0.076012</td>
+      <td>   0.078698</td>
+      <td>   0.000000</td>
+      <td> 0.093698</td>
+      <td> 0.076583</td>
+      <td>...</td>
+      <td> 0.693459</td>
+      <td> 0.010137</td>
+      <td> 0.081936</td>
+      <td> 0.000000</td>
+      <td> 0.000000</td>
+      <td> 0.086879</td>
+      <td>  0.068174</td>
+      <td> 0.062063</td>
+      <td> 0.000000</td>
+      <td>  0.050605</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 21 columns</p>
+</div><p>These data are in the &#8220;transcripts per million,&#8221; aka TPM unit. See
 <a class="reference external" href="http://haroldpimentel.wordpress.com/2014/05/08/what-the-fpkm-a-review-rna-seq-expression-units/">this</a>
 blog post if that sounds weird to you.</p>
 <p>These data are formatted with samples on the columns, and genes on the
@@ -319,18 +474,159 @@ each gene is a feature. So we will simply transpose this.</p>
 <span class="n">expression</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>---------------------------------------------------------------------------
-NameError                                 Traceback (most recent call last)
-
-&lt;ipython-input-4-7fdc90570fae&gt; in &lt;module&gt;()
-----&gt; 1 expression = expression.T
-      2 expression.head()
-
-
-NameError: name &#39;expression&#39; is not defined
-</pre></div>
-</div>
-<p>The authors filtered the expression data based on having at least 3
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>GENE</th>
+      <th>XKR4</th>
+      <th>AB338584</th>
+      <th>B3GAT2</th>
+      <th>NPL</th>
+      <th>T2</th>
+      <th>T</th>
+      <th>PDE10A</th>
+      <th>1700010I14RIK</th>
+      <th>6530411M01RIK</th>
+      <th>PABPC6</th>
+      <th>...</th>
+      <th>AK085062</th>
+      <th>DHX9</th>
+      <th>RNASET2B</th>
+      <th>FGFR1OP</th>
+      <th>CCR6</th>
+      <th>BRP44L</th>
+      <th>AK014435</th>
+      <th>AK015714</th>
+      <th>SFT2D1</th>
+      <th>PRR18</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>S1</th>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0.000000</td>
+      <td>  72.008590</td>
+      <td> 0.109249</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td>...</td>
+      <td> 0</td>
+      <td> 0.774638</td>
+      <td> 23.520936</td>
+      <td>   0.000000</td>
+      <td> 0</td>
+      <td>  460.316773</td>
+      <td> 0</td>
+      <td> 0.000000</td>
+      <td> 39.442566</td>
+      <td> 0</td>
+    </tr>
+    <tr>
+      <th>S2</th>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0.000000</td>
+      <td>   0.000000</td>
+      <td> 0.172009</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td>...</td>
+      <td> 0</td>
+      <td> 0.367391</td>
+      <td>  1.887873</td>
+      <td>   0.000000</td>
+      <td> 0</td>
+      <td>  823.890290</td>
+      <td> 0</td>
+      <td> 0.000000</td>
+      <td>  4.967412</td>
+      <td> 0</td>
+    </tr>
+    <tr>
+      <th>S3</th>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0.023441</td>
+      <td> 128.062012</td>
+      <td> 0.000000</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td>...</td>
+      <td> 0</td>
+      <td> 0.249858</td>
+      <td>  0.313510</td>
+      <td>   0.166772</td>
+      <td> 0</td>
+      <td> 1002.354241</td>
+      <td> 0</td>
+      <td> 0.000000</td>
+      <td>  0.000000</td>
+      <td> 0</td>
+    </tr>
+    <tr>
+      <th>S4</th>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0.000000</td>
+      <td>   0.095082</td>
+      <td> 0.000000</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td>...</td>
+      <td> 0</td>
+      <td> 0.354157</td>
+      <td>  0.000000</td>
+      <td>   0.887003</td>
+      <td> 0</td>
+      <td> 1230.766795</td>
+      <td> 0</td>
+      <td> 0.000000</td>
+      <td>  0.131215</td>
+      <td> 0</td>
+    </tr>
+    <tr>
+      <th>S5</th>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0.000000</td>
+      <td>   0.000000</td>
+      <td> 0.182703</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td>...</td>
+      <td> 0</td>
+      <td> 0.039263</td>
+      <td>  0.000000</td>
+      <td> 131.077131</td>
+      <td> 0</td>
+      <td> 1614.749122</td>
+      <td> 0</td>
+      <td> 0.242179</td>
+      <td> 95.485743</td>
+      <td> 0</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 27723 columns</p>
+</div><p>The authors filtered the expression data based on having at least 3
 single cells express genes with at TPM (transcripts per million, ) &gt; 1.
 We can express this in using the
 <tt class="docutils literal"><span class="pre">`pandas</span></tt> &lt;<a class="reference external" href="http://pandas.pydata.org">http://pandas.pydata.org</a>&gt;`_ DataFrames easily.</p>
@@ -346,6 +642,12 @@ or not that sample id begins with the letter &#8220;S&#8221;.</p>
 <span class="n">expression_filtered</span> <span class="o">=</span> <span class="n">expression</span><span class="o">.</span><span class="n">ix</span><span class="p">[:,</span> <span class="n">singles</span><span class="p">[</span><span class="n">singles</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">]</span>
 <span class="n">expression_filtered</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">expression_filtered</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 <span class="n">expression_filtered</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="s">&#39;number of single cells:&#39;</span><span class="p">,</span> <span class="mi">18</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="mi">21</span><span class="p">,</span> <span class="mi">6312</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Hmm, that&#8217;s strange. The paper states that they had 6313 genes after
@@ -382,96 +684,441 @@ as a <tt class="docutils literal"><span class="pre">csv</span></tt> for maximum 
 <span class="n">expression2</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>---------------------------------------------------------------------------
-IOError                                   Traceback (most recent call last)
-
-&lt;ipython-input-5-623c304ac226&gt; in &lt;module&gt;()
-      2                             # Need to specify the index column as both the first and the last columns,
-      3                             # Because the last column is the &quot;Gene Category&quot;
-----&gt; 4                             index_col=[0, -1], parse_dates=False, infer_datetime_format=False)
-      5
-      6 # This was also in features x samples format, so we need to transpose
-
-
-/usr/local/lib/python2.7/site-packages/pandas/io/parsers.pyc in parser_f(filepath_or_buffer, sep, dialect, compression, doublequote, escapechar, quotechar, quoting, skipinitialspace, lineterminator, header, index_col, names, prefix, skiprows, skipfooter, skip_footer, na_values, na_fvalues, true_values, false_values, delimiter, converters, dtype, usecols, engine, delim_whitespace, as_recarray, na_filter, compact_ints, use_unsigned, low_memory, buffer_lines, warn_bad_lines, error_bad_lines, keep_default_na, thousands, comment, decimal, parse_dates, keep_date_col, dayfirst, date_parser, memory_map, float_precision, nrows, iterator, chunksize, verbose, encoding, squeeze, mangle_dupe_cols, tupleize_cols, infer_datetime_format, skip_blank_lines)
-    461                     skip_blank_lines=skip_blank_lines)
-    462
---&gt; 463         return _read(filepath_or_buffer, kwds)
-    464
-    465     parser_f.__name__ = name
-
-
-/usr/local/lib/python2.7/site-packages/pandas/io/parsers.pyc in _read(filepath_or_buffer, kwds)
-    237
-    238     # Create the parser.
---&gt; 239     parser = TextFileReader(filepath_or_buffer, **kwds)
-    240
-    241     if (nrows is not None) and (chunksize is not None):
-
-
-/usr/local/lib/python2.7/site-packages/pandas/io/parsers.pyc in __init__(self, f, engine, **kwds)
-    551             self.options[&#39;has_index_names&#39;] = kwds[&#39;has_index_names&#39;]
-    552
---&gt; 553         self._make_engine(self.engine)
-    554
-    555     def _get_options_with_defaults(self, engine):
-
-
-/usr/local/lib/python2.7/site-packages/pandas/io/parsers.pyc in _make_engine(self, engine)
-    688     def _make_engine(self, engine=&#39;c&#39;):
-    689         if engine == &#39;c&#39;:
---&gt; 690             self._engine = CParserWrapper(self.f, **self.options)
-    691         else:
-    692             if engine == &#39;python&#39;:
-
-
-/usr/local/lib/python2.7/site-packages/pandas/io/parsers.pyc in __init__(self, src, **kwds)
-   1050         kwds[&#39;allow_leading_cols&#39;] = self.index_col is not False
-   1051
--&gt; 1052         self._reader = _parser.TextReader(src, **kwds)
-   1053
-   1054         # XXX
-
-
-/usr/local/lib/python2.7/site-packages/pandas/parser.so in pandas.parser.TextReader.__cinit__ (pandas/parser.c:3128)()
-
-
-/usr/local/lib/python2.7/site-packages/pandas/parser.so in pandas.parser.TextReader._setup_parser_source (pandas/parser.c:5759)()
-
-
-IOError: File nature12172-s1/Supplementary_Table2.csv does not exist
-</pre></div>
-</div>
-<p>Now we need to strip the single-quote I added to all the gene names:</p>
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th>'GENE</th>
+      <th>'0610007L01RIK</th>
+      <th>'0610007P14RIK</th>
+      <th>'0610007P22RIK</th>
+      <th>'0610008F07RIK</th>
+      <th>'0610009B22RIK</th>
+      <th>'0610009D07RIK</th>
+      <th>'0610009O20RIK</th>
+      <th>'0610010B08RIK</th>
+      <th>'0610010F05RIK</th>
+      <th>'0610010K06RIK</th>
+      <th>...</th>
+      <th>'ZWILCH</th>
+      <th>'ZWINT</th>
+      <th>'ZXDA</th>
+      <th>'ZXDB</th>
+      <th>'ZXDC</th>
+      <th>'ZYG11A</th>
+      <th>'ZYG11B</th>
+      <th>'ZYX</th>
+      <th>'ZZEF1</th>
+      <th>'ZZZ3</th>
+    </tr>
+    <tr>
+      <th>Gene Category</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <th>...</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <th>NaN</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>S1</th>
+      <td> 27.181570</td>
+      <td>  0.166794</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td>   0.000000</td>
+      <td> 178.852732</td>
+      <td> 0</td>
+      <td> 0.962417</td>
+      <td> 0.000000</td>
+      <td> 143.359550</td>
+      <td>...</td>
+      <td> 0.000000</td>
+      <td> 302.361227</td>
+      <td> 0.000000</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0.027717</td>
+      <td> 297.918756</td>
+      <td> 37.685501</td>
+      <td> 0.000000</td>
+    </tr>
+    <tr>
+      <th>S2</th>
+      <td> 37.682691</td>
+      <td>  0.263962</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td>   0.207921</td>
+      <td>   0.141099</td>
+      <td> 0</td>
+      <td> 0.000000</td>
+      <td> 0.000000</td>
+      <td>   0.255617</td>
+      <td>...</td>
+      <td> 0.000000</td>
+      <td>  96.033724</td>
+      <td> 0.020459</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0.042430</td>
+      <td>   0.242888</td>
+      <td>  0.000000</td>
+      <td> 0.000000</td>
+    </tr>
+    <tr>
+      <th>S3</th>
+      <td>  0.056916</td>
+      <td> 78.622459</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td>   0.145680</td>
+      <td>   0.396363</td>
+      <td> 0</td>
+      <td> 0.000000</td>
+      <td> 0.024692</td>
+      <td>  72.775846</td>
+      <td>...</td>
+      <td> 0.000000</td>
+      <td> 427.915555</td>
+      <td> 0.000000</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0.040407</td>
+      <td>   6.753530</td>
+      <td>  0.132011</td>
+      <td> 0.017615</td>
+    </tr>
+    <tr>
+      <th>S4</th>
+      <td> 55.649250</td>
+      <td>  0.228866</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td>   0.000000</td>
+      <td>  88.798158</td>
+      <td> 0</td>
+      <td> 0.000000</td>
+      <td> 0.000000</td>
+      <td>  93.825442</td>
+      <td>...</td>
+      <td> 0.000000</td>
+      <td>   9.788557</td>
+      <td> 0.017787</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0.013452</td>
+      <td>   0.274689</td>
+      <td>  9.724890</td>
+      <td> 0.000000</td>
+    </tr>
+    <tr>
+      <th>S5</th>
+      <td>  0.000000</td>
+      <td>  0.093117</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 131.326008</td>
+      <td> 155.936361</td>
+      <td> 0</td>
+      <td> 0.000000</td>
+      <td> 0.000000</td>
+      <td>   0.031029</td>
+      <td>...</td>
+      <td> 0.204522</td>
+      <td>  26.575760</td>
+      <td> 0.000000</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 1.101589</td>
+      <td>  59.256094</td>
+      <td> 44.430726</td>
+      <td> 0.000000</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 27723 columns</p>
+</div><p>Now we need to strip the single-quote I added to all the gene names:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">new_index</span><span class="p">,</span> <span class="n">indexer</span> <span class="o">=</span> <span class="n">expression2</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s">&quot;&#39;&quot;</span><span class="p">),</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">expression2</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
 <span class="n">expression2</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">new_index</span>
 <span class="n">expression2</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>We want to create a <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> from the &#8220;Gene Category&#8221; row
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th>'GENE</th>
+      <th>0610007L01RIK</th>
+      <th>0610007P14RIK</th>
+      <th>0610007P22RIK</th>
+      <th>0610008F07RIK</th>
+      <th>0610009B22RIK</th>
+      <th>0610009D07RIK</th>
+      <th>0610009O20RIK</th>
+      <th>0610010B08RIK</th>
+      <th>0610010F05RIK</th>
+      <th>0610010K06RIK</th>
+      <th>...</th>
+      <th>ZWILCH</th>
+      <th>ZWINT</th>
+      <th>ZXDA</th>
+      <th>ZXDB</th>
+      <th>ZXDC</th>
+      <th>ZYG11A</th>
+      <th>ZYG11B</th>
+      <th>ZYX</th>
+      <th>ZZEF1</th>
+      <th>ZZZ3</th>
+    </tr>
+    <tr>
+      <th>Gene Category</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <th>...</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <th>NaN</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>S1</th>
+      <td> 27.181570</td>
+      <td>  0.166794</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td>   0.000000</td>
+      <td> 178.852732</td>
+      <td> 0</td>
+      <td> 0.962417</td>
+      <td> 0.000000</td>
+      <td> 143.359550</td>
+      <td>...</td>
+      <td> 0.000000</td>
+      <td> 302.361227</td>
+      <td> 0.000000</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0.027717</td>
+      <td> 297.918756</td>
+      <td> 37.685501</td>
+      <td> 0.000000</td>
+    </tr>
+    <tr>
+      <th>S2</th>
+      <td> 37.682691</td>
+      <td>  0.263962</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td>   0.207921</td>
+      <td>   0.141099</td>
+      <td> 0</td>
+      <td> 0.000000</td>
+      <td> 0.000000</td>
+      <td>   0.255617</td>
+      <td>...</td>
+      <td> 0.000000</td>
+      <td>  96.033724</td>
+      <td> 0.020459</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0.042430</td>
+      <td>   0.242888</td>
+      <td>  0.000000</td>
+      <td> 0.000000</td>
+    </tr>
+    <tr>
+      <th>S3</th>
+      <td>  0.056916</td>
+      <td> 78.622459</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td>   0.145680</td>
+      <td>   0.396363</td>
+      <td> 0</td>
+      <td> 0.000000</td>
+      <td> 0.024692</td>
+      <td>  72.775846</td>
+      <td>...</td>
+      <td> 0.000000</td>
+      <td> 427.915555</td>
+      <td> 0.000000</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0.040407</td>
+      <td>   6.753530</td>
+      <td>  0.132011</td>
+      <td> 0.017615</td>
+    </tr>
+    <tr>
+      <th>S4</th>
+      <td> 55.649250</td>
+      <td>  0.228866</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td>   0.000000</td>
+      <td>  88.798158</td>
+      <td> 0</td>
+      <td> 0.000000</td>
+      <td> 0.000000</td>
+      <td>  93.825442</td>
+      <td>...</td>
+      <td> 0.000000</td>
+      <td>   9.788557</td>
+      <td> 0.017787</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0.013452</td>
+      <td>   0.274689</td>
+      <td>  9.724890</td>
+      <td> 0.000000</td>
+    </tr>
+    <tr>
+      <th>S5</th>
+      <td>  0.000000</td>
+      <td>  0.093117</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 131.326008</td>
+      <td> 155.936361</td>
+      <td> 0</td>
+      <td> 0.000000</td>
+      <td> 0.000000</td>
+      <td>   0.031029</td>
+      <td>...</td>
+      <td> 0.204522</td>
+      <td>  26.575760</td>
+      <td> 0.000000</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 0</td>
+      <td> 1.101589</td>
+      <td>  59.256094</td>
+      <td> 44.430726</td>
+      <td> 0.000000</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 27723 columns</p>
+</div><p>We want to create a <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> from the &#8220;Gene Category&#8221; row
 for our <tt class="docutils literal"><span class="pre">expression_feature_data</span></tt>, which we will do via:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">gene_ids</span><span class="p">,</span> <span class="n">gene_category</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">expression2</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 <span class="n">gene_categories</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">gene_category</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">gene_ids</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&#39;gene_category&#39;</span><span class="p">)</span>
 <span class="n">gene_categories</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>---------------------------------------------------------------------------
-NameError                                 Traceback (most recent call last)
-
-&lt;ipython-input-6-e614b69586d0&gt; in &lt;module&gt;()
-----&gt; 1 gene_ids, gene_category = zip(*expression2.columns.values)
-      2 gene_categories = pd.Series(gene_category, index=gene_ids, name=&#39;gene_category&#39;)
-      3 gene_categories
-
-
-NameError: name &#39;expression2&#39; is not defined
+<div class="highlight-python"><div class="highlight"><pre>0610007L01RIK    NaN
+0610007P14RIK    NaN
+0610007P22RIK    NaN
+0610008F07RIK    NaN
+0610009B22RIK    NaN
+0610009D07RIK    NaN
+0610009O20RIK    NaN
+0610010B08RIK    NaN
+0610010F05RIK    NaN
+0610010K06RIK    NaN
+0610010K14RIK    NaN
+0610010O12RIK    NaN
+0610011F06RIK    NaN
+0610011L14RIK    NaN
+0610012G03RIK    NaN
+...
+ZSWIM5             NaN
+ZSWIM6             NaN
+ZSWIM7             NaN
+ZUFSP     LPS Response
+ZW10               NaN
+ZWILCH             NaN
+ZWINT              NaN
+ZXDA               NaN
+ZXDB               NaN
+ZXDC               NaN
+ZYG11A             NaN
+ZYG11B             NaN
+ZYX                NaN
+ZZEF1              NaN
+ZZZ3               NaN
+Name: gene_category, Length: 27723, dtype: object
 </pre></div>
 </div>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">expression_feature_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">gene_categories</span><span class="p">)</span>
 <span class="n">expression_feature_data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>gene_category</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0610007L01RIK</th>
+      <td> NaN</td>
+    </tr>
+    <tr>
+      <th>0610007P14RIK</th>
+      <td> NaN</td>
+    </tr>
+    <tr>
+      <th>0610007P22RIK</th>
+      <td> NaN</td>
+    </tr>
+    <tr>
+      <th>0610008F07RIK</th>
+      <td> NaN</td>
+    </tr>
+    <tr>
+      <th>0610009B22RIK</th>
+      <td> NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
 <div class="section" id="splicing-data">
 <h2>Splicing Data<a class="headerlink" href="#splicing-data" title="Permalink to this headline">¶</a></h2>
 <p>We obtain the splicing data from this study from the supplementary
@@ -480,58 +1127,727 @@ information, specifically the <tt class="docutils literal"><span class="pre">Sup
 <span class="n">splicing</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>---------------------------------------------------------------------------
-IOError                                   Traceback (most recent call last)
-
-&lt;ipython-input-7-6956dd3a6ad6&gt; in &lt;module&gt;()
-----&gt; 1 splicing = pd.read_excel(&#39;nature12172-s1/Supplementary_Table4.xls&#39;, &#39;splicingTable.txt&#39;, index_col=(0,1))
-      2 splicing.head()
-
-
-/usr/local/lib/python2.7/site-packages/pandas/io/excel.pyc in read_excel(io, sheetname, **kwds)
-    125     engine = kwds.pop(&#39;engine&#39;, None)
-    126
---&gt; 127     return ExcelFile(io, engine=engine).parse(sheetname=sheetname, **kwds)
-    128
-    129
-
-
-/usr/local/lib/python2.7/site-packages/pandas/io/excel.pyc in __init__(self, io, **kwds)
-    162                 self.book = xlrd.open_workbook(file_contents=data)
-    163             else:
---&gt; 164                 self.book = xlrd.open_workbook(io)
-    165         elif engine == &#39;xlrd&#39; and isinstance(io, xlrd.Book):
-    166             self.book = io
-
-
-/usr/local/lib/python2.7/site-packages/xlrd/__init__.pyc in open_workbook(filename, logfile, verbosity, use_mmap, file_contents, encoding_override, formatting_info, on_demand, ragged_rows)
-    392         peek = file_contents[:peeksz]
-    393     else:
---&gt; 394         f = open(filename, &quot;rb&quot;)
-    395         peek = f.read(peeksz)
-    396         f.close()
-
-
-IOError: [Errno 2] No such file or directory: &#39;nature12172-s1/Supplementary_Table4.xls&#39;
-</pre></div>
-</div>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="n">splicing</span> <span class="o">=</span> <span class="n">splicing</span><span class="o">.</span><span class="n">T</span>
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th>S1</th>
+      <th>S2</th>
+      <th>S3</th>
+      <th>S4</th>
+      <th>S5</th>
+      <th>S6</th>
+      <th>S7</th>
+      <th>S8</th>
+      <th>S9</th>
+      <th>S10</th>
+      <th>S11</th>
+      <th>S13</th>
+      <th>S14</th>
+      <th>S15</th>
+      <th>S16</th>
+      <th>S17</th>
+      <th>S18</th>
+      <th>10,000 cell Rep1 (P1)</th>
+      <th>10,000 cell Rep2 (P2)</th>
+      <th>10,000 cell Rep3 (P3)</th>
+    </tr>
+    <tr>
+      <th>Event name</th>
+      <th>gene</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>chr10:126534988:126535177:-@chr10:126533971:126534135:-@chr10:126533686:126533798:-</th>
+      <th>Os9</th>
+      <td> 0.84</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td> 0.01</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>NaN</td>
+      <td> 0.03</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td> 0.02</td>
+      <td>NaN</td>
+      <td> 0.01</td>
+      <td>NaN</td>
+      <td> 0.27</td>
+      <td> 0.37</td>
+      <td> 0.31</td>
+    </tr>
+    <tr>
+      <th>chr10:14403870:14403945:-@chr10:14395740:14395848:-@chr10:14387738:14387914:-</th>
+      <th>Vta1</th>
+      <td> 0.95</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td> 0.84</td>
+      <td> 0.95</td>
+      <td> 0.91</td>
+      <td> 0.87</td>
+      <td> 0.86</td>
+      <td>  NaN</td>
+      <td>NaN</td>
+      <td> 0.93</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td> 0.96</td>
+      <td>NaN</td>
+      <td>  NaN</td>
+      <td>NaN</td>
+      <td> 0.83</td>
+      <td> 0.85</td>
+      <td> 0.64</td>
+    </tr>
+    <tr>
+      <th>chr10:20051892:20052067:+@chr10:20052202:20052363:+@chr10:20053198:20053697:+</th>
+      <th>Bclaf1</th>
+      <td>  NaN</td>
+      <td> 0.04</td>
+      <td> 0.02</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td> 0.14</td>
+      <td>  NaN</td>
+      <td> 0.02</td>
+      <td>  NaN</td>
+      <td>NaN</td>
+      <td>  NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td> 0.01</td>
+      <td>NaN</td>
+      <td>  NaN</td>
+      <td>NaN</td>
+      <td> 0.40</td>
+      <td> 0.49</td>
+      <td> 0.59</td>
+    </tr>
+    <tr>
+      <th>chr10:20052864:20053378:+@chr10:20054305:20054451:+@chr10:20059515:20059727:+</th>
+      <th>Bclaf1</th>
+      <td> 0.02</td>
+      <td> 0.98</td>
+      <td> 0.55</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td> 0.98</td>
+      <td>  NaN</td>
+      <td>NaN</td>
+      <td>  NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td> 0.06</td>
+      <td>NaN</td>
+      <td>  NaN</td>
+      <td>NaN</td>
+      <td> 0.62</td>
+      <td> 0.63</td>
+      <td> 0.70</td>
+    </tr>
+    <tr>
+      <th>chr10:58814831:58815007:+@chr10:58817088:58817158:+@chr10:58818098:58818168:+@chr10:58824609:58824708:+</th>
+      <th>P4ha1</th>
+      <td> 0.42</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td> 0.94</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td> 0.03</td>
+      <td> 0.97</td>
+      <td>NaN</td>
+      <td>  NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>  NaN</td>
+      <td>NaN</td>
+      <td>  NaN</td>
+      <td>NaN</td>
+      <td> 0.43</td>
+      <td> 0.36</td>
+      <td> 0.52</td>
+    </tr>
+  </tbody>
+</table>
+</div><div class="code python highlight-python"><div class="highlight"><pre><span class="n">splicing</span> <span class="o">=</span> <span class="n">splicing</span><span class="o">.</span><span class="n">T</span>
 <span class="n">splicing</span>
 </pre></div>
 </div>
-<p>The three pooled samples aren&#8217;t named consistently with the expression
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th>Event name</th>
+      <th>chr10:126534988:126535177:-@chr10:126533971:126534135:-@chr10:126533686:126533798:-</th>
+      <th>chr10:14403870:14403945:-@chr10:14395740:14395848:-@chr10:14387738:14387914:-</th>
+      <th>chr10:20051892:20052067:+@chr10:20052202:20052363:+@chr10:20053198:20053697:+</th>
+      <th>chr10:20052864:20053378:+@chr10:20054305:20054451:+@chr10:20059515:20059727:+</th>
+      <th>chr10:58814831:58815007:+@chr10:58817088:58817158:+@chr10:58818098:58818168:+@chr10:58824609:58824708:+</th>
+      <th>chr10:79173370:79173665:+@chr10:79174001:79174029:+@chr10:79174239:79174726:+</th>
+      <th>chr10:79322526:79322700:+@chr10:79322862:79322939:+@chr10:79323569:79323862:+</th>
+      <th>chr10:87376364:87376545:+@chr10:87378043:87378094:+@chr10:87393420:87399792:+</th>
+      <th>chr10:92747514:92747722:-@chr10:92727625:92728425:-@chr10:92717434:92717556:-</th>
+      <th>chr11:101438508:101438565:+@chr11:101439246:101439351:+@chr11:101441899:101443267:+</th>
+      <th>...</th>
+      <th>chr8:126022488:126022598:+@chr8:126023892:126024007:+@chr8:126025133:126025333:+</th>
+      <th>chr14:51455667:51455879:-@chr14:51453589:51453752:-@chr14:51453129:51453242:-</th>
+      <th>chr17:29497858:29498102:+@chr17:29500656:29500887:+@chr17:29501856:29502226:+</th>
+      <th>chr2:94198908:94199094:-@chr2:94182784:94182954:-@chr2:94172950:94173209:-</th>
+      <th>chr9:21314438:21314697:-@chr9:21313375:21313558:-@chr9:21311823:21312835:-</th>
+      <th>chr9:21314438:21314697:-@chr9:21313375:21313795:-@chr9:21311823:21312835:-</th>
+      <th>chr10:79545360:79545471:-@chr10:79542698:79544127:-@chr10:79533365:79535263:-</th>
+      <th>chr17:5975579:5975881:+@chr17:5985972:5986242:+@chr17:5990136:5990361:+</th>
+      <th>chr2:29997782:29997941:+@chr2:30002172:30002382:+@chr2:30002882:30003045:+</th>
+      <th>chr7:119221306:119221473:+@chr7:119223686:119223745:+@chr7:119225944:119226075:+</th>
+    </tr>
+    <tr>
+      <th>gene</th>
+      <th>Os9</th>
+      <th>Vta1</th>
+      <th>Bclaf1</th>
+      <th>Bclaf1</th>
+      <th>P4ha1</th>
+      <th>Bsg</th>
+      <th>Ptbp1</th>
+      <th>Igf1</th>
+      <th>Elk3</th>
+      <th>Nbr1</th>
+      <th>...</th>
+      <th>Afg3l1</th>
+      <th>Tep1</th>
+      <th>Fgd2</th>
+      <th>Ttc17</th>
+      <th>Tmed1</th>
+      <th>Tmed1</th>
+      <th>Sbno2</th>
+      <th>Synj2</th>
+      <th>Tbc1d13</th>
+      <th>Usp47</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>S1</th>
+      <td> 0.84</td>
+      <td> 0.95</td>
+      <td>  NaN</td>
+      <td> 0.02</td>
+      <td> 0.42</td>
+      <td>  NaN</td>
+      <td> 0.57</td>
+      <td> 0.31</td>
+      <td> 0.93</td>
+      <td> 0.57</td>
+      <td>...</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+    </tr>
+    <tr>
+      <th>S2</th>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td> 0.04</td>
+      <td> 0.98</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>...</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+    </tr>
+    <tr>
+      <th>S3</th>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td> 0.02</td>
+      <td> 0.55</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td> 0.20</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>...</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+    </tr>
+    <tr>
+      <th>S4</th>
+      <td>  NaN</td>
+      <td> 0.84</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td> 0.95</td>
+      <td>  NaN</td>
+      <td> 0.04</td>
+      <td>...</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+    </tr>
+    <tr>
+      <th>S5</th>
+      <td>  NaN</td>
+      <td> 0.95</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td> 0.94</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td> 0.73</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>...</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+    </tr>
+    <tr>
+      <th>S6</th>
+      <td> 0.01</td>
+      <td> 0.91</td>
+      <td> 0.14</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td> 0.61</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>...</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+    </tr>
+    <tr>
+      <th>S7</th>
+      <td>  NaN</td>
+      <td> 0.87</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td> 0.62</td>
+      <td>  NaN</td>
+      <td> 0.85</td>
+      <td> 0.73</td>
+      <td> 0.55</td>
+      <td>...</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+    </tr>
+    <tr>
+      <th>S8</th>
+      <td>  NaN</td>
+      <td> 0.86</td>
+      <td> 0.02</td>
+      <td> 0.98</td>
+      <td> 0.03</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td> 0.89</td>
+      <td> 0.82</td>
+      <td> 0.83</td>
+      <td>...</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+    </tr>
+    <tr>
+      <th>S9</th>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td> 0.97</td>
+      <td>  NaN</td>
+      <td> 0.97</td>
+      <td>  NaN</td>
+      <td> 0.90</td>
+      <td>  NaN</td>
+      <td>...</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+    </tr>
+    <tr>
+      <th>S10</th>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td> 0.06</td>
+      <td> 0.98</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>...</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+    </tr>
+    <tr>
+      <th>S11</th>
+      <td> 0.03</td>
+      <td> 0.93</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td> 0.97</td>
+      <td>  NaN</td>
+      <td>...</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+    </tr>
+    <tr>
+      <th>S13</th>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>...</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+    </tr>
+    <tr>
+      <th>S14</th>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td> 0.88</td>
+      <td>...</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+    </tr>
+    <tr>
+      <th>S15</th>
+      <td> 0.02</td>
+      <td> 0.96</td>
+      <td> 0.01</td>
+      <td> 0.06</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td> 0.44</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>...</td>
+      <td> 0.91</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+    </tr>
+    <tr>
+      <th>S16</th>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>...</td>
+      <td>  NaN</td>
+      <td> 0.27</td>
+      <td> 0.99</td>
+      <td> 0.99</td>
+      <td> 0.98</td>
+      <td> 0.98</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+    </tr>
+    <tr>
+      <th>S17</th>
+      <td> 0.01</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>...</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td> 0.96</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td> 0.99</td>
+      <td> 0.98</td>
+      <td> 0.67</td>
+      <td> 0.07</td>
+    </tr>
+    <tr>
+      <th>S18</th>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>...</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+    </tr>
+    <tr>
+      <th>10,000 cell Rep1 (P1)</th>
+      <td> 0.27</td>
+      <td> 0.83</td>
+      <td> 0.40</td>
+      <td> 0.62</td>
+      <td> 0.43</td>
+      <td> 0.78</td>
+      <td>  NaN</td>
+      <td> 0.60</td>
+      <td> 0.76</td>
+      <td> 0.52</td>
+      <td>...</td>
+      <td> 0.92</td>
+      <td>  NaN</td>
+      <td> 0.81</td>
+      <td> 0.77</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td> 0.84</td>
+      <td> 0.50</td>
+      <td> 0.56</td>
+      <td>  NaN</td>
+    </tr>
+    <tr>
+      <th>10,000 cell Rep2 (P2)</th>
+      <td> 0.37</td>
+      <td> 0.85</td>
+      <td> 0.49</td>
+      <td> 0.63</td>
+      <td> 0.36</td>
+      <td> 0.72</td>
+      <td> 0.47</td>
+      <td> 0.60</td>
+      <td> 0.73</td>
+      <td> 0.68</td>
+      <td>...</td>
+      <td> 0.67</td>
+      <td> 0.15</td>
+      <td> 0.52</td>
+      <td> 0.67</td>
+      <td> 0.63</td>
+      <td> 0.73</td>
+      <td> 0.82</td>
+      <td> 0.90</td>
+      <td> 0.71</td>
+      <td> 0.55</td>
+    </tr>
+    <tr>
+      <th>10,000 cell Rep3 (P3)</th>
+      <td> 0.31</td>
+      <td> 0.64</td>
+      <td> 0.59</td>
+      <td> 0.70</td>
+      <td> 0.52</td>
+      <td> 0.79</td>
+      <td>  NaN</td>
+      <td> 0.65</td>
+      <td> 0.42</td>
+      <td> 0.64</td>
+      <td>...</td>
+      <td> 0.58</td>
+      <td> 0.79</td>
+      <td> 0.74</td>
+      <td> 0.85</td>
+      <td> 0.73</td>
+      <td> 0.39</td>
+      <td> 0.56</td>
+      <td>  NaN</td>
+      <td> 0.64</td>
+      <td>  NaN</td>
+    </tr>
+  </tbody>
+</table>
+<p>20 rows × 352 columns</p>
+</div><p>The three pooled samples aren&#8217;t named consistently with the expression
 data, so we have to fix that.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">splicing</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">splicing</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s">&#39;P&#39;</span> <span class="ow">in</span> <span class="n">x</span><span class="p">)]</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>---------------------------------------------------------------------------
-NameError                                 Traceback (most recent call last)
-
-&lt;ipython-input-8-1b6ff48cd9a9&gt; in &lt;module&gt;()
-----&gt; 1 splicing.index[splicing.index.map(lambda x: &#39;P&#39; in x)]
-
-
-NameError: name &#39;splicing&#39; is not defined
+<div class="highlight-python"><div class="highlight"><pre><span class="n">Index</span><span class="p">([</span><span class="s">u&#39;10,000 cell Rep1 (P1)&#39;</span><span class="p">,</span> <span class="s">u&#39;10,000 cell Rep2 (P2)&#39;</span><span class="p">,</span> <span class="s">u&#39;10,000 cell Rep3 (P3)&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;object&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Since the pooled sample IDs are inconsistent with the <tt class="docutils literal"><span class="pre">expression</span></tt>
@@ -540,6 +1856,9 @@ that using regular expressions, called <tt class="docutils literal"><span class=
 library, e.g.:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">re</span>
 <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">r&#39;P\d&#39;</span><span class="p">,</span> <span class="s">&#39;10,000 cell Rep1 (P1)&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="s">&#39;P1&#39;</span>
 </pre></div>
 </div>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">long_pooled_name_to_short</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
@@ -552,13 +1871,194 @@ library, e.g.:</p>
 <span class="n">splicing</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">long_pooled_name_to_short</span><span class="p">)</span>
 </pre></div>
 </div>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">array</span><span class="p">([</span><span class="s">u&#39;S1&#39;</span><span class="p">,</span> <span class="s">u&#39;S2&#39;</span><span class="p">,</span> <span class="s">u&#39;S3&#39;</span><span class="p">,</span> <span class="s">u&#39;S4&#39;</span><span class="p">,</span> <span class="s">u&#39;S5&#39;</span><span class="p">,</span> <span class="s">u&#39;S6&#39;</span><span class="p">,</span> <span class="s">u&#39;S7&#39;</span><span class="p">,</span> <span class="s">u&#39;S8&#39;</span><span class="p">,</span> <span class="s">u&#39;S9&#39;</span><span class="p">,</span>
+       <span class="s">u&#39;S10&#39;</span><span class="p">,</span> <span class="s">u&#39;S11&#39;</span><span class="p">,</span> <span class="s">u&#39;S13&#39;</span><span class="p">,</span> <span class="s">u&#39;S14&#39;</span><span class="p">,</span> <span class="s">u&#39;S15&#39;</span><span class="p">,</span> <span class="s">u&#39;S16&#39;</span><span class="p">,</span> <span class="s">u&#39;S17&#39;</span><span class="p">,</span> <span class="s">u&#39;S18&#39;</span><span class="p">,</span>
+       <span class="s">u&#39;P1&#39;</span><span class="p">,</span> <span class="s">u&#39;P2&#39;</span><span class="p">,</span> <span class="s">u&#39;P3&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>And now we assign this new index as our index to the <tt class="docutils literal"><span class="pre">splicing</span></tt>
 dataframe</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">splicing</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">splicing</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">long_pooled_name_to_short</span><span class="p">)</span>
 <span class="n">splicing</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th>Event name</th>
+      <th>chr10:126534988:126535177:-@chr10:126533971:126534135:-@chr10:126533686:126533798:-</th>
+      <th>chr10:14403870:14403945:-@chr10:14395740:14395848:-@chr10:14387738:14387914:-</th>
+      <th>chr10:20051892:20052067:+@chr10:20052202:20052363:+@chr10:20053198:20053697:+</th>
+      <th>chr10:20052864:20053378:+@chr10:20054305:20054451:+@chr10:20059515:20059727:+</th>
+      <th>chr10:58814831:58815007:+@chr10:58817088:58817158:+@chr10:58818098:58818168:+@chr10:58824609:58824708:+</th>
+      <th>chr10:79173370:79173665:+@chr10:79174001:79174029:+@chr10:79174239:79174726:+</th>
+      <th>chr10:79322526:79322700:+@chr10:79322862:79322939:+@chr10:79323569:79323862:+</th>
+      <th>chr10:87376364:87376545:+@chr10:87378043:87378094:+@chr10:87393420:87399792:+</th>
+      <th>chr10:92747514:92747722:-@chr10:92727625:92728425:-@chr10:92717434:92717556:-</th>
+      <th>chr11:101438508:101438565:+@chr11:101439246:101439351:+@chr11:101441899:101443267:+</th>
+      <th>...</th>
+      <th>chr8:126022488:126022598:+@chr8:126023892:126024007:+@chr8:126025133:126025333:+</th>
+      <th>chr14:51455667:51455879:-@chr14:51453589:51453752:-@chr14:51453129:51453242:-</th>
+      <th>chr17:29497858:29498102:+@chr17:29500656:29500887:+@chr17:29501856:29502226:+</th>
+      <th>chr2:94198908:94199094:-@chr2:94182784:94182954:-@chr2:94172950:94173209:-</th>
+      <th>chr9:21314438:21314697:-@chr9:21313375:21313558:-@chr9:21311823:21312835:-</th>
+      <th>chr9:21314438:21314697:-@chr9:21313375:21313795:-@chr9:21311823:21312835:-</th>
+      <th>chr10:79545360:79545471:-@chr10:79542698:79544127:-@chr10:79533365:79535263:-</th>
+      <th>chr17:5975579:5975881:+@chr17:5985972:5986242:+@chr17:5990136:5990361:+</th>
+      <th>chr2:29997782:29997941:+@chr2:30002172:30002382:+@chr2:30002882:30003045:+</th>
+      <th>chr7:119221306:119221473:+@chr7:119223686:119223745:+@chr7:119225944:119226075:+</th>
+    </tr>
+    <tr>
+      <th>gene</th>
+      <th>Os9</th>
+      <th>Vta1</th>
+      <th>Bclaf1</th>
+      <th>Bclaf1</th>
+      <th>P4ha1</th>
+      <th>Bsg</th>
+      <th>Ptbp1</th>
+      <th>Igf1</th>
+      <th>Elk3</th>
+      <th>Nbr1</th>
+      <th>...</th>
+      <th>Afg3l1</th>
+      <th>Tep1</th>
+      <th>Fgd2</th>
+      <th>Ttc17</th>
+      <th>Tmed1</th>
+      <th>Tmed1</th>
+      <th>Sbno2</th>
+      <th>Synj2</th>
+      <th>Tbc1d13</th>
+      <th>Usp47</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>S1</th>
+      <td> 0.84</td>
+      <td> 0.95</td>
+      <td>  NaN</td>
+      <td> 0.02</td>
+      <td> 0.42</td>
+      <td>NaN</td>
+      <td> 0.57</td>
+      <td> 0.31</td>
+      <td> 0.93</td>
+      <td> 0.57</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>S2</th>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td> 0.04</td>
+      <td> 0.98</td>
+      <td>  NaN</td>
+      <td>NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>S3</th>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td> 0.02</td>
+      <td> 0.55</td>
+      <td>  NaN</td>
+      <td>NaN</td>
+      <td>  NaN</td>
+      <td> 0.20</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>S4</th>
+      <td>  NaN</td>
+      <td> 0.84</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>NaN</td>
+      <td>  NaN</td>
+      <td> 0.95</td>
+      <td>  NaN</td>
+      <td> 0.04</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>S5</th>
+      <td>  NaN</td>
+      <td> 0.95</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td> 0.94</td>
+      <td>NaN</td>
+      <td>  NaN</td>
+      <td> 0.73</td>
+      <td>  NaN</td>
+      <td>  NaN</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 352 columns</p>
+</div></div>
 <div class="section" id="metadata">
 <h2>Metadata<a class="headerlink" href="#metadata" title="Permalink to this headline">¶</a></h2>
 <p>Now let&#8217;s get into creating a metadata dataframe. We&#8217;ll use the index
@@ -573,21 +2073,124 @@ this sample is pooled or not.</p>
 <span class="n">metadata</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>---------------------------------------------------------------------------
-NameError                                 Traceback (most recent call last)
-
-&lt;ipython-input-9-af3589c05db2&gt; in &lt;module&gt;()
-----&gt; 1 metadata = pd.DataFrame(index=expression_filtered.index)
-      2 metadata[&#39;phenotype&#39;] = &#39;BDMC&#39;
-      3 metadata[&#39;pooled&#39;] = metadata.index.map(lambda x: x.startswith(&#39;P&#39;))
-      4
-      5 metadata
-
-
-NameError: name &#39;expression_filtered&#39; is not defined
-</pre></div>
-</div>
-</div>
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>phenotype</th>
+      <th>pooled</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>S1</th>
+      <td> BDMC</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>S2</th>
+      <td> BDMC</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>S3</th>
+      <td> BDMC</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>S4</th>
+      <td> BDMC</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>S5</th>
+      <td> BDMC</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>S6</th>
+      <td> BDMC</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>S7</th>
+      <td> BDMC</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>S8</th>
+      <td> BDMC</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>S9</th>
+      <td> BDMC</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>S10</th>
+      <td> BDMC</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>S11</th>
+      <td> BDMC</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>S12</th>
+      <td> BDMC</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>S13</th>
+      <td> BDMC</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>S14</th>
+      <td> BDMC</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>S15</th>
+      <td> BDMC</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>S16</th>
+      <td> BDMC</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>S17</th>
+      <td> BDMC</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>S18</th>
+      <td> BDMC</td>
+      <td> False</td>
+    </tr>
+    <tr>
+      <th>P1</th>
+      <td> BDMC</td>
+      <td>  True</td>
+    </tr>
+    <tr>
+      <th>P2</th>
+      <td> BDMC</td>
+      <td>  True</td>
+    </tr>
+    <tr>
+      <th>P3</th>
+      <td> BDMC</td>
+      <td>  True</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
 <div class="section" id="mapping-stats-data">
 <h2>Mapping stats data<a class="headerlink" href="#mapping-stats-data" title="Permalink to this headline">¶</a></h2>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">mapping_stats</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s">&#39;nature12172-s1/Supplementary_Table1.xls&#39;</span><span class="p">,</span> <span class="n">sheetname</span><span class="o">=</span><span class="s">&#39;SuppTable1 2.txt&#39;</span><span class="p">)</span>
@@ -901,33 +2504,28 @@ NameError: name &#39;expression_filtered&#39; is not defined
                        <span class="n">mapping_stats_number_mapped_col</span><span class="o">=</span><span class="s">&#39;PF_READS&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>2014-11-04 14:19:33 Initializing Study
-2014-11-04 14:19:33 Initializing Predictor configuration manager for Study
-2014-11-04 14:19:33 Predictor ExtraTreesClassifier is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesClassifier&#39;&gt;
-2014-11-04 14:19:33 Added ExtraTreesClassifier to default predictors
-2014-11-04 14:19:33 Predictor ExtraTreesRegressor is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesRegressor&#39;&gt;
-2014-11-04 14:19:33 Added ExtraTreesRegressor to default predictors
-2014-11-04 14:19:33 Predictor GradientBoostingClassifier is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingClassifier&#39;&gt;
-2014-11-04 14:19:33 Added GradientBoostingClassifier to default predictors
-2014-11-04 14:19:33 Predictor GradientBoostingRegressor is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingRegressor&#39;&gt;
-2014-11-04 14:19:33 Added GradientBoostingRegressor to default predictors
-2014-11-04 14:19:33 Loading metadata
-2014-11-04 14:19:33 Loading expression data
-2014-11-04 14:19:33 Initializing expression
-2014-11-04 14:19:33 Done initializing expression
-2014-11-04 14:19:33 Loading splicing data
-2014-11-04 14:19:33 Initializing splicing
-2014-11-04 14:19:33 Done initializing splicing
-2014-11-04 14:19:33 Successfully initialized a Study object!
+<div class="highlight-python"><div class="highlight"><pre>2014-11-10 12:36:35 Initializing Study
+2014-11-10 12:36:35 Initializing Predictor configuration manager for Study
+2014-11-10 12:36:35 Predictor ExtraTreesClassifier is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesClassifier&#39;&gt;
+2014-11-10 12:36:35 Added ExtraTreesClassifier to default predictors
+2014-11-10 12:36:35 Predictor ExtraTreesRegressor is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesRegressor&#39;&gt;
+2014-11-10 12:36:35 Added ExtraTreesRegressor to default predictors
+2014-11-10 12:36:35 Predictor GradientBoostingClassifier is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingClassifier&#39;&gt;
+2014-11-10 12:36:35 Added GradientBoostingClassifier to default predictors
+2014-11-10 12:36:35 Predictor GradientBoostingRegressor is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingRegressor&#39;&gt;
+2014-11-10 12:36:35 Added GradientBoostingRegressor to default predictors
+2014-11-10 12:36:35 Loading metadata
+2014-11-10 12:36:35 Loading expression data
+2014-11-10 12:36:35 Initializing expression
+2014-11-10 12:36:35 Done initializing expression
+2014-11-10 12:36:35 Loading splicing data
+2014-11-10 12:36:35 Initializing splicing
+2014-11-10 12:36:35 Done initializing splicing
+2014-11-10 12:36:35 Successfully initialized a Study object!
 </pre></div>
 </div>
 <div class="highlight-python"><div class="highlight"><pre>No phenotype to color mapping was provided, so coming up with reasonable defaults
 No phenotype to marker (matplotlib plotting symbol) was provided, so each phenotype will be plotted as a circle in the PCA visualizations.
-samples had too few mapped reads (&lt;5.0e+05 reads):
-
-Removing technical outliers from consideration in expression:
-
-Removing technical outliers from consideration in splicing:
 </pre></div>
 </div>
 <p>As a side note, you can save this study to disk now, so you can
@@ -956,10 +2554,14 @@ Knowledge Foundation.</p>
   <span class="s">&quot;licenses&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
   <span class="s">&quot;resources&quot;</span><span class="p">:</span> <span class="p">[</span>
     <span class="p">{</span>
-      <span class="s">&quot;path&quot;</span><span class="p">:</span> <span class="s">&quot;/Users/olga/flotilla_projects/shalek2013/splicing.csv.gz&quot;</span><span class="p">,</span>
+      <span class="s">&quot;header&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="mi">0</span><span class="p">,</span>
+        <span class="mi">1</span>
+      <span class="p">],</span>
       <span class="s">&quot;format&quot;</span><span class="p">:</span> <span class="s">&quot;csv&quot;</span><span class="p">,</span>
+      <span class="s">&quot;compression&quot;</span><span class="p">:</span> <span class="s">&quot;gzip&quot;</span><span class="p">,</span>
       <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;splicing&quot;</span><span class="p">,</span>
-      <span class="s">&quot;compression&quot;</span><span class="p">:</span> <span class="s">&quot;gzip&quot;</span>
+      <span class="s">&quot;path&quot;</span><span class="p">:</span> <span class="s">&quot;/Users/olga/flotilla_projects/shalek2013/splicing.csv.gz&quot;</span>
     <span class="p">},</span>
     <span class="p">{</span>
       <span class="s">&quot;number_mapped_col&quot;</span><span class="p">:</span> <span class="s">&quot;PF_READS&quot;</span><span class="p">,</span>
@@ -1032,26 +2634,26 @@ having to open and process all those files again:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">study2</span> <span class="o">=</span> <span class="n">flotilla</span><span class="o">.</span><span class="n">embark</span><span class="p">(</span><span class="s">&#39;shalek2013&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>2014-10-30 12:16:56 Reading datapackage from /Users/olga/flotilla_projects/shalek2013/datapackage.json
-2014-10-30 12:16:56 Parsing datapackage to create a Study object
-2014-10-30 12:16:56 Initializing Study
-2014-10-30 12:16:56 Initializing Predictor configuration manager for Study
-2014-10-30 12:16:56 Predictor ExtraTreesClassifier is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesClassifier&#39;&gt;
-2014-10-30 12:16:56 Added ExtraTreesClassifier to default predictors
-2014-10-30 12:16:56 Predictor ExtraTreesRegressor is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesRegressor&#39;&gt;
-2014-10-30 12:16:56 Added ExtraTreesRegressor to default predictors
-2014-10-30 12:16:56 Predictor GradientBoostingClassifier is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingClassifier&#39;&gt;
-2014-10-30 12:16:56 Added GradientBoostingClassifier to default predictors
-2014-10-30 12:16:56 Predictor GradientBoostingRegressor is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingRegressor&#39;&gt;
-2014-10-30 12:16:56 Added GradientBoostingRegressor to default predictors
-2014-10-30 12:16:56 Loading metadata
-2014-10-30 12:16:56 Loading expression data
-2014-10-30 12:16:56 Initializing expression
-2014-10-30 12:16:56 Done initializing expression
-2014-10-30 12:16:56 Loading splicing data
-2014-10-30 12:16:56 Initializing splicing
-2014-10-30 12:16:56 Done initializing splicing
-2014-10-30 12:16:56 Successfully initialized a Study object!
+<div class="highlight-python"><div class="highlight"><pre>2014-11-10 12:36:38 Reading datapackage from /Users/olga/flotilla_projects/shalek2013/datapackage.json
+2014-11-10 12:36:38 Parsing datapackage to create a Study object
+2014-11-10 12:36:39 Initializing Study
+2014-11-10 12:36:39 Initializing Predictor configuration manager for Study
+2014-11-10 12:36:39 Predictor ExtraTreesClassifier is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesClassifier&#39;&gt;
+2014-11-10 12:36:39 Added ExtraTreesClassifier to default predictors
+2014-11-10 12:36:39 Predictor ExtraTreesRegressor is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesRegressor&#39;&gt;
+2014-11-10 12:36:39 Added ExtraTreesRegressor to default predictors
+2014-11-10 12:36:39 Predictor GradientBoostingClassifier is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingClassifier&#39;&gt;
+2014-11-10 12:36:39 Added GradientBoostingClassifier to default predictors
+2014-11-10 12:36:39 Predictor GradientBoostingRegressor is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingRegressor&#39;&gt;
+2014-11-10 12:36:39 Added GradientBoostingRegressor to default predictors
+2014-11-10 12:36:39 Loading metadata
+2014-11-10 12:36:39 Loading expression data
+2014-11-10 12:36:39 Initializing expression
+2014-11-10 12:36:39 Done initializing expression
+2014-11-10 12:36:39 Loading splicing data
+2014-11-10 12:36:39 Initializing splicing
+2014-11-10 12:36:39 Done initializing splicing
+2014-11-10 12:36:39 Successfully initialized a Study object!
 </pre></div>
 </div>
 <p>Now we can start creating figures!</p>
@@ -1076,7 +2678,7 @@ where the original is:</p>
   warnings.warn(&quot;This figure includes Axes that are not &quot;
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_48_1.png" src="../_images/shalek2013_48_1.png" />
+<img alt="../_images/shalek2013_52_1.png" src="../_images/shalek2013_52_1.png" />
 </div>
 <div class="section" id="without-flotilla-you-would-do">
 <h3>Without flotilla, you would do<a class="headerlink" href="#without-flotilla-you-would-do" title="Permalink to this headline">¶</a></h3>
@@ -1094,7 +2696,7 @@ where the original is:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">12.0</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_50_1.png" src="../_images/shalek2013_50_1.png" />
+<img alt="../_images/shalek2013_54_1.png" src="../_images/shalek2013_54_1.png" />
 </div>
 <div class="section" id="figure-1b">
 <h3>Figure 1b<a class="headerlink" href="#figure-1b" title="Permalink to this headline">¶</a></h3>
@@ -1102,7 +2704,7 @@ where the original is:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">study</span><span class="o">.</span><span class="n">plot_two_samples</span><span class="p">(</span><span class="s">&#39;S1&#39;</span><span class="p">,</span> <span class="s">&#39;S2&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_52_0.png" src="../_images/shalek2013_52_0.png" />
+<img alt="../_images/shalek2013_56_0.png" src="../_images/shalek2013_56_0.png" />
 </div>
 <div class="section" id="without-flotilla">
 <h3>Without <tt class="docutils literal"><span class="pre">flotilla</span></tt><a class="headerlink" href="#without-flotilla" title="Permalink to this headline">¶</a></h3>
@@ -1122,18 +2724,18 @@ where the original is:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">12.0</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_54_1.png" src="../_images/shalek2013_54_1.png" />
+<img alt="../_images/shalek2013_58_1.png" src="../_images/shalek2013_58_1.png" />
 <p>By the way, you can do other kinds of plots with <tt class="docutils literal"><span class="pre">flotilla</span></tt>, like a
 kernel density estimate (&#8220;<tt class="docutils literal"><span class="pre">kde</span></tt>&#8221;) plot:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">study</span><span class="o">.</span><span class="n">plot_two_samples</span><span class="p">(</span><span class="s">&#39;S1&#39;</span><span class="p">,</span> <span class="s">&#39;S2&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s">&#39;kde&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_56_0.png" src="../_images/shalek2013_56_0.png" />
+<img alt="../_images/shalek2013_60_0.png" src="../_images/shalek2013_60_0.png" />
 <p>Or a binned hexagon plot (&#8220;<tt class="docutils literal"><span class="pre">hexbin&quot;</span></tt>):</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">study</span><span class="o">.</span><span class="n">plot_two_samples</span><span class="p">(</span><span class="s">&#39;S1&#39;</span><span class="p">,</span> <span class="s">&#39;S2&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s">&#39;hexbin&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_58_0.png" src="../_images/shalek2013_58_0.png" />
+<img alt="../_images/shalek2013_62_0.png" src="../_images/shalek2013_62_0.png" />
 <p>Any inputs that are valid to <tt class="docutils literal"><span class="pre">seaborn</span></tt>&#8216;s
 <tt class="docutils literal"><span class="pre">`jointplot</span></tt> &lt;<a class="reference external" href="http://web.stanford.edu/~mwaskom/software/seaborn/generated/seaborn.jointplot.html#seaborn.jointplot">http://web.stanford.edu/~mwaskom/software/seaborn/generated/seaborn.jointplot.html#seaborn.jointplot</a>&gt;`_
 are valid.</p>
@@ -1155,7 +2757,7 @@ are valid.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">12.0</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_61_1.png" src="../_images/shalek2013_61_1.png" />
+<img alt="../_images/shalek2013_65_1.png" src="../_images/shalek2013_65_1.png" />
 </div>
 </div>
 <div class="section" id="figure-2">
@@ -1200,11 +2802,11 @@ the Appendix.</p>
 <span class="n">jointgrid</span><span class="o">.</span><span class="n">ax_joint</span><span class="o">.</span><span class="n">fill_betweenx</span><span class="p">((</span><span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">250</span><span class="p">),</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>&lt;matplotlib.collections.PolyCollection at 0x1109a6590&gt;
+<div class="highlight-python"><div class="highlight"><pre>&lt;matplotlib.collections.PolyCollection at 0x1132a0950&gt;
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_63_1.png" src="../_images/shalek2013_63_1.png" />
-<p>I couldn&#8217;t find the data for the <a href="#id4"><span class="problematic" id="id5">``</span></a>hESC``s for the right-side panel of
+<img alt="../_images/shalek2013_67_1.png" src="../_images/shalek2013_67_1.png" />
+<p>I couldn&#8217;t find the data for the <a href="#id5"><span class="problematic" id="id6">``</span></a>hESC``s for the right-side panel of
 Fig. 2a, so I couldn&#8217;t remake the figure.</p>
 </div>
 <div class="section" id="figure-2b">
@@ -1268,10 +2870,10 @@ the original data to get this new subset.</p>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">&#39;ln(TPM, binned)&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>&lt;matplotlib.text.Text at 0x11139dc10&gt;
+<div class="highlight-python"><div class="highlight"><pre>&lt;matplotlib.text.Text at 0x11325df10&gt;
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_70_1.png" src="../_images/shalek2013_70_1.png" />
+<img alt="../_images/shalek2013_74_1.png" src="../_images/shalek2013_74_1.png" />
 <p>Doesn&#8217;t quite look the same. Maybe the y-axis labels were opposite, and
 higher up on the y-axis was less variant? Because I see a blob of color
 for (1,2] TPM (by the way, the figure in the paper is not TPM+1 as
@@ -1302,7 +2904,7 @@ is <span class="math">\(\ln\)</span>(TPM+1).</p>
 <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">cv_ax</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_72_0.png" src="../_images/shalek2013_72_0.png" />
+<img alt="../_images/shalek2013_76_0.png" src="../_images/shalek2013_76_0.png" />
 </div>
 </div>
 <div class="section" id="figure-3">
@@ -1324,7 +2926,7 @@ outside of <tt class="docutils literal"><span class="pre">flotilla</span></tt>, 
 <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">()</span>
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_75_0.png" src="../_images/shalek2013_75_0.png" />
+<img alt="../_images/shalek2013_79_0.png" src="../_images/shalek2013_79_0.png" />
 </div>
 <div class="section" id="figure-3b-bottom-panel">
 <h3>Figure 3b, bottom panel<a class="headerlink" href="#figure-3b-bottom-panel" title="Permalink to this headline">¶</a></h3>
@@ -1334,7 +2936,7 @@ outside of <tt class="docutils literal"><span class="pre">flotilla</span></tt>, 
 <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">()</span>
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_77_0.png" src="../_images/shalek2013_77_0.png" />
+<img alt="../_images/shalek2013_81_0.png" src="../_images/shalek2013_81_0.png" />
 </div>
 </div>
 <div class="section" id="figure-4">
@@ -1352,22 +2954,622 @@ different dimensionality reductions on the data.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">study</span><span class="o">.</span><span class="n">interactive_pca</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>savefile :
+<div class="highlight-python"><div class="highlight"><pre>savefile : data/last.pca.pdf
 y_pc : 2
 data_type : expression
 featurewise : False
 show_point_labels : False
-sample_subset : all_samples
+sample_subset : pooled
 feature_subset : variant
-plot_violins : False
+plot_violins : True
 x_pc : 1
 list_link :
+1100001G20RIK (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+1110002B05RIK (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+1600029D21RIK (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+2310016C08RIK (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+ACSL1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+AK041746 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+ALDOC (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+AMICA1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+APOOL (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+ARG2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+ASF1B (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+ATP6V0D2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+AW112010 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+BANF1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+C1QB (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CAR4 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CAV1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CCL17 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CCL2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CCL22 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CCL7 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CCR2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CCT3 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CD200 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CD200R1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CD302 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CD69 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CETN2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CHI3L3 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CKS2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CLAST2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+COPS5 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+COX5A (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CXCL1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CXCL3 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+DHRS1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+DYNLT1B (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+EAR11 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+EMR1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+F10 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+FAM103A1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+FCGR3 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+FLRT3 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+FPR1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+FUCA2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+GLIPR2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+GNGT2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+GPR141 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+H2-AB1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+H2-EB1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+HMGN2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+HP (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+IFI30 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+IFIT1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+IFIT2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+IFITM1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+IFNB1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+IL1R2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+IL23A (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+INSL6 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+IRGM1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+KLK1B1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+LAT2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+LCN2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+LGALS1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+LSM3 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+LY86 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+LY96 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+MAD2L1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+MED21 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+MGST3 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+MMP13 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+MMP8 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+MS4A7 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+N6AMT2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+NAA38 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+NAGK (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+NCF4 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+NDUFA4 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+NUDT9 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+NUPR1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+OASL1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+OAZ1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+PDZD11 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+PFN1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+PMP22 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+PNP2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+PPP1R15A (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+PTGS2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+PTX3 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+QPCT (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+RAB9 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+RFC2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+ROGDI (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+S100A4 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+SC4MOL (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+SELL (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+SEPP1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+SERPINB6A (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+SERPINB9 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+SLFN1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+SLPI (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+STMN1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+TARM1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+THBS1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+TM7SF4 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+TMEM176A (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+TMEM176B (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+TMEM39A (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+TNFRSF9 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+TNFSF4 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+TRIM13 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+TUBA1A (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+TUBA1B (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+TUBB2C (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+UPP1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+VAMP4 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+VPS25 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+WDR61 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+ZFP263 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
 </pre></div>
 </div>
 <div class="highlight-python"><div class="highlight"><pre>&lt;function flotilla.visualize.ipython_interact.do_interact&gt;
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_80_2.png" src="../_images/shalek2013_80_2.png" />
+<img alt="../_images/shalek2013_84_2.png" src="../_images/shalek2013_84_2.png" />
+<img alt="../_images/shalek2013_84_3.png" src="../_images/shalek2013_84_3.png" />
 <p>A &#8220;sequences shortened&#8221; version of this is available as a gif:</p>
 <div class="figure align-center">
 <img alt="Imgur" src="http://i.imgur.com/fJKPQ7W.gif" />
@@ -1378,10 +3580,10 @@ instead of using <tt class="docutils literal"><span class="pre">study.interactiv
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">study</span><span class="o">.</span><span class="n">plot_pca</span><span class="p">(</span><span class="n">feature_subset</span><span class="o">=</span><span class="s">&#39;gene_category: LPS Response&#39;</span><span class="p">,</span> <span class="n">sample_subset</span><span class="o">=</span><span class="s">&#39;~pooled&#39;</span><span class="p">,</span> <span class="n">plot_violins</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>&lt;flotilla.visualize.decomposition.DecompositionViz at 0x159d9e2d0&gt;
+<div class="highlight-python"><div class="highlight"><pre>&lt;flotilla.visualize.decomposition.DecompositionViz at 0x11c9e5210&gt;
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_83_1.png" src="../_images/shalek2013_83_1.png" />
+<img alt="../_images/shalek2013_87_1.png" src="../_images/shalek2013_87_1.png" />
 <p>Without <tt class="docutils literal"><span class="pre">flotilla</span></tt>, <tt class="docutils literal"><span class="pre">plot_pca</span></tt> is quite a bit of code:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
@@ -1930,10 +4132,10 @@ instead of using <tt class="docutils literal"><span class="pre">study.interactiv
 <span class="n">visualizer</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>&lt;__main__.DecompositionViz at 0x139e9d790&gt;
+<div class="highlight-python"><div class="highlight"><pre>&lt;__main__.DecompositionViz at 0x1137f8450&gt;
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_85_1.png" src="../_images/shalek2013_85_1.png" />
+<img alt="../_images/shalek2013_89_1.png" src="../_images/shalek2013_89_1.png" />
 </div>
 <div class="section" id="figure-4b">
 <h3>Figure 4b<a class="headerlink" href="#figure-4b" title="Permalink to this headline">¶</a></h3>
@@ -2108,7 +4310,9 @@ different variations on which metric to use, such as using the average
 distance to the cluster center, or the explained variance. Let&#8217;s try the
 distance to cluster center first, because <tt class="docutils literal"><span class="pre">scikit-learn</span></tt> makes it
 easy.</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="c">##### cluster data into K=1..10 clusters #####</span>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="kn">import</span> <span class="n">KMeans</span>
+
+<span class="c">##### cluster data into K=1..10 clusters #####</span>
 <span class="n">ks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">11</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 
 <span class="n">X</span> <span class="o">=</span> <span class="n">lps_response_corr</span><span class="o">.</span><span class="n">values</span>
@@ -2124,16 +4328,45 @@ easy.</p>
 <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">()</span>
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_91_0.png" src="../_images/shalek2013_91_0.png" />
+<img alt="../_images/shalek2013_95_0.png" src="../_images/shalek2013_95_0.png" />
 <p>Not quite sure where the elbow is here. looks like there&#8217;s a big drop
 off after <span class="math">\(k=1\)</span>, but that could just be an illusion. Since they
 didn&#8217;t specify which version of the elbow method they used, I&#8217;m not
 going to investigate this further, and just see if we can see what they
 see with the <span class="math">\(k=5\)</span> clusters that they found was optimal.</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="kn">import</span> <span class="n">KMeans</span>
-<span class="n">kmeans</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">kmeans</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 <span class="n">lps_response_corr_clusters</span> <span class="o">=</span> <span class="n">kmeans</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">lps_response_corr</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 <span class="n">lps_response_corr_clusters</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span>
+       <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span>
+       <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span>
+       <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span>
+       <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span>
+       <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span>
+       <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span>
+       <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span>
+       <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
+       <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span>
+       <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
+       <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span>
+       <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span>
+       <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span>
+       <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span>
+       <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span>
+       <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span>
+       <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span>
+       <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span>
+       <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
+       <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
+       <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span>
+       <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+       <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span>
+       <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+       <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span>
+       <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span>
+       <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Now let&#8217;s create a dataframe with these genes in their cluster orders.</p>
@@ -2154,27 +4387,27 @@ see with the <span class="math">\(k=5\)</span> clusters that they found was opti
   <thead>
     <tr style="text-align: right;">
       <th>GENE</th>
-      <th>1200009I06RIK</th>
-      <th>4921513D23RIK</th>
-      <th>9230105E10RIK</th>
-      <th>9430076C15RIK</th>
-      <th>ABTB2</th>
-      <th>ADORA2A</th>
-      <th>AK138792</th>
-      <th>ARF4</th>
-      <th>AW112010</th>
-      <th>AY096003</th>
+      <th>1810029B16RIK</th>
+      <th>6330409N04RIK</th>
+      <th>A130040M12RIK</th>
+      <th>A630001G21RIK</th>
+      <th>AA467197</th>
+      <th>ACPP</th>
+      <th>ACSL1</th>
+      <th>AI607873</th>
+      <th>AK035387</th>
+      <th>AK042010</th>
       <th>...</th>
-      <th>TOR1AIP2</th>
-      <th>TRIM26</th>
+      <th>TAPBPL</th>
+      <th>TIMP1</th>
+      <th>TNFSF4</th>
+      <th>TNFSF9</th>
+      <th>TOR1AIP1</th>
       <th>TRIM34</th>
-      <th>USP25</th>
-      <th>USP42</th>
-      <th>VCAM1</th>
-      <th>XAF1</th>
-      <th>ZC3HAV1</th>
-      <th>ZFP800</th>
-      <th>ZNFX1</th>
+      <th>TTC39C</th>
+      <th>USP12</th>
+      <th>ZC3H12C</th>
+      <th>ZUFSP</th>
     </tr>
     <tr>
       <th>GENE</th>
@@ -2203,124 +4436,124 @@ see with the <span class="math">\(k=5\)</span> clusters that they found was opti
   </thead>
   <tbody>
     <tr>
-      <th>1200009I06RIK</th>
+      <th>1810029B16RIK</th>
       <td> 1.000000</td>
-      <td>-0.068924</td>
-      <td> 0.111419</td>
-      <td> 0.369713</td>
-      <td> 0.602290</td>
-      <td> 0.346815</td>
-      <td> 0.245846</td>
-      <td>-0.111502</td>
-      <td> 0.433534</td>
-      <td> 0.496736</td>
+      <td>-0.394008</td>
+      <td> 0.178867</td>
+      <td> 0.271292</td>
+      <td> 0.150375</td>
+      <td> 0.106683</td>
+      <td> 0.182380</td>
+      <td> 0.076501</td>
+      <td> 0.032006</td>
+      <td> 0.335728</td>
       <td>...</td>
-      <td>-0.018924</td>
-      <td> 0.318059</td>
-      <td> 0.125805</td>
-      <td> 0.013312</td>
-      <td> 0.252641</td>
-      <td> 0.245119</td>
-      <td>-0.239299</td>
-      <td> 0.034543</td>
-      <td>-0.378926</td>
-      <td> 0.126485</td>
+      <td>-0.048557</td>
+      <td> 0.029439</td>
+      <td>-0.194118</td>
+      <td> 0.098728</td>
+      <td> 0.228197</td>
+      <td> 0.214306</td>
+      <td> 0.204341</td>
+      <td>-0.300112</td>
+      <td> 0.052816</td>
+      <td>-0.305531</td>
     </tr>
     <tr>
-      <th>4921513D23RIK</th>
-      <td>-0.068924</td>
+      <th>6330409N04RIK</th>
+      <td>-0.394008</td>
       <td> 1.000000</td>
-      <td> 0.412124</td>
-      <td>-0.147477</td>
-      <td> 0.169083</td>
-      <td> 0.136871</td>
-      <td> 0.362837</td>
-      <td> 0.129226</td>
-      <td> 0.410335</td>
-      <td> 0.376150</td>
+      <td> 0.212542</td>
+      <td>-0.293282</td>
+      <td> 0.119868</td>
+      <td> 0.468823</td>
+      <td> 0.298642</td>
+      <td> 0.320296</td>
+      <td> 0.158348</td>
+      <td> 0.273508</td>
       <td>...</td>
-      <td> 0.104778</td>
-      <td>-0.195757</td>
-      <td>-0.019130</td>
-      <td>-0.435627</td>
-      <td>-0.373424</td>
-      <td> 0.323700</td>
-      <td>-0.013203</td>
-      <td>-0.182901</td>
-      <td>-0.180966</td>
-      <td> 0.073259</td>
+      <td>-0.125377</td>
+      <td> 0.027740</td>
+      <td> 0.190240</td>
+      <td>-0.422914</td>
+      <td>-0.400675</td>
+      <td>-0.197247</td>
+      <td>-0.023442</td>
+      <td> 0.088776</td>
+      <td>-0.006295</td>
+      <td>-0.412691</td>
     </tr>
     <tr>
-      <th>9230105E10RIK</th>
-      <td> 0.111419</td>
-      <td> 0.412124</td>
+      <th>A130040M12RIK</th>
+      <td> 0.178867</td>
+      <td> 0.212542</td>
       <td> 1.000000</td>
-      <td>-0.023530</td>
-      <td> 0.194732</td>
-      <td> 0.710700</td>
-      <td> 0.345700</td>
-      <td> 0.223106</td>
-      <td> 0.162851</td>
-      <td> 0.003728</td>
+      <td> 0.135900</td>
+      <td> 0.262295</td>
+      <td> 0.591539</td>
+      <td> 0.101211</td>
+      <td> 0.198424</td>
+      <td>-0.061268</td>
+      <td> 0.261002</td>
       <td>...</td>
-      <td> 0.329883</td>
-      <td>-0.121727</td>
-      <td>-0.042006</td>
-      <td>-0.306021</td>
-      <td>-0.241706</td>
-      <td> 0.050636</td>
-      <td> 0.434880</td>
-      <td>-0.111380</td>
-      <td>-0.181238</td>
-      <td> 0.338789</td>
+      <td> 0.131664</td>
+      <td> 0.268447</td>
+      <td> 0.004338</td>
+      <td>-0.043116</td>
+      <td>-0.052081</td>
+      <td>-0.336334</td>
+      <td> 0.322725</td>
+      <td> 0.013706</td>
+      <td> 0.254403</td>
+      <td> 0.048982</td>
     </tr>
     <tr>
-      <th>9430076C15RIK</th>
-      <td> 0.369713</td>
-      <td>-0.147477</td>
-      <td>-0.023530</td>
+      <th>A630001G21RIK</th>
+      <td> 0.271292</td>
+      <td>-0.293282</td>
+      <td> 0.135900</td>
       <td> 1.000000</td>
-      <td> 0.392165</td>
-      <td> 0.118186</td>
-      <td> 0.192424</td>
-      <td> 0.116998</td>
-      <td> 0.010792</td>
-      <td> 0.192111</td>
+      <td> 0.420200</td>
+      <td> 0.317858</td>
+      <td>-0.312477</td>
+      <td> 0.030636</td>
+      <td> 0.260572</td>
+      <td> 0.030842</td>
       <td>...</td>
-      <td>-0.284535</td>
-      <td> 0.142847</td>
-      <td>-0.131215</td>
-      <td> 0.050992</td>
-      <td>-0.018936</td>
-      <td>-0.053677</td>
-      <td>-0.277650</td>
-      <td> 0.457283</td>
-      <td>-0.304456</td>
-      <td>-0.587908</td>
+      <td> 0.121712</td>
+      <td>-0.313992</td>
+      <td>-0.128168</td>
+      <td> 0.059445</td>
+      <td>-0.177031</td>
+      <td>-0.332522</td>
+      <td> 0.027750</td>
+      <td>-0.125732</td>
+      <td> 0.071474</td>
+      <td> 0.070166</td>
     </tr>
     <tr>
-      <th>ABTB2</th>
-      <td> 0.602290</td>
-      <td> 0.169083</td>
-      <td> 0.194732</td>
-      <td> 0.392165</td>
+      <th>AA467197</th>
+      <td> 0.150375</td>
+      <td> 0.119868</td>
+      <td> 0.262295</td>
+      <td> 0.420200</td>
       <td> 1.000000</td>
-      <td> 0.352381</td>
-      <td> 0.372170</td>
-      <td> 0.047382</td>
-      <td> 0.151569</td>
-      <td> 0.436899</td>
+      <td> 0.277036</td>
+      <td> 0.020186</td>
+      <td> 0.747215</td>
+      <td> 0.404682</td>
+      <td> 0.342458</td>
       <td>...</td>
-      <td> 0.029446</td>
-      <td> 0.189948</td>
-      <td> 0.138569</td>
-      <td>-0.207286</td>
-      <td>-0.255225</td>
-      <td> 0.240424</td>
-      <td>-0.322520</td>
-      <td> 0.077558</td>
-      <td>-0.307413</td>
-      <td> 0.136130</td>
+      <td>-0.023484</td>
+      <td> 0.198358</td>
+      <td> 0.452022</td>
+      <td>-0.467622</td>
+      <td>-0.325064</td>
+      <td>-0.029880</td>
+      <td> 0.036769</td>
+      <td> 0.244542</td>
+      <td>-0.093778</td>
+      <td> 0.108472</td>
     </tr>
   </tbody>
 </table>
@@ -2508,29 +4741,29 @@ the LPS response genes. We can do this in <tt class="docutils literal"><span cla
   </thead>
   <tbody>
     <tr>
-      <th>1200009I06RIK</th>
-      <td>-0.041123</td>
-      <td> 0.000088</td>
+      <th>1810029B16RIK</th>
+      <td> 0.042928</td>
+      <td>-0.005064</td>
     </tr>
     <tr>
-      <th>4921513D23RIK</th>
-      <td>-0.052404</td>
-      <td> 0.039188</td>
+      <th>6330409N04RIK</th>
+      <td> 0.033104</td>
+      <td>-0.015244</td>
     </tr>
     <tr>
-      <th>9230105E10RIK</th>
-      <td>-0.050203</td>
-      <td> 0.028938</td>
+      <th>A130040M12RIK</th>
+      <td> 0.043078</td>
+      <td> 0.016664</td>
     </tr>
     <tr>
-      <th>9430076C15RIK</th>
-      <td>-0.027157</td>
-      <td>-0.015479</td>
+      <th>A630001G21RIK</th>
+      <td> 0.023375</td>
+      <td>-0.007379</td>
     </tr>
     <tr>
-      <th>ABTB2</th>
-      <td>-0.052774</td>
-      <td> 0.015593</td>
+      <th>AA467197</th>
+      <td> 0.054588</td>
+      <td> 0.018045</td>
     </tr>
   </tbody>
 </table>
@@ -2556,10 +4789,10 @@ the LPS response genes. We can do this in <tt class="docutils literal"><span cla
 <span class="n">pc_ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>&lt;matplotlib.text.Text at 0x139caefd0&gt;
+<div class="highlight-python"><div class="highlight"><pre>&lt;matplotlib.text.Text at 0x11cae66d0&gt;
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_101_1.png" src="../_images/shalek2013_101_1.png" />
+<img alt="../_images/shalek2013_105_1.png" src="../_images/shalek2013_105_1.png" />
 <p>This looks pretty similar, maybe just rearranged cluster order. Let&#8217;s
 check what their data looks like when you plot this.</p>
 </div>
@@ -2647,10 +4880,10 @@ check what their data looks like when you plot this.</p>
 <span class="n">pc_ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>&lt;matplotlib.text.Text at 0x14fd65790&gt;
+<div class="highlight-python"><div class="highlight"><pre>&lt;matplotlib.text.Text at 0x120ef2450&gt;
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_105_1.png" src="../_images/shalek2013_105_1.png" />
+<img alt="../_images/shalek2013_109_1.png" src="../_images/shalek2013_109_1.png" />
 <p>Sure enough, if I use their annotations, I get exactly that. Though
 there were two genes in their file that I didn&#8217;t have in the
 <tt class="docutils literal"><span class="pre">lps_response_corr</span></tt> data:</p>
@@ -2658,13 +4891,21 @@ there were two genes in their file that I didn&#8217;t have in the
 </pre></div>
 </div>
 <div class="highlight-python"><div class="highlight"><pre>---------------------------------------------------------------------------
-NameError                                 Traceback (most recent call last)
+TypeError                                 Traceback (most recent call last)
 
-&lt;ipython-input-1-f11acbabb21a&gt; in &lt;module&gt;()
+&lt;ipython-input-57-f11acbabb21a&gt; in &lt;module&gt;()
 ----&gt; 1 gene_pc_clusters.index.difference(lps_response_corr.index)
 
 
-NameError: name &#39;gene_pc_clusters&#39; is not defined
+/usr/local/lib/python2.7/site-packages/pandas/core/index.pyc in difference(self, other)
+   1325             result_name = self.name if self.name == other.name else None
+   1326
+-&gt; 1327         theDiff = sorted(set(self) - set(other))
+   1328         return Index(theDiff, name=result_name)
+   1329
+
+
+TypeError: can&#39;t compare datetime.datetime to unicode
 </pre></div>
 </div>
 <p>Oh joy, another <tt class="docutils literal"><span class="pre">datetime</span></tt> error, just like we had with
@@ -2673,7 +4914,7 @@ gene that Excel mangled to be a date:</p>
 <div class="figure align-center">
 <img alt="" src="https://raw.githubusercontent.com/olgabot/olgabot.github.io-source/master/content/images/shalek2013_supplementary_table_5_datetime_error.png" />
 </div>
-<p>Please, can we start using just plain ole <a href="#id8"><span class="problematic" id="id9">``</span></a>.csv``s for supplementary
+<p>Please, can we start using just plain ole <a href="#id9"><span class="problematic" id="id10">``</span></a>.csv``s for supplementary
 data! Excel does NOT preserve strings if they start with numbers, and
 instead thinks they are dates.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">collections</span>
@@ -2943,7 +5184,7 @@ really have the crucial information about the experiments.</p>
 <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">()</span>
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_119_0.png" src="../_images/shalek2013_119_0.png" />
+<img alt="../_images/shalek2013_123_0.png" src="../_images/shalek2013_123_0.png" />
 <p>Notice that this is mostly red, while in the figure from the paper, it
 was both blue and red. This is because the colormap started at 0.2 (not
 negative), and was centered with white at about 0.6. I see that they&#8217;re
@@ -3687,10 +5928,10 @@ they&#8217;re second</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">sns</span><span class="o">.</span><span class="n">lmplot</span><span class="p">(</span><span class="s">&#39;log TPM&#39;</span><span class="p">,</span> <span class="s">&#39;log Unique Barcodes&#39;</span><span class="p">,</span> <span class="n">barcoded_tidy</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s">&#39;sample_id&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>&lt;seaborn.axisgrid.FacetGrid at 0x15a2aa290&gt;
+<div class="highlight-python"><div class="highlight"><pre>&lt;seaborn.axisgrid.FacetGrid at 0x129535d10&gt;
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_149_1.png" src="../_images/shalek2013_149_1.png" />
+<img alt="../_images/shalek2013_153_1.png" src="../_images/shalek2013_153_1.png" />
 </div>
 </div>
 <div class="section" id="supplementary-figures-6-20">
@@ -3721,12 +5962,13 @@ this reproduction.</p>
 <h2>Conclusions<a class="headerlink" href="#conclusions" title="Permalink to this headline">¶</a></h2>
 <p>While there may be minor, undocumented, differences between the methods
 presented in the manuscript and the figures, the application of
-<tt class="docutils literal"><span class="pre">flotilla</span></tt> presents an oppoiurtunity to avoid these types of
-inconsistencies by strictly documenting every change to code and every
-transformation of the data. The biology the authors found is clearly
-real, as they did the knockout experiment of <em>Ifnr-/-</em> and saw that
-indeed the maturation process was affected, and <em>Stat2</em> and <em>Irf7</em> had
-much lower expression, as with the &#8220;maturing&#8221; cells in the data.</p>
+<tt class="docutils literal"><span class="pre">`flotilla</span></tt> &lt;<a class="reference external" href="https://github.com/YeoLab/flotilla">https://github.com/YeoLab/flotilla</a>&gt;`_ presents an
+opportunity to avoid these types of inconsistencies by strictly
+documenting every change to code and every transformation of the data.
+The biology the authors found is clearly real, as they did the knockout
+experiment of <em>Ifnr-/-</em> and saw that indeed the maturation process was
+affected, and <em>Stat2</em> and <em>Irf7</em> had much lower expression, as with the
+&#8220;maturing&#8221; cells in the data.</p>
 </div>
 </div>
 
