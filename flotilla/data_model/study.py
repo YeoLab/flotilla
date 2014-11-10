@@ -39,7 +39,7 @@ class Study(object):
 
     # Data types with enough data that we'd probably reduce them, and even
     # then we might want to take subsets. E.g. most variant genes for
-    # expression. But we don't expect to do this for spikein or mapping_stats
+    # expresion. But we don't expect to do this for spikein or mapping_stats
     # data
     _subsetable_data_types = ['expression', 'splicing']
 
@@ -86,8 +86,6 @@ class Study(object):
                  metadata_phenotype_to_color=None,
                  metadata_phenotype_to_marker=None,
                  license=None, title=None, sources=None,
-                 default_sample_subset="all_samples",
-                 default_feature_subset="variant",
                  metadata_minimum_samples=0):
         """Construct a biological study
 
@@ -202,7 +200,6 @@ class Study(object):
             metadata_phenotype_to_marker, pooled_col=metadata_pooled_col,
             phenotype_col=metadata_phenotype_col,
             predictor_config_manager=self.predictor_config_manager)
-
         self.phenotype_col = self.metadata.phenotype_col
         self.phenotype_order = self.metadata.phenotype_order
         self.phenotype_to_color = self.metadata.phenotype_to_color
@@ -212,9 +209,6 @@ class Study(object):
         self.sample_id_to_color = self.metadata.sample_id_to_color
         self.phenotype_transitions = self.metadata.phenotype_transitions
 
-        self.default_feature_subset = default_feature_subset
-        self.default_sample_subset = default_sample_subset
-
         if 'outlier' in self.metadata.data and drop_outliers:
             outliers = self.metadata.data.index[
                 self.metadata.data.outlier.astype(bool)]
@@ -223,7 +217,7 @@ class Study(object):
             self.metadata.data['outlier'] = False
 
         # Get pooled samples
-        pooled = None
+
         if self.metadata.pooled_col is not None:
             if self.metadata.pooled_col in self.metadata.data:
                 try:
@@ -232,6 +226,8 @@ class Study(object):
                             self.metadata.pooled_col].astype(bool)]
                 except:
                     pooled = None
+        else:
+            pooled = None
         self.pooled = pooled
 
         if mapping_stats_data is not None:
@@ -241,33 +237,21 @@ class Study(object):
                 predictor_config_manager=self.predictor_config_manager,
                 min_reads=mapping_stats_min_reads)
             self.technical_outliers = self.mapping_stats.too_few_mapped
-            sys.stderr.write('samples had too few mapped reads (<{'
-                             ':.1e} reads):\n\t{}\n'.format(
-                mapping_stats_min_reads, ', '.join(self.technical_outliers)))
         else:
             self.technical_outliers = None
 
-        if self.species is not None:
-
+        if self.species is not None and (expression_feature_data is None or
+                                                 splicing_feature_data is None):
             sys.stdout.write('{}\tLoading species metadata from '
-                             '~/flotilla_packages\n'.format(timestamp()))
+                             'sauron.ucsd.edu\n'.format(timestamp()))
             species_kws = self.load_species_data(self.species, self.readers)
-
-            if expression_feature_data is None:
-                expression_feature_data = species_kws.pop('expression_feature_data',
-                    None)
-
-            if expression_feature_rename_col is None:
-                expression_feature_rename_col = species_kws.pop(
-                    'expression_feature_rename_col', None)
-
-
-            if splicing_feature_data is None:
-                splicing_feature_data = species_kws.pop('splicing_feature_data',
-                                                        None)
-
-            if splicing_feature_rename_col is None:
-                splicing_feature_rename_col = species_kws.pop(
+            expression_feature_data = species_kws.pop('expression_feature_data',
+                                                      None)
+            expression_feature_rename_col = species_kws.pop(
+                'expression_feature_rename_col', None)
+            splicing_feature_data = species_kws.pop('splicing_feature_data',
+                                                    None)
+            splicing_feature_rename_col = species_kws.pop(
                 'splicing_feature_rename_col', None)
 
         if expression_data is not None:
@@ -315,12 +299,7 @@ class Study(object):
 
     @property
     def default_sample_subsets(self):
-        #move default_sample_subset to the front of the list, sort the rest
-        sorted_sample_subsets = [self.default_sample_subset] + sorted(list(set(self.metadata.sample_subsets.keys(\
-            )).difference(set(self.default_sample_subset))))
-        sample_subsets_and_logcal_nots = sorted_sample_subsets + map(lambda x: "~{}".format(x),
-                                                                     sorted_sample_subsets)
-        return sample_subsets_and_logcal_nots
+        return self.metadata.sample_subsets.keys()
 
     @property
     def default_feature_subsets(self):
@@ -404,6 +383,7 @@ class Study(object):
                          'object\n'.format(timestamp()))
         dfs = {}
         kwargs = {}
+        log_base = None
         datapackage_name = datapackage['name']
 
         for resource in datapackage['resources']:
@@ -477,6 +457,7 @@ class Study(object):
                 version))
         study = Study(
             sample_metadata=sample_metadata,
+            expression_log_base=log_base,
             species=species,
             license=license,
             title=title,
@@ -522,74 +503,24 @@ class Study(object):
             pass
         return dfs
 
-    def detect_outliers(self, data_type='expression',
-                        sample_subset=None, feature_subset=None,
-                        featurewise=False,
-                        reducer=None,
-                        standardize=None,
-                        reducer_kwargs=None,
-                        bins=None,
-                        outlier_detection_method=None,
-                        outlier_detection_method_kwargs=None):
+    def detect_outliers(self):
+        """Detects outlier cells from expression, mapping, and splicing
+        study_data and labels the outliers as such for future analysis.
 
-        if sample_subset is None:
-            sample_subset = self.default_sample_subset
+        Parameters
+        ----------
+        self
 
-        sample_ids = self.sample_subset_to_sample_ids(sample_subset)
+        Returns
+        -------
 
-        if feature_subset is None:
-            feature_subset = self.default_feature_subset
 
-        feature_ids = self.feature_subset_to_feature_ids(data_type,
-                                                         feature_subset,
-                                                         rename=False)
+        Raises
+        ------
 
-        if data_type == "expression":
-            obj = self.expression
-        elif data_type == "splicing":
-            obj = self.splicing
-
-        reducer, outlier_detector = obj.detect_outliers(sample_ids=sample_ids,
-                                                        feature_ids=feature_ids,
-                                                        featurewise=featurewise,
-                                                        reducer=reducer,
-                                                        standardize=standardize,
-                                                        reducer_kwargs=reducer_kwargs,
-                                                        bins=bins,
-                                                        outlier_detection_method=outlier_detection_method,
-                                                        outlier_detection_method_kwargs=outlier_detection_method_kwargs)
-
-        outlier_detector.predict(reducer.reduced_space)
-        outlier_detector.title = "_".join(
-            ['outlier', data_type, sample_subset, feature_subset])
-        print "setting outlier type:\"{}\" in metadata".format(
-            outlier_detector.title)
-        if outlier_detector.title not in self.metadata.data:
-            self.metadata.data[outlier_detector.title] = False
-
-        self.metadata.data[outlier_detector.title].update(
-            outlier_detector.outliers)
-        return reducer, outlier_detector
-
-    def drop_outliers(self):
-        """remove samples labeled "outlier" in self.metadata,
-        replace the data in self.expression and self.splicing with the smaller version"""
-        outliers = self.metadata.data['outlier'][
-            self.metadata.data['outlier']].index
-        try:
-            sys.stdout.write("dropping expression outliers\n")
-
-            self.expression.data = \
-            self.expression.drop_outliers(self.expression.data, outliers)[0]
-        except:
-            sys.stderr.write("couldn't drop expression outliers\n")
-
-        try:
-            sys.stdout.write("dropping splicing outliers\n")
-            self.splicing.data = \
-            self.splicing.drop_outliers(self.splicing.data, outliers)[0]
-        except:
-            sys.stderr.write("couldn't drop splicing outliers")
+        """
+        # TODO.md: Boyko/Patrick please implement
+        raise NotImplementedError
 
     def jsd(self):
         """Performs Jensen-Shannon Divergence on both splicing and expression
@@ -660,6 +591,8 @@ class Study(object):
             List of sample ids in the data
         """
 
+        # IF this is a list of IDs
+
         try:
             return self.metadata.sample_subsets[phenotype_subset]
         except KeyError:
@@ -718,10 +651,6 @@ class Study(object):
             samplewise (default), then this labels the samples. If this is
             featurewise, then this labels the features.
         """
-
-        sample_subset = self.default_sample_subset if sample_subset is None else sample_subset
-        feature_subset = self.default_feature_subset if feature_subset is None else feature_subset
-
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
         feature_ids = self.feature_subset_to_feature_ids(data_type,
                                                          feature_subset,
@@ -748,7 +677,6 @@ class Study(object):
                 featurewise=featurewise, show_point_labels=show_point_labels,
                 title=title, reduce_kwargs=reduce_kwargs,
                 plot_violins=plot_violins, **kwargs)
-
         elif "splicing".startswith(data_type):
             reducer = self.splicing.plot_pca(
                 x_pc=x_pc, y_pc=y_pc, sample_ids=sample_ids,
@@ -856,11 +784,10 @@ class Study(object):
         except KeyError:
             trait_ids = self.metadata.sample_subsets[trait]
             trait_data = self.metadata.data.index.isin(trait_ids)
-        if all(trait_data == True) or all(trait_data == False) or len(set(trait_data)) <= 1:
+        if all(trait_data) or all(~trait_data):
             raise ValueError("All samples are True (or all samples are "
-                             "False) or all are the same, cannot classify"
-                             "when all samples are the same")
-
+                             "False), cannot classify when all samples are "
+                             "the same")
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
         feature_ids = self.feature_subset_to_feature_ids(data_type,
                                                          feature_subset,
@@ -1134,7 +1061,6 @@ class Study(object):
     #             sample_ids, feature_ids, linkage_method=linkage_method,
     #             metric=metric, sample_colors=sample_colors, figsize=figsize)
 
-
     def plot_big_nmf_space_transitions(self, data_type='expression'):
         if data_type == 'expression':
             self.expression.plot_big_nmf_space_transitions(
@@ -1225,7 +1151,7 @@ class Study(object):
                         'minimum_samples': self.metadata.minimum_samples}
 
         try:
-            expression = self.expression.data_original
+            expression = self.expression.data
             expression_kws = {
                 'log_base': self.expression.log_base,
                 'thresh': self.expression.thresh}
@@ -1244,7 +1170,7 @@ class Study(object):
             expression_feature_kws = None
 
         try:
-            splicing = self.splicing.data_original
+            splicing = self.splicing.data
             splicing_kws = {}
         except AttributeError:
             splicing = None
@@ -1261,12 +1187,12 @@ class Study(object):
             splicing_feature_kws = None
 
         try:
-            spikein = self.spikein.data_original
+            spikein = self.spikein.data
         except AttributeError:
             spikein = None
 
         try:
-            mapping_stats = self.mapping_stats.data_original
+            mapping_stats = self.mapping_stats.data
             mapping_stats_kws = {'number_mapped_col':
                                      self.mapping_stats.number_mapped_col}
         except AttributeError:
@@ -1297,7 +1223,6 @@ class Study(object):
                                       flotilla_dir=flotilla_dir)
 
 
-
 # Add interactive visualizations
 Study.interactive_classifier = Interactive.interactive_classifier
 Study.interactive_graph = Interactive.interactive_graph
@@ -1305,6 +1230,4 @@ Study.interactive_pca = Interactive.interactive_pca
 # Study.interactive_localZ = Interactive.interactive_localZ
 Study.interactive_lavalamp_pooled_inconsistent = \
     Interactive.interactive_lavalamp_pooled_inconsistent
-Study.interactive_choose_outliers = Interactive.interactive_choose_outliers
-Study.interactive_reset_outliers = Interactive.interactive_reset_outliers
 # Study.interactive_clusteredheatmap = Interactive.interactive_clusteredheatmap

@@ -1,5 +1,3 @@
-import itertools
-
 import matplotlib as mpl
 from matplotlib import pyplot as plt
 import numpy as np
@@ -14,31 +12,19 @@ def violinplot(data, groupby=None, color_ordered=None, ax=None,
     Parameters
     ----------
     data : pandas.Series
-        The main data to plot as violins
-    groupby : dict-like, optional
+        The main data to plot
+    groupby : dict-like
         How to group the samples (e.g. by phenotype)
-    color_ordered : list, optional
-        List of colors, in the order you want to plot
-    ax : matplotlib.Axes, optional
-        Where to plot the violins. If None, get the current axes
-    pooled_data : pandas.Series, optional
-        Pooled samples. Will be plotted as black dots
-    order : list, optional
-        The order in which to plot the phenotypes, e.g. if the data is
-        form a differentiation time course
-    violinplot_kws : dict, optional
-        Other keywords to pass to seaborn.violinplot
-    title : str, optional
-        Title of the plot
-    label_pooled : bool, optional
-        If True, label the sample id of the pooled samples
-    outliers : pandas.Series
-        Outlier samples. Will be plotted in their phenotype category,
-        as a grey shadow
-    data_type : 'expression' | 'splicing' | None
-        If 'splicing', then force the y-axis to be from 0 to 1. If
-        'expression' or None, don't mess with the y-axis
+    color_ordered : list
+
+    Returns
+    -------
+
+
+    Raises
+    ------
     """
+    # import pdb; pdb.set_trace()
     data_type = 'none' if data_type is None else data_type
     splicing = 'splicing'.startswith(data_type)
 
@@ -47,21 +33,6 @@ def violinplot(data, groupby=None, color_ordered=None, ax=None,
 
     if ax is None:
         ax = plt.gca()
-
-    if order is None:
-        data_groups = data.groupby(groupby).groups.keys()
-        if outliers is not None:
-            outliers_groups = outliers.groupby(groupby).groups.keys()
-        else:
-            outliers_groups = []
-        if pooled_data is not None:
-            pooled_groups = pooled_data.groupby(groupby).groups.keys()
-        else:
-            pooled_groups = []
-        all_groups = set(itertools.chain(data_groups, pooled_groups,
-                                         outliers_groups))
-        order = sorted(all_groups)
-
 
     _violinplot_single_dataset(data, groupby=groupby, color=color_ordered,
                                ax=ax, order=order,
@@ -153,6 +124,12 @@ def _violinplot_single_dataset(data, groupby=None, order=None,
 
         single_positions = None
         single_color = None
+
+    print data.name, data.shape
+    print 'verified_color', verified_color
+    print 'verified_order', verified_order
+    print data.groupby(groupby).groups.keys()
+    print
 
     violinplot_kws = {} if violinplot_kws is None else violinplot_kws
 
