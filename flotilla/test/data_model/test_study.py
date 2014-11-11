@@ -2,6 +2,7 @@
 This tests whether the Study object was created correctly. No
 computation or visualization tests yet.
 """
+import copy
 import json
 import os
 
@@ -85,8 +86,8 @@ class TestStudy(object):
 
     @pytest.fixture
     def datapackage(self, example_datapackage, metadata_none_key,
-                    expression_none_key, splicing_none_key):
-        datapackage = example_datapackage.copy()
+                    expression_none_key, splicing_none_key, monkeypatch):
+        datapackage = copy.deepcopy(example_datapackage)
         datatype_to_key = {'metadata': metadata_none_key,
                            'expression': expression_none_key,
                            'splicing': splicing_none_key}
@@ -94,7 +95,7 @@ class TestStudy(object):
             if key is not None:
                 resource = name_to_resource(datapackage, datatype)
                 if key in resource:
-                    resource.pop(key)
+                    monkeypatch.delitem(resource, key, raising=False)
         return datapackage
 
     @pytest.fixture
@@ -145,7 +146,7 @@ class TestStudy(object):
 
         with open('{}/datapackage.json'.format(save_dir)) as f:
             test_datapackage = json.load(f)
-        true_datapackage = example_datapackage.copy()
+        true_datapackage = copy.deepcopy(example_datapackage)
 
         assert study_name == save_dir.purebasename
 
