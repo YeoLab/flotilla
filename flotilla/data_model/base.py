@@ -972,13 +972,11 @@ class BaseData(object):
         """
         nmf_space_positions = self.nmf_space_positions(groupby)
         nmf_space_transitions = nmf_space_positions.groupby(
-            level=0, axis=0, as_index=False, group_keys=False).apply(
-            self.transition_distances,
-            transitions=phenotype_transitions)
+            level=0, axis=0, as_index=True, group_keys=False).apply(
+            self.transition_distances, transitions=phenotype_transitions)
         return nmf_space_transitions
 
     def big_nmf_space_transitions(self, groupby, phenotype_transitions):
-        import pdb; pdb.set_trace()
         nmf_space_transitions = self.nmf_space_transitions(
             groupby, phenotype_transitions)
 
