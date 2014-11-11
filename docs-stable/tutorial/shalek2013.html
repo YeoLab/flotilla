@@ -31,7 +31,7 @@
     <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
     <link rel="top" title="flotilla 0.2.2 documentation" href="../index.html" />
     <link rel="up" title="Flotilla tutorial" href="../tutorial.html" />
-    <link rel="prev" title="Create an advanced datapackage" href="advanced_study_making.html" />
+    <link rel="prev" title="Create a barebones datapackage" href="barebones_study_making.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -193,7 +193,13 @@
   <div class="row">
     <div class="col-md-12">
       
-  <p>Before we begin, let&#8217;s import everything we need.</p>
+  <p>In the interest of reproducibility, and to showcase our new package
+<tt class="docutils literal"><span class="pre">`flotilla</span></tt> &lt;<a class="reference external" href="http://github.com/yeolab/flotilla">http://github.com/yeolab/flotilla</a>&gt;`_, I&#8217;ve reproduced
+many figures from the landmark single-cell paper, <a class="reference external" href="http://www.ncbi.nlm.nih.gov/pubmed/23685454">Single-cell
+transcriptomics reveals bimodality in expression and splicing in immune
+cells</a> by Shalek and
+Sujita, <em>et al</em>. <em>Nature</em> (2013).</p>
+<p>Before we begin, let&#8217;s import everything we need.</p>
 <div class="code python highlight-python"><div class="highlight"><pre># Import the flotilla package for biological data analysis
 import flotilla
 
@@ -213,11 +219,7 @@ import seaborn as sns
 %matplotlib inline
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>[autoreload of flotilla.data_model.base failed: Traceback (most recent call last):
-  File &quot;/Users/olga/workspace-git/ipython/IPython/extensions/autoreload.py&quot;, line 247, in check
-    superreload(m, reload, self.old_objects)
-AttributeError: &#39;NoneType&#39; object has no attribute &#39;_subset&#39;
-]
+<div class="highlight-python"><div class="highlight"><pre>Couldn&#39;t import dot_parser, loading of dot files will not be possible.
 </pre></div>
 </div>
 <div class="section" id="shalek-and-sujita-et-al-2013">
@@ -232,12 +234,50 @@ in addition to 3 pooled samples.</p>
 <h2>Expression data<a class="headerlink" href="#expression-data" title="Permalink to this headline">¶</a></h2>
 <p>First, we will read in the expression data. These data were obtained
 using,</p>
-<div class="highlight-python"><div class="highlight"><pre>wget ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE41nnn/GSE41265/suppl/GSE41265_allGenesTPM.txt.gz
+<div class="code python highlight-python"><div class="highlight"><pre>! wget ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE41nnn/GSE41265/suppl/GSE41265_allGenesTPM.txt.gz
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>--2014-11-10 12:35:20--  ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE41nnn/GSE41265/suppl/GSE41265_allGenesTPM.txt.gz
+           =&gt; &#39;GSE41265_allGenesTPM.txt.gz.1&#39;
+Resolving ftp.ncbi.nlm.nih.gov... 130.14.250.7, 2607:f220:41e:250::11
+Connecting to ftp.ncbi.nlm.nih.gov|130.14.250.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==&gt; SYST ... done.    ==&gt; PWD ... done.
+==&gt; TYPE I ... done.  ==&gt; CWD (1) /geo/series/GSE41nnn/GSE41265/suppl ... done.
+==&gt; SIZE GSE41265_allGenesTPM.txt.gz ... 1099290
+==&gt; PASV ... done.    ==&gt; RETR GSE41265_allGenesTPM.txt.gz ... done.
+Length: 1099290 (1.0M) (unauthoritative)
+
+100%[======================================&gt;] 1,099,290   6.28MB/s   in 0.2s
+
+2014-11-10 12:35:21 (6.28 MB/s) - &#39;GSE41265_allGenesTPM.txt.gz.1&#39; saved [1099290]
 </pre></div>
 </div>
 <p>We will also compare to the supplementary table 2 data, obtained using</p>
-<div class="highlight-python"><div class="highlight"><pre>wget http://www.nature.com/nature/journal/v498/n7453/extref/nature12172-s1.zip
-unzip nature12172-s1.zip
+<div class="code python highlight-python"><div class="highlight"><pre>! wget http://www.nature.com/nature/journal/v498/n7453/extref/nature12172-s1.zip
+! unzip nature12172-s1.zip
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>--2014-11-10 12:35:22--  http://www.nature.com/nature/journal/v498/n7453/extref/nature12172-s1.zip
+Resolving www.nature.com... 23.62.97.233, 23.62.97.227
+Connecting to www.nature.com|23.62.97.233|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 4634226 (4.4M) [application/zip]
+Saving to: &#39;nature12172-s1.zip&#39;
+
+100%[======================================&gt;] 4,634,226   1.17MB/s   in 3.8s
+
+2014-11-10 12:35:26 (1.16 MB/s) - &#39;nature12172-s1.zip&#39; saved [4634226/4634226]
+
+Archive:  nature12172-s1.zip
+   creating: nature12172-s1/
+  inflating: nature12172-s1/Supplementary_Table1.xls
+  inflating: nature12172-s1/Supplementary_Table2.xlsx
+  inflating: nature12172-s1/Supplementary_Table3.xls
+  inflating: nature12172-s1/Supplementary_Table4.xls
+  inflating: nature12172-s1/Supplementary_Table5.xls
+  inflating: nature12172-s1/Supplementary_Table6.xls
+  inflating: nature12172-s1/Supplementary_Table7.xlsx
 </pre></div>
 </div>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">expression</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="s">&quot;GSE41265_allGenesTPM.txt.gz&quot;</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s">&quot;gzip&quot;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
@@ -2463,33 +2503,28 @@ this sample is pooled or not.</p>
                        <span class="n">mapping_stats_number_mapped_col</span><span class="o">=</span><span class="s">&#39;PF_READS&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>2014-11-04 14:19:33 Initializing Study
-2014-11-04 14:19:33 Initializing Predictor configuration manager for Study
-2014-11-04 14:19:33 Predictor ExtraTreesClassifier is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesClassifier&#39;&gt;
-2014-11-04 14:19:33 Added ExtraTreesClassifier to default predictors
-2014-11-04 14:19:33 Predictor ExtraTreesRegressor is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesRegressor&#39;&gt;
-2014-11-04 14:19:33 Added ExtraTreesRegressor to default predictors
-2014-11-04 14:19:33 Predictor GradientBoostingClassifier is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingClassifier&#39;&gt;
-2014-11-04 14:19:33 Added GradientBoostingClassifier to default predictors
-2014-11-04 14:19:33 Predictor GradientBoostingRegressor is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingRegressor&#39;&gt;
-2014-11-04 14:19:33 Added GradientBoostingRegressor to default predictors
-2014-11-04 14:19:33 Loading metadata
-2014-11-04 14:19:33 Loading expression data
-2014-11-04 14:19:33 Initializing expression
-2014-11-04 14:19:33 Done initializing expression
-2014-11-04 14:19:33 Loading splicing data
-2014-11-04 14:19:33 Initializing splicing
-2014-11-04 14:19:33 Done initializing splicing
-2014-11-04 14:19:33 Successfully initialized a Study object!
+<div class="highlight-python"><div class="highlight"><pre>2014-11-10 12:36:35 Initializing Study
+2014-11-10 12:36:35 Initializing Predictor configuration manager for Study
+2014-11-10 12:36:35 Predictor ExtraTreesClassifier is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesClassifier&#39;&gt;
+2014-11-10 12:36:35 Added ExtraTreesClassifier to default predictors
+2014-11-10 12:36:35 Predictor ExtraTreesRegressor is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesRegressor&#39;&gt;
+2014-11-10 12:36:35 Added ExtraTreesRegressor to default predictors
+2014-11-10 12:36:35 Predictor GradientBoostingClassifier is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingClassifier&#39;&gt;
+2014-11-10 12:36:35 Added GradientBoostingClassifier to default predictors
+2014-11-10 12:36:35 Predictor GradientBoostingRegressor is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingRegressor&#39;&gt;
+2014-11-10 12:36:35 Added GradientBoostingRegressor to default predictors
+2014-11-10 12:36:35 Loading metadata
+2014-11-10 12:36:35 Loading expression data
+2014-11-10 12:36:35 Initializing expression
+2014-11-10 12:36:35 Done initializing expression
+2014-11-10 12:36:35 Loading splicing data
+2014-11-10 12:36:35 Initializing splicing
+2014-11-10 12:36:35 Done initializing splicing
+2014-11-10 12:36:35 Successfully initialized a Study object!
 </pre></div>
 </div>
 <div class="highlight-python"><div class="highlight"><pre>No phenotype to color mapping was provided, so coming up with reasonable defaults
 No phenotype to marker (matplotlib plotting symbol) was provided, so each phenotype will be plotted as a circle in the PCA visualizations.
-samples had too few mapped reads (&lt;5.0e+05 reads):
-
-Removing technical outliers from consideration in expression:
-
-Removing technical outliers from consideration in splicing:
 </pre></div>
 </div>
 <p>As a side note, you can save this study to disk now, so you can
@@ -2518,10 +2553,14 @@ Knowledge Foundation.</p>
   <span class="s">&quot;licenses&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
   <span class="s">&quot;resources&quot;</span><span class="p">:</span> <span class="p">[</span>
     <span class="p">{</span>
-      <span class="s">&quot;path&quot;</span><span class="p">:</span> <span class="s">&quot;/Users/olga/flotilla_projects/shalek2013/splicing.csv.gz&quot;</span><span class="p">,</span>
+      <span class="s">&quot;header&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="mi">0</span><span class="p">,</span>
+        <span class="mi">1</span>
+      <span class="p">],</span>
       <span class="s">&quot;format&quot;</span><span class="p">:</span> <span class="s">&quot;csv&quot;</span><span class="p">,</span>
+      <span class="s">&quot;compression&quot;</span><span class="p">:</span> <span class="s">&quot;gzip&quot;</span><span class="p">,</span>
       <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;splicing&quot;</span><span class="p">,</span>
-      <span class="s">&quot;compression&quot;</span><span class="p">:</span> <span class="s">&quot;gzip&quot;</span>
+      <span class="s">&quot;path&quot;</span><span class="p">:</span> <span class="s">&quot;/Users/olga/flotilla_projects/shalek2013/splicing.csv.gz&quot;</span>
     <span class="p">},</span>
     <span class="p">{</span>
       <span class="s">&quot;number_mapped_col&quot;</span><span class="p">:</span> <span class="s">&quot;PF_READS&quot;</span><span class="p">,</span>
@@ -2594,26 +2633,26 @@ having to open and process all those files again:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">study2</span> <span class="o">=</span> <span class="n">flotilla</span><span class="o">.</span><span class="n">embark</span><span class="p">(</span><span class="s">&#39;shalek2013&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>2014-10-30 12:16:56 Reading datapackage from /Users/olga/flotilla_projects/shalek2013/datapackage.json
-2014-10-30 12:16:56 Parsing datapackage to create a Study object
-2014-10-30 12:16:56 Initializing Study
-2014-10-30 12:16:56 Initializing Predictor configuration manager for Study
-2014-10-30 12:16:56 Predictor ExtraTreesClassifier is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesClassifier&#39;&gt;
-2014-10-30 12:16:56 Added ExtraTreesClassifier to default predictors
-2014-10-30 12:16:56 Predictor ExtraTreesRegressor is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesRegressor&#39;&gt;
-2014-10-30 12:16:56 Added ExtraTreesRegressor to default predictors
-2014-10-30 12:16:56 Predictor GradientBoostingClassifier is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingClassifier&#39;&gt;
-2014-10-30 12:16:56 Added GradientBoostingClassifier to default predictors
-2014-10-30 12:16:56 Predictor GradientBoostingRegressor is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingRegressor&#39;&gt;
-2014-10-30 12:16:56 Added GradientBoostingRegressor to default predictors
-2014-10-30 12:16:56 Loading metadata
-2014-10-30 12:16:56 Loading expression data
-2014-10-30 12:16:56 Initializing expression
-2014-10-30 12:16:56 Done initializing expression
-2014-10-30 12:16:56 Loading splicing data
-2014-10-30 12:16:56 Initializing splicing
-2014-10-30 12:16:56 Done initializing splicing
-2014-10-30 12:16:56 Successfully initialized a Study object!
+<div class="highlight-python"><div class="highlight"><pre>2014-11-10 12:36:38 Reading datapackage from /Users/olga/flotilla_projects/shalek2013/datapackage.json
+2014-11-10 12:36:38 Parsing datapackage to create a Study object
+2014-11-10 12:36:39 Initializing Study
+2014-11-10 12:36:39 Initializing Predictor configuration manager for Study
+2014-11-10 12:36:39 Predictor ExtraTreesClassifier is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesClassifier&#39;&gt;
+2014-11-10 12:36:39 Added ExtraTreesClassifier to default predictors
+2014-11-10 12:36:39 Predictor ExtraTreesRegressor is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesRegressor&#39;&gt;
+2014-11-10 12:36:39 Added ExtraTreesRegressor to default predictors
+2014-11-10 12:36:39 Predictor GradientBoostingClassifier is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingClassifier&#39;&gt;
+2014-11-10 12:36:39 Added GradientBoostingClassifier to default predictors
+2014-11-10 12:36:39 Predictor GradientBoostingRegressor is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingRegressor&#39;&gt;
+2014-11-10 12:36:39 Added GradientBoostingRegressor to default predictors
+2014-11-10 12:36:39 Loading metadata
+2014-11-10 12:36:39 Loading expression data
+2014-11-10 12:36:39 Initializing expression
+2014-11-10 12:36:39 Done initializing expression
+2014-11-10 12:36:39 Loading splicing data
+2014-11-10 12:36:39 Initializing splicing
+2014-11-10 12:36:39 Done initializing splicing
+2014-11-10 12:36:39 Successfully initialized a Study object!
 </pre></div>
 </div>
 <p>Now we can start creating figures!</p>
@@ -2638,7 +2677,7 @@ where the original is:</p>
   warnings.warn(&quot;This figure includes Axes that are not &quot;
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_48_1.png" src="../_images/shalek2013_48_1.png" />
+<img alt="../_images/shalek2013_52_1.png" src="../_images/shalek2013_52_1.png" />
 </div>
 <div class="section" id="without-flotilla-you-would-do">
 <h3>Without flotilla, you would do<a class="headerlink" href="#without-flotilla-you-would-do" title="Permalink to this headline">¶</a></h3>
@@ -2656,7 +2695,7 @@ where the original is:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">12.0</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_50_1.png" src="../_images/shalek2013_50_1.png" />
+<img alt="../_images/shalek2013_54_1.png" src="../_images/shalek2013_54_1.png" />
 </div>
 <div class="section" id="figure-1b">
 <h3>Figure 1b<a class="headerlink" href="#figure-1b" title="Permalink to this headline">¶</a></h3>
@@ -2664,7 +2703,7 @@ where the original is:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">study</span><span class="o">.</span><span class="n">plot_two_samples</span><span class="p">(</span><span class="s">&#39;S1&#39;</span><span class="p">,</span> <span class="s">&#39;S2&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_52_0.png" src="../_images/shalek2013_52_0.png" />
+<img alt="../_images/shalek2013_56_0.png" src="../_images/shalek2013_56_0.png" />
 </div>
 <div class="section" id="without-flotilla">
 <h3>Without <tt class="docutils literal"><span class="pre">flotilla</span></tt><a class="headerlink" href="#without-flotilla" title="Permalink to this headline">¶</a></h3>
@@ -2684,18 +2723,18 @@ where the original is:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">12.0</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_54_1.png" src="../_images/shalek2013_54_1.png" />
+<img alt="../_images/shalek2013_58_1.png" src="../_images/shalek2013_58_1.png" />
 <p>By the way, you can do other kinds of plots with <tt class="docutils literal"><span class="pre">flotilla</span></tt>, like a
 kernel density estimate (&#8220;<tt class="docutils literal"><span class="pre">kde</span></tt>&#8221;) plot:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">study</span><span class="o">.</span><span class="n">plot_two_samples</span><span class="p">(</span><span class="s">&#39;S1&#39;</span><span class="p">,</span> <span class="s">&#39;S2&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s">&#39;kde&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_56_0.png" src="../_images/shalek2013_56_0.png" />
+<img alt="../_images/shalek2013_60_0.png" src="../_images/shalek2013_60_0.png" />
 <p>Or a binned hexagon plot (&#8220;<tt class="docutils literal"><span class="pre">hexbin&quot;</span></tt>):</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">study</span><span class="o">.</span><span class="n">plot_two_samples</span><span class="p">(</span><span class="s">&#39;S1&#39;</span><span class="p">,</span> <span class="s">&#39;S2&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s">&#39;hexbin&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_58_0.png" src="../_images/shalek2013_58_0.png" />
+<img alt="../_images/shalek2013_62_0.png" src="../_images/shalek2013_62_0.png" />
 <p>Any inputs that are valid to <tt class="docutils literal"><span class="pre">seaborn</span></tt>&#8216;s
 <tt class="docutils literal"><span class="pre">`jointplot</span></tt> &lt;<a class="reference external" href="http://web.stanford.edu/~mwaskom/software/seaborn/generated/seaborn.jointplot.html#seaborn.jointplot">http://web.stanford.edu/~mwaskom/software/seaborn/generated/seaborn.jointplot.html#seaborn.jointplot</a>&gt;`_
 are valid.</p>
@@ -2717,7 +2756,7 @@ are valid.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">12.0</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_61_1.png" src="../_images/shalek2013_61_1.png" />
+<img alt="../_images/shalek2013_65_1.png" src="../_images/shalek2013_65_1.png" />
 </div>
 </div>
 <div class="section" id="figure-2">
@@ -2762,11 +2801,11 @@ the Appendix.</p>
 <span class="n">jointgrid</span><span class="o">.</span><span class="n">ax_joint</span><span class="o">.</span><span class="n">fill_betweenx</span><span class="p">((</span><span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">250</span><span class="p">),</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>&lt;matplotlib.collections.PolyCollection at 0x1109a6590&gt;
+<div class="highlight-python"><div class="highlight"><pre>&lt;matplotlib.collections.PolyCollection at 0x1132a0950&gt;
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_63_1.png" src="../_images/shalek2013_63_1.png" />
-<p>I couldn&#8217;t find the data for the <a href="#id4"><span class="problematic" id="id5">``</span></a>hESC``s for the right-side panel of
+<img alt="../_images/shalek2013_67_1.png" src="../_images/shalek2013_67_1.png" />
+<p>I couldn&#8217;t find the data for the <a href="#id5"><span class="problematic" id="id6">``</span></a>hESC``s for the right-side panel of
 Fig. 2a, so I couldn&#8217;t remake the figure.</p>
 </div>
 <div class="section" id="figure-2b">
@@ -2830,10 +2869,10 @@ the original data to get this new subset.</p>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">&#39;ln(TPM, binned)&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>&lt;matplotlib.text.Text at 0x11139dc10&gt;
+<div class="highlight-python"><div class="highlight"><pre>&lt;matplotlib.text.Text at 0x11325df10&gt;
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_70_1.png" src="../_images/shalek2013_70_1.png" />
+<img alt="../_images/shalek2013_74_1.png" src="../_images/shalek2013_74_1.png" />
 <p>Doesn&#8217;t quite look the same. Maybe the y-axis labels were opposite, and
 higher up on the y-axis was less variant? Because I see a blob of color
 for (1,2] TPM (by the way, the figure in the paper is not TPM+1 as
@@ -2864,7 +2903,7 @@ is <span class="math">\(\ln\)</span>(TPM+1).</p>
 <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">cv_ax</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_72_0.png" src="../_images/shalek2013_72_0.png" />
+<img alt="../_images/shalek2013_76_0.png" src="../_images/shalek2013_76_0.png" />
 </div>
 </div>
 <div class="section" id="figure-3">
@@ -2886,7 +2925,7 @@ outside of <tt class="docutils literal"><span class="pre">flotilla</span></tt>, 
 <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">()</span>
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_75_0.png" src="../_images/shalek2013_75_0.png" />
+<img alt="../_images/shalek2013_79_0.png" src="../_images/shalek2013_79_0.png" />
 </div>
 <div class="section" id="figure-3b-bottom-panel">
 <h3>Figure 3b, bottom panel<a class="headerlink" href="#figure-3b-bottom-panel" title="Permalink to this headline">¶</a></h3>
@@ -2896,7 +2935,7 @@ outside of <tt class="docutils literal"><span class="pre">flotilla</span></tt>, 
 <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">()</span>
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_77_0.png" src="../_images/shalek2013_77_0.png" />
+<img alt="../_images/shalek2013_81_0.png" src="../_images/shalek2013_81_0.png" />
 </div>
 </div>
 <div class="section" id="figure-4">
@@ -2914,22 +2953,622 @@ different dimensionality reductions on the data.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">study</span><span class="o">.</span><span class="n">interactive_pca</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>savefile :
+<div class="highlight-python"><div class="highlight"><pre>savefile : data/last.pca.pdf
 y_pc : 2
 data_type : expression
 featurewise : False
 show_point_labels : False
-sample_subset : all_samples
+sample_subset : pooled
 feature_subset : variant
-plot_violins : False
+plot_violins : True
 x_pc : 1
 list_link :
+1100001G20RIK (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+1110002B05RIK (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+1600029D21RIK (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+2310016C08RIK (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+ACSL1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+AK041746 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+ALDOC (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+AMICA1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+APOOL (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+ARG2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+ASF1B (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+ATP6V0D2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+AW112010 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+BANF1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+C1QB (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CAR4 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CAV1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CCL17 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CCL2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CCL22 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CCL7 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CCR2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CCT3 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CD200 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CD200R1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CD302 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CD69 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CETN2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CHI3L3 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CKS2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CLAST2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+COPS5 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+COX5A (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CXCL1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+CXCL3 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+DHRS1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+DYNLT1B (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+EAR11 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+EMR1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+F10 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+FAM103A1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+FCGR3 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+FLRT3 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+FPR1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+FUCA2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+GLIPR2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+GNGT2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+GPR141 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+H2-AB1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+H2-EB1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+HMGN2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+HP (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+IFI30 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+IFIT1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+IFIT2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+IFITM1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+IFNB1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+IL1R2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+IL23A (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+INSL6 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+IRGM1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+KLK1B1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+LAT2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+LCN2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+LGALS1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+LSM3 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+LY86 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+LY96 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+MAD2L1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+MED21 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+MGST3 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+MMP13 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+MMP8 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+MS4A7 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+N6AMT2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+NAA38 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+NAGK (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+NCF4 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+NDUFA4 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+NUDT9 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+NUPR1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+OASL1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+OAZ1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+PDZD11 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+PFN1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+PMP22 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+PNP2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+PPP1R15A (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+PTGS2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+PTX3 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+QPCT (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+RAB9 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+RFC2 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+ROGDI (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+S100A4 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+SC4MOL (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+SELL (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+SEPP1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+SERPINB6A (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+SERPINB9 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+SLFN1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+SLPI (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+STMN1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+TARM1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+THBS1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+TM7SF4 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+TMEM176A (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+TMEM176B (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+TMEM39A (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+TNFRSF9 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+TNFSF4 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+TRIM13 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+TUBA1A (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+TUBA1B (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+TUBB2C (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+UPP1 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+VAMP4 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+VPS25 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+WDR61 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
+
+ZFP263 (18,)
+verified_color [u&#39;#1b9e77&#39;]
+verified_order [&#39;BDMC&#39;]
+[&#39;BDMC&#39;]
 </pre></div>
 </div>
 <div class="highlight-python"><div class="highlight"><pre>&lt;function flotilla.visualize.ipython_interact.do_interact&gt;
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_80_2.png" src="../_images/shalek2013_80_2.png" />
+<img alt="../_images/shalek2013_84_2.png" src="../_images/shalek2013_84_2.png" />
+<img alt="../_images/shalek2013_84_3.png" src="../_images/shalek2013_84_3.png" />
 <p>A &#8220;sequences shortened&#8221; version of this is available as a gif:</p>
 <div class="figure align-center">
 <img alt="Imgur" src="http://i.imgur.com/fJKPQ7W.gif" />
@@ -2940,10 +3579,10 @@ instead of using <tt class="docutils literal"><span class="pre">study.interactiv
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">study</span><span class="o">.</span><span class="n">plot_pca</span><span class="p">(</span><span class="n">feature_subset</span><span class="o">=</span><span class="s">&#39;gene_category: LPS Response&#39;</span><span class="p">,</span> <span class="n">sample_subset</span><span class="o">=</span><span class="s">&#39;~pooled&#39;</span><span class="p">,</span> <span class="n">plot_violins</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>&lt;flotilla.visualize.decomposition.DecompositionViz at 0x159d9e2d0&gt;
+<div class="highlight-python"><div class="highlight"><pre>&lt;flotilla.visualize.decomposition.DecompositionViz at 0x11c9e5210&gt;
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_83_1.png" src="../_images/shalek2013_83_1.png" />
+<img alt="../_images/shalek2013_87_1.png" src="../_images/shalek2013_87_1.png" />
 <p>Without <tt class="docutils literal"><span class="pre">flotilla</span></tt>, <tt class="docutils literal"><span class="pre">plot_pca</span></tt> is quite a bit of code:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
@@ -3492,10 +4131,10 @@ instead of using <tt class="docutils literal"><span class="pre">study.interactiv
 <span class="n">visualizer</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>&lt;__main__.DecompositionViz at 0x139e9d790&gt;
+<div class="highlight-python"><div class="highlight"><pre>&lt;__main__.DecompositionViz at 0x1137f8450&gt;
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_85_1.png" src="../_images/shalek2013_85_1.png" />
+<img alt="../_images/shalek2013_89_1.png" src="../_images/shalek2013_89_1.png" />
 </div>
 <div class="section" id="figure-4b">
 <h3>Figure 4b<a class="headerlink" href="#figure-4b" title="Permalink to this headline">¶</a></h3>
@@ -3670,7 +4309,9 @@ different variations on which metric to use, such as using the average
 distance to the cluster center, or the explained variance. Let&#8217;s try the
 distance to cluster center first, because <tt class="docutils literal"><span class="pre">scikit-learn</span></tt> makes it
 easy.</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="c">##### cluster data into K=1..10 clusters #####</span>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="kn">import</span> <span class="n">KMeans</span>
+
+<span class="c">##### cluster data into K=1..10 clusters #####</span>
 <span class="n">ks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">11</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 
 <span class="n">X</span> <span class="o">=</span> <span class="n">lps_response_corr</span><span class="o">.</span><span class="n">values</span>
@@ -3686,16 +4327,45 @@ easy.</p>
 <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">()</span>
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_91_0.png" src="../_images/shalek2013_91_0.png" />
+<img alt="../_images/shalek2013_95_0.png" src="../_images/shalek2013_95_0.png" />
 <p>Not quite sure where the elbow is here. looks like there&#8217;s a big drop
 off after <span class="math">\(k=1\)</span>, but that could just be an illusion. Since they
 didn&#8217;t specify which version of the elbow method they used, I&#8217;m not
 going to investigate this further, and just see if we can see what they
 see with the <span class="math">\(k=5\)</span> clusters that they found was optimal.</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="kn">import</span> <span class="n">KMeans</span>
-<span class="n">kmeans</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">kmeans</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 <span class="n">lps_response_corr_clusters</span> <span class="o">=</span> <span class="n">kmeans</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">lps_response_corr</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 <span class="n">lps_response_corr_clusters</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span>
+       <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span>
+       <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span>
+       <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span>
+       <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span>
+       <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span>
+       <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span>
+       <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span>
+       <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
+       <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span>
+       <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
+       <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span>
+       <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span>
+       <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span>
+       <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span>
+       <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span>
+       <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span>
+       <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span>
+       <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span>
+       <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
+       <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
+       <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span>
+       <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+       <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span>
+       <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+       <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span>
+       <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span>
+       <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Now let&#8217;s create a dataframe with these genes in their cluster orders.</p>
@@ -3716,27 +4386,27 @@ see with the <span class="math">\(k=5\)</span> clusters that they found was opti
   <thead>
     <tr style="text-align: right;">
       <th>GENE</th>
-      <th>1200009I06RIK</th>
-      <th>4921513D23RIK</th>
-      <th>9230105E10RIK</th>
-      <th>9430076C15RIK</th>
-      <th>ABTB2</th>
-      <th>ADORA2A</th>
-      <th>AK138792</th>
-      <th>ARF4</th>
-      <th>AW112010</th>
-      <th>AY096003</th>
+      <th>1810029B16RIK</th>
+      <th>6330409N04RIK</th>
+      <th>A130040M12RIK</th>
+      <th>A630001G21RIK</th>
+      <th>AA467197</th>
+      <th>ACPP</th>
+      <th>ACSL1</th>
+      <th>AI607873</th>
+      <th>AK035387</th>
+      <th>AK042010</th>
       <th>...</th>
-      <th>TOR1AIP2</th>
-      <th>TRIM26</th>
+      <th>TAPBPL</th>
+      <th>TIMP1</th>
+      <th>TNFSF4</th>
+      <th>TNFSF9</th>
+      <th>TOR1AIP1</th>
       <th>TRIM34</th>
-      <th>USP25</th>
-      <th>USP42</th>
-      <th>VCAM1</th>
-      <th>XAF1</th>
-      <th>ZC3HAV1</th>
-      <th>ZFP800</th>
-      <th>ZNFX1</th>
+      <th>TTC39C</th>
+      <th>USP12</th>
+      <th>ZC3H12C</th>
+      <th>ZUFSP</th>
     </tr>
     <tr>
       <th>GENE</th>
@@ -3765,124 +4435,124 @@ see with the <span class="math">\(k=5\)</span> clusters that they found was opti
   </thead>
   <tbody>
     <tr>
-      <th>1200009I06RIK</th>
+      <th>1810029B16RIK</th>
       <td> 1.000000</td>
-      <td>-0.068924</td>
-      <td> 0.111419</td>
-      <td> 0.369713</td>
-      <td> 0.602290</td>
-      <td> 0.346815</td>
-      <td> 0.245846</td>
-      <td>-0.111502</td>
-      <td> 0.433534</td>
-      <td> 0.496736</td>
+      <td>-0.394008</td>
+      <td> 0.178867</td>
+      <td> 0.271292</td>
+      <td> 0.150375</td>
+      <td> 0.106683</td>
+      <td> 0.182380</td>
+      <td> 0.076501</td>
+      <td> 0.032006</td>
+      <td> 0.335728</td>
       <td>...</td>
-      <td>-0.018924</td>
-      <td> 0.318059</td>
-      <td> 0.125805</td>
-      <td> 0.013312</td>
-      <td> 0.252641</td>
-      <td> 0.245119</td>
-      <td>-0.239299</td>
-      <td> 0.034543</td>
-      <td>-0.378926</td>
-      <td> 0.126485</td>
+      <td>-0.048557</td>
+      <td> 0.029439</td>
+      <td>-0.194118</td>
+      <td> 0.098728</td>
+      <td> 0.228197</td>
+      <td> 0.214306</td>
+      <td> 0.204341</td>
+      <td>-0.300112</td>
+      <td> 0.052816</td>
+      <td>-0.305531</td>
     </tr>
     <tr>
-      <th>4921513D23RIK</th>
-      <td>-0.068924</td>
+      <th>6330409N04RIK</th>
+      <td>-0.394008</td>
       <td> 1.000000</td>
-      <td> 0.412124</td>
-      <td>-0.147477</td>
-      <td> 0.169083</td>
-      <td> 0.136871</td>
-      <td> 0.362837</td>
-      <td> 0.129226</td>
-      <td> 0.410335</td>
-      <td> 0.376150</td>
+      <td> 0.212542</td>
+      <td>-0.293282</td>
+      <td> 0.119868</td>
+      <td> 0.468823</td>
+      <td> 0.298642</td>
+      <td> 0.320296</td>
+      <td> 0.158348</td>
+      <td> 0.273508</td>
       <td>...</td>
-      <td> 0.104778</td>
-      <td>-0.195757</td>
-      <td>-0.019130</td>
-      <td>-0.435627</td>
-      <td>-0.373424</td>
-      <td> 0.323700</td>
-      <td>-0.013203</td>
-      <td>-0.182901</td>
-      <td>-0.180966</td>
-      <td> 0.073259</td>
+      <td>-0.125377</td>
+      <td> 0.027740</td>
+      <td> 0.190240</td>
+      <td>-0.422914</td>
+      <td>-0.400675</td>
+      <td>-0.197247</td>
+      <td>-0.023442</td>
+      <td> 0.088776</td>
+      <td>-0.006295</td>
+      <td>-0.412691</td>
     </tr>
     <tr>
-      <th>9230105E10RIK</th>
-      <td> 0.111419</td>
-      <td> 0.412124</td>
+      <th>A130040M12RIK</th>
+      <td> 0.178867</td>
+      <td> 0.212542</td>
       <td> 1.000000</td>
-      <td>-0.023530</td>
-      <td> 0.194732</td>
-      <td> 0.710700</td>
-      <td> 0.345700</td>
-      <td> 0.223106</td>
-      <td> 0.162851</td>
-      <td> 0.003728</td>
+      <td> 0.135900</td>
+      <td> 0.262295</td>
+      <td> 0.591539</td>
+      <td> 0.101211</td>
+      <td> 0.198424</td>
+      <td>-0.061268</td>
+      <td> 0.261002</td>
       <td>...</td>
-      <td> 0.329883</td>
-      <td>-0.121727</td>
-      <td>-0.042006</td>
-      <td>-0.306021</td>
-      <td>-0.241706</td>
-      <td> 0.050636</td>
-      <td> 0.434880</td>
-      <td>-0.111380</td>
-      <td>-0.181238</td>
-      <td> 0.338789</td>
+      <td> 0.131664</td>
+      <td> 0.268447</td>
+      <td> 0.004338</td>
+      <td>-0.043116</td>
+      <td>-0.052081</td>
+      <td>-0.336334</td>
+      <td> 0.322725</td>
+      <td> 0.013706</td>
+      <td> 0.254403</td>
+      <td> 0.048982</td>
     </tr>
     <tr>
-      <th>9430076C15RIK</th>
-      <td> 0.369713</td>
-      <td>-0.147477</td>
-      <td>-0.023530</td>
+      <th>A630001G21RIK</th>
+      <td> 0.271292</td>
+      <td>-0.293282</td>
+      <td> 0.135900</td>
       <td> 1.000000</td>
-      <td> 0.392165</td>
-      <td> 0.118186</td>
-      <td> 0.192424</td>
-      <td> 0.116998</td>
-      <td> 0.010792</td>
-      <td> 0.192111</td>
+      <td> 0.420200</td>
+      <td> 0.317858</td>
+      <td>-0.312477</td>
+      <td> 0.030636</td>
+      <td> 0.260572</td>
+      <td> 0.030842</td>
       <td>...</td>
-      <td>-0.284535</td>
-      <td> 0.142847</td>
-      <td>-0.131215</td>
-      <td> 0.050992</td>
-      <td>-0.018936</td>
-      <td>-0.053677</td>
-      <td>-0.277650</td>
-      <td> 0.457283</td>
-      <td>-0.304456</td>
-      <td>-0.587908</td>
+      <td> 0.121712</td>
+      <td>-0.313992</td>
+      <td>-0.128168</td>
+      <td> 0.059445</td>
+      <td>-0.177031</td>
+      <td>-0.332522</td>
+      <td> 0.027750</td>
+      <td>-0.125732</td>
+      <td> 0.071474</td>
+      <td> 0.070166</td>
     </tr>
     <tr>
-      <th>ABTB2</th>
-      <td> 0.602290</td>
-      <td> 0.169083</td>
-      <td> 0.194732</td>
-      <td> 0.392165</td>
+      <th>AA467197</th>
+      <td> 0.150375</td>
+      <td> 0.119868</td>
+      <td> 0.262295</td>
+      <td> 0.420200</td>
       <td> 1.000000</td>
-      <td> 0.352381</td>
-      <td> 0.372170</td>
-      <td> 0.047382</td>
-      <td> 0.151569</td>
-      <td> 0.436899</td>
+      <td> 0.277036</td>
+      <td> 0.020186</td>
+      <td> 0.747215</td>
+      <td> 0.404682</td>
+      <td> 0.342458</td>
       <td>...</td>
-      <td> 0.029446</td>
-      <td> 0.189948</td>
-      <td> 0.138569</td>
-      <td>-0.207286</td>
-      <td>-0.255225</td>
-      <td> 0.240424</td>
-      <td>-0.322520</td>
-      <td> 0.077558</td>
-      <td>-0.307413</td>
-      <td> 0.136130</td>
+      <td>-0.023484</td>
+      <td> 0.198358</td>
+      <td> 0.452022</td>
+      <td>-0.467622</td>
+      <td>-0.325064</td>
+      <td>-0.029880</td>
+      <td> 0.036769</td>
+      <td> 0.244542</td>
+      <td>-0.093778</td>
+      <td> 0.108472</td>
     </tr>
   </tbody>
 </table>
@@ -4070,29 +4740,29 @@ the LPS response genes. We can do this in <tt class="docutils literal"><span cla
   </thead>
   <tbody>
     <tr>
-      <th>1200009I06RIK</th>
-      <td>-0.041123</td>
-      <td> 0.000088</td>
+      <th>1810029B16RIK</th>
+      <td> 0.042928</td>
+      <td>-0.005064</td>
     </tr>
     <tr>
-      <th>4921513D23RIK</th>
-      <td>-0.052404</td>
-      <td> 0.039188</td>
+      <th>6330409N04RIK</th>
+      <td> 0.033104</td>
+      <td>-0.015244</td>
     </tr>
     <tr>
-      <th>9230105E10RIK</th>
-      <td>-0.050203</td>
-      <td> 0.028938</td>
+      <th>A130040M12RIK</th>
+      <td> 0.043078</td>
+      <td> 0.016664</td>
     </tr>
     <tr>
-      <th>9430076C15RIK</th>
-      <td>-0.027157</td>
-      <td>-0.015479</td>
+      <th>A630001G21RIK</th>
+      <td> 0.023375</td>
+      <td>-0.007379</td>
     </tr>
     <tr>
-      <th>ABTB2</th>
-      <td>-0.052774</td>
-      <td> 0.015593</td>
+      <th>AA467197</th>
+      <td> 0.054588</td>
+      <td> 0.018045</td>
     </tr>
   </tbody>
 </table>
@@ -4118,10 +4788,12 @@ the LPS response genes. We can do this in <tt class="docutils literal"><span cla
 <span class="n">pc_ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>&lt;matplotlib.text.Text at 0x139caefd0&gt;
+<div class="highlight-python"><div class="highlight"><pre>&lt;matplotlib.text.Text at 0x11cae66d0&gt;
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_101_1.png" src="../_images/shalek2013_101_1.png" />
+<img alt="../_images/shalek2013_105_1.png" src="../_images/shalek2013_105_1.png" />
+<p>This looks pretty similar, maybe just rearranged cluster order. Let&#8217;s
+check what their data looks like when you plot this.</p>
 </div>
 <div class="section" id="their-pc-scores-and-clusters-for-the-genes">
 <h4>Their PC scores and clusters for the genes<a class="headerlink" href="#their-pc-scores-and-clusters-for-the-genes" title="Permalink to this headline">¶</a></h4>
@@ -4207,10 +4879,10 @@ the LPS response genes. We can do this in <tt class="docutils literal"><span cla
 <span class="n">pc_ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>&lt;matplotlib.text.Text at 0x14fd65790&gt;
+<div class="highlight-python"><div class="highlight"><pre>&lt;matplotlib.text.Text at 0x120ef2450&gt;
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_104_1.png" src="../_images/shalek2013_104_1.png" />
+<img alt="../_images/shalek2013_109_1.png" src="../_images/shalek2013_109_1.png" />
 <p>Sure enough, if I use their annotations, I get exactly that. Though
 there were two genes in their file that I didn&#8217;t have in the
 <tt class="docutils literal"><span class="pre">lps_response_corr</span></tt> data:</p>
@@ -4220,7 +4892,7 @@ there were two genes in their file that I didn&#8217;t have in the
 <div class="highlight-python"><div class="highlight"><pre>---------------------------------------------------------------------------
 TypeError                                 Traceback (most recent call last)
 
-&lt;ipython-input-160-f11acbabb21a&gt; in &lt;module&gt;()
+&lt;ipython-input-57-f11acbabb21a&gt; in &lt;module&gt;()
 ----&gt; 1 gene_pc_clusters.index.difference(lps_response_corr.index)
 
 
@@ -4241,7 +4913,7 @@ gene that Excel mangled to be a date:</p>
 <div class="figure align-center">
 <img alt="" src="https://raw.githubusercontent.com/olgabot/olgabot.github.io-source/master/content/images/shalek2013_supplementary_table_5_datetime_error.png" />
 </div>
-<p>Please, can we start using just plain ole <a href="#id8"><span class="problematic" id="id9">``</span></a>.csv``s for supplementary
+<p>Please, can we start using just plain ole <a href="#id9"><span class="problematic" id="id10">``</span></a>.csv``s for supplementary
 data! Excel does NOT preserve strings if they start with numbers, and
 instead thinks they are dates.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">collections</span>
@@ -4511,7 +5183,7 @@ really have the crucial information about the experiments.</p>
 <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">()</span>
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_118_0.png" src="../_images/shalek2013_118_0.png" />
+<img alt="../_images/shalek2013_123_0.png" src="../_images/shalek2013_123_0.png" />
 <p>Notice that this is mostly red, while in the figure from the paper, it
 was both blue and red. This is because the colormap started at 0.2 (not
 negative), and was centered with white at about 0.6. I see that they&#8217;re
@@ -5255,10 +5927,10 @@ they&#8217;re second</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">sns</span><span class="o">.</span><span class="n">lmplot</span><span class="p">(</span><span class="s">&#39;log TPM&#39;</span><span class="p">,</span> <span class="s">&#39;log Unique Barcodes&#39;</span><span class="p">,</span> <span class="n">barcoded_tidy</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s">&#39;sample_id&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>&lt;seaborn.axisgrid.FacetGrid at 0x15a2aa290&gt;
+<div class="highlight-python"><div class="highlight"><pre>&lt;seaborn.axisgrid.FacetGrid at 0x129535d10&gt;
 </pre></div>
 </div>
-<img alt="../_images/shalek2013_148_1.png" src="../_images/shalek2013_148_1.png" />
+<img alt="../_images/shalek2013_153_1.png" src="../_images/shalek2013_153_1.png" />
 </div>
 </div>
 <div class="section" id="supplementary-figures-6-20">
@@ -5289,12 +5961,13 @@ this reproduction.</p>
 <h2>Conclusions<a class="headerlink" href="#conclusions" title="Permalink to this headline">¶</a></h2>
 <p>While there may be minor, undocumented, differences between the methods
 presented in the manuscript and the figures, the application of
-<tt class="docutils literal"><span class="pre">flotilla</span></tt> presents an oppoiurtunity to avoid these types of
-inconsistencies by strictly documenting every change to code and every
-transformation of the data. The biology the authors found is clearly
-real, as they did the knockout experiment of <em>Ifnr-/-</em> and saw that
-indeed the maturation process was affected, and <em>Stat2</em> and <em>Irf7</em> had
-much lower expression, as with the &#8220;maturing&#8221; cells in the data.</p>
+<tt class="docutils literal"><span class="pre">`flotilla</span></tt> &lt;<a class="reference external" href="https://github.com/YeoLab/flotilla">https://github.com/YeoLab/flotilla</a>&gt;`_ presents an
+opportunity to avoid these types of inconsistencies by strictly
+documenting every change to code and every transformation of the data.
+The biology the authors found is clearly real, as they did the knockout
+experiment of <em>Ifnr-/-</em> and saw that indeed the maturation process was
+affected, and <em>Stat2</em> and <em>Irf7</em> had much lower expression, as with the
+&#8220;maturing&#8221; cells in the data.</p>
 </div>
 </div>
 

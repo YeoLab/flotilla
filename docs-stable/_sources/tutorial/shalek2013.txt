@@ -1,4 +1,11 @@
 
+In the interest of reproducibility, and to showcase our new package
+```flotilla`` <http://github.com/yeolab/flotilla>`_, I've reproduced
+many figures from the landmark single-cell paper, `Single-cell
+transcriptomics reveals bimodality in expression and splicing in immune
+cells <http://www.ncbi.nlm.nih.gov/pubmed/23685454>`_ by Shalek and
+Sujita, *et al*. *Nature* (2013).
+
 Before we begin, let's import everything we need.
 
 .. code:: python
@@ -23,11 +30,7 @@ Before we begin, let's import everything we need.
 
 .. parsed-literal::
 
-    [autoreload of flotilla.data_model.base failed: Traceback (most recent call last):
-      File "/Users/olga/workspace-git/ipython/IPython/extensions/autoreload.py", line 247, in check
-        superreload(m, reload, self.old_objects)
-    AttributeError: 'NoneType' object has no attribute '_subset'
-    ]
+    Couldn't import dot_parser, loading of dot files will not be possible.
 
 
 Shalek and Sujita, *et al* (2013)
@@ -46,16 +49,59 @@ Expression data
 First, we will read in the expression data. These data were obtained
 using,
 
-::
+.. code:: python
 
-    wget ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE41nnn/GSE41265/suppl/GSE41265_allGenesTPM.txt.gz
+    ! wget ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE41nnn/GSE41265/suppl/GSE41265_allGenesTPM.txt.gz
+
+.. parsed-literal::
+
+    --2014-11-10 12:35:20--  ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE41nnn/GSE41265/suppl/GSE41265_allGenesTPM.txt.gz
+               => 'GSE41265_allGenesTPM.txt.gz.1'
+    Resolving ftp.ncbi.nlm.nih.gov... 130.14.250.7, 2607:f220:41e:250::11
+    Connecting to ftp.ncbi.nlm.nih.gov|130.14.250.7|:21... connected.
+    Logging in as anonymous ... Logged in!
+    ==> SYST ... done.    ==> PWD ... done.
+    ==> TYPE I ... done.  ==> CWD (1) /geo/series/GSE41nnn/GSE41265/suppl ... done.
+    ==> SIZE GSE41265_allGenesTPM.txt.gz ... 1099290
+    ==> PASV ... done.    ==> RETR GSE41265_allGenesTPM.txt.gz ... done.
+    Length: 1099290 (1.0M) (unauthoritative)
+    
+    100%[======================================>] 1,099,290   6.28MB/s   in 0.2s   
+    
+    2014-11-10 12:35:21 (6.28 MB/s) - 'GSE41265_allGenesTPM.txt.gz.1' saved [1099290]
+    
+
 
 We will also compare to the supplementary table 2 data, obtained using
 
-::
+.. code:: python
 
-    wget http://www.nature.com/nature/journal/v498/n7453/extref/nature12172-s1.zip
-    unzip nature12172-s1.zip
+    ! wget http://www.nature.com/nature/journal/v498/n7453/extref/nature12172-s1.zip
+    ! unzip nature12172-s1.zip
+
+.. parsed-literal::
+
+    --2014-11-10 12:35:22--  http://www.nature.com/nature/journal/v498/n7453/extref/nature12172-s1.zip
+    Resolving www.nature.com... 23.62.97.233, 23.62.97.227
+    Connecting to www.nature.com|23.62.97.233|:80... connected.
+    HTTP request sent, awaiting response... 200 OK
+    Length: 4634226 (4.4M) [application/zip]
+    Saving to: 'nature12172-s1.zip'
+    
+    100%[======================================>] 4,634,226   1.17MB/s   in 3.8s   
+    
+    2014-11-10 12:35:26 (1.16 MB/s) - 'nature12172-s1.zip' saved [4634226/4634226]
+    
+    Archive:  nature12172-s1.zip
+       creating: nature12172-s1/
+      inflating: nature12172-s1/Supplementary_Table1.xls  
+      inflating: nature12172-s1/Supplementary_Table2.xlsx  
+      inflating: nature12172-s1/Supplementary_Table3.xls  
+      inflating: nature12172-s1/Supplementary_Table4.xls  
+      inflating: nature12172-s1/Supplementary_Table5.xls  
+      inflating: nature12172-s1/Supplementary_Table6.xls  
+      inflating: nature12172-s1/Supplementary_Table7.xlsx  
+
 
 .. code:: python
 
@@ -2422,36 +2468,30 @@ Create a ``flotilla`` Study!
 
 .. parsed-literal::
 
-    2014-11-04 14:19:33	Initializing Study
-    2014-11-04 14:19:33	Initializing Predictor configuration manager for Study
-    2014-11-04 14:19:33	Predictor ExtraTreesClassifier is of type <class 'sklearn.ensemble.forest.ExtraTreesClassifier'>
-    2014-11-04 14:19:33	Added ExtraTreesClassifier to default predictors
-    2014-11-04 14:19:33	Predictor ExtraTreesRegressor is of type <class 'sklearn.ensemble.forest.ExtraTreesRegressor'>
-    2014-11-04 14:19:33	Added ExtraTreesRegressor to default predictors
-    2014-11-04 14:19:33	Predictor GradientBoostingClassifier is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingClassifier'>
-    2014-11-04 14:19:33	Added GradientBoostingClassifier to default predictors
-    2014-11-04 14:19:33	Predictor GradientBoostingRegressor is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingRegressor'>
-    2014-11-04 14:19:33	Added GradientBoostingRegressor to default predictors
-    2014-11-04 14:19:33	Loading metadata
-    2014-11-04 14:19:33	Loading expression data
-    2014-11-04 14:19:33	Initializing expression
-    2014-11-04 14:19:33	Done initializing expression
-    2014-11-04 14:19:33	Loading splicing data
-    2014-11-04 14:19:33	Initializing splicing
-    2014-11-04 14:19:33	Done initializing splicing
-    2014-11-04 14:19:33	Successfully initialized a Study object!
+    2014-11-10 12:36:35	Initializing Study
+    2014-11-10 12:36:35	Initializing Predictor configuration manager for Study
+    2014-11-10 12:36:35	Predictor ExtraTreesClassifier is of type <class 'sklearn.ensemble.forest.ExtraTreesClassifier'>
+    2014-11-10 12:36:35	Added ExtraTreesClassifier to default predictors
+    2014-11-10 12:36:35	Predictor ExtraTreesRegressor is of type <class 'sklearn.ensemble.forest.ExtraTreesRegressor'>
+    2014-11-10 12:36:35	Added ExtraTreesRegressor to default predictors
+    2014-11-10 12:36:35	Predictor GradientBoostingClassifier is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingClassifier'>
+    2014-11-10 12:36:35	Added GradientBoostingClassifier to default predictors
+    2014-11-10 12:36:35	Predictor GradientBoostingRegressor is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingRegressor'>
+    2014-11-10 12:36:35	Added GradientBoostingRegressor to default predictors
+    2014-11-10 12:36:35	Loading metadata
+    2014-11-10 12:36:35	Loading expression data
+    2014-11-10 12:36:35	Initializing expression
+    2014-11-10 12:36:35	Done initializing expression
+    2014-11-10 12:36:35	Loading splicing data
+    2014-11-10 12:36:35	Initializing splicing
+    2014-11-10 12:36:35	Done initializing splicing
+    2014-11-10 12:36:35	Successfully initialized a Study object!
 
 
 .. parsed-literal::
 
     No phenotype to color mapping was provided, so coming up with reasonable defaults
     No phenotype to marker (matplotlib plotting symbol) was provided, so each phenotype will be plotted as a circle in the PCA visualizations.
-    samples had too few mapped reads (<5.0e+05 reads):
-    	
-    Removing technical outliers from consideration in expression:
-    	
-    Removing technical outliers from consideration in splicing:
-    	
 
 
 As a side note, you can save this study to disk now, so you can
@@ -2488,10 +2528,14 @@ Knowledge Foundation.
       "licenses": null, 
       "resources": [
         {
-          "path": "/Users/olga/flotilla_projects/shalek2013/splicing.csv.gz", 
+          "header": [
+            0, 
+            1
+          ], 
           "format": "csv", 
+          "compression": "gzip", 
           "name": "splicing", 
-          "compression": "gzip"
+          "path": "/Users/olga/flotilla_projects/shalek2013/splicing.csv.gz"
         }, 
         {
           "number_mapped_col": "PF_READS", 
@@ -2573,26 +2617,26 @@ having to open and process all those files again:
 
 .. parsed-literal::
 
-    2014-10-30 12:16:56	Reading datapackage from /Users/olga/flotilla_projects/shalek2013/datapackage.json
-    2014-10-30 12:16:56	Parsing datapackage to create a Study object
-    2014-10-30 12:16:56	Initializing Study
-    2014-10-30 12:16:56	Initializing Predictor configuration manager for Study
-    2014-10-30 12:16:56	Predictor ExtraTreesClassifier is of type <class 'sklearn.ensemble.forest.ExtraTreesClassifier'>
-    2014-10-30 12:16:56	Added ExtraTreesClassifier to default predictors
-    2014-10-30 12:16:56	Predictor ExtraTreesRegressor is of type <class 'sklearn.ensemble.forest.ExtraTreesRegressor'>
-    2014-10-30 12:16:56	Added ExtraTreesRegressor to default predictors
-    2014-10-30 12:16:56	Predictor GradientBoostingClassifier is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingClassifier'>
-    2014-10-30 12:16:56	Added GradientBoostingClassifier to default predictors
-    2014-10-30 12:16:56	Predictor GradientBoostingRegressor is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingRegressor'>
-    2014-10-30 12:16:56	Added GradientBoostingRegressor to default predictors
-    2014-10-30 12:16:56	Loading metadata
-    2014-10-30 12:16:56	Loading expression data
-    2014-10-30 12:16:56	Initializing expression
-    2014-10-30 12:16:56	Done initializing expression
-    2014-10-30 12:16:56	Loading splicing data
-    2014-10-30 12:16:56	Initializing splicing
-    2014-10-30 12:16:56	Done initializing splicing
-    2014-10-30 12:16:56	Successfully initialized a Study object!
+    2014-11-10 12:36:38	Reading datapackage from /Users/olga/flotilla_projects/shalek2013/datapackage.json
+    2014-11-10 12:36:38	Parsing datapackage to create a Study object
+    2014-11-10 12:36:39	Initializing Study
+    2014-11-10 12:36:39	Initializing Predictor configuration manager for Study
+    2014-11-10 12:36:39	Predictor ExtraTreesClassifier is of type <class 'sklearn.ensemble.forest.ExtraTreesClassifier'>
+    2014-11-10 12:36:39	Added ExtraTreesClassifier to default predictors
+    2014-11-10 12:36:39	Predictor ExtraTreesRegressor is of type <class 'sklearn.ensemble.forest.ExtraTreesRegressor'>
+    2014-11-10 12:36:39	Added ExtraTreesRegressor to default predictors
+    2014-11-10 12:36:39	Predictor GradientBoostingClassifier is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingClassifier'>
+    2014-11-10 12:36:39	Added GradientBoostingClassifier to default predictors
+    2014-11-10 12:36:39	Predictor GradientBoostingRegressor is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingRegressor'>
+    2014-11-10 12:36:39	Added GradientBoostingRegressor to default predictors
+    2014-11-10 12:36:39	Loading metadata
+    2014-11-10 12:36:39	Loading expression data
+    2014-11-10 12:36:39	Initializing expression
+    2014-11-10 12:36:39	Done initializing expression
+    2014-11-10 12:36:39	Loading splicing data
+    2014-11-10 12:36:39	Initializing splicing
+    2014-11-10 12:36:39	Done initializing splicing
+    2014-11-10 12:36:39	Successfully initialized a Study object!
 
 
 Now we can start creating figures!
@@ -2625,7 +2669,7 @@ Figure 1a
 
 
 
-.. image:: shalek2013_files/shalek2013_48_1.png
+.. image:: shalek2013_files/shalek2013_52_1.png
 
 
 Without flotilla, you would do
@@ -2652,7 +2696,7 @@ Without flotilla, you would do
 
 
 
-.. image:: shalek2013_files/shalek2013_50_1.png
+.. image:: shalek2013_files/shalek2013_54_1.png
 
 
 Figure 1b
@@ -2665,7 +2709,7 @@ Paper: :math:`r=0.54`\ . Not sure at all what's going on here.
     study.plot_two_samples('S1', 'S2')
 
 
-.. image:: shalek2013_files/shalek2013_52_0.png
+.. image:: shalek2013_files/shalek2013_56_0.png
 
 
 Without ``flotilla``
@@ -2694,7 +2738,7 @@ Without ``flotilla``
 
 
 
-.. image:: shalek2013_files/shalek2013_54_1.png
+.. image:: shalek2013_files/shalek2013_58_1.png
 
 
 By the way, you can do other kinds of plots with ``flotilla``, like a
@@ -2705,7 +2749,7 @@ kernel density estimate ("``kde``") plot:
     study.plot_two_samples('S1', 'S2', kind='kde')
 
 
-.. image:: shalek2013_files/shalek2013_56_0.png
+.. image:: shalek2013_files/shalek2013_60_0.png
 
 
 Or a binned hexagon plot ("``hexbin"``):
@@ -2715,7 +2759,7 @@ Or a binned hexagon plot ("``hexbin"``):
     study.plot_two_samples('S1', 'S2', kind='hexbin')
 
 
-.. image:: shalek2013_files/shalek2013_58_0.png
+.. image:: shalek2013_files/shalek2013_62_0.png
 
 
 Any inputs that are valid to ``seaborn``'s
@@ -2747,7 +2791,7 @@ Figure 1c
 
 
 
-.. image:: shalek2013_files/shalek2013_61_1.png
+.. image:: shalek2013_files/shalek2013_65_1.png
 
 
 Figure 2
@@ -2802,12 +2846,12 @@ the Appendix.
 
 .. parsed-literal::
 
-    <matplotlib.collections.PolyCollection at 0x1109a6590>
+    <matplotlib.collections.PolyCollection at 0x1132a0950>
 
 
 
 
-.. image:: shalek2013_files/shalek2013_63_1.png
+.. image:: shalek2013_files/shalek2013_67_1.png
 
 
 I couldn't find the data for the ``hESC``s for the right-side panel of
@@ -2895,12 +2939,12 @@ Here's how you would make the original figure from the paper:
 
 .. parsed-literal::
 
-    <matplotlib.text.Text at 0x11139dc10>
+    <matplotlib.text.Text at 0x11325df10>
 
 
 
 
-.. image:: shalek2013_files/shalek2013_70_1.png
+.. image:: shalek2013_files/shalek2013_74_1.png
 
 
 Doesn't quite look the same. Maybe the y-axis labels were opposite, and
@@ -2937,7 +2981,7 @@ is :math:`\ln`\ (TPM+1).
     sns.despine(ax=cv_ax, left=True, right=False)
 
 
-.. image:: shalek2013_files/shalek2013_72_0.png
+.. image:: shalek2013_files/shalek2013_76_0.png
 
 
 Figure 3
@@ -2966,7 +3010,7 @@ Figure 3b, top panel
     sns.despine()
 
 
-.. image:: shalek2013_files/shalek2013_75_0.png
+.. image:: shalek2013_files/shalek2013_79_0.png
 
 
 Figure 3b, bottom panel
@@ -2980,7 +3024,7 @@ Figure 3b, bottom panel
     sns.despine()
 
 
-.. image:: shalek2013_files/shalek2013_77_0.png
+.. image:: shalek2013_files/shalek2013_81_0.png
 
 
 Figure 4
@@ -3007,16 +3051,616 @@ different dimensionality reductions on the data.
 
 .. parsed-literal::
 
-    savefile : 
+    savefile : data/last.pca.pdf
     y_pc : 2
     data_type : expression
     featurewise : False
     show_point_labels : False
-    sample_subset : all_samples
+    sample_subset : pooled
     feature_subset : variant
-    plot_violins : False
+    plot_violins : True
     x_pc : 1
     list_link : 
+    1100001G20RIK (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    1110002B05RIK (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    1600029D21RIK (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    2310016C08RIK (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    ACSL1 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    AK041746 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    ALDOC (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    AMICA1 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    APOOL (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    ARG2 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    ASF1B (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    ATP6V0D2 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    AW112010 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    BANF1 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    C1QB (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    CAR4 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    CAV1 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    CCL17 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    CCL2 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    CCL22 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    CCL7 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    CCR2 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    CCT3 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    CD200 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    CD200R1 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    CD302 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    CD69 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    CETN2 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    CHI3L3 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    CKS2 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    CLAST2 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    COPS5 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    COX5A (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    CXCL1 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    CXCL3 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    DHRS1 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    DYNLT1B (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    EAR11 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    EMR1 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    F10 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    FAM103A1 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    FCGR3 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    FLRT3 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    FPR1 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    FUCA2 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    GLIPR2 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    GNGT2 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    GPR141 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    H2-AB1 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    H2-EB1 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    HMGN2 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    HP (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    IFI30 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    IFIT1 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    IFIT2 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    IFITM1 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    IFNB1 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    IL1R2 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    IL23A (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    INSL6 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    IRGM1 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    KLK1B1 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    LAT2 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    LCN2 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    LGALS1 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    LSM3 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    LY86 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    LY96 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    MAD2L1 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    MED21 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    MGST3 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    MMP13 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    MMP8 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    MS4A7 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    N6AMT2 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    NAA38 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    NAGK (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    NCF4 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    NDUFA4 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    NUDT9 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    NUPR1 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    OASL1 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    OAZ1 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    PDZD11 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    PFN1 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    PMP22 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    PNP2 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    PPP1R15A (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    PTGS2 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    PTX3 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    QPCT (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    RAB9 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    RFC2 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    ROGDI (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    S100A4 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    SC4MOL (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    SELL (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    SEPP1 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    SERPINB6A (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    SERPINB9 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    SLFN1 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    SLPI (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    STMN1 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    TARM1 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    THBS1 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    TM7SF4 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    TMEM176A (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    TMEM176B (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    TMEM39A (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    TNFRSF9 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    TNFSF4 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    TRIM13 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    TUBA1A (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    TUBA1B (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    TUBB2C (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    UPP1 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    VAMP4 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    VPS25 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    WDR61 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
+    ZFP263 (18,)
+    verified_color [u'#1b9e77']
+    verified_order ['BDMC']
+    ['BDMC']
+    
 
 
 
@@ -3028,7 +3672,11 @@ different dimensionality reductions on the data.
 
 
 
-.. image:: shalek2013_files/shalek2013_80_2.png
+.. image:: shalek2013_files/shalek2013_84_2.png
+
+
+
+.. image:: shalek2013_files/shalek2013_84_3.png
 
 
 A "sequences shortened" version of this is available as a gif:
@@ -3050,12 +3698,12 @@ instead of using ``study.interactive_pca``:
 
 .. parsed-literal::
 
-    <flotilla.visualize.decomposition.DecompositionViz at 0x159d9e2d0>
+    <flotilla.visualize.decomposition.DecompositionViz at 0x11c9e5210>
 
 
 
 
-.. image:: shalek2013_files/shalek2013_83_1.png
+.. image:: shalek2013_files/shalek2013_87_1.png
 
 
 Without ``flotilla``, ``plot_pca`` is quite a bit of code:
@@ -3612,12 +4260,12 @@ Without ``flotilla``, ``plot_pca`` is quite a bit of code:
 
 .. parsed-literal::
 
-    <__main__.DecompositionViz at 0x139e9d790>
+    <__main__.DecompositionViz at 0x1137f8450>
 
 
 
 
-.. image:: shalek2013_files/shalek2013_85_1.png
+.. image:: shalek2013_files/shalek2013_89_1.png
 
 
 Figure 4b
@@ -3807,6 +4455,8 @@ easy.
 
 .. code:: python
 
+    from sklearn.cluster import KMeans
+    
     ##### cluster data into K=1..10 clusters #####
     ks = np.arange(1, 11).astype(int)
     
@@ -3823,7 +4473,7 @@ easy.
     sns.despine()
 
 
-.. image:: shalek2013_files/shalek2013_91_0.png
+.. image:: shalek2013_files/shalek2013_95_0.png
 
 
 Not quite sure where the elbow is here. looks like there's a big drop
@@ -3834,10 +4484,45 @@ see with the :math:`k=5` clusters that they found was optimal.
 
 .. code:: python
 
-    from sklearn.cluster import KMeans
     kmeans = KMeans(n_clusters=5)
     lps_response_corr_clusters = kmeans.fit_predict(lps_response_corr.values)
     lps_response_corr_clusters
+
+
+
+.. parsed-literal::
+
+    array([1, 1, 2, 4, 0, 1, 3, 4, 2, 4, 0, 3, 2, 2, 3, 3, 0, 1, 0, 3, 0, 1, 2,
+           0, 0, 3, 3, 2, 4, 4, 0, 4, 4, 0, 4, 0, 3, 4, 2, 1, 4, 4, 4, 3, 1, 4,
+           0, 0, 4, 1, 3, 3, 4, 0, 0, 2, 0, 0, 0, 4, 1, 3, 4, 3, 3, 4, 2, 2, 4,
+           3, 0, 4, 0, 3, 4, 2, 2, 4, 2, 3, 3, 3, 1, 1, 4, 1, 2, 2, 2, 1, 1, 3,
+           1, 1, 4, 3, 3, 3, 3, 1, 1, 4, 0, 2, 0, 0, 2, 3, 4, 4, 2, 0, 0, 3, 2,
+           4, 0, 2, 4, 3, 4, 2, 2, 4, 1, 4, 3, 0, 1, 2, 3, 3, 4, 4, 0, 0, 4, 3,
+           2, 1, 0, 4, 2, 0, 4, 2, 4, 0, 1, 0, 0, 3, 3, 3, 3, 1, 4, 3, 0, 2, 2,
+           3, 4, 1, 3, 4, 2, 2, 2, 3, 3, 3, 4, 0, 1, 3, 1, 0, 2, 1, 1, 0, 2, 4,
+           0, 1, 3, 2, 1, 3, 0, 1, 1, 2, 4, 3, 1, 0, 0, 0, 3, 3, 2, 1, 3, 1, 1,
+           4, 4, 3, 2, 3, 3, 1, 4, 3, 4, 3, 0, 1, 3, 3, 3, 3, 3, 1, 4, 1, 0, 3,
+           3, 2, 4, 3, 2, 0, 0, 3, 1, 1, 4, 3, 2, 4, 4, 3, 1, 1, 1, 0, 4, 1, 1,
+           0, 0, 4, 0, 0, 0, 3, 4, 3, 4, 3, 3, 3, 3, 0, 3, 4, 1, 2, 4, 1, 2, 2,
+           0, 0, 0, 4, 0, 2, 4, 0, 2, 4, 0, 4, 0, 3, 1, 3, 2, 3, 0, 3, 3, 3, 2,
+           1, 2, 2, 2, 2, 2, 4, 3, 2, 4, 3, 2, 2, 3, 1, 4, 1, 0, 0, 0, 0, 1, 4,
+           1, 4, 4, 3, 1, 1, 1, 1, 1, 2, 1, 2, 0, 4, 3, 4, 0, 3, 3, 3, 0, 3, 2,
+           2, 3, 0, 0, 2, 4, 4, 0, 1, 1, 3, 4, 2, 0, 3, 3, 0, 1, 0, 0, 4, 3, 2,
+           3, 3, 0, 2, 3, 3, 1, 1, 1, 3, 4, 2, 2, 2, 2, 3, 3, 2, 0, 1, 1, 1, 3,
+           3, 3, 4, 4, 0, 4, 3, 3, 1, 0, 0, 3, 3, 0, 3, 3, 0, 1, 4, 4, 4, 3, 4,
+           3, 1, 3, 1, 2, 2, 1, 4, 0, 1, 0, 3, 2, 0, 1, 1, 2, 4, 1, 0, 3, 0, 3,
+           3, 1, 3, 1, 4, 3, 1, 1, 2, 4, 1, 4, 2, 3, 0, 1, 4, 3, 2, 3, 3, 1, 1,
+           2, 3, 1, 2, 1, 0, 0, 4, 3, 3, 1, 3, 4, 0, 3, 0, 4, 0, 4, 1, 4, 0, 1,
+           3, 0, 1, 0, 4, 3, 2, 2, 3, 3, 1, 0, 2, 4, 1, 1, 4, 0, 2, 2, 3, 2, 4,
+           1, 0, 3, 4, 2, 1, 1, 3, 3, 0, 0, 0, 3, 3, 1, 0, 3, 2, 3, 3, 0, 2, 0,
+           1, 3, 0, 3, 4, 4, 1, 2, 4, 2, 3, 3, 3, 2, 3, 2, 4, 4, 1, 1, 4, 3, 2,
+           2, 4, 0, 1, 2, 0, 3, 0, 4, 0, 2, 1, 1, 3, 0, 2, 1, 3, 3, 1, 2, 0, 0,
+           1, 2, 0, 0, 4, 3, 4, 0, 1, 4, 1, 3, 0, 2, 2, 2, 0, 3, 1, 3, 1, 4, 3,
+           4, 2, 2, 3, 2, 0, 0, 4, 2, 1, 1, 1, 3, 3, 1, 2, 2, 0, 1, 2, 3, 0, 4,
+           1, 3, 2, 2, 2, 1, 2, 1, 4], dtype=int32)
+
+
+
 Now let's create a dataframe with these genes in their cluster orders.
 
 .. code:: python
@@ -3862,27 +4547,27 @@ Now let's create a dataframe with these genes in their cluster orders.
       <thead>
         <tr style="text-align: right;">
           <th>GENE</th>
-          <th>1200009I06RIK</th>
-          <th>4921513D23RIK</th>
-          <th>9230105E10RIK</th>
-          <th>9430076C15RIK</th>
-          <th>ABTB2</th>
-          <th>ADORA2A</th>
-          <th>AK138792</th>
-          <th>ARF4</th>
-          <th>AW112010</th>
-          <th>AY096003</th>
+          <th>1810029B16RIK</th>
+          <th>6330409N04RIK</th>
+          <th>A130040M12RIK</th>
+          <th>A630001G21RIK</th>
+          <th>AA467197</th>
+          <th>ACPP</th>
+          <th>ACSL1</th>
+          <th>AI607873</th>
+          <th>AK035387</th>
+          <th>AK042010</th>
           <th>...</th>
-          <th>TOR1AIP2</th>
-          <th>TRIM26</th>
+          <th>TAPBPL</th>
+          <th>TIMP1</th>
+          <th>TNFSF4</th>
+          <th>TNFSF9</th>
+          <th>TOR1AIP1</th>
           <th>TRIM34</th>
-          <th>USP25</th>
-          <th>USP42</th>
-          <th>VCAM1</th>
-          <th>XAF1</th>
-          <th>ZC3HAV1</th>
-          <th>ZFP800</th>
-          <th>ZNFX1</th>
+          <th>TTC39C</th>
+          <th>USP12</th>
+          <th>ZC3H12C</th>
+          <th>ZUFSP</th>
         </tr>
         <tr>
           <th>GENE</th>
@@ -3911,124 +4596,124 @@ Now let's create a dataframe with these genes in their cluster orders.
       </thead>
       <tbody>
         <tr>
-          <th>1200009I06RIK</th>
+          <th>1810029B16RIK</th>
           <td> 1.000000</td>
-          <td>-0.068924</td>
-          <td> 0.111419</td>
-          <td> 0.369713</td>
-          <td> 0.602290</td>
-          <td> 0.346815</td>
-          <td> 0.245846</td>
-          <td>-0.111502</td>
-          <td> 0.433534</td>
-          <td> 0.496736</td>
+          <td>-0.394008</td>
+          <td> 0.178867</td>
+          <td> 0.271292</td>
+          <td> 0.150375</td>
+          <td> 0.106683</td>
+          <td> 0.182380</td>
+          <td> 0.076501</td>
+          <td> 0.032006</td>
+          <td> 0.335728</td>
           <td>...</td>
-          <td>-0.018924</td>
-          <td> 0.318059</td>
-          <td> 0.125805</td>
-          <td> 0.013312</td>
-          <td> 0.252641</td>
-          <td> 0.245119</td>
-          <td>-0.239299</td>
-          <td> 0.034543</td>
-          <td>-0.378926</td>
-          <td> 0.126485</td>
+          <td>-0.048557</td>
+          <td> 0.029439</td>
+          <td>-0.194118</td>
+          <td> 0.098728</td>
+          <td> 0.228197</td>
+          <td> 0.214306</td>
+          <td> 0.204341</td>
+          <td>-0.300112</td>
+          <td> 0.052816</td>
+          <td>-0.305531</td>
         </tr>
         <tr>
-          <th>4921513D23RIK</th>
-          <td>-0.068924</td>
+          <th>6330409N04RIK</th>
+          <td>-0.394008</td>
           <td> 1.000000</td>
-          <td> 0.412124</td>
-          <td>-0.147477</td>
-          <td> 0.169083</td>
-          <td> 0.136871</td>
-          <td> 0.362837</td>
-          <td> 0.129226</td>
-          <td> 0.410335</td>
-          <td> 0.376150</td>
+          <td> 0.212542</td>
+          <td>-0.293282</td>
+          <td> 0.119868</td>
+          <td> 0.468823</td>
+          <td> 0.298642</td>
+          <td> 0.320296</td>
+          <td> 0.158348</td>
+          <td> 0.273508</td>
           <td>...</td>
-          <td> 0.104778</td>
-          <td>-0.195757</td>
-          <td>-0.019130</td>
-          <td>-0.435627</td>
-          <td>-0.373424</td>
-          <td> 0.323700</td>
-          <td>-0.013203</td>
-          <td>-0.182901</td>
-          <td>-0.180966</td>
-          <td> 0.073259</td>
+          <td>-0.125377</td>
+          <td> 0.027740</td>
+          <td> 0.190240</td>
+          <td>-0.422914</td>
+          <td>-0.400675</td>
+          <td>-0.197247</td>
+          <td>-0.023442</td>
+          <td> 0.088776</td>
+          <td>-0.006295</td>
+          <td>-0.412691</td>
         </tr>
         <tr>
-          <th>9230105E10RIK</th>
-          <td> 0.111419</td>
-          <td> 0.412124</td>
+          <th>A130040M12RIK</th>
+          <td> 0.178867</td>
+          <td> 0.212542</td>
           <td> 1.000000</td>
-          <td>-0.023530</td>
-          <td> 0.194732</td>
-          <td> 0.710700</td>
-          <td> 0.345700</td>
-          <td> 0.223106</td>
-          <td> 0.162851</td>
-          <td> 0.003728</td>
+          <td> 0.135900</td>
+          <td> 0.262295</td>
+          <td> 0.591539</td>
+          <td> 0.101211</td>
+          <td> 0.198424</td>
+          <td>-0.061268</td>
+          <td> 0.261002</td>
           <td>...</td>
-          <td> 0.329883</td>
-          <td>-0.121727</td>
-          <td>-0.042006</td>
-          <td>-0.306021</td>
-          <td>-0.241706</td>
-          <td> 0.050636</td>
-          <td> 0.434880</td>
-          <td>-0.111380</td>
-          <td>-0.181238</td>
-          <td> 0.338789</td>
+          <td> 0.131664</td>
+          <td> 0.268447</td>
+          <td> 0.004338</td>
+          <td>-0.043116</td>
+          <td>-0.052081</td>
+          <td>-0.336334</td>
+          <td> 0.322725</td>
+          <td> 0.013706</td>
+          <td> 0.254403</td>
+          <td> 0.048982</td>
         </tr>
         <tr>
-          <th>9430076C15RIK</th>
-          <td> 0.369713</td>
-          <td>-0.147477</td>
-          <td>-0.023530</td>
+          <th>A630001G21RIK</th>
+          <td> 0.271292</td>
+          <td>-0.293282</td>
+          <td> 0.135900</td>
           <td> 1.000000</td>
-          <td> 0.392165</td>
-          <td> 0.118186</td>
-          <td> 0.192424</td>
-          <td> 0.116998</td>
-          <td> 0.010792</td>
-          <td> 0.192111</td>
+          <td> 0.420200</td>
+          <td> 0.317858</td>
+          <td>-0.312477</td>
+          <td> 0.030636</td>
+          <td> 0.260572</td>
+          <td> 0.030842</td>
           <td>...</td>
-          <td>-0.284535</td>
-          <td> 0.142847</td>
-          <td>-0.131215</td>
-          <td> 0.050992</td>
-          <td>-0.018936</td>
-          <td>-0.053677</td>
-          <td>-0.277650</td>
-          <td> 0.457283</td>
-          <td>-0.304456</td>
-          <td>-0.587908</td>
+          <td> 0.121712</td>
+          <td>-0.313992</td>
+          <td>-0.128168</td>
+          <td> 0.059445</td>
+          <td>-0.177031</td>
+          <td>-0.332522</td>
+          <td> 0.027750</td>
+          <td>-0.125732</td>
+          <td> 0.071474</td>
+          <td> 0.070166</td>
         </tr>
         <tr>
-          <th>ABTB2</th>
-          <td> 0.602290</td>
-          <td> 0.169083</td>
-          <td> 0.194732</td>
-          <td> 0.392165</td>
+          <th>AA467197</th>
+          <td> 0.150375</td>
+          <td> 0.119868</td>
+          <td> 0.262295</td>
+          <td> 0.420200</td>
           <td> 1.000000</td>
-          <td> 0.352381</td>
-          <td> 0.372170</td>
-          <td> 0.047382</td>
-          <td> 0.151569</td>
-          <td> 0.436899</td>
+          <td> 0.277036</td>
+          <td> 0.020186</td>
+          <td> 0.747215</td>
+          <td> 0.404682</td>
+          <td> 0.342458</td>
           <td>...</td>
-          <td> 0.029446</td>
-          <td> 0.189948</td>
-          <td> 0.138569</td>
-          <td>-0.207286</td>
-          <td>-0.255225</td>
-          <td> 0.240424</td>
-          <td>-0.322520</td>
-          <td> 0.077558</td>
-          <td>-0.307413</td>
-          <td> 0.136130</td>
+          <td>-0.023484</td>
+          <td> 0.198358</td>
+          <td> 0.452022</td>
+          <td>-0.467622</td>
+          <td>-0.325064</td>
+          <td>-0.029880</td>
+          <td> 0.036769</td>
+          <td> 0.244542</td>
+          <td>-0.093778</td>
+          <td> 0.108472</td>
         </tr>
       </tbody>
     </table>
@@ -4236,29 +4921,29 @@ We can get the principal components using ``reduced.components_``
       </thead>
       <tbody>
         <tr>
-          <th>1200009I06RIK</th>
-          <td>-0.041123</td>
-          <td> 0.000088</td>
+          <th>1810029B16RIK</th>
+          <td> 0.042928</td>
+          <td>-0.005064</td>
         </tr>
         <tr>
-          <th>4921513D23RIK</th>
-          <td>-0.052404</td>
-          <td> 0.039188</td>
+          <th>6330409N04RIK</th>
+          <td> 0.033104</td>
+          <td>-0.015244</td>
         </tr>
         <tr>
-          <th>9230105E10RIK</th>
-          <td>-0.050203</td>
-          <td> 0.028938</td>
+          <th>A130040M12RIK</th>
+          <td> 0.043078</td>
+          <td> 0.016664</td>
         </tr>
         <tr>
-          <th>9430076C15RIK</th>
-          <td>-0.027157</td>
-          <td>-0.015479</td>
+          <th>A630001G21RIK</th>
+          <td> 0.023375</td>
+          <td>-0.007379</td>
         </tr>
         <tr>
-          <th>ABTB2</th>
-          <td>-0.052774</td>
-          <td> 0.015593</td>
+          <th>AA467197</th>
+          <td> 0.054588</td>
+          <td> 0.018045</td>
         </tr>
       </tbody>
     </table>
@@ -4293,13 +4978,16 @@ We can get the principal components using ``reduced.components_``
 
 .. parsed-literal::
 
-    <matplotlib.text.Text at 0x139caefd0>
+    <matplotlib.text.Text at 0x11cae66d0>
 
 
 
 
-.. image:: shalek2013_files/shalek2013_101_1.png
+.. image:: shalek2013_files/shalek2013_105_1.png
 
+
+This looks pretty similar, maybe just rearranged cluster order. Let's
+check what their data looks like when you plot this.
 
 Their PC scores and clusters for the genes
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -4400,12 +5088,12 @@ Their PC scores and clusters for the genes
 
 .. parsed-literal::
 
-    <matplotlib.text.Text at 0x14fd65790>
+    <matplotlib.text.Text at 0x120ef2450>
 
 
 
 
-.. image:: shalek2013_files/shalek2013_104_1.png
+.. image:: shalek2013_files/shalek2013_109_1.png
 
 
 Sure enough, if I use their annotations, I get exactly that. Though
@@ -4422,7 +5110,7 @@ there were two genes in their file that I didn't have in the
     ---------------------------------------------------------------------------
     TypeError                                 Traceback (most recent call last)
 
-    <ipython-input-160-f11acbabb21a> in <module>()
+    <ipython-input-57-f11acbabb21a> in <module>()
     ----> 1 gene_pc_clusters.index.difference(lps_response_corr.index)
     
 
@@ -4754,7 +5442,7 @@ Supplementary Figure 1
     sns.despine()
 
 
-.. image:: shalek2013_files/shalek2013_118_0.png
+.. image:: shalek2013_files/shalek2013_123_0.png
 
 
 Notice that this is mostly red, while in the figure from the paper, it
@@ -5604,12 +6292,12 @@ Now we can use the convenient linear model plot (``lmplot``) in
 
 .. parsed-literal::
 
-    <seaborn.axisgrid.FacetGrid at 0x15a2aa290>
+    <seaborn.axisgrid.FacetGrid at 0x129535d10>
 
 
 
 
-.. image:: shalek2013_files/shalek2013_148_1.png
+.. image:: shalek2013_files/shalek2013_153_1.png
 
 
 Supplementary Figures 6-20
@@ -5641,9 +6329,10 @@ Conclusions
 
 While there may be minor, undocumented, differences between the methods
 presented in the manuscript and the figures, the application of
-``flotilla`` presents an oppoiurtunity to avoid these types of
-inconsistencies by strictly documenting every change to code and every
-transformation of the data. The biology the authors found is clearly
-real, as they did the knockout experiment of *Ifnr-/-* and saw that
-indeed the maturation process was affected, and *Stat2* and *Irf7* had
-much lower expression, as with the "maturing" cells in the data.
+```flotilla`` <https://github.com/YeoLab/flotilla>`_ presents an
+opportunity to avoid these types of inconsistencies by strictly
+documenting every change to code and every transformation of the data.
+The biology the authors found is clearly real, as they did the knockout
+experiment of *Ifnr-/-* and saw that indeed the maturation process was
+affected, and *Stat2* and *Irf7* had much lower expression, as with the
+"maturing" cells in the data.
