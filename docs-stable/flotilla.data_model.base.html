@@ -430,7 +430,60 @@ what the crazy IDs are <tt class="xref py py-meth docutils literal"><span class=
 <dl class="method">
 <dt id="flotilla.data_model.base.BaseData.nmf_space_positions">
 <tt class="descname">nmf_space_positions</tt><big>(</big><em>groupby</em>, <em>min_samples_per_group=5</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.nmf_space_positions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.nmf_space_positions" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Calculate NMF-space position of splicing events in phenotype groups</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>groupby</strong> : mappable</p>
+<blockquote>
+<div><p>A sample id to phenotype mapping</p>
+</div></blockquote>
+<p><strong>min_samples_per_group</strong> : int</p>
+<blockquote>
+<div><p>Minimum samples required per group</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>df</strong> : pandas.DataFrame</p>
+<blockquote class="last">
+<div><p>A (n_events, n_groups) dataframe of NMF positions</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.base.BaseData.nmf_space_transitions">
+<tt class="descname">nmf_space_transitions</tt><big>(</big><em>groupby</em>, <em>phenotype_transitions</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.nmf_space_transitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.nmf_space_transitions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get distance in NMF space of different splicing events</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>groupby</strong> : mappable</p>
+<blockquote>
+<div><p>A sample id to phenotype mapping</p>
+</div></blockquote>
+<p><strong>phenotype_transitions</strong> : list of str pairs</p>
+<blockquote>
+<div><p>Which phenotype follows from one to the next, for calculating
+distances between</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>nmf_space_transitions</strong> : pandas.DataFrame</p>
+<blockquote class="last">
+<div><p>A (n_events, n_phenotype_transitions) sized DataFrame of the
+distances of these events in NMF space</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="flotilla.data_model.base.BaseData.outliers">
