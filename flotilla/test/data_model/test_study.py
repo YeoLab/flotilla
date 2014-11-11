@@ -5,7 +5,6 @@ computation or visualization tests yet.
 import copy
 import json
 import os
-import copy
 
 import matplotlib as mpl
 
@@ -87,7 +86,7 @@ class TestStudy(object):
 
     @pytest.fixture
     def datapackage(self, example_datapackage, metadata_none_key,
-                    expression_none_key, splicing_none_key):
+                    expression_none_key, splicing_none_key, monkeypatch):
         datapackage = copy.deepcopy(example_datapackage)
         datatype_to_key = {'metadata': metadata_none_key,
                            'expression': expression_none_key,
@@ -96,7 +95,7 @@ class TestStudy(object):
             if key is not None:
                 resource = name_to_resource(datapackage, datatype)
                 if key in resource:
-                    resource.pop(key)
+                    monkeypatch.delitem(resource, key, raising=False)
         return datapackage
 
     @pytest.fixture
@@ -205,3 +204,16 @@ class TestStudy(object):
 
         pdt.assert_dict_equal(test_datapackage,
                               true_datapackage)
+
+
+# def test_write_package(tmpdir):
+# from flotilla.data_model import StudyFactory
+#
+#     new_study = StudyFactory()
+#     new_study.experiment_design_data = None
+#     new_study.event_metadata = None
+#     new_study.expression_metadata = None
+#     new_study.expression_df = None
+#     new_study.splicing_df = None
+#     new_study.event_metadata = None
+#     new_study.write_package('test_package', where=tmpdir, install=False)
