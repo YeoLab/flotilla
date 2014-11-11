@@ -43,7 +43,7 @@ setup(
                       "semantic_version",
     ],
     version=version,
-    classifiers=['License :: OSI Approved :: MIT License',
+    classifiers=['License :: OSI Approved :: BSD License',
                  'Topic :: Scientific/Engineering :: Bio-Informatics',
                  'Topic :: Scientific/Engineering :: Visualization',
                  'Topic :: Scientific/Engineering :: Medical Science Apps.',
