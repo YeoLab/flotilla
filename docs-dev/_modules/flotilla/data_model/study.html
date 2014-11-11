@@ -55,7 +55,6 @@
 
         <div class="collapse navbar-collapse nav-collapse">
           <ul class="nav navbar-nav">
-            <li class="divider-vertical"></li>
             
                 <li><a href="../../../tutorial.html">Tutorial</a></li>
                 <li><a href="../../../gallery/index.html">Gallery</a></li>
@@ -1277,6 +1276,23 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">splicing</span><span class="o">.</span><span class="n">plot_two_features</span><span class="p">(</span>
                 <span class="n">feature1</span><span class="p">,</span> <span class="n">feature2</span><span class="p">,</span> <span class="n">groupby</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_id_to_phenotype</span><span class="p">,</span>
                 <span class="n">label_to_color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">phenotype_to_color</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Study.big_nmf_space_transitions"><a class="viewcode-back" href="../../../flotilla.data_model.study.html#flotilla.data_model.study.Study.big_nmf_space_transitions">[docs]</a>    <span class="k">def</span> <span class="nf">big_nmf_space_transitions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phenotypes</span><span class="o">=</span><span class="s">&#39;all&#39;</span><span class="p">,</span>
+                                  <span class="n">data_type</span><span class="o">=</span><span class="s">&#39;splicing&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get events with big NMF space between phenotypes</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        phenotypes : str or list-like</span>
+<span class="sd">            If &quot;all&quot;, get the phenotype transitions between all</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
 </div>
 <div class="viewcode-block" id="Study.save"><a class="viewcode-back" href="../../../flotilla.data_model.study.html#flotilla.data_model.study.Study.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">flotilla_dir</span><span class="o">=</span><span class="n">FLOTILLA_DOWNLOAD_DIR</span><span class="p">):</span>
