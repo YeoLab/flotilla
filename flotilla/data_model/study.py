@@ -1136,6 +1136,23 @@ class Study(object):
                 feature1, feature2, groupby=self.sample_id_to_phenotype,
                 label_to_color=self.phenotype_to_color, **kwargs)
 
+    def big_nmf_space_transitions(self, phenotypes='all',
+                                  data_type='splicing'):
+        """Get events with big NMF space between phenotypes
+
+        Parameters
+        ----------
+        phenotypes : str or list-like
+            If "all", get the phenotype transitions between all
+
+        Returns
+        -------
+
+
+        Raises
+        ------
+        """
+
 
     def save(self, name, flotilla_dir=FLOTILLA_DOWNLOAD_DIR):
 

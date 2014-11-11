@@ -906,6 +906,20 @@ class BaseData(object):
             sns.despine()
 
     def nmf_space_positions(self, groupby, min_samples_per_group=5):
+        """Calculate NMF-space position of splicing events in phenotype groups
+
+        Parameters
+        ----------
+        groupby : mappable
+            A sample id to phenotype mapping
+        min_samples_per_group : int
+            Minimum samples required per group
+
+        Returns
+        -------
+        df : pandas.DataFrame
+            A (n_events, n_groups) dataframe of NMF positions
+        """
         data = self.data.groupby(groupby).filter(
             lambda x: len(x) >= min_samples_per_group)
         df = data.groupby(groupby).apply(
@@ -939,12 +953,34 @@ class BaseData(object):
                 pass
         return distances
 
-    def big_nmf_space_transitions(self, groupby, phenotype_transitions):
+    def nmf_space_transitions(self, groupby, phenotype_transitions):
+        """Get distance in NMF space of different splicing events
+
+        Parameters
+        ----------
+        groupby : mappable
+            A sample id to phenotype mapping
+        phenotype_transitions : list of str pairs
+            Which phenotype follows from one to the next, for calculating
+            distances between
+
+        Returns
+        -------
+        nmf_space_transitions : pandas.DataFrame
+            A (n_events, n_phenotype_transitions) sized DataFrame of the
+            distances of these events in NMF space
+        """
         nmf_space_positions = self.nmf_space_positions(groupby)
         nmf_space_transitions = nmf_space_positions.groupby(
             level=0, axis=0, as_index=False, group_keys=False).apply(
             self.transition_distances,
             transitions=phenotype_transitions)
+        return nmf_space_transitions
+
+    def big_nmf_space_transitions(self, groupby, phenotype_transitions):
+        import pdb; pdb.set_trace()
+        nmf_space_transitions = self.nmf_space_transitions(
+            groupby, phenotype_transitions)
 
         mean = nmf_space_transitions.mean()
         std = nmf_space_transitions.std()
