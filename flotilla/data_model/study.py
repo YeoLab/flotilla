@@ -1210,6 +1210,19 @@ class Study(object):
                 feature1, feature2, groupby=self.sample_id_to_phenotype,
                 label_to_color=self.phenotype_to_color, **kwargs)
 
+    def nmf_space_transitions(self, phenotype_transitions='all', data_type='splicing'):
+        if phenotype_transitions == 'all':
+            phenotype_transitions = self.phenotype_transitions
+        if data_type == 'splicing':
+            self.splicing.nmf_space_transitions(self.sample_id_to_phenotype,
+                                                phenotype_transitions)
+
+    def big_nmf_space_transitions(self, phenotype_transitions='all', data_type='splicing'):
+        if phenotype_transitions == 'all':
+            phenotype_transitions = self.phenotype_transitions
+        if data_type == 'splicing':
+            self.splicing.big_nmf_space_transitions(self.sample_id_to_phenotype,
+                                                phenotype_transitions)
 
     def save(self, name, flotilla_dir=FLOTILLA_DOWNLOAD_DIR):
 
