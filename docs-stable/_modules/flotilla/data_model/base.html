@@ -1188,20 +1188,6 @@
             <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="BaseData.nmf_space_positions"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.nmf_space_positions">[docs]</a>    <span class="k">def</span> <span class="nf">nmf_space_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">groupby</span><span class="p">,</span> <span class="n">min_samples_per_group</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Calculate NMF-space position of splicing events in phenotype groups</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        groupby : mappable</span>
-<span class="sd">            A sample id to phenotype mapping</span>
-<span class="sd">        min_samples_per_group : int</span>
-<span class="sd">            Minimum samples required per group</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        df : pandas.DataFrame</span>
-<span class="sd">            A (n_events, n_groups) dataframe of NMF positions</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">groupby</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
             <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">min_samples_per_group</span><span class="p">)</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">groupby</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
@@ -1235,32 +1221,12 @@
                 <span class="k">pass</span>
         <span class="k">return</span> <span class="n">distances</span>
 </div>
-<div class="viewcode-block" id="BaseData.nmf_space_transitions"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.nmf_space_transitions">[docs]</a>    <span class="k">def</span> <span class="nf">nmf_space_transitions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">groupby</span><span class="p">,</span> <span class="n">phenotype_transitions</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get distance in NMF space of different splicing events</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        groupby : mappable</span>
-<span class="sd">            A sample id to phenotype mapping</span>
-<span class="sd">        phenotype_transitions : list of str pairs</span>
-<span class="sd">            Which phenotype follows from one to the next, for calculating</span>
-<span class="sd">            distances between</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        nmf_space_transitions : pandas.DataFrame</span>
-<span class="sd">            A (n_events, n_phenotype_transitions) sized DataFrame of the</span>
-<span class="sd">            distances of these events in NMF space</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="BaseData.big_nmf_space_transitions"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.big_nmf_space_transitions">[docs]</a>    <span class="k">def</span> <span class="nf">big_nmf_space_transitions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">groupby</span><span class="p">,</span> <span class="n">phenotype_transitions</span><span class="p">):</span>
         <span class="n">nmf_space_positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nmf_space_positions</span><span class="p">(</span><span class="n">groupby</span><span class="p">)</span>
         <span class="n">nmf_space_transitions</span> <span class="o">=</span> <span class="n">nmf_space_positions</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span>
-            <span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">as_index</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">group_keys</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">transition_distances</span><span class="p">,</span> <span class="n">transitions</span><span class="o">=</span><span class="n">phenotype_transitions</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">nmf_space_transitions</span>
-</div>
-<div class="viewcode-block" id="BaseData.big_nmf_space_transitions"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.big_nmf_space_transitions">[docs]</a>    <span class="k">def</span> <span class="nf">big_nmf_space_transitions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">groupby</span><span class="p">,</span> <span class="n">phenotype_transitions</span><span class="p">):</span>
-        <span class="n">nmf_space_transitions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nmf_space_transitions</span><span class="p">(</span>
-            <span class="n">groupby</span><span class="p">,</span> <span class="n">phenotype_transitions</span><span class="p">)</span>
+            <span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">as_index</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">group_keys</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transition_distances</span><span class="p">,</span>
+            <span class="n">transitions</span><span class="o">=</span><span class="n">phenotype_transitions</span><span class="p">)</span>
 
         <span class="n">mean</span> <span class="o">=</span> <span class="n">nmf_space_transitions</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
         <span class="n">std</span> <span class="o">=</span> <span class="n">nmf_space_transitions</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
