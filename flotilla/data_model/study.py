@@ -254,21 +254,22 @@ class Study(object):
             species_kws = self.load_species_data(self.species, self.readers)
 
             if expression_feature_data is None:
-                expression_feature_data = species_kws.pop('expression_feature_data',
+                expression_feature_data = species_kws.pop(
+                    'expression_feature_data',
                     None)
 
             if expression_feature_rename_col is None:
                 expression_feature_rename_col = species_kws.pop(
                     'expression_feature_rename_col', None)
 
-
             if splicing_feature_data is None:
-                splicing_feature_data = species_kws.pop('splicing_feature_data',
-                                                        None)
+                splicing_feature_data = species_kws.pop(
+                    'splicing_feature_data',
+                    None)
 
             if splicing_feature_rename_col is None:
                 splicing_feature_rename_col = species_kws.pop(
-                'splicing_feature_rename_col', None)
+                    'splicing_feature_rename_col', None)
 
         if expression_data is not None:
             sys.stdout.write(
@@ -315,11 +316,13 @@ class Study(object):
 
     @property
     def default_sample_subsets(self):
-        #move default_sample_subset to the front of the list, sort the rest
-        sorted_sample_subsets = [self.default_sample_subset] + sorted(list(set(self.metadata.sample_subsets.keys(\
-            )).difference(set(self.default_sample_subset))))
-        sample_subsets_and_logcal_nots = sorted_sample_subsets + map(lambda x: "~{}".format(x),
-                                                                     sorted_sample_subsets)
+        # move default_sample_subset to the front of the list, sort the rest
+        sorted_sample_subsets = [self.default_sample_subset] + sorted(
+            list(set(self.metadata.sample_subsets.keys( \
+                )).difference(set(self.default_sample_subset))))
+        sample_subsets_and_logcal_nots = sorted_sample_subsets + map(
+            lambda x: "~{}".format(x),
+            sorted_sample_subsets)
         return sample_subsets_and_logcal_nots
 
     @property
@@ -580,14 +583,15 @@ class Study(object):
             sys.stdout.write("dropping expression outliers\n")
 
             self.expression.data = \
-            self.expression.drop_outliers(self.expression.data, outliers)[0]
+                self.expression.drop_outliers(self.expression.data, outliers)[
+                    0]
         except:
             sys.stderr.write("couldn't drop expression outliers\n")
 
         try:
             sys.stdout.write("dropping splicing outliers\n")
             self.splicing.data = \
-            self.splicing.drop_outliers(self.splicing.data, outliers)[0]
+                self.splicing.drop_outliers(self.splicing.data, outliers)[0]
         except:
             sys.stderr.write("couldn't drop splicing outliers")
 
@@ -856,7 +860,8 @@ class Study(object):
         except KeyError:
             trait_ids = self.metadata.sample_subsets[trait]
             trait_data = self.metadata.data.index.isin(trait_ids)
-        if all(trait_data == True) or all(trait_data == False) or len(set(trait_data)) <= 1:
+        if all(trait_data == True) or all(trait_data == False) or len(
+                set(trait_data)) <= 1:
             raise ValueError("All samples are True (or all samples are "
                              "False) or all are the same, cannot classify"
                              "when all samples are the same")
@@ -1020,7 +1025,7 @@ class Study(object):
                     bootstrapped_kws=bootstrapped_kws)
 
     def plot_event(self, feature_id, sample_subset=None, nmf_space=False):
-        """Plot the violinplot and DataFrameNMF transitions of a splicing event
+        """Plot the violinplot and NMF transitions of a splicing event
         """
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
         self.splicing.plot_feature(feature_id, sample_ids,
@@ -1105,7 +1110,7 @@ class Study(object):
     # linkage_method='median', figsize=None):
     # if data_type == 'expression':
     # data = self.expression.data
-    #     elif data_type == 'splicing':
+    # elif data_type == 'splicing':
     #         data = self.splicing.data
     #     celltype_groups = data.groupby(
     #         self.sample_id_to_phenotype, axis=0)
@@ -1210,19 +1215,21 @@ class Study(object):
                 feature1, feature2, groupby=self.sample_id_to_phenotype,
                 label_to_color=self.phenotype_to_color, **kwargs)
 
-    def nmf_space_transitions(self, phenotype_transitions='all', data_type='splicing'):
+    def nmf_space_transitions(self, phenotype_transitions='all',
+                              data_type='splicing'):
         if phenotype_transitions == 'all':
             phenotype_transitions = self.phenotype_transitions
         if data_type == 'splicing':
-            self.splicing.nmf_space_transitions(self.sample_id_to_phenotype,
-                                                phenotype_transitions)
+            return self.splicing.nmf_space_transitions(
+                self.sample_id_to_phenotype, phenotype_transitions)
 
-    def big_nmf_space_transitions(self, phenotype_transitions='all', data_type='splicing'):
+    def big_nmf_space_transitions(self, phenotype_transitions='all',
+                                  data_type='splicing'):
         if phenotype_transitions == 'all':
             phenotype_transitions = self.phenotype_transitions
         if data_type == 'splicing':
-            self.splicing.big_nmf_space_transitions(self.sample_id_to_phenotype,
-                                                phenotype_transitions)
+            return self.splicing.big_nmf_space_transitions(
+                self.sample_id_to_phenotype, phenotype_transitions)
 
     def save(self, name, flotilla_dir=FLOTILLA_DOWNLOAD_DIR):
 
@@ -1308,7 +1315,6 @@ class Study(object):
                                       sources=self.sources,
                                       version=version,
                                       flotilla_dir=flotilla_dir)
-
 
 
 # Add interactive visualizations
