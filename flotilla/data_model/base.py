@@ -1022,10 +1022,14 @@ class BaseData(object):
         if not isinstance(feature_ids, pd.Index):
             feature_ids = [feature_id]
 
+        nrows = len(feature_ids)
         ncols = 2 if nmf_space else 1
+        figsize = 4*ncols, 4*nrows
 
-        for feature_id in feature_ids:
-            fig, axes = plt.subplots(ncols=ncols, figsize=(4 * ncols, 4))
+        fig, axesgrid = plt.subplots(nrows=nrows, ncols=ncols,
+                                     figsize=figsize)
+
+        for feature_id, axes in zip(feature_ids, axesgrid):
             if not nmf_space:
                 axes = [axes]
             # if self.data_type == 'expression':
