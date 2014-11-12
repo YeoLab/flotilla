@@ -72,6 +72,7 @@ class Study(object):
                  splicing_feature_data=None,
                  splicing_feature_rename_col=None,
                  splicing_feature_ignore_subset_cols=None,
+                 splicing_feature_common_id=None,
                  mapping_stats_data=None,
                  mapping_stats_number_mapped_col=None,
                  mapping_stats_min_reads=MIN_READS,
@@ -144,6 +145,9 @@ class Study(object):
             example, if your splicing IDs are MISO IDs, but you want to plot
             Ensembl IDs, make sure the column you want, e.g. "ensembl_id" is
             in your dataframe and specify that. Default "gene_name".
+        splicing_feature_expression_id : str
+            A column name in the splicing_feature_data dataframe that
+            corresponds to the row names of the expression data
         mapping_stats_data : pandas.DataFrame
             Samples x feature dataframe of mapping stats measurements.
             Currently, this
@@ -1041,7 +1045,8 @@ class Study(object):
 
     def plot_lavalamp_pooled_inconsistent(
             self, sample_subset=None, feature_ids=None,
-            fraction_diff_thresh=FRACTION_DIFF_THRESH):
+            fraction_diff_thresh=FRACTION_DIFF_THRESH,
+            expression_thresh=-np.inf):
         # grouped_ids = self.splicing.data.groupby(self.sample_id_to_color,
         # axis=0)
         celltype_groups = self.metadata.data.groupby(
@@ -1353,6 +1358,56 @@ class Study(object):
                                       sources=self.sources,
                                       version=version,
                                       flotilla_dir=flotilla_dir)
+
+    def filter_splicing_on_expression(self, expression_thresh):
+        """Filter splicing events on expression values
+
+        Parameters
+        ----------
+        expression_thresh : float
+            Minimum expression value, of the original input. E.g. if the
+            original input is already log-transformed, then this threshold is
+            on the log values. Otherwise, this threshold is on the raw input,
+            e.g. TPM or FPKM
+
+        Returns
+        -------
+
+
+        Raises
+        ------
+        """
+        splicing_index_name = self.splicing.data.index.name
+        splicing_index_name = 'index' if splicing_index_name is None \
+            else splicing_index_name
+        expression_index_name = self.expression.data_original.index.name
+        expression_index_name = 'index' if expression_index_name is None \
+            else expression_index_name
+        splicing_tidy = pd.melt(self.splicing.data.reset_index(),
+                                id_vars=splicing_index_name,
+                                value_name='psi',
+                                var_name='miso_id')
+        if splicing_index_name == 'index':
+            splicing_tidy = splicing_tidy.rename(columns={'index': 'sample_id'})
+        splicing_tidy['common_id'] = splicing_tidy.miso_id.map(
+            self.splicing.feature_data[self.splicing.feature_expression_id])
+        expression_tidy = pd.melt(self.expression.data.reset_index(),
+                                  id_vars=expression_index_name,
+                                  value_name='expression',
+                                  var_name='common_id')
+        if expression_index_name == 'index':
+            expression_tidy = expression_tidy.rename(
+                columns={'index': 'sample_id'})
+
+        splicing_tidy.set_index(['sample_id', 'common_id'], inplace=True)
+        expression_tidy.set_index(['sample_id', 'common_id'], inplace=True)
+
+        splicing_with_expression = splicing_tidy.join(expression_tidy)
+        splicing_high_expression = splicing_with_expression.ix[
+            splicing_with_expression.expression >= expression_thresh].reset_index().dropna()
+        filtered_psi = splicing_high_expression.pivot(
+            columns='miso_id', index='sample_id', values='psi')
+        return filtered_psi
 
 
 
