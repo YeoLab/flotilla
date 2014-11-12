@@ -9,6 +9,7 @@ import numpy as np
 import pandas as pd
 from scipy.spatial.distance import pdist, squareform
 import seaborn as sns
+
 from sklearn.preprocessing import StandardScaler
 
 from ..compute.decomposition import DataFramePCA, DataFrameNMF
@@ -84,6 +85,7 @@ class BaseData(object):
 
         """
         self.data = data
+        self.data_original = self.data
         self.thresh = thresh
         self.minimum_samples = minimum_samples
 
