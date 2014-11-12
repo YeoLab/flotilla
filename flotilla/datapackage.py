@@ -1,3 +1,7 @@
+"""
+Functions to deal with creation and loading of datapackages
+"""
+
 import gzip
 import json
 import os
@@ -103,12 +107,8 @@ def make_study_datapackage(name, metadata,
     except OSError:
         pass
 
-    datapackage = {}
-    datapackage['name'] = name
-    datapackage['title'] = title
-    datapackage['sources'] = sources
-    datapackage['licenses'] = license
-    datapackage['datapackage_version'] = version
+    datapackage = {'name': name, 'title': title, 'sources': sources,
+                   'licenses': license, 'datapackage_version': version}
 
     if species is not None:
         datapackage['species'] = species
