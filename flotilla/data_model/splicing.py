@@ -289,23 +289,28 @@ class SplicingData(BaseData):
                      phenotype_to_color=None,
                      phenotype_to_marker=None, xlabel=None, ylabel=None,
                      nmf_space=False):
-        nmf_space_positions = self.nmf_space_positions(phenotype_groupby)
+        if nmf_space:
+            nmf_space_positions = self.nmf_space_positions(phenotype_groupby)
 
-        # Get the correct included/excluded labeling for the x and y axes
-        event, phenotype = nmf_space_positions.pc_1.argmax()
-        top_pc1_samples = self.data.groupby(phenotype_groupby).groups[
-            phenotype]
+            # Get the correct included/excluded labeling for the x and y axes
+            event, phenotype = nmf_space_positions.pc_1.argmax()
+            top_pc1_samples = self.data.groupby(phenotype_groupby).groups[
+                phenotype]
 
-        data = self._subset(self.data, sample_ids=top_pc1_samples)
-        binned = self.binify(data)
+            data = self._subset(self.data, sample_ids=top_pc1_samples)
+            binned = self.binify(data)
+            x_axis_excluded = bool(binned[event][0])
+            included_label = 'included >>'
+            excluded_label = 'excluded >>'
+            if xlabel is None:
+                xlabel = excluded_label if x_axis_excluded else included_label
+            if ylabel is None:
+                ylabel = included_label if x_axis_excluded else excluded_label
 
-        x_axis_excluded = bool(binned[event][0])
-        included_label = 'included >>'
-        excluded_label = 'excluded >>'
-        if xlabel is None:
-            xlabel = excluded_label if x_axis_excluded else included_label
-        if ylabel is None:
-            ylabel = included_label if x_axis_excluded else excluded_label
+        else:
+            ylabel = None
+            xlabel = None
+
 
         super(SplicingData, self).plot_feature(feature_id, sample_ids,
                                                phenotype_groupby,
