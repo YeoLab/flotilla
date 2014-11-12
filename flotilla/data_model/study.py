@@ -421,8 +421,8 @@ class Study(object):
                                header=header)
 
             if name == 'expression':
-                if 'log_transformed' in resource:
-                    log_base = 2
+                # if 'log_transformed' in resource:
+                #     log_base = 2
             for key in set(resource.keys()).difference(
                     DATAPACKAGE_RESOURCE_COMMON_KWS):
                 kwargs['{}_{}'.format(name, key)] = resource[key]
@@ -462,7 +462,7 @@ class Study(object):
                 version))
         study = Study(
             sample_metadata=sample_metadata,
-            expression_log_base=log_base,
+            # expression_log_base=log_base,
             species=species,
             license=license,
             title=title,
@@ -1145,7 +1145,7 @@ class Study(object):
 
     def save(self, name, flotilla_dir=FLOTILLA_DOWNLOAD_DIR):
 
-        metadata = self.metadata.data
+        metadata = self.metadata.data_original
 
         metadata_kws = {'pooled_col': self.metadata.pooled_col,
                         'phenotype_col': self.metadata.phenotype_col,
@@ -1157,7 +1157,7 @@ class Study(object):
                         'minimum_samples': self.metadata.minimum_samples}
 
         try:
-            expression = self.expression.data
+            expression = self.expression.data_original
             expression_kws = {
                 'log_base': self.expression.log_base,
                 'thresh': self.expression.thresh}
@@ -1176,7 +1176,7 @@ class Study(object):
             expression_feature_kws = None
 
         try:
-            splicing = self.splicing.data
+            splicing = self.splicing.data_original
             splicing_kws = {}
         except AttributeError:
             splicing = None
