@@ -4,7 +4,7 @@ from setuptools import find_packages
 #from flotilla import __version__
 
 #version = __version__
-version = "0.2.2"
+version = "0.2.3dev"
 
 setup(
     name='flotilla',
