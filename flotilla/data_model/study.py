@@ -420,7 +420,7 @@ class Study(object):
             dfs[name] = reader(filename, compression=compression,
                                header=header)
 
-            if name == 'expression':
+            # if name == 'expression':
                 # if 'log_transformed' in resource:
                 #     log_base = 2
             for key in set(resource.keys()).difference(
