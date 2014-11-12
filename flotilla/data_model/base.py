@@ -1028,6 +1028,8 @@ class BaseData(object):
 
         fig, axesgrid = plt.subplots(nrows=nrows, ncols=ncols,
                                      figsize=figsize)
+        if nrows == 1 and ncols == 1:
+            axesgrid = [axesgrid]
 
         for feature_id, axes in zip(feature_ids, axesgrid):
             if not nmf_space:
@@ -1135,13 +1137,32 @@ class BaseData(object):
         return nmf_space_transitions
 
     def big_nmf_space_transitions(self, groupby, phenotype_transitions):
+        """Get features whose change in NMF space between phenotypes is large
+
+        Parameters
+        ----------
+        groupby : mappable
+            A sample id to phenotype group mapping
+        phenotype_transitions : list of length-2 tuples of str
+            List of ('phenotype1', 'phenotype2') transitions whose change in
+            distribution you are interested in
+
+        Returns
+        -------
+        big_transitions : pandas.DataFrame
+            A (n_events, n_transitions) dataframe of the NMF distances between
+            splicing events
+        """
         nmf_space_transitions = self.nmf_space_transitions(
             groupby, phenotype_transitions)
 
-        mean = nmf_space_transitions.mean()
-        std = nmf_space_transitions.std()
+        # get the mean and standard dev of the whole array
+        n = nmf_space_transitions.count().sum()
+        mean = nmf_space_transitions.sum().sum() / n
+        std = np.sqrt(np.square(nmf_space_transitions - mean).sum().sum() / n)
+
         big_transitions = nmf_space_transitions[
-            nmf_space_transitions > (mean + 2 * std)].dropna(how='all')
+            nmf_space_transitions > (mean + 2*std)].dropna(how='all')
         return big_transitions
 
     def plot_big_nmf_space_transitions(self, phenotype_groupby,
