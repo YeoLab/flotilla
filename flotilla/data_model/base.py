@@ -999,9 +999,11 @@ class BaseData(object):
         return DataFrameNMF(self.binify(data).T, n_components=2)
 
     @memoize
-    def binned_nmf_reduced(self, sample_ids=None, feature_ids=None):
-        data = self._subset(self.data, sample_ids, feature_ids,
-                            require_min_samples=False)
+    def binned_nmf_reduced(self, sample_ids=None, feature_ids=None,
+                           data=None):
+        if data is None:
+            data = self._subset(self.data, sample_ids, feature_ids,
+                                require_min_samples=False)
         binned = self.binify(data)
         reduced = self.nmf.transform(binned.T)
         return reduced
@@ -1061,12 +1063,12 @@ class BaseData(object):
         df : pandas.DataFrame
             A (n_events, n_groups) dataframe of NMF positions
         """
-        import pdb; pdb.set_trace()
         grouped = self.singles.groupby(groupby)
-        per_group_event_detection = grouped.apply(lambda x: x.groupby(level=0, axis=1).filter(lambda y: len(y.dropna())) >= 5)
-        data = self.singles.groupby(groupby).filter(lambda x: len(x) >= min_samples_per_group)
-        df = data.groupby(groupby).apply(
-            lambda x: self.binned_nmf_reduced(sample_ids=x.index))
+        at_least_n_per_group_per_event = grouped.transform(
+            lambda x: x if x.count() >= min_samples_per_group
+            else pd.Series(np.nan, index=x.index))
+        df = at_least_n_per_group_per_event.groupby(groupby).apply(
+            lambda x: self.binned_nmf_reduced(data=x))
         df = df.swaplevel(0, 1)
         df = df.sort_index()
         return df
