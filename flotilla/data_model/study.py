@@ -245,7 +245,7 @@ class Study(object):
                 predictor_config_manager=self.predictor_config_manager,
                 min_reads=mapping_stats_min_reads)
             self.technical_outliers = self.mapping_stats.too_few_mapped
-            sys.stderr.write('samples had too few mapped reads (<{'
+            sys.stderr.write('Samples had too few mapped reads (<{'
                              ':.1e} reads):\n\t{}\n'.format(
                 mapping_stats_min_reads, ', '.join(self.technical_outliers)))
         else:
@@ -449,9 +449,6 @@ class Study(object):
             dfs[name] = reader(filename, compression=compression,
                                header=header)
 
-            if name == 'expression':
-                if 'log_transformed' in resource:
-                    log_base = 2
             for key in set(resource.keys()).difference(
                     DATAPACKAGE_RESOURCE_COMMON_KWS):
                 kwargs['{}_{}'.format(name, key)] = resource[key]
@@ -557,21 +554,17 @@ class Study(object):
         feature_ids = self.feature_subset_to_feature_ids(data_type,
                                                          feature_subset,
                                                          rename=False)
-
         if data_type == "expression":
-            obj = self.expression
+            datamodel = self.expression
         elif data_type == "splicing":
-            obj = self.splicing
+            datamodel = self.splicing
 
-        reducer, outlier_detector = obj.detect_outliers(sample_ids=sample_ids,
-                                                        feature_ids=feature_ids,
-                                                        featurewise=featurewise,
-                                                        reducer=reducer,
-                                                        standardize=standardize,
-                                                        reducer_kwargs=reducer_kwargs,
-                                                        bins=bins,
-                                                        outlier_detection_method=outlier_detection_method,
-                                                        outlier_detection_method_kwargs=outlier_detection_method_kwargs)
+        reducer, outlier_detector = datamodel.detect_outliers(
+            sample_ids=sample_ids, feature_ids=feature_ids,
+            featurewise=featurewise, reducer=reducer, standardize=standardize,
+            reducer_kwargs=reducer_kwargs, bins=bins,
+            outlier_detection_method=outlier_detection_method,
+            outlier_detection_method_kwargs=outlier_detection_method_kwargs)
 
         outlier_detector.predict(reducer.reduced_space)
         outlier_detector.title = "_".join(
@@ -586,8 +579,7 @@ class Study(object):
         return reducer, outlier_detector
 
     def drop_outliers(self):
-        """remove samples labeled "outlier" in self.metadata,
-        replace the data in self.expression and self.splicing with the smaller version"""
+        """Assign samples marked as "outlier" in metadata, to other datas"""
         outliers = self.metadata.data['outlier'][
             self.metadata.data['outlier']].index
         self.expression.outlier_samples = outliers
@@ -661,6 +653,8 @@ class Study(object):
         sample_ids : list of strings
             List of sample ids in the data
         """
+
+        # IF this is a list of IDs
 
         try:
             return self.metadata.sample_subsets[phenotype_subset]
