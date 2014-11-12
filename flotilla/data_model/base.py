@@ -1116,9 +1116,18 @@ class BaseData(object):
             distances of these events in NMF space
         """
         nmf_space_positions = self.nmf_space_positions(groupby)
+
+        # Take only splicing events that have at least two phenotypes
+        nmf_space_positions = nmf_space_positions.groupby(
+            level=0, axis=0).filter(lambda x: len(x) > 1)
+
         nmf_space_transitions = nmf_space_positions.groupby(
             level=0, axis=0, as_index=True, group_keys=False).apply(
             self.transition_distances, transitions=phenotype_transitions)
+
+        # Remove any events that didn't have phenotype pairs from
+        # the transitions
+        nmf_space_transitions = nmf_space_transitions.dropna(how='all', axis=0)
         return nmf_space_transitions
 
     def big_nmf_space_transitions(self, groupby, phenotype_transitions):
