@@ -1140,17 +1140,17 @@ class Study(object):
     #             metric=metric, sample_colors=sample_colors, figsize=figsize)
 
 
-    def plot_big_nmf_space_transitions(self, data_type='expression'):
+    def plot_big_nmf_space_transitions(self, data_type='expression', n=5):
         if data_type == 'expression':
             self.expression.plot_big_nmf_space_transitions(
                 self.sample_id_to_phenotype, self.phenotype_transitions,
                 self.phenotype_order, self.phenotype_color_ordered,
-                self.phenotype_to_color, self.phenotype_to_marker)
+                self.phenotype_to_color, self.phenotype_to_marker, n=n)
         if data_type == 'splicing':
             self.splicing.plot_big_nmf_space_transitions(
                 self.sample_id_to_phenotype, self.phenotype_transitions,
                 self.phenotype_order, self.phenotype_color_ordered,
-                self.phenotype_to_color, self.phenotype_to_marker)
+                self.phenotype_to_color, self.phenotype_to_marker, n=n)
 
 
     def plot_two_samples(self, sample1, sample2, data_type='expression',
@@ -1221,20 +1221,59 @@ class Study(object):
                 self.sample_id_to_phenotype)
 
     def nmf_space_transitions(self, phenotype_transitions='all',
-                              data_type='splicing'):
+                              data_type='splicing', n=5):
+        """The change in NMF space of splicing events across phenotypes
+
+        Parameters
+        ----------
+        phenotype_transitions : list of length-2 tuples of str
+            List of ('phenotype1', 'phenotype2') transitions whose change in
+            distribution you are interested in
+        data_type : 'splicing' | 'expression'
+            Which data type to calculate this on. (default='splicing')
+        n : int
+            Minimum number of samples per phenotype, per event
+
+        Returns
+        -------
+        big_transitions : pandas.DataFrame
+            A (n_events, n_transitions) dataframe of the NMF distances between
+            splicing events
+        """
         if phenotype_transitions == 'all':
             phenotype_transitions = self.phenotype_transitions
         if data_type == 'splicing':
             return self.splicing.nmf_space_transitions(
-                self.sample_id_to_phenotype, phenotype_transitions)
+                self.sample_id_to_phenotype, phenotype_transitions, n=n)
 
     def big_nmf_space_transitions(self, phenotype_transitions='all',
-                                  data_type='splicing'):
+                                  data_type='splicing', n=5):
+        """Splicing events whose change in NMF space is large
+
+        By large, we mean that difference is 2 standard deviations away from
+        the mean
+
+        Parameters
+        ----------
+        phenotype_transitions : list of length-2 tuples of str
+            List of ('phenotype1', 'phenotype2') transitions whose change in
+            distribution you are interested in
+        data_type : 'splicing' | 'expression'
+            Which data type to calculate this on. (default='splicing')
+        n : int
+            Minimum number of samples per phenotype, per event
+
+        Returns
+        -------
+        big_transitions : pandas.DataFrame
+            A (n_events, n_transitions) dataframe of the NMF distances between
+            splicing events
+        """
         if phenotype_transitions == 'all':
             phenotype_transitions = self.phenotype_transitions
         if data_type == 'splicing':
             return self.splicing.big_nmf_space_transitions(
-                self.sample_id_to_phenotype, phenotype_transitions)
+                self.sample_id_to_phenotype, phenotype_transitions, n=n)
 
     def save(self, name, flotilla_dir=FLOTILLA_DOWNLOAD_DIR):
 

@@ -1054,14 +1054,14 @@ class BaseData(object):
                     continue
             sns.despine()
 
-    def nmf_space_positions(self, groupby, min_samples_per_group=5):
+    def nmf_space_positions(self, groupby, n=5):
         """Calculate NMF-space position of splicing events in phenotype groups
 
         Parameters
         ----------
         groupby : mappable
             A sample id to phenotype mapping
-        min_samples_per_group : int
+        n : int
             Minimum samples required per group
 
         Returns
@@ -1071,8 +1071,8 @@ class BaseData(object):
         """
         grouped = self.singles.groupby(groupby)
         at_least_n_per_group_per_event = grouped.transform(
-            lambda x: x if x.count() >= min_samples_per_group
-            else pd.Series(np.nan, index=x.index))
+            lambda x: x if x.count() >= n else pd.Series(np.nan,
+                                                         index=x.index))
         df = at_least_n_per_group_per_event.groupby(groupby).apply(
             lambda x: self.binned_nmf_reduced(data=x))
         df = df.swaplevel(0, 1)
@@ -1104,7 +1104,7 @@ class BaseData(object):
                 pass
         return distances
 
-    def nmf_space_transitions(self, groupby, phenotype_transitions):
+    def nmf_space_transitions(self, groupby, phenotype_transitions, n=5):
         """Get distance in NMF space of different splicing events
 
         Parameters
@@ -1114,6 +1114,8 @@ class BaseData(object):
         phenotype_transitions : list of str pairs
             Which phenotype follows from one to the next, for calculating
             distances between
+        n : int
+            Minimum number of samples per phenotype, per event
 
         Returns
         -------
@@ -1121,7 +1123,7 @@ class BaseData(object):
             A (n_events, n_phenotype_transitions) sized DataFrame of the
             distances of these events in NMF space
         """
-        nmf_space_positions = self.nmf_space_positions(groupby)
+        nmf_space_positions = self.nmf_space_positions(groupby, n=n)
 
         # Take only splicing events that have at least two phenotypes
         nmf_space_positions = nmf_space_positions.groupby(
@@ -1133,10 +1135,11 @@ class BaseData(object):
 
         # Remove any events that didn't have phenotype pairs from
         # the transitions
-        nmf_space_transitions = nmf_space_transitions.dropna(how='all', axis=0)
+        nmf_space_transitions = nmf_space_transitions.dropna(how='all',
+                                                             axis=0)
         return nmf_space_transitions
 
-    def big_nmf_space_transitions(self, groupby, phenotype_transitions):
+    def big_nmf_space_transitions(self, groupby, phenotype_transitions, n=5):
         """Get features whose change in NMF space between phenotypes is large
 
         Parameters
@@ -1146,6 +1149,8 @@ class BaseData(object):
         phenotype_transitions : list of length-2 tuples of str
             List of ('phenotype1', 'phenotype2') transitions whose change in
             distribution you are interested in
+        n : int
+            Minimum number of samples per phenotype, per event
 
         Returns
         -------
@@ -1154,7 +1159,7 @@ class BaseData(object):
             splicing events
         """
         nmf_space_transitions = self.nmf_space_transitions(
-            groupby, phenotype_transitions)
+            groupby, phenotype_transitions, n=n)
 
         # get the mean and standard dev of the whole array
         n = nmf_space_transitions.count().sum()
@@ -1169,7 +1174,22 @@ class BaseData(object):
                                        phenotype_transitions,
                                        phenotype_order, color,
                                        phenotype_to_color,
-                                       phenotype_to_marker):
+                                       phenotype_to_marker, n=5):
+        """
+
+        Parameters
+        ----------
+        n : int
+            Minimum number of samples per phenotype, per event
+
+
+        Returns
+        -------
+
+
+        Raises
+        ------
+        """
         big_transitions = self.big_nmf_space_transitions(phenotype_groupby,
                                                          phenotype_transitions)
         for feature_id in big_transitions.index:
