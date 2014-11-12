@@ -1215,6 +1215,11 @@ class Study(object):
                 feature1, feature2, groupby=self.sample_id_to_phenotype,
                 label_to_color=self.phenotype_to_color, **kwargs)
 
+    def nmf_space_positions(self, data_type='splicing'):
+        if data_type == 'splicing':
+            return self.splicing.nmf_space_positions(
+                self.sample_id_to_phenotype)
+
     def nmf_space_transitions(self, phenotype_transitions='all',
                               data_type='splicing'):
         if phenotype_transitions == 'all':
