@@ -1013,7 +1013,7 @@ class BaseData(object):
                      phenotype_to_marker=None, xlabel=None, ylabel=None,
                      nmf_space=False):
         """
-        Plot the violinplot of a splicing event (should also show NMF movement)
+        Plot the violinplot of a feature. Have the option to show NMF movement
         """
         feature_ids = self.maybe_renamed_to_feature_id(feature_id)
 
@@ -1061,8 +1061,10 @@ class BaseData(object):
         df : pandas.DataFrame
             A (n_events, n_groups) dataframe of NMF positions
         """
-        data = self.data.groupby(groupby).filter(
-            lambda x: len(x) >= min_samples_per_group)
+        import pdb; pdb.set_trace()
+        grouped = self.singles.groupby(groupby)
+        per_group_event_detection = grouped.apply(lambda x: x.groupby(level=0, axis=1).filter(lambda y: len(y.dropna())) >= 5)
+        data = self.singles.groupby(groupby).filter(lambda x: len(x) >= min_samples_per_group)
         df = data.groupby(groupby).apply(
             lambda x: self.binned_nmf_reduced(sample_ids=x.index))
         df = df.swaplevel(0, 1)
