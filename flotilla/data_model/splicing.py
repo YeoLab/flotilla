@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 from .base import BaseData
+
 from ..compute.splicing import Modalities
 from ..compute.decomposition import DataFramePCA
 from ..visualize.color import purples
@@ -37,7 +38,8 @@ class SplicingData(BaseData):
                  feature_ignore_subset_cols=None,
                  excluded_max=0.2, included_min=0.8,
                  pooled=None, predictor_config_manager=None,
-                 technical_outliers=None, minimum_samples=0):
+                 technical_outliers=None, minimum_samples=0,
+                 feature_expression_id_col=None):
         """Instantiate a object for percent spliced in (PSI) scores
 
         Parameters
@@ -69,6 +71,11 @@ class SplicingData(BaseData):
             predictor_config_manager=predictor_config_manager,
             minimum_samples=minimum_samples)
         sys.stdout.write("{}\tDone initializing splicing\n".format(timestamp()))
+
+        self.feature_expression_id_col = feature_expression_id_col \
+            if feature_expression_id_col is not None \
+            else self.feature_rename_col
+
         self.binsize = binsize
         self.bins = np.arange(0, 1 + self.binsize, self.binsize)
 
