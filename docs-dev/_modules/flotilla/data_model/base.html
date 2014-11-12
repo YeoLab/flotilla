@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>flotilla.data_model.base &mdash; flotilla 0.2.2 documentation</title>
+    <title>flotilla.data_model.base &mdash; flotilla 0.2.3dev documentation</title>
     
     <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.2.2',
+        VERSION:     '0.2.3dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -29,7 +29,7 @@
     <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../../../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
-    <link rel="top" title="flotilla 0.2.2 documentation" href="../../../index.html" />
+    <link rel="top" title="flotilla 0.2.3dev documentation" href="../../../index.html" />
     <link rel="up" title="flotilla" href="../../flotilla.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -50,7 +50,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           Flotilla</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.3dev</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -1047,20 +1047,6 @@
             <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="BaseData.nmf_space_positions"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.nmf_space_positions">[docs]</a>    <span class="k">def</span> <span class="nf">nmf_space_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">groupby</span><span class="p">,</span> <span class="n">min_samples_per_group</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Calculate NMF-space position of splicing events in phenotype groups</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        groupby : mappable</span>
-<span class="sd">            A sample id to phenotype mapping</span>
-<span class="sd">        min_samples_per_group : int</span>
-<span class="sd">            Minimum samples required per group</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        df : pandas.DataFrame</span>
-<span class="sd">            A (n_events, n_groups) dataframe of NMF positions</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">groupby</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
             <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">min_samples_per_group</span><span class="p">)</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">groupby</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
@@ -1094,32 +1080,12 @@
                 <span class="k">pass</span>
         <span class="k">return</span> <span class="n">distances</span>
 </div>
-<div class="viewcode-block" id="BaseData.nmf_space_transitions"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.nmf_space_transitions">[docs]</a>    <span class="k">def</span> <span class="nf">nmf_space_transitions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">groupby</span><span class="p">,</span> <span class="n">phenotype_transitions</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get distance in NMF space of different splicing events</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        groupby : mappable</span>
-<span class="sd">            A sample id to phenotype mapping</span>
-<span class="sd">        phenotype_transitions : list of str pairs</span>
-<span class="sd">            Which phenotype follows from one to the next, for calculating</span>
-<span class="sd">            distances between</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        nmf_space_transitions : pandas.DataFrame</span>
-<span class="sd">            A (n_events, n_phenotype_transitions) sized DataFrame of the</span>
-<span class="sd">            distances of these events in NMF space</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="BaseData.big_nmf_space_transitions"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.big_nmf_space_transitions">[docs]</a>    <span class="k">def</span> <span class="nf">big_nmf_space_transitions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">groupby</span><span class="p">,</span> <span class="n">phenotype_transitions</span><span class="p">):</span>
         <span class="n">nmf_space_positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nmf_space_positions</span><span class="p">(</span><span class="n">groupby</span><span class="p">)</span>
         <span class="n">nmf_space_transitions</span> <span class="o">=</span> <span class="n">nmf_space_positions</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span>
-            <span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">as_index</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">group_keys</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">transition_distances</span><span class="p">,</span> <span class="n">transitions</span><span class="o">=</span><span class="n">phenotype_transitions</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">nmf_space_transitions</span>
-</div>
-<div class="viewcode-block" id="BaseData.big_nmf_space_transitions"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.big_nmf_space_transitions">[docs]</a>    <span class="k">def</span> <span class="nf">big_nmf_space_transitions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">groupby</span><span class="p">,</span> <span class="n">phenotype_transitions</span><span class="p">):</span>
-        <span class="n">nmf_space_transitions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nmf_space_transitions</span><span class="p">(</span>
-            <span class="n">groupby</span><span class="p">,</span> <span class="n">phenotype_transitions</span><span class="p">)</span>
+            <span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">as_index</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">group_keys</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transition_distances</span><span class="p">,</span>
+            <span class="n">transitions</span><span class="o">=</span><span class="n">phenotype_transitions</span><span class="p">)</span>
 
         <span class="n">mean</span> <span class="o">=</span> <span class="n">nmf_space_transitions</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
         <span class="n">std</span> <span class="o">=</span> <span class="n">nmf_space_transitions</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
