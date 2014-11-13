@@ -647,7 +647,7 @@ class BaseData(object):
             singles = self._subset(self.singles, sample_ids, feature_ids,
                                    require_min_samples=True)
         else:
-            sample_ids = data.index.intersection(self.singles.intersection)
+            sample_ids = data.index.intersection(self.singles.index)
             singles = self._subset(data, sample_ids,
                                    require_min_samples=True)
 
