@@ -1360,7 +1360,7 @@ class Study(object):
                                       version=version,
                                       flotilla_dir=flotilla_dir)
 
-    def filter_splicing_on_expression(self, expression_thresh):
+    def filter_splicing_on_expression(self, expression_thresh, sample_ids=None):
         """Filter splicing events on expression values
 
         Parameters
@@ -1384,7 +1384,11 @@ class Study(object):
         expression_index_name = self.expression.data_original.index.name
         expression_index_name = 'index' if expression_index_name is None \
             else expression_index_name
-        splicing_tidy = pd.melt(self.splicing.data.reset_index(),
+        splicing = self.splicing._subset(self.splicing.data,
+                                         sample_ids=sample_ids,
+                                         require_min_samples=False)
+
+        splicing_tidy = pd.melt(splicing.reset_index(),
                                 id_vars=splicing_index_name,
                                 value_name='psi',
                                 var_name='miso_id')
@@ -1392,7 +1396,10 @@ class Study(object):
             splicing_tidy = splicing_tidy.rename(columns={'index': 'sample_id'})
         splicing_tidy['common_id'] = splicing_tidy.miso_id.map(
             self.splicing.feature_data[self.splicing.feature_expression_id_col])
-        expression_tidy = pd.melt(self.expression.data.reset_index(),
+        expression = self.expression._subset(self.expression.data,
+                                             sample_ids=sample_ids,
+                                             require_min_samples=False)
+        expression_tidy = pd.melt(expression.reset_index(),
                                   id_vars=expression_index_name,
                                   value_name='expression',
                                   var_name='common_id')
