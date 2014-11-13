@@ -217,6 +217,9 @@ def lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
 
     suffix = ' of events measured in both pooled and single'
 
+    ax_inconsistent.set_xticks([])
+    ax_consistent.set_xticks([])
+
     try:
         singles_values = singles.ix[:, pooled_inconsistent.columns].values
         lavalamp(singles_values, color=color, ax=ax_inconsistent)
