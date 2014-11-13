@@ -97,7 +97,7 @@ class ModalitiesViz(object):
 
 
 def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
-             switchy_score_psi=None, marker='d', plot_kws=None):
+             switchy_score_psi=None, marker='o', plot_kws=None):
     """Make a 'lavalamp' scatter plot of many splicing events
 
     Useful for visualizing many splicing events at once.
@@ -204,7 +204,7 @@ def lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
                                  color=None, percent=None):
     fig , axes = plt.subplots(nrows=2, figsize=(16, 8))
     ax_inconsistent = axes[0]
-    ax_consistent = axes[0]
+    ax_consistent = axes[1]
     plot_order = \
         pooled_inconsistent.sum() / pooled_inconsistent.count().astype(float)
     plot_order.sort()
