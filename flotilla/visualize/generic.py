@@ -125,12 +125,6 @@ def _violinplot_single_dataset(data, groupby=None, order=None,
         single_positions = None
         single_color = None
 
-    print data.name, data.shape
-    print 'verified_color', verified_color
-    print 'verified_order', verified_order
-    print data.groupby(groupby).groups.keys()
-    print
-
     violinplot_kws = {} if violinplot_kws is None else violinplot_kws
 
     # Add a tiny amount of random noise in case the values are all identical,
