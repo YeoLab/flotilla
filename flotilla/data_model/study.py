@@ -309,9 +309,9 @@ class Study(object):
         #move default_sample_subset to the front of the list, sort the rest
         sorted_sample_subsets = [self.default_sample_subset] + sorted(list(set(self.metadata.sample_subsets.keys(\
             )).difference(set(self.default_sample_subset))))
-        sample_subsets_and_logcal_nots = sorted_sample_subsets + map(lambda x: "~{}".format(x),
+        sample_subsets_and_logical_nots = sorted_sample_subsets + map(lambda x: "~{}".format(x),
                                                                      sorted_sample_subsets)
-        return sample_subsets_and_logcal_nots
+        return sample_subsets_and_logical_nots
 
     @property
     def default_feature_subsets(self):
