@@ -1029,7 +1029,6 @@ class Study(object):
 
             # Assumes all samples of a sample_subset have the same color...
             # probably wrong
-            color = self.sample_id_to_color[sample_ids[0]]
             sample_ids = celltype_samples.intersection(sample_ids)
             if len(sample_ids) == 0:
                 continue
@@ -1252,15 +1251,12 @@ class Study(object):
         Raises
         ------
         """
-        splicing_index_name = self.splicing.data.index.name
-        splicing_index_name = 'index' if splicing_index_name is None \
-            else splicing_index_name
-        expression_index_name = self.expression.data_original.index.name
-        expression_index_name = 'index' if expression_index_name is None \
-            else expression_index_name
         splicing = self.splicing._subset(self.splicing.data,
                                          sample_ids=sample_ids,
                                          require_min_samples=False)
+        splicing_index_name = splicing.index.name
+        splicing_index_name = 'index' if splicing_index_name is None \
+            else splicing_index_name
 
         splicing_tidy = pd.melt(splicing.reset_index(),
                                 id_vars=splicing_index_name,
@@ -1273,6 +1269,11 @@ class Study(object):
         expression = self.expression._subset(self.expression.data,
                                              sample_ids=sample_ids,
                                              require_min_samples=False)
+        expression_index_name = expression.index.name
+        expression_index_name = 'index' if expression_index_name is None \
+            else expression_index_name
+
+
         expression_tidy = pd.melt(expression.reset_index(),
                                   id_vars=expression_index_name,
                                   value_name='expression',
