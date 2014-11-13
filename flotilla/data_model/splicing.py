@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 from .base import BaseData
-
 from ..compute.splicing import Modalities
 from ..compute.decomposition import DataFramePCA
 from ..visualize.color import purples
@@ -343,7 +342,7 @@ class SplicingData(BaseData):
             ax.set_ylabel('$\Psi$')
 
     @memoize
-    def pooled_inconsistent(self, sample_ids, feature_ids=None,
+    def pooled_inconsistent(self, data, feature_ids=None,
                             fraction_diff_thresh=FRACTION_DIFF_THRESH):
         """Return splicing events which pooled samples are consistently
         different from the single cells.
@@ -368,7 +367,7 @@ class SplicingData(BaseData):
         """
         # singles = self._subset(self.data, singles_ids, feature_ids)
         singles, pooled, not_measured_in_pooled, diff_from_singles = \
-            self._diff_from_singles(sample_ids, feature_ids, scaled=True)
+            self._diff_from_singles(data, feature_ids, scaled=True)
 
         large_diff = \
             diff_from_singles[diff_from_singles.abs()
@@ -377,7 +376,7 @@ class SplicingData(BaseData):
         return singles, pooled, not_measured_in_pooled, large_diff
 
     @memoize
-    def _diff_from_singles(self, sample_ids,
+    def _diff_from_singles(self, data,
                            feature_ids=None, scaled=True, dropna=True):
         """
         Parameters
@@ -389,8 +388,8 @@ class SplicingData(BaseData):
 
 
         """
-        singles, pooled = self._subset_singles_and_pooled(sample_ids,
-                                                          feature_ids)
+        singles, pooled = self._subset_singles_and_pooled(feature_ids,
+                                                          data=data)
         pooled = pooled.dropna(how='all', axis=1)
         not_measured_in_pooled = singles.columns.diff(pooled.columns)
         singles, pooled = singles.align(pooled, axis=1, join='inner')
@@ -407,12 +406,26 @@ class SplicingData(BaseData):
         return singles, pooled, not_measured_in_pooled, diff_from_singles
 
     def plot_lavalamp_pooled_inconsistent(
-            self, sample_ids, feature_ids=None,
+            self, data, feature_ids=None,
             fraction_diff_thresh=FRACTION_DIFF_THRESH, color=None):
+        """
+
+        Parameters
+        ----------
+
+
+        Returns
+        -------
+
+
+        Raises
+        ------
+
+        """
         singles, pooled, not_measured_in_pooled, pooled_inconsistent = \
-            self.pooled_inconsistent(sample_ids, feature_ids,
+            self.pooled_inconsistent(data, feature_ids,
                                      fraction_diff_thresh)
-        print "not_measured_in_pooled.shape", not_measured_in_pooled.shape
+        # print "not_measured_in_pooled.shape", not_measured_in_pooled.shape
         # singles, pooled = self._subset_singles_and_pooled(sample_ids,
         #                                                   feature_ids)
         sample_ids = singles.index.union(pooled.index)
@@ -421,14 +434,13 @@ class SplicingData(BaseData):
         lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
                                      color=color, percent=percent)
 
-    def plot_hist_single_vs_pooled_diff(self, sample_ids,
-                                        feature_ids=None,
+    def plot_hist_single_vs_pooled_diff(self, data, feature_ids=None,
                                         color=None, title='',
                                         hist_kws=None):
         singles, pooled, not_measured_in_pooled, diff_from_singles = \
-            self._diff_from_singles(sample_ids, feature_ids)
+            self._diff_from_singles(data, feature_ids)
         singles, pooled, not_measured_in_pooled, diff_from_singles_scaled = \
-            self._diff_from_singles(sample_ids, feature_ids, scaled=True)
+            self._diff_from_singles(data, feature_ids, scaled=True)
         hist_single_vs_pooled_diff(diff_from_singles,
                                    diff_from_singles_scaled, color=color,
                                    title=title, hist_kws=hist_kws)
