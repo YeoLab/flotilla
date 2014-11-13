@@ -404,6 +404,7 @@ class SplicingData(BaseData):
         ------
 
         """
+        import pdb; pdb.set_trace()
         singles, pooled, not_measured_in_pooled, pooled_inconsistent = \
             self.pooled_inconsistent(data, feature_ids,
                                      fraction_diff_thresh)
