@@ -506,24 +506,37 @@ class BaseData(object):
         return subset
 
     def _subset_singles_and_pooled(self, sample_ids=None,
-                                   feature_ids=None):
+                                   feature_ids=None, data=None):
         # singles_ids = self.data.index.intersection(sample_ids)
         # pooled_ids = self.pooled.index.intersection(sample_ids)
         # import pdb; pdb.set_trace()
-        singles = self._subset(self.data, sample_ids, feature_ids,
-                               require_min_samples=True)
+        if data is None:
+            singles = self._subset(self.singles, sample_ids, feature_ids,
+                                   require_min_samples=True)
+        else:
+            sample_ids = data.index.intersection(self.singles.intersection)
+            singles = self._subset(data, sample_ids,
+                                   require_min_samples=True)
 
         try:
             # If the sample ids don't overlap with the pooled sample, assume you
             # want all the pooled samples
-            if sample_ids is not None and sum(
-                    self.pooled.index.isin(sample_ids)) \
-                    > 0:
+            n_pooled_sample_ids = sum(self.pooled.index.isin(sample_ids))
+
+            if sample_ids is not None and n_pooled_sample_ids > 0:
                 pooled_sample_ids = sample_ids
             else:
                 pooled_sample_ids = None
-            pooled = self._subset(self.pooled, pooled_sample_ids, feature_ids,
-                                  require_min_samples=False)
+
+            if data is None:
+                pooled = self._subset(self.pooled, pooled_sample_ids,
+                                      feature_ids,
+                                      require_min_samples=False)
+            else:
+                sample_ids = data.index.intersection(self.pooled.index)
+                pooled = self._subset(data, sample_ids,
+                                      require_min_samples=False)
+
             if feature_ids is None or len(feature_ids) > 1:
                 # These are DataFrames
                 singles, pooled = singles.align(pooled, axis=1, join='inner')
