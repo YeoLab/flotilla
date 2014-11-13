@@ -548,6 +548,7 @@ class BaseData(object):
                                       label_to_color=label_to_color,
                                       label_to_marker=label_to_marker,
                                       groupby=groupby, order=order,
+                                      data_type=self.data_type,
                                       x_pc="pc_" + str(x_pc),
                                       y_pc="pc_" + str(y_pc))
         # pca(show_vectors=True,
