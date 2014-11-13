@@ -426,12 +426,8 @@ class SplicingData(BaseData):
         singles, pooled, not_measured_in_pooled, pooled_inconsistent = \
             self.pooled_inconsistent(data, feature_ids,
                                      fraction_diff_thresh)
-        # print "not_measured_in_pooled.shape", not_measured_in_pooled.shape
-        # singles, pooled = self._subset_singles_and_pooled(sample_ids,
-        #                                                   feature_ids)
-        sample_ids = singles.index.union(pooled.index)
-        percent = self.percent_pooled_inconsistent(sample_ids, singles.columns,
-                                                   fraction_diff_thresh)
+        percent = self._percent_pooled_inconsistent(pooled,
+                                                    pooled_inconsistent)
         lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
                                      color=color, percent=percent)
 
@@ -446,19 +442,12 @@ class SplicingData(BaseData):
                                    diff_from_singles_scaled, color=color,
                                    title=title, hist_kws=hist_kws)
 
-    @memoize
-    def percent_pooled_inconsistent(self, sample_ids,
-                                    feature_ids,
-                                    fraction_diff_thresh=FRACTION_DIFF_THRESH):
+    def _percent_pooled_inconsistent(self, pooled, pooled_inconsistent):
         """The percent of splicing events which are
 
         """
-        # singles, pooled = self._subset_singles_and_pooled(sample_ids, feature_ids)
-        singles, pooled, not_measured_in_pooled, large_diff = \
-            self.pooled_inconsistent(sample_ids, feature_ids,
-                                     fraction_diff_thresh)
         try:
-            return large_diff.shape[1] / float(pooled.shape[1]) * 100
+            return pooled_inconsistent.shape[1] / float(pooled.shape[1]) * 100
         except ZeroDivisionError:
             return 100
 
