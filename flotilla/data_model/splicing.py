@@ -422,7 +422,6 @@ class SplicingData(BaseData):
         ------
 
         """
-        import pdb; pdb.set_trace()
         singles, pooled, not_measured_in_pooled, pooled_inconsistent = \
             self.pooled_inconsistent(data, feature_ids,
                                      fraction_diff_thresh)
@@ -446,10 +445,12 @@ class SplicingData(BaseData):
         """The percent of splicing events which are
 
         """
+        if pooled_inconsistent.shape[1] == 0:
+            return 0.0
         try:
             return pooled_inconsistent.shape[1] / float(pooled.shape[1]) * 100
         except ZeroDivisionError:
-            return 100
+            return 100.0
 
     def _calculate_linkage(self, sample_ids, feature_ids,
                            metric='euclidean', linkage_method='median',
