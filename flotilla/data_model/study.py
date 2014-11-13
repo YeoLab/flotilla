@@ -307,11 +307,11 @@ class Study(object):
     @property
     def default_sample_subsets(self):
         #move default_sample_subset to the front of the list, sort the rest
-        sorted_sample_subsets = [self.default_sample_subset] + sorted(list(set(self.metadata.sample_subsets.keys(\
-            )).difference(set(self.default_sample_subset))))
-        sample_subsets_and_logical_nots = sorted_sample_subsets + map(lambda x: "~{}".format(x),
-                                                                     sorted_sample_subsets)
-        return sample_subsets_and_logical_nots
+        sorted_sample_subsets = list(sorted(list(set(
+            self.metadata.sample_subsets.keys()).difference(
+            set(self.default_sample_subset)))))
+        sorted_sample_subsets.insert(0, self.default_sample_subset)
+        return sorted_sample_subsets
 
     @property
     def default_feature_subsets(self):
