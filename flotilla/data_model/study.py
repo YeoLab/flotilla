@@ -974,7 +974,7 @@ class Study(object):
             phenotype_to_marker=self.phenotype_to_marker, nmf_space=nmf_space)
 
     def plot_lavalamp_pooled_inconsistent(
-            self, sample_subset=None, feature_ids=None,
+            self, sample_subset=None, feature_subset=None,
             fraction_diff_thresh=FRACTION_DIFF_THRESH,
             expression_thresh=-np.inf):
         # grouped_ids = self.splicing.data.groupby(self.sample_id_to_color,
@@ -989,9 +989,11 @@ class Study(object):
             # Plotting all the celltypes
             celltype_samples = self.sample_subset_to_sample_ids(sample_subset)
 
+        feature_ids = self.feature_subset_to_feature_ids('splicing',
+                                                            feature_subset=feature_subset)
+
         celltype_and_sample_ids = celltype_groups.groups.iteritems()
-        for i, (phenotype, sample_ids) in enumerate(
-                celltype_and_sample_ids):
+        for i, (phenotype, sample_ids) in enumerate(celltype_and_sample_ids):
             # import pdb; pdb.set_trace()
 
             # Assumes all samples of a sample_subset have the same color...
@@ -1000,9 +1002,11 @@ class Study(object):
             sample_ids = celltype_samples.intersection(sample_ids)
             if len(sample_ids) == 0:
                 continue
-            self.splicing.plot_lavalamp_pooled_inconsistent(
-                sample_ids, feature_ids, fraction_diff_thresh,
-                color=color)
+            data = self.filter_splicing_on_expression(expression_thresh,
+                                                      sample_ids=sample_ids)
+
+            self.splicing.plot_lavalamp_pooled_inconsistent(data,
+                feature_ids, fraction_diff_thresh, color=color)
 
     def percent_pooled_inconsistent(self,
                                     sample_subset=None, feature_ids=None,
