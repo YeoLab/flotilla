@@ -1,11 +1,13 @@
 """
-Common operations performed on all kinds of data types
+Base data class for all data types. All data types in flotilla inherit from
+this, or a child object (like ExpressionData).
 """
 import sys
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from scipy.spatial.distance import pdist, squareform
 import seaborn as sns
 
 from sklearn.preprocessing import StandardScaler
@@ -321,15 +323,13 @@ class BaseData(object):
 
     @property
     def _var_cut(self):
-        """Variance values which are 2 standard deviations away the mean
-        variance"""
+        """Variance cutoff, 2 std devs away from mean variance"""
         return self.data.var().dropna().mean() + 2 * self.data.var() \
             .dropna().std()
 
     @property
     def variant(self):
-        """Genes whose variance among all cells is 2 standard deviations away
-        from the mean variance"""
+        """Features whose variance is 2 std devs away from mean variance"""
         return self.data.columns[self.data.var() > self._var_cut]
 
     # def drop_outliers(self, data, outliers):
@@ -616,9 +616,9 @@ class BaseData(object):
         return subset
 
     def _subset_singles_and_pooled(self, sample_ids=None,
-                                   feature_ids=None):
+                                   feature_ids=None, data=None):
         """Subset singles and pooled, taking only features that appear in both
-
+        
         Parameters
         ----------
         sample_ids : list-like, optional (default=None)
@@ -627,7 +627,10 @@ class BaseData(object):
             samples
         feature_ids : list-like, optional (default=None)
             List of feature ids to use. If None, use all
-
+        data : pandas.DataFrame
+            A (samples, features) Dataframe of input data to use instead of
+            the :py:attr:`.data` default data
+        
         Returns
         -------
         singles : pandas.DataFrame
@@ -637,19 +640,36 @@ class BaseData(object):
             DataFrame of only pooled samples, with only features that appear
             in both these single cell and pooled samples
         """
-        singles = self._subset(self.data, sample_ids, feature_ids,
-                               require_min_samples=True)
+        # singles_ids = self.data.index.intersection(sample_ids)
+        # pooled_ids = self.pooled.index.intersection(sample_ids)
+        # import pdb; pdb.set_trace()
+        if data is None:
+            singles = self._subset(self.singles, sample_ids, feature_ids,
+                                   require_min_samples=True)
+        else:
+            sample_ids = data.index.intersection(self.singles.intersection)
+            singles = self._subset(data, sample_ids,
+                                   require_min_samples=True)
+
         try:
-            # If the sample ids don't overlap with the pooled sample, assume
-            # you want all the pooled samples
-            if sample_ids is not None and sum(
-                    self.pooled.index.isin(sample_ids)) \
-                    > 0:
+            # If the sample ids don't overlap with the pooled sample, assume you
+            # want all the pooled samples
+            n_pooled_sample_ids = sum(self.pooled.index.isin(sample_ids))
+
+            if sample_ids is not None and n_pooled_sample_ids > 0:
                 pooled_sample_ids = sample_ids
             else:
                 pooled_sample_ids = None
-            pooled = self._subset(self.pooled, pooled_sample_ids, feature_ids,
-                                  require_min_samples=False)
+
+            if data is None:
+                pooled = self._subset(self.pooled, pooled_sample_ids,
+                                      feature_ids,
+                                      require_min_samples=False)
+            else:
+                sample_ids = data.index.intersection(self.pooled.index)
+                pooled = self._subset(data, sample_ids,
+                                      require_min_samples=False)
+
             if feature_ids is None or len(feature_ids) > 1:
                 # These are DataFrames
                 singles, pooled = singles.align(pooled, axis=1, join='inner')
@@ -699,6 +719,7 @@ class BaseData(object):
         means : pandas.DataFrame
             (Only if return_means=True) Mean values of the features (columns).
         """
+
         # fill na with mean for each event
         subset = self._subset(data, sample_ids, feature_ids)
         means = subset.mean()
@@ -722,6 +743,7 @@ class BaseData(object):
             return subset, means
         else:
             return subset
+
 
     # def plot_clusteredheatmap(self, sample_ids, feature_ids,
     #                           metric='euclidean',
@@ -809,8 +831,8 @@ class BaseData(object):
     # @memoize
     def reduce(self, sample_ids=None, feature_ids=None,
                featurewise=False,
-               reducer=None,
-               standardize=None,
+               reducer=DataFramePCA,
+               standardize=True,
                reducer_kwargs=None, bins=None):
         """Make and memoize a reduced dimensionality representation of data
 
@@ -841,11 +863,6 @@ class BaseData(object):
         reducer_object : flotilla.compute.reduce.ReducerViz
             A ready-to-plot object containing the reduced space
         """
-        if reducer is None:
-            reducer = DataFramePCA
-
-        if standardize is None:
-            standardize = True
 
         reducer_kwargs = {} if reducer_kwargs is None else reducer_kwargs
 
@@ -864,6 +881,7 @@ class BaseData(object):
         reducer_object.means = means
         return reducer_object
 
+    @memoize
     def classify(self, trait, sample_ids, feature_ids,
                  standardize=True,
                  data_name='expression',
@@ -876,6 +894,8 @@ class BaseData(object):
                  plotting_kwargs=None,
                  color=None, groupby=None, label_to_color=None,
                  label_to_marker=None, order=None, bins=None):
+        # Should all this be exposed to the user???
+
         """Make and memoize a predictor on a categorical trait (associated
         with samples) subset of genes
 
