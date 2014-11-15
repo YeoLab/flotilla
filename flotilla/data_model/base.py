@@ -25,8 +25,10 @@ from ..compute.outlier import OutlierDetection
 MINIMUM_FEATURE_SUBSET = 20
 
 class BaseData(object):
-    """Base class for biological data measurements. All data types in flotilla
-    inherit from this
+    """Base class for biological data measurements.
+
+    All data types in flotilla inherit from this, and have all functionality
+    described here
 
     Attributes
     ----------
