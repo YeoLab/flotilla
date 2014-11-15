@@ -372,6 +372,11 @@ class SplicingData(BaseData):
         """
         singles, pooled = self._subset_singles_and_pooled(feature_ids,
                                                           data=data)
+
+        # Make sure the
+        if isinstance(pooled, pd.Series):
+            pooled = pd.DataFrame([pooled.values], columns=[pooled.name],
+                                  index=pooled.name)
         pooled = pooled.dropna(how='all', axis=1)
         not_measured_in_pooled = singles.columns.diff(pooled.columns)
         singles, pooled = singles.align(pooled, axis=1, join='inner')
