@@ -1,15 +1,15 @@
+import numpy.testing as npt
 import pandas.util.testing as pdt
 import pytest
 
-from flotilla.data_model.base import BaseData
-
-
 @pytest.fixture
 def base_data(example_data):
+    from flotilla.data_model.base import BaseData
     return BaseData(example_data.expression)
 
 
 def test_basedata_init(example_data):
+    from flotilla.data_model.base import BaseData
     base_data = BaseData(example_data.expression)
     pdt.assert_frame_equal(base_data.data, example_data.expression)
 
@@ -90,3 +90,29 @@ def test__subset_and_standardize(base_data, standardize, feature_ids,
 
     pdt.assert_frame_equal(subset_standardized, base_data.subset)
     pdt.assert_series_equal(means, base_data.means)
+
+@pytest.fixture(param=[True, False])
+def featurewise(request):
+    return request.param
+
+def test_reduce(example_data, featurewise):
+    # TODO: parameterize and test with featurewise and subsets
+    from flotilla.compute.decomposition import DataFramePCA
+    from flotilla.data_model.base import BaseData
+    expression = BaseData(example_data.expression)
+    test_reduced = expression.reduce(featurewise=featurewise)
+
+    if featurewise:
+        subset, means = expression._subset_and_standardize(
+            expression.data.T, return_means=True)
+    else:
+        subset, means = expression._subset_and_standardize(
+            expression.data, return_means=True)
+    true_reduced = DataFramePCA(subset)
+    true_reduced.means = means
+
+    pdt.assert_frame_equal(test_reduced.X, subset)
+    npt.assert_array_equal(test_reduced.reduced_space,
+                           true_reduced.reduced_space)
+    pdt.assert_series_equal(test_reduced.means,
+                            true_reduced.means)
