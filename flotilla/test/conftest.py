@@ -7,14 +7,14 @@ import subprocess
 
 import matplotlib as mpl
 
+
 # Tell matplotlib to not make any window popups
 mpl.use('Agg')
 
+import numpy as np
 import pytest
 import pandas as pd
 
-from flotilla.util import link_to_list
-from flotilla.datapackage import data_package_url_to_dict
 
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
 # DATA_BASE_URL = 'https://raw.githubusercontent.com/YeoLab/shalek2013/master'
@@ -61,6 +61,8 @@ def example_datapackage_path():
 
 @pytest.fixture(scope='module')
 def example_datapackage(example_datapackage_path):
+    from flotilla.datapackage import data_package_url_to_dict
+
     return data_package_url_to_dict(example_datapackage_path)
 
 
@@ -101,6 +103,8 @@ def genelist_link(request, genelist_path, genelist_dropbox_link):
                         'link',
                         'path'], scope='module')
 def feature_subset(request, genelist_dropbox_link, genelist_path):
+    from flotilla.util import link_to_list
+
     name_to_location = {'link': genelist_dropbox_link,
                         'path': genelist_path}
 
@@ -117,3 +121,22 @@ def feature_subset(request, genelist_dropbox_link, genelist_path):
     else:
         # Otherwise, this is a name of a subset
         return request.param
+
+@pytest.fixture(scope='module')
+def x_norm():
+    """Normally distributed numpy array"""
+    n_samples = 50
+    n_features = 1000
+    x = np.random.randn(n_samples * n_features)
+    x = x.reshape(n_samples, n_features)
+    return x
+
+
+@pytest.fixture(scope='module')
+def df_norm(x_norm):
+    """Normally distributed pandas dataframe"""
+    nrow, ncol = x_norm.shape
+    index = ['sample_{0:02d}'.format(i) for i in range(nrow)]
+    columns = ['feature_{0:04d}'.format(i) for i in range(ncol)]
+    df = pd.DataFrame(x_norm, index=index, columns=columns)
+    return df
