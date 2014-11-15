@@ -22,9 +22,9 @@ WORKDIR /home/root/ipython
 
 ENV HOME /root
 #user should use -v option to mount a host directory here
-MOUNT /root/ipython
+VOLUME /root/ipython
 #user should use -v option to mount ~/flotilla_packages here
-MOUNT /root/flotilla_packages
+VOLUME /root/flotilla_packages
 
 EXPOSE 8888
 ENTRYPOINT run_notebook.sh
