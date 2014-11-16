@@ -314,7 +314,7 @@ class SplicingData(BaseData):
                      phenotype_order=None, color=None,
                      phenotype_to_color=None,
                      phenotype_to_marker=None, xlabel=None, ylabel=None,
-                     nmf_space=False):
+                     nmf_space=False, fig=None, axesgrid=None):
         if nmf_space:
             xlabel = self._nmf_space_xlabel(phenotype_groupby)
             ylabel = self._nmf_space_xlabel(phenotype_groupby)
@@ -327,7 +327,8 @@ class SplicingData(BaseData):
                                                phenotype_order, color,
                                                phenotype_to_color,
                                                phenotype_to_marker, xlabel,
-                                               ylabel, nmf_space=nmf_space)
+                                               ylabel, nmf_space=nmf_space,
+                                               fig=fig, axesgrid=axesgrid)
 
     @memoize
     def pooled_inconsistent(self, sample_ids, feature_ids=None,
