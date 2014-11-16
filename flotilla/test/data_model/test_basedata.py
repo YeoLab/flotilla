@@ -91,7 +91,7 @@ def test__subset_and_standardize(base_data, standardize, feature_ids,
     pdt.assert_frame_equal(subset_standardized, base_data.subset)
     pdt.assert_series_equal(means, base_data.means)
 
-@pytest.fixture(param=[True, False])
+@pytest.fixture(params=[True, False])
 def featurewise(request):
     return request.param
 
