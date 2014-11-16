@@ -8,6 +8,7 @@ import subprocess
 import matplotlib as mpl
 
 
+
 # Tell matplotlib to not make any window popups
 mpl.use('Agg')
 
@@ -19,6 +20,10 @@ import pandas as pd
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
 # DATA_BASE_URL = 'https://raw.githubusercontent.com/YeoLab/shalek2013/master'
 DATA_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects/shalek2013'
+
+@pytest.fixture(scope='module')
+def RANDOM_STATE():
+    return 0
 
 class ExampleData(object):
     __slots__ = ('metadata', 'expression', 'splicing', 'data')
@@ -140,3 +145,8 @@ def df_norm(x_norm):
     columns = ['feature_{0:04d}'.format(i) for i in range(ncol)]
     df = pd.DataFrame(x_norm, index=index, columns=columns)
     return df
+
+@pytest.fixture(scope='module')
+def df_nonneg(df_norm):
+    """Non-negative data for testing NMF"""
+    return df_norm.abs()
