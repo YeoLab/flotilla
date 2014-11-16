@@ -1012,7 +1012,7 @@ class BaseData(object):
                      phenotype_order=None, color=None,
                      phenotype_to_color=None,
                      phenotype_to_marker=None, xlabel=None, ylabel=None,
-                     nmf_space=False):
+                     nmf_space=False, fig=None, axesgrid=None):
         """
         Plot the violinplot of a feature. Have the option to show NMF movement
         """
@@ -1021,14 +1021,15 @@ class BaseData(object):
         if not isinstance(feature_ids, pd.Index):
             feature_ids = [feature_id]
 
-        nrows = len(feature_ids)
-        ncols = 2 if nmf_space else 1
-        figsize = 4*ncols, 4*nrows
+        if fig is None and axesgrid is None:
+            nrows = len(feature_ids)
+            ncols = 2 if nmf_space else 1
+            figsize = 4*ncols, 4*nrows
 
-        fig, axesgrid = plt.subplots(nrows=nrows, ncols=ncols,
-                                     figsize=figsize)
-        if nrows == 1 and ncols == 1:
-            axesgrid = [axesgrid]
+            fig, axesgrid = plt.subplots(nrows=nrows, ncols=ncols,
+                                         figsize=figsize)
+            if nrows == 1:
+                axesgrid = [axesgrid]
 
         for feature_id, axes in zip(feature_ids, axesgrid):
             if not nmf_space:
@@ -1090,13 +1091,31 @@ class BaseData(object):
                               ax, xlabel, ylabel)
 
     @staticmethod
-    def transition_distances(df, transitions):
-        df.index = df.index.droplevel(0)
+    def transition_distances(positions, transitions):
+        """Get NMF distance of features between phenotype transitions
+
+        Parameters
+        ----------
+        positions : pandas.DataFrame
+            A ((n_features, phenotypes), 2) MultiIndex dataframe of the NMF
+            positions of splicing events for different phenotypes
+        transitions : list of 2-string tuples
+            List of (phenotype1, phenotype2) transitions
+
+        Returns
+        -------
+        transitions : pandas.DataFrame
+            A (n_features, n_transitions) DataFrame of the NMF distances
+            of features between different phenotypes
+        """
+        positions_phenotype = positions.copy()
+        positions_phenotype.index = positions_phenotype.index.droplevel(0)
         distances = pd.Series(index=transitions)
         for transition in transitions:
             try:
                 phenotype1, phenotype2 = transition
-                norm = np.linalg.norm(df.ix[phenotype2] - df.ix[phenotype1])
+                norm = np.linalg.norm(positions_phenotype.ix[phenotype2] -
+                                      positions_phenotype.ix[phenotype1])
                 # print phenotype1, phenotype2, norm
                 distances[transition] = norm
             except KeyError:
@@ -1174,7 +1193,10 @@ class BaseData(object):
                                        phenotype_order, color,
                                        phenotype_to_color,
                                        phenotype_to_marker, n=5):
-        """
+        """Violinplots and NMF transitions of features different in phenotypes
+
+        Plot violinplots and NMF-space transitions of features that have large
+        NMF-space transitions between different phenotypes
 
         Parameters
         ----------
@@ -1191,12 +1213,20 @@ class BaseData(object):
         """
         big_transitions = self.big_nmf_space_transitions(phenotype_groupby,
                                                          phenotype_transitions)
+        nrows = big_transitions.shape[0]
+        ncols = 2
+        figsize = 4 * ncols, 4 * nrows
+
+        fig, axesgrid = plt.subplots(nrows=nrows, ncols=ncols,
+                                     figsize=figsize)
+        if nrows == 1:
+            axesgrid = [axesgrid]
         for feature_id in big_transitions.index:
             self.plot_feature(feature_id, phenotype_groupby=phenotype_groupby,
                               phenotype_order=phenotype_order, color=color,
                               phenotype_to_color=phenotype_to_color,
                               phenotype_to_marker=phenotype_to_marker,
-                              nmf_space=True)
+                              nmf_space=True, fig=fig, axesgrid=axesgrid)
 
 
     def plot_two_samples(self, sample1, sample2, **kwargs):
