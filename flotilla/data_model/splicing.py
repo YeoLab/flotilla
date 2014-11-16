@@ -27,6 +27,8 @@ class SplicingData(BaseData):
     n_components = 2
     _binsize = 0.1
 
+    included_label = 'included >>'
+    excluded_label = 'excluded >>'
 
     def __init__(self, data,
                  feature_data=None, binsize=0.1, outliers=None,
@@ -282,6 +284,30 @@ class SplicingData(BaseData):
     #                       phenotype_groupby, phenotype_order,
     #                       color, phenotype_to_color, phenotype_to_marker)
 
+    @memoize
+    def _is_nmf_space_x_axis_excluded(self, phenotype_groupby):
+        nmf_space_positions = self.nmf_space_positions(phenotype_groupby)
+
+        # Get the correct included/excluded labeling for the x and y axes
+        event, phenotype = nmf_space_positions.pc_1.argmax()
+        top_pc1_samples = self.data.groupby(phenotype_groupby).groups[
+            phenotype]
+
+        data = self._subset(self.data, sample_ids=top_pc1_samples)
+        binned = self.binify(data)
+        return bool(binned[event][0])
+
+    def _nmf_space_xlabel(self, phenotype_groupby):
+        if self._is_nmf_space_x_axis_excluded(phenotype_groupby):
+            return self.excluded_label
+        else:
+            return self.included_label
+
+    def _nmf_space_ylabel(self, phenotype_groupby):
+        if self._is_nmf_space_x_axis_excluded(phenotype_groupby):
+            return self.included_label
+        else:
+            return self.excluded_label
 
     def plot_feature(self, feature_id, sample_ids=None,
                      phenotype_groupby=None,
@@ -290,23 +316,8 @@ class SplicingData(BaseData):
                      phenotype_to_marker=None, xlabel=None, ylabel=None,
                      nmf_space=False):
         if nmf_space:
-            nmf_space_positions = self.nmf_space_positions(phenotype_groupby)
-
-            # Get the correct included/excluded labeling for the x and y axes
-            event, phenotype = nmf_space_positions.pc_1.argmax()
-            top_pc1_samples = self.data.groupby(phenotype_groupby).groups[
-                phenotype]
-
-            data = self._subset(self.data, sample_ids=top_pc1_samples)
-            binned = self.binify(data)
-            x_axis_excluded = bool(binned[event][0])
-            included_label = 'included >>'
-            excluded_label = 'excluded >>'
-            if xlabel is None:
-                xlabel = excluded_label if x_axis_excluded else included_label
-            if ylabel is None:
-                ylabel = included_label if x_axis_excluded else excluded_label
-
+            xlabel = self._nmf_space_xlabel(phenotype_groupby)
+            ylabel = self._nmf_space_xlabel(phenotype_groupby)
         else:
             ylabel = None
             xlabel = None
