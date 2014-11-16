@@ -959,8 +959,7 @@ class BaseData(object):
         return subset, row_linkage, col_linkage
 
     def binify(self, data, bins=None):
-        return binify(data, bins).dropna(how='all', axis=0).dropna(how='all',
-                                                                   axis=1)
+        return binify(data, bins).dropna(how='all', axis=1)
 
 
     def _violinplot(self, feature_id, sample_ids=None,
