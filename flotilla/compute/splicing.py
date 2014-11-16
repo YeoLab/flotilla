@@ -171,7 +171,7 @@ class Modalities(object):
                                    index=range(n_iter))
 
         for i, (train_index, test_index) in enumerate(bs):
-            index = np.concatentate([train_index, test_index])
+            index = np.concatenate([train_index, test_index])
             psi = data.ix[data.index[index], :]
             psi = psi.dropna(axis=1, thresh=min_samples)
             assignments.ix[i] = self._single_fit_transform(psi,
