@@ -5,21 +5,15 @@ these objects and functions across test files.
 import os
 import subprocess
 
-import matplotlib as mpl
-
-
-
-# Tell matplotlib to not make any window popups
-mpl.use('Agg')
-
 import numpy as np
 import pytest
 import pandas as pd
 
 
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
-# DATA_BASE_URL = 'https://raw.githubusercontent.com/YeoLab/shalek2013/master'
-DATA_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects/shalek2013'
+SHALEK2013_BASE_URL = 'https://raw.githubusercontent.com/YeoLab/shalek2013/master'
+# SHALEK2013_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects/shalek2013'
+CHR22_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22'
 
 @pytest.fixture(scope='module')
 def RANDOM_STATE():
@@ -40,49 +34,59 @@ def data_dir():
     return '{}/example_data'.format(CURRENT_DIR.rstrip('/'))
 
 @pytest.fixture(scope='module')
-def example_data():
-    expression = pd.read_csv('{}/expression.csv'.format(DATA_BASE_URL),
+def shalek2013_data():
+    expression = pd.read_csv('{}/expression.csv'.format(SHALEK2013_BASE_URL),
                              index_col=0)
-    splicing = pd.read_csv('{}/splicing.csv'.format(DATA_BASE_URL),
+    splicing = pd.read_csv('{}/splicing.csv'.format(SHALEK2013_BASE_URL),
                            index_col=0, header=[0, 1])
-    metadata = pd.read_csv('{}/metadata.csv'.format(DATA_BASE_URL),
+    metadata = pd.read_csv('{}/metadata.csv'.format(SHALEK2013_BASE_URL),
                            index_col=0)
     return ExampleData(metadata, expression, splicing)
 
 
 @pytest.fixture(scope='module')
-def example_study(example_data):
+def example_study(shalek2013_data):
     from flotilla.data_model import Study
 
-    return Study(sample_metadata=example_data.metadata,
-                 expression_data=example_data.expression,
-                 splicing_data=example_data.splicing)
+    return Study(sample_metadata=shalek2013_data.metadata,
+                 expression_data=shalek2013_data.expression,
+                 splicing_data=shalek2013_data.splicing)
 
 
 @pytest.fixture(scope='module')
-def example_datapackage_path():
-    return os.path.join(DATA_BASE_URL, 'datapackage.json')
+def shalek2013_datapackage_path():
+    return os.path.join(SHALEK2013_BASE_URL, 'datapackage.json')
+
+@pytest.fixture(scope='module')
+def chr22_datapackage_path():
+    return os.path.join(CHR22_BASE_URL, 'datapackage.json')
 
 
 @pytest.fixture(scope='module')
-def example_datapackage(example_datapackage_path):
+def shalek2013_datapackage(shalek2013_datapackage_path):
     from flotilla.datapackage import data_package_url_to_dict
 
-    return data_package_url_to_dict(example_datapackage_path)
+    return data_package_url_to_dict(shalek2013_datapackage_path)
 
 
 @pytest.fixture(scope='module')
-def expression(example_data):
+def expression(shalek2013_data):
     from flotilla.data_model import ExpressionData
 
-    return ExpressionData(example_data.expression)
+    return ExpressionData(shalek2013_data.expression)
 
 
 @pytest.fixture(scope='module')
-def study(example_datapackage_path):
+def shalek2013(shalek2013_datapackage_path):
     import flotilla
 
-    return flotilla.embark(example_datapackage_path)
+    return flotilla.embark(shalek2013_datapackage_path)
+
+@pytest.fixture(scope='module')
+def chr22(chr22_datapackage_path):
+    import flotilla
+
+    return flotilla.embark(chr22_datapackage_path)
 
 
 @pytest.fixture(scope='module')
@@ -150,3 +154,11 @@ def df_norm(x_norm):
 def df_nonneg(df_norm):
     """Non-negative data for testing NMF"""
     return df_norm.abs()
+
+@pytest.fixture(scope='module', params=[0, 5])
+def minimum_samples(request):
+    return request.param
+
+@pytest.fixture(params=[True, False])
+def featurewise(request):
+    return request.param

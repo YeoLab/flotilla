@@ -322,7 +322,6 @@ class SplicingData(BaseData):
             ylabel = None
             xlabel = None
 
-
         super(SplicingData, self).plot_feature(feature_id, sample_ids,
                                                phenotype_groupby,
                                                phenotype_order, color,
