@@ -28,6 +28,25 @@ def binned(kwargs):
     columns = ['event_{}'.format(i+1) for i in np.arange(binned.shape[0])]
     return pd.DataFrame(binned.T, index=index, columns=columns)
 
+@pytest.fixture
+def psi(binned):
+    n_samples = 10
+    unbinned = (binned * n_samples).astype(int).cumsum()
+    psi = pd.DataFrame(index=np.arange(n_samples), columns=binned.columns)
+
+    values = (0, 0.5, 1)
+
+    for col in unbinned:
+        for i, row in enumerate(unbinned[col]):
+            if i == 0:
+                row_i = 0
+            else:
+                row_i = unbinned.ix[i - 1, col]
+            row_j = unbinned.ix[i, col]
+            psi.ix[row_i:row_j, col] = values[i]
+    return psi
+
+
 class TestModalities:
 
     def test_init(self, kwargs):
