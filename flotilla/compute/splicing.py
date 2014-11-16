@@ -19,7 +19,7 @@ class Modalities(object):
     - Excluded (most cells have excluded the exon)
     - Middle (most cells have both the included and excluded isoforms)
     - Included (most cells have included the exon)
-    - Bimodal (approximately a 50:50 distribution of inclusoion:exclusion)
+    - Bimodal (approximately a 50:50 distribution of inclusion:exclusion)
     - Uniform (uniform distribution of exon usage)
 
     The way that these modalities are calculated is by binning each splicing
@@ -71,7 +71,7 @@ class Modalities(object):
             A (n_modalities,) sized series of JSD between this event and the
             true modalities
         """
-        return self.true_modalities.apply(jsd, axis=0, p=col)
+        return self.true_modalities.apply(jsd, axis=0, q=col)
 
     def sqrt_jsd_modalities(self, binned):
         """Calculate JSD between all binned splicing events and true modalities
