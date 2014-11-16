@@ -70,7 +70,7 @@ class TestDataFrameNMF():
 #     def test_init(self, df_norm):
 #         from flotilla.compute.decomposition import DataFrameNMF
 #
-#         expression = ExpressionData(example_data.expression)
+#         expression = ExpressionData(shalek2013_data.expression)
 #         test_reduced = expression.reduce()
 #
 #         subset, means = expression._subset_and_standardize(
