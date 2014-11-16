@@ -182,7 +182,7 @@ class Modalities(object):
         fractions = counts / counts.sum().astype(float)
         thresh_assignments = fractions[fractions >= thresh].apply(
             self._max_assignment, axis=0)
-        thresh_assignments = thresh_assignments.fillna('unassigned')
+        thresh_assignments = thresh_assignments.fillna('ambiguous')
         return thresh_assignments
 
     @staticmethod
