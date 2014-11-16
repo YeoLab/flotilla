@@ -332,7 +332,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">pc_loadings_labels</span><span class="p">[</span><span class="n">pc</span><span class="p">]</span> <span class="o">=</span> <span class="n">labels</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">top_features</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">plot_violins</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">plot_violins</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
                  <span class="n">show_point_labels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
                  <span class="n">show_vectors</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
                  <span class="n">show_vector_labels</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
@@ -557,30 +557,12 @@
                 <span class="bp">None</span>
             <span class="n">outliers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">outliers</span><span class="p">[</span><span class="n">feature_id</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">outliers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> \
                 <span class="k">else</span> <span class="bp">None</span>
-
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">feature_id</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
-                <span class="n">feature_id</span> <span class="o">=</span> <span class="n">feature_id</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span><span class="mi">20</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">renamed</span> <span class="o">!=</span> <span class="n">feature_id</span><span class="p">:</span>
-                <span class="n">title</span> <span class="o">=</span> <span class="s">&#39;{}</span><span class="se">\n</span><span class="s">{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">feature_id</span><span class="p">,</span> <span class="n">renamed</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">title</span> <span class="o">=</span> <span class="n">feature_id</span>
-            <span class="n">singles</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">renamed</span>
-            <span class="n">pooled</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">renamed</span>
-            <span class="n">outliers</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">renamed</span>
-            <span class="c"># import pdb; pdb.set_trace()</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="s">&#39;{}</span><span class="se">\n</span><span class="s">{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">feature_id</span><span class="p">,</span> <span class="n">renamed</span><span class="p">)</span>
             <span class="n">violinplot</span><span class="p">(</span><span class="n">singles</span><span class="p">,</span> <span class="n">pooled_data</span><span class="o">=</span><span class="n">pooled</span><span class="p">,</span> <span class="n">outliers</span><span class="o">=</span><span class="n">outliers</span><span class="p">,</span>
                        <span class="n">groupby</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">groupby</span><span class="p">,</span> <span class="n">color_ordered</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">color_ordered</span><span class="p">,</span>
                        <span class="n">order</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
                        <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data_type</span><span class="p">,</span>
                        <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">violinplot_kws</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_type</span> <span class="o">==</span> <span class="s">&#39;splicing&#39;</span><span class="p">:</span>
-                <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&#39;$\Psi$&#39;</span><span class="p">)</span>
-                <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_type</span> <span class="o">==</span> <span class="s">&#39;expression&#39;</span><span class="p">:</span>
-                <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&#39;Expression&#39;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)</span>
 
         <span class="c"># Clear any unused axes</span>
         <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes</span><span class="o">.</span><span class="n">flat</span><span class="p">:</span>
