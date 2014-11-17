@@ -1212,7 +1212,8 @@ class BaseData(object):
         ------
         """
         big_transitions = self.big_nmf_space_transitions(phenotype_groupby,
-                                                         phenotype_transitions)
+                                                         phenotype_transitions,
+                                                         n=n)
         nrows = big_transitions.shape[0]
         ncols = 2
         figsize = 4 * ncols, 4 * nrows
