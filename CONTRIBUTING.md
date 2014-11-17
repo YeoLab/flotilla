@@ -27,9 +27,11 @@ Git branching
 
 We use the [GitHub-Flow](http://scottchacon.com/2011/08/31/github-flow.html) model.
 
-To contribute, make a branch off of the master. Commit exclusively to your branch. When changes on that branch are
-finished, open a pull request. Once someone has reviewed and approved of the changes on your branch, you should
-immediately merge your branch into the master.
+To contribute:
+1. Make a branch off of the master.
+2. Commit updates exclusively to your branch.
+3. When changes on that branch are finished, open a [pull request](https://help.github.com/articles/using-pull-requests/).
+4. Once someone has reviewed and approved of the changes on your branch, you should immediately merge your branch into the master.
 
 
 Naming conventions
