@@ -12,7 +12,8 @@ from sklearn.preprocessing import StandardScaler
 from ..compute.decomposition import DataFramePCA, DataFrameNMF
 # from ..compute.clustering import Cluster
 from ..compute.infotheory import binify
-from ..compute.predict import PredictorConfigManager, PredictorDataSetManager
+from ..compute.predict import PredictorConfigManager, \
+    PredictorDataSetManager, CLASSIFIER
 from ..visualize.decomposition import DecompositionViz
 from ..visualize.generic import violinplot, nmf_space_transitions, \
     simple_twoway_scatter
@@ -21,13 +22,14 @@ from ..visualize.predict import ClassifierViz
 from ..util import memoize, cached_property
 from ..compute.outlier import OutlierDetection
 
-default_predictor_name = "ExtraTreesClassifier"
 MINIMUM_FEATURE_SUBSET = 20
 
 
 class BaseData(object):
-    """Base class for biological data measurements. All data types in flotilla
-    inherit from this
+    """Base class for biological data measurements.
+
+    All data types in flotilla inherit from this, and have all functionality
+    described here
 
     Attributes
     ----------
@@ -463,7 +465,7 @@ class BaseData(object):
         # local_plotting_args = self.pca_plotting_args.copy()
         # local_plotting_args.update(plotting_kwargs)
         if predictor_name is None:
-            predictor_name = default_predictor_name
+            predictor_name = CLASSIFIER
 
         classifier = self.classify(trait, sample_ids=sample_ids,
                             feature_ids=feature_ids,
