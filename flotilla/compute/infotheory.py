@@ -76,6 +76,13 @@ def kld(p, q):
     The input to this function must be probability distributions, not raw
     values. Otherwise, the output makes no sense.
     """
+    if np.any(p < 0) or np.any(q < 0):
+        raise ValueError('The columns of the input dataframes must be '
+                         '**non-negative** probability distributions')
+    if np.any(p.sum() != np.ones(p.shape[1])) \
+            or np.any(q.sum() != np.ones(q.shape[1])):
+        raise ValueError('The columns of the input matrices must be '
+                         'probability distributions that **sum to 1**')
     # If one of them is zero, then the other should be considered to be 0.
     # In this problem formulation, log0 = 0
     p = p.replace(0, np.nan)
@@ -104,6 +111,13 @@ def jsd(p, q):
         Jensen-Shannon divergence of each column with the same names between
         p and q
     """
+    if np.any(p < 0) or np.any(q < 0):
+        raise ValueError('The columns of the input dataframes must be '
+                         '**non-negative** probability distributions')
+    if np.any(p.sum() != np.ones(p.shape[1])) \
+            or np.any(q.sum() != np.ones(q.shape[1])):
+        raise ValueError('The columns of the input matrices must be '
+                         'probability distributions that **sum to 1**')
     weight = 0.5
     m = weight * (p + q)
 
