@@ -8,12 +8,12 @@
 #
 #
 # @pytest.fixture
-# def study(example_data):
+# def study(shalek2013_data):
 # from flotilla.data_model import Study
 #
-#     return Study(sample_metadata=example_data.metadata,
-#                  expression_data=example_data.expression,
-#                  splicing_data=example_data.splicing)
+#     return Study(sample_metadata=shalek2013_data.metadata,
+#                  expression_data=shalek2013_data.expression,
+#                  splicing_data=shalek2013_data.splicing)
 #
 #
 # @pytest.fixture

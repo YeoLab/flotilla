@@ -28,7 +28,8 @@ class SplicingData(BaseData):
     n_components = 2
     _binsize = 0.1
 
-    _last_reducer_accessed = None
+    included_label = 'included >>'
+    excluded_label = 'excluded >>'
 
     def __init__(self, data,
                  feature_data=None, binsize=0.1, outliers=None,
@@ -58,6 +59,7 @@ class SplicingData(BaseData):
         'thresh' from BaseData is not used.
         """
         sys.stdout.write("{}\tInitializing splicing\n".format(timestamp()))
+
         super(SplicingData, self).__init__(
             data, feature_data=feature_data,
             feature_rename_col=feature_rename_col,
@@ -73,8 +75,6 @@ class SplicingData(BaseData):
         self.modalities_calculator = Modalities(excluded_max=excluded_max,
                                                 included_min=included_min)
         self.modalities_visualizer = ModalitiesViz()
-
-        self.data_type = 'splicing'
 
     @memoize
     def modalities(self, sample_ids=None, feature_ids=None,
@@ -285,13 +285,8 @@ class SplicingData(BaseData):
     #                       phenotype_groupby, phenotype_order,
     #                       color, phenotype_to_color, phenotype_to_marker)
 
-
-    def plot_feature(self, feature_id, sample_ids=None,
-                     phenotype_groupby=None,
-                     phenotype_order=None, color=None,
-                     phenotype_to_color=None,
-                     phenotype_to_marker=None, xlabel=None, ylabel=None,
-                     nmf_space=False):
+    @memoize
+    def _is_nmf_space_x_axis_excluded(self, phenotype_groupby):
         nmf_space_positions = self.nmf_space_positions(phenotype_groupby)
 
         # Get the correct included/excluded labeling for the x and y axes
@@ -301,21 +296,40 @@ class SplicingData(BaseData):
 
         data = self._subset(self.data, sample_ids=top_pc1_samples)
         binned = self.binify(data)
+        return bool(binned[event][0])
+    
+    def _nmf_space_xlabel(self, phenotype_groupby):
+        if self._is_nmf_space_x_axis_excluded(phenotype_groupby):
+            return self.excluded_label
+        else:
+            return self.included_label
 
-        x_axis_excluded = bool(binned[event][0])
-        included_label = 'included >>'
-        excluded_label = 'excluded >>'
-        if xlabel is None:
-            xlabel = excluded_label if x_axis_excluded else included_label
-        if ylabel is None:
-            ylabel = included_label if x_axis_excluded else excluded_label
+    def _nmf_space_ylabel(self, phenotype_groupby):
+        if self._is_nmf_space_x_axis_excluded(phenotype_groupby):
+            return self.included_label
+        else:
+            return self.excluded_label
 
+    def plot_feature(self, feature_id, sample_ids=None,
+                     phenotype_groupby=None,
+                     phenotype_order=None, color=None,
+                     phenotype_to_color=None,
+                     phenotype_to_marker=None, xlabel=None, ylabel=None,
+                     nmf_space=False, fig=None, axesgrid=None):
+        if nmf_space:
+            xlabel = self._nmf_space_xlabel(phenotype_groupby)
+            ylabel = self._nmf_space_xlabel(phenotype_groupby)
+        else:
+            ylabel = None
+            xlabel = None
+        
         super(SplicingData, self).plot_feature(feature_id, sample_ids,
                                                phenotype_groupby,
                                                phenotype_order, color,
                                                phenotype_to_color,
                                                phenotype_to_marker, xlabel,
-                                               ylabel, nmf_space=nmf_space)
+                                               ylabel, nmf_space=nmf_space,
+                                               fig=fig, axesgrid=axesgrid)
 
     @memoize
     def pooled_inconsistent(self, sample_ids, feature_ids=None,
@@ -441,6 +455,18 @@ class SplicingData(BaseData):
                reducer=DataFramePCA,
                standardize=True,
                reducer_kwargs=None, bins=None):
+        """
+        :param sample_ids: list of sample ids
+        :param feature_ids: list of features
+        :param featurewise: reduce transpose (feature X sample) instead of sample X feature
+        :param reducer: DataFrameReducer object, defaults to DataFramePCA
+        :param standardize: standardize columns before reduction
+        :param reducer_kwargs: kwargs for reducer
+        :param bins: bins to use for binify
+        :return: reducer object
+
+        """
+
         return super(SplicingData, self).reduce(sample_ids, feature_ids,
                                                 featurewise, reducer,
                                                 standardize=False,

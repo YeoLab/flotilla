@@ -261,6 +261,24 @@ class Study(object):
             splicing_feature_rename_col = species_kws.pop(
                 'splicing_feature_rename_col', None)
 
+            if expression_feature_data is None:
+                expression_feature_data = species_kws.pop(
+                    'expression_feature_data',
+                    None)
+
+            if expression_feature_rename_col is None:
+                expression_feature_rename_col = species_kws.pop(
+                    'expression_feature_rename_col', None)
+
+            if splicing_feature_data is None:
+                splicing_feature_data = species_kws.pop(
+                    'splicing_feature_data',
+                    None)
+
+            if splicing_feature_rename_col is None:
+                splicing_feature_rename_col = species_kws.pop(
+                    'splicing_feature_rename_col', None)
+
         if expression_data is not None:
             sys.stdout.write(
                 "{}\tLoading expression data\n".format(timestamp()))
@@ -568,19 +586,20 @@ class Study(object):
         outliers = self.metadata.data['outlier'][
             self.metadata.data['outlier']].index
         try:
-            sys.stdout.write("dropping expression outliers\n")
+            sys.stdout.write("Dropping expression outliers\n")
 
             self.expression.data = \
-            self.expression.drop_outliers(self.expression.data, outliers)[0]
+                self.expression.drop_outliers(self.expression.data, outliers)[
+                    0]
         except:
-            sys.stderr.write("couldn't drop expression outliers\n")
+            sys.stderr.write("Couldn't drop expression outliers\n")
 
         try:
-            sys.stdout.write("dropping splicing outliers\n")
+            sys.stdout.write("Dropping splicing outliers\n")
             self.splicing.data = \
-            self.splicing.drop_outliers(self.splicing.data, outliers)[0]
+                self.splicing.drop_outliers(self.splicing.data, outliers)[0]
         except:
-            sys.stderr.write("couldn't drop splicing outliers")
+            sys.stderr.write("Couldn't drop splicing outliers")
 
     def jsd(self):
         """Performs Jensen-Shannon Divergence on both splicing and expression
@@ -650,8 +669,6 @@ class Study(object):
         sample_ids : list of strings
             List of sample ids in the data
         """
-
-        # IF this is a list of IDs
 
         try:
             return self.metadata.sample_subsets[phenotype_subset]
@@ -741,6 +758,7 @@ class Study(object):
                 featurewise=featurewise, show_point_labels=show_point_labels,
                 title=title, reduce_kwargs=reduce_kwargs,
                 plot_violins=plot_violins, **kwargs)
+
         elif "splicing".startswith(data_type):
             reducer = self.splicing.plot_pca(
                 x_pc=x_pc, y_pc=y_pc, sample_ids=sample_ids,
@@ -848,7 +866,8 @@ class Study(object):
         except KeyError:
             trait_ids = self.metadata.sample_subsets[trait]
             trait_data = self.metadata.data.index.isin(trait_ids)
-        if all(trait_data == True) or all(trait_data == False) or len(set(trait_data)) <= 1:
+        if all(trait_data == True) or all(trait_data == False) or len(
+                set(trait_data)) <= 1:
             raise ValueError("All samples are True (or all samples are "
                              "False) or all are the same, cannot classify"
                              "when all samples are the same")
@@ -1012,7 +1031,7 @@ class Study(object):
                     bootstrapped_kws=bootstrapped_kws)
 
     def plot_event(self, feature_id, sample_subset=None, nmf_space=False):
-        """Plot the violinplot and DataFrameNMF transitions of a splicing event
+        """Plot the violinplot and NMF transitions of a splicing event
         """
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
         self.splicing.plot_feature(feature_id, sample_ids,
@@ -1126,17 +1145,18 @@ class Study(object):
     #             sample_ids, feature_ids, linkage_method=linkage_method,
     #             metric=metric, sample_colors=sample_colors, figsize=figsize)
 
-    def plot_big_nmf_space_transitions(self, data_type='expression'):
+
+    def plot_big_nmf_space_transitions(self, data_type='expression', n=5):
         if data_type == 'expression':
             self.expression.plot_big_nmf_space_transitions(
                 self.sample_id_to_phenotype, self.phenotype_transitions,
                 self.phenotype_order, self.phenotype_color_ordered,
-                self.phenotype_to_color, self.phenotype_to_marker)
+                self.phenotype_to_color, self.phenotype_to_marker, n=n)
         if data_type == 'splicing':
             self.splicing.plot_big_nmf_space_transitions(
                 self.sample_id_to_phenotype, self.phenotype_transitions,
                 self.phenotype_order, self.phenotype_color_ordered,
-                self.phenotype_to_color, self.phenotype_to_marker)
+                self.phenotype_to_color, self.phenotype_to_marker, n=n)
 
 
     def plot_two_samples(self, sample1, sample2, data_type='expression',
@@ -1201,6 +1221,65 @@ class Study(object):
                 feature1, feature2, groupby=self.sample_id_to_phenotype,
                 label_to_color=self.phenotype_to_color, **kwargs)
 
+    def nmf_space_positions(self, data_type='splicing'):
+        if data_type == 'splicing':
+            return self.splicing.nmf_space_positions(
+                self.sample_id_to_phenotype)
+
+    def nmf_space_transitions(self, phenotype_transitions='all',
+                              data_type='splicing', n=5):
+        """The change in NMF space of splicing events across phenotypes
+
+        Parameters
+        ----------
+        phenotype_transitions : list of length-2 tuples of str
+            List of ('phenotype1', 'phenotype2') transitions whose change in
+            distribution you are interested in
+        data_type : 'splicing' | 'expression'
+            Which data type to calculate this on. (default='splicing')
+        n : int
+            Minimum number of samples per phenotype, per event
+
+        Returns
+        -------
+        big_transitions : pandas.DataFrame
+            A (n_events, n_transitions) dataframe of the NMF distances between
+            splicing events
+        """
+        if phenotype_transitions == 'all':
+            phenotype_transitions = self.phenotype_transitions
+        if data_type == 'splicing':
+            return self.splicing.nmf_space_transitions(
+                self.sample_id_to_phenotype, phenotype_transitions, n=n)
+
+    def big_nmf_space_transitions(self, phenotype_transitions='all',
+                                  data_type='splicing', n=5):
+        """Splicing events whose change in NMF space is large
+
+        By large, we mean that difference is 2 standard deviations away from
+        the mean
+
+        Parameters
+        ----------
+        phenotype_transitions : list of length-2 tuples of str
+            List of ('phenotype1', 'phenotype2') transitions whose change in
+            distribution you are interested in
+        data_type : 'splicing' | 'expression'
+            Which data type to calculate this on. (default='splicing')
+        n : int
+            Minimum number of samples per phenotype, per event
+
+        Returns
+        -------
+        big_transitions : pandas.DataFrame
+            A (n_events, n_transitions) dataframe of the NMF distances between
+            splicing events
+        """
+        if phenotype_transitions == 'all':
+            phenotype_transitions = self.phenotype_transitions
+        if data_type == 'splicing':
+            return self.splicing.big_nmf_space_transitions(
+                self.sample_id_to_phenotype, phenotype_transitions, n=n)
 
     def save(self, name, flotilla_dir=FLOTILLA_DOWNLOAD_DIR):
 
@@ -1286,6 +1365,7 @@ class Study(object):
                                       sources=self.sources,
                                       version=version,
                                       flotilla_dir=flotilla_dir)
+
 
 
 # Add interactive visualizations

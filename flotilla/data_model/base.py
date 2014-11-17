@@ -24,6 +24,7 @@ from ..compute.outlier import OutlierDetection
 default_predictor_name = "ExtraTreesClassifier"
 MINIMUM_FEATURE_SUBSET = 20
 
+
 class BaseData(object):
     """Base class for biological data measurements. All data types in flotilla
     inherit from this
@@ -132,7 +133,6 @@ class BaseData(object):
         -----
         Any cells not marked as "technical_outliers", "outliers" or "pooled"
         are considered as single-cell samples.
-
         """
         self.data = data
         self.data_original = self.data
@@ -455,7 +455,7 @@ class BaseData(object):
 
         Returns
         -------
-        self
+        self : BaseData
         """
         # print trait
         plotting_kwargs = {} if plotting_kwargs is None else plotting_kwargs
@@ -636,7 +636,6 @@ class BaseData(object):
         """
         singles = self._subset(self.data, sample_ids, feature_ids,
                                require_min_samples=True)
-
         try:
             # If the sample ids don't overlap with the pooled sample, assume
             # you want all the pooled samples
@@ -862,7 +861,6 @@ class BaseData(object):
         reducer_object.means = means
         return reducer_object
 
-    @memoize
     def classify(self, trait, sample_ids, feature_ids,
                  standardize=True,
                  data_name='expression',
@@ -945,8 +943,7 @@ class BaseData(object):
         return subset, row_linkage, col_linkage
 
     def binify(self, data, bins=None):
-        return binify(data, bins).dropna(how='all', axis=0).dropna(how='all',
-                                                                   axis=1)
+        return binify(data, bins).dropna(how='all', axis=1)
 
 
     def _violinplot(self, feature_id, sample_ids=None,
@@ -985,12 +982,11 @@ class BaseData(object):
         return DataFrameNMF(self.binify(data).T, n_components=2)
 
     @memoize
-    def binned_nmf_reduced(self, sample_ids=None, feature_ids=None):
-        """
-
-        """
-        data = self._subset(self.data, sample_ids, feature_ids,
-                            require_min_samples=False)
+    def binned_nmf_reduced(self, sample_ids=None, feature_ids=None,
+                           data=None):
+        if data is None:
+            data = self._subset(self.data, sample_ids, feature_ids,
+                                require_min_samples=False)
         binned = self.binify(data)
         reduced = self.nmf.transform(binned.T)
         return reduced
@@ -1001,19 +997,25 @@ class BaseData(object):
                      phenotype_to_color=None,
                      phenotype_to_marker=None, xlabel=None, ylabel=None,
                      nmf_space=False):
-
         """
-        Plot the violinplot of a splicing event (should also show NMF movement)
+        Plot the violinplot of a feature. Have the option to show NMF movement
         """
         feature_ids = self.maybe_renamed_to_feature_id(feature_id)
 
         if not isinstance(feature_ids, pd.Index):
             feature_ids = [feature_id]
 
-        ncols = 2 if nmf_space else 1
+        if fig is None and axesgrid is None:
+            nrows = len(feature_ids)
+            ncols = 2 if nmf_space else 1
+            figsize = 4*ncols, 4*nrows
 
-        for feature_id in feature_ids:
-            fig, axes = plt.subplots(ncols=ncols, figsize=(4 * ncols, 4))
+            fig, axesgrid = plt.subplots(nrows=nrows, ncols=ncols,
+                                         figsize=figsize)
+            if nrows == 1:
+                axesgrid = [axesgrid]
+
+        for feature_id, axes in zip(feature_ids, axesgrid):
             if not nmf_space:
                 axes = [axes]
             # if self.data_type == 'expression':
@@ -1036,11 +1038,27 @@ class BaseData(object):
                     continue
             sns.despine()
 
-    def nmf_space_positions(self, groupby, min_samples_per_group=5):
-        data = self.data.groupby(groupby).filter(
-            lambda x: len(x) >= min_samples_per_group)
-        df = data.groupby(groupby).apply(
-            lambda x: self.binned_nmf_reduced(sample_ids=x.index))
+    def nmf_space_positions(self, groupby, n=5):
+        """Calculate NMF-space position of splicing events in phenotype groups
+
+        Parameters
+        ----------
+        groupby : mappable
+            A sample id to phenotype mapping
+        n : int
+            Minimum samples required per group
+
+        Returns
+        -------
+        df : pandas.DataFrame
+            A (n_events, n_groups) dataframe of NMF positions
+        """
+        grouped = self.singles.groupby(groupby)
+        at_least_n_per_group_per_event = grouped.transform(
+            lambda x: x if x.count() >= n else pd.Series(np.nan,
+                                                         index=x.index))
+        df = at_least_n_per_group_per_event.groupby(groupby).apply(
+            lambda x: self.binned_nmf_reduced(data=x))
         df = df.swaplevel(0, 1)
         df = df.sort_index()
         return df
@@ -1057,45 +1075,143 @@ class BaseData(object):
                               ax, xlabel, ylabel)
 
     @staticmethod
-    def transition_distances(df, transitions):
-        df.index = df.index.droplevel(0)
+    def transition_distances(positions, transitions):
+        """Get NMF distance of features between phenotype transitions
+
+        Parameters
+        ----------
+        positions : pandas.DataFrame
+            A ((n_features, phenotypes), 2) MultiIndex dataframe of the NMF
+            positions of splicing events for different phenotypes
+        transitions : list of 2-string tuples
+            List of (phenotype1, phenotype2) transitions
+
+        Returns
+        -------
+        transitions : pandas.DataFrame
+            A (n_features, n_transitions) DataFrame of the NMF distances
+            of features between different phenotypes
+        """
+        positions_phenotype = positions.copy()
+        positions_phenotype.index = positions_phenotype.index.droplevel(0)
         distances = pd.Series(index=transitions)
         for transition in transitions:
             try:
                 phenotype1, phenotype2 = transition
-                norm = np.linalg.norm(df.ix[phenotype2] - df.ix[phenotype1])
+                norm = np.linalg.norm(positions_phenotype.ix[phenotype2] -
+                                      positions_phenotype.ix[phenotype1])
                 # print phenotype1, phenotype2, norm
                 distances[transition] = norm
             except KeyError:
                 pass
         return distances
 
-    def big_nmf_space_transitions(self, groupby, phenotype_transitions):
-        nmf_space_positions = self.nmf_space_positions(groupby)
-        nmf_space_transitions = nmf_space_positions.groupby(
-            level=0, axis=0, as_index=False, group_keys=False).apply(
-            self.transition_distances,
-            transitions=phenotype_transitions)
+    def nmf_space_transitions(self, groupby, phenotype_transitions, n=5):
+        """Get distance in NMF space of different splicing events
 
-        mean = nmf_space_transitions.mean()
-        std = nmf_space_transitions.std()
+        Parameters
+        ----------
+        groupby : mappable
+            A sample id to phenotype mapping
+        phenotype_transitions : list of str pairs
+            Which phenotype follows from one to the next, for calculating
+            distances between
+        n : int
+            Minimum number of samples per phenotype, per event
+
+        Returns
+        -------
+        nmf_space_transitions : pandas.DataFrame
+            A (n_events, n_phenotype_transitions) sized DataFrame of the
+            distances of these events in NMF space
+        """
+        nmf_space_positions = self.nmf_space_positions(groupby, n=n)
+
+        # Take only splicing events that have at least two phenotypes
+        nmf_space_positions = nmf_space_positions.groupby(
+            level=0, axis=0).filter(lambda x: len(x) > 1)
+
+        nmf_space_transitions = nmf_space_positions.groupby(
+            level=0, axis=0, as_index=True, group_keys=False).apply(
+            self.transition_distances, transitions=phenotype_transitions)
+
+        # Remove any events that didn't have phenotype pairs from
+        # the transitions
+        nmf_space_transitions = nmf_space_transitions.dropna(how='all',
+                                                             axis=0)
+        return nmf_space_transitions
+
+    def big_nmf_space_transitions(self, groupby, phenotype_transitions, n=5):
+        """Get features whose change in NMF space between phenotypes is large
+
+        Parameters
+        ----------
+        groupby : mappable
+            A sample id to phenotype group mapping
+        phenotype_transitions : list of length-2 tuples of str
+            List of ('phenotype1', 'phenotype2') transitions whose change in
+            distribution you are interested in
+        n : int
+            Minimum number of samples per phenotype, per event
+
+        Returns
+        -------
+        big_transitions : pandas.DataFrame
+            A (n_events, n_transitions) dataframe of the NMF distances between
+            splicing events
+        """
+        nmf_space_transitions = self.nmf_space_transitions(
+            groupby, phenotype_transitions, n=n)
+
+        # get the mean and standard dev of the whole array
+        n = nmf_space_transitions.count().sum()
+        mean = nmf_space_transitions.sum().sum() / n
+        std = np.sqrt(np.square(nmf_space_transitions - mean).sum().sum() / n)
+
         big_transitions = nmf_space_transitions[
-            nmf_space_transitions > (mean + 2 * std)].dropna(how='all')
+            nmf_space_transitions > (mean + 2*std)].dropna(how='all')
         return big_transitions
 
     def plot_big_nmf_space_transitions(self, phenotype_groupby,
                                        phenotype_transitions,
                                        phenotype_order, color,
                                        phenotype_to_color,
-                                       phenotype_to_marker):
+                                       phenotype_to_marker, n=5):
+        """Violinplots and NMF transitions of features different in phenotypes
+
+        Plot violinplots and NMF-space transitions of features that have large
+        NMF-space transitions between different phenotypes
+
+        Parameters
+        ----------
+        n : int
+            Minimum number of samples per phenotype, per event
+
+
+        Returns
+        -------
+
+
+        Raises
+        ------
+        """
         big_transitions = self.big_nmf_space_transitions(phenotype_groupby,
-                                                         phenotype_transitions)
+                                                         phenotype_transitions,
+                                                         n=n)
+        nrows = big_transitions.shape[0]
+        ncols = 2
+        figsize = 4 * ncols, 4 * nrows
+
+        fig, axesgrid = plt.subplots(nrows=nrows, ncols=ncols,
+                                     figsize=figsize)
+        if nrows == 1:
+            axesgrid = [axesgrid]
         for feature_id in big_transitions.index:
             self.plot_feature(feature_id, phenotype_groupby=phenotype_groupby,
                               phenotype_order=phenotype_order, color=color,
                               phenotype_to_color=phenotype_to_color,
                               phenotype_to_marker=phenotype_to_marker,
-                              nmf_space=True)
+                              nmf_space=True, fig=fig, axesgrid=axesgrid)
 
 
     def plot_two_samples(self, sample1, sample2, **kwargs):
