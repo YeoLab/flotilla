@@ -138,6 +138,7 @@ class BaseData(object):
         -----
         Any cells not marked as "technical_outliers", "outliers" or "pooled"
         are considered as single-cell samples.
+
         """
         self.data = data
         self.data_original = self.data
@@ -414,6 +415,42 @@ class BaseData(object):
     #     """
     #     raise NotImplementedError
 
+    #     Needed for some clustering algorithms
+    # 
+    #     Parameters
+    #     ----------
+    #     metric : str, optional
+    #         One of any valid scipy.distance metric strings. Default 'euclidean'
+    #     """
+    #     raise NotImplementedError
+    #     self.pdist = squareform(pdist(self.binned, metric=metric))
+    #     return self
+    # 
+    # def correlate(self, method='spearman', between='features'):
+    #     """Find correlations between either splicing/expression measurements
+    #     or cells
+    # 
+    #     Parameters
+    #     ----------
+    #     method : str
+    #         Specify to calculate either 'spearman' (rank-based) or 'pearson'
+    #         (linear) correlation. Default 'spearman'
+    #     between : str
+    #         Either 'features' or 'samples'. Default 'features'
+    #     """
+    #     raise NotImplementedError
+    #     # Stub for choosing between features or samples
+    #     if 'features'.startswith(between):
+    #         pass
+    #     elif 'samples'.startswith(between):
+    #         pass
+    # 
+    # def jsd(self):
+    #     """Jensen-Shannon divergence showing most varying measurements within a
+    #     celltype and between celltypes
+    #     """
+    #     raise NotImplementedError
+
     # TODO.md: Specify dtypes in docstring
     def plot_classifier(self, trait, sample_ids=None, feature_ids=None,
                         predictor_name=None, standardize=True,
@@ -458,7 +495,8 @@ class BaseData(object):
 
         Returns
         -------
-        self : BaseData
+        cv : ClassifierViz
+            Visualziation of the classifier
         """
         # print trait
         plotting_kwargs = {} if plotting_kwargs is None else plotting_kwargs
@@ -480,7 +518,7 @@ class BaseData(object):
         if score_coefficient is not None:
             classifier.score_coefficient = score_coefficient
         classifier.plot(**plotting_kwargs)
-        return self
+        return classifier
 
     def plot_dimensionality_reduction(self, x_pc=1, y_pc=2, sample_ids=None,
                                       feature_ids=None, featurewise=False,
@@ -627,9 +665,11 @@ class BaseData(object):
             samples
         feature_ids : list-like, optional (default=None)
             List of feature ids to use. If None, use all
-        data : pandas.DataFrame
-            A (samples, features) Dataframe of input data to use instead of
-            the :py:attr:`.data` default data
+        data : pandas.DataFrame, optional (default=None)
+            If provided, use this ``data`` instead of this instance's 
+            py:attr:`BaseData.data`. Convenient for when you filtered based on
+            some other criteria, e.g. for splicing events with expression 
+            greater than some threshold
         
         Returns
         -------
@@ -719,7 +759,6 @@ class BaseData(object):
         means : pandas.DataFrame
             (Only if return_means=True) Mean values of the features (columns).
         """
-
         # fill na with mean for each event
         subset = self._subset(data, sample_ids, feature_ids)
         means = subset.mean()
@@ -743,7 +782,6 @@ class BaseData(object):
             return subset, means
         else:
             return subset
-
 
     # def plot_clusteredheatmap(self, sample_ids, feature_ids,
     #                           metric='euclidean',
@@ -1192,7 +1230,7 @@ class BaseData(object):
         std = np.sqrt(np.square(nmf_space_transitions - mean).sum().sum() / n)
 
         big_transitions = nmf_space_transitions[
-            nmf_space_transitions > (mean + 2*std)].dropna(how='all')
+            nmf_space_transitions > (mean + 2 * std)].dropna(how='all')
         return big_transitions
 
     def plot_big_nmf_space_transitions(self, phenotype_groupby,

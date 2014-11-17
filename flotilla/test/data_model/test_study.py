@@ -162,7 +162,8 @@ class TestStudy(object):
                            'expression_feature': ['rename_col',
                                                   'ignore_subset_cols'],
                            'splicing_feature': ['rename_col',
-                                                'ignore_subset_cols']}
+                                                'ignore_subset_cols',
+                                                'expression_id_col']}
         resource_names = keys_from_study.keys()
 
         # Add auto-generated attributes into the true datapackage
@@ -193,8 +194,13 @@ class TestStudy(object):
 
         # Have to check for resources separately because they could be in any
         # order, it just matters that the contents are equal
-        assert sorted(true_datapackage['resources']) == sorted(
-            test_datapackage['resources'])
+        sorted_true = sorted(true_datapackage['resources'],
+                             key=lambda x: x['name'])
+        sorted_test = sorted(test_datapackage['resources'],
+                             key=lambda x: x['name'])
+        for i in range(len(sorted_true)):
+            pdt.assert_equal(sorted(sorted_true[i].items()),
+                             sorted(sorted_test[i].items()))
 
         for key in datapackage_keys_to_ignore:
             for datapackage in datapackages:
