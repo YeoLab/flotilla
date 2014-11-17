@@ -413,13 +413,13 @@ class BaseData(object):
         raise NotImplementedError
 
     # TODO.md: Specify dtypes in docstring
-        def plot_classifier(self, trait, sample_ids=None, feature_ids=None,
-                            predictor_name=None, standardize=True,
-                            score_coefficient=None, data_name=None,
-                            groupby=None,
-                            label_to_color=None, label_to_marker=None,
-                            order=None,
-                            color=None, **plotting_kwargs):
+    def plot_classifier(self, trait, sample_ids=None, feature_ids=None,
+                        predictor_name=None, standardize=True,
+                        score_coefficient=None, data_name=None,
+                        groupby=None,
+                        label_to_color=None, label_to_marker=None,
+                        order=None,
+                        color=None, **plotting_kwargs):
         """Classify samples on boolean or categorical traits
 
         Parameters
