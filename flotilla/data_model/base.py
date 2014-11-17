@@ -478,7 +478,7 @@ class BaseData(object):
 
         if score_coefficient is not None:
             classifier.score_coefficient = score_coefficient
-        classifier(**plotting_kwargs)
+        classifier.plot(**plotting_kwargs)
         return self
 
     def plot_dimensionality_reduction(self, x_pc=1, y_pc=2, sample_ids=None,
@@ -555,7 +555,7 @@ class BaseData(object):
                                       y_pc="pc_" + str(y_pc))
         # pca(show_vectors=True,
         # **plotting_kwargs)
-        return visualized(title=title,
+        return visualized.plot(title=title,
                           plot_violins=plot_violins, **plotting_kwargs)
 
     def plot_pca(self, **kwargs):
@@ -786,7 +786,7 @@ class BaseData(object):
                               groupby=outlier_detector.outliers,
                               )
 
-        dv(show_point_labels=show_point_labels)
+        dv.plot(show_point_labels=show_point_labels)
         #self.plot_pca(self, groupby=outlier_detector.outliers,
         #              title=outlier_detector.title,
         #              **pca_args)
