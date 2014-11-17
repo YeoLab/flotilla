@@ -393,7 +393,8 @@ class Study(object):
         sys.stdout.write('{}\tParsing datapackage to create a Study '
                          'object\n'.format(timestamp()))
         dfs = {}
-        kwargs = {}        datapackage_name = datapackage['name']
+        kwargs = {}
+        datapackage_name = datapackage['name']
 
         for resource in datapackage['resources']:
             if 'url' in resource:
