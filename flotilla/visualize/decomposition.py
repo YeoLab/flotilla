@@ -191,7 +191,7 @@ class DecompositionViz(object):
             self.pc_loadings_labels[pc] = labels
             self.top_features.update(labels)
 
-    def __call__(self, ax=None, title='', plot_violins=True,
+    def __call__(self, ax=None, title='', plot_violins=False,
                  show_point_labels=False,
                  show_vectors=True,
                  show_vector_labels=True,
@@ -416,12 +416,30 @@ class DecompositionViz(object):
                 None
             outliers = self.outliers[feature_id] if self.outliers is not None \
                 else None
-            title = '{}\n{}'.format(feature_id, renamed)
+
+            if isinstance(feature_id, tuple):
+                feature_id = feature_id[0][:20]
+            if renamed != feature_id:
+                title = '{}\n{}'.format(feature_id, renamed)
+            else:
+                title = feature_id
+            singles.name = renamed
+            pooled.name = renamed
+            outliers.name = renamed
+            # import pdb; pdb.set_trace()
             violinplot(singles, pooled_data=pooled, outliers=outliers,
                        groupby=self.groupby, color_ordered=self.color_ordered,
                        order=self.order, title=title,
                        ax=ax, data_type=self.data_type,
                        **self.violinplot_kws)
+
+            if self.data_type == 'splicing':
+                ax.set_ylabel('$\Psi$')
+                ax.set_ylim(0, 1)
+            elif self.data_type == 'expression':
+                ax.set_ylabel('Expression')
+            else:
+                ax.set_ylabel('')
 
         # Clear any unused axes
         for ax in axes.flat:
