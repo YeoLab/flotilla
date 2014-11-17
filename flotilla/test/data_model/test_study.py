@@ -6,17 +6,13 @@ import copy
 import json
 import os
 
-import matplotlib as mpl
-
-# Tell matplotlib to not make any window popups
-mpl.use('Agg')
-
 import matplotlib.pyplot as plt
 import pandas.util.testing as pdt
 import pytest
 import semantic_version
 
 from flotilla.datapackage import get_resource_from_name
+
 
 def name_to_resource(datapackage, name):
     """
@@ -31,45 +27,46 @@ def name_to_resource(datapackage, name):
 
 class TestStudy(object):
     @pytest.fixture
-    def toy_study(self, example_data):
+    def toy_study(self, shalek2013_data):
         from flotilla import Study
 
-        return Study(sample_metadata=example_data.metadata,
+        return Study(sample_metadata=shalek2013_data.metadata,
                      version='0.1.0',
-                     expression_data=example_data.expression,
-                     splicing_data=example_data.splicing)
+                     expression_data=shalek2013_data.expression,
+                     splicing_data=shalek2013_data.splicing)
 
-    def test_toy_init(self, toy_study, example_data):
+    def test_toy_init(self, toy_study, shalek2013_data):
         from flotilla.data_model import ExpressionData, SplicingData
 
-        outliers = example_data.metadata.index[
-            example_data.metadata.outlier.astype(bool)]
-        expression = ExpressionData(data=example_data.expression,
+        outliers = shalek2013_data.metadata.index[
+            shalek2013_data.metadata.outlier.astype(bool)]
+        expression = ExpressionData(data=shalek2013_data.expression,
                                     outliers=outliers)
-        splicing = SplicingData(data=example_data.splicing, outliers=outliers)
+        splicing = SplicingData(data=shalek2013_data.splicing,
+                                outliers=outliers)
 
         pdt.assert_frame_equal(toy_study.metadata.data,
-                               example_data.metadata)
+                               shalek2013_data.metadata)
         pdt.assert_frame_equal(toy_study.expression.data,
                                expression.data)
         pdt.assert_frame_equal(toy_study.splicing.data, splicing.data)
         # There's more to test for correct initialization but this is barebones
         # for now
 
-    def test_real_init(self, example_datapackage_path):
+    def test_real_init(self, shalek2013_datapackage_path):
         import flotilla
 
-        flotilla.embark(example_datapackage_path, load_species_data=False)
+        flotilla.embark(shalek2013_datapackage_path, load_species_data=False)
 
-    def test_plot_pca(self, study, feature_subset):
-        study.plot_pca(feature_subset=feature_subset)
+    def test_plot_pca(self, shalek2013, feature_subset):
+        shalek2013.plot_pca(feature_subset=feature_subset)
 
-    def test_plot_graph(self, study):
-        study.plot_graph(feature_of_interest=None)
+    def test_plot_graph(self, shalek2013):
+        shalek2013.plot_graph(feature_of_interest=None)
         plt.close('all')
 
-    def test_plot_classifier(self, study):
-        study.plot_classifier('pooled')
+    def test_plot_classifier(self, shalek2013):
+        shalek2013.plot_classifier('pooled')
         plt.close('all')
 
     @pytest.fixture(params=[None, 'pooled_col', 'phenotype_col'])
@@ -85,9 +82,9 @@ class TestStudy(object):
         return request.param
 
     @pytest.fixture
-    def datapackage(self, example_datapackage, metadata_none_key,
+    def datapackage(self, shalek2013_datapackage, metadata_none_key,
                     expression_none_key, splicing_none_key, monkeypatch):
-        datapackage = copy.deepcopy(example_datapackage)
+        datapackage = copy.deepcopy(shalek2013_datapackage)
         datatype_to_key = {'metadata': metadata_none_key,
                            'expression': expression_none_key,
                            'splicing': splicing_none_key}
@@ -99,8 +96,8 @@ class TestStudy(object):
         return datapackage
 
     @pytest.fixture
-    def datapackage_dir(self, example_datapackage_path):
-        return os.path.dirname(example_datapackage_path)
+    def datapackage_dir(self, shalek2013_datapackage_path):
+        return os.path.dirname(shalek2013_datapackage_path)
 
     def test_from_datapackage(self, datapackage, datapackage_dir):
         import flotilla
@@ -131,12 +128,12 @@ class TestStudy(object):
                == expression_feature_rename_col
         assert study.splicing.feature_rename_col == splicing_feature_rename_col
 
-    def test_save(self, example_datapackage_path, example_datapackage, tmpdir,
-                  monkeypatch):
+    def test_save(self, shalek2013_datapackage_path, shalek2013_datapackage,
+                  tmpdir, monkeypatch):
         import flotilla
         from flotilla.datapackage import get_resource_from_name
 
-        study = flotilla.embark(example_datapackage_path,
+        study = flotilla.embark(shalek2013_datapackage_path,
                                 load_species_data=False)
         study_name = 'test_save'
         study.save(study_name, flotilla_dir=tmpdir)
@@ -146,7 +143,7 @@ class TestStudy(object):
 
         with open('{}/datapackage.json'.format(save_dir)) as f:
             test_datapackage = json.load(f)
-        true_datapackage = copy.deepcopy(example_datapackage)
+        true_datapackage = copy.deepcopy(shalek2013_datapackage)
 
         assert study_name == save_dir.purebasename
 
@@ -205,6 +202,13 @@ class TestStudy(object):
         pdt.assert_dict_equal(test_datapackage,
                               true_datapackage)
 
+    def test_nmf_space_positions(self, chr22):
+        test_positions = chr22.nmf_space_positions()
+
+        true_positions = chr22.splicing.nmf_space_positions(
+            groupby=chr22.sample_id_to_phenotype)
+
+        pdt.assert_frame_equal(test_positions, true_positions)
 
 # def test_write_package(tmpdir):
 # from flotilla.data_model import StudyFactory
