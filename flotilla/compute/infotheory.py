@@ -73,6 +73,12 @@ def kld(p, q):
         dataframe. E.g. between 1st column in p and 1st column in q, and 2nd
         column in p and 2nd column in q.
 
+    Raises
+    ------
+    ValueError
+        If the data provided is not a probability distribution, i.e. it has
+        negative values or its columns do not sum to 1, raise ValueError
+
     Notes
     -----
     The input to this function must be probability distributions, not raw
@@ -112,6 +118,12 @@ def jsd(p, q):
     jsd : pandas.Series
         Jensen-Shannon divergence of each column with the same names between
         p and q
+
+    Raises
+    ------
+    ValueError
+        If the data provided is not a probability distribution, i.e. it has
+        negative values or its columns do not sum to 1, raise ValueError
     """
     if np.any(p < 0) or np.any(q < 0):
         raise ValueError('The columns of the input dataframes must be '
@@ -144,6 +156,12 @@ def entropy(binned, base=2):
     -------
     entropy : pandas.Seires
         Entropy values for each column of the dataframe.
+
+    Raises
+    ------
+    ValueError
+        If the data provided is not a probability distribution, i.e. it has
+        negative values or its columns do not sum to 1, raise ValueError
     """
     if np.any(binned < 0):
         raise ValueError('The columns of the input dataframe must be '
