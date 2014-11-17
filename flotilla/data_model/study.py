@@ -585,21 +585,8 @@ class Study(object):
         replace the data in self.expression and self.splicing with the smaller version"""
         outliers = self.metadata.data['outlier'][
             self.metadata.data['outlier']].index
-        try:
-            sys.stdout.write("Dropping expression outliers\n")
-
-            self.expression.data = \
-                self.expression.drop_outliers(self.expression.data, outliers)[
-                    0]
-        except:
-            sys.stderr.write("Couldn't drop expression outliers\n")
-
-        try:
-            sys.stdout.write("Dropping splicing outliers\n")
-            self.splicing.data = \
-                self.splicing.drop_outliers(self.splicing.data, outliers)[0]
-        except:
-            sys.stderr.write("Couldn't drop splicing outliers")
+        self.expression.outlier_samples = outliers
+        self.splicing.outlier_samples = outliers
 
     def jsd(self):
         """Performs Jensen-Shannon Divergence on both splicing and expression
