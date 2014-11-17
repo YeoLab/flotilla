@@ -5,6 +5,8 @@ Information-theoretic calculations
 import numpy as np
 import pandas as pd
 
+EPSILON = np.finfo(float).eps
+
 
 def bin_range_strings(bins):
     """Given a list of bins, make a list of strings of those bin ranges
@@ -79,8 +81,8 @@ def kld(p, q):
     if np.any(p < 0) or np.any(q < 0):
         raise ValueError('The columns of the input dataframes must be '
                          '**non-negative** probability distributions')
-    if np.any(p.sum() != np.ones(p.shape[1])) \
-            or np.any(q.sum() != np.ones(q.shape[1])):
+    if np.any(p.sum() - np.ones(p.shape[1]) > EPSILON) \
+            or np.any(q.sum() - np.ones(q.shape[1]) > EPSILON):
         raise ValueError('The columns of the input dataframe must be '
                          'probability distributions that **sum to 1**')
     # If one of them is zero, then the other should be considered to be 0.
@@ -114,10 +116,11 @@ def jsd(p, q):
     if np.any(p < 0) or np.any(q < 0):
         raise ValueError('The columns of the input dataframes must be '
                          '**non-negative** probability distributions')
-    if np.any(p.sum() != np.ones(p.shape[1])) \
-            or np.any(q.sum() != np.ones(q.shape[1])):
+    if np.any(p.sum() - np.ones(p.shape[1]) > EPSILON) \
+            or np.any(q.sum() - np.ones(q.shape[1]) > EPSILON):
         raise ValueError('The columns of the input dataframe must be '
                          'probability distributions that **sum to 1**')
+
     weight = 0.5
     m = weight * (p + q)
 
@@ -145,7 +148,7 @@ def entropy(binned, base=2):
     if np.any(binned < 0):
         raise ValueError('The columns of the input dataframe must be '
                          '**non-negative** probability distributions')
-    if np.any(binned.sum() != np.ones(binned.shape[1])):
+    if np.any(binned.sum() - np.ones(binned.shape[1]) > EPSILON):
         raise ValueError('The columns of the input dataframe must be '
                          'probability distributions that **sum to 1**')
 

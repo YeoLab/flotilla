@@ -22,11 +22,24 @@ def df2():
     return pd.DataFrame(np.random.uniform(size=200).reshape(10, 20))
 
 
-@pytest.fixture
-def p(df1, bins):
+@pytest.fixture(params=[None,
+                        pytest.mark.xfail('negative',
+                                          reason='Should not input data that '
+                                                 'has negative values (not a '
+                                                 'probability distribution)'),
+                        pytest.mark.xfail('sum > 1',
+                                          reason='Should not input data that '
+                                                 'does not sum to 1 (not a '
+                                                 'probability distribution)')])
+def p(request, df1, bins):
     from flotilla.compute.infotheory import binify
 
-    return binify(df1, bins)
+    if request.param is None:
+        return binify(df1, bins)
+    elif request.param == 'negative':
+        return pd.DataFrame(np.random.randn(size=200).reshape(10, 20))
+    elif request.param == 'sum > 1':
+        return df1
 
 
 @pytest.fixture
