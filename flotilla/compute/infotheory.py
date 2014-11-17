@@ -81,7 +81,7 @@ def kld(p, q):
                          '**non-negative** probability distributions')
     if np.any(p.sum() != np.ones(p.shape[1])) \
             or np.any(q.sum() != np.ones(q.shape[1])):
-        raise ValueError('The columns of the input matrices must be '
+        raise ValueError('The columns of the input dataframe must be '
                          'probability distributions that **sum to 1**')
     # If one of them is zero, then the other should be considered to be 0.
     # In this problem formulation, log0 = 0
@@ -116,7 +116,7 @@ def jsd(p, q):
                          '**non-negative** probability distributions')
     if np.any(p.sum() != np.ones(p.shape[1])) \
             or np.any(q.sum() != np.ones(q.shape[1])):
-        raise ValueError('The columns of the input matrices must be '
+        raise ValueError('The columns of the input dataframe must be '
                          'probability distributions that **sum to 1**')
     weight = 0.5
     m = weight * (p + q)
@@ -142,4 +142,11 @@ def entropy(binned, base=2):
     entropy : pandas.Seires
         Entropy values for each column of the dataframe.
     """
+    if np.any(binned < 0):
+        raise ValueError('The columns of the input dataframe must be '
+                         '**non-negative** probability distributions')
+    if np.any(binned.sum() != np.ones(binned.shape[1])):
+        raise ValueError('The columns of the input dataframe must be '
+                         'probability distributions that **sum to 1**')
+
     return -((np.log(binned) / np.log(base)) * binned).sum(axis=0)
