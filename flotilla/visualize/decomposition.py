@@ -191,7 +191,7 @@ class DecompositionViz(object):
             self.pc_loadings_labels[pc] = labels
             self.top_features.update(labels)
 
-    def __call__(self, ax=None, title='', plot_violins=False,
+    def plot(self, ax=None, title='', plot_violins=False,
                  show_point_labels=False,
                  show_vectors=True,
                  show_vector_labels=True,
@@ -224,6 +224,7 @@ class DecompositionViz(object):
         if plot_violins and not self.featurewise and self.singles is not None:
             self.plot_violins()
         return self
+
 
     def shorten(self, x):
         if len(x) > self.max_char_width:
