@@ -332,7 +332,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">pc_loadings_labels</span><span class="p">[</span><span class="n">pc</span><span class="p">]</span> <span class="o">=</span> <span class="n">labels</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">top_features</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">plot_violins</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+<div class="viewcode-block" id="DecompositionViz.plot"><a class="viewcode-back" href="../../../flotilla.visualize.decomposition.html#flotilla.visualize.decomposition.DecompositionViz.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">plot_violins</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
                  <span class="n">show_point_labels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
                  <span class="n">show_vectors</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
                  <span class="n">show_vector_labels</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
@@ -366,6 +366,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">plot_violins</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span>
 
+</div>
 <div class="viewcode-block" id="DecompositionViz.shorten"><a class="viewcode-back" href="../../../flotilla.visualize.decomposition.html#flotilla.visualize.decomposition.DecompositionViz.shorten">[docs]</a>    <span class="k">def</span> <span class="nf">shorten</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_char_width</span><span class="p">:</span>
             <span class="k">return</span> <span class="s">&#39;{}...&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">max_char_width</span><span class="p">])</span>
