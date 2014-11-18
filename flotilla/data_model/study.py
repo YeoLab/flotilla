@@ -1295,7 +1295,7 @@ class Study(object):
                                       version=version,
                                       flotilla_dir=flotilla_dir)
 
-    @cached_property
+    @cached_property()
     def tidy_splicing_with_expression(self):
         """A tall 'tidy' dataframe of
 
