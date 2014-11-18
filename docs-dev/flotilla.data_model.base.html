@@ -155,8 +155,9 @@
 <dt id="flotilla.data_model.base.BaseData">
 <em class="property">class </em><tt class="descclassname">flotilla.data_model.base.</tt><tt class="descname">BaseData</tt><big>(</big><em>data</em>, <em>thresh=-inf</em>, <em>minimum_samples=0</em>, <em>feature_data=None</em>, <em>feature_rename_col=None</em>, <em>feature_ignore_subset_cols=None</em>, <em>technical_outliers=None</em>, <em>outliers=None</em>, <em>pooled=None</em>, <em>predictor_config_manager=None</em>, <em>data_type=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
-<p>Base class for biological data measurements. All data types in flotilla
-inherit from this</p>
+<p>Base class for biological data measurements.</p>
+<p>All data types in flotilla inherit from this, and have all functionality
+described here</p>
 <p class="rubric">Attributes</p>
 <table border="1" class="longtable docutils">
 <colgroup>
@@ -297,8 +298,37 @@ for this instance.</p>
 are considered as single-cell samples.</p>
 <dl class="method">
 <dt id="flotilla.data_model.base.BaseData.big_nmf_space_transitions">
-<tt class="descname">big_nmf_space_transitions</tt><big>(</big><em>groupby</em>, <em>phenotype_transitions</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.big_nmf_space_transitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.big_nmf_space_transitions" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<tt class="descname">big_nmf_space_transitions</tt><big>(</big><em>groupby</em>, <em>phenotype_transitions</em>, <em>n=5</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.big_nmf_space_transitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.big_nmf_space_transitions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get features whose change in NMF space between phenotypes is large</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>groupby</strong> : mappable</p>
+<blockquote>
+<div><p>A sample id to phenotype group mapping</p>
+</div></blockquote>
+<p><strong>phenotype_transitions</strong> : list of length-2 tuples of str</p>
+<blockquote>
+<div><p>List of (&#8216;phenotype1&#8217;, &#8216;phenotype2&#8217;) transitions whose change in
+distribution you are interested in</p>
+</div></blockquote>
+<p><strong>n</strong> : int</p>
+<blockquote>
+<div><p>Minimum number of samples per phenotype, per event</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>big_transitions</strong> : pandas.DataFrame</p>
+<blockquote class="last">
+<div><p>A (n_events, n_transitions) dataframe of the NMF distances between
+splicing events</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="flotilla.data_model.base.BaseData.binify">
@@ -312,7 +342,7 @@ are considered as single-cell samples.</p>
 
 <dl class="method">
 <dt id="flotilla.data_model.base.BaseData.classify">
-<tt class="descname">classify</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.classify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.classify" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">classify</tt><big>(</big><em>trait</em>, <em>sample_ids</em>, <em>feature_ids</em>, <em>standardize=True</em>, <em>data_name='expression'</em>, <em>predictor_name='ExtraTreesClassifier'</em>, <em>predictor_obj=None</em>, <em>predictor_scoring_fun=None</em>, <em>score_cutoff_fun=None</em>, <em>n_features_dependent_kwargs=None</em>, <em>constant_kwargs=None</em>, <em>plotting_kwargs=None</em>, <em>color=None</em>, <em>groupby=None</em>, <em>label_to_color=None</em>, <em>label_to_marker=None</em>, <em>order=None</em>, <em>bins=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.classify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.classify" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make and memoize a predictor on a categorical trait (associated
 with samples) subset of genes</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -423,8 +453,65 @@ what the crazy IDs are <tt class="xref py py-meth docutils literal"><span class=
 
 <dl class="method">
 <dt id="flotilla.data_model.base.BaseData.nmf_space_positions">
-<tt class="descname">nmf_space_positions</tt><big>(</big><em>groupby</em>, <em>min_samples_per_group=5</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.nmf_space_positions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.nmf_space_positions" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<tt class="descname">nmf_space_positions</tt><big>(</big><em>groupby</em>, <em>n=5</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.nmf_space_positions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.nmf_space_positions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate NMF-space position of splicing events in phenotype groups</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>groupby</strong> : mappable</p>
+<blockquote>
+<div><p>A sample id to phenotype mapping</p>
+</div></blockquote>
+<p><strong>n</strong> : int</p>
+<blockquote>
+<div><p>Minimum samples required per group</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>df</strong> : pandas.DataFrame</p>
+<blockquote class="last">
+<div><p>A (n_events, n_groups) dataframe of NMF positions</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.base.BaseData.nmf_space_transitions">
+<tt class="descname">nmf_space_transitions</tt><big>(</big><em>groupby</em>, <em>phenotype_transitions</em>, <em>n=5</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.nmf_space_transitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.nmf_space_transitions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get distance in NMF space of different splicing events</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>groupby</strong> : mappable</p>
+<blockquote>
+<div><p>A sample id to phenotype mapping</p>
+</div></blockquote>
+<p><strong>phenotype_transitions</strong> : list of str pairs</p>
+<blockquote>
+<div><p>Which phenotype follows from one to the next, for calculating
+distances between</p>
+</div></blockquote>
+<p><strong>n</strong> : int</p>
+<blockquote>
+<div><p>Minimum number of samples per phenotype, per event</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>nmf_space_transitions</strong> : pandas.DataFrame</p>
+<blockquote class="last">
+<div><p>A (n_events, n_phenotype_transitions) sized DataFrame of the
+distances of these events in NMF space</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="flotilla.data_model.base.BaseData.outliers">
@@ -434,8 +521,23 @@ what the crazy IDs are <tt class="xref py py-meth docutils literal"><span class=
 
 <dl class="method">
 <dt id="flotilla.data_model.base.BaseData.plot_big_nmf_space_transitions">
-<tt class="descname">plot_big_nmf_space_transitions</tt><big>(</big><em>phenotype_groupby</em>, <em>phenotype_transitions</em>, <em>phenotype_order</em>, <em>color</em>, <em>phenotype_to_color</em>, <em>phenotype_to_marker</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.plot_big_nmf_space_transitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.plot_big_nmf_space_transitions" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<tt class="descname">plot_big_nmf_space_transitions</tt><big>(</big><em>phenotype_groupby</em>, <em>phenotype_transitions</em>, <em>phenotype_order</em>, <em>color</em>, <em>phenotype_to_color</em>, <em>phenotype_to_marker</em>, <em>n=5</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.plot_big_nmf_space_transitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.plot_big_nmf_space_transitions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Violinplots and NMF transitions of features different in phenotypes</p>
+<p>Plot violinplots and NMF-space transitions of features that have large
+NMF-space transitions between different phenotypes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>n</strong> : int</p>
+<blockquote class="last">
+<div><p>Minimum number of samples per phenotype, per event</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="flotilla.data_model.base.BaseData.plot_classifier">
@@ -502,7 +604,7 @@ features and highly expressed features on the same playing field</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">self</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>self</strong> : BaseData</p>
 </td>
 </tr>
 </tbody>
@@ -592,8 +694,8 @@ just want a quick look at the PCA.</p>
 
 <dl class="method">
 <dt id="flotilla.data_model.base.BaseData.plot_feature">
-<tt class="descname">plot_feature</tt><big>(</big><em>feature_id</em>, <em>sample_ids=None</em>, <em>phenotype_groupby=None</em>, <em>phenotype_order=None</em>, <em>color=None</em>, <em>phenotype_to_color=None</em>, <em>phenotype_to_marker=None</em>, <em>xlabel=None</em>, <em>ylabel=None</em>, <em>nmf_space=False</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.plot_feature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.plot_feature" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot the violinplot of a splicing event (should also show NMF movement)</p>
+<tt class="descname">plot_feature</tt><big>(</big><em>feature_id</em>, <em>sample_ids=None</em>, <em>phenotype_groupby=None</em>, <em>phenotype_order=None</em>, <em>color=None</em>, <em>phenotype_to_color=None</em>, <em>phenotype_to_marker=None</em>, <em>xlabel=None</em>, <em>ylabel=None</em>, <em>nmf_space=False</em>, <em>fig=None</em>, <em>axesgrid=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.plot_feature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.plot_feature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the violinplot of a feature. Have the option to show NMF movement</p>
 </dd></dl>
 
 <dl class="method">
@@ -715,8 +817,33 @@ mean-center via sklearn.preprocessing.StandardScaler</p>
 
 <dl class="staticmethod">
 <dt id="flotilla.data_model.base.BaseData.transition_distances">
-<em class="property">static </em><tt class="descname">transition_distances</tt><big>(</big><em>df</em>, <em>transitions</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.transition_distances"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.transition_distances" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property">static </em><tt class="descname">transition_distances</tt><big>(</big><em>positions</em>, <em>transitions</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.transition_distances"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.transition_distances" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get NMF distance of features between phenotype transitions</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>positions</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A ((n_features, phenotypes), 2) MultiIndex dataframe of the NMF
+positions of splicing events for different phenotypes</p>
+</div></blockquote>
+<p><strong>transitions</strong> : list of 2-string tuples</p>
+<blockquote>
+<div><p>List of (phenotype1, phenotype2) transitions</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>transitions</strong> : pandas.DataFrame</p>
+<blockquote class="last">
+<div><p>A (n_features, n_transitions) DataFrame of the NMF distances
+of features between different phenotypes</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="flotilla.data_model.base.BaseData.variant">
