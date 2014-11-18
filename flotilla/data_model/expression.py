@@ -35,6 +35,7 @@ class ExpressionData(BaseData):
             technical_outliers=technical_outliers)
         self.data_type = 'expression'
         self.thresh = thresh
+        self.plus_one = plus_one
 
         if plus_one:
             self.data += 1
