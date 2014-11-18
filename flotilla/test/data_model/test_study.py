@@ -150,7 +150,8 @@ class TestStudy(object):
         resource_keys_to_ignore = ('compression', 'format', 'path', 'url')
         keys_from_study = {'splicing': [],
                            'expression': ['thresh',
-                                          'log_base'],
+                                          'log_base',
+                                          'plus_one'],
                            'metadata': ['phenotype_order',
                                         'phenotype_to_color',
                                         'phenotype_col',
