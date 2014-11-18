@@ -6,11 +6,19 @@ This is a patch release, with non-breaking changes from v0.2.2.
 Plotting functions
 ~~~~~~~~~~~~~~~~~~
 
-- Add :py:class:`Study`-level NMF
+- Add :py:class:`.Study`-level NMF space transitions/positions
 
 Bug Fixes
 ~~~~~~~~~
 
 - :py:func:`embark` wouldn't work if `metadata` didn't have a `pooled` column,
   now it does
+- :py:func:`.BaseData.drop_outliers` would actually drop samples from the data,
+  but we never want to remove data, only mark it as something to be removed so
+  all the original data is there
 
+Documentation
+~~~~~~~~~~~~~
+
+- Restore some lost documentation on :py:class:`.BaseData` and
+  :py:class:`.Study`
