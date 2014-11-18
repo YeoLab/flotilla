@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>flotilla.compute.infotheory &mdash; flotilla 0.2.3dev documentation</title>
+    <title>flotilla.compute.infotheory &mdash; flotilla 0.2.3 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.2.3dev',
+        VERSION:     '0.2.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -29,7 +29,7 @@
     <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../../../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
-    <link rel="top" title="flotilla 0.2.3dev documentation" href="../../../index.html" />
+    <link rel="top" title="flotilla 0.2.3 documentation" href="../../../index.html" />
     <link rel="up" title="flotilla" href="../../flotilla.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -50,7 +50,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           Flotilla</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2.3dev</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -75,6 +75,8 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../whatsnew.html">What&#8217;s new in the package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-3-november-17th-2014">v0.2.3 (November 17th, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-2-november-7th-2014">v0.2.2 (November 7th, 2014)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-1-november-6th-2014">v0.2.1 (November 6th, 2014)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
 </ul>
@@ -146,6 +148,8 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 
+<span class="n">EPSILON</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
+
 
 <div class="viewcode-block" id="bin_range_strings"><a class="viewcode-back" href="../../../flotilla.compute.infotheory.html#flotilla.compute.infotheory.bin_range_strings">[docs]</a><span class="k">def</span> <span class="nf">bin_range_strings</span><span class="p">(</span><span class="n">bins</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Given a list of bins, make a list of strings of those bin ranges</span>
@@ -212,11 +216,24 @@
 <span class="sd">        dataframe. E.g. between 1st column in p and 1st column in q, and 2nd</span>
 <span class="sd">        column in p and 2nd column in q.</span>
 
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the data provided is not a probability distribution, i.e. it has</span>
+<span class="sd">        negative values or its columns do not sum to 1, raise ValueError</span>
+
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    The input to this function must be probability distributions, not raw</span>
 <span class="sd">    values. Otherwise, the output makes no sense.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">p</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">q</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;The columns of the input dataframes must be &#39;</span>
+                         <span class="s">&#39;**non-negative** probability distributions&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">EPSILON</span><span class="p">)</span> \
+            <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">EPSILON</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;The columns of the input dataframe must be &#39;</span>
+                         <span class="s">&#39;probability distributions that **sum to 1**&#39;</span><span class="p">)</span>
     <span class="c"># If one of them is zero, then the other should be considered to be 0.</span>
     <span class="c"># In this problem formulation, log0 = 0</span>
     <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
@@ -244,7 +261,21 @@
 <span class="sd">    jsd : pandas.Series</span>
 <span class="sd">        Jensen-Shannon divergence of each column with the same names between</span>
 <span class="sd">        p and q</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the data provided is not a probability distribution, i.e. it has</span>
+<span class="sd">        negative values or its columns do not sum to 1, raise ValueError</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">p</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">q</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;The columns of the input dataframes must be &#39;</span>
+                         <span class="s">&#39;**non-negative** probability distributions&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">EPSILON</span><span class="p">)</span> \
+            <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">EPSILON</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;The columns of the input dataframe must be &#39;</span>
+                         <span class="s">&#39;probability distributions that **sum to 1**&#39;</span><span class="p">)</span>
+
     <span class="n">weight</span> <span class="o">=</span> <span class="mf">0.5</span>
     <span class="n">m</span> <span class="o">=</span> <span class="n">weight</span> <span class="o">*</span> <span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="n">q</span><span class="p">)</span>
 
@@ -268,7 +299,20 @@
 <span class="sd">    -------</span>
 <span class="sd">    entropy : pandas.Seires</span>
 <span class="sd">        Entropy values for each column of the dataframe.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the data provided is not a probability distribution, i.e. it has</span>
+<span class="sd">        negative values or its columns do not sum to 1, raise ValueError</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">binned</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;The columns of the input dataframe must be &#39;</span>
+                         <span class="s">&#39;**non-negative** probability distributions&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">binned</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">binned</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">EPSILON</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;The columns of the input dataframe must be &#39;</span>
+                         <span class="s">&#39;probability distributions that **sum to 1**&#39;</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="o">-</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">binned</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">base</span><span class="p">))</span> <span class="o">*</span> <span class="n">binned</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
 </pre></div>
 
