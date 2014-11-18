@@ -36,12 +36,6 @@ To contribute:
 3.    When changes on that branch are finished, open a [pull request](https://help.github.com/articles/using-pull-requests/).
 
 4.    Once someone has reviewed and approved of the changes on your branch, you should immediately merge your branch into the master.
-<ol>
-<li>Make a branch off of the master.</li>
-<li>Commit updates exclusively to your branch.</li>
-<li>When changes on that branch are finished, open a [pull request](https://help.github.com/articles/using-pull-requests/).</li>
-<li>Once someone has reviewed and approved of the changes on your branch, you should immediately merge your branch into the master.</li>
-</ol>
 
 Naming conventions
 ------------------
