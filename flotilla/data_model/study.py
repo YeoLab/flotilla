@@ -1322,7 +1322,6 @@ class Study(object):
         splicing_tidy['common_id'] = splicing_tidy.miso_id.map(
             self.splicing.feature_data[self.splicing.feature_expression_id_col])
 
-        import pdb; pdb.set_trace()
         splicing_tidy = splicing_tidy.dropna()
 
         # Tidify expression
