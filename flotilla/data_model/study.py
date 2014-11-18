@@ -1384,7 +1384,7 @@ class Study(object):
         splicing_tidy = splicing_tidy.dropna()
 
         # Tidify expression
-        expression = self.expression.data
+        expression = self.expression.data_original
         expression_index_name = expression.index.name
         expression_index_name = 'index' if expression_index_name is None \
             else expression_index_name
@@ -1410,16 +1410,13 @@ class Study(object):
         expression_thresh : float
             Minimum expression value, of the original input. E.g. if the
             original input is already log-transformed, then this threshold is
-            on the log values. Otherwise, this threshold is on the raw input,
-            e.g. TPM or FPKM
+            on the log values.
 
         Returns
         -------
         psi : pandas.DataFrame
             A (n_samples, n_features)
 
-        Raises
-        ------
         """
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
         splicing_with_expression = \
