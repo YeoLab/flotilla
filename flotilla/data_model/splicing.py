@@ -330,6 +330,10 @@ class SplicingData(BaseData):
                                                phenotype_to_marker, xlabel,
                                                ylabel, nmf_space=nmf_space,
                                                fig=fig, axesgrid=axesgrid)
+        fig = plt.gcf()
+        for ax in fig.axes:
+            ax.set_ylim(0, 1)
+            ax.set_ylabel('$\Psi$')
 
     @memoize
     def pooled_inconsistent(self, sample_ids, feature_ids=None,
