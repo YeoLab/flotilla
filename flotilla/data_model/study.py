@@ -1361,13 +1361,13 @@ class Study(object):
 
     @cached_property()
     def tidy_splicing_with_expression(self):
-        """A tall 'tidy' dataframe of
+        """A tall 'tidy' dataframe of samples with expression and splicing
 
         :return:
         :rtype:
         """
+        # Tidify splicing
         splicing = self.splicing.data
-
         splicing_index_name = splicing.index.name
         splicing_index_name = 'index' if splicing_index_name is None \
             else splicing_index_name
@@ -1380,6 +1380,9 @@ class Study(object):
                                                           'sample_id'})
         splicing_tidy['common_id'] = splicing_tidy.miso_id.map(
             self.splicing.feature_data[self.splicing.feature_expression_id_col])
+        splicing_tidy = splicing_tidy.dropna()
+
+        # Tidify expression
         expression = self.expression.data
         expression_index_name = expression.index.name
         expression_index_name = 'index' if expression_index_name is None \
@@ -1391,6 +1394,7 @@ class Study(object):
                                   var_name='common_id')
         # if expression_index_name == 'index':
         expression_tidy = expression_tidy.rename(columns={'index': 'sample_id'})
+        expression_tidy = expression_tidy.dropna()
 
         splicing_tidy.set_index(['sample_id', 'common_id'], inplace=True)
         expression_tidy.set_index(['sample_id', 'common_id'], inplace=True)
