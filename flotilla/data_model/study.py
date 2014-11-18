@@ -1342,7 +1342,7 @@ class Study(object):
         splicing_tidy.set_index(['sample_id', 'common_id'], inplace=True)
         expression_tidy.set_index(['sample_id', 'common_id'], inplace=True)
 
-        return splicing_tidy.join(expression_tidy)
+        return splicing_tidy.join(expression_tidy, how='inner')
 
     def filter_splicing_on_expression(self, expression_thresh, sample_subset=None):
         """Filter splicing events on expression values
