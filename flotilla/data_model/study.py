@@ -23,7 +23,7 @@ from ..visualize.color import blue
 from ..visualize.ipython_interact import Interactive
 from ..datapackage import FLOTILLA_DOWNLOAD_DIR
 from ..util import load_csv, load_json, load_tsv, load_gzip_pickle_df, \
-    load_pickle_df, timestamp
+    load_pickle_df, timestamp, cached_property
 
 
 SPECIES_DATA_PACKAGE_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects'
@@ -1295,7 +1295,45 @@ class Study(object):
                                       version=version,
                                       flotilla_dir=flotilla_dir)
 
-    def filter_splicing_on_expression(self, expression_thresh, sample_ids=None):
+    @cached_property
+    def tidy_splicing_with_expression(self):
+        """A tall 'tidy' dataframe of
+
+        :return:
+        :rtype:
+        """
+        splicing = self.splicing.data
+
+        splicing_index_name = splicing.index.name
+        splicing_index_name = 'index' if splicing_index_name is None \
+            else splicing_index_name
+
+        splicing_tidy = pd.melt(splicing.reset_index(),
+                                id_vars=splicing_index_name,
+                                value_name='psi',
+                                var_name='miso_id')
+        splicing_tidy = splicing_tidy.rename(columns={splicing_index_name:
+                                                          'sample_id'})
+        splicing_tidy['common_id'] = splicing_tidy.miso_id.map(
+            self.splicing.feature_data[self.splicing.feature_expression_id_col])
+        expression = self.expression.data
+        expression_index_name = expression.index.name
+        expression_index_name = 'index' if expression_index_name is None \
+            else expression_index_name
+
+        expression_tidy = pd.melt(expression.reset_index(),
+                                  id_vars=expression_index_name,
+                                  value_name='expression',
+                                  var_name='common_id')
+        # if expression_index_name == 'index':
+        expression_tidy = expression_tidy.rename(columns={'index': 'sample_id'})
+
+        splicing_tidy.set_index(['sample_id', 'common_id'], inplace=True)
+        expression_tidy.set_index(['sample_id', 'common_id'], inplace=True)
+
+        return splicing_tidy.join(expression_tidy)
+
+    def filter_splicing_on_expression(self, expression_thresh, sample_subset=None):
         """Filter splicing events on expression values
 
         Parameters
@@ -1308,48 +1346,18 @@ class Study(object):
 
         Returns
         -------
-
+        psi : pandas.DataFrame
+            A (n_samples, n_features)
 
         Raises
         ------
         """
-        splicing = self.splicing._subset(self.splicing.data,
-                                         sample_ids=sample_ids,
-                                         require_min_samples=False)
-        splicing_index_name = splicing.index.name
-        splicing_index_name = 'index' if splicing_index_name is None \
-            else splicing_index_name
-
-        splicing_tidy = pd.melt(splicing.reset_index(),
-                                id_vars=splicing_index_name,
-                                value_name='psi',
-                                var_name='miso_id')
-        if splicing_index_name == 'index':
-            splicing_tidy = splicing_tidy.rename(columns={'index': 'sample_id'})
-        splicing_tidy['common_id'] = splicing_tidy.miso_id.map(
-            self.splicing.feature_data[self.splicing.feature_expression_id_col])
-        expression = self.expression._subset(self.expression.data,
-                                             sample_ids=sample_ids,
-                                             require_min_samples=False)
-        expression_index_name = expression.index.name
-        expression_index_name = 'index' if expression_index_name is None \
-            else expression_index_name
-
-
-        expression_tidy = pd.melt(expression.reset_index(),
-                                  id_vars=expression_index_name,
-                                  value_name='expression',
-                                  var_name='common_id')
-        if expression_index_name == 'index':
-            expression_tidy = expression_tidy.rename(
-                columns={'index': 'sample_id'})
-
-        splicing_tidy.set_index(['sample_id', 'common_id'], inplace=True)
-        expression_tidy.set_index(['sample_id', 'common_id'], inplace=True)
-
-        splicing_with_expression = splicing_tidy.join(expression_tidy)
-        splicing_high_expression = splicing_with_expression.ix[
-            splicing_with_expression.expression >= expression_thresh].reset_index().dropna()
+        sample_ids = self.sample_subset_to_sample_ids(sample_subset)
+        splicing_with_expression = \
+            self.tidy_splicing_with_expression.sample_id.isin(sample_ids)
+        ind = splicing_with_expression.expression >= expression_thresh
+        splicing_high_expression = splicing_with_expression.ix[ind]
+        splicing_high_expression = splicing_high_expression.reset_index().dropna()
         filtered_psi = splicing_high_expression.pivot(
             columns='miso_id', index='sample_id', values='psi')
         return filtered_psi
