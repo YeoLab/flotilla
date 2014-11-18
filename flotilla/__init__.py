@@ -7,7 +7,7 @@ import data_model
 from flotilla.datapackage import make_study_datapackage
 import visualize
 
-__version__ = '0.2.3'
+__version__ = '0.2.4dev'
 
 _neural_diff_chr22 = 'http://sauron.ucsd.edu/flotilla_projects/' \
                      'neural_diff_chr22/datapackage.json'
