@@ -1,0 +1,16 @@
+v0.2.3 (November 17th, 2014)
+---------------------------
+
+This is a patch release, with non-breaking changes from v0.2.2.
+
+Plotting functions
+~~~~~~~~~~~~~~~~~~
+
+- Add :py:class:`Study`-level NMF
+
+Bug Fixes
+~~~~~~~~~
+
+- :py:func:`embark` wouldn't work if `metadata` didn't have a `pooled` column,
+  now it does
+
