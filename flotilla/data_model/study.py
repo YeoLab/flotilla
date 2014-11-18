@@ -72,6 +72,7 @@ class Study(object):
                  splicing_feature_data=None,
                  splicing_feature_rename_col=None,
                  splicing_feature_ignore_subset_cols=None,
+                 splicing_feature_expression_id_col=None,
                  mapping_stats_data=None,
                  mapping_stats_number_mapped_col=None,
                  mapping_stats_min_reads=MIN_READS,
@@ -144,6 +145,9 @@ class Study(object):
             example, if your splicing IDs are MISO IDs, but you want to plot
             Ensembl IDs, make sure the column you want, e.g. "ensembl_id" is
             in your dataframe and specify that. Default "gene_name".
+        splicing_feature_expression_id_col : str
+            A column name in the splicing_feature_data dataframe that
+            corresponds to the row names of the expression data
         mapping_stats_data : pandas.DataFrame
             Samples x feature dataframe of mapping stats measurements.
             Currently, this
@@ -287,7 +291,8 @@ class Study(object):
                 predictor_config_manager=self.predictor_config_manager,
                 technical_outliers=self.technical_outliers,
                 minimum_samples=metadata_minimum_samples,
-                feature_ignore_subset_cols=splicing_feature_ignore_subset_cols)
+                feature_ignore_subset_cols=splicing_feature_ignore_subset_cols,
+                feature_expression_id_col=splicing_feature_expression_id_col)
 
         if spikein_data is not None:
             self.spikein = SpikeInData(
