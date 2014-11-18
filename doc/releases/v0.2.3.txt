@@ -3,6 +3,13 @@ v0.2.3 (November 17th, 2014)
 
 This is a patch release, with non-breaking changes from v0.2.2.
 
+Compute functions
+~~~~~~~~~~~~~~~~~
+
+- Restore :py:func:`.Study.detect_outliers`,
+  :py:func:`.Study.interactive_choose_outliers` and
+  :py:func:`.Study.interactive_reset_outliers`
+
 Plotting functions
 ~~~~~~~~~~~~~~~~~~
 
@@ -16,9 +23,19 @@ Bug Fixes
 - :py:func:`.BaseData.drop_outliers` would actually drop samples from the data,
   but we never want to remove data, only mark it as something to be removed so
   all the original data is there
+- For all :py:mod:`.compute` submodules, add a check to make sure the input
+  data is truly a probability distribution (non-negative, sums to 1)
+- :py:func:`.BaseData.plot_feature` now plots all features with the same name
+  (e.g. all splicing events within that gene) onto a single `fig` object
 
 Documentation
 ~~~~~~~~~~~~~
 
 - Restore some lost documentation on :py:class:`.BaseData` and
   :py:class:`.Study`
+
+Other
+~~~~~
+
+- Rename modalities that couldn't be assigned when `bootstrapped=True` in
+  :py:class:`.compute.splicing.Modalities`, from "unassigned" to "ambiguous"
