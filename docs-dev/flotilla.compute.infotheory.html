@@ -230,15 +230,8 @@ is in bits.</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>entropy</strong> : pandas.Seires</p>
-<blockquote>
-<div><p>Entropy values for each column of the dataframe.</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><strong>ValueError</strong></p>
 <blockquote class="last">
-<div><p>If the data provided is not a probability distribution, i.e. it has
-negative values or its columns do not sum to 1, raise ValueError</p>
+<div><p>Entropy values for each column of the dataframe.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -268,16 +261,9 @@ binify() on the dataframe.</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>jsd</strong> : pandas.Series</p>
-<blockquote>
+<blockquote class="last">
 <div><p>Jensen-Shannon divergence of each column with the same names between
 p and q</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><strong>ValueError</strong></p>
-<blockquote class="last">
-<div><p>If the data provided is not a probability distribution, i.e. it has
-negative values or its columns do not sum to 1, raise ValueError</p>
 </div></blockquote>
 </td>
 </tr>
@@ -305,17 +291,10 @@ dataframes, p and q</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>kld</strong> : pandas.Series</p>
-<blockquote>
+<blockquote class="last">
 <div><p>Kullback-Lieber divergence of the common columns between the
 dataframe. E.g. between 1st column in p and 1st column in q, and 2nd
 column in p and 2nd column in q.</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><strong>ValueError</strong></p>
-<blockquote class="last">
-<div><p>If the data provided is not a probability distribution, i.e. it has
-negative values or its columns do not sum to 1, raise ValueError</p>
 </div></blockquote>
 </td>
 </tr>

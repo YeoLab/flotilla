@@ -74,19 +74,45 @@ Example gallery
 .. toctree::
    :hidden:
 
+   ./plot_pca
+
+   ./plot_gene
+
    ./plot_two_features
 
    ./plot_event
 
-   ./plot_lavalamp_pooled_inconsistent
-
-   ./plot_pca
-
    ./plot_two_samples
 
-   ./plot_gene
+   ./plot_lavalamp_pooled_inconsistent
 
 
+
+
+
+.. raw:: html
+
+    <div class='figure align-center'>
+    <a href=./plot_pca.html>
+    <img src=../_static/plot_pca_thumb.png>
+    <span class='figure-label'>
+    <p></p>
+    </span>
+    </a>
+    </div>
+
+
+
+.. raw:: html
+
+    <div class='figure align-center'>
+    <a href=./plot_gene.html>
+    <img src=../_static/plot_gene_thumb.png>
+    <span class='figure-label'>
+    <p></p>
+    </span>
+    </a>
+    </div>
 
 
 
@@ -119,32 +145,6 @@ Example gallery
 .. raw:: html
 
     <div class='figure align-center'>
-    <a href=./plot_lavalamp_pooled_inconsistent.html>
-    <img src=../_static/plot_lavalamp_pooled_inconsistent_thumb.png>
-    <span class='figure-label'>
-    <p></p>
-    </span>
-    </a>
-    </div>
-
-
-
-.. raw:: html
-
-    <div class='figure align-center'>
-    <a href=./plot_pca.html>
-    <img src=../_static/plot_pca_thumb.png>
-    <span class='figure-label'>
-    <p></p>
-    </span>
-    </a>
-    </div>
-
-
-
-.. raw:: html
-
-    <div class='figure align-center'>
     <a href=./plot_two_samples.html>
     <img src=../_static/plot_two_samples_thumb.png>
     <span class='figure-label'>
@@ -158,8 +158,8 @@ Example gallery
 .. raw:: html
 
     <div class='figure align-center'>
-    <a href=./plot_gene.html>
-    <img src=../_static/plot_gene_thumb.png>
+    <a href=./plot_lavalamp_pooled_inconsistent.html>
+    <img src=../_static/plot_lavalamp_pooled_inconsistent_thumb.png>
     <span class='figure-label'>
     <p></p>
     </span>
