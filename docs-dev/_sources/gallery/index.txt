@@ -78,13 +78,13 @@ Example gallery
 
    ./plot_two_features
 
-   ./plot_lavalamp_pooled_inconsistent
-
    ./plot_pca
 
-   ./plot_event
+   ./plot_lavalamp_pooled_inconsistent
 
    ./plot_gene
+
+   ./plot_event
 
 
 
@@ -119,19 +119,6 @@ Example gallery
 .. raw:: html
 
     <div class='figure align-center'>
-    <a href=./plot_lavalamp_pooled_inconsistent.html>
-    <img src=../_static/plot_lavalamp_pooled_inconsistent_thumb.png>
-    <span class='figure-label'>
-    <p></p>
-    </span>
-    </a>
-    </div>
-
-
-
-.. raw:: html
-
-    <div class='figure align-center'>
     <a href=./plot_pca.html>
     <img src=../_static/plot_pca_thumb.png>
     <span class='figure-label'>
@@ -145,8 +132,8 @@ Example gallery
 .. raw:: html
 
     <div class='figure align-center'>
-    <a href=./plot_event.html>
-    <img src=../_static/plot_event_thumb.png>
+    <a href=./plot_lavalamp_pooled_inconsistent.html>
+    <img src=../_static/plot_lavalamp_pooled_inconsistent_thumb.png>
     <span class='figure-label'>
     <p></p>
     </span>
@@ -160,6 +147,19 @@ Example gallery
     <div class='figure align-center'>
     <a href=./plot_gene.html>
     <img src=../_static/plot_gene_thumb.png>
+    <span class='figure-label'>
+    <p></p>
+    </span>
+    </a>
+    </div>
+
+
+
+.. raw:: html
+
+    <div class='figure align-center'>
+    <a href=./plot_event.html>
+    <img src=../_static/plot_event_thumb.png>
     <span class='figure-label'>
     <p></p>
     </span>
