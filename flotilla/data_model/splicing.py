@@ -84,7 +84,7 @@ class SplicingData(BaseData):
                                                 included_min=included_min)
         self.modalities_visualizer = ModalitiesViz()
 
-    @memoize
+    # @memoize
     def modalities(self, sample_ids=None, feature_ids=None, data=None,
                    bootstrapped=False, bootstrapped_kws=None):
         """Assigned modalities for these samples and features.
@@ -119,7 +119,7 @@ class SplicingData(BaseData):
         return self.modalities_calculator.fit_transform(data, bootstrapped,
                                                         bootstrapped_kws)
 
-    @memoize
+    # @memoize
     def modalities_counts(self, sample_ids=None, feature_ids=None, data=None,
                           bootstrapped=False, bootstrapped_kws=False):
         """Count the number of each modalities of these samples and features
@@ -315,9 +315,6 @@ class SplicingData(BaseData):
                                 (x, offset_),
                                 verticalalignment='bottom',
                                 horizontalalignment='center')
-
-
-        # import pdb; pdb.set_trace()
 
         yticks = [0, self.excluded_max, self.included_min, 1]
         for ax, (modality, s) in zip(axes[1:], grouped):
