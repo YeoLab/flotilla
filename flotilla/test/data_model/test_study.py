@@ -175,6 +175,10 @@ class TestStudy(object):
                     command = 'study.{}.{}'.format(name, key)
                 monkeypatch.setitem(resource, key, eval(command))
 
+        for name in resource_names:
+            resource = get_resource_from_name(test_datapackage, name)
+            assert resource['path'] == '{}.csv.gz'.format(name)
+
         version = semantic_version.Version(study.version)
         version.patch += 1
         assert str(version) == test_datapackage['datapackage_version']
