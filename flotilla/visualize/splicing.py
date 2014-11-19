@@ -97,7 +97,7 @@ class ModalitiesViz(object):
 
 
 def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
-             switchy_score_psi=None, marker='d', plot_kws=None):
+             switchy_score_psi=None, marker='o', plot_kws=None):
     """Make a 'lavalamp' scatter plot of many splicing events
 
     Useful for visualizing many splicing events at once.
@@ -202,6 +202,9 @@ def hist_single_vs_pooled_diff(diff_from_singles, diff_from_singles_scaled,
 
 def lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
                                  color=None, percent=None):
+    fig , axes = plt.subplots(nrows=2, figsize=(16, 8))
+    ax_inconsistent = axes[0]
+    ax_consistent = axes[1]
     plot_order = \
         pooled_inconsistent.sum() / pooled_inconsistent.count().astype(float)
     plot_order.sort()
@@ -214,33 +217,35 @@ def lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
 
     suffix = ' of events measured in both pooled and single'
 
+    ax_inconsistent.set_xticks([])
+    ax_consistent.set_xticks([])
+
     try:
         singles_values = singles.ix[:, pooled_inconsistent.columns].values
-        lavalamp(singles_values, color=color)
+        lavalamp(singles_values, color=color, ax=ax_inconsistent)
         lavalamp(pooled.ix[:, pooled_inconsistent.columns], marker='o',
                  color='k',
                  switchy_score_psi=singles_values,
-                 ax=plt.gca(), plot_kws=pooled_plot_kws)
-        ax = plt.gca()
+                 ax=ax_inconsistent, plot_kws=pooled_plot_kws)
         title_suffix = '' if percent is None else ' ({:.1f}%){}'.format(
             percent, suffix)
-        ax.set_title('Pooled splicing events inconsistent with singles{}'
-                     .format(title_suffix))
+        ax_inconsistent.set_title('Pooled splicing events inconsistent '
+                                  'with singles{}'.format(title_suffix))
     except IndexError:
         # There are no inconsistent events
         pass
 
     singles = singles.dropna(axis=1, how='all')
-    non_failing_events = singles.columns[
+    consistent_events = singles.columns[
         ~singles.columns.isin(pooled_inconsistent.columns)]
-    lavalamp(singles.ix[:, non_failing_events], color=color)
-    lavalamp(pooled.ix[:, non_failing_events], color='k', marker='o',
-             switchy_score_psi=singles.ix[:, non_failing_events],
-             ax=plt.gca(), plot_kws=pooled_plot_kws)
-    ax = plt.gca()
+    lavalamp(singles.ix[:, consistent_events], color=color, ax=ax_consistent)
+    lavalamp(pooled.ix[:, consistent_events], color='k', marker='o',
+             switchy_score_psi=singles.ix[:, consistent_events],
+             ax=ax_consistent, plot_kws=pooled_plot_kws)
     title_suffix = '' if percent is None else ' ({:.1f}%){}'.format(
         100 - percent, suffix)
-    ax.set_title('Pooled splicing events consistent with singles{}'
+    ax_consistent.set_title('Pooled splicing events consistent with singles{}'
                  .format(title_suffix))
+    sns.despine()
 
 

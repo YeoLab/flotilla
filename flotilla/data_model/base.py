@@ -1,12 +1,15 @@
 """
-Common operations performed on all kinds of data types
+Base data class for all data types. All data types in flotilla inherit from
+this, or a child object (like ExpressionData).
 """
 import sys
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from scipy.spatial.distance import pdist, squareform
 import seaborn as sns
+
 from sklearn.preprocessing import StandardScaler
 
 from ..compute.decomposition import DataFramePCA, DataFrameNMF
@@ -135,6 +138,7 @@ class BaseData(object):
         -----
         Any cells not marked as "technical_outliers", "outliers" or "pooled"
         are considered as single-cell samples.
+
         """
         self.data = data
         self.data_original = self.data
@@ -320,15 +324,13 @@ class BaseData(object):
 
     @property
     def _var_cut(self):
-        """Variance values which are 2 standard deviations away the mean
-        variance"""
+        """Variance cutoff, 2 std devs away from mean variance"""
         return self.data.var().dropna().mean() + 2 * self.data.var() \
             .dropna().std()
 
     @property
     def variant(self):
-        """Genes whose variance among all cells is 2 standard deviations away
-        from the mean variance"""
+        """Features whose variance is 2 std devs away from mean variance"""
         return self.data.columns[self.data.var() > self._var_cut]
 
     # def drop_outliers(self, data, outliers):
@@ -413,6 +415,42 @@ class BaseData(object):
     #     """
     #     raise NotImplementedError
 
+    #     Needed for some clustering algorithms
+    # 
+    #     Parameters
+    #     ----------
+    #     metric : str, optional
+    #         One of any valid scipy.distance metric strings. Default 'euclidean'
+    #     """
+    #     raise NotImplementedError
+    #     self.pdist = squareform(pdist(self.binned, metric=metric))
+    #     return self
+    # 
+    # def correlate(self, method='spearman', between='features'):
+    #     """Find correlations between either splicing/expression measurements
+    #     or cells
+    # 
+    #     Parameters
+    #     ----------
+    #     method : str
+    #         Specify to calculate either 'spearman' (rank-based) or 'pearson'
+    #         (linear) correlation. Default 'spearman'
+    #     between : str
+    #         Either 'features' or 'samples'. Default 'features'
+    #     """
+    #     raise NotImplementedError
+    #     # Stub for choosing between features or samples
+    #     if 'features'.startswith(between):
+    #         pass
+    #     elif 'samples'.startswith(between):
+    #         pass
+    # 
+    # def jsd(self):
+    #     """Jensen-Shannon divergence showing most varying measurements within a
+    #     celltype and between celltypes
+    #     """
+    #     raise NotImplementedError
+
     # TODO.md: Specify dtypes in docstring
     def plot_classifier(self, trait, sample_ids=None, feature_ids=None,
                         predictor_name=None, standardize=True,
@@ -457,7 +495,8 @@ class BaseData(object):
 
         Returns
         -------
-        self : BaseData
+        cv : ClassifierViz
+            Visualziation of the classifier
         """
         # print trait
         plotting_kwargs = {} if plotting_kwargs is None else plotting_kwargs
@@ -479,7 +518,7 @@ class BaseData(object):
         if score_coefficient is not None:
             classifier.score_coefficient = score_coefficient
         classifier.plot(**plotting_kwargs)
-        return self
+        return classifier
 
     def plot_dimensionality_reduction(self, x_pc=1, y_pc=2, sample_ids=None,
                                       feature_ids=None, featurewise=False,
@@ -615,9 +654,9 @@ class BaseData(object):
         return subset
 
     def _subset_singles_and_pooled(self, sample_ids=None,
-                                   feature_ids=None):
+                                   feature_ids=None, data=None):
         """Subset singles and pooled, taking only features that appear in both
-
+        
         Parameters
         ----------
         sample_ids : list-like, optional (default=None)
@@ -626,7 +665,12 @@ class BaseData(object):
             samples
         feature_ids : list-like, optional (default=None)
             List of feature ids to use. If None, use all
-
+        data : pandas.DataFrame, optional (default=None)
+            If provided, use this ``data`` instead of this instance's 
+            py:attr:`BaseData.data`. Convenient for when you filtered based on
+            some other criteria, e.g. for splicing events with expression 
+            greater than some threshold
+        
         Returns
         -------
         singles : pandas.DataFrame
@@ -636,19 +680,36 @@ class BaseData(object):
             DataFrame of only pooled samples, with only features that appear
             in both these single cell and pooled samples
         """
-        singles = self._subset(self.data, sample_ids, feature_ids,
-                               require_min_samples=True)
+        # singles_ids = self.data.index.intersection(sample_ids)
+        # pooled_ids = self.pooled.index.intersection(sample_ids)
+        # import pdb; pdb.set_trace()
+        if data is None:
+            singles = self._subset(self.singles, sample_ids, feature_ids,
+                                   require_min_samples=True)
+        else:
+            sample_ids = data.index.intersection(self.singles.index)
+            singles = self._subset(data, sample_ids,
+                                   require_min_samples=True)
+
         try:
-            # If the sample ids don't overlap with the pooled sample, assume
-            # you want all the pooled samples
-            if sample_ids is not None and sum(
-                    self.pooled.index.isin(sample_ids)) \
-                    > 0:
+            # If the sample ids don't overlap with the pooled sample, assume you
+            # want all the pooled samples
+            n_pooled_sample_ids = sum(self.pooled.index.isin(sample_ids))
+
+            if sample_ids is not None and n_pooled_sample_ids > 0:
                 pooled_sample_ids = sample_ids
             else:
                 pooled_sample_ids = None
-            pooled = self._subset(self.pooled, pooled_sample_ids, feature_ids,
-                                  require_min_samples=False)
+
+            if data is None:
+                pooled = self._subset(self.pooled, pooled_sample_ids,
+                                      feature_ids,
+                                      require_min_samples=False)
+            else:
+                sample_ids = data.index.intersection(self.pooled.index)
+                pooled = self._subset(data, sample_ids,
+                                      require_min_samples=False)
+
             if feature_ids is None or len(feature_ids) > 1:
                 # These are DataFrames
                 singles, pooled = singles.align(pooled, axis=1, join='inner')
@@ -808,8 +869,8 @@ class BaseData(object):
     # @memoize
     def reduce(self, sample_ids=None, feature_ids=None,
                featurewise=False,
-               reducer=None,
-               standardize=None,
+               reducer=DataFramePCA,
+               standardize=True,
                reducer_kwargs=None, bins=None):
         """Make and memoize a reduced dimensionality representation of data
 
@@ -840,11 +901,6 @@ class BaseData(object):
         reducer_object : flotilla.compute.reduce.ReducerViz
             A ready-to-plot object containing the reduced space
         """
-        if reducer is None:
-            reducer = DataFramePCA
-
-        if standardize is None:
-            standardize = True
 
         reducer_kwargs = {} if reducer_kwargs is None else reducer_kwargs
 
@@ -863,6 +919,7 @@ class BaseData(object):
         reducer_object.means = means
         return reducer_object
 
+    @memoize
     def classify(self, trait, sample_ids, feature_ids,
                  standardize=True,
                  data_name='expression',
@@ -875,6 +932,8 @@ class BaseData(object):
                  plotting_kwargs=None,
                  color=None, groupby=None, label_to_color=None,
                  label_to_marker=None, order=None, bins=None):
+        # Should all this be exposed to the user???
+
         """Make and memoize a predictor on a categorical trait (associated
         with samples) subset of genes
 
@@ -1171,7 +1230,7 @@ class BaseData(object):
         std = np.sqrt(np.square(nmf_space_transitions - mean).sum().sum() / n)
 
         big_transitions = nmf_space_transitions[
-            nmf_space_transitions > (mean + 2*std)].dropna(how='all')
+            nmf_space_transitions > (mean + 2 * std)].dropna(how='all')
         return big_transitions
 
     def plot_big_nmf_space_transitions(self, phenotype_groupby,

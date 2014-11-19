@@ -37,7 +37,8 @@ class SplicingData(BaseData):
                  feature_ignore_subset_cols=None,
                  excluded_max=0.2, included_min=0.8,
                  pooled=None, predictor_config_manager=None,
-                 technical_outliers=None, minimum_samples=0):
+                 technical_outliers=None, minimum_samples=0,
+                 feature_expression_id_col=None):
         """Instantiate a object for percent spliced in (PSI) scores
 
         Parameters
@@ -69,6 +70,11 @@ class SplicingData(BaseData):
             predictor_config_manager=predictor_config_manager,
             minimum_samples=minimum_samples)
         sys.stdout.write("{}\tDone initializing splicing\n".format(timestamp()))
+
+        self.feature_expression_id_col = feature_expression_id_col \
+            if feature_expression_id_col is not None \
+            else self.feature_rename_col
+
         self.binsize = binsize
         self.bins = np.arange(0, 1 + self.binsize, self.binsize)
 
@@ -77,20 +83,23 @@ class SplicingData(BaseData):
         self.modalities_visualizer = ModalitiesViz()
 
     @memoize
-    def modalities(self, sample_ids=None, feature_ids=None,
+    def modalities(self, sample_ids=None, feature_ids=None, data=None,
                    bootstrapped=False, bootstrapped_kws=None):
         """Assigned modalities for these samples and features.
 
         Parameters
         ----------
-        sample_ids : list of str
+        sample_ids : list of str, optional
             Which samples to use. If None, use all. Default None.
-        feature_ids : list of str
+        feature_ids : list of str, optional
             Which features to use. If None, use all. Default None.
-        bootstrapped : bool
+        data : pandas.DataFrame, optional
+            If provided, use this dataframe instead of the sample_ids and
+            feature_ids provided
+        bootstrapped : bool, optional (default=False)
             Whether or not to use bootstrapping, i.e. resample each splicing
             event several times to get a better estimate of its true modality.
-        bootstrappped_kws : dict
+        bootstrappped_kws : dict, optional
             Valid arguments to _bootstrapped_fit_transform. If None, default is
             dict(n_iter=100, thresh=0.6, minimum_samples=10)
 
@@ -99,12 +108,17 @@ class SplicingData(BaseData):
         modality_assignments : pandas.Series
             The modality assignments of each feature given these samples
         """
-        data = self._subset(self.data, sample_ids, feature_ids)
+        if data is None:
+            data = self._subset(self.data, sample_ids, feature_ids)
+        else:
+            if feature_ids is not None and sample_ids is not None:
+                raise ValueError('Can only specify `sample_ids` and '
+                                 '`feature_ids` or `data`, but not both.')
         return self.modalities_calculator.fit_transform(data, bootstrapped,
                                                         bootstrapped_kws)
 
     @memoize
-    def modalities_counts(self, sample_ids=None, feature_ids=None,
+    def modalities_counts(self, sample_ids=None, feature_ids=None, data=None,
                           bootstrapped=False, bootstrapped_kws=False):
         """Count the number of each modalities of these samples and features
 
@@ -114,11 +128,14 @@ class SplicingData(BaseData):
             Which samples to use. If None, use all. Default None.
         feature_ids : list of str
             Which features to use. If None, use all. Default None.
+        data : pandas.DataFrame, optional
+            If provided, use this dataframe instead of the sample_ids and
+            feature_ids provided
         bootstrapped : bool
             Whether or not to use bootstrapping, i.e. resample each splicing
             event several times to get a better estimate of its true modality.
             Default False.
-        bootstrappped_kws : dict
+        bootstrapped_kws : dict
             Valid arguments to _bootstrapped_fit_transform. If None, default is
             dict(n_iter=100, thresh=0.6, minimum_samples=10)
 
@@ -127,7 +144,13 @@ class SplicingData(BaseData):
         modalities_counts : pandas.Series
             The number of events detected in each modality
         """
-        data = self._subset(self.data, sample_ids, feature_ids)
+        if data is None:
+            data = self._subset(self.data, sample_ids, feature_ids)
+        else:
+            if feature_ids is not None and sample_ids is not None:
+                raise ValueError('Can only specify `sample_ids` and '
+                                 '`feature_ids` or `data`, but not both.')
+
         return self.modalities_calculator.counts(data, bootstrapped,
                                                  bootstrapped_kws)
 
@@ -336,7 +359,7 @@ class SplicingData(BaseData):
             ax.set_ylabel('$\Psi$')
 
     @memoize
-    def pooled_inconsistent(self, sample_ids, feature_ids=None,
+    def pooled_inconsistent(self, data, feature_ids=None,
                             fraction_diff_thresh=FRACTION_DIFF_THRESH):
         """Return splicing events which pooled samples are consistently
         different from the single cells.
@@ -361,7 +384,7 @@ class SplicingData(BaseData):
         """
         # singles = self._subset(self.data, singles_ids, feature_ids)
         singles, pooled, not_measured_in_pooled, diff_from_singles = \
-            self._diff_from_singles(sample_ids, feature_ids, scaled=True)
+            self._diff_from_singles(data, feature_ids, scaled=True)
 
         large_diff = \
             diff_from_singles[diff_from_singles.abs()
@@ -370,7 +393,7 @@ class SplicingData(BaseData):
         return singles, pooled, not_measured_in_pooled, large_diff
 
     @memoize
-    def _diff_from_singles(self, sample_ids,
+    def _diff_from_singles(self, data,
                            feature_ids=None, scaled=True, dropna=True):
         """
         Parameters
@@ -382,8 +405,13 @@ class SplicingData(BaseData):
 
 
         """
-        singles, pooled = self._subset_singles_and_pooled(sample_ids,
-                                                          feature_ids)
+        singles, pooled = self._subset_singles_and_pooled(feature_ids,
+                                                          data=data)
+
+        # Make sure "pooled" is always a dataframe
+        if isinstance(pooled, pd.Series):
+            pooled = pd.DataFrame([pooled.values], columns=pooled.index,
+                                  index=[pooled.name])
         pooled = pooled.dropna(how='all', axis=1)
         not_measured_in_pooled = singles.columns.diff(pooled.columns)
         singles, pooled = singles.align(pooled, axis=1, join='inner')
@@ -400,47 +428,51 @@ class SplicingData(BaseData):
         return singles, pooled, not_measured_in_pooled, diff_from_singles
 
     def plot_lavalamp_pooled_inconsistent(
-            self, sample_ids, feature_ids=None,
+            self, data, feature_ids=None,
             fraction_diff_thresh=FRACTION_DIFF_THRESH, color=None):
+        """
+
+        Parameters
+        ----------
+
+
+        Returns
+        -------
+
+
+        Raises
+        ------
+
+        """
         singles, pooled, not_measured_in_pooled, pooled_inconsistent = \
-            self.pooled_inconsistent(sample_ids, feature_ids,
+            self.pooled_inconsistent(data, feature_ids,
                                      fraction_diff_thresh)
-        print "not_measured_in_pooled.shape", not_measured_in_pooled.shape
-        # singles, pooled = self._subset_singles_and_pooled(sample_ids,
-        #                                                   feature_ids)
-        sample_ids = singles.index.union(pooled.index)
-        percent = self.percent_pooled_inconsistent(sample_ids, singles.columns,
-                                                   fraction_diff_thresh)
+        percent = self._percent_pooled_inconsistent(pooled,
+                                                    pooled_inconsistent)
         lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
                                      color=color, percent=percent)
 
-    def plot_hist_single_vs_pooled_diff(self, sample_ids,
-                                        feature_ids=None,
+    def plot_hist_single_vs_pooled_diff(self, data, feature_ids=None,
                                         color=None, title='',
                                         hist_kws=None):
         singles, pooled, not_measured_in_pooled, diff_from_singles = \
-            self._diff_from_singles(sample_ids, feature_ids)
+            self._diff_from_singles(data, feature_ids)
         singles, pooled, not_measured_in_pooled, diff_from_singles_scaled = \
-            self._diff_from_singles(sample_ids, feature_ids, scaled=True)
+            self._diff_from_singles(data, feature_ids, scaled=True)
         hist_single_vs_pooled_diff(diff_from_singles,
                                    diff_from_singles_scaled, color=color,
                                    title=title, hist_kws=hist_kws)
 
-    @memoize
-    def percent_pooled_inconsistent(self, sample_ids,
-                                    feature_ids,
-                                    fraction_diff_thresh=FRACTION_DIFF_THRESH):
+    def _percent_pooled_inconsistent(self, pooled, pooled_inconsistent):
         """The percent of splicing events which are
 
         """
-        # singles, pooled = self._subset_singles_and_pooled(sample_ids, feature_ids)
-        singles, pooled, not_measured_in_pooled, large_diff = \
-            self.pooled_inconsistent(sample_ids, feature_ids,
-                                     fraction_diff_thresh)
+        if pooled_inconsistent.shape[1] == 0:
+            return 0.0
         try:
-            return large_diff.shape[1] / float(pooled.shape[1]) * 100
+            return pooled_inconsistent.shape[1] / float(pooled.shape[1]) * 100
         except ZeroDivisionError:
-            return 100
+            return 100.0
 
     def _calculate_linkage(self, sample_ids, feature_ids,
                            metric='euclidean', linkage_method='median',
