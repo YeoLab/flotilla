@@ -77,6 +77,9 @@ class SplicingData(BaseData):
         self.binsize = binsize
         self.bins = np.arange(0, 1 + self.binsize, self.binsize)
 
+        self.excluded_max = excluded_max
+        self.included_min = included_min
+
         self.modalities_calculator = Modalities(excluded_max=excluded_max,
                                                 included_min=included_min)
         self.modalities_visualizer = ModalitiesViz()
@@ -316,10 +319,12 @@ class SplicingData(BaseData):
 
         # import pdb; pdb.set_trace()
 
+        yticks = [0, self.excluded_max, self.included_min, 0.1]
         for ax, (modality, s) in zip(axes[1:], grouped):
             # modality_count[modality] = len(s)
             psi = self.data[s.index]
-            lavalamp(psi, color=color, ax=ax, x_offset=x_offset)
+            lavalamp(psi, color=color, ax=ax, x_offset=x_offset,
+                     yticks=yticks)
             ax.set_title('{} {}'.format(title, modality))
         sns.despine()
         fig.tight_layout()
