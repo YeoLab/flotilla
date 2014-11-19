@@ -319,7 +319,7 @@ class SplicingData(BaseData):
 
         # import pdb; pdb.set_trace()
 
-        yticks = [0, self.excluded_max, self.included_min, 0.1]
+        yticks = [0, self.excluded_max, self.included_min, 1]
         for ax, (modality, s) in zip(axes[1:], grouped):
             # modality_count[modality] = len(s)
             psi = self.data[s.index]
