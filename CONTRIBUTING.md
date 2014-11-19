@@ -25,44 +25,17 @@ Now install via `pip` in "editable" mode, aka "develop" mode:
 Git branching
 -------------
 
-We use the [git-flow](http://nvie.com/posts/a-successful-git-branching-model/) model.
+We use the [GitHub-Flow](http://scottchacon.com/2011/08/31/github-flow.html) model.
 
-We use the [`gitflow`](https://github.com/nvie/gitflow) model of branching
-and features. The "production release" repo is `master` and the '"next release"
-development' repo is `dev`. Everything else is default:
+To contribute:
 
-```
-Which branch should be used for bringing forth production releases?
-   - master
-Branch name for production releases: [master]
-Branch name for "next release" development: [develop] dev
+1.    Make a branch off of the master.
 
-How to name your supporting branch prefixes?
-Feature branches? [feature/]
-Release branches? [release/]
-Hotfix branches? [hotfix/]
-Support branches? [support/]
-Version tag prefix? []
-```
+2.    Commit updates exclusively to your branch.
 
+3.    When changes on that branch are finished, open a [pull request](https://help.github.com/articles/using-pull-requests/).
 
-So if you have a feature
-(called `myfeature` as an example) you want to add, please add it off of the
-`dev` branch, as so:
-
-    git flow feature start myfeature
-
-This creates the branch `feature/myfeature` as a copy off of `dev`.
-
-... Make changes to files, commit them ...
-
-When you're done working on your feature, do
-
-    git flow feature finish myfeature
-
-Which will merge the branch `feature/myfeature` with `dev`,
-and remove the branch `feature/myfeature` in one command!
-
+4.    Once someone has reviewed and approved of the changes on your branch, you should immediately merge your branch into the master.
 
 Naming conventions
 ------------------
