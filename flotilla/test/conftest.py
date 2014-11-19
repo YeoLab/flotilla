@@ -64,9 +64,9 @@ def chr22_datapackage_path():
 
 @pytest.fixture(scope='module')
 def shalek2013_datapackage(shalek2013_datapackage_path):
-    from flotilla.datapackage import data_package_url_to_dict
+    from flotilla.datapackage import datapackage_url_to_dict
 
-    return data_package_url_to_dict(shalek2013_datapackage_path)
+    return datapackage_url_to_dict(shalek2013_datapackage_path)
 
 
 @pytest.fixture(scope='module')
