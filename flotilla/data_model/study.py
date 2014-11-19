@@ -393,8 +393,8 @@ class Study(object):
             species_datapackage_base_url=species_datapackage_base_url)
 
     @staticmethod
-    def _is_relative_path(location):
-        return not location.startswith('http') or not location.startswith('/')
+    def _is_absolute_path(location):
+        return location.startswith('http') or location.startswith('/')
 
     @classmethod
     def from_datapackage(
@@ -422,7 +422,7 @@ class Study(object):
         for resource in datapackage['resources']:
             if 'url' in resource:
                 resource_url = resource['url']
-                if cls._is_relative_path(resource_url):
+                if not cls._is_absolute_path(resource_url):
                     resource_url = '{}/{}'.format(datapackage_dir,
                                                   resource_url)
                 filename = check_if_already_downloaded(resource_url,
@@ -433,7 +433,7 @@ class Study(object):
                                                            datapackage_name)
                 else:
                     filename = resource['path']
-                    if cls._is_relative_path(filename):
+                    if not cls._is_absolute_path(filename):
                         filename = '{}/{}'.format(datapackage_dir,
                                                   filename)
 
