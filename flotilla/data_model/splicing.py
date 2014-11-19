@@ -616,7 +616,7 @@ class DownsampledSplicingData(BaseData):
             filename = '{}/downsampled_shared_events_{}.pdf'.format(
                 figure_dir, splice_type)
             fig.savefig(filename, bbox_extra_artists=(legend,),
-                        bbox_inches='tight')
+                        bbox_inches='tight', format="pdf")
 
     def shared_events_percentage(self, min_iter_shared=5, figure_dir='./'):
         """Plot the percentage of all events detected at that iteration,
@@ -658,4 +658,4 @@ class DownsampledSplicingData(BaseData):
             fig.savefig(
                 '{}/downsampled_shared_events_{}_min_iter_shared{}.pdf'
                 .format(figure_dir, splice_type, min_iter_shared),
-                bbox_extra_artists=(legend,), bbox_inches='tight')
+                bbox_extra_artists=(legend,), bbox_inches='tight', format="pdf")
