@@ -63,7 +63,7 @@ We have prepared a slice of the full dataset for testing and demonstration purpo
 Run each of the following code lines in its own ipython notebook cell for an interactive feature.
 
     import flotilla
-    test_study = flotilla.embark('http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22/datapackage.json')
+    test_study = flotilla.embark(flotilla._shalek2013)
 
     test_study.interactive_pca()
 
