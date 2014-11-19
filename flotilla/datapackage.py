@@ -131,7 +131,8 @@ def make_study_datapackage(name, metadata,
         datapackage['resources'].append({'name': resource_name})
         resource = datapackage['resources'][-1]
 
-        data_filename = '{}/{}.csv.gz'.format(datapackage_dir, resource_name)
+        basename = '{}.csv.gz'.format(resource_name)
+        data_filename = '{}/{}'.format(datapackage_dir, basename)
         with gzip.open(data_filename, 'wb') as f:
             data.to_csv(f)
 
@@ -145,7 +146,7 @@ def make_study_datapackage(name, metadata,
         # except Exception as e:
         #     sys.stderr.write("error sending data to host: {}".format(e))
 
-        resource['path'] = data_filename
+        resource['path'] = basename
         resource['compression'] = 'gzip'
         resource['format'] = 'csv'
         if kws is not None:
