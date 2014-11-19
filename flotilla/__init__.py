@@ -9,8 +9,6 @@ import visualize
 
 __version__ = '0.2.4dev'
 
-_neural_diff_chr22 = 'http://sauron.ucsd.edu/flotilla_projects/' \
-                     'neural_diff_chr22/datapackage.json'
 _shalek2013 = 'https://raw.githubusercontent.com/YeoLab/shalek2013/master/' \
               'datapackage.json'
 
