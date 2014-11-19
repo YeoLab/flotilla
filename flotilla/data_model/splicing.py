@@ -223,8 +223,7 @@ class SplicingData(BaseData):
     def plot_modalities_lavalamps(self, sample_ids=None, feature_ids=None,
                                   color=None, x_offset=0,
                                   use_these_modalities=True,
-                                  bootstrapped=False, bootstrapped_kws=None,
-                                  ax=None):
+                                  bootstrapped=False, bootstrapped_kws=None):
         """Plot "lavalamp" scatterplot of each event
 
         Parameters
@@ -287,6 +286,7 @@ class SplicingData(BaseData):
             lavalamp(psi, color=color, ax=ax, x_offset=x_offset)
             ax.set_title(modality)
         sns.despine()
+        fig.tight_layout()
 
         # pie_axis.pie(map(int, modality_count.values()),
         #              labels=modality_count.keys(), autopct='%1.1f%%')
