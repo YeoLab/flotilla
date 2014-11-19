@@ -23,7 +23,7 @@ from ..visualize.color import blue
 from ..visualize.ipython_interact import Interactive
 from ..datapackage import FLOTILLA_DOWNLOAD_DIR
 from ..util import load_csv, load_json, load_tsv, load_gzip_pickle_df, \
-    load_pickle_df, timestamp
+    load_pickle_df, timestamp, cached_property
 
 
 SPECIES_DATA_PACKAGE_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects'
@@ -72,6 +72,7 @@ class Study(object):
                  splicing_feature_data=None,
                  splicing_feature_rename_col=None,
                  splicing_feature_ignore_subset_cols=None,
+                 splicing_feature_expression_id_col=None,
                  mapping_stats_data=None,
                  mapping_stats_number_mapped_col=None,
                  mapping_stats_min_reads=MIN_READS,
@@ -144,6 +145,9 @@ class Study(object):
             example, if your splicing IDs are MISO IDs, but you want to plot
             Ensembl IDs, make sure the column you want, e.g. "ensembl_id" is
             in your dataframe and specify that. Default "gene_name".
+        splicing_feature_expression_id_col : str
+            A column name in the splicing_feature_data dataframe that
+            corresponds to the row names of the expression data
         mapping_stats_data : pandas.DataFrame
             Samples x feature dataframe of mapping stats measurements.
             Currently, this
@@ -241,7 +245,7 @@ class Study(object):
                 predictor_config_manager=self.predictor_config_manager,
                 min_reads=mapping_stats_min_reads)
             self.technical_outliers = self.mapping_stats.too_few_mapped
-            sys.stderr.write('samples had too few mapped reads (<{'
+            sys.stderr.write('Samples had too few mapped reads (<{'
                              ':.1e} reads):\n\t{}\n'.format(
                 mapping_stats_min_reads, ', '.join(self.technical_outliers)))
         else:
@@ -305,7 +309,8 @@ class Study(object):
                 predictor_config_manager=self.predictor_config_manager,
                 technical_outliers=self.technical_outliers,
                 minimum_samples=metadata_minimum_samples,
-                feature_ignore_subset_cols=splicing_feature_ignore_subset_cols)
+                feature_ignore_subset_cols=splicing_feature_ignore_subset_cols,
+                feature_expression_id_col=splicing_feature_expression_id_col)
 
         if spikein_data is not None:
             self.spikein = SpikeInData(
@@ -458,9 +463,6 @@ class Study(object):
             dfs[name] = reader(filename, compression=compression,
                                header=header)
 
-            if name == 'expression':
-                if 'log_transformed' in resource:
-                    log_base = 2
             for key in set(resource.keys()).difference(
                     DATAPACKAGE_RESOURCE_COMMON_KWS):
                 kwargs['{}_{}'.format(name, key)] = resource[key]
@@ -566,21 +568,17 @@ class Study(object):
         feature_ids = self.feature_subset_to_feature_ids(data_type,
                                                          feature_subset,
                                                          rename=False)
-
         if data_type == "expression":
-            obj = self.expression
+            datamodel = self.expression
         elif data_type == "splicing":
-            obj = self.splicing
+            datamodel = self.splicing
 
-        reducer, outlier_detector = obj.detect_outliers(sample_ids=sample_ids,
-                                                        feature_ids=feature_ids,
-                                                        featurewise=featurewise,
-                                                        reducer=reducer,
-                                                        standardize=standardize,
-                                                        reducer_kwargs=reducer_kwargs,
-                                                        bins=bins,
-                                                        outlier_detection_method=outlier_detection_method,
-                                                        outlier_detection_method_kwargs=outlier_detection_method_kwargs)
+        reducer, outlier_detector = datamodel.detect_outliers(
+            sample_ids=sample_ids, feature_ids=feature_ids,
+            featurewise=featurewise, reducer=reducer, standardize=standardize,
+            reducer_kwargs=reducer_kwargs, bins=bins,
+            outlier_detection_method=outlier_detection_method,
+            outlier_detection_method_kwargs=outlier_detection_method_kwargs)
 
         outlier_detector.predict(reducer.reduced_space)
         outlier_detector.title = "_".join(
@@ -595,8 +593,7 @@ class Study(object):
         return reducer, outlier_detector
 
     def drop_outliers(self):
-        """remove samples labeled "outlier" in self.metadata,
-        replace the data in self.expression and self.splicing with the smaller version"""
+        """Assign samples marked as "outlier" in metadata, to other datas"""
         outliers = self.metadata.data['outlier'][
             self.metadata.data['outlier']].index
         self.expression.outlier_samples = outliers
@@ -671,10 +668,16 @@ class Study(object):
             List of sample ids in the data
         """
 
+        # IF this is a list of IDs
+
         try:
             return self.metadata.sample_subsets[phenotype_subset]
         except KeyError:
             pass
+
+        ind = self.metadata.phenotype_series == phenotype_subset
+        if ind.sum() > 0:
+            return self.metadata.phenotype_series.index[ind]
 
         try:
             if phenotype_subset is None or 'all_samples'.startswith(
@@ -916,15 +919,105 @@ class Study(object):
         elif data_type == "splicing":
             self.splicing.plot_regressor(**kwargs)
 
-    def modalities(self, sample_subset=None, feature_subset=None):
-        """Get modality assignments of
+    def modalities(self, sample_subset=None, feature_subset=None,
+                   expression_thresh=None, bootstrapped=False,
+                   bootstrapped_kws=None):
+        """Get splicing modality assignments of data
+
+        Parameters
+        ----------
+        sample_subset : str or None, optional
+            Which subset of the samples to use, based on some phenotype
+            column in the experiment design data. If None, all samples are
+            used.
+        feature_subset : str or None, optional
+            Which subset of the features to used, based on some feature type
+            in the expression data (e.g. "variant"). If None, all features
+            are used.
+        expression_thresh : float, optional
+            Minimum expression value, of the original input. E.g. if the
+            original input is already log-transformed, then this threshold is
+            on the log values.
+        bootstrapped : bool, optional
+            Whether or not to use bootstrap resampling of each splicing event
+            to robustly estimate its modality
+        bootstrapped_kws : dict, optional
+            Valid arguments to _bootstrapped_fit_transform. If None, default is
+            dict(n_iter=100, thresh=0.6, minimum_samples=10)
+
+        Returns
+        -------
+        modalities : pandas.Series
+            A (n_events,) shaped series of the assigned modality (in the case
+            of bootstrapped=False), or modality most commonly assigned, in the
+            case of bootstrapped=True
 
         """
-        sample_ids = self.sample_subset_to_sample_ids(sample_subset)
-        feature_ids = self.feature_subset_to_feature_ids('splicing',
-                                                         feature_subset,
-                                                         rename=False)
-        return self.splicing.modalities(sample_ids, feature_ids)
+        if expression_thresh is not None:
+            data = self.filter_splicing_on_expression(
+                expression_thresh=expression_thresh,
+                sample_subset=sample_subset)
+            sample_ids = None
+            feature_ids = None
+        else:
+            sample_ids = self.sample_subset_to_sample_ids(sample_subset)
+            feature_ids = self.feature_subset_to_feature_ids(
+                'splicing', feature_subset, rename=False)
+            data = None
+
+        return self.splicing.modalities(sample_ids, feature_ids, data=data,
+                                        bootstrapped=bootstrapped,
+                                        bootstrapped_kws=bootstrapped_kws)
+
+    def modalities_counts(self, sample_subset=None, feature_subset=None,
+                   expression_thresh=None, bootstrapped=True,
+                   bootstrapped_kws=None):
+        """Get counts of each resampled splicing event assigned to a modality
+
+        Parameters
+        ----------
+        sample_subset : str or None, optional
+            Which subset of the samples to use, based on some phenotype
+            column in the experiment design data. If None, all samples are
+            used.
+        feature_subset : str or None, optional
+            Which subset of the features to used, based on some feature type
+            in the expression data (e.g. "variant"). If None, all features
+            are used.
+        expression_thresh : float, optional
+            Minimum expression value, of the original input. E.g. if the
+            original input is already log-transformed, then this threshold is
+            on the log values.
+        bootstrapped : bool, optional
+            Whether or not to use bootstrap resampling of each splicing event
+            to robustly estimate its modality
+        bootstrapped_kws : dict, optional
+            Valid arguments to _bootstrapped_fit_transform. If None, default is
+            dict(n_iter=100, thresh=0.6, minimum_samples=10)
+
+        Returns
+        -------
+        modalities : pandas.Series
+            A (n_events,) shaped series of the assigned modality (in the case
+            of bootstrapped=False), or modality most commonly assigned, in the
+            case of bootstrapped=True
+
+        """
+        if expression_thresh is not None:
+            data = self.filter_splicing_on_expression(
+                expression_thresh=expression_thresh,
+                sample_subset=sample_subset)
+            sample_ids = None
+            feature_ids = None
+        else:
+            sample_ids = self.sample_subset_to_sample_ids(sample_subset)
+            feature_ids = self.feature_subset_to_feature_ids(
+                'splicing', feature_subset, rename=False)
+            data = None
+
+        return self.splicing.modalities_counts(
+            sample_ids, feature_ids, data=data, bootstrapped=bootstrapped,
+            bootstrapped_kws=bootstrapped_kws)
 
     def plot_modalities(self, sample_subset=None, feature_subset=None,
                         normed=True):
@@ -1054,8 +1147,9 @@ class Study(object):
             phenotype_to_marker=self.phenotype_to_marker, nmf_space=nmf_space)
 
     def plot_lavalamp_pooled_inconsistent(
-            self, sample_subset=None, feature_ids=None,
-            fraction_diff_thresh=FRACTION_DIFF_THRESH):
+            self, sample_subset=None, feature_subset=None,
+            fraction_diff_thresh=FRACTION_DIFF_THRESH,
+            expression_thresh=-np.inf):
         # grouped_ids = self.splicing.data.groupby(self.sample_id_to_color,
         # axis=0)
         celltype_groups = self.metadata.data.groupby(
@@ -1068,9 +1162,11 @@ class Study(object):
             # Plotting all the celltypes
             celltype_samples = self.sample_subset_to_sample_ids(sample_subset)
 
+        feature_ids = self.feature_subset_to_feature_ids('splicing',
+                                                            feature_subset=feature_subset)
+
         celltype_and_sample_ids = celltype_groups.groups.iteritems()
-        for i, (phenotype, sample_ids) in enumerate(
-                celltype_and_sample_ids):
+        for i, (phenotype, sample_ids) in enumerate(celltype_and_sample_ids):
             # import pdb; pdb.set_trace()
 
             # Assumes all samples of a sample_subset have the same color...
@@ -1079,9 +1175,11 @@ class Study(object):
             sample_ids = celltype_samples.intersection(sample_ids)
             if len(sample_ids) == 0:
                 continue
-            self.splicing.plot_lavalamp_pooled_inconsistent(
-                sample_ids, feature_ids, fraction_diff_thresh,
-                color=color)
+            data = self.filter_splicing_on_expression(expression_thresh,
+                                                      sample_ids=sample_ids)
+
+            self.splicing.plot_lavalamp_pooled_inconsistent(data,
+                feature_ids, fraction_diff_thresh, color=color)
 
     def percent_pooled_inconsistent(self,
                                     sample_subset=None, feature_ids=None,
@@ -1104,7 +1202,6 @@ class Study(object):
 
             # Assumes all samples of a sample_subset have the same color...
             # probably wrong
-            color = self.sample_id_to_color[sample_ids[0]]
             sample_ids = celltype_samples.intersection(sample_ids)
             if len(sample_ids) == 0:
                 continue
@@ -1327,7 +1424,9 @@ class Study(object):
             splicing_feature_kws = {'rename_col':
                                         self.splicing.feature_rename_col,
                                     'ignore_subset_cols':
-                                        self.splicing.feature_ignore_subset_cols}
+                                        self.splicing.feature_ignore_subset_cols,
+                                    'expression_id_col':
+                                        self.splicing.feature_expression_id_col}
         except AttributeError:
             splicing_feature_data = None
             splicing_feature_kws = None
@@ -1367,6 +1466,76 @@ class Study(object):
                                       sources=self.sources,
                                       version=version,
                                       flotilla_dir=flotilla_dir)
+
+    @cached_property()
+    def tidy_splicing_with_expression(self):
+        """A tall 'tidy' dataframe of samples with expression and splicing
+
+        :return:
+        :rtype:
+        """
+        # Tidify splicing
+        splicing = self.splicing.data
+        splicing_index_name = splicing.index.name
+        splicing_index_name = 'index' if splicing_index_name is None \
+            else splicing_index_name
+
+        splicing_tidy = pd.melt(splicing.reset_index(),
+                                id_vars=splicing_index_name,
+                                value_name='psi',
+                                var_name='miso_id')
+        splicing_tidy = splicing_tidy.rename(columns={splicing_index_name:
+                                                          'sample_id'})
+        splicing_tidy['common_id'] = splicing_tidy.miso_id.map(
+            self.splicing.feature_data[self.splicing.feature_expression_id_col])
+
+        splicing_tidy = splicing_tidy.dropna()
+
+        # Tidify expression
+        expression = self.expression.data_original
+        expression_index_name = expression.index.name
+        expression_index_name = 'index' if expression_index_name is None \
+            else expression_index_name
+
+        expression_tidy = pd.melt(expression.reset_index(),
+                                  id_vars=expression_index_name,
+                                  value_name='expression',
+                                  var_name='common_id')
+        # if expression_index_name == 'index':
+        expression_tidy = expression_tidy.rename(columns={'index': 'sample_id'})
+        expression_tidy = expression_tidy.dropna()
+
+        splicing_tidy.set_index(['sample_id', 'common_id'], inplace=True)
+        expression_tidy.set_index(['sample_id', 'common_id'], inplace=True)
+
+        return splicing_tidy.join(expression_tidy, how='inner')
+
+    def filter_splicing_on_expression(self, expression_thresh,
+                                      sample_subset=None):
+        """Filter splicing events on expression values
+
+        Parameters
+        ----------
+        expression_thresh : float
+            Minimum expression value, of the original input. E.g. if the
+            original input is already log-transformed, then this threshold is
+            on the log values.
+
+        Returns
+        -------
+        psi : pandas.DataFrame
+            A (n_samples, n_features)
+
+        """
+        sample_ids = self.sample_subset_to_sample_ids(sample_subset)
+        splicing_with_expression = \
+            self.tidy_splicing_with_expression.sample_id.isin(sample_ids)
+        ind = splicing_with_expression.expression >= expression_thresh
+        splicing_high_expression = splicing_with_expression.ix[ind]
+        splicing_high_expression = splicing_high_expression.reset_index().dropna()
+        filtered_psi = splicing_high_expression.pivot(
+            columns='miso_id', index='sample_id', values='psi')
+        return filtered_psi
 
 
 
