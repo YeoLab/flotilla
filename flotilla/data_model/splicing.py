@@ -308,13 +308,13 @@ class SplicingData(BaseData):
                     (x, y + offset), verticalalignment=verticalalignment,
                     horizontalalignment='center')
             except KeyError:
-                ax_bar.annotate('{0} (0%)',
+                ax_bar.annotate('0 (0%)',
                                 (x, offset_),
                                 verticalalignment='bottom',
                                 horizontalalignment='center')
 
 
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
 
         for ax, (modality, s) in zip(axes[1:], grouped):
             # modality_count[modality] = len(s)
