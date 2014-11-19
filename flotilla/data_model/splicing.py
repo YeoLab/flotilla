@@ -1,6 +1,5 @@
 import collections
 import sys
-import itertools
 
 import pandas as pd
 import numpy as np
@@ -255,13 +254,13 @@ class SplicingData(BaseData):
         """
 
         if use_these_modalities:
-            modalities_assignments = self.modalities(
+            assignments = self.modalities(
                 sample_ids, feature_ids, bootstrapped=bootstrapped,
                 bootstrapped_kws=bootstrapped_kws)
         else:
-            modalities_assignments = self.modalities(
+            assignments = self.modalities(
                 bootstrapped=bootstrapped, bootstrapped_kws=bootstrapped_kws)
-        modalities_names = modalities_assignments.unique()
+        modalities_names = assignments.unique()
 
         nrows = len(modalities_names)+1
         figsize = 10, nrows*4
@@ -270,18 +269,25 @@ class SplicingData(BaseData):
         # pie_axis.set_aspect('equal')
         # pie_axis.axis('off')
         if color is None:
-            color = pd.Series(red, index=modalities_assignments.index)
+            color = pd.Series(red, index=assignments.index)
 
-        modalities_grouped = modalities_assignments.groupby(
-            modalities_assignments)
+        grouped = assignments.groupby(assignments)
         # modality_count = {}
-        import pdb; pdb.set_trace()
-        for ax, (modality, s) in itertools.izip(axes,
-                                                modalities_grouped):
+        # import pdb; pdb.set_trace()
+
+        ax_bar = axes[0]
+        sns.barplot(assignments,
+                    color=self.splicing.modalities_visualizer.colors,
+                    x_order=self.splicing.modalities_visualizer.modalities_order,
+                    ax=ax_bar)
+
+        for ax, (modality, s) in zip(axes[1:], grouped):
             # modality_count[modality] = len(s)
             psi = self.data[s.index]
             lavalamp(psi, color=color, ax=ax, x_offset=x_offset)
             ax.set_title(modality)
+        sns.despine()
+
         # pie_axis.pie(map(int, modality_count.values()),
         #              labels=modality_count.keys(), autopct='%1.1f%%')
 
