@@ -181,6 +181,7 @@ def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
 
     ax.set_xlim(-0.5, xmax + .5)
     ax.set_ylim(0, 1)
+    ax.set_yticks([0, 0.5, 1])
     ax.set_title(title)
 
 
