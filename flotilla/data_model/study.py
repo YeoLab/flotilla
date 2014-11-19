@@ -435,7 +435,7 @@ class Study(object):
                     filename = resource['path']
                     if cls._is_relative_path(filename):
                         filename = '{}/{}'.format(datapackage_dir,
-                                                  resource_url)
+                                                  filename)
 
                     # Test if the file exists, if not, then add the datapackage
                     # file
