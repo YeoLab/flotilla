@@ -131,3 +131,7 @@ class MetaData(BaseData):
     def sample_subsets(self):
         return subsets_from_metadata(self.data, MINIMUM_SAMPLE_SUBSET,
                                      'samples')
+
+    @property
+    def phenotype_series(self):
+        return self.data[self.phenotype_col]
