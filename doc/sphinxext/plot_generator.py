@@ -139,7 +139,7 @@ def create_thumbnail(infile, thumbfile,
                       frameon=False, xticks=[], yticks=[])
     ax.imshow(thumb, aspect='auto', resample=True,
               interpolation='bilinear')
-    fig.savefig(thumbfile, dpi=dpi)
+    fig.savefig(thumbfile, dpi=dpi, format='png')
     return fig
 
 
@@ -272,7 +272,7 @@ class ExampleGenerator(object):
                                  self.thumbfilename)
         self.html = "<img src=../%s>" % self.pngfilename
         fig.tight_layout()
-        fig.savefig(pngfile, dpi=75)
+        fig.savefig(pngfile, dpi=75, format="png")
 
         cx, cy = self.thumbloc
         create_thumbnail(pngfile, thumbfile, cx=cx, cy=cy)

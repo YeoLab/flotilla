@@ -7,12 +7,9 @@ import pytest
 np.random.seed(0)
 
 
-@pytest.fixture(params=[(0, .1, .2, .3, .4, 0.5, .6, .7, .8, .9, 1),
-                        pytest.mark.xfail(None,
-                                          reason='Must specify bins for '
-                                                 'binify')])
-def bins(request):
-    return request.param
+@pytest.fixture
+def bins():
+    return (0, .1, .2, .3, .4, 0.5, .6, .7, .8, .9, 1)
 
 
 @pytest.fixture
@@ -25,44 +22,18 @@ def df2():
     return pd.DataFrame(np.random.uniform(size=200).reshape(10, 20))
 
 
-@pytest.fixture(params=[None,
-                        pytest.mark.xfail('negative',
-                                          reason='Should not input data that '
-                                                 'has negative values (not a '
-                                                 'probability distribution)'),
-                        pytest.mark.xfail('sum > 1',
-                                          reason='Should not input data that '
-                                                 'does not sum to 1 (not a '
-                                                 'probability distribution)')])
-def p(request, df1, bins):
+@pytest.fixture
+def p(df1, bins):
     from flotilla.compute.infotheory import binify
 
-    if request.param is None:
-        return binify(df1, bins)
-    elif request.param == 'negative':
-        return -df1
-    elif request.param == 'sum > 1':
-        return df1
+    return binify(df1, bins)
 
 
-@pytest.fixture(params=[None,
-                        pytest.mark.xfail('negative',
-                                          reason='Should not input data that '
-                                                 'has negative values (not a '
-                                                 'probability distribution)'),
-                        pytest.mark.xfail('sum > 1',
-                                          reason='Should not input data that '
-                                                 'does not sum to 1 (not a '
-                                                 'probability distribution)')])
-def q(request, df2, bins):
+@pytest.fixture
+def q(df2, bins):
     from flotilla.compute.infotheory import binify
 
-    if request.param is None:
-        return binify(df2, bins)
-    elif request.param == 'negative':
-        return -df2
-    elif request.param == 'sum > 1':
-        return df2
+    return binify(df2, bins)
 
 
 def test_bin_range_strings(bins):
