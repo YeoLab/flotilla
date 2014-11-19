@@ -241,8 +241,6 @@ class SplicingData(BaseData):
             How much to offset the x-axis of each event. Useful if you want
             to plot the same event, but in several iterations with different
             celltypes or colors
-        axes : None or list of matplotlib.axes.Axes objects
-            Which axes to plot these on
         use_these_modalities : bool
             If True, then use these sample ids to calculate modalities.
             Otherwise, use the modalities assigned using ALL samples and
@@ -264,23 +262,10 @@ class SplicingData(BaseData):
             modalities_assignments = self.modalities(
                 bootstrapped=bootstrapped, bootstrapped_kws=bootstrapped_kws)
         modalities_names = modalities_assignments.unique()
-        from matplotlib.gridspec import GridSpec, GridSpecFromSubplotSpec
-        import matplotlib.pyplot as plt
 
-        gs_x = len(modalities_names)
-        gs_y = 15
-
-        if ax is None:
-            fig, ax = plt.subplots(1, 1,
-                                   figsize=(18, 3 * len(modalities_names)))
-            gs = GridSpec(gs_x, gs_y)
-
-        else:
-            gs = GridSpecFromSubplotSpec(gs_x, gs_y, ax.get_subplotspec())
-            fig = plt.gcf()
-
-        lavalamp_axes = [plt.subplot(gs[i, :18]) for i in
-                         xrange(len(modalities_names))]
+        nrows = len(modalities_names)+1
+        figsize = 10, nrows*4
+        fig, axes = plt.subplots(nrows=nrows, figsize=figsize)
         # pie_axis = plt.subplot(gs[:, 12:])
         # pie_axis.set_aspect('equal')
         # pie_axis.axis('off')
@@ -290,7 +275,8 @@ class SplicingData(BaseData):
         modalities_grouped = modalities_assignments.groupby(
             modalities_assignments)
         # modality_count = {}
-        for ax, (modality, s) in itertools.izip(lavalamp_axes,
+        import pdb; pdb.set_trace()
+        for ax, (modality, s) in itertools.izip(axes,
                                                 modalities_grouped):
             # modality_count[modality] = len(s)
             psi = self.data[s.index]
