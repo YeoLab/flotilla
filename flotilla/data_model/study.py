@@ -1101,7 +1101,7 @@ class Study(object):
 
     def plot_modalities_lavalamps(self, sample_subset=None, bootstrapped=False,
                                   bootstrapped_kws=None):
-        grouped = self.splicing.data.groupby(self.sample_id_to_color, axis=0)
+        grouped = self.splicing.data.groupby(self.sample_id_to_phenotype, axis=0)
         celltype_groups = self.splicing.data.groupby(
             self.sample_id_to_phenotype, axis=0)
 
@@ -1110,22 +1110,21 @@ class Study(object):
             # from just the samples from this sample_subset
             celltype_samples = celltype_groups.groups[sample_subset]
             celltype_samples = set(celltype_groups.groups[sample_subset])
-            use_these_modalities = True
         else:
             # Plotting all the celltypes, use the modality assignments from
             # all celltypes together
             celltype_samples = self.splicing.data.index
-            use_these_modalities = False
 
-        for i, (color, sample_ids) in enumerate(grouped.groups.iteritems()):
+        for i, (phenotype, sample_ids) in enumerate(grouped.groups.iteritems()):
             x_offset = 1. / (i + 1)
             sample_ids = celltype_samples.intersection(sample_ids)
+            color = self.phenotype_to_color[phenotype]
             if len(sample_ids) > 0:
                 self.splicing.plot_modalities_lavalamps(
                     sample_ids=sample_ids,
                     color=color,
                     x_offset=x_offset,
-                    use_these_modalities=use_these_modalities,
+                    title=phenotype,
                     bootstrapped=bootstrapped,
                     bootstrapped_kws=bootstrapped_kws)
 
