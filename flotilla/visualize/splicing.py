@@ -104,14 +104,14 @@ class ModalitiesViz(object):
 
 
 def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
-             switchy_score_psi=None, marker='o', plot_kws=None):
+             switchy_score_psi=None, marker='o', plot_kws=None,
+             yticks=None):
     """Make a 'lavalamp' scatter plot of many splicing events
 
     Useful for visualizing many splicing events at once.
 
     Parameters
     ----------
-    TODO.md: (n_events, n_samples).transpose()
     psi : array
         A (n_events, n_samples) matrix either as a numpy array or as a pandas
         DataFrame
@@ -181,7 +181,10 @@ def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
 
     ax.set_xlim(-0.5, xmax + .5)
     ax.set_ylim(0, 1)
-    ax.set_yticks([0, 0.5, 1])
+    if yticks is None:
+        ax.set_yticks([0, 0.5, 1])
+    else:
+        ax.set_yticks(yticks)
     ax.set_title(title)
 
 
