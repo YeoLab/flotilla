@@ -937,11 +937,15 @@ class Study(object):
         """
         if expression_thresh is not None:
             data = self.filter_splicing_on_expression(
-                expression_thresh=expression_thresh, sample_subset=sample_subset)
+                expression_thresh=expression_thresh,
+                sample_subset=sample_subset)
+            sample_ids = None
+            feature_ids = None
         else:
             sample_ids = self.sample_subset_to_sample_ids(sample_subset)
             feature_ids = self.feature_subset_to_feature_ids(
                 'splicing', feature_subset, rename=False)
+            data = None
 
         return self.splicing.modalities(sample_ids, feature_ids, data=data,
                                         bootstrapped=bootstrapped,
@@ -983,12 +987,15 @@ class Study(object):
         """
         if expression_thresh is not None:
             data = self.filter_splicing_on_expression(
-                expression_thresh=expression_thresh, sample_subset=sample_subset)
-
+                expression_thresh=expression_thresh,
+                sample_subset=sample_subset)
+            sample_ids = None
+            feature_ids = None
         else:
             sample_ids = self.sample_subset_to_sample_ids(sample_subset)
             feature_ids = self.feature_subset_to_feature_ids(
                 'splicing', feature_subset, rename=False)
+            data = None
 
         return self.splicing.modalities_counts(
             sample_ids, feature_ids, data=data, bootstrapped=bootstrapped,
