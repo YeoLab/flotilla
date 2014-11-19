@@ -83,20 +83,23 @@ class SplicingData(BaseData):
         self.data_type = 'splicing'
 
     @memoize
-    def modalities(self, sample_ids=None, feature_ids=None,
+    def modalities(self, sample_ids=None, feature_ids=None, data=None,
                    bootstrapped=False, bootstrapped_kws=None):
         """Assigned modalities for these samples and features.
 
         Parameters
         ----------
-        sample_ids : list of str
+        sample_ids : list of str, optional
             Which samples to use. If None, use all. Default None.
-        feature_ids : list of str
+        feature_ids : list of str, optional
             Which features to use. If None, use all. Default None.
-        bootstrapped : bool
+        data : pandas.DataFrame, optional
+            If provided, use this dataframe instead of the sample_ids and
+            feature_ids provided
+        bootstrapped : bool, optional (default=False)
             Whether or not to use bootstrapping, i.e. resample each splicing
             event several times to get a better estimate of its true modality.
-        bootstrappped_kws : dict
+        bootstrappped_kws : dict, optional
             Valid arguments to _bootstrapped_fit_transform. If None, default is
             dict(n_iter=100, thresh=0.6, minimum_samples=10)
 
@@ -105,12 +108,17 @@ class SplicingData(BaseData):
         modality_assignments : pandas.Series
             The modality assignments of each feature given these samples
         """
-        data = self._subset(self.data, sample_ids, feature_ids)
+        if data is None:
+            data = self._subset(self.data, sample_ids, feature_ids)
+        else:
+            if feature_ids is not None and sample_ids is not None:
+                raise ValueError('Can only specify `sample_ids` and '
+                                 '`feature_ids` or `data`, but not both.')
         return self.modalities_calculator.fit_transform(data, bootstrapped,
                                                         bootstrapped_kws)
 
     @memoize
-    def modalities_counts(self, sample_ids=None, feature_ids=None,
+    def modalities_counts(self, sample_ids=None, feature_ids=None, data=None,
                           bootstrapped=False, bootstrapped_kws=False):
         """Count the number of each modalities of these samples and features
 
@@ -120,11 +128,14 @@ class SplicingData(BaseData):
             Which samples to use. If None, use all. Default None.
         feature_ids : list of str
             Which features to use. If None, use all. Default None.
+        data : pandas.DataFrame, optional
+            If provided, use this dataframe instead of the sample_ids and
+            feature_ids provided
         bootstrapped : bool
             Whether or not to use bootstrapping, i.e. resample each splicing
             event several times to get a better estimate of its true modality.
             Default False.
-        bootstrappped_kws : dict
+        bootstrapped_kws : dict
             Valid arguments to _bootstrapped_fit_transform. If None, default is
             dict(n_iter=100, thresh=0.6, minimum_samples=10)
 
@@ -133,7 +144,13 @@ class SplicingData(BaseData):
         modalities_counts : pandas.Series
             The number of events detected in each modality
         """
-        data = self._subset(self.data, sample_ids, feature_ids)
+        if data is None:
+            data = self._subset(self.data, sample_ids, feature_ids)
+        else:
+            if feature_ids is not None and sample_ids is not None:
+                raise ValueError('Can only specify `sample_ids` and '
+                                 '`feature_ids` or `data`, but not both.')
+
         return self.modalities_calculator.counts(data, bootstrapped,
                                                  bootstrapped_kws)
 
