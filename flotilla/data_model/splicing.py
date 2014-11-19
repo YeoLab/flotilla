@@ -277,8 +277,8 @@ class SplicingData(BaseData):
 
         ax_bar = axes[0]
         sns.barplot(assignments,
-                    color=self.splicing.modalities_visualizer.colors,
-                    x_order=self.splicing.modalities_visualizer.modalities_order,
+                    color=self.modalities_visualizer.colors,
+                    x_order=self.modalities_visualizer.modalities_order,
                     ax=ax_bar)
 
         for ax, (modality, s) in zip(axes[1:], grouped):
