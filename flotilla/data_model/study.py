@@ -17,7 +17,7 @@ from .expression import ExpressionData, SpikeInData
 from .quality_control import MappingStatsData, MIN_READS
 from .splicing import SplicingData, FRACTION_DIFF_THRESH
 from ..compute.predict import PredictorConfigManager
-from ..datapackage import data_package_url_to_dict, \
+from ..datapackage import datapackage_url_to_dict, \
     check_if_already_downloaded, make_study_datapackage
 from ..visualize.color import blue
 from ..visualize.ipython_interact import Interactive
@@ -346,7 +346,7 @@ class Study(object):
     def from_datapackage_url(
             cls, datapackage_url,
             load_species_data=True,
-            species_data_package_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
+            species_datapackage_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
         """Create a study from a url of a datapackage.json file
 
         Parameters
@@ -372,10 +372,13 @@ class Study(object):
             If the datapackage.json file does not contain the required
             resources of metadata, expression, and splicing.
         """
-        data_package = data_package_url_to_dict(datapackage_url)
+        datapackage = datapackage_url_to_dict(datapackage_url)
+        datapackage_dir = '{}/{}'.format(FLOTILLA_DOWNLOAD_DIR, 
+                                         datapackage['name'])
         return cls.from_datapackage(
-            data_package, load_species_data=load_species_data,
-            species_datapackage_base_url=species_data_package_base_url)
+            datapackage, load_species_data=load_species_data,
+            datapackage_dir=datapackage_dir,
+            species_datapackage_base_url=species_datapackage_base_url)
 
     @classmethod
     def from_datapackage_file(
@@ -513,10 +516,10 @@ class Study(object):
         try:
             species_data_url = '{}/{}/datapackage.json'.format(
                 species_datapackage_base_url, species)
-            species_data_package = data_package_url_to_dict(
+            species_datapackage = datapackage_url_to_dict(
                 species_data_url)
 
-            for resource in species_data_package['resources']:
+            for resource in species_datapackage['resources']:
                 if 'url' in resource:
                     resource_url = resource['url']
                     filename = check_if_already_downloaded(resource_url,
