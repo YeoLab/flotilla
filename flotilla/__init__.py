@@ -36,7 +36,6 @@ def embark(study_name, load_species_data=True):
             pass
         filename = os.path.abspath(os.path.expanduser(
             '~/flotilla_projects/{}/datapackage.json'.format(study_name)))
-        import pdb; pdb.set_trace()
         return Study.from_datapackage_file(filename,
                                            load_species_data=load_species_data)
     except IOError:
