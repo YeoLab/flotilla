@@ -307,7 +307,7 @@ class SplicingData(BaseData):
                 ax_bar.annotate('{} (:.1f%)'.format(y, percent),
                     (x, y + offset), verticalalignment=verticalalignment,
                     horizontalalignment='center')
-            except IndexError:
+            except KeyError:
                 ax_bar.annotate('{0} (0%)',
                                 (x, offset_),
                                 verticalalignment='bottom',
