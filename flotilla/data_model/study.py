@@ -392,6 +392,10 @@ class Study(object):
             load_species_data=load_species_data,
             species_datapackage_base_url=species_datapackage_base_url)
 
+    @staticmethod
+    def _is_absolute_path(location):
+        return location.startswith('http') or location.startswith('/')
+
     @classmethod
     def from_datapackage(
             cls, datapackage, datapackage_dir='./',
@@ -418,6 +422,9 @@ class Study(object):
         for resource in datapackage['resources']:
             if 'url' in resource:
                 resource_url = resource['url']
+                if not cls._is_absolute_path(resource_url):
+                    resource_url = '{}/{}'.format(datapackage_dir,
+                                                  resource_url)
                 filename = check_if_already_downloaded(resource_url,
                                                        datapackage_name)
             else:
@@ -426,6 +433,10 @@ class Study(object):
                                                            datapackage_name)
                 else:
                     filename = resource['path']
+                    if not cls._is_absolute_path(filename):
+                        filename = '{}/{}'.format(datapackage_dir,
+                                                  filename)
+
                     # Test if the file exists, if not, then add the datapackage
                     # file
                     try:
