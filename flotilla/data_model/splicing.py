@@ -299,13 +299,19 @@ class SplicingData(BaseData):
 
         offset_ = yrange * annotate_yrange_factor
         for x, modality in zip(xs, x_order):
-            y = sizes[modality]
-            offset = offset_ if y >= 0 else -1 * offset_
-            verticalalignment = 'bottom' if y >= 0 else 'top'
-            percent = percents[modality]
-            ax_bar.annotate('{} (.1f%)'.format(y, percent),
-                (x, y + offset), verticalalignment=verticalalignment,
-                horizontalalignment='center')
+            try:
+                y = sizes[modality]
+                offset = offset_ if y >= 0 else -1 * offset_
+                verticalalignment = 'bottom' if y >= 0 else 'top'
+                percent = percents[modality]
+                ax_bar.annotate('{} (:.1f%)'.format(y, percent),
+                    (x, y + offset), verticalalignment=verticalalignment,
+                    horizontalalignment='center')
+            except IndexError:
+                ax_bar.annotate('{0} (0%)',
+                                (x, offset_),
+                                verticalalignment='bottom',
+                                horizontalalignment='center')
 
 
         import pdb; pdb.set_trace()
