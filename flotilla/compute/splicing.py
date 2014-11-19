@@ -4,7 +4,6 @@ import numpy as np
 import pandas as pd
 from sklearn import cross_validation
 
-from ..util import memoize
 from .infotheory import jsd, binify
 
 
@@ -110,7 +109,7 @@ class Modalities(object):
             np.argmin(sqrt_jsd_modalities.values, axis=0)]
         return pd.Series(modalities, sqrt_jsd_modalities.columns)
 
-    @memoize
+    # @memoize
     def fit_transform(self, data, bootstrapped=False, bootstrapped_kws=None):
         """Given psi scores, estimate the modality of each
 
