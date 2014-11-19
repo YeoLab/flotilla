@@ -279,25 +279,25 @@ class SplicingData(BaseData):
             gs = GridSpecFromSubplotSpec(gs_x, gs_y, ax.get_subplotspec())
             fig = plt.gcf()
 
-        lavalamp_axes = [plt.subplot(gs[i, :12]) for i in
+        lavalamp_axes = [plt.subplot(gs[i, :18]) for i in
                          xrange(len(modalities_names))]
-        pie_axis = plt.subplot(gs[:, 12:])
-        pie_axis.set_aspect('equal')
-        pie_axis.axis('off')
+        # pie_axis = plt.subplot(gs[:, 12:])
+        # pie_axis.set_aspect('equal')
+        # pie_axis.axis('off')
         if color is None:
             color = pd.Series(red, index=modalities_assignments.index)
 
         modalities_grouped = modalities_assignments.groupby(
             modalities_assignments)
-        modality_count = {}
+        # modality_count = {}
         for ax, (modality, s) in itertools.izip(lavalamp_axes,
                                                 modalities_grouped):
-            modality_count[modality] = len(s)
+            # modality_count[modality] = len(s)
             psi = self.data[s.index]
             lavalamp(psi, color=color, ax=ax, x_offset=x_offset)
             ax.set_title(modality)
-        pie_axis.pie(map(int, modality_count.values()),
-                     labels=modality_count.keys(), autopct='%1.1f%%')
+        # pie_axis.pie(map(int, modality_count.values()),
+        #              labels=modality_count.keys(), autopct='%1.1f%%')
 
     # def plot_event(self, feature_id, sample_ids=None,
     #                phenotype_groupby=None,
