@@ -21,7 +21,7 @@ class ModalitiesViz(object):
                          'excluded': seaborn_colors[0],
                          'included': seaborn_colors[2],
                          'middle': seaborn_colors[1],
-                         '  ambiguous': 'lightgrey',
+                         'ambiguous': 'lightgrey',
                          'uniform': seaborn_colors[4]}
 
     modalities_order = ['excluded', 'uniform', 'bimodal', 'middle',
