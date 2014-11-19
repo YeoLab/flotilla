@@ -1020,7 +1020,8 @@ class Study(object):
             bootstrapped_kws=bootstrapped_kws)
 
     def plot_modalities(self, sample_subset=None, feature_subset=None,
-                        normed=True):
+                        normed=True, bootstrapped=False,
+                        bootstrapped_kws=None):
         # try:
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
         feature_ids = self.feature_subset_to_feature_ids('splicing',
@@ -1037,10 +1038,14 @@ class Study(object):
         bar_ax = axes[0]
         all_ax = axes[1]
         self.splicing.plot_modalities_reduced(sample_ids, feature_ids,
-                                              all_ax, title='all samples')
+                                              all_ax, title='all samples',
+                                              bootstrapped=bootstrapped,
+                                              bootstrapped_kws=bootstrapped_kws)
         self.splicing.plot_modalities_bar(sample_ids, feature_ids,
                                           bar_ax, i=0, normed=normed,
-                                          legend=False)
+                                          legend=False,
+                                          bootstrapped=bootstrapped,
+                                          bootstrapped_kws=bootstrapped_kws)
 
         axes = axes[2:]
         for i, ((celltype, series), ax) in enumerate(zip(grouped, axes)):
@@ -1086,13 +1091,13 @@ class Study(object):
         n_total = self.celltype_event_counts.sum(axis=1).astype(float)
         return n_unique / n_total * 100
 
-    @property
-    def celltype_modalities(self):
-        """Return modality assignments of each celltype
-        """
-        return self.splicing.data.groupby(
-            self.sample_id_to_phenotype, axis=0).apply(
-            lambda x: self.splicing.modalities(x.index))
+    # @property
+    # def celltype_modalities(self):
+    #     """Return modality assignments of each celltype
+    #     """
+    #     return self.splicing.data.groupby(
+    #         self.sample_id_to_phenotype, axis=0).apply(
+    #         lambda x: self.splicing.modalities(x.index))
 
     def plot_modalities_lavalamps(self, sample_subset=None, bootstrapped=False,
                                   bootstrapped_kws=None):
