@@ -11,12 +11,12 @@ import pandas as pd
 FLOTILLA_DOWNLOAD_DIR = os.path.expanduser('~/flotilla_projects')
 
 
-def data_package_url_to_dict(data_package_url):
-    filename = check_if_already_downloaded(data_package_url)
+def datapackage_url_to_dict(datapackage_url):
+    filename = check_if_already_downloaded(datapackage_url)
 
     with open(filename) as f:
-        data_package = json.load(f)
-    return data_package
+        datapackage = json.load(f)
+    return datapackage
 
 
 def check_if_already_downloaded(url,
