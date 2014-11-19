@@ -662,6 +662,10 @@ class Study(object):
         except KeyError:
             pass
 
+        ind = self.metadata.phenotype_series == phenotype_subset
+        if ind.sum() > 0:
+            return self.metadata.phenotype_series.index[ind]
+
         try:
             if phenotype_subset is None or 'all_samples'.startswith(
                     phenotype_subset):
