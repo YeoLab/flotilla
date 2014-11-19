@@ -221,8 +221,7 @@ class SplicingData(BaseData):
         sys.stdout.write(str(modalities_fractions) + '\n')
 
     def plot_modalities_lavalamps(self, sample_ids=None, feature_ids=None,
-                                  color=None, x_offset=0,
-                                  use_these_modalities=True,
+                                  color=None, x_offset=0, title='',
                                   bootstrapped=False, bootstrapped_kws=None):
         """Plot "lavalamp" scatterplot of each event
 
@@ -252,7 +251,7 @@ class SplicingData(BaseData):
             dict(n_iter=100, thresh=0.6, minimum_samples=10)
         """
 
-        if use_these_modalities:
+        if sample_ids is not None or feature_ids is not None:
             assignments = self.modalities(
                 sample_ids, feature_ids, bootstrapped=bootstrapped,
                 bootstrapped_kws=bootstrapped_kws)
@@ -279,12 +278,14 @@ class SplicingData(BaseData):
                     color=self.modalities_visualizer.colors,
                     x_order=self.modalities_visualizer.modalities_order,
                     ax=ax_bar)
+        ax_bar.set_title('{} modality counts'.format(title))
+        import pdb; pdb.set_trace()
 
         for ax, (modality, s) in zip(axes[1:], grouped):
             # modality_count[modality] = len(s)
             psi = self.data[s.index]
             lavalamp(psi, color=color, ax=ax, x_offset=x_offset)
-            ax.set_title(modality)
+            ax.set_title('{} {}'.format(title, modality))
         sns.despine()
         fig.tight_layout()
 
