@@ -504,9 +504,7 @@ class SplicingData(BaseData):
                                    title=title, hist_kws=hist_kws)
 
     def _percent_pooled_inconsistent(self, pooled, pooled_inconsistent):
-        """The percent of splicing events which are
-
-        """
+        """The percent of events with pooled psi different from singles"""
         if pooled_inconsistent.shape[1] == 0:
             return 0.0
         try:
