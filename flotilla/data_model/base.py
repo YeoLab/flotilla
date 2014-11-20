@@ -7,9 +7,7 @@ import sys
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from scipy.spatial.distance import pdist, squareform
 import seaborn as sns
-
 from sklearn.preprocessing import StandardScaler
 
 from ..compute.decomposition import DataFramePCA, DataFrameNMF
