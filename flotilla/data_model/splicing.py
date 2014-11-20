@@ -2,7 +2,6 @@ import collections
 import sys
 
 import pandas as pd
-
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -228,6 +227,59 @@ class SplicingData(BaseData):
             modalities_counts / modalities_counts.sum().astype(float)
         sys.stdout.write(str(modalities_fractions) + '\n')
 
+    def plot_modalities_bars(self, sample_ids=None, feature_ids=None,
+                             data=None, groupby=None,
+                             phenotype_to_color=None,
+                             bootstrapped=False, bootstrapped_kws=None):
+        """Plot bar
+
+        Parameters
+        ----------
+        sample_ids : None or list of str
+            Which samples to use. If None, use all
+        feature_ids : None or list of str
+            Which features to use. If None, use all
+        color : None or matplotlib color
+            Which color to use for plotting the lavalamps of these features
+            and samples
+        x_offset : numeric
+            How much to offset the x-axis of each event. Useful if you want
+            to plot the same event, but in several iterations with different
+            celltypes or colors
+        use_these_modalities : bool
+            If True, then use these sample ids to calculate modalities.
+            Otherwise, use the modalities assigned using ALL samples and
+            features
+        bootstrapped : bool
+            Whether or not to use bootstrapping, i.e. resample each splicing
+            event several times to get a better estimate of its true modality.
+            Default False.
+        bootstrappped_kws : dict
+            Valid arguments to _bootstrapped_fit_transform. If None, default is
+            dict(n_iter=100, thresh=0.6, minimum_samples=10)
+        """
+        if data is not None:
+            assignments = self.modalities(data=data, groupby=groupby,
+                                          bootstrapped=bootstrapped,
+                                          bootstrapped_kws=bootstrapped_kws)
+        else:
+            assignments = self.modalities(
+                sample_ids, feature_ids, groupby=groupby,
+                bootstrapped=bootstrapped, bootstrapped_kws=bootstrapped_kws)
+
+        # make sure this is always a dataframe
+        if isinstance(assignments, pd.Series):
+            assignments = pd.DataFrame([assignments.values],
+                                       index=assignments.name,
+                                       columns=assignments.index)
+        x_order = self.modalities_visualizer.modalities_order
+        id_vars = list(self.data.columns.names)
+        df = pd.melt(assignments.T.reset_index(),
+                     value_vars=assignments.index.tolist(),
+                     id_vars=id_vars)
+        sns.factorplot('value', hue=assignments.index.name, data=df,
+                       x_order=x_order)
+
     def plot_modalities_lavalamps(self, sample_ids=None, feature_ids=None,
                                   data=None, groupby=None,
                                   phenotype_to_color=None,
@@ -276,18 +328,6 @@ class SplicingData(BaseData):
                                        columns=assignments.index)
 
         grouped = data.groupby(groupby)
-        # import pdb; pdb.set_trace()
-
-        modalities_names = np.unique(assignments.values.flat)
-
-        x_order = self.modalities_visualizer.modalities_order
-        id_vars = list(self.data.columns.names)
-        df = pd.melt(assignments.T.reset_index(),
-                     value_vars=assignments.index.tolist(),
-                     id_vars=id_vars)
-        sns.factorplot('value', hue=assignments.index.name, data=df,
-                       x_order=x_order)
-
         nrows = assignments.groupby(
             level=0, axis=0).apply(
             lambda x: np.unique(x.values)).apply(lambda x: len(x)).sum()
