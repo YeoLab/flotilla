@@ -467,6 +467,32 @@ class SplicingData(BaseData):
             diff_from_singles = diff_from_singles.dropna(axis=1, how='all')
         return singles, pooled, not_measured_in_pooled, diff_from_singles
 
+    def plot_lavalamp(self, sample_ids=None, feature_ids=None,
+                      data=None, groupby=None,
+                      phenotype_to_color=None):
+        if data is None:
+            data = self._subset(self.data, sample_ids, feature_ids,
+                                require_min_samples=False)
+        else:
+            if feature_ids is not None and sample_ids is not None:
+                raise ValueError('Can only specify `sample_ids` and '
+                                 '`feature_ids` or `data`, but not both.')
+        grouped = data.groupby(groupby)
+
+        nrows = len(grouped.groups)
+        figsize = 12, nrows * 4
+        fig, axes = plt.subplots(nrows=len(grouped.groups), figsize=figsize)
+
+        for ax, (name, psi) in zip(axes, grouped):
+            try:
+                color = phenotype_to_color[name]
+            except KeyError:
+                color = None
+            lavalamp(psi, color=color, ax=ax)
+            ax.set_title(name)
+        sns.despine()
+        fig.tight_layout()
+
     def plot_lavalamp_pooled_inconsistent(
             self, data, feature_ids=None,
             fraction_diff_thresh=FRACTION_DIFF_THRESH, color=None):

@@ -1265,6 +1265,23 @@ class Study(object):
     #             sample_ids, feature_ids, linkage_method=linkage_method,
     #             metric=metric, sample_colors=sample_colors, figsize=figsize)
 
+    def plot_lavalamps(self, sample_subset=None, feature_subset=None,
+                       expression_thresh=-np.inf):
+        if expression_thresh > -np.inf:
+            data = self.filter_splicing_on_expression(
+                expression_thresh=expression_thresh,
+                sample_subset=sample_subset)
+            sample_ids = None
+            feature_ids = None
+        else:
+            sample_ids = self.sample_subset_to_sample_ids(sample_subset)
+            feature_ids = self.feature_subset_to_feature_ids(
+                'splicing', feature_subset, rename=False)
+            data = None
+
+        self.splicing.plot_lavalamp(sample_ids, feature_ids, data,
+                                    self.sample_id_to_phenotype,
+                                    self.phenotype_to_color)
 
     def plot_big_nmf_space_transitions(self, data_type='expression', n=5):
         if data_type == 'expression':
