@@ -342,7 +342,7 @@ class SplicingData(BaseData):
             for modality, s in modalities.groupby(modalities):
                 ax = axes_iter.next()
                 psi = self.data.ix[sample_ids, s.index]
-                if modality == 'excluded': import pdb; pdb.set_trace()
+                # if modality == 'excluded': import pdb; pdb.set_trace()
                 lavalamp(psi, color=color, ax=ax, yticks=yticks)
                 ax.set_title('{} {}'.format(phenotype, modality))
         sns.despine()
