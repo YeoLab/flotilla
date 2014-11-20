@@ -115,8 +115,10 @@ class SplicingData(BaseData):
             if feature_ids is not None and sample_ids is not None:
                 raise ValueError('Can only specify `sample_ids` and '
                                  '`feature_ids` or `data`, but not both.')
-        return self.modalities_calculator.fit_transform(data, bootstrapped,
-                                                        bootstrapped_kws)
+        assignments = data.groupby.apply(
+            self.modalities_calculator.fit_transform,
+            bootstrapped=bootstrapped, bootstrapped_kws=bootstrapped_kws)
+        return assignments
 
     # @memoize
     def modalities_counts(self, sample_ids=None, feature_ids=None, data=None,
@@ -153,8 +155,10 @@ class SplicingData(BaseData):
                 raise ValueError('Can only specify `sample_ids` and '
                                  '`feature_ids` or `data`, but not both.')
 
-        return self.modalities_calculator.counts(data, bootstrapped,
-                                                 bootstrapped_kws)
+        counts = data.groupby(groupby).apply(
+            self.modalities_calculator.counts, bootstrapped=bootstrapped,
+            bootstrapped_kws=bootstrapped_kws)
+        return counts
 
 
     def binify(self, data):
