@@ -1021,12 +1021,19 @@ class Study(object):
 
     def plot_modalities(self, sample_subset=None, feature_subset=None,
                         normed=True, bootstrapped=False,
-                        bootstrapped_kws=None):
+                        bootstrapped_kws=None, expression_thresh=-np.inf):
         # try:
-        sample_ids = self.sample_subset_to_sample_ids(sample_subset)
-        feature_ids = self.feature_subset_to_feature_ids('splicing',
-                                                         feature_subset,
-                                                         rename=False)
+        if expression_thresh is not None:
+            data = self.filter_splicing_on_expression(
+                expression_thresh=expression_thresh,
+                sample_subset=sample_subset)
+            sample_ids = None
+            feature_ids = None
+        else:
+            sample_ids = self.sample_subset_to_sample_ids(sample_subset)
+            feature_ids = self.feature_subset_to_feature_ids(
+                'splicing', feature_subset, rename=False)
+            data = None
 
         grouped = self.sample_id_to_phenotype.groupby(
             self.sample_id_to_phenotype)
@@ -1100,33 +1107,45 @@ class Study(object):
     #         lambda x: self.splicing.modalities(x.index))
 
     def plot_modalities_lavalamps(self, sample_subset=None, bootstrapped=False,
-                                  bootstrapped_kws=None):
-        grouped = self.splicing.data.groupby(self.sample_id_to_phenotype, axis=0)
-        celltype_groups = self.splicing.data.groupby(
-            self.sample_id_to_phenotype, axis=0)
+                                  bootstrapped_kws=None,
+                                  expression_thresh=-np.inf):
+        # grouped = self.splicing.singles.groupby(self.sample_id_to_phenotype,
+        #                                         axis=0)
+        # celltype_groups = self.splicing.singles.groupby(
+        #     self.sample_id_to_phenotype, axis=0)
+        #
+        # if sample_subset is not None:
+        #     # Only plotting one sample_subset, use the modality assignments
+        #     # from just the samples from this sample_subset
+        #     celltype_samples = set(celltype_groups.groups[sample_subset])
+        # else:
+        #     # Plotting all the celltypes, use the modality assignments from
+        #     # all celltypes together
+        #     celltype_samples = self.splicing.data.index
 
-        if sample_subset is not None:
-            # Only plotting one sample_subset, use the modality assignments
-            # from just the samples from this sample_subset
-            celltype_samples = celltype_groups.groups[sample_subset]
-            celltype_samples = set(celltype_groups.groups[sample_subset])
+        if expression_thresh is not None:
+            data = self.filter_splicing_on_expression(
+                expression_thresh=expression_thresh,
+                sample_subset=sample_subset)
+            sample_ids = None
         else:
-            # Plotting all the celltypes, use the modality assignments from
-            # all celltypes together
-            celltype_samples = self.splicing.data.index
+            sample_ids = self.sample_subset_to_sample_ids(sample_subset)
+            data = None
 
-        for i, (phenotype, sample_ids) in enumerate(grouped.groups.iteritems()):
-            x_offset = 1. / (i + 1)
-            sample_ids = celltype_samples.intersection(sample_ids)
-            color = self.phenotype_to_color[phenotype]
-            if len(sample_ids) > 0:
-                self.splicing.plot_modalities_lavalamps(
-                    sample_ids=sample_ids,
-                    color=color,
-                    x_offset=x_offset,
-                    title=phenotype,
-                    bootstrapped=bootstrapped,
-                    bootstrapped_kws=bootstrapped_kws)
+        # for i, (phenotype, sample_ids) in enumerate(grouped.groups.iteritems()):
+        #     x_offset = 1. / (i + 1)
+        #     sample_ids = celltype_samples.intersection(sample_ids)
+        #     color = self.phenotype_to_color[phenotype]
+        #     if len(sample_ids) > 0:
+        self.splicing.plot_modalities_lavalamps(
+            groupby=self.sample_id_to_phenotype,
+            phenotype_to_color=self.phenotype_to_color,
+            sample_ids=sample_ids, data=data,
+            # color=color,
+            # x_offset=x_offset,
+            # title=phenotype,
+            bootstrapped=bootstrapped,
+            bootstrapped_kws=bootstrapped_kws)
 
     def plot_event(self, feature_id, sample_subset=None, nmf_space=False):
         """Plot the violinplot and NMF transitions of a splicing event
