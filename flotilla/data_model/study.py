@@ -1003,7 +1003,7 @@ class Study(object):
             case of bootstrapped=True
 
         """
-        if expression_thresh is not None:
+        if expression_thresh > -np.inf:
             data = self.filter_splicing_on_expression(
                 expression_thresh=expression_thresh,
                 sample_subset=sample_subset)
@@ -1023,7 +1023,7 @@ class Study(object):
                         normed=True, bootstrapped=False,
                         bootstrapped_kws=None, expression_thresh=-np.inf):
         # try:
-        if expression_thresh is not None:
+        if expression_thresh > -np.inf:
             data = self.filter_splicing_on_expression(
                 expression_thresh=expression_thresh,
                 sample_subset=sample_subset)
