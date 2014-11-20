@@ -2,6 +2,7 @@ import collections
 import sys
 
 import pandas as pd
+
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -229,7 +230,7 @@ class SplicingData(BaseData):
 
     def plot_modalities_lavalamps(self, sample_ids=None, feature_ids=None,
                                   data=None, groupby=None,
-                                  phenotype_to_color=None, x_offset=0,
+                                  phenotype_to_color=None,
                                   bootstrapped=False, bootstrapped_kws=None):
         """Plot "lavalamp" scatterplot of each event
 
