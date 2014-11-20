@@ -7,9 +7,7 @@ import sys
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from scipy.spatial.distance import pdist, squareform
 import seaborn as sns
-
 from sklearn.preprocessing import StandardScaler
 
 from ..compute.decomposition import DataFramePCA, DataFrameNMF
@@ -627,11 +625,13 @@ class BaseData(object):
         """
         if feature_ids is None:
             feature_ids = data.columns
+        else:
+            feature_ids = pd.Index(set(feature_ids).intersection(data.columns))
         if sample_ids is None:
             sample_ids = data.index
+        else:
+            sample_ids = pd.Index(set(sample_ids).intersection(data.index))
 
-        sample_ids = pd.Index(set(sample_ids).intersection(data.index))
-        feature_ids = pd.Index(set(feature_ids).intersection(data.columns))
 
         if len(sample_ids) == 1:
             sample_ids = sample_ids[0]
@@ -642,8 +642,10 @@ class BaseData(object):
         else:
             single_feature = False
 
-        subset = data.ix[sample_ids]
-        subset = subset.T.ix[feature_ids].T
+
+        import pdb; pdb.set_trace()
+        subset = data.ix[sample_ids, feature_ids]
+        # subset = subset.T.ix[feature_ids].T
 
         if require_min_samples and not single_feature:
             subset = subset.ix[:, subset.count() >= self.minimum_samples]
