@@ -11,7 +11,6 @@ from .base import BaseData
 from ..compute.splicing import Modalities
 from ..compute.decomposition import DataFramePCA
 from ..visualize.color import purples, red
-from ..visualize.generic import barplot
 from ..visualize.splicing import ModalitiesViz, lavalamp, \
     hist_single_vs_pooled_diff, lavalamp_pooled_inconsistent
 from ..util import memoize, timestamp
@@ -279,11 +278,17 @@ class SplicingData(BaseData):
         # import pdb; pdb.set_trace()
 
         x_order = self.modalities_visualizer.modalities_order
-        ax_bar = axes[0]
+        id_vars = self.data.columns.names
+        df = pd.melt(assignments.T.reset_index(),
+                     value_vars=assignments.index,
+                     id_vars=id_vars)
+        # ax_bar = axes[0]
+        g = sns.factorplot('value', hue='phenotype', data=df)
 
-        barplot(assignments, color=self.modalities_visualizer.colors,
-                x_order=x_order, ax=ax_bar,
-                title='{} modality counts'.format(title))
+        # for name, s in assignments.iterrows():
+        #     barplot(s, color=self.modalities_visualizer.colors,
+        #             x_order=x_order, ax=ax_bar,
+        #             title='{} modality counts'.format(name))
         # sns.barplot(assignments,
         #             color=self.modalities_visualizer.colors,
         #             x_order=x_order,
