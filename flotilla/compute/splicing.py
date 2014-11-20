@@ -161,10 +161,11 @@ class Modalities(object):
         self.true_modalities.index = binned.index
         return self.assignments(self.sqrt_jsd_modalities(binned))
 
-    def _cat_indices_and_fit_transform(self, indices, data, min_samples=10):
+    @classmethod
+    def _cat_indices_and_fit_transform(cls, indices, data, min_samples=10):
         index = np.concatenate(indices)
         psi = data.iloc[index, :].dropna(axis=1, thresh=min_samples)
-        return self._single_fit_transform(psi, do_not_memoize=True)
+        return cls._single_fit_transform(psi, do_not_memoize=True)
 
     def _bootstrapped_fit_transform(self, data, n_iter=100, thresh=0.6,
                                     min_samples=10):
