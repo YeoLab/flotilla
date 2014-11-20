@@ -7,10 +7,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 from .base import BaseData
-
 from ..compute.splicing import Modalities
 from ..compute.decomposition import DataFramePCA
-from ..visualize.color import purples, red
+from ..visualize.color import purples
 from ..visualize.splicing import ModalitiesViz, lavalamp, \
     hist_single_vs_pooled_diff, lavalamp_pooled_inconsistent
 from ..util import memoize, timestamp
@@ -110,7 +109,8 @@ class SplicingData(BaseData):
             The modality assignments of each feature given these samples
         """
         if data is None:
-            data = self._subset(self.data, sample_ids, feature_ids)
+            data = self._subset(self.data, sample_ids, feature_ids,
+                                require_min_samples=False)
         else:
             if feature_ids is not None and sample_ids is not None:
                 raise ValueError('Can only specify `sample_ids` and '
@@ -149,7 +149,8 @@ class SplicingData(BaseData):
             The number of events detected in each modality
         """
         if data is None:
-            data = self._subset(self.data, sample_ids, feature_ids)
+            data = self._subset(self.data, sample_ids, feature_ids,
+                                require_min_samples=False)
         else:
             if feature_ids is not None and sample_ids is not None:
                 raise ValueError('Can only specify `sample_ids` and '
@@ -228,8 +229,7 @@ class SplicingData(BaseData):
 
     def plot_modalities_lavalamps(self, sample_ids=None, feature_ids=None,
                                   data=None, groupby=None,
-                                  phenotype_to_color=None,
-                                  color=None, x_offset=0, title='',
+                                  phenotype_to_color=None, x_offset=0,
                                   bootstrapped=False, bootstrapped_kws=None):
         """Plot "lavalamp" scatterplot of each event
 
@@ -262,96 +262,47 @@ class SplicingData(BaseData):
             assignments = self.modalities(data=data, groupby=groupby,
                 bootstrapped=bootstrapped, bootstrapped_kws=bootstrapped_kws)
         else:
+            data = self._subset(self.singles, sample_ids, feature_ids,
+                                require_min_samples=False)
             assignments = self.modalities(
                 sample_ids, feature_ids, groupby=groupby,
                 bootstrapped=bootstrapped, bootstrapped_kws=bootstrapped_kws)
+
+        # make sure this is always a dataframe
+        if isinstance(assignments, pd.Series):
+            assignments = pd.DataFrame([assignments.values],
+                                       index=assignments.name,
+                                       columns=assignments.index)
+
+        grouped = data.groupby(groupby)
+
         modalities_names = np.unique(assignments.values.flat)
-
-        nrows = len(modalities_names)+1
-        figsize = 10, nrows*4
-        fig, axes = plt.subplots(nrows=nrows, figsize=figsize)
-        # pie_axis = plt.subplot(gs[:, 12:])
-        # pie_axis.set_aspect('equal')
-        # pie_axis.axis('off')
-        if color is None:
-            color = pd.Series(red, index=assignments.index)
-
-        grouped = assignments.groupby(assignments)
-        # modality_count = {}
-        # import pdb; pdb.set_trace()
 
         x_order = self.modalities_visualizer.modalities_order
         id_vars = list(self.data.columns.names)
         df = pd.melt(assignments.T.reset_index(),
                      value_vars=assignments.index.tolist(),
                      id_vars=id_vars)
-        # ax_bar = axes[0]
         g = sns.factorplot('value', hue=assignments.index.name, data=df,
                            x_order=x_order)
 
-        # for name, s in assignments.iterrows():
-        #     barplot(s, color=self.modalities_visualizer.colors,
-        #             x_order=x_order, ax=ax_bar,
-        #             title='{} modality counts'.format(name))
-        # sns.barplot(assignments,
-        #             color=self.modalities_visualizer.colors,
-        #             x_order=x_order,
-        #             ax=ax_bar)
-        # ax_bar.set_title('{} modality counts'.format(title))
-        # sizes = grouped.size()
-        # percents = sizes/sizes.sum() * 100
-        # xs = ax_bar.get_xticks()
-        #
-        # annotate_yrange_factor = 0.025
-        # ymin, ymax = ax_bar.get_ylim()
-        # yrange = ymax - ymin
-        #
-        # # Reset ymax and ymin so there's enough room to see the annotation of
-        # # the top-most
-        # if ymax > 0:
-        #     ymax += yrange * 0.1
-        # if ymin < 0:
-        #     ymin -= yrange * 0.1
-        # ax_bar.set_ylim(ymin, ymax)
-        # yrange = ymax - ymin
-        #
-        # offset_ = yrange * annotate_yrange_factor
-        # for x, modality in zip(xs, x_order):
-        #     try:
-        #         y = sizes[modality]
-        #         offset = offset_ if y >= 0 else -1 * offset_
-        #         verticalalignment = 'bottom' if y >= 0 else 'top'
-        #         percent = percents[modality]
-        #         ax_bar.annotate('{} ({:.1f}%)'.format(y, percent),
-        #             (x, y + offset), verticalalignment=verticalalignment,
-        #             horizontalalignment='center')
-        #     except KeyError:
-        #         ax_bar.annotate('0 (0%)',
-        #                         (x, offset_),
-        #                         verticalalignment='bottom',
-        #                         horizontalalignment='center')
+        nrows = len(modalities_names) * assignments.shape[0]
+        figsize = 10, nrows*4
+        fig, axes = plt.subplots(nrows=nrows, figsize=figsize)
+        axes_iter = axes.flat
 
         yticks = [0, self.excluded_max, self.included_min, 1]
-        for ax, (modality, s) in zip(axes[1:], grouped):
-            # modality_count[modality] = len(s)
-            psi = self.data[s.index]
-            lavalamp(psi, color=color, ax=ax, x_offset=x_offset,
-                     yticks=yticks)
-            ax.set_title('{} {}'.format(title, modality))
+        for phenotype, modalities in assignments.iterrows():
+            color = phenotype_to_color[phenotype]
+            sample_ids = grouped.groups[phenotype]
+            for modality, s in modalities.groupby(modalities):
+                ax = axes_iter.next()
+                psi = self.data[sample_ids, s.index]
+                lavalamp(psi, color=color, ax=ax, x_offset=x_offset,
+                         yticks=yticks)
+                ax.set_title('{} {}'.format(phenotype, modality))
         sns.despine()
         fig.tight_layout()
-
-        # pie_axis.pie(map(int, modality_count.values()),
-        #              labels=modality_count.keys(), autopct='%1.1f%%')
-
-    # def plot_event(self, feature_id, sample_ids=None,
-    #                phenotype_groupby=None,
-    #                phenotype_order=None, color=None,
-    #                phenotype_to_color=None,
-    #                phenotype_to_marker=None):
-    #     self.plot_feature(feature_id, sample_ids,
-    #                       phenotype_groupby, phenotype_order,
-    #                       color, phenotype_to_color, phenotype_to_marker)
 
     @memoize
     def _is_nmf_space_x_axis_excluded(self, phenotype_groupby):
