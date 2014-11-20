@@ -3,6 +3,7 @@ import collections
 import numpy as np
 import pandas as pd
 from sklearn import cross_validation
+from joblib import Parallel, delayed
 
 from .infotheory import jsd, binify
 
@@ -128,6 +129,7 @@ class Modalities(object):
 
         Returns
         -------
+
         assignments : pandas.Series
             Modality assignments of each column (feature)
         """
@@ -159,23 +161,39 @@ class Modalities(object):
         self.true_modalities.index = binned.index
         return self.assignments(self.sqrt_jsd_modalities(binned))
 
+    def _cat_indices_and_fit_transform(self, indices, data, min_samples=10):
+        index = np.concatenate(indices)
+        psi = data.iloc[index, :].dropna(axis=1, thresh=min_samples)
+        return self._single_fit_transform(psi, do_not_memoize=True)
+
     def _bootstrapped_fit_transform(self, data, n_iter=100, thresh=0.6,
                                     min_samples=10):
-        """Resample each splicing event n_iter times to robustly estimate
-        modalities.
+        """Resample each splicing event to robustly estimate modalities.
+
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            A (n_samples, n_features) dataframe of the splicing data
+        n_iter : int, optional (default=100)
+            Number of iterations (sampling with replacement)
+        thresh : float, optional (default=0.6)
+            Fraction of times that an event must be classified with a modality
+            for it to be considered robustly assigned
+        min_samples : int, optional (default=10)
+            Minimum number of samples for each resampled splicing event
+
+        Returns
+        -------
+        assignments : pandas.Series
+            Modality assignments of each column (feature)
         """
         bs = cross_validation.Bootstrap(data.shape[0], n_iter=n_iter)
 
-        assignments = pd.DataFrame(columns=data.columns,
-                                   index=range(n_iter))
+        results = Parallel(n_jobs=-1, max_nbytes=1e4)(
+            delayed(self.single_fit_transform)(x, data, min_samples)
+            for x in bs)
 
-        for i, (train_index, test_index) in enumerate(bs):
-            index = np.concatenate([train_index, test_index])
-            psi = data.ix[data.index[index], :]
-            psi = psi.dropna(axis=1, thresh=min_samples)
-            assignments.ix[i] = self._single_fit_transform(psi,
-                                                           do_not_memoize=True)
-
+        assignments = pd.concat(results, axis=1).T
         counts = assignments.apply(lambda x: pd.Series(
             collections.Counter(x.dropna())))
         fractions = counts / counts.sum().astype(float)
