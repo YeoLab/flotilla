@@ -1198,9 +1198,8 @@ class Study(object):
             sample_ids = celltype_samples.intersection(sample_ids)
             if len(sample_ids) == 0:
                 continue
-            data = self.filter_splicing_on_expression(expression_thresh,
-                                                      sample_ids=sample_ids)
-
+            data = self.filter_splicing_on_expression(expression_thresh)
+            data = data.ix[sample_ids, :]
             self.splicing.plot_lavalamp_pooled_inconsistent(data,
                 feature_ids, fraction_diff_thresh, color=color)
 
