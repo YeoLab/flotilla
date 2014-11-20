@@ -7,9 +7,7 @@ import sys
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from scipy.spatial.distance import pdist, squareform
 import seaborn as sns
-
 from sklearn.preprocessing import StandardScaler
 
 from ..compute.decomposition import DataFramePCA, DataFrameNMF
@@ -1308,7 +1306,7 @@ class BaseData(object):
         return simple_twoway_scatter(x, y, **kwargs)
 
     def plot_two_features(self, feature1, feature2, groupby=None,
-                          label_to_color=None, **kwargs):
+                          label_to_color=None, fillna=None, **kwargs):
         """Plot the values of two features
         """
         feature1s = self.maybe_renamed_to_feature_id(feature1)
@@ -1317,6 +1315,10 @@ class BaseData(object):
             for f2 in feature2s:
                 x = self.data.ix[:, f1].copy()
                 y = self.data.ix[:, f2].copy()
+
+                if fillna is not None:
+                    x = x.fillna(fillna)
+                    y = y.fillna(fillna)
 
                 x.name = feature1
                 y.name = feature2
