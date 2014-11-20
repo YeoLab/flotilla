@@ -283,7 +283,8 @@ class SplicingData(BaseData):
                      value_vars=assignments.index.tolist(),
                      id_vars=id_vars)
         # ax_bar = axes[0]
-        g = sns.factorplot('value', hue='phenotype', data=df, x_order=x_order)
+        g = sns.factorplot('value', hue=assignments.index.name, data=df,
+                           x_order=x_order)
 
         # for name, s in assignments.iterrows():
         #     barplot(s, color=self.modalities_visualizer.colors,
