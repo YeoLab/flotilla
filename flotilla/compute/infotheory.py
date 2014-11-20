@@ -6,6 +6,8 @@ import numpy as np
 import pandas as pd
 from sklearn import cross_validation
 
+EPSILON = np.finfo(float).eps
+
 
 def bin_range_strings(bins):
     """Given a list of bins, make a list of strings of those bin ranges
@@ -72,11 +74,24 @@ def kld(p, q):
         dataframe. E.g. between 1st column in p and 1st column in q, and 2nd
         column in p and 2nd column in q.
 
+    Raises
+    ------
+    ValueError
+        If the data provided is not a probability distribution, i.e. it has
+        negative values or its columns do not sum to 1, raise ValueError
+
     Notes
     -----
     The input to this function must be probability distributions, not raw
     values. Otherwise, the output makes no sense.
     """
+    if np.any(p < 0) or np.any(q < 0):
+        raise ValueError('Each column of the input dataframes must be '
+                         '**non-negative** probability distributions')
+    if np.any(p.sum() - np.ones(p.shape[1]) > EPSILON) \
+            or np.any(q.sum() - np.ones(q.shape[1]) > EPSILON):
+        raise ValueError('Each column of the input dataframe must be '
+                         'probability distributions that **sum to 1**')
     # If one of them is zero, then the other should be considered to be 0.
     # In this problem formulation, log0 = 0
     p = p.replace(0, np.nan)
@@ -104,7 +119,21 @@ def jsd(p, q):
     jsd : pandas.Series
         Jensen-Shannon divergence of each column with the same names between
         p and q
+    
+    Raises
+    ------
+    ValueError
+        If the data provided is not a probability distribution, i.e. it has
+        negative values or its columns do not sum to 1, raise ValueError
     """
+    if np.any(p < 0) or np.any(q < 0):
+        raise ValueError('The columns of the input dataframes must be '
+                         '**non-negative** probability distributions')
+    if np.any(p.sum() - np.ones(p.shape[1]) > EPSILON) \
+            or np.any(q.sum() - np.ones(q.shape[1]) > EPSILON):
+        raise ValueError('The columns of the input dataframe must be '
+                         'probability distributions that **sum to 1**')
+
     weight = 0.5
     m = weight * (p + q)
 
@@ -128,7 +157,20 @@ def entropy(binned, base=2):
     -------
     entropy : pandas.Seires
         Entropy values for each column of the dataframe.
+
+    Raises
+    ------
+    ValueError
+        If the data provided is not a probability distribution, i.e. it has
+        negative values or its columns do not sum to 1, raise ValueError
     """
+    if np.any(binned < 0):
+        raise ValueError('The columns of the input dataframe must be '
+                         '**non-negative** probability distributions')
+    if np.any(binned.sum() - np.ones(binned.shape[1]) > EPSILON):
+        raise ValueError('The columns of the input dataframe must be '
+                         'probability distributions that **sum to 1**')
+
     return -((np.log(binned) / np.log(base)) * binned).sum(axis=0)
 
 
