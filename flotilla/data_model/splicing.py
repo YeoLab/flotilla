@@ -86,7 +86,7 @@ class SplicingData(BaseData):
 
     # @memoize
     def modalities(self, sample_ids=None, feature_ids=None, data=None,
-                   bootstrapped=False, bootstrapped_kws=None):
+                   groupby=None, bootstrapped=False, bootstrapped_kws=None):
         """Assigned modalities for these samples and features.
 
         Parameters
@@ -121,6 +121,7 @@ class SplicingData(BaseData):
 
     # @memoize
     def modalities_counts(self, sample_ids=None, feature_ids=None, data=None,
+                          groupby=None,
                           bootstrapped=False, bootstrapped_kws=False):
         """Count the number of each modalities of these samples and features
 
@@ -224,6 +225,8 @@ class SplicingData(BaseData):
         sys.stdout.write(str(modalities_fractions) + '\n')
 
     def plot_modalities_lavalamps(self, sample_ids=None, feature_ids=None,
+                                  data=None, groupby=None,
+                                  phenotype_to_color=None,
                                   color=None, x_offset=0, title='',
                                   bootstrapped=False, bootstrapped_kws=None):
         """Plot "lavalamp" scatterplot of each event
@@ -253,13 +256,12 @@ class SplicingData(BaseData):
             Valid arguments to _bootstrapped_fit_transform. If None, default is
             dict(n_iter=100, thresh=0.6, minimum_samples=10)
         """
-
-        if sample_ids is not None or feature_ids is not None:
-            assignments = self.modalities(
-                sample_ids, feature_ids, bootstrapped=bootstrapped,
-                bootstrapped_kws=bootstrapped_kws)
+        if data is not None:
+            assignments = self.modalities(data=data, groupby=groupby,
+                bootstrapped=bootstrapped, bootstrapped_kws=bootstrapped_kws)
         else:
             assignments = self.modalities(
+                sample_ids, feature_ids, groupby=groupby,
                 bootstrapped=bootstrapped, bootstrapped_kws=bootstrapped_kws)
         modalities_names = assignments.unique()
 
