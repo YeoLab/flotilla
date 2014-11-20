@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 from sklearn import cross_validation
 
-EPSILON = np.finfo(float).eps
+EPSILON = 2 * np.finfo(float).eps
 
 
 def bin_range_strings(bins):
