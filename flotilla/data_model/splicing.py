@@ -509,6 +509,12 @@ class SplicingData(BaseData):
                                                 reducer_kwargs=reducer_kwargs,
                                                 bins=bins)
 
+    def plot_two_samples(self, sample1, sample2, **kwargs):
+        return super(SplicingData, self).plot_two_samples(sample1, sample2,
+                                                          fillna=-0.05,
+                                                          **kwargs)
+
+
 
 class SpliceJunctionData(SplicingData):
     """Class to hold splice junction information from SJ.out.tab files from

@@ -1275,7 +1275,8 @@ class BaseData(object):
                               nmf_space=True, fig=fig, axesgrid=axesgrid)
 
 
-    def plot_two_samples(self, sample1, sample2, **kwargs):
+    def plot_two_samples(self, sample1, sample2, fillna=None,
+                         **kwargs):
         """
 
         Parameters
@@ -1284,6 +1285,8 @@ class BaseData(object):
             Name of the sample to plot on the x-axis
         sample2 : str
             Name of the sample to plot on the y-axis
+        fillna : float
+            Value to replace NAs with
         Any other keyword arguments valid for seaborn.jointplot
 
         Returns
@@ -1298,6 +1301,10 @@ class BaseData(object):
         """
         x = self.data.ix[sample1]
         y = self.data.ix[sample2]
+
+        if fillna is not None:
+            x = x.fillna(fillna)
+            y = y.fillna(fillna)
         return simple_twoway_scatter(x, y, **kwargs)
 
     def plot_two_features(self, feature1, feature2, groupby=None,
