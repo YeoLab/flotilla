@@ -115,7 +115,7 @@ class SplicingData(BaseData):
             if feature_ids is not None and sample_ids is not None:
                 raise ValueError('Can only specify `sample_ids` and '
                                  '`feature_ids` or `data`, but not both.')
-        assignments = data.groupby.apply(
+        assignments = data.groupby(groupby).apply(
             self.modalities_calculator.fit_transform,
             bootstrapped=bootstrapped, bootstrapped_kws=bootstrapped_kws)
         return assignments
@@ -159,7 +159,6 @@ class SplicingData(BaseData):
             self.modalities_calculator.counts, bootstrapped=bootstrapped,
             bootstrapped_kws=bootstrapped_kws)
         return counts
-
 
     def binify(self, data):
         return super(SplicingData, self).binify(data, self.bins)
