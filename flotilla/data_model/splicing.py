@@ -297,7 +297,7 @@ class SplicingData(BaseData):
             sample_ids = grouped.groups[phenotype]
             for modality, s in modalities.groupby(modalities):
                 ax = axes_iter.next()
-                psi = self.data[sample_ids, s.index]
+                psi = self.data.ix[sample_ids, s.index]
                 lavalamp(psi, color=color, ax=ax, x_offset=x_offset,
                          yticks=yticks)
                 ax.set_title('{} {}'.format(phenotype, modality))
