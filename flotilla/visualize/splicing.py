@@ -152,7 +152,7 @@ def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
     plot_kws.setdefault('marker', marker)
     plot_kws.setdefault('linestyle', 'None')
 
-    y = as_numpy(psi)
+    y = as_numpy(psi.dropna(how='all', axis=1))
 
     if switchy_score_psi is not None:
         switchy_score_y = as_numpy(switchy_score_psi)
@@ -165,7 +165,8 @@ def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
     n_samples, n_events = y.shape
     # .astype(float) is to get rid of a deprecation warning
     import pdb; pdb.set_trace()
-    x = np.vstack((np.arange(n_events) for _ in xrange(n_samples))).astype(float)
+    x = np.vstack((np.arange(n_events) for _ in xrange(n_samples)))
+    x = x.astype(float)
     x += x_offset
 
     # Add one so the last value is actually included instead of cut off
