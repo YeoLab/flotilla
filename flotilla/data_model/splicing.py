@@ -58,6 +58,7 @@ class SplicingData(BaseData):
         'thresh' from BaseData is not used.
         """
         sys.stdout.write("{}\tInitializing splicing\n".format(timestamp()))
+        import pdb; pdb.set_trace()
 
         super(SplicingData, self).__init__(
             data, feature_data=feature_data,
