@@ -169,10 +169,12 @@ class Modalities(object):
             return self._single_fit_transform(data)
 
     @staticmethod
-    def _cat_indices_and_fit_transform(indices, data, bins, min_samples=10):
+    def _cat_indices_and_fit_transform(indices, data, bins, true_modalities,
+                                       min_samples=10):
         index = np.concatenate(indices)
         psi = data.iloc[index, :].dropna(axis=1, thresh=min_samples)
-        return _single_fit_transform(psi, bins, do_not_memoize=True)
+        return _single_fit_transform(psi, bins, true_modalities,
+                                     do_not_memoize=True)
 
     def _bootstrapped_fit_transform(self, data, n_iter=100, thresh=0.6,
                                     min_samples=10):
@@ -198,7 +200,9 @@ class Modalities(object):
         bs = cross_validation.Bootstrap(data.shape[0], n_iter=n_iter)
 
         results = Parallel(n_jobs=-1, max_nbytes=1e4)(
-            delayed(self._cat_indices_and_fit_transform)(x, data, min_samples)
+            delayed(self._cat_indices_and_fit_transform)(x, data, self.bins,
+                                                         self.true_modalities,
+                                                         min_samples)
             for x in bs)
 
         assignments = pd.concat(results, axis=1).T
