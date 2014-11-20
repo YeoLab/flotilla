@@ -920,7 +920,7 @@ class Study(object):
             self.splicing.plot_regressor(**kwargs)
 
     def modalities(self, sample_subset=None, feature_subset=None,
-                   expression_thresh=None, bootstrapped=False,
+                   expression_thresh=-np.inf, bootstrapped=False,
                    bootstrapped_kws=None):
         """Get splicing modality assignments of data
 
@@ -953,7 +953,7 @@ class Study(object):
             case of bootstrapped=True
 
         """
-        if expression_thresh is not None:
+        if expression_thresh > -np.inf:
             data = self.filter_splicing_on_expression(
                 expression_thresh=expression_thresh,
                 sample_subset=sample_subset)
@@ -970,7 +970,7 @@ class Study(object):
                                         bootstrapped_kws=bootstrapped_kws)
 
     def modalities_counts(self, sample_subset=None, feature_subset=None,
-                   expression_thresh=None, bootstrapped=True,
+                   expression_thresh=-np.inf, bootstrapped=True,
                    bootstrapped_kws=None):
         """Get counts of each resampled splicing event assigned to a modality
 
@@ -1123,7 +1123,7 @@ class Study(object):
         #     # all celltypes together
         #     celltype_samples = self.splicing.data.index
 
-        if expression_thresh is not None:
+        if expression_thresh > -np.inf:
             data = self.filter_splicing_on_expression(
                 expression_thresh=expression_thresh,
                 sample_subset=sample_subset)
