@@ -14,6 +14,7 @@ from sklearn import cross_validation
 from joblib import Parallel, delayed
 
 from .infotheory import jsd, binify, bin_range_strings
+from ..util import memoize
 
 MODALITIES_BINS = np.array([[1, 0, 0],  # excluded
                             [0, 1, 0],  # middle
@@ -157,6 +158,7 @@ class Modalities(object):
         self.bins = (0, excluded_max, included_min, 1)
         self.true_modalities.index = bin_range_strings(self.bins)
 
+    @memoize
     def fit_transform(self, data, bootstrapped=False, bootstrapped_kws=None):
         """Given psi scores, estimate the modality of each
 
@@ -179,6 +181,8 @@ class Modalities(object):
         assignments : pandas.Series
             Modality assignments of each column (feature)
         """
+
+        import pdb; pdb.set_trace()
         if bootstrapped:
             bootstrapped_kws = {} if bootstrapped_kws \
                                      is None else bootstrapped_kws
