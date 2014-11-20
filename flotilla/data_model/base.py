@@ -642,8 +642,6 @@ class BaseData(object):
         else:
             single_feature = False
 
-
-        import pdb; pdb.set_trace()
         subset = data.ix[sample_ids, feature_ids]
         # subset = subset.T.ix[feature_ids].T
 
