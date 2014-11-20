@@ -7,14 +7,14 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 from .base import BaseData
+
 from ..compute.splicing import Modalities
 from ..compute.decomposition import DataFramePCA
-from ..visualize.color import purples
-from ..visualize.splicing import ModalitiesViz
+from ..visualize.color import purples, red
+from ..visualize.generic import barplot
+from ..visualize.splicing import ModalitiesViz, lavalamp, \
+    hist_single_vs_pooled_diff, lavalamp_pooled_inconsistent
 from ..util import memoize, timestamp
-from ..visualize.color import red
-from ..visualize.splicing import lavalamp, hist_single_vs_pooled_diff, \
-    lavalamp_pooled_inconsistent
 
 
 FRACTION_DIFF_THRESH = 0.1
@@ -280,43 +280,47 @@ class SplicingData(BaseData):
 
         x_order = self.modalities_visualizer.modalities_order
         ax_bar = axes[0]
-        sns.barplot(assignments,
-                    color=self.modalities_visualizer.colors,
-                    x_order=x_order,
-                    ax=ax_bar)
-        ax_bar.set_title('{} modality counts'.format(title))
-        sizes = grouped.size()
-        percents = sizes/sizes.sum() * 100
-        xs = ax_bar.get_xticks()
 
-        annotate_yrange_factor = 0.025
-        ymin, ymax = ax_bar.get_ylim()
-        yrange = ymax - ymin
-
-        # Reset ymax and ymin so there's enough room to see the annotation of
-        # the top-most
-        if ymax > 0:
-            ymax += yrange * 0.1
-        if ymin < 0:
-            ymin -= yrange * 0.1
-        ax_bar.set_ylim(ymin, ymax)
-        yrange = ymax - ymin
-
-        offset_ = yrange * annotate_yrange_factor
-        for x, modality in zip(xs, x_order):
-            try:
-                y = sizes[modality]
-                offset = offset_ if y >= 0 else -1 * offset_
-                verticalalignment = 'bottom' if y >= 0 else 'top'
-                percent = percents[modality]
-                ax_bar.annotate('{} ({:.1f}%)'.format(y, percent),
-                    (x, y + offset), verticalalignment=verticalalignment,
-                    horizontalalignment='center')
-            except KeyError:
-                ax_bar.annotate('0 (0%)',
-                                (x, offset_),
-                                verticalalignment='bottom',
-                                horizontalalignment='center')
+        barplot(assignments, color=self.modalities_visualizer.colors,
+                x_order=x_order, ax=ax_bar,
+                title='{} modality counts'.format(title))
+        # sns.barplot(assignments,
+        #             color=self.modalities_visualizer.colors,
+        #             x_order=x_order,
+        #             ax=ax_bar)
+        # ax_bar.set_title('{} modality counts'.format(title))
+        # sizes = grouped.size()
+        # percents = sizes/sizes.sum() * 100
+        # xs = ax_bar.get_xticks()
+        #
+        # annotate_yrange_factor = 0.025
+        # ymin, ymax = ax_bar.get_ylim()
+        # yrange = ymax - ymin
+        #
+        # # Reset ymax and ymin so there's enough room to see the annotation of
+        # # the top-most
+        # if ymax > 0:
+        #     ymax += yrange * 0.1
+        # if ymin < 0:
+        #     ymin -= yrange * 0.1
+        # ax_bar.set_ylim(ymin, ymax)
+        # yrange = ymax - ymin
+        #
+        # offset_ = yrange * annotate_yrange_factor
+        # for x, modality in zip(xs, x_order):
+        #     try:
+        #         y = sizes[modality]
+        #         offset = offset_ if y >= 0 else -1 * offset_
+        #         verticalalignment = 'bottom' if y >= 0 else 'top'
+        #         percent = percents[modality]
+        #         ax_bar.annotate('{} ({:.1f}%)'.format(y, percent),
+        #             (x, y + offset), verticalalignment=verticalalignment,
+        #             horizontalalignment='center')
+        #     except KeyError:
+        #         ax_bar.annotate('0 (0%)',
+        #                         (x, offset_),
+        #                         verticalalignment='bottom',
+        #                         horizontalalignment='center')
 
         yticks = [0, self.excluded_max, self.included_min, 1]
         for ax, (modality, s) in zip(axes[1:], grouped):
