@@ -143,7 +143,28 @@ def binify_and_jsd(df1, df2, pair, bins):
     return series
 
 
-def cross_phenotype_jsd(grouped, bins, n_iter=100):
+def cross_phenotype_jsd(data, groupby, bins, n_iter=100):
+    """Jensen-Shannon divergence of features across phenotypes
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        A (n_samples, n_features) Dataframe
+    groupby : mappable
+        A samples to phenotypes mapping
+    n_iter : int
+        Number of bootstrap resampling iterations to perform for the
+        within-group comparisons
+    n_bins : int
+        Number of bins to binify the singles data on
+
+    Returns
+    -------
+    jsd_df : pandas.DataFrame
+        A (n_features, n_phenotypes^2) dataframe of the JSD between each
+        feature between and within phenotypes
+    """
+    grouped = data.groupby(groupby)
     jsds = []
 
     seen = set([])
@@ -174,9 +195,23 @@ def cross_phenotype_jsd(grouped, bins, n_iter=100):
     return pd.concat(jsds, axis=1)
 
 def jsd_df_to_2d(jsd_df):
+    """Transform a tall JSD dataframe to a square matrix of mean JSDs
+
+    Parameters
+    ----------
+    jsd_df : pandas.DataFrame
+        A (n_features, n_phenotypes^2) dataframe of the JSD between each
+        feature between and within phenotypes
+
+    Returns
+    -------
+    jsd_2d : pandas.DataFrame
+        A (n_phenotypes, n_phenotypes) symmetric dataframe of the mean JSD
+        between and within phenotypes
+    """
     jsd_2d = jsd_df.mean().reset_index()
     jsd_2d = jsd_2d.rename(
-        columns={'level_0': 'phenotype0', 'level_1': 'phenotype1', 0: 'jsd'})
-    jsd_2d = jsd_2d.pivot(index='phenotype0', columns='phenotype1',
+        columns={'level_0': 'phenotype1', 'level_1': 'phenotype2', 0: 'jsd'})
+    jsd_2d = jsd_2d.pivot(index='phenotype1', columns='phenotype2',
                           values='jsd')
     return jsd_2d + np.tril(jsd_2d.T, -1)
