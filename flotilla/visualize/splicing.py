@@ -164,7 +164,6 @@ def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
 
     n_samples, n_events = y.shape
     # .astype(float) is to get rid of a deprecation warning
-    import pdb; pdb.set_trace()
     x = np.vstack((np.arange(n_events) for _ in xrange(n_samples)))
     x = x.astype(float)
     x += x_offset
