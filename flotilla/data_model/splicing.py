@@ -275,6 +275,7 @@ class SplicingData(BaseData):
                                        columns=assignments.index)
 
         grouped = data.groupby(groupby)
+        import pdb; pdb.set_trace()
 
         modalities_names = np.unique(assignments.values.flat)
 
@@ -283,10 +284,12 @@ class SplicingData(BaseData):
         df = pd.melt(assignments.T.reset_index(),
                      value_vars=assignments.index.tolist(),
                      id_vars=id_vars)
-        g = sns.factorplot('value', hue=assignments.index.name, data=df,
-                           x_order=x_order)
+        sns.factorplot('value', hue=assignments.index.name, data=df,
+                       x_order=x_order)
 
-        nrows = len(modalities_names) * assignments.shape[0]
+        nrows = assignments.groupby(
+            level=0, axis=0).apply(
+            lambda x: np.unique(x.values)).apply(lambda x: len(x)).sum()
         figsize = 10, nrows*4
         fig, axes = plt.subplots(nrows=nrows, figsize=figsize)
         axes_iter = axes.flat
@@ -298,8 +301,7 @@ class SplicingData(BaseData):
             for modality, s in modalities.groupby(modalities):
                 ax = axes_iter.next()
                 psi = self.data.ix[sample_ids, s.index]
-                lavalamp(psi, color=color, ax=ax, x_offset=x_offset,
-                         yticks=yticks)
+                lavalamp(psi, color=color, ax=ax, yticks=yticks)
                 ax.set_title('{} {}'.format(phenotype, modality))
         sns.despine()
         fig.tight_layout()
