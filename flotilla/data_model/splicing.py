@@ -265,7 +265,7 @@ class SplicingData(BaseData):
             assignments = self.modalities(
                 sample_ids, feature_ids, groupby=groupby,
                 bootstrapped=bootstrapped, bootstrapped_kws=bootstrapped_kws)
-        modalities_names = assignments.unique()
+        modalities_names = np.unique(assignments.values.flat)
 
         nrows = len(modalities_names)+1
         figsize = 10, nrows*4
