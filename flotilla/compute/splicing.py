@@ -184,7 +184,8 @@ class Modalities(object):
                                      is None else bootstrapped_kws
             return self._bootstrapped_fit_transform(data, **bootstrapped_kws)
         else:
-            return _single_fit_transform(data)
+            return _single_fit_transform(data, bins=self.bins,
+                                         true_modalities=self.true_modalities)
 
     def _bootstrapped_fit_transform(self, data, n_iter=100, thresh=0.6,
                                     min_samples=10):
