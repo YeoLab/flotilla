@@ -182,7 +182,7 @@ class Modalities(object):
             Modality assignments of each column (feature)
         """
 
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         if bootstrapped:
             bootstrapped_kws = {} if bootstrapped_kws \
                                      is None else bootstrapped_kws
