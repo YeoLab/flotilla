@@ -259,5 +259,3 @@ def lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
                             .format(title_suffix))
     sns.despine()
 
-
-# def barplot()
