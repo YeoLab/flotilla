@@ -1,5 +1,6 @@
 import collections
 import sys
+
 import itertools
 
 import pandas as pd
@@ -9,6 +10,7 @@ import seaborn as sns
 
 from .base import BaseData
 from ..compute.splicing import Modalities
+
 from ..compute.decomposition import DataFramePCA
 from ..visualize.color import purples
 from ..visualize.splicing import ModalitiesViz
@@ -69,7 +71,8 @@ class SplicingData(BaseData):
             technical_outliers=technical_outliers,
             predictor_config_manager=predictor_config_manager,
             minimum_samples=minimum_samples)
-        sys.stdout.write("{}\tDone initializing splicing\n".format(timestamp()))
+        sys.stdout.write(
+            "{}\tDone initializing splicing\n".format(timestamp()))
 
         self.feature_expression_id_col = feature_expression_id_col \
             if feature_expression_id_col is not None \
@@ -300,7 +303,7 @@ class SplicingData(BaseData):
                      labels=modality_count.keys(), autopct='%1.1f%%')
 
     # def plot_event(self, feature_id, sample_ids=None,
-    #                phenotype_groupby=None,
+    # phenotype_groupby=None,
     #                phenotype_order=None, color=None,
     #                phenotype_to_color=None,
     #                phenotype_to_marker=None):
@@ -320,7 +323,7 @@ class SplicingData(BaseData):
         data = self._subset(self.data, sample_ids=top_pc1_samples)
         binned = self.binify(data)
         return bool(binned[event][0])
-    
+
     def _nmf_space_xlabel(self, phenotype_groupby):
         if self._is_nmf_space_x_axis_excluded(phenotype_groupby):
             return self.excluded_label
@@ -345,7 +348,7 @@ class SplicingData(BaseData):
         else:
             ylabel = None
             xlabel = None
-        
+
         super(SplicingData, self).plot_feature(feature_id, sample_ids,
                                                phenotype_groupby,
                                                phenotype_order, color,
@@ -514,6 +517,10 @@ class SplicingData(BaseData):
                                                           fillna=-0.05,
                                                           **kwargs)
 
+    def plot_two_features(self, feature1, feature2, **kwargs):
+        return super(SplicingData, self).plot_two_features(feature1, feature2,
+                                                           fillna=-0.05,
+                                                           **kwargs)
 
 
 class SpliceJunctionData(SplicingData):
@@ -696,4 +703,5 @@ class DownsampledSplicingData(BaseData):
             fig.savefig(
                 '{}/downsampled_shared_events_{}_min_iter_shared{}.pdf'
                 .format(figure_dir, splice_type, min_iter_shared),
-                bbox_extra_artists=(legend,), bbox_inches='tight', format="pdf")
+                bbox_extra_artists=(legend,), bbox_inches='tight',
+                format="pdf")
