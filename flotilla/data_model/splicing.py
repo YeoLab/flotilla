@@ -481,7 +481,8 @@ class SplicingData(BaseData):
 
         nrows = len(grouped.groups)
         figsize = 12, nrows * 4
-        fig, axes = plt.subplots(nrows=len(grouped.groups), figsize=figsize)
+        fig, axes = plt.subplots(nrows=len(grouped.groups), figsize=figsize,
+                                 sharex=False)
 
         for ax, (name, psi) in zip(axes, grouped):
             try:
