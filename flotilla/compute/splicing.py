@@ -109,8 +109,9 @@ def _single_fit_transform(data, bins, true_modalities,
 
 def _cat_indices_and_fit_transform(indices, data, bins, true_modalities,
                                    min_samples=10):
-    index = np.concatenate(indices)
-    psi = data.ix[data.index[index], :]#.copy().dropna(axis=1, thresh=min_samples)
+    i = np.concatenate(indices)
+    index = data.index[i]
+    psi = data.ix[index, :]#.copy().dropna(axis=1, thresh=min_samples)
     psi = psi.ix[:, psi.count() >= min_samples]
     return _single_fit_transform(psi, bins, true_modalities,
                                  do_not_memoize=True)
