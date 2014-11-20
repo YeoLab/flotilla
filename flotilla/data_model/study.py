@@ -1502,7 +1502,10 @@ class Study(object):
         splicing_index_name = splicing.index.name
         splicing_index_name = 'index' if splicing_index_name is None \
             else splicing_index_name
-        splicing_columns_name = splicing.columns.name
+        if isinstance(splicing.columns, pd.MultiIndex):
+            splicing_columns_name = splicing.columns.names
+        else:
+            splicing_columns_name = splicing.columns.name
 
         splicing_tidy = pd.melt(splicing.reset_index(),
                                 id_vars=splicing_index_name,
