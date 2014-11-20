@@ -1502,14 +1502,15 @@ class Study(object):
         splicing_index_name = splicing.index.name
         splicing_index_name = 'index' if splicing_index_name is None \
             else splicing_index_name
+        splicing_columns_name = splicing.columns.name
 
         splicing_tidy = pd.melt(splicing.reset_index(),
                                 id_vars=splicing_index_name,
                                 value_name='psi',
-                                var_name='miso_id')
-        splicing_tidy = splicing_tidy.rename(columns={splicing_index_name:
-                                                          'sample_id'})
-        splicing_tidy['common_id'] = splicing_tidy.miso_id.map(
+                                var_name=splicing_columns_name)
+        splicing_tidy = splicing_tidy.rename(columns={
+            splicing_index_name: 'sample_id'})
+        splicing_tidy['common_id'] = splicing_tidy[splicing_columns_name].map(
             self.splicing.feature_data[self.splicing.feature_expression_id_col])
 
         splicing_tidy = splicing_tidy.dropna()
