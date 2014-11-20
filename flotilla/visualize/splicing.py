@@ -143,8 +143,6 @@ def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
 
     if ax is None:
         fig, ax = plt.subplots(figsize=(16, 4))
-    else:
-        fig = plt.gcf()
 
     color = seaborn_colors[0] if color is None else color
     plot_kws = {} if plot_kws is None else plot_kws
@@ -164,10 +162,10 @@ def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
     order = get_switchy_score_order(switchy_score_y)
     y = y[:, order]
 
-    n_samples, n_events = psi.shape
+    n_samples, n_events = y.shape
     # .astype(float) is to get rid of a deprecation warning
-    x = np.vstack((np.arange(n_events)
-                   for _ in xrange(n_samples))).astype(float)
+    import pdb; pdb.set_trace()
+    x = np.vstack((np.arange(n_events) for _ in xrange(n_samples))).astype(float)
     x += x_offset
 
     # Add one so the last value is actually included instead of cut off
