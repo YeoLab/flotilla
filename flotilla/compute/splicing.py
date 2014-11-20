@@ -190,7 +190,7 @@ class Modalities(object):
         bs = cross_validation.Bootstrap(data.shape[0], n_iter=n_iter)
 
         results = Parallel(n_jobs=-1, max_nbytes=1e4)(
-            delayed(self.single_fit_transform)(x, data, min_samples)
+            delayed(self._cat_indices_and_fit_transform)(x, data, min_samples)
             for x in bs)
 
         assignments = pd.concat(results, axis=1).T
