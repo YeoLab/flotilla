@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 from sklearn import cross_validation
 
-EPSILON = 2 * np.finfo(float).eps
+EPSILON = 10 * np.finfo(float).eps
 
 
 def bin_range_strings(bins):
@@ -214,7 +214,6 @@ def cross_phenotype_jsd(data, groupby, bins, n_iter=100):
     for phenotype1, df1 in grouped:
         for phenotype2, df2 in grouped:
             pair = tuple(sorted([phenotype1, phenotype2]))
-            print pair
             if pair in seen:
                 continue
             seen.add(pair)
