@@ -278,12 +278,12 @@ class SplicingData(BaseData):
         # import pdb; pdb.set_trace()
 
         x_order = self.modalities_visualizer.modalities_order
-        id_vars = self.data.columns.names
+        id_vars = list(self.data.columns.names)
         df = pd.melt(assignments.T.reset_index(),
-                     value_vars=assignments.index,
+                     value_vars=assignments.index.tolist(),
                      id_vars=id_vars)
         # ax_bar = axes[0]
-        g = sns.factorplot('value', hue='phenotype', data=df)
+        g = sns.factorplot('value', hue='phenotype', data=df, x_order=x_order)
 
         # for name, s in assignments.iterrows():
         #     barplot(s, color=self.modalities_visualizer.colors,
