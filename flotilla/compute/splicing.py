@@ -1,3 +1,11 @@
+"""
+Calculate modalities of splicing events.
+
+This code is crazy, sometimes using classes and sometimes just objects because
+for parallelization, you can't pickle anything that has state, like an
+instancemethod
+"""
+
 import collections
 
 import numpy as np
@@ -96,13 +104,13 @@ def _single_fit_transform(data, bins, true_modalities,
         Modality assignments of each column (feature)
     """
     binned = binify(data, bins)
-    return assignments(sqrt_jsd_modalities(binned,
-                                           true_modalities=true_modalities))
+    sqrt_jsds = sqrt_jsd_modalities(binned, true_modalities)
+    return assignments(sqrt_jsds, true_modalities)
 
 def _cat_indices_and_fit_transform(indices, data, bins, true_modalities,
                                    min_samples=10):
     index = np.concatenate(indices)
-    psi = data.iloc[index, :].dropna(axis=1, thresh=min_samples)
+    psi = data.iloc[index, :].copy().dropna(axis=1, thresh=min_samples)
     return _single_fit_transform(psi, bins, true_modalities,
                                  do_not_memoize=True)
 
