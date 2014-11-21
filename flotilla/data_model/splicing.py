@@ -148,7 +148,7 @@ class SplicingData(BaseData):
             The number of events detected in each modality
         """
         if data is None:
-            data = self._subset(self.data, sample_ids, feature_ids,
+            data = self._subset(self.singles, sample_ids, feature_ids,
                                 require_min_samples=False)
         else:
             if feature_ids is not None and sample_ids is not None:
