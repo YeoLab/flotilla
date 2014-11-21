@@ -45,7 +45,10 @@ def _col_jsd_modalities(col, true_modalities):
         A (n_modalities,) sized series of JSD between this event and the
         true modalities
     """
-    return true_modalities.apply(jsd, axis=0, q=col)
+    if np.all(np.isfinite(col))
+        return true_modalities.apply(jsd, axis=0, q=col)
+    else:
+        return pd.Series(np.nan, index=true_modalities.columns)
 
 def assignments(sqrt_jsd_modalities, true_modalities):
     """Return the modality with the smallest square root JSD to each event
