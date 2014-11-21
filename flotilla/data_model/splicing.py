@@ -108,7 +108,7 @@ class SplicingData(BaseData):
             The modality assignments of each feature given these samples
         """
         if data is None:
-            data = self._subset(self.data, sample_ids, feature_ids,
+            data = self._subset(self.singles, sample_ids, feature_ids,
                                 require_min_samples=False)
         else:
             if feature_ids is not None and sample_ids is not None:
