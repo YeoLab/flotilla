@@ -1099,6 +1099,7 @@ class BaseData(object):
                 except KeyError:
                     continue
             sns.despine()
+        fig.tight_layout()
 
     def nmf_space_positions(self, groupby, n=5):
         """Calculate NMF-space position of splicing events in phenotype groups
