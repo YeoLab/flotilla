@@ -1,5 +1,6 @@
 import collections
 import sys
+import itertools
 
 import pandas as pd
 import numpy as np
@@ -13,6 +14,9 @@ from ..visualize.color import purples
 from ..visualize.splicing import ModalitiesViz, lavalamp, \
     hist_single_vs_pooled_diff, lavalamp_pooled_inconsistent
 from ..util import memoize, timestamp
+from ..visualize.color import red
+from ..visualize.splicing import lavalamp, hist_single_vs_pooled_diff, \
+    lavalamp_pooled_inconsistent
 
 
 FRACTION_DIFF_THRESH = 0.1
@@ -75,16 +79,13 @@ class SplicingData(BaseData):
         self.binsize = binsize
         self.bins = np.arange(0, 1 + self.binsize, self.binsize)
 
-        self.excluded_max = excluded_max
-        self.included_min = included_min
-
         self.modalities_calculator = Modalities(excluded_max=excluded_max,
                                                 included_min=included_min)
         self.modalities_visualizer = ModalitiesViz()
 
-    # @memoize
+    @memoize
     def modalities(self, sample_ids=None, feature_ids=None, data=None,
-                   groupby=None, bootstrapped=False, bootstrapped_kws=None):
+                   bootstrapped=False, bootstrapped_kws=None):
         """Assigned modalities for these samples and features.
 
         Parameters
@@ -160,6 +161,7 @@ class SplicingData(BaseData):
             self.modalities_calculator.counts, bootstrapped=bootstrapped,
             bootstrapped_kws=bootstrapped_kws)
         return counts
+
 
     def binify(self, data):
         return super(SplicingData, self).binify(data, self.bins)
@@ -467,33 +469,6 @@ class SplicingData(BaseData):
             diff_from_singles = diff_from_singles.dropna(axis=1, how='all')
         return singles, pooled, not_measured_in_pooled, diff_from_singles
 
-    def plot_lavalamp(self, sample_ids=None, feature_ids=None,
-                      data=None, groupby=None,
-                      phenotype_to_color=None):
-        if data is None:
-            data = self._subset(self.data, sample_ids, feature_ids,
-                                require_min_samples=False)
-        else:
-            if feature_ids is not None and sample_ids is not None:
-                raise ValueError('Can only specify `sample_ids` and '
-                                 '`feature_ids` or `data`, but not both.')
-        grouped = data.groupby(groupby)
-
-        nrows = len(grouped.groups)
-        figsize = 12, nrows * 4
-        fig, axes = plt.subplots(nrows=len(grouped.groups), figsize=figsize,
-                                 sharex=False)
-
-        for ax, (name, psi) in zip(axes, grouped):
-            try:
-                color = phenotype_to_color[name]
-            except KeyError:
-                color = None
-            lavalamp(psi, color=color, ax=ax)
-            ax.set_title(name)
-        sns.despine()
-        fig.tight_layout()
-
     def plot_lavalamp_pooled_inconsistent(
             self, data, feature_ids=None,
             fraction_diff_thresh=FRACTION_DIFF_THRESH, color=None):
@@ -755,4 +730,5 @@ class DownsampledSplicingData(BaseData):
             fig.savefig(
                 '{}/downsampled_shared_events_{}_min_iter_shared{}.pdf'
                 .format(figure_dir, splice_type, min_iter_shared),
-                bbox_extra_artists=(legend,), bbox_inches='tight', format="pdf")
+                bbox_extra_artists=(legend,), bbox_inches='tight',
+                format="pdf")
