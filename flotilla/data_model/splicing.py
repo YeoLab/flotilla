@@ -548,14 +548,18 @@ class SplicingData(BaseData):
 
     def plot_two_features(self, feature1, feature2, groupby=None,
                           label_to_color=None, fillna=None, **kwargs):
+        xlim = kwargs.pop('xlim', (-.1, 1))
+        ylim = kwargs.pop('ylim', (-.1, 1))
         return super(SplicingData, self).plot_two_features(
             feature1, feature2, groupby=groupby, label_to_color=label_to_color,
-            fillna=-0.05, **kwargs)
+            xlim=xlim, ylim=ylim, fillna=-0.05, **kwargs)
 
     def plot_two_samples(self, sample1, sample2, groupby=None,
                           label_to_color=None, fillna=None, **kwargs):
+        xlim = kwargs.pop('xlim', (-.1, 1))
+        ylim = kwargs.pop('ylim', (-.1, 1))
         return super(SplicingData, self).plot_two_samples(
-            sample1, sample2, fillna=-0.05, **kwargs)
+            sample1, sample2, xlim=xlim, ylim=ylim, fillna=-0.05, **kwargs)
 
 
 class SpliceJunctionData(SplicingData):
