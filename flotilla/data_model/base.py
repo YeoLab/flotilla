@@ -1057,7 +1057,7 @@ class BaseData(object):
                      phenotype_groupby=None,
                      phenotype_order=None, color=None,
                      phenotype_to_color=None,
-                     phenotype_to_marker=None, xlabel=None, ylabel=None,
+                     phenotype_to_marker=None, nmf_xlabel=None, nmf_ylabel=None,
                      nmf_space=False, fig=None, axesgrid=None):
         """
         Plot the violinplot of a feature. Have the option to show NMF movement
@@ -1087,7 +1087,7 @@ class BaseData(object):
                              phenotype_groupby=phenotype_groupby,
                              phenotype_order=phenotype_order, ax=axes[0],
                              color=color)
-            # if self.data_type == 'splicing':
+
             if nmf_space:
                 try:
                     self.plot_nmf_space_transitions(
@@ -1095,7 +1095,7 @@ class BaseData(object):
                         phenotype_to_color=phenotype_to_color,
                         phenotype_to_marker=phenotype_to_marker,
                         order=phenotype_order, ax=axes[1],
-                        xlabel=xlabel, ylabel=ylabel)
+                        xlabel=nmf_xlabel, ylabel=nmf_ylabel)
                 except KeyError:
                     continue
             sns.despine()
