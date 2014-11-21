@@ -1017,7 +1017,8 @@ class Study(object):
 
         return self.splicing.modalities_counts(
             sample_ids, feature_ids, data=data, bootstrapped=bootstrapped,
-            bootstrapped_kws=bootstrapped_kws)
+            bootstrapped_kws=bootstrapped_kws,
+            groupby=self.sample_id_to_phenotype)
 
     def plot_modalities(self, sample_subset=None, feature_subset=None,
                         normed=True, bootstrapped=False,
