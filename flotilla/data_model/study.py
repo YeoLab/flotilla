@@ -967,6 +967,7 @@ class Study(object):
 
         return self.splicing.modalities(sample_ids, feature_ids, data=data,
                                         bootstrapped=bootstrapped,
+                                        groupby=self.sample_id_to_phenotype,
                                         bootstrapped_kws=bootstrapped_kws)
 
     def modalities_counts(self, sample_subset=None, feature_subset=None,
@@ -1049,7 +1050,7 @@ class Study(object):
                                               all_ax, title='all samples',
                                               bootstrapped=bootstrapped,
                                               bootstrapped_kws=bootstrapped_kws)
-        self.splicing.plot_modalities_bar(sample_ids, feature_ids,
+        self.splicing.plot_modalities_stacked_bar(sample_ids, feature_ids,
                                           bar_ax, i=0, normed=normed,
                                           legend=False,
                                           bootstrapped=bootstrapped,
@@ -1061,7 +1062,7 @@ class Study(object):
             sys.stdout.write('\n---- {} ----\n'.format(celltype))
             samples = series.index.intersection(sample_ids)
             # legend = i == 0
-            self.splicing.plot_modalities_bar(samples, feature_ids,
+            self.splicing.plot_modalities_stacked_bar(samples, feature_ids,
                                               bar_ax, i + 1, normed=normed,
                                               legend=False)
 
