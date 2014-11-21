@@ -1,6 +1,5 @@
 import collections
 import sys
-import itertools
 
 import pandas as pd
 import numpy as np
@@ -11,10 +10,8 @@ from .base import BaseData
 from ..compute.splicing import Modalities
 from ..compute.decomposition import DataFramePCA
 from ..visualize.color import purples
-from ..visualize.splicing import ModalitiesViz, lavalamp, \
-    hist_single_vs_pooled_diff, lavalamp_pooled_inconsistent
+from ..visualize.splicing import ModalitiesViz
 from ..util import memoize, timestamp
-from ..visualize.color import red
 from ..visualize.splicing import lavalamp, hist_single_vs_pooled_diff, \
     lavalamp_pooled_inconsistent
 
@@ -548,6 +545,17 @@ class SplicingData(BaseData):
                                                 standardize=False,
                                                 reducer_kwargs=reducer_kwargs,
                                                 bins=bins)
+
+    def plot_two_features(self, feature1, feature2, groupby=None,
+                          label_to_color=None, fillna=None, **kwargs):
+        return super(SplicingData, self).plot_two_features(
+            feature1, feature2, groupby=groupby, label_to_color=label_to_color,
+            fillna=-0.05, **kwargs)
+
+    def plot_two_samples(self, sample1, sample2, groupby=None,
+                          label_to_color=None, fillna=None, **kwargs):
+        return super(SplicingData, self).plot_two_samples(
+            sample1, sample2, fillna=-0.05, **kwargs)
 
 
 class SpliceJunctionData(SplicingData):
