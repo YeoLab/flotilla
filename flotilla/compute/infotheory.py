@@ -27,6 +27,19 @@ def bin_range_strings(bins):
     """
     return ['{}-{}'.format(i, j) for i, j in zip(bins, bins[1:])]
 
+def _check_prob_dist(x):
+    if np.any(x < 0):
+        raise ValueError('Each column of the input dataframes must be '
+                         '**non-negative** probability distributions')
+    try:
+        if np.any(x.sum() - np.ones(x.shape[1]) > EPSILON):
+            raise ValueError('Each column of the input dataframe must be '
+                             'probability distributions that **sum to 1**')
+    except IndexError:
+        if np.any(x.sum() - np.ones(x.shape[0]) > EPSILON):
+            raise ValueError('Each column of the input dataframe must be '
+                             'probability distributions that **sum to 1**')
+
 
 def binify(df, bins):
     """Makes a histogram of each column the provided binsize
@@ -63,9 +76,9 @@ def kld(p, q):
     Parameters
     ----------
     p : pandas.DataFrame
-        An nbins x features DataFrame
+        An nbins x features DataFrame, or (nbins,) Series
     q : pandas.DataFrame
-        An nbins x features DataFrame
+        An nbins x features DataFrame, or (nbins,) Series
 
     Returns
     -------
@@ -85,13 +98,8 @@ def kld(p, q):
     The input to this function must be probability distributions, not raw
     values. Otherwise, the output makes no sense.
     """
-    if np.any(p < 0) or np.any(q < 0):
-        raise ValueError('Each column of the input dataframes must be '
-                         '**non-negative** probability distributions')
-    if np.any(p.sum() - np.ones(p.shape[1]) > EPSILON) \
-            or np.any(q.sum() - np.ones(q.shape[1]) > EPSILON):
-        raise ValueError('Each column of the input dataframe must be '
-                         'probability distributions that **sum to 1**')
+    _check_prob_dist(p)
+    _check_prob_dist(q)
     # If one of them is zero, then the other should be considered to be 0.
     # In this problem formulation, log0 = 0
     p = p.replace(0, np.nan)
@@ -126,14 +134,8 @@ def jsd(p, q):
         If the data provided is not a probability distribution, i.e. it has
         negative values or its columns do not sum to 1, raise ValueError
     """
-    if np.any(p < 0) or np.any(q < 0):
-        raise ValueError('The columns of the input dataframes must be '
-                         '**non-negative** probability distributions')
-    if np.any(p.sum() - np.ones(p.shape[1]) > EPSILON) \
-            or np.any(q.sum() - np.ones(q.shape[1]) > EPSILON):
-        raise ValueError('The columns of the input dataframe must be '
-                         'probability distributions that **sum to 1**')
-
+    _check_prob_dist(p)
+    _check_prob_dist(q)
     weight = 0.5
     m = weight * (p + q)
 
@@ -164,13 +166,7 @@ def entropy(binned, base=2):
         If the data provided is not a probability distribution, i.e. it has
         negative values or its columns do not sum to 1, raise ValueError
     """
-    if np.any(binned < 0):
-        raise ValueError('The columns of the input dataframe must be '
-                         '**non-negative** probability distributions')
-    if np.any(binned.sum() - np.ones(binned.shape[1]) > EPSILON):
-        raise ValueError('The columns of the input dataframe must be '
-                         'probability distributions that **sum to 1**')
-
+    _check_prob_dist(binned)
     return -((np.log(binned) / np.log(base)) * binned).sum(axis=0)
 
 
