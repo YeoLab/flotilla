@@ -192,7 +192,9 @@ class SplicingData(BaseData):
             bootstrapped_kws=bootstrapped_kws)
         self.modalities_visualizer.plot_reduced_space(
             self.binned_nmf_reduced(sample_ids, feature_ids),
-            modalities_assignments, ax=ax, title=title)
+            modalities_assignments, ax=ax, title=title,
+            xlabel=self._nmf_space_xlabel(phenotype_groupby=None),
+            ylabel=self._nmf_space_ylabel(phenotype_groupby=None))
 
     # def plot_modalities_bar(self, sample_ids=None, feature_ids=None, ax=None,
     #                         i=0, normed=True, legend=True,
@@ -394,8 +396,9 @@ class SplicingData(BaseData):
                                                fig=fig, axesgrid=axesgrid)
         fig = plt.gcf()
         for ax in fig.axes:
-            ax.set_ylim(0, 1)
-            ax.set_ylabel('$\Psi$')
+            if ax.is_first_col():
+                ax.set_ylim(0, 1)
+                ax.set_ylabel('$\Psi$')
 
     @memoize
     def pooled_inconsistent(self, data, feature_ids=None,
@@ -465,6 +468,38 @@ class SplicingData(BaseData):
         if dropna:
             diff_from_singles = diff_from_singles.dropna(axis=1, how='all')
         return singles, pooled, not_measured_in_pooled, diff_from_singles
+
+    def plot_lavalamp(self, sample_ids=None, feature_ids=None,
+                      data=None, groupby=None,
+                      phenotype_to_color=None, order=None):
+        if data is None:
+            data = self._subset(self.data, sample_ids, feature_ids,
+                                require_min_samples=False)
+        else:
+            if feature_ids is not None and sample_ids is not None:
+                raise ValueError('Can only specify `sample_ids` and '
+                                 '`feature_ids` or `data`, but not both.')
+        grouped = data.groupby(groupby)
+
+        nrows = len(grouped.groups)
+        figsize = 12, nrows * 4
+        fig, axes = plt.subplots(nrows=len(grouped.groups), figsize=figsize,
+                                 sharex=False)
+
+        if order is None:
+            order = grouped.groups.keys()
+
+        for ax, name in zip(axes, order):
+            try:
+                color = phenotype_to_color[name]
+            except KeyError:
+                color = None
+            samples = grouped.groups[name]
+            psi = data.ix[samples]
+            lavalamp(psi, color=color, ax=ax)
+            ax.set_title(name)
+        sns.despine()
+        fig.tight_layout()
 
     def plot_lavalamp_pooled_inconsistent(
             self, data, feature_ids=None,

@@ -31,7 +31,7 @@ class ModalitiesViz(object):
               modalities_order]
 
     def plot_reduced_space(self, binned_reduced, modalities_assignments,
-                           ax=None, title=None):
+                           ax=None, title=None, xlabel='', ylabel=''):
         if ax is None:
             fig, ax = plt.subplots(figsize=(8, 8))
 
@@ -50,6 +50,8 @@ class ModalitiesViz(object):
         xmax, ymax = X.max()
         ax.set_xlim(0, 1.05 * xmax)
         ax.set_ylim(0, 1.05 * ymax)
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel(ylabel)
         ax.legend()
         if title is not None:
             ax.set_title(title)
@@ -151,6 +153,8 @@ def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
     plot_kws.setdefault('markersize', 10)
     plot_kws.setdefault('marker', marker)
     plot_kws.setdefault('linestyle', 'None')
+    plot_kws.setdefault('markeredgecolor', '#262626')
+    plot_kws.setdefault('markeredgewidth', .1)
 
     y = as_numpy(psi.dropna(how='all', axis=1))
 
