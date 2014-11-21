@@ -98,8 +98,11 @@ def kld(p, q):
     The input to this function must be probability distributions, not raw
     values. Otherwise, the output makes no sense.
     """
-    _check_prob_dist(p)
-    _check_prob_dist(q)
+    try:
+        _check_prob_dist(p)
+        _check_prob_dist(q)
+    except ValueError:
+        return np.nan
     # If one of them is zero, then the other should be considered to be 0.
     # In this problem formulation, log0 = 0
     p = p.replace(0, np.nan)
@@ -134,8 +137,11 @@ def jsd(p, q):
         If the data provided is not a probability distribution, i.e. it has
         negative values or its columns do not sum to 1, raise ValueError
     """
-    _check_prob_dist(p)
-    _check_prob_dist(q)
+    try:
+        _check_prob_dist(p)
+        _check_prob_dist(q)
+    except ValueError:
+        return np.nan
     weight = 0.5
     m = weight * (p + q)
 
@@ -166,7 +172,10 @@ def entropy(binned, base=2):
         If the data provided is not a probability distribution, i.e. it has
         negative values or its columns do not sum to 1, raise ValueError
     """
-    _check_prob_dist(binned)
+    try:
+        _check_prob_dist(binned)
+    except ValueError:
+        np.nan
     return -((np.log(binned) / np.log(base)) * binned).sum(axis=0)
 
 
