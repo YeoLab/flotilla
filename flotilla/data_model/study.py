@@ -1281,7 +1281,8 @@ class Study(object):
 
         self.splicing.plot_lavalamp(sample_ids, feature_ids, data,
                                     self.sample_id_to_phenotype,
-                                    self.phenotype_to_color)
+                                    self.phenotype_to_color,
+                                    order=self.phenotype_order)
 
     def plot_big_nmf_space_transitions(self, data_type='expression', n=5):
         if data_type == 'expression':
