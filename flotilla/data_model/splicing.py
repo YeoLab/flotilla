@@ -66,7 +66,7 @@ class SplicingData(BaseData):
             outliers=outliers, pooled=pooled,
             technical_outliers=technical_outliers,
             predictor_config_manager=predictor_config_manager,
-            minimum_samples=minimum_samples)
+            minimum_samples=minimum_samples, data_type='splicing')
         sys.stdout.write("{}\tDone initializing splicing\n".format(timestamp()))
 
         self.feature_expression_id_col = feature_expression_id_col \
@@ -379,27 +379,22 @@ class SplicingData(BaseData):
                      phenotype_groupby=None,
                      phenotype_order=None, color=None,
                      phenotype_to_color=None,
-                     phenotype_to_marker=None, xlabel=None, ylabel=None,
+                     phenotype_to_marker=None, nmf_xlabel=None, nmf_ylabel=None,
                      nmf_space=False, fig=None, axesgrid=None):
         if nmf_space:
-            xlabel = self._nmf_space_xlabel(phenotype_groupby)
-            ylabel = self._nmf_space_xlabel(phenotype_groupby)
+            nmf_xlabel = self._nmf_space_xlabel(phenotype_groupby)
+            nmf_ylabel = self._nmf_space_xlabel(phenotype_groupby)
         else:
-            ylabel = None
-            xlabel = None
+            nmf_ylabel = None
+            nmf_xlabel = None
         
         super(SplicingData, self).plot_feature(feature_id, sample_ids,
                                                phenotype_groupby,
                                                phenotype_order, color,
                                                phenotype_to_color,
-                                               phenotype_to_marker, xlabel,
-                                               ylabel, nmf_space=nmf_space,
+                                               phenotype_to_marker, nmf_xlabel,
+                                               nmf_ylabel, nmf_space=nmf_space,
                                                fig=fig, axesgrid=axesgrid)
-        fig = plt.gcf()
-        for ax in fig.axes:
-            if ax.is_first_col():
-                ax.set_ylim(0, 1)
-                ax.set_ylabel('$\Psi$')
 
     @memoize
     def pooled_inconsistent(self, data, feature_ids=None,
