@@ -48,14 +48,15 @@ class TestBaseData:
         data = base_data.data
         if feature_ids is None:
             feature_ids = data.columns
+        else:
+            feature_ids = pd.Index(set(feature_ids).intersection(data.columns))
         if sample_ids is None:
             sample_ids = data.index
+        else:
+            sample_ids = pd.Index(set(sample_ids).intersection(data.index))
 
-        sample_ids = pd.Index(set(sample_ids).intersection(data.index))
-        feature_ids = pd.Index(set(feature_ids).intersection(data.columns))
+        true_subset = data.ix[sample_ids, feature_ids]
 
-        true_subset = data.ix[sample_ids]
-        true_subset = true_subset.T.ix[feature_ids].T
         pdt.assert_frame_equal(subset, true_subset)
 
     def test__subset_and_standardize(self, base_data, standardize, feature_ids,
