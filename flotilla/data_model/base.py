@@ -11,10 +11,9 @@ import seaborn as sns
 from sklearn.preprocessing import StandardScaler
 
 from ..compute.decomposition import DataFramePCA, DataFrameNMF
-# from ..compute.clustering import Cluster
-from ..compute.infotheory import binify
-from ..compute.predict import PredictorConfigManager, \
-    PredictorDataSetManager, CLASSIFIER
+from ..compute.infotheory import binify, cross_phenotype_jsd, jsd_df_to_2d
+from ..compute.predict import PredictorConfigManager, PredictorDataSetManager, \
+    CLASSIFIER
 from ..visualize.decomposition import DecompositionViz
 from ..visualize.generic import violinplot, nmf_space_transitions, \
     simple_twoway_scatter
@@ -406,50 +405,54 @@ class BaseData(object):
     #         pass
     #     elif 'samples'.startswith(between):
     #         pass
-    #
-    # def jsd(self):
-    #     """Jensen-Shannon divergence showing most varying measurements within a
-    #     celltype and between celltypes
-    #     """
-    #     raise NotImplementedError
 
-    #     Needed for some clustering algorithms
-    # 
-    #     Parameters
-    #     ----------
-    #     metric : str, optional
-    #         One of any valid scipy.distance metric strings. Default 'euclidean'
-    #     """
-    #     raise NotImplementedError
-    #     self.pdist = squareform(pdist(self.binned, metric=metric))
-    #     return self
-    # 
-    # def correlate(self, method='spearman', between='features'):
-    #     """Find correlations between either splicing/expression measurements
-    #     or cells
-    # 
-    #     Parameters
-    #     ----------
-    #     method : str
-    #         Specify to calculate either 'spearman' (rank-based) or 'pearson'
-    #         (linear) correlation. Default 'spearman'
-    #     between : str
-    #         Either 'features' or 'samples'. Default 'features'
-    #     """
-    #     raise NotImplementedError
-    #     # Stub for choosing between features or samples
-    #     if 'features'.startswith(between):
-    #         pass
-    #     elif 'samples'.startswith(between):
-    #         pass
-    # 
-    # def jsd(self):
-    #     """Jensen-Shannon divergence showing most varying measurements within a
-    #     celltype and between celltypes
-    #     """
-    #     raise NotImplementedError
+    def jsd_df(self, groupby=None, n_iter=100, n_bins=10):
+        """Jensen-Shannon divergence of features across phenotypes
 
-    # TODO.md: Specify dtypes in docstring
+        Parameters
+        ----------
+        groupby : mappable
+            A samples to phenotypes mapping
+        n_iter : int
+            Number of bootstrap resampling iterations to perform for the
+            within-group comparisons
+        n_bins : int
+            Number of bins to binify the singles data on
+
+        Returns
+        -------
+        jsd_df : pandas.DataFrame
+            A (n_features, n_phenotypes^2) dataframe of the JSD between each
+            feature between and within phenotypes
+        """
+        bins = np.linspace(self.singles.min().min(), self.singles.max().max(),
+                           n_bins)
+        return cross_phenotype_jsd(self.singles, groupby=groupby,
+                                   bins=bins, n_iter=n_iter)
+
+    def jsd_2d(self, groupby=None, n_iter=100, n_bins=10):
+        """Mean Jensen-Shannon divergence of features across phenotypes
+
+        Parameters
+        ----------
+        groupby : mappable
+            A samples to phenotypes mapping
+        n_iter : int
+            Number of bootstrap resampling iterations to perform for the
+            within-group comparisons
+        n_bins : int
+            Number of bins to binify the singles data on
+
+        Returns
+        -------
+        jsd_2d : pandas.DataFrame
+            A (n_phenotypes, n_phenotypes) symmetric dataframe of the mean JSD
+            between and within phenotypes
+        """
+        return jsd_df_to_2d(self.jsd_df(groupby=groupby, n_iter=n_iter,
+                                        n_bins=n_bins))
+
+
     def plot_classifier(self, trait, sample_ids=None, feature_ids=None,
                         predictor_name=None, standardize=True,
                         score_coefficient=None, data_name=None, groupby=None,
@@ -932,8 +935,6 @@ class BaseData(object):
                  plotting_kwargs=None,
                  color=None, groupby=None, label_to_color=None,
                  label_to_marker=None, order=None, bins=None):
-        # Should all this be exposed to the user???
-
         """Make and memoize a predictor on a categorical trait (associated
         with samples) subset of genes
 
@@ -1275,7 +1276,8 @@ class BaseData(object):
                               nmf_space=True, fig=fig, axesgrid=axesgrid)
 
 
-    def plot_two_samples(self, sample1, sample2, **kwargs):
+    def plot_two_samples(self, sample1, sample2, fillna=None,
+                         **kwargs):
         """
 
         Parameters
@@ -1284,6 +1286,8 @@ class BaseData(object):
             Name of the sample to plot on the x-axis
         sample2 : str
             Name of the sample to plot on the y-axis
+        fillna : float
+            Value to replace NAs with
         Any other keyword arguments valid for seaborn.jointplot
 
         Returns
@@ -1298,10 +1302,14 @@ class BaseData(object):
         """
         x = self.data.ix[sample1]
         y = self.data.ix[sample2]
+
+        if fillna is not None:
+            x = x.fillna(fillna)
+            y = y.fillna(fillna)
         return simple_twoway_scatter(x, y, **kwargs)
 
     def plot_two_features(self, feature1, feature2, groupby=None,
-                          label_to_color=None, **kwargs):
+                          label_to_color=None, fillna=None, **kwargs):
         """Plot the values of two features
         """
         feature1s = self.maybe_renamed_to_feature_id(feature1)
@@ -1310,6 +1318,10 @@ class BaseData(object):
             for f2 in feature2s:
                 x = self.data.ix[:, f1].copy()
                 y = self.data.ix[:, f2].copy()
+
+                if fillna is not None:
+                    x = x.fillna(fillna)
+                    y = y.fillna(fillna)
 
                 x.name = feature1
                 y.name = feature2
