@@ -82,6 +82,7 @@ class SplicingData(BaseData):
 
     @memoize
     def modalities(self, sample_ids=None, feature_ids=None, data=None,
+                   groupby=None,
                    bootstrapped=False, bootstrapped_kws=None):
         """Assigned modalities for these samples and features.
 
@@ -196,37 +197,37 @@ class SplicingData(BaseData):
             xlabel=self._nmf_space_xlabel(phenotype_groupby=None),
             ylabel=self._nmf_space_ylabel(phenotype_groupby=None))
 
-    # def plot_modalities_bar(self, sample_ids=None, feature_ids=None, ax=None,
-    #                         i=0, normed=True, legend=True,
-    #                         bootstrapped=False, bootstrapped_kws=None):
-    #     """Plot stacked bar graph of each modality
-    #
-    #     Parameters
-    #     ----------
-    #     bootstrapped : bool
-    #         Whether or not to use bootstrapping, i.e. resample each splicing
-    #         event several times to get a better estimate of its true modality.
-    #         Default False.
-    #     bootstrappped_kws : dict
-    #         Valid arguments to _bootstrapped_fit_transform. If None, default is
-    #         dict(n_iter=100, thresh=0.6, minimum_samples=10)
-    #
-    #
-    #     Returns
-    #     -------
-    #
-    #
-    #     Raises
-    #     ------
-    #     """
-    #     modalities_counts = self.modalities_counts(
-    #         sample_ids, feature_ids, bootstrapped=bootstrapped,
-    #         bootstrapped_kws=bootstrapped_kws)
-    #     self.modalities_visualizer.bar(modalities_counts, ax, i, normed,
-    #                                    legend)
-    #     modalities_fractions = \
-    #         modalities_counts / modalities_counts.sum().astype(float)
-    #     sys.stdout.write(str(modalities_fractions) + '\n')
+    def plot_modalities_stacked_bar(self, sample_ids=None, feature_ids=None, ax=None,
+                            i=0, normed=True, legend=True,
+                            bootstrapped=False, bootstrapped_kws=None):
+        """Plot stacked bar graph of each modality
+
+        Parameters
+        ----------
+        bootstrapped : bool
+            Whether or not to use bootstrapping, i.e. resample each splicing
+            event several times to get a better estimate of its true modality.
+            Default False.
+        bootstrappped_kws : dict
+            Valid arguments to _bootstrapped_fit_transform. If None, default is
+            dict(n_iter=100, thresh=0.6, minimum_samples=10)
+
+
+        Returns
+        -------
+
+
+        Raises
+        ------
+        """
+        modalities_counts = self.modalities_counts(
+            sample_ids, feature_ids, bootstrapped=bootstrapped,
+            bootstrapped_kws=bootstrapped_kws)
+        self.modalities_visualizer.bar(modalities_counts, ax, i, normed,
+                                       legend)
+        modalities_fractions = \
+            modalities_counts / modalities_counts.sum().astype(float)
+        sys.stdout.write(str(modalities_fractions) + '\n')
 
     def plot_modalities_bars(self, sample_ids=None, feature_ids=None,
                              data=None, groupby=None,
