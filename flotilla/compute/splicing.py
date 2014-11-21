@@ -45,7 +45,7 @@ def _col_jsd_modalities(col, true_modalities):
         A (n_modalities,) sized series of JSD between this event and the
         true modalities
     """
-    if np.all(np.isfinite(col))
+    if np.all(np.isfinite(col)):
         return true_modalities.apply(jsd, axis=0, q=col)
     else:
         return pd.Series(np.nan, index=true_modalities.columns)
