@@ -74,6 +74,9 @@ class SplicingData(BaseData):
             else self.feature_rename_col
 
         self.binsize = binsize
+        self.excluded_max = excluded_max
+        self.included_min = included_min
+                
         self.bins = np.arange(0, 1 + self.binsize, self.binsize)
 
         self.modalities_calculator = Modalities(excluded_max=excluded_max,
