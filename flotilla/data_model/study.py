@@ -1205,10 +1205,10 @@ class Study(object):
             self.splicing.plot_lavalamp_pooled_inconsistent(data,
                 feature_ids, fraction_diff_thresh, color=color)
 
-    def percent_pooled_inconsistent(self,
-                                    sample_subset=None, feature_ids=None,
-                                    fraction_diff_thresh=FRACTION_DIFF_THRESH):
-
+    def percent_pooled_inconsistent(
+            self, sample_subset=None, feature_subset=None,
+            fraction_diff_thresh=FRACTION_DIFF_THRESH,
+            expression_thresh=-np.inf):
         celltype_groups = self.metadata.data.groupby(
             self.sample_id_to_phenotype, axis=0)
 
@@ -1217,20 +1217,32 @@ class Study(object):
             celltype_samples = set(celltype_groups.groups[sample_subset])
         else:
             # Plotting all the celltypes
-            celltype_samples = self.metadata.data.index
+            celltype_samples = self.sample_subset_to_sample_ids(sample_subset)
+
+        feature_ids = self.feature_subset_to_feature_ids('splicing',
+                                                         feature_subset=feature_subset)
 
         celltype_and_sample_ids = celltype_groups.groups.iteritems()
-        for i, (sample_subset, sample_ids) in enumerate(
-                celltype_and_sample_ids):
+        percents = pd.Series(celltype_groups.groups.keys())
+        for i, (phenotype, sample_ids) in enumerate(celltype_and_sample_ids):
             # import pdb; pdb.set_trace()
 
             # Assumes all samples of a sample_subset have the same color...
             # probably wrong
+            color = self.phenotype_to_color[phenotype]
             sample_ids = celltype_samples.intersection(sample_ids)
             if len(sample_ids) == 0:
                 continue
-            self.splicing.percent_pooled_inconsistent(sample_ids, feature_ids,
-                                                      fraction_diff_thresh)
+            data = self.filter_splicing_on_expression(expression_thresh)
+            data = data.ix[sample_ids, :]
+            singles, pooled, not_measured_in_pooled, pooled_inconsistent =\
+                self.splicing.pooled_inconsistent(data, feature_ids,
+                                              fraction_diff_thresh)
+            percent = self._percent_pooled_inconsistent(pooled,
+                                                        pooled_inconsistent)
+            percents[phenotype] = percent
+        return percents
+
 
     # def plot_clusteredheatmap(self, sample_subset=None,
     # feature_subset='variant',
