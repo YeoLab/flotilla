@@ -129,3 +129,4 @@ def entropy(binned, base=2):
         Entropy values for each column of the dataframe.
     """
     return -((np.log(binned) / np.log(base)) * binned).sum(axis=0)
+

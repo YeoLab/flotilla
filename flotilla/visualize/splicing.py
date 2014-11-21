@@ -1,24 +1,31 @@
+"""
+Splicing-specific visualization classes and methods
+"""
+
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 
-from .color import red, blue, purple, grey, green
+# from .color import red, blue, purple, grey, green
 from ..compute.splicing import get_switchy_score_order
 from ..util import as_numpy
+
+seaborn_colors = map(mpl.colors.rgb2hex, sns.color_palette('deep'))
 
 
 class ModalitiesViz(object):
     """Visualize results of modality assignments
     """
-    modalities_colors = {'included': red,
-                         'excluded': blue,
-                         'bimodal': purple,
-                         'uniform': grey,
-                         'middle': green,
-                         'unassigned': 'k'}
+    modalities_colors = {'bimodal': seaborn_colors[3],
+                         'excluded': seaborn_colors[0],
+                         'included': seaborn_colors[2],
+                         'middle': seaborn_colors[1],
+                         'ambiguous': 'lightgrey',
+                         'uniform': seaborn_colors[4]}
 
     modalities_order = ['excluded', 'uniform', 'bimodal', 'middle',
-                        'included', 'unassigned']
+                        'included', 'ambiguous']
 
     colors = [modalities_colors[modality] for modality in
               modalities_order]
@@ -97,14 +104,14 @@ class ModalitiesViz(object):
 
 
 def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
-             switchy_score_psi=None, marker='o', plot_kws=None):
+             switchy_score_psi=None, marker='o', plot_kws=None,
+             yticks=None):
     """Make a 'lavalamp' scatter plot of many splicing events
 
     Useful for visualizing many splicing events at once.
 
     Parameters
     ----------
-    TODO.md: (n_events, n_samples).transpose()
     psi : array
         A (n_events, n_samples) matrix either as a numpy array or as a pandas
         DataFrame
@@ -136,10 +143,8 @@ def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
 
     if ax is None:
         fig, ax = plt.subplots(figsize=(16, 4))
-    else:
-        fig = plt.gcf()
 
-    color = green if color is None else color
+    color = seaborn_colors[0] if color is None else color
     plot_kws = {} if plot_kws is None else plot_kws
     plot_kws.setdefault('color', color)
     plot_kws.setdefault('alpha', 0.2)
@@ -147,7 +152,7 @@ def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
     plot_kws.setdefault('marker', marker)
     plot_kws.setdefault('linestyle', 'None')
 
-    y = as_numpy(psi)
+    y = as_numpy(psi.dropna(how='all', axis=1))
 
     if switchy_score_psi is not None:
         switchy_score_y = as_numpy(switchy_score_psi)
@@ -157,10 +162,10 @@ def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
     order = get_switchy_score_order(switchy_score_y)
     y = y[:, order]
 
-    n_samples, n_events = psi.shape
+    n_samples, n_events = y.shape
     # .astype(float) is to get rid of a deprecation warning
-    x = np.vstack((np.arange(n_events)
-                   for _ in xrange(n_samples))).astype(float)
+    x = np.vstack((np.arange(n_events) for _ in xrange(n_samples)))
+    x = x.astype(float)
     x += x_offset
 
     # Add one so the last value is actually included instead of cut off
@@ -174,6 +179,10 @@ def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
 
     ax.set_xlim(-0.5, xmax + .5)
     ax.set_ylim(0, 1)
+    if yticks is None:
+        ax.set_yticks([0, 0.5, 1])
+    else:
+        ax.set_yticks(yticks)
     ax.set_title(title)
 
 
@@ -202,14 +211,14 @@ def hist_single_vs_pooled_diff(diff_from_singles, diff_from_singles_scaled,
 
 def lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
                                  color=None, percent=None):
-    fig , axes = plt.subplots(nrows=2, figsize=(16, 8))
+    fig, axes = plt.subplots(nrows=2, figsize=(16, 8))
     ax_inconsistent = axes[0]
     ax_consistent = axes[1]
     plot_order = \
         pooled_inconsistent.sum() / pooled_inconsistent.count().astype(float)
     plot_order.sort()
 
-    color = green if color is None else color
+    color = seaborn_colors[0] if color is None else color
     pooled_plot_kws = {'alpha': 0.5, 'markeredgecolor': 'k',
                        'markerfacecolor': 'none', 'markeredgewidth': 1}
 
@@ -245,7 +254,6 @@ def lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
     title_suffix = '' if percent is None else ' ({:.1f}%){}'.format(
         100 - percent, suffix)
     ax_consistent.set_title('Pooled splicing events consistent with singles{}'
-                 .format(title_suffix))
+                            .format(title_suffix))
     sns.despine()
-
 
