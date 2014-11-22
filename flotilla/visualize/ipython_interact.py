@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 
 
 
+
 # from ..compute.predict import default_classifier
 from flotilla.util import link_to_list
 from ..visualize.color import red
@@ -157,8 +158,8 @@ class Interactive(object):
             # Make the directory if it's not already there
             self.maybe_make_directory(savefile.value)
             # f = plt.gcf()
-            print 'asdf'
-            import pdb ;pdb.set_trace()
+            # print 'asdf'
+            # import pdb ;pdb.set_trace()
             gui.result.reduced_fig.savefig(savefile.value, format="pdf")
 
             # add "violins" after the provided filename, but before the
