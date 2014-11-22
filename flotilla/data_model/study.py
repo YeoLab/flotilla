@@ -1244,10 +1244,13 @@ class Study(object):
         return percents
 
 
-    def plot_clustermap(self, sample_subset=None,
-                              feature_subset='variant', data_type='expression',
-                              metric='euclidean', method='average',
-                              figsize=None, **kwargs):
+    def plot_clustermap(self, sample_subset=None, feature_subset=None,
+                        data_type='expression', metric='euclidean',
+                        method='average', figsize=None, **kwargs):
+
+        if feature_subset is None:
+            feature_subset = self.default_feature_subset
+
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
         sample_colors = [self.sample_id_to_color[x] for x in sample_ids]
         feature_ids = self.feature_subset_to_feature_ids(data_type,
