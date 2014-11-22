@@ -16,6 +16,7 @@ import matplotlib.pyplot as plt
 
 
 
+
 # from ..compute.predict import default_classifier
 from flotilla.util import link_to_list
 from ..visualize.color import red
@@ -161,7 +162,8 @@ class Interactive(object):
             # f = plt.gcf()
             # print 'asdf'
             # import pdb ;pdb.set_trace()
-            gui.result.reduced_fig.savefig(savefile.value, format="pdf")
+            gui.widget.result.reduced_fig.savefig(savefile.value,
+                                                  format="pdf")
 
             # add "violins" after the provided filename, but before the
             # extension
@@ -169,7 +171,8 @@ class Interactive(object):
                                      'violins']) + "." + \
                            savefile.value.split('.')[-1]
             try:
-                gui.result.violins_fig.savefig(violins_file, format="pdf")
+                gui.widget.result.violins_fig.savefig(violins_file,
+                                                      format="pdf")
             except AttributeError:
                 pass
 
