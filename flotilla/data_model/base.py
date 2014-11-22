@@ -1357,6 +1357,7 @@ class BaseData(object):
                         method='average', **kwargs):
         # data = self._subset_ids_or_data(sample_ids, feature_ids, data)
         if data is None:
+            import pdb; pdb.set_trace()
             data = self._subset(self.data, sample_ids, feature_ids,
                                 require_min_samples=False)
 
@@ -1372,7 +1373,7 @@ class BaseData(object):
             # yticklabels = data.index
             data.columns = data.columns.map(self.feature_renamer)
 
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()set_trace
         return sns.clustermap(data, linewidth=0, col_colors=col_colors,
                               row_colors=row_colors, metric=metric,
                               method=method, **kwargs)
