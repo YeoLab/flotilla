@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 
 
 
+
 # from ..compute.predict import default_classifier
 from flotilla.util import link_to_list
 from ..visualize.color import red
@@ -105,7 +106,8 @@ class Interactive(object):
                         x_pc=1, y_pc=2,
                         plot_violins=True,
                         show_point_labels=False,
-                        savefile='data/last.pca.pdf'):
+                        savefile='data/last.pca.pdf',
+                        save=False):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -135,7 +137,7 @@ class Interactive(object):
                                 show_point_labels=show_point_labels,
                                 feature_subset=feature_subset,
                                 plot_violins=plot_violins)
-            if savefile != '':
+            if save and savefile != '':
                 # Make the directory if it's not already there
                 self.maybe_make_directory(savefile)
                 # f = plt.gcf()
@@ -146,9 +148,10 @@ class Interactive(object):
                 violins_file = "_".join([".".join(savefile.split('.')[:-1]),
                                          'violins']) + "." + \
                                savefile.split('.')[-1]
-                if plot_violins:
+                try:
                     pca.violins_fig.savefig(violins_file, format="pdf")
-
+                except AttributeError:
+                    pass
 
         # self.plot_study_sample_legend()
 
@@ -166,7 +169,7 @@ class Interactive(object):
                         x_pc=x_pc, y_pc=y_pc,
                         show_point_labels=show_point_labels,
                         list_link=list_link, plot_violins=plot_violins,
-                        savefile=savefile)
+                        savefile=savefile, save=False)
 
     @staticmethod
     def interactive_graph(self, data_types=('expression', 'splicing'),
