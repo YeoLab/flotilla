@@ -1356,13 +1356,19 @@ class BaseData(object):
             data = data.T
             col_colors = sample_colors
             row_colors = feature_colors
+            yticklabels = self.feature_renamer_series[data.index]
+            xticklabels = data.columns
         else:
             col_colors = feature_colors
             row_colors = sample_colors
+            xticklabels = self.feature_renamer_series[data.index]
+            yticklabels = data.columns
 
+        import pdb; pdb.set_trace()
         return sns.clustermap(data, linewidth=0, col_colors=col_colors,
                               row_colors=row_colors, metric=metric,
-                              method=method, **kwargs)
+                              method=method, xticklabels=xticklabels,
+                              yticklabels=yticklabels, **kwargs)
 
 
     def plot_correlations(self, sample_ids=None, feature_ids=None, data=None,
