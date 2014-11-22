@@ -8,15 +8,6 @@ import warnings
 from IPython.html.widgets import interact, TextWidget, ButtonWidget
 import matplotlib.pyplot as plt
 
-
-
-
-
-
-
-
-
-
 # from ..compute.predict import default_classifier
 from flotilla.util import link_to_list
 from ..visualize.color import red
@@ -98,7 +89,7 @@ class Interactive(object):
                         featurewise=False,
                         x_pc=(1, 10), y_pc=(1, 10),
                         show_point_labels=False,
-                        list_link='', plot_violins=True,
+                        list_link='', plot_violins=False,
                         savefile='data/last.pca.pdf'):
 
         def do_interact(data_type='expression',
@@ -107,9 +98,8 @@ class Interactive(object):
                         featurewise=False,
                         list_link='',
                         x_pc=1, y_pc=2,
-                        plot_violins=True,
+                        plot_violins=False,
                         show_point_labels=False):
-
             for k, v in locals().iteritems():
                 if k == 'self':
                     continue
