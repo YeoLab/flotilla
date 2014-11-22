@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
-from .color import dark2
+from .color import dark2, deep
 from .generic import violinplot
 
 
@@ -351,7 +351,7 @@ class DecompositionViz(object):
         x = loadings
         y = np.arange(loadings.shape[0])
 
-        ax.scatter(x, y, color='#262626')
+        ax.scatter(x, y, color=deep[0])
         ax.set_ylim(-.5, y.max()+.5)
 
         ax.set_yticks(np.arange(max(loadings.shape[0], n_features)))
