@@ -1244,40 +1244,24 @@ class Study(object):
         return percents
 
 
-    # def plot_clusteredheatmap(self, sample_subset=None,
-    # feature_subset='variant',
-    # data_type='expression', metric='euclidean',
-    # linkage_method='median', figsize=None):
-    # if data_type == 'expression':
-    # data = self.expression.data
-    #     elif data_type == 'splicing':
-    #         data = self.splicing.data
-    #     celltype_groups = data.groupby(
-    #         self.sample_id_to_phenotype, axis=0)
-    #
-    #     if sample_subset is not None:
-    #         # Only plotting one sample_subset
-    #         try:
-    #             sample_ids = set(celltype_groups.groups[sample_subset])
-    #         except KeyError:
-    #             sample_ids = self.sample_subset_to_sample_ids(sample_subset)
-    #     else:
-    #         # Plotting all the celltypes
-    #         sample_ids = data.index
-    #
-    #     sample_colors = [self.sample_id_to_color[x] for x in sample_ids]
-    #     feature_ids = self.feature_subset_to_feature_ids(data_type,
-    #                                                      feature_subset,
-    #                                                      rename=False)
-    #
-    #     if data_type == "expression":
-    #         return self.expression.plot_clusteredheatmap(
-    #             sample_ids, feature_ids, linkage_method=linkage_method,
-    #             metric=metric, sample_colors=sample_colors, figsize=figsize)
-    #     elif data_type == "splicing":
-    #         return self.splicing.plot_clusteredheatmap(
-    #             sample_ids, feature_ids, linkage_method=linkage_method,
-    #             metric=metric, sample_colors=sample_colors, figsize=figsize)
+    def plot_clustermap(self, sample_subset=None,
+                              feature_subset='variant', data_type='expression',
+                              metric='euclidean', linkage_method='average',
+                              figsize=None):
+        sample_ids = self.sample_subset_to_sample_ids(sample_subset)
+        sample_colors = [self.sample_id_to_color[x] for x in sample_ids]
+        feature_ids = self.feature_subset_to_feature_ids(data_type,
+                                                         feature_subset,
+                                                         rename=False)
+
+        if data_type == "expression":
+            return self.expression.plot_clustermap(
+                sample_ids, feature_ids, linkage_method=linkage_method,
+                metric=metric, sample_colors=sample_colors, figsize=figsize)
+        elif data_type == "splicing":
+            return self.splicing.plot_clustermap(
+                sample_ids, feature_ids, linkage_method=linkage_method,
+                metric=metric, sample_colors=sample_colors, figsize=figsize)
 
     def plot_lavalamps(self, sample_subset=None, feature_subset=None,
                        expression_thresh=-np.inf):
