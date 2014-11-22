@@ -1357,7 +1357,6 @@ class BaseData(object):
                         method='average', **kwargs):
         # data = self._subset_ids_or_data(sample_ids, feature_ids, data)
         if data is None:
-            import pdb; pdb.set_trace()
             data = self._subset(self.data, sample_ids, feature_ids,
                                 require_min_samples=False)
 
