@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 
 
 
+
 # from ..compute.predict import default_classifier
 from flotilla.util import link_to_list
 from ..visualize.color import red
@@ -168,7 +169,7 @@ class Interactive(object):
 
         savefile = TextWidget(description='filename')
         save_widget = ButtonWidget(description='save')
-        gui.widget.children.extend([savefile, save_widget])
+        gui.widget.children = gui.widget.children + [savefile, save_widget]
         save_widget.on_click(save)
 
 
