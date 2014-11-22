@@ -419,7 +419,9 @@ class DecompositionViz(object):
                 else None
 
             if isinstance(feature_id, tuple):
-                feature_id = feature_id[0][:20]
+                feature_id = feature_id[0]
+            if len(feature_id) > 25:
+                feature_id = feature_id[:25] + '...'
             if renamed != feature_id:
                 title = '{}\n{}'.format(feature_id, renamed)
             else:
