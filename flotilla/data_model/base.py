@@ -725,21 +725,21 @@ class BaseData(object):
 
         return singles, pooled
 
-    def _subset_ids_or_data(self, sample_ids, feature_ids, data,
-                               singles=True):
-        if data is None:
-            if singles:
-                data = self.singles
-            else:
-                data = self.data
-            return self._subset(data, sample_ids, feature_ids,
-                                require_min_samples=False)
-        else:
-            if feature_ids is not None and sample_ids is not None:
-                raise ValueError('Can only specify `sample_ids` and '
-                                 '`feature_ids` or `data`, but not both.')
-            else:
-                return data
+    # def _subset_ids_or_data(self, sample_ids, feature_ids, data,
+    #                            singles=False):
+    #     if data is None:
+    #         if singles:
+    #             data = self.singles
+    #         else:
+    #             data = self.data
+    #         return self._subset(data, sample_ids, feature_ids,
+    #                             require_min_samples=False)
+    #     else:
+    #         if feature_ids is not None and sample_ids is not None:
+    #             raise ValueError('Can only specify `sample_ids` and '
+    #                              '`feature_ids` or `data`, but not both.')
+    #         else:
+    #             return data
 
     def _subset_and_standardize(self, data, sample_ids=None,
                                 feature_ids=None,
@@ -1355,7 +1355,10 @@ class BaseData(object):
                         sample_colors=None, feature_colors=None,
                         featurewise=False, metric='euclidean',
                         method='average', **kwargs):
-        data = self._subset_ids_or_data(sample_ids, feature_ids, data)
+        # data = self._subset_ids_or_data(sample_ids, feature_ids, data)
+        if data is None:
+            data = self._subset(self.data, sample_ids, feature_ids,
+                                require_min_samples=False)
 
         if featurewise:
             data = data.T
