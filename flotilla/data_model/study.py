@@ -1252,7 +1252,7 @@ class Study(object):
             feature_subset = self.default_feature_subset
 
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
-        sample_colors = [self.sample_id_to_color[x] for x in sample_ids]
+        sample_colors = [self.phenotype_to_color[self.sample_id_to_phenotype[x]] for x in sample_ids]
         feature_ids = self.feature_subset_to_feature_ids(data_type,
                                                          feature_subset,
                                                          rename=False)
