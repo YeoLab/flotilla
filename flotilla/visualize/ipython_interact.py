@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 
 
 
+
 # from ..compute.predict import default_classifier
 from flotilla.util import link_to_list
 from ..visualize.color import red
@@ -94,7 +95,6 @@ class Interactive(object):
                         list_link='', plot_violins=True,
                         savefile='data/last.pca.pdf'):
 
-        pca = []
         def do_interact(data_type='expression',
                         sample_subset=self.default_sample_subsets,
                         feature_subset=self.default_feature_subsets,
@@ -102,9 +102,7 @@ class Interactive(object):
                         list_link='',
                         x_pc=1, y_pc=2,
                         plot_violins=True,
-                        show_point_labels=False,
-                        savefile='data/last.pca.pdf',
-                        save=False, pca=pca):
+                        show_point_labels=False):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -127,7 +125,7 @@ class Interactive(object):
 
                               "features.".format(feature_subset, data_type))
 
-            pca[0] = self.plot_pca(sample_subset=sample_subset,
+            return self.plot_pca(sample_subset=sample_subset,
                                 data_type=data_type,
                                 featurewise=featurewise,
                                 x_pc=x_pc, y_pc=y_pc,
@@ -150,14 +148,13 @@ class Interactive(object):
                         featurewise=featurewise,
                         x_pc=x_pc, y_pc=y_pc,
                         show_point_labels=show_point_labels,
-                        list_link=list_link, plot_violins=plot_violins,
-                        )
+                        list_link=list_link, plot_violins=plot_violins)
 
         def save():
             # Make the directory if it's not already there
             self.maybe_make_directory(savefile.value)
             # f = plt.gcf()
-            pca[0].reduced_fig.savefig(savefile.value, format="pdf")
+            gui.result.reduced_fig.savefig(savefile.value, format="pdf")
 
             # add "violins" after the provided filename, but before the
             # extension
@@ -165,7 +162,7 @@ class Interactive(object):
                                      'violins']) + "." + \
                            savefile.value.split('.')[-1]
             try:
-                pca[0].violins_fig.savefig(violins_file, format="pdf")
+                gui.result.violins_fig.savefig(violins_file, format="pdf")
             except AttributeError:
                 pass
 
