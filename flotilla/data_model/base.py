@@ -725,6 +725,17 @@ class BaseData(object):
 
         return singles, pooled
 
+    def _subset_ids_or_data(self, sample_ids, feature_ids, data):
+        if data is None:
+            return self._subset(self.singles, sample_ids, feature_ids,
+                                require_min_samples=False)
+        else:
+            if feature_ids is not None and sample_ids is not None:
+                raise ValueError('Can only specify `sample_ids` and '
+                                 '`feature_ids` or `data`, but not both.')
+            else:
+                return data
+
     def _subset_and_standardize(self, data, sample_ids=None,
                                 feature_ids=None,
                                 standardize=True, return_means=False,
@@ -1334,6 +1345,42 @@ class BaseData(object):
                         joint_kws['color'] = [label_to_color[groupby[i]]
                                               for i in x.index]
                 simple_twoway_scatter(x, y, joint_kws=joint_kws, **kwargs)
+
+    def plot_clustermap(self, sample_ids=None, feature_ids=None, data=None,
+                        sample_colors=None, feature_colors=None,
+                        featurewise=False, metric='euclidean',
+                        method='average', **kwargs):
+        data = self._subset_ids_or_data(sample_ids, feature_ids, data)
+
+        if featurewise:
+            data = data.T
+            col_colors = sample_colors
+            row_colors = feature_colors
+        else:
+            col_colors = feature_colors
+            row_colors = sample_ids
+
+        return sns.clustermap(data, linewidth=0, col_colors=col_colors,
+                              row_colors=row_colors, metric=metric,
+                              method=method, **kwargs)
+
+
+    def plot_correlations(self, sample_ids=None, feature_ids=None, data=None,
+                          featurewise=False, colors=None, metric='euclidean',
+                          method='average', **kwargs):
+        data = self._subset_ids_or_data(sample_ids, feature_ids, data)
+
+        if featurewise:
+            corr = data.corr()
+        else:
+            corr = data.corr()
+
+        figsize = kwargs.pop((40, 40))
+
+        return sns.clustermap(corr, linewidth=0, col_colors=colors,
+                              row_colors=colors, figsize=figsize,
+                              method=method, metric=metric, **kwargs)
+
 
 def subsets_from_metadata(metadata, minimum, subset_type, ignore=None):
     """
