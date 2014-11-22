@@ -121,7 +121,8 @@ class MetaData(BaseData):
     @property
     def sample_id_to_color(self):
         return dict((sample_id, self.phenotype_to_color[p])
-                    for sample_id, p in self.sample_id_to_phenotype.iteritems())
+                    for sample_id, p in
+                    self.sample_id_to_phenotype.iteritems())
 
     @property
     def phenotype_transitions(self):
