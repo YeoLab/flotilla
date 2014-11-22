@@ -725,9 +725,14 @@ class BaseData(object):
 
         return singles, pooled
 
-    def _subset_ids_or_data(self, sample_ids, feature_ids, data):
+    def _subset_ids_or_data(self, sample_ids, feature_ids, data,
+                               singles=True):
         if data is None:
-            return self._subset(self.singles, sample_ids, feature_ids,
+            if singles:
+                data = self.singles
+            else:
+                data = self.data
+            return self._subset(data, sample_ids, feature_ids,
                                 require_min_samples=False)
         else:
             if feature_ids is not None and sample_ids is not None:
