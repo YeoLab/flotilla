@@ -1249,7 +1249,6 @@ class Study(object):
                               metric='euclidean', method='average',
                               figsize=None, **kwargs):
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
-        import pdb; pdb.set_trace()
         sample_colors = [self.sample_id_to_color[x] for x in sample_ids]
         feature_ids = self.feature_subset_to_feature_ids(data_type,
                                                          feature_subset,
