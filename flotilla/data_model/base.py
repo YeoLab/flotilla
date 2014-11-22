@@ -1361,13 +1361,13 @@ class BaseData(object):
             data = data.T
             col_colors = sample_colors
             row_colors = feature_colors
-            yticklabels = data.index.map(self.feature_renamer_series)
+            yticklabels = data.index.map(self.feature_renamer)
             xticklabels = data.columns
         else:
             col_colors = feature_colors
             row_colors = sample_colors
-            yticklabels = data.columns
-            xticklabels = data.index.map(self.feature_renamer_series)
+            yticklabels = data.index
+            xticklabels = data.columns.map(self.feature_renamer)
 
         import pdb; pdb.set_trace()
         return sns.clustermap(data, linewidth=0, col_colors=col_colors,
