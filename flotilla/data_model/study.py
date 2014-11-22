@@ -1252,21 +1252,21 @@ class Study(object):
             feature_subset = self.default_feature_subset
 
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
-        sample_colors = [self.phenotype_to_color[self.sample_id_to_phenotype[x]] for x in sample_ids]
+        # sample_colors = [self.phenotype_to_color[self.sample_id_to_phenotype[x]] for x in sample_ids]
         feature_ids = self.feature_subset_to_feature_ids(data_type,
                                                          feature_subset,
                                                          rename=False)
 
         if data_type == "expression":
             return self.expression.plot_clustermap(
-                sample_ids, feature_ids, method=method,
-                metric=metric, sample_colors=sample_colors, figsize=figsize,
-                **kwargs)
+                sample_ids=sample_ids, feature_ids=feature_ids, method=method,
+                metric=metric, sample_id_to_color=self.sample_id_to_color,
+                figsize=figsize, **kwargs)
         elif data_type == "splicing":
             return self.splicing.plot_clustermap(
-                sample_ids, feature_ids, method=method,
-                metric=metric, sample_colors=sample_colors, figsize=figsize,
-                **kwargs)
+                sample_ids=sample_ids, feature_ids=feature_ids, method=method,
+                metric=metric, sample_id_to_color=self.sample_id_to_color,
+                figsize=figsize, **kwargs)
 
     def plot_lavalamps(self, sample_subset=None, feature_subset=None,
                        expression_thresh=-np.inf):

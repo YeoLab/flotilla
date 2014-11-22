@@ -1352,7 +1352,7 @@ class BaseData(object):
                 simple_twoway_scatter(x, y, joint_kws=joint_kws, **kwargs)
 
     def plot_clustermap(self, sample_ids=None, feature_ids=None, data=None,
-                        sample_colors=None, feature_colors=None,
+                        feature_colors=None, sample_id_to_color=None,
                         featurewise=False, metric='euclidean',
                         method='average', **kwargs):
         # data = self._subset_ids_or_data(sample_ids, feature_ids, data)
@@ -1360,6 +1360,9 @@ class BaseData(object):
             import pdb; pdb.set_trace()
             data = self._subset(self.data, sample_ids, feature_ids,
                                 require_min_samples=False)
+
+        if sample_id_to_color is not None:
+            sample_colors = [sample_id_to_color[x] for x in data.index]
 
         if featurewise:
             data = data.T
