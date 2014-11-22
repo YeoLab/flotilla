@@ -699,7 +699,7 @@ class Study(object):
 
     def plot_pca(self, data_type='expression', x_pc=1, y_pc=2,
                  sample_subset=None, feature_subset=None,
-                 title='', featurewise=False, plot_violins=True,
+                 title='', featurewise=False, plot_violins=False,
                  show_point_labels=False, reduce_kwargs=None,
                  **kwargs):
         """Performs DataFramePCA on both expression and splicing study_data
