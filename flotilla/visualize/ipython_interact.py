@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 
 
 
+
 # from ..compute.predict import default_classifier
 from flotilla.util import link_to_list
 from ..visualize.color import red
@@ -177,6 +178,7 @@ class Interactive(object):
         gui.widget.children = list(gui.widget.children) + \
                               [savefile, save_widget]
         save_widget.on_click(save)
+        return gui
 
 
     @staticmethod
