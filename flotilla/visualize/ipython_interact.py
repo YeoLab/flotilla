@@ -5,8 +5,12 @@ between IPython interactive visualizations vs D3 interactive visualizations.
 import sys
 import warnings
 
-from IPython.html.widgets import interact
+from IPython.html.widgets import interact, TextWidget, ButtonWidget
 import matplotlib.pyplot as plt
+
+
+
+
 
 
 
@@ -104,8 +108,7 @@ class Interactive(object):
                         list_link='',
                         x_pc=1, y_pc=2,
                         plot_violins=True,
-                        show_point_labels=False,
-                        savefile='data/last.pca.pdf'):
+                        show_point_labels=False):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -128,27 +131,13 @@ class Interactive(object):
 
                               "features.".format(feature_subset, data_type))
 
-            pca = self.plot_pca(sample_subset=sample_subset,
+            return self.plot_pca(sample_subset=sample_subset,
                                 data_type=data_type,
                                 featurewise=featurewise,
                                 x_pc=x_pc, y_pc=y_pc,
                                 show_point_labels=show_point_labels,
                                 feature_subset=feature_subset,
                                 plot_violins=plot_violins)
-            if savefile != '':
-                # Make the directory if it's not already there
-                self.maybe_make_directory(savefile)
-                # f = plt.gcf()
-                pca.reduced_fig.savefig(savefile, format="pdf")
-
-                # add "violins" after the provided filename, but before the
-                # extension
-                violins_file = "_".join([".".join(savefile.split('.')[:-1]),
-                                         'violins']) + "." + \
-                               savefile.split('.')[-1]
-                if plot_violins:
-                    pca.violins_fig.savefig(violins_file, format="pdf")
-
 
         # self.plot_study_sample_legend()
 
@@ -158,15 +147,42 @@ class Interactive(object):
         if sample_subsets is None:
             sample_subsets = self.default_sample_subsets
 
-        return interact(do_interact,
+        gui = interact(do_interact,
                         data_type=data_types,
                         sample_subset=sample_subsets,
                         feature_subset=feature_subsets + ['custom'],
                         featurewise=featurewise,
                         x_pc=x_pc, y_pc=y_pc,
                         show_point_labels=show_point_labels,
-                        list_link=list_link, plot_violins=plot_violins,
-                        savefile=savefile)
+                        list_link=list_link, plot_violins=plot_violins)
+
+        def save(w):
+            # Make the directory if it's not already there
+            self.maybe_make_directory(savefile.value)
+            # f = plt.gcf()
+            # print 'asdf'
+            # import pdb ;pdb.set_trace()
+            gui.widget.result.reduced_fig.savefig(savefile.value,
+                                                  format="pdf")
+
+            # add "violins" after the provided filename, but before the
+            # extension
+            violins_file = "_".join([".".join(savefile.value.split('.')[:-1]),
+                                     'violins']) + "." + \
+                           savefile.value.split('.')[-1]
+            try:
+                gui.widget.result.violins_fig.savefig(violins_file,
+                                                      format="pdf")
+            except AttributeError:
+                pass
+
+        savefile = TextWidget(description='filename')
+        save_widget = ButtonWidget(description='save')
+        gui.widget.children = list(gui.widget.children) + \
+                              [savefile, save_widget]
+        save_widget.on_click(save)
+        return gui
+
 
     @staticmethod
     def interactive_graph(self, data_types=('expression', 'splicing'),
