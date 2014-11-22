@@ -41,6 +41,7 @@ setup(
                       "jinja2",
                       #"fastcluster",
                       "semantic_version",
+                      "joblib",
     ],
     version=version,
     classifiers=['License :: OSI Approved :: BSD License',
