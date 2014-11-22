@@ -628,11 +628,13 @@ class BaseData(object):
         """
         if feature_ids is None:
             feature_ids = data.columns
+        else:
+            feature_ids = pd.Index(set(feature_ids).intersection(data.columns))
         if sample_ids is None:
             sample_ids = data.index
+        else:
+            sample_ids = pd.Index(set(sample_ids).intersection(data.index))
 
-        sample_ids = pd.Index(set(sample_ids).intersection(data.index))
-        feature_ids = pd.Index(set(feature_ids).intersection(data.columns))
 
         if len(sample_ids) == 1:
             sample_ids = sample_ids[0]
@@ -643,8 +645,8 @@ class BaseData(object):
         else:
             single_feature = False
 
-        subset = data.ix[sample_ids]
-        subset = subset.T.ix[feature_ids].T
+        subset = data.ix[sample_ids, feature_ids]
+        # subset = subset.T.ix[feature_ids].T
 
         if require_min_samples and not single_feature:
             subset = subset.ix[:, subset.count() >= self.minimum_samples]
@@ -1055,7 +1057,7 @@ class BaseData(object):
                      phenotype_groupby=None,
                      phenotype_order=None, color=None,
                      phenotype_to_color=None,
-                     phenotype_to_marker=None, xlabel=None, ylabel=None,
+                     phenotype_to_marker=None, nmf_xlabel=None, nmf_ylabel=None,
                      nmf_space=False, fig=None, axesgrid=None):
         """
         Plot the violinplot of a feature. Have the option to show NMF movement
@@ -1085,7 +1087,7 @@ class BaseData(object):
                              phenotype_groupby=phenotype_groupby,
                              phenotype_order=phenotype_order, ax=axes[0],
                              color=color)
-            # if self.data_type == 'splicing':
+
             if nmf_space:
                 try:
                     self.plot_nmf_space_transitions(
@@ -1093,10 +1095,11 @@ class BaseData(object):
                         phenotype_to_color=phenotype_to_color,
                         phenotype_to_marker=phenotype_to_marker,
                         order=phenotype_order, ax=axes[1],
-                        xlabel=xlabel, ylabel=ylabel)
+                        xlabel=nmf_xlabel, ylabel=nmf_ylabel)
                 except KeyError:
                     continue
             sns.despine()
+        fig.tight_layout()
 
     def nmf_space_positions(self, groupby, n=5):
         """Calculate NMF-space position of splicing events in phenotype groups
@@ -1274,7 +1277,8 @@ class BaseData(object):
                               nmf_space=True, fig=fig, axesgrid=axesgrid)
 
 
-    def plot_two_samples(self, sample1, sample2, **kwargs):
+    def plot_two_samples(self, sample1, sample2, fillna=None,
+                         **kwargs):
         """
 
         Parameters
@@ -1283,6 +1287,8 @@ class BaseData(object):
             Name of the sample to plot on the x-axis
         sample2 : str
             Name of the sample to plot on the y-axis
+        fillna : float
+            Value to replace NAs with
         Any other keyword arguments valid for seaborn.jointplot
 
         Returns
@@ -1297,10 +1303,14 @@ class BaseData(object):
         """
         x = self.data.ix[sample1]
         y = self.data.ix[sample2]
+
+        if fillna is not None:
+            x = x.fillna(fillna)
+            y = y.fillna(fillna)
         return simple_twoway_scatter(x, y, **kwargs)
 
     def plot_two_features(self, feature1, feature2, groupby=None,
-                          label_to_color=None, **kwargs):
+                          label_to_color=None, fillna=None, **kwargs):
         """Plot the values of two features
         """
         feature1s = self.maybe_renamed_to_feature_id(feature1)
@@ -1309,6 +1319,10 @@ class BaseData(object):
             for f2 in feature2s:
                 x = self.data.ix[:, f1].copy()
                 y = self.data.ix[:, f2].copy()
+
+                if fillna is not None:
+                    x = x.fillna(fillna)
+                    y = y.fillna(fillna)
 
                 x.name = feature1
                 y.name = feature2

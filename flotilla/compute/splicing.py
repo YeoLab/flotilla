@@ -1,12 +1,124 @@
+"""
+Calculate modalities of splicing events.
+
+This code is crazy, sometimes using classes and sometimes just objects because
+for parallelization, you can't pickle anything that has state, like an
+instancemethod
+"""
+
 import collections
 
 import numpy as np
 import pandas as pd
 from sklearn import cross_validation
+from joblib import Parallel, delayed
 
+from .infotheory import jsd, binify, bin_range_strings
 from ..util import memoize
-from .infotheory import jsd, binify
 
+MODALITIES_BINS = np.array([[1, 0, 0],  # excluded
+                            [0, 1, 0],  # middle
+                            [0, 0, 1],  # included
+                            [1, 0, 1],  # bimodal
+                            [1, 1, 1]])  # uniform
+
+MODALITIES_NAMES = ['excluded', 'middle', 'included', 'bimodal',
+                    'uniform']
+
+TRUE_MODALITIES = pd.DataFrame(MODALITIES_BINS.T, columns=MODALITIES_NAMES)
+
+
+def _col_jsd_modalities(col, true_modalities):
+    """Calculate JSD between a single binned event and true modalities
+
+    Given a column of a binned splicing event, calculate its Jensen-Shannon
+    divergence to the true modalities
+
+    Parameters
+    ----------
+    col : pandas.Series
+        A (n_bins,) sized series of a splicing event
+
+    Returns
+    -------
+    jsd : pandas.Series
+        A (n_modalities,) sized series of JSD between this event and the
+        true modalities
+    """
+    if np.all(np.isfinite(col)):
+        return true_modalities.apply(jsd, axis=0, q=col)
+    else:
+        return pd.Series(np.nan, index=true_modalities.columns)
+
+def assignments(sqrt_jsd_modalities, true_modalities):
+    """Return the modality with the smallest square root JSD to each event
+
+    Parameters
+    ----------
+    sqrt_jsd_modalities : pandas.DataFrame
+        A modalities x features dataframe of the square root
+        Jensen-Shannon divergence between this event and each modality
+
+    Returns
+    -------
+    assignments : pandas.Series
+        The closest modality to each splicing event
+    """
+    modalities = true_modalities.columns[
+        np.argmin(sqrt_jsd_modalities.values, axis=0)]
+    return pd.Series(modalities, sqrt_jsd_modalities.columns)
+
+
+def sqrt_jsd_modalities(binned, true_modalities):
+    """Calculate JSD between all binned splicing events and true modalities
+
+    Use square root of JSD because it's a metric.
+
+    Parameters
+    ----------
+    binned : pandas.DataFrame
+        A (n_bins, n_events) sized DataFrame of binned splicing events
+
+    Returns
+    -------
+    sqrt_jsd : pandas.DataFrame
+        A (n_modalities, n_events) sized DataFrame of the square root JSD
+        between splicing events and all modalities
+
+    """
+    return np.sqrt(binned.apply(_col_jsd_modalities, axis=0,
+                                true_modalities=true_modalities))
+
+def _single_fit_transform(data, bins, true_modalities,
+                          do_not_memoize=False):
+    """Given psi scores, estimate the modality of each
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        A samples x features dataframe, where you want to find the
+        splicing modality of each column (feature)
+    do_not_memoize : bool
+        Whether or not to memoize the results of the _single_fit_transform
+        on this data (used by @memoize decorator)
+
+    Returns
+    -------
+    assignments : pandas.Series
+        Modality assignments of each column (feature)
+    """
+    binned = binify(data, bins)
+    sqrt_jsds = sqrt_jsd_modalities(binned, true_modalities)
+    return assignments(sqrt_jsds, true_modalities)
+
+def _cat_indices_and_fit_transform(indices, data, bins, true_modalities,
+                                   min_samples=10):
+    i = np.concatenate(indices)
+    index = data.index[i]
+    psi = data.copy().ix[index, :]#.copy().dropna(axis=1, thresh=min_samples)
+    psi = psi.ix[:, psi.count() >= min_samples]
+    return _single_fit_transform(psi, bins, true_modalities,
+                                 do_not_memoize=True)
 
 class Modalities(object):
     """
@@ -39,76 +151,15 @@ class Modalities(object):
 
     Methods
     -------
+
     """
-    modalities_bins = np.array([[1, 0, 0],  # excluded
-                                [0, 1, 0],  # middle
-                                [0, 0, 1],  # included
-                                [1, 0, 1],  # bimodal
-                                [1, 1, 1]])  # uniform
-
-    modalities_names = ['excluded', 'middle', 'included', 'bimodal',
-                        'uniform']
-
-    true_modalities = pd.DataFrame(modalities_bins.T, columns=modalities_names)
+    true_modalities = TRUE_MODALITIES
+    modalities_names = MODALITIES_NAMES
+    modalities_bins = MODALITIES_BINS
 
     def __init__(self, excluded_max=0.2, included_min=0.8):
         self.bins = (0, excluded_max, included_min, 1)
-
-    def _col_jsd_modalities(self, col):
-        """Calculate JSD between a single binned event and true modalities
-
-        Given a column of a binned splicing event, calculate its Jensen-Shannon
-        divergence to the true modalities
-
-        Parameters
-        ----------
-        col : pandas.Series
-            A (n_bins,) sized series of a splicing event
-
-        Returns
-        -------
-        jsd : pandas.Series
-            A (n_modalities,) sized series of JSD between this event and the
-            true modalities
-        """
-        return self.true_modalities.apply(jsd, axis=0, q=col)
-
-    def sqrt_jsd_modalities(self, binned):
-        """Calculate JSD between all binned splicing events and true modalities
-
-        Use square root of JSD because it's a metric.
-
-        Parameters
-        ----------
-        binned : pandas.DataFrame
-            A (n_bins, n_events) sized DataFrame of binned splicing events
-
-        Returns
-        -------
-        sqrt_jsd : pandas.DataFrame
-            A (n_modalities, n_events) sized DataFrame of the square root JSD
-            between splicing events and all modalities
-
-        """
-        return np.sqrt(binned.apply(self._col_jsd_modalities, axis=0))
-
-    def assignments(self, sqrt_jsd_modalities):
-        """Return the modality with the smallest square root JSD to each event
-
-        Parameters
-        ----------
-        sqrt_jsd_modalities : pandas.DataFrame
-            A modalities x features dataframe of the square root
-            Jensen-Shannon divergence between this event and each modality
-
-        Returns
-        -------
-        assignments : pandas.Series
-            The closest modality to each splicing event
-        """
-        modalities = self.true_modalities.columns[
-            np.argmin(sqrt_jsd_modalities.values, axis=0)]
-        return pd.Series(modalities, sqrt_jsd_modalities.columns)
+        self.true_modalities.index = bin_range_strings(self.bins)
 
     @memoize
     def fit_transform(self, data, bootstrapped=False, bootstrapped_kws=None):
@@ -129,54 +180,49 @@ class Modalities(object):
 
         Returns
         -------
+
         assignments : pandas.Series
             Modality assignments of each column (feature)
         """
+
+        # import pdb; pdb.set_trace()
         if bootstrapped:
             bootstrapped_kws = {} if bootstrapped_kws \
                                      is None else bootstrapped_kws
             return self._bootstrapped_fit_transform(data, **bootstrapped_kws)
         else:
-            return self._single_fit_transform(data)
+            return _single_fit_transform(data, bins=self.bins,
+                                         true_modalities=self.true_modalities)
 
-    def _single_fit_transform(self, data, do_not_memoize=False):
-        """Given psi scores, estimate the modality of each
+    def _bootstrapped_fit_transform(self, data, n_iter=100, thresh=0.6,
+                                    min_samples=10):
+        """Resample each splicing event to robustly estimate modalities.
 
         Parameters
         ----------
         data : pandas.DataFrame
-            A samples x features dataframe, where you want to find the
-            splicing modality of each column (feature)
-        do_not_memoize : bool
-            Whether or not to memoize the results of the _single_fit_transform
-            on this data (used by @memoize decorator)
+            A (n_samples, n_features) dataframe of the splicing data
+        n_iter : int, optional (default=100)
+            Number of iterations (sampling with replacement)
+        thresh : float, optional (default=0.6)
+            Fraction of times that an event must be classified with a modality
+            for it to be considered robustly assigned
+        min_samples : int, optional (default=10)
+            Minimum number of samples for each resampled splicing event
 
         Returns
         -------
         assignments : pandas.Series
             Modality assignments of each column (feature)
         """
-        binned = binify(data, self.bins)
-        self.true_modalities.index = binned.index
-        return self.assignments(self.sqrt_jsd_modalities(binned))
-
-    def _bootstrapped_fit_transform(self, data, n_iter=100, thresh=0.6,
-                                    min_samples=10):
-        """Resample each splicing event n_iter times to robustly estimate
-        modalities.
-        """
         bs = cross_validation.Bootstrap(data.shape[0], n_iter=n_iter)
 
-        assignments = pd.DataFrame(columns=data.columns,
-                                   index=range(n_iter))
+        results = Parallel(n_jobs=-1, max_nbytes=1e4)(
+            delayed(_cat_indices_and_fit_transform)(
+                x, data, self.bins, self.true_modalities, min_samples)
+            for x in bs)
 
-        for i, (train_index, test_index) in enumerate(bs):
-            index = np.concatenate([train_index, test_index])
-            psi = data.ix[data.index[index], :]
-            psi = psi.dropna(axis=1, thresh=min_samples)
-            assignments.ix[i] = self._single_fit_transform(psi,
-                                                           do_not_memoize=True)
-
+        assignments = pd.concat(results, axis=1).T
         counts = assignments.apply(lambda x: pd.Series(
             collections.Counter(x.dropna())))
         fractions = counts / counts.sum().astype(float)
