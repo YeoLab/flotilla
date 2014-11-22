@@ -1358,7 +1358,7 @@ class BaseData(object):
             row_colors = feature_colors
         else:
             col_colors = feature_colors
-            row_colors = sample_ids
+            row_colors = sample_colors
 
         return sns.clustermap(data, linewidth=0, col_colors=col_colors,
                               row_colors=row_colors, metric=metric,

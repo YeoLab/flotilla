@@ -1247,8 +1247,9 @@ class Study(object):
     def plot_clustermap(self, sample_subset=None,
                               feature_subset='variant', data_type='expression',
                               metric='euclidean', linkage_method='average',
-                              figsize=None):
+                              figsize=None, **kwargs):
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
+        import pdb; pdb.set_trace()
         sample_colors = [self.sample_id_to_color[x] for x in sample_ids]
         feature_ids = self.feature_subset_to_feature_ids(data_type,
                                                          feature_subset,
@@ -1257,11 +1258,13 @@ class Study(object):
         if data_type == "expression":
             return self.expression.plot_clustermap(
                 sample_ids, feature_ids, linkage_method=linkage_method,
-                metric=metric, sample_colors=sample_colors, figsize=figsize)
+                metric=metric, sample_colors=sample_colors, figsize=figsize,
+                **kwargs)
         elif data_type == "splicing":
             return self.splicing.plot_clustermap(
                 sample_ids, feature_ids, linkage_method=linkage_method,
-                metric=metric, sample_colors=sample_colors, figsize=figsize)
+                metric=metric, sample_colors=sample_colors, figsize=figsize,
+                **kwargs)
 
     def plot_lavalamps(self, sample_subset=None, feature_subset=None,
                        expression_thresh=-np.inf):
