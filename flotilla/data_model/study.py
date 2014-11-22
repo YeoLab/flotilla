@@ -1246,7 +1246,7 @@ class Study(object):
 
     def plot_clustermap(self, sample_subset=None,
                               feature_subset='variant', data_type='expression',
-                              metric='euclidean', linkage_method='average',
+                              metric='euclidean', method='average',
                               figsize=None, **kwargs):
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
         import pdb; pdb.set_trace()
@@ -1257,12 +1257,12 @@ class Study(object):
 
         if data_type == "expression":
             return self.expression.plot_clustermap(
-                sample_ids, feature_ids, linkage_method=linkage_method,
+                sample_ids, feature_ids, method=method,
                 metric=metric, sample_colors=sample_colors, figsize=figsize,
                 **kwargs)
         elif data_type == "splicing":
             return self.splicing.plot_clustermap(
-                sample_ids, feature_ids, linkage_method=linkage_method,
+                sample_ids, feature_ids, method=method,
                 metric=metric, sample_colors=sample_colors, figsize=figsize,
                 **kwargs)
 
