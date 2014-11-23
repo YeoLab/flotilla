@@ -1388,6 +1388,7 @@ class BaseData(object):
 
         # Get a mask of what values are NA, then replace them because
         # clustering doesn't work if there's NAs
+        data = data.dropna(how='all', axis=1).dropna(how='all', axis=0)
         mask = data.isnull()
         data = data.fillna(data.mean())
 
@@ -1412,6 +1413,12 @@ class BaseData(object):
         if not featurewise:
             data = data.T
         corr = data.corr()
+        corr = corr.dropna(how='all', axis=0).dropna(how='all', axis=1)
+
+        # Get a mask of what values are NA, then replace them because
+        # clustering doesn't work if there's NAs
+        mask = corr.isnull()
+        corr = corr.fillna(data.mean())
 
         if featurewise:
             corr.index = corr.index.map(self.feature_renamer)
@@ -1423,10 +1430,6 @@ class BaseData(object):
         else:
             figsize = kwargs.pop('figsize', None)
 
-        # Get a mask of what values are NA, then replace them because
-        # clustering doesn't work if there's NAs
-        mask = corr.isnull()
-        corr = corr.fillna(data.mean())
         return sns.clustermap(corr, linewidth=0, col_colors=colors,
                               row_colors=colors, figsize=figsize,
                               method=method, metric=metric, mask=mask,
