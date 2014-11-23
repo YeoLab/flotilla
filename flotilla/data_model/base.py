@@ -1366,6 +1366,11 @@ class BaseData(object):
         if data is None:
             data = self._subset(self.data, sample_ids, feature_ids,
                                 require_min_samples=False)
+        # Get a mask of what values are NA, then replace them because
+        # clustering doesn't work if there's NAs
+        data = data.dropna(how='all', axis=1).dropna(how='all', axis=0)
+        mask = data.isnull()
+        data = data.fillna(data.mean())
 
         if sample_id_to_color is not None:
             sample_colors = [sample_id_to_color[x] for x in data.index]
@@ -1380,11 +1385,6 @@ class BaseData(object):
         else:
             figsize = kwargs.pop('figsize', None)
 
-        # Get a mask of what values are NA, then replace them because
-        # clustering doesn't work if there's NAs
-        data = data.dropna(how='all', axis=1).dropna(how='all', axis=0)
-        mask = data.isnull()
-        data = data.fillna(data.mean())
 
         return sns.clustermap(data, linewidth=0, col_colors=col_colors,
                               row_colors=row_colors, metric=metric,
