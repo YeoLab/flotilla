@@ -1285,7 +1285,7 @@ class Study(object):
 
     def plot_correlations(self, sample_subset=None, feature_subset=None,
                         data_type='expression', metric='euclidean',
-                        method='average', figsize=None,
+                        method='average', figsize=None, featurewise=False,
                         scale_fig_by_data=True, **kwargs):
         """Visualize clustered correlations of samples across features
 
@@ -1319,14 +1319,14 @@ class Study(object):
                 sample_ids=sample_ids, feature_ids=feature_ids,
                 sample_id_to_color=self.sample_id_to_color,
                 figsize=figsize, scale_fig_by_data=scale_fig_by_data,
-                metric=metric, method=method,
+                metric=metric, method=method, featurewise=featurewise,
                 **kwargs)
         elif data_type == "splicing":
             return self.splicing.plot_correlations(
                 sample_ids=sample_ids, feature_ids=feature_ids, method=method,
                 metric=metric, sample_id_to_color=self.sample_id_to_color,
                 figsize=figsize, scale_fig_by_data=scale_fig_by_data,
-                **kwargs)
+                featurewise=featurewise, **kwargs)
 
     def plot_lavalamps(self, sample_subset=None, feature_subset=None,
                        expression_thresh=-np.inf):
