@@ -1319,6 +1319,7 @@ class Study(object):
                 sample_ids=sample_ids, feature_ids=feature_ids,
                 sample_id_to_color=self.sample_id_to_color,
                 figsize=figsize, scale_fig_by_data=scale_fig_by_data,
+                metric=metric, method=method,
                 **kwargs)
         elif data_type == "splicing":
             return self.splicing.plot_correlations(
