@@ -8,4 +8,4 @@ See also
 """
 import flotilla
 study = flotilla.embark(flotilla._shalek2013)
-study.plot_graph(cov_cut=0.5)
+study.plot_graph(cov_std_cut=0.5)
