@@ -168,11 +168,11 @@ class DataFrameNMF(DataFrameReducerBase, decomposition.NMF):
         self._check_dataframe(X)
         self.X = X
         # notice this is fit_transform, not fit
-        super(decomposition.NMF, self).fit_transform(X)
+        reduced_space = super(decomposition.NMF, self).fit_transform(X)
         self.components_ = pd.DataFrame(self.components_,
                                         columns=self.X.columns).rename_axis(
             self.relabel_pcs, 0)
-        return self
+        return reduced_space
 
 
 class DataFrameICA(DataFrameReducerBase, decomposition.FastICA):
