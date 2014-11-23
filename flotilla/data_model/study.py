@@ -875,6 +875,8 @@ class Study(object):
             raise ValueError("All samples are True (or all samples are "
                              "False) or all are the same, cannot classify"
                              "when all samples are the same")
+        trait_data = pd.Series(trait_data, name=trait,
+                               index=self.metadata.data.index)
 
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
         feature_ids = self.feature_subset_to_feature_ids(data_type,
@@ -1244,40 +1246,89 @@ class Study(object):
         return percents
 
 
-    # def plot_clusteredheatmap(self, sample_subset=None,
-    # feature_subset='variant',
-    # data_type='expression', metric='euclidean',
-    # linkage_method='median', figsize=None):
-    # if data_type == 'expression':
-    # data = self.expression.data
-    #     elif data_type == 'splicing':
-    #         data = self.splicing.data
-    #     celltype_groups = data.groupby(
-    #         self.sample_id_to_phenotype, axis=0)
-    #
-    #     if sample_subset is not None:
-    #         # Only plotting one sample_subset
-    #         try:
-    #             sample_ids = set(celltype_groups.groups[sample_subset])
-    #         except KeyError:
-    #             sample_ids = self.sample_subset_to_sample_ids(sample_subset)
-    #     else:
-    #         # Plotting all the celltypes
-    #         sample_ids = data.index
-    #
-    #     sample_colors = [self.sample_id_to_color[x] for x in sample_ids]
-    #     feature_ids = self.feature_subset_to_feature_ids(data_type,
-    #                                                      feature_subset,
-    #                                                      rename=False)
-    #
-    #     if data_type == "expression":
-    #         return self.expression.plot_clusteredheatmap(
-    #             sample_ids, feature_ids, linkage_method=linkage_method,
-    #             metric=metric, sample_colors=sample_colors, figsize=figsize)
-    #     elif data_type == "splicing":
-    #         return self.splicing.plot_clusteredheatmap(
-    #             sample_ids, feature_ids, linkage_method=linkage_method,
-    #             metric=metric, sample_colors=sample_colors, figsize=figsize)
+    def plot_clustermap(self, sample_subset=None, feature_subset=None,
+                        data_type='expression', metric='euclidean',
+                        method='average', figsize=None,
+                        scale_fig_by_data=True, **kwargs):
+        """Visualize hierarchical relationships within samples and features
+
+        Parameters
+        ----------
+
+
+        Returns
+        -------
+
+
+        Raises
+        ------
+        """
+
+        if feature_subset is None:
+            feature_subset = self.default_feature_subset
+
+        sample_ids = self.sample_subset_to_sample_ids(sample_subset)
+        feature_ids = self.feature_subset_to_feature_ids(data_type,
+                                                         feature_subset,
+                                                         rename=False)
+
+        if data_type == "expression":
+            return self.expression.plot_clustermap(
+                sample_ids=sample_ids, feature_ids=feature_ids, method=method,
+                metric=metric, sample_id_to_color=self.sample_id_to_color,
+                figsize=figsize, scale_fig_by_data=scale_fig_by_data,
+                **kwargs)
+        elif data_type == "splicing":
+            return self.splicing.plot_clustermap(
+                sample_ids=sample_ids, feature_ids=feature_ids, method=method,
+                metric=metric, sample_id_to_color=self.sample_id_to_color,
+                figsize=figsize, scale_fig_by_data=scale_fig_by_data,
+                **kwargs)
+
+    def plot_correlations(self, sample_subset=None, feature_subset=None,
+                        data_type='expression', metric='euclidean',
+                        method='average', figsize=None, featurewise=False,
+                        scale_fig_by_data=True, **kwargs):
+        """Visualize clustered correlations of samples across features
+
+        Parameters
+        ----------
+
+
+        Returns
+        -------
+
+
+        Raises
+        ------
+
+        """
+
+        if feature_subset is None:
+            feature_subset = self.default_feature_subset
+
+        sample_ids = self.sample_subset_to_sample_ids(sample_subset)
+        feature_ids = self.feature_subset_to_feature_ids(data_type,
+                                                         feature_subset,
+                                                         rename=False)
+
+        if figsize is not None and scale_fig_by_data:
+            raise ValueError('If "scale_fig_by_data" is true, then cannot '
+                             'also specify "figsize"')
+
+        if data_type == "expression":
+            return self.expression.plot_correlations(
+                sample_ids=sample_ids, feature_ids=feature_ids,
+                sample_id_to_color=self.sample_id_to_color,
+                figsize=figsize, scale_fig_by_data=scale_fig_by_data,
+                metric=metric, method=method, featurewise=featurewise,
+                **kwargs)
+        elif data_type == "splicing":
+            return self.splicing.plot_correlations(
+                sample_ids=sample_ids, feature_ids=feature_ids, method=method,
+                metric=metric, sample_id_to_color=self.sample_id_to_color,
+                figsize=figsize, scale_fig_by_data=scale_fig_by_data,
+                featurewise=featurewise, **kwargs)
 
     def plot_lavalamps(self, sample_subset=None, feature_subset=None,
                        expression_thresh=-np.inf):
@@ -1607,4 +1658,5 @@ Study.interactive_lavalamp_pooled_inconsistent = \
     Interactive.interactive_lavalamp_pooled_inconsistent
 Study.interactive_choose_outliers = Interactive.interactive_choose_outliers
 Study.interactive_reset_outliers = Interactive.interactive_reset_outliers
-# Study.interactive_clusteredheatmap = Interactive.interactive_clusteredheatmap
+Study.interactive_clustermap = Interactive.interactive_clustermap
+Study.interactive_correlations = Interactive.interactive_correlations
