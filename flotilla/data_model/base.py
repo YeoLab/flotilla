@@ -1402,10 +1402,13 @@ class BaseData(object):
         else:
             colors = None
 
+        if not featurewise:
+            data = data.T
+        corr = data.corr()
+
         if featurewise:
-            corr = data.corr()
-        else:
-            corr = data.corr()
+            corr.index = corr.index.map(self.feature_renamer)
+            corr.columns = corr.columns.map(self.feature_renamer)
 
         if scale_fig_by_data:
             figsize = self._figsizer(data.shape)
