@@ -2,11 +2,13 @@
 Named `ipython_interact.py` rather than just `interact.py` to differentiate
 between IPython interactive visualizations vs D3 interactive visualizations.
 """
+import os
 import sys
 import warnings
 
 from IPython.html.widgets import interact, TextWidget, ButtonWidget
 import matplotlib.pyplot as plt
+
 
 # from ..compute.predict import default_classifier
 from flotilla.util import link_to_list
@@ -122,12 +124,12 @@ class Interactive(object):
                               "features.".format(feature_subset, data_type))
 
             return self.plot_pca(sample_subset=sample_subset,
-                                data_type=data_type,
-                                featurewise=featurewise,
-                                x_pc=x_pc, y_pc=y_pc,
-                                show_point_labels=show_point_labels,
-                                feature_subset=feature_subset,
-                                plot_violins=plot_violins)
+                                 data_type=data_type,
+                                 featurewise=featurewise,
+                                 x_pc=x_pc, y_pc=y_pc,
+                                 show_point_labels=show_point_labels,
+                                 feature_subset=feature_subset,
+                                 plot_violins=plot_violins)
 
         # self.plot_study_sample_legend()
 
@@ -138,35 +140,33 @@ class Interactive(object):
             sample_subsets = self.default_sample_subsets
 
         gui = interact(do_interact,
-                        data_type=data_types,
-                        sample_subset=sample_subsets,
-                        feature_subset=feature_subsets + ['custom'],
-                        featurewise=featurewise,
-                        x_pc=x_pc, y_pc=y_pc,
-                        show_point_labels=show_point_labels,
-                        list_link=list_link, plot_violins=plot_violins)
+                       data_type=data_types,
+                       sample_subset=sample_subsets,
+                       feature_subset=feature_subsets + ['custom'],
+                       featurewise=featurewise,
+                       x_pc=x_pc, y_pc=y_pc,
+                       show_point_labels=show_point_labels,
+                       list_link=list_link, plot_violins=plot_violins)
 
         def save(w):
             # Make the directory if it's not already there
+            filename, extension = os.path.splitext(savefile)
             self.maybe_make_directory(savefile.value)
-            # f = plt.gcf()
-            # print 'asdf'
-            # import pdb ;pdb.set_trace()
+
             gui.widget.result.reduced_fig.savefig(savefile.value,
-                                                  format="pdf")
+                                                  format=extension)
 
             # add "violins" after the provided filename, but before the
             # extension
-            violins_file = "_".join([".".join(savefile.value.split('.')[:-1]),
-                                     'violins']) + "." + \
-                           savefile.value.split('.')[-1]
+            violins_file = '{}.{}'.format("_".join([filename, 'violins']),
+                                          extension)
             try:
                 gui.widget.result.violins_fig.savefig(violins_file,
-                                                      format="pdf")
+                                                      format=extension)
             except AttributeError:
                 pass
 
-        savefile = TextWidget(description='filename')
+        savefile = TextWidget(description='savefile')
         save_widget = ButtonWidget(description='save')
         gui.widget.children = list(gui.widget.children) + \
                               [savefile, save_widget]
@@ -492,10 +492,11 @@ class Interactive(object):
                                     featurewise=False,
                                     x_pc=(1, 3), y_pc=(1, 3),
                                     show_point_labels=False,
-                                    kernel=['rbf','linear','poly','sigmoid'],
+                                    kernel=['rbf', 'linear', 'poly',
+                                            'sigmoid'],
                                     gamma=(0, 25),
                                     nu=(0.1, 9.9),
-                                    ):
+    ):
 
         def do_interact(data_type='expression',
                         sample_subset=self.default_sample_subset,
@@ -505,7 +506,7 @@ class Interactive(object):
                         kernel='rbf',
                         gamma=16,
                         nu=.2,
-                        ):
+        ):
             print "transforming input gamma by 2^-(input): %f" % gamma
             gamma = 2 ** -float(gamma)
             print "transforming input nu by input/10: %f" % nu
@@ -525,15 +526,16 @@ class Interactive(object):
                               "this data type ('{}'). Falling back on all "
                               "features.".format(feature_subset, data_type))
 
-            reducer, outlier_detector = self.detect_outliers(data_type=data_type,
-                                                             sample_subset=sample_subset,
-                                                             feature_subset=feature_subset,
-                                                             reducer=None,
-                                                             reducer_kwargs=None,
-                                                             outlier_detection_method=None,
-                                                             outlier_detection_method_kwargs={'gamma': gamma,
-                                                                                              'nu': nu,
-                                                                                              'kernel': kernel})
+            reducer, outlier_detector = self.detect_outliers(
+                data_type=data_type,
+                sample_subset=sample_subset,
+                feature_subset=feature_subset,
+                reducer=None,
+                reducer_kwargs=None,
+                outlier_detection_method=None,
+                outlier_detection_method_kwargs={'gamma': gamma,
+                                                 'nu': nu,
+                                                 'kernel': kernel})
             if data_type == "expression":
                 obj = self.expression
             if data_type == "splicing":
@@ -586,56 +588,63 @@ class Interactive(object):
         interact(do_interact, **outlier_columns)
 
 
-        # @staticmethod
-        # def interactive_clusteredheatmap(self):
-        # def do_interact(data_type='expression',
-        # sample_subset=self.default_sample_subsets,
-        # feature_subset=self.default_feature_subset,
-        #                     metric='euclidean',
-        #                     linkage_method='median',
-        #                     list_link='',
-        #                     savefile='data/last.clusteredheatmap.pdf'):
-        #
-        #         for k, v in locals().iteritems():
-        #             if k == 'self':
-        #                 continue
-        #             sys.stdout.write('{} : {}\n'.format(k, v))
-        #
-        #         if feature_subset != "custom" and list_link != "":
-        #             raise ValueError(
-        #                 "set feature_subset to \"custom\" to use list_link")
-        #
-        #         if feature_subset == "custom" and list_link == "":
-        #             raise ValueError("use a custom list name please")
-        #
-        #         if feature_subset == 'custom':
-        #             feature_subset = list_link
-        #         elif feature_subset not in self.default_feature_subsets[data_type]:
-        #             warnings.warn("This feature_subset ('{}') is not available in "
-        #                           "this data type ('{}'). Falling back on all "
-        #                           "features.".format(feature_subset, data_type))
-        #
-        #         self.plot_clusteredheatmap(sample_subset=sample_subset,
-        #                                    feature_subset=feature_subset,
-        #                                    data_type=data_type,
-        #                                    metric=metric,
-        #                                    linkage_method=linkage_method)
-        #         plt.tight_layout()
-        #         if savefile != '':
-        #             # Make the directory if it's not already there
-        #             self.maybe_make_directory(savefile)
-        #             f = plt.gcf()
-        #             f.savefig(savefile)
-        #
-        #     feature_subsets = Interactive.get_feature_subsets(self,
-        #                                                       ['expression',
-        #                                                        'splicing'])
-        #
-        #     linkage_method = ('single', 'median', 'centroid')
-        #     metric = ('euclidean', 'seuclidean')
-        #     interact(do_interact,
-        #              data_type=('expression', 'splicing'),
-        #              sample_subset=self.default_sample_subsets,
-        #              feature_subset=feature_subsets,
-        #              metric=metric,
-        #              linkage_method=linkage_method)
+    @staticmethod
+    def interactive_clustermap(self):
+        def do_interact(data_type='expression',
+                        sample_subset=self.default_sample_subsets,
+                        feature_subset=self.default_feature_subset,
+                        metric='euclidean',
+                        method='median',
+                        list_link='',
+                        savefile='data/last.clustermap.pdf',
+                        scale_fig_by_data=True,
+                        fig_width='', fig_height=''):
+
+            for k, v in locals().iteritems():
+                if k == 'self':
+                    continue
+                sys.stdout.write('{} : {}\n'.format(k, v))
+
+            if feature_subset != "custom" and list_link != "":
+                raise ValueError(
+                    "set feature_subset to \"custom\" to use list_link")
+
+            if feature_subset == "custom" and list_link == "":
+                raise ValueError("use a custom list name please")
+
+            if feature_subset == 'custom':
+                feature_subset = list_link
+            elif feature_subset not in self.default_feature_subsets[data_type]:
+                warnings.warn("This feature_subset ('{}') is not available in "
+                              "this data type ('{}'). Falling back on all "
+                              "features.".format(feature_subset, data_type))
+            return self.plot_clusteredheatmap(
+                sample_subset=sample_subset, feature_subset=feature_subset,
+                data_type=data_type, metric=metric, method=method,
+                scale_fig_by_data=scale_fig_by_data)
+
+
+        feature_subsets = Interactive.get_feature_subsets(self,
+                                                          ['expression',
+                                                           'splicing'])
+        method = ('single', 'average', 'complete', 'ward', 'weighted')
+        metric = ('euclidean', 'seuclidean', 'sqeuclidean', 'chebyshev',
+                  'cosine', 'cityblock', 'mahalonobis', 'minowski', 'jaccard')
+        gui = interact(do_interact,
+                       data_type=('expression', 'splicing'),
+                       sample_subset=self.default_sample_subsets,
+                       feature_subset=feature_subsets,
+                       metric=metric,
+                       method=method)
+
+        def save(w):
+            filename, extension = os.path.splitext(savefile.value)
+            self.maybe_make_directory(savefile.value)
+            gui.widget.result.savefig(savefile.value, format=extension)
+
+        savefile = TextWidget(description='savefile')
+        save_widget = ButtonWidget(description='save')
+        gui.widget.children = list(gui.widget.children) + \
+                              [savefile, save_widget]
+        save_widget.on_click(save)
+        return gui
