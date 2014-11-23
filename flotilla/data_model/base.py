@@ -1382,6 +1382,7 @@ class BaseData(object):
 
         if scale_fig_by_data:
             figsize = self._figsizer(data.shape)
+            kwargs.pop('figsize')
         else:
             figsize = kwargs.pop('figsize', None)
         return sns.clustermap(data, linewidth=0, col_colors=col_colors,
@@ -1400,6 +1401,7 @@ class BaseData(object):
 
         if scale_fig_by_data:
             figsize = self._figsizer(data.shape)
+            kwargs.pop('figsize')
         else:
             figsize = kwargs.pop('figsize', None)
         return sns.clustermap(corr, linewidth=0, col_colors=colors,
