@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 
 
 
+
 # from ..compute.predict import default_classifier
 from flotilla.util import link_to_list
 from ..visualize.color import red
@@ -275,8 +276,7 @@ class Interactive(object):
                                categorical_variables=None,
                                predictor_types=None,
                                score_coefficient=(0.1, 20),
-                               draw_labels=False,
-                               savefile='figures/last.clf.pdf'):
+                               draw_labels=False):
 
         def do_interact(data_type,
                         sample_subset,
