@@ -1,4 +1,4 @@
-v0.2.3 (Month 00th, 2014)
+v0.2.4 (November 23rd, 2014)
 ---------------------------
 
 This is a patch release, with non-breaking changes from v0.2.3.
