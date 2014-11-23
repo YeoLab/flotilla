@@ -76,6 +76,7 @@
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">What&#8217;s new in the package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#v0-2-4-november-23rd-2014">v0.2.4 (November 23rd, 2014)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#v0-2-3-november-17th-2014">v0.2.3 (November 17th, 2014)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#v0-2-2-november-7th-2014">v0.2.2 (November 7th, 2014)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#v0-2-1-november-6th-2014">v0.2.1 (November 6th, 2014)</a></li>
@@ -113,9 +114,14 @@
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
 <li><a class="reference internal" href="#">What&#8217;s new in the package</a><ul>
+<li><a class="reference internal" href="#v0-2-4-november-23rd-2014">v0.2.4 (November 23rd, 2014)</a><ul>
+<li><a class="reference internal" href="#plotting-functions">Plotting functions</a></li>
+<li><a class="reference internal" href="#api-changes">API changes</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#v0-2-3-november-17th-2014">v0.2.3 (November 17th, 2014)</a><ul>
 <li><a class="reference internal" href="#compute-functions">Compute functions</a></li>
-<li><a class="reference internal" href="#plotting-functions">Plotting functions</a></li>
+<li><a class="reference internal" href="#id1">Plotting functions</a></li>
 <li><a class="reference internal" href="#bug-fixes">Bug Fixes</a></li>
 <li><a class="reference internal" href="#documentation">Documentation</a></li>
 <li><a class="reference internal" href="#other">Other</a></li>
@@ -126,12 +132,12 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#v0-2-1-november-6th-2014">v0.2.1 (November 6th, 2014)</a><ul>
-<li><a class="reference internal" href="#id1">Documentation updates</a></li>
+<li><a class="reference internal" href="#id2">Documentation updates</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a><ul>
 <li><a class="reference internal" href="#new-features">New features</a></li>
-<li><a class="reference internal" href="#api-changes">API changes</a></li>
+<li><a class="reference internal" href="#id3">API changes</a></li>
 <li><a class="reference internal" href="#other-changes">Other Changes</a></li>
 </ul>
 </li>
@@ -175,6 +181,26 @@
   <div class="section" id="what-s-new-in-the-package">
 <span id="whatsnew"></span><h1>What&#8217;s new in the package<a class="headerlink" href="#what-s-new-in-the-package" title="Permalink to this headline">¶</a></h1>
 <p>A catalog of new features, improvements, and bug-fixes in each release.</p>
+<div class="section" id="v0-2-4-november-23rd-2014">
+<h2>v0.2.4 (November 23rd, 2014)<a class="headerlink" href="#v0-2-4-november-23rd-2014" title="Permalink to this headline">¶</a></h2>
+<p>This is a patch release, with non-breaking changes from v0.2.3.</p>
+<div class="section" id="plotting-functions">
+<h3>Plotting functions<a class="headerlink" href="#plotting-functions" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>New clustered heatmap and <tt class="xref py py-func docutils literal"><span class="pre">data_model.Study.plot_clustermap()</span></tt> and
+<tt class="xref py py-func docutils literal"><span class="pre">data_model.Study.plot_correlations()</span></tt></li>
+</ul>
+</div>
+<div class="section" id="api-changes">
+<h3>API changes<a class="headerlink" href="#api-changes" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><tt class="xref py py-func docutils literal"><span class="pre">data_model.Study.save()</span></tt> now saves relative instead of absolute
+paths, which makes for more portable <tt class="docutils literal"><span class="pre">datapackages</span></tt></li>
+<li>Underlying code for <tt class="xref py py-class docutils literal"><span class="pre">visualize.DecompositionViz</span></tt> and
+<tt class="xref py py-class docutils literal"><span class="pre">visualize.ClassifierViz</span></tt> now plots via <tt class="docutils literal"><span class="pre">plot()</span></tt></li>
+</ul>
+</div>
+</div>
 <div class="section" id="v0-2-3-november-17th-2014">
 <h2>v0.2.3 (November 17th, 2014)<a class="headerlink" href="#v0-2-3-november-17th-2014" title="Permalink to this headline">¶</a></h2>
 <p>This is a patch release, with non-breaking changes from v0.2.2.</p>
@@ -186,8 +212,8 @@
 <tt class="xref py py-func docutils literal"><span class="pre">Study.interactive_reset_outliers()</span></tt></li>
 </ul>
 </div>
-<div class="section" id="plotting-functions">
-<h3>Plotting functions<a class="headerlink" href="#plotting-functions" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id1">
+<h3>Plotting functions<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Add <a class="reference internal" href="flotilla.data_model.study.html#flotilla.data_model.study.Study" title="flotilla.data_model.study.Study"><tt class="xref py py-class docutils literal"><span class="pre">Study</span></tt></a>-level NMF space transitions/positions</li>
 </ul>
@@ -237,8 +263,8 @@ data is truly a probability distribution (non-negative, sums to 1)</li>
 <div class="section" id="v0-2-1-november-6th-2014">
 <h2>v0.2.1 (November 6th, 2014)<a class="headerlink" href="#v0-2-1-november-6th-2014" title="Permalink to this headline">¶</a></h2>
 <p>This is a patch release, with non-breaking changes from v0.2.0.</p>
-<div class="section" id="id1">
-<h3>Documentation updates<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id2">
+<h3>Documentation updates<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Update <a class="reference external" href="../gallery">gallery</a></li>
 <li>Update tutorial for <a class="reference external" href="../tutorial/addvanced_study_making.ipynb">advanced study making</a></li>
@@ -273,8 +299,8 @@ which were detected in at least three cells, since
 </li>
 </ul>
 </div>
-<div class="section" id="api-changes">
-<h3>API changes<a class="headerlink" href="#api-changes" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id3">
+<h3>API changes<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>The attribute <tt class="docutils literal"><span class="pre">data</span></tt> in <a class="reference internal" href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData" title="flotilla.data_model.base.BaseData"><tt class="xref py py-class docutils literal"><span class="pre">BaseData</span></tt></a> (i.e.
 <tt class="xref py py-attr docutils literal"><span class="pre">BaseData.data</span></tt>) now contains <strong>all</strong> the data, including pooled,
