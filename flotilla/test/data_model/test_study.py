@@ -11,30 +11,24 @@ import pandas.util.testing as pdt
 import pytest
 import semantic_version
 
-from flotilla.datapackage import get_resource_from_name
+from flotilla.datapackage import name_to_resource
 
 
-def name_to_resource(datapackage, name):
-    """
-    Given the name of a resource, search through a datapackage's "resource"
-    list and return that dictionary
-    """
-    for resource in datapackage['resources']:
-        if resource['name'] == name:
-            return resource
-    raise ValueError('No resource named {} in this datapackage'.format(name))
+@pytest.fixture
+def toy_study(shalek2013_data):
+    from flotilla import Study
 
+    return Study(sample_metadata=shalek2013_data.metadata,
+                 version='0.1.0',
+                 expression_data=shalek2013_data.expression,
+                 splicing_data=shalek2013_data.splicing)
+
+
+@pytest.fixture(params=['expression', 'splicing'])
+def data_type(request):
+    return request.param
 
 class TestStudy(object):
-    @pytest.fixture
-    def toy_study(self, shalek2013_data):
-        from flotilla import Study
-
-        return Study(sample_metadata=shalek2013_data.metadata,
-                     version='0.1.0',
-                     expression_data=shalek2013_data.expression,
-                     splicing_data=shalek2013_data.splicing)
-
     def test_toy_init(self, toy_study, shalek2013_data):
         from flotilla.data_model import ExpressionData, SplicingData
 
@@ -58,15 +52,38 @@ class TestStudy(object):
 
         flotilla.embark(shalek2013_datapackage_path, load_species_data=False)
 
-    def test_plot_pca(self, shalek2013, feature_subset):
-        shalek2013.plot_pca(feature_subset=feature_subset)
+    def test_plot_pca(self, shalek2013, feature_subset, data_type,
+                      featurewise, sample_subset):
+        shalek2013.plot_pca(feature_subset=feature_subset, data_type=data_type,
+                            featurewise=featurewise, sample_subset=sample_subset)
 
-    def test_plot_graph(self, shalek2013):
-        shalek2013.plot_graph(feature_of_interest=None)
+    def test_plot_graph(self, shalek2013, data_type, feature_subset,
+                        sample_subset):
+        shalek2013.plot_graph(feature_of_interest=None, data_type=data_type,
+                              feature_subset=feature_subset,
+                              sample_subset=sample_subset)
         plt.close('all')
 
-    def test_plot_classifier(self, shalek2013):
-        shalek2013.plot_classifier('pooled')
+    def test_plot_classifier(self, shalek2013, data_type, feature_subset,
+                             sample_subset):
+        shalek2013.plot_classifier('pooled', data_type=data_type,
+                                   feature_subset=feature_subset,
+                                   sample_subset=sample_subset)
+        plt.close('all')
+
+    def test_plot_clustermap(self, shalek2013, data_type, feature_subset,
+                             sample_subset):
+        shalek2013.plot_clustermap(data_type=data_type,
+                                   feature_subset=feature_subset,
+                                   sample_subset=sample_subset)
+        plt.close('all')
+
+    def test_plot_correlations(self, shalek2013, data_type, feature_subset,
+                               featurewise, sample_subset):
+        shalek2013.plot_correlations(data_type=data_type,
+                                     feature_subset=feature_subset,
+                                     featurewise=featurewise,
+                                     sample_subset=sample_subset)
         plt.close('all')
 
     @pytest.fixture(params=[None, 'pooled_col', 'phenotype_col'])
@@ -131,7 +148,7 @@ class TestStudy(object):
     def test_save(self, shalek2013_datapackage_path, shalek2013_datapackage,
                   tmpdir, monkeypatch):
         import flotilla
-        from flotilla.datapackage import get_resource_from_name
+        from flotilla.datapackage import name_to_resource
 
         study = flotilla.embark(shalek2013_datapackage_path,
                                 load_species_data=False)
@@ -168,7 +185,7 @@ class TestStudy(object):
 
         # Add auto-generated attributes into the true datapackage
         for name, keys in keys_from_study.iteritems():
-            resource = get_resource_from_name(true_datapackage, name)
+            resource = name_to_resource(true_datapackage, name)
             for key in keys:
                 if 'feature' in name:
                     command = 'study.{}.feature_{}'.format(name.rstrip(
@@ -178,7 +195,7 @@ class TestStudy(object):
                 monkeypatch.setitem(resource, key, eval(command))
 
         for name in resource_names:
-            resource = get_resource_from_name(test_datapackage, name)
+            resource = name_to_resource(test_datapackage, name)
             assert resource['path'] == '{}.csv.gz'.format(name)
 
         version = semantic_version.Version(study.version)
@@ -192,7 +209,7 @@ class TestStudy(object):
 
         for name in resource_names:
             for datapackage in datapackages:
-                resource = get_resource_from_name(datapackage, name)
+                resource = name_to_resource(datapackage, name)
                 for key in resource_keys_to_ignore:
                     monkeypatch.delitem(resource, key, raising=False)
 

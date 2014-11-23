@@ -49,18 +49,17 @@ class TestDataFrameNMF():
                                 random_state=RANDOM_STATE)
 
         true_nmf = NMF(n_components=n_components, random_state=RANDOM_STATE)
-        true_nmf.fit(df_nonneg.values)
-        pc_names = ['pc_{}'.format(i+1) for i in
+        true_nmf.reduced_space = true_nmf.fit_transform(df_nonneg.values)
+        pc_names = ['pc_{}'.format(i + 1) for i in
                     range(true_nmf.components_.shape[0])]
-        true_nmf.components_ = pd.DataFrame(true_nmf.components_,
-                                            index=pc_names,
-                                            columns=df_nonneg.columns)
-        true_nmf.reduced_space = true_nmf.transform(df_nonneg.values)
         true_nmf.reduced_space = pd.DataFrame(true_nmf.reduced_space,
                                               index=df_nonneg.index,
                                               columns=pc_names)
+        true_nmf.components_ = pd.DataFrame(true_nmf.components_,
+                                            index=pc_names,
+                                            columns=df_nonneg.columns)
 
-        npt.assert_array_equal(test_nmf.X, df_nonneg.values)
+        npt.assert_almost_equal(test_nmf.X, df_nonneg.values, decimal=4)
         pdt.assert_frame_equal(test_nmf.components_,
                                true_nmf.components_)
         pdt.assert_frame_equal(test_nmf.reduced_space,

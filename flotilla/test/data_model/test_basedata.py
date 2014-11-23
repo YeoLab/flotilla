@@ -1,36 +1,5 @@
 import numpy.testing as npt
 import pandas.util.testing as pdt
-import pytest
-
-@pytest.fixture
-def base_data(shalek2013_data):
-    from flotilla.data_model.base import BaseData
-    return BaseData(shalek2013_data.expression)
-
-@pytest.fixture(params=[None, 'half', 'all'])
-def sample_ids(request, base_data):
-    if request.param is None:
-        return request.param
-    elif request.param == 'some':
-        half = base_data.data.shape[0] / 2
-        return base_data.data.index[:half]
-    elif request.param == 'all':
-        return base_data.data.index
-
-
-@pytest.fixture(params=[None, 'half', 'all'])
-def feature_ids(request, base_data):
-    if request.param is None:
-        return request.param
-    elif request.param == 'some':
-        half = base_data.data.shape[1] / 2
-        return base_data.data.columns[:half]
-    elif request.param == 'all':
-        return base_data.data.columns
-
-@pytest.fixture(params=[True, False])
-def standardize(request):
-    return request.param
 
 
 class TestBaseData:
