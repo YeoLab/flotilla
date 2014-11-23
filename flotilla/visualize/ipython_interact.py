@@ -16,6 +16,7 @@ import matplotlib.pyplot as plt
 
 
 
+
 # from ..compute.predict import default_classifier
 from flotilla.util import link_to_list
 from ..visualize.color import red
@@ -168,7 +169,7 @@ class Interactive(object):
                                           extension)
             try:
                 gui.widget.result.violins_fig.savefig(violins_file,
-                                                      format=extension)
+                                                      format=extension.lstrip('.'))
             except AttributeError:
                 pass
 
@@ -260,7 +261,7 @@ class Interactive(object):
             # Make the directory if it's not already there
             filename, extension = os.path.splitext(savefile.value)
             self.maybe_make_directory(savefile.value)
-            plt.gcf().savefig(savefile, format=extension)
+            plt.gcf().savefig(savefile, format=extension.lstrip('.'))
 
         savefile = TextWidget(description='savefile')
         save_widget = ButtonWidget(description='save')
@@ -339,7 +340,7 @@ class Interactive(object):
                                           extension)
             try:
                 gui.widget.result.violins_fig.savefig(violins_file,
-                                                      format=extension)
+                                                      format=extension.lstrip('.'))
             except AttributeError:
                 pass
 
@@ -468,7 +469,7 @@ class Interactive(object):
         def save(w):
             filename, extension = os.path.splitext(savefile.value)
             self.maybe_make_directory(savefile.value)
-            gui.widget.result.savefig(savefile.value, format=extension)
+            gui.widget.result.savefig(savefile.value, format=extension.lstrip('.'))
 
         savefile = TextWidget(description='savefile',
                               value='figures/clustermap.pdf')
@@ -524,7 +525,7 @@ class Interactive(object):
         def save(w):
             filename, extension = os.path.splitext(savefile.value)
             self.maybe_make_directory(savefile.value)
-            gui.widget.result.savefig(savefile.value, format=extension)
+            gui.widget.result.savefig(savefile.value, format=extension.lstrip('.'))
 
         savefile = TextWidget(description='savefile',
                               value='figures/clustermap.pdf')
@@ -689,7 +690,7 @@ class Interactive(object):
         def save(w):
             filename, extension = os.path.splitext(savefile.value)
             self.maybe_make_directory(savefile.value)
-            gui.widget.result.savefig(savefile.value, format=extension)
+            gui.widget.result.savefig(savefile.value, format=extension.lstrip('.'))
 
         savefile = TextWidget(description='savefile',
                               value='figures/clustermap.pdf')
@@ -750,7 +751,7 @@ class Interactive(object):
         def save(w):
             filename, extension = os.path.splitext(savefile.value)
             self.maybe_make_directory(savefile.value)
-            gui.widget.result.savefig(savefile.value, format=extension)
+            gui.widget.result.savefig(savefile.value, format=extension.lstrip('.'))
 
         savefile = TextWidget(description='savefile',
                               value='figures/correlations.pdf')
