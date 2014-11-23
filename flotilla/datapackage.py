@@ -187,7 +187,9 @@ def make_feature_datapackage():
             ]}
 
 
-def get_resource_from_name(datapackage, name):
+def name_to_resource(datapackage, name):
+    """Get resource with specified name in the datapackage"""
     for resource in datapackage['resources']:
         if resource['name'] == name:
             return resource
+    raise ValueError('No resource named {} in this datapackage'.format(name))
