@@ -1248,6 +1248,19 @@ class Study(object):
                         data_type='expression', metric='euclidean',
                         method='average', figsize=None,
                         scale_fig_by_data=True, **kwargs):
+        """Visualize hierarchical relationships within samples and features
+
+        Parameters
+        ----------
+
+
+        Returns
+        -------
+
+
+        Raises
+        ------
+        """
 
         if feature_subset is None:
             feature_subset = self.default_feature_subset
@@ -1274,6 +1287,20 @@ class Study(object):
                         data_type='expression', metric='euclidean',
                         method='average', figsize=None,
                         scale_fig_by_data=True, **kwargs):
+        """Visualize clustered correlations of samples across features
+
+        Parameters
+        ----------
+
+
+        Returns
+        -------
+
+
+        Raises
+        ------
+
+        """
 
         if feature_subset is None:
             feature_subset = self.default_feature_subset
@@ -1628,4 +1655,5 @@ Study.interactive_lavalamp_pooled_inconsistent = \
     Interactive.interactive_lavalamp_pooled_inconsistent
 Study.interactive_choose_outliers = Interactive.interactive_choose_outliers
 Study.interactive_reset_outliers = Interactive.interactive_reset_outliers
-# Study.interactive_clusteredheatmap = Interactive.interactive_clusteredheatmap
+Study.interactive_clustermap = Interactive.interactive_clustermap
+Study.interactive_correlations = Interactive.interactive_correlations
