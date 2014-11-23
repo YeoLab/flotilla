@@ -9,4 +9,4 @@ See also
 """
 import flotilla
 study = flotilla.embark(flotilla._shalek2013)
-study.plot_classifier('maturity: immature')
+study.plot_classifier('phenotype: Immature BDMC')
