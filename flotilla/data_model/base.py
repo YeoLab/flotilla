@@ -1351,6 +1351,13 @@ class BaseData(object):
                                               for i in x.index]
                 simple_twoway_scatter(x, y, joint_kws=joint_kws, **kwargs)
 
+    @staticmethod
+    def _figsizer(shape, multiplier=0.5):
+        """Scale a heatmap figure based on the dataframe shape"""
+        return reversed(map(lambda x: min(x * multiplier, 40),
+                            shape))
+
+
     def plot_clustermap(self, sample_ids=None, feature_ids=None, data=None,
                         feature_colors=None, sample_id_to_color=None,
                         featurewise=False, metric='euclidean',
@@ -1375,11 +1382,12 @@ class BaseData(object):
             # yticklabels = data.index
             data.columns = data.columns.map(self.feature_renamer)
 
+        figsize = kwargs.pop('figsize', self._figsizer(data.shape))
+
         # import pdb; pdb.set_trace()set_trace
         return sns.clustermap(data, linewidth=0, col_colors=col_colors,
                               row_colors=row_colors, metric=metric,
-                              method=method, **kwargs)
-
+                              method=method, figsize=figsize, **kwargs)
 
     def plot_correlations(self, sample_ids=None, feature_ids=None, data=None,
                           featurewise=False, colors=None, metric='euclidean',
@@ -1391,7 +1399,7 @@ class BaseData(object):
         else:
             corr = data.corr()
 
-        figsize = kwargs.pop((40, 40))
+        figsize = kwargs.pop('figsize', self.figsizer(corr.shape))
 
         return sns.clustermap(corr, linewidth=0, col_colors=colors,
                               row_colors=colors, figsize=figsize,
