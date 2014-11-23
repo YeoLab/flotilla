@@ -52,38 +52,24 @@ class TestStudy(object):
 
         flotilla.embark(shalek2013_datapackage_path, load_species_data=False)
 
-    def test_plot_pca(self, shalek2013, feature_subset, data_type,
-                      featurewise, sample_subset):
-        shalek2013.plot_pca(feature_subset=feature_subset, data_type=data_type,
-                            featurewise=featurewise, sample_subset=sample_subset)
+    def test_plot_pca(self, shalek2013, data_type):
+        shalek2013.plot_pca(data_type=data_type)
 
-    def test_plot_graph(self, shalek2013, data_type, feature_subset,
-                        sample_subset):
-        shalek2013.plot_graph(feature_of_interest=None, data_type=data_type,
-                              feature_subset=feature_subset,
-                              sample_subset=sample_subset)
+    def test_plot_graph(self, shalek2013):
+        shalek2013.plot_graph(feature_of_interest=None)
         plt.close('all')
 
-    def test_plot_classifier(self, shalek2013, data_type, feature_subset,
-                             sample_subset):
-        shalek2013.plot_classifier('pooled', data_type=data_type,
-                                   feature_subset=feature_subset,
-                                   sample_subset=sample_subset)
+    def test_plot_classifier(self, shalek2013, data_type):
+        shalek2013.plot_classifier('pooled', data_type=data_type)
         plt.close('all')
 
-    def test_plot_clustermap(self, shalek2013, data_type, feature_subset,
-                             sample_subset):
-        shalek2013.plot_clustermap(data_type=data_type,
-                                   feature_subset=feature_subset,
-                                   sample_subset=sample_subset)
+    def test_plot_clustermap(self, shalek2013, data_type):
+        shalek2013.plot_clustermap(data_type=data_type)
         plt.close('all')
 
-    def test_plot_correlations(self, shalek2013, data_type, feature_subset,
-                               featurewise, sample_subset):
+    def test_plot_correlations(self, shalek2013, data_type, featurewise):
         shalek2013.plot_correlations(data_type=data_type,
-                                     feature_subset=feature_subset,
-                                     featurewise=featurewise,
-                                     sample_subset=sample_subset)
+                                     featurewise=featurewise)
         plt.close('all')
 
     @pytest.fixture(params=[None, 'pooled_col', 'phenotype_col'])
