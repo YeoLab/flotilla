@@ -99,34 +99,34 @@ class TestStudy(object):
     def datapackage_dir(self, shalek2013_datapackage_path):
         return os.path.dirname(shalek2013_datapackage_path)
 
-    def test_from_datapackage(self, datapackage, datapackage_dir):
-        import flotilla
-
-        study = flotilla.Study.from_datapackage(datapackage, datapackage_dir,
-                                                load_species_data=False)
-
-        metadata_resource = get_resource_from_name(datapackage, 'metadata')
-        expression_resource = get_resource_from_name(datapackage,
-                                                     'expression')
-        splicing_resource = get_resource_from_name(datapackage, 'splicing')
-
-        phenotype_col = 'phenotype' if 'phenotype_col' \
-                                       not in metadata_resource else \
-        metadata_resource['phenotype_col']
-        pooled_col = 'pooled' if 'pooled_col' not in metadata_resource else \
-            metadata_resource['pooled_col']
-        expression_feature_rename_col = None if \
-            'feature_rename_col' not in expression_resource \
-            else expression_resource['feature_rename_col']
-        splicing_feature_rename_col = 'gene_name' if \
-            'feature_rename_col' not in splicing_resource \
-            else splicing_resource['feature_rename_col']
-
-        assert study.metadata.phenotype_col == phenotype_col
-        assert study.metadata.pooled_col == pooled_col
-        assert study.expression.feature_rename_col \
-               == expression_feature_rename_col
-        assert study.splicing.feature_rename_col == splicing_feature_rename_col
+    # def test_from_datapackage(self, datapackage, datapackage_dir):
+    #     import flotilla
+    #
+    #     study = flotilla.Study.from_datapackage(datapackage, datapackage_dir,
+    #                                             load_species_data=False)
+    #
+    #     metadata_resource = get_resource_from_name(datapackage, 'metadata')
+    #     expression_resource = get_resource_from_name(datapackage,
+    #                                                  'expression')
+    #     splicing_resource = get_resource_from_name(datapackage, 'splicing')
+    #
+    #     phenotype_col = 'phenotype' if 'phenotype_col' \
+    #                                    not in metadata_resource else \
+    #     metadata_resource['phenotype_col']
+    #     pooled_col = 'pooled' if 'pooled_col' not in metadata_resource else \
+    #         metadata_resource['pooled_col']
+    #     expression_feature_rename_col = None if \
+    #         'feature_rename_col' not in expression_resource \
+    #         else expression_resource['feature_rename_col']
+    #     splicing_feature_rename_col = 'gene_name' if \
+    #         'feature_rename_col' not in splicing_resource \
+    #         else splicing_resource['feature_rename_col']
+    #
+    #     assert study.metadata.phenotype_col == phenotype_col
+    #     assert study.metadata.pooled_col == pooled_col
+    #     assert study.expression.feature_rename_col \
+    #            == expression_feature_rename_col
+    #     assert study.splicing.feature_rename_col == splicing_feature_rename_col
 
     def test_save(self, shalek2013_datapackage_path, shalek2013_datapackage,
                   tmpdir, monkeypatch):
