@@ -150,6 +150,10 @@
       
   <div class="section" id="module-flotilla.compute.splicing">
 <span id="flotilla-compute-splicing-module"></span><h1>flotilla.compute.splicing module<a class="headerlink" href="#module-flotilla.compute.splicing" title="Permalink to this headline">¶</a></h1>
+<p>Calculate modalities of splicing events.</p>
+<p>This code is crazy, sometimes using classes and sometimes just objects because
+for parallelization, you can&#8217;t pickle anything that has state, like an
+instancemethod</p>
 <dl class="class">
 <dt id="flotilla.compute.splicing.Modalities">
 <em class="property">class </em><tt class="descclassname">flotilla.compute.splicing.</tt><tt class="descname">Modalities</tt><big>(</big><em>excluded_max=0.2</em>, <em>included_min=0.8</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/splicing.html#Modalities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.Modalities" title="Permalink to this definition">¶</a></dt>
@@ -182,31 +186,6 @@ the Jensen-Shannon Divergence that event, and each of the five modalities</p>
 </tr>
 </tbody>
 </table>
-<dl class="method">
-<dt id="flotilla.compute.splicing.Modalities.assignments">
-<tt class="descname">assignments</tt><big>(</big><em>sqrt_jsd_modalities</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/splicing.html#Modalities.assignments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.Modalities.assignments" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the modality with the smallest square root JSD to each event</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>sqrt_jsd_modalities</strong> : pandas.DataFrame</p>
-<blockquote>
-<div><p>A modalities x features dataframe of the square root
-Jensen-Shannon divergence between this event and each modality</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>assignments</strong> : pandas.Series</p>
-<blockquote class="last">
-<div><p>The closest modality to each splicing event</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 <dl class="method">
 <dt id="flotilla.compute.splicing.Modalities.counts">
 <tt class="descname">counts</tt><big>(</big><em>psi</em>, <em>bootstrapped=False</em>, <em>bootstrapped_kws=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/splicing.html#Modalities.counts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.Modalities.counts" title="Permalink to this definition">¶</a></dt>
@@ -277,37 +256,36 @@ dict(n_iter=100, thresh=0.6, minimum_samples=10)</p>
 <tt class="descname">modalities_names</tt><em class="property"> = ['excluded', 'middle', 'included', 'bimodal', 'uniform']</em><a class="headerlink" href="#flotilla.compute.splicing.Modalities.modalities_names" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="flotilla.compute.splicing.Modalities.sqrt_jsd_modalities">
-<tt class="descname">sqrt_jsd_modalities</tt><big>(</big><em>binned</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/splicing.html#Modalities.sqrt_jsd_modalities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.Modalities.sqrt_jsd_modalities" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate JSD between all binned splicing events and true modalities</p>
-<p>Use square root of JSD because it&#8217;s a metric.</p>
+<dl class="attribute">
+<dt id="flotilla.compute.splicing.Modalities.true_modalities">
+<tt class="descname">true_modalities</tt><em class="property"> =          excluded  middle  included  bimodal  uniform 0-0.2           1       0         0        1        1 0.2-0.8         0       1         0        0        1 0.8-1           0       0         1        1        1</em><a class="headerlink" href="#flotilla.compute.splicing.Modalities.true_modalities" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.compute.splicing.assignments">
+<tt class="descclassname">flotilla.compute.splicing.</tt><tt class="descname">assignments</tt><big>(</big><em>sqrt_jsd_modalities</em>, <em>true_modalities</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/splicing.html#assignments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.assignments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the modality with the smallest square root JSD to each event</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>binned</strong> : pandas.DataFrame</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>sqrt_jsd_modalities</strong> : pandas.DataFrame</p>
 <blockquote>
-<div><p>A (n_bins, n_events) sized DataFrame of binned splicing events</p>
+<div><p>A modalities x features dataframe of the square root
+Jensen-Shannon divergence between this event and each modality</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>sqrt_jsd</strong> : pandas.DataFrame</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>assignments</strong> : pandas.Series</p>
 <blockquote class="last">
-<div><p>A (n_modalities, n_events) sized DataFrame of the square root JSD
-between splicing events and all modalities</p>
+<div><p>The closest modality to each splicing event</p>
 </div></blockquote>
 </td>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="flotilla.compute.splicing.Modalities.true_modalities">
-<tt class="descname">true_modalities</tt><em class="property"> =    excluded  middle  included  bimodal  uniform 0         1       0         0        1        1 1         0       1         0        0        1 2         0       0         1        1        1</em><a class="headerlink" href="#flotilla.compute.splicing.Modalities.true_modalities" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 <dl class="function">
@@ -327,6 +305,32 @@ between splicing events and all modalities</p>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">numpy.array</p>
 <blockquote class="last">
 <div><p>A 1-D array of the ordered indices, in switchy score order</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.compute.splicing.sqrt_jsd_modalities">
+<tt class="descclassname">flotilla.compute.splicing.</tt><tt class="descname">sqrt_jsd_modalities</tt><big>(</big><em>binned</em>, <em>true_modalities</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/splicing.html#sqrt_jsd_modalities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.sqrt_jsd_modalities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate JSD between all binned splicing events and true modalities</p>
+<p>Use square root of JSD because it&#8217;s a metric.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>binned</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A (n_bins, n_events) sized DataFrame of binned splicing events</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>sqrt_jsd</strong> : pandas.DataFrame</p>
+<blockquote class="last">
+<div><p>A (n_modalities, n_events) sized DataFrame of the square root JSD
+between splicing events and all modalities</p>
 </div></blockquote>
 </td>
 </tr>

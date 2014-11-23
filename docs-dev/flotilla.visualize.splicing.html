@@ -151,6 +151,7 @@
       
   <div class="section" id="module-flotilla.visualize.splicing">
 <span id="flotilla-visualize-splicing-module"></span><h1>flotilla.visualize.splicing module<a class="headerlink" href="#module-flotilla.visualize.splicing" title="Permalink to this headline">¶</a></h1>
+<p>Splicing-specific visualization classes and methods</p>
 <dl class="class">
 <dt id="flotilla.visualize.splicing.ModalitiesViz">
 <em class="property">class </em><tt class="descclassname">flotilla.visualize.splicing.</tt><tt class="descname">ModalitiesViz</tt><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#ModalitiesViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz" title="Permalink to this definition">¶</a></dt>
@@ -164,7 +165,7 @@
 
 <dl class="attribute">
 <dt id="flotilla.visualize.splicing.ModalitiesViz.colors">
-<tt class="descname">colors</tt><em class="property"> = [u'#377eb8', u'#999999', u'#984ea3', u'#4daf4a', u'#e41a1c', 'k']</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.colors" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">colors</tt><em class="property"> = [u'#4c72b0', u'#ccb974', u'#8172b2', u'#55a868', u'#c44e52', 'lightgrey']</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.colors" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -176,22 +177,22 @@ violin plots</p>
 
 <dl class="attribute">
 <dt id="flotilla.visualize.splicing.ModalitiesViz.modalities_colors">
-<tt class="descname">modalities_colors</tt><em class="property"> = {'bimodal': u'#984ea3', 'uniform': u'#999999', 'middle': u'#4daf4a', 'unassigned': 'k', 'excluded': u'#377eb8', 'included': u'#e41a1c'}</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.modalities_colors" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">modalities_colors</tt><em class="property"> = {'ambiguous': 'lightgrey', 'bimodal': u'#8172b2', 'uniform': u'#ccb974', 'middle': u'#55a868', 'excluded': u'#4c72b0', 'included': u'#c44e52'}</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.modalities_colors" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="flotilla.visualize.splicing.ModalitiesViz.modalities_order">
-<tt class="descname">modalities_order</tt><em class="property"> = ['excluded', 'uniform', 'bimodal', 'middle', 'included', 'unassigned']</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.modalities_order" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">modalities_order</tt><em class="property"> = ['excluded', 'uniform', 'bimodal', 'middle', 'included', 'ambiguous']</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.modalities_order" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="flotilla.visualize.splicing.ModalitiesViz.modality">
-<tt class="descname">modality</tt><em class="property"> = 'unassigned'</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.modality" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">modality</tt><em class="property"> = 'ambiguous'</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.modality" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="flotilla.visualize.splicing.ModalitiesViz.plot_reduced_space">
-<tt class="descname">plot_reduced_space</tt><big>(</big><em>binned_reduced</em>, <em>modalities_assignments</em>, <em>ax=None</em>, <em>title=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#ModalitiesViz.plot_reduced_space"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.plot_reduced_space" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">plot_reduced_space</tt><big>(</big><em>binned_reduced</em>, <em>modalities_assignments</em>, <em>ax=None</em>, <em>title=None</em>, <em>xlabel=''</em>, <em>ylabel=''</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#ModalitiesViz.plot_reduced_space"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.plot_reduced_space" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -205,15 +206,14 @@ scores from the pooled to the singles, and the scaled difference</p>
 
 <dl class="function">
 <dt id="flotilla.visualize.splicing.lavalamp">
-<tt class="descclassname">flotilla.visualize.splicing.</tt><tt class="descname">lavalamp</tt><big>(</big><em>psi</em>, <em>color=None</em>, <em>x_offset=0</em>, <em>title=''</em>, <em>ax=None</em>, <em>switchy_score_psi=None</em>, <em>marker='d'</em>, <em>plot_kws=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#lavalamp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.lavalamp" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">flotilla.visualize.splicing.</tt><tt class="descname">lavalamp</tt><big>(</big><em>psi</em>, <em>color=None</em>, <em>x_offset=0</em>, <em>title=''</em>, <em>ax=None</em>, <em>switchy_score_psi=None</em>, <em>marker='o'</em>, <em>plot_kws=None</em>, <em>yticks=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#lavalamp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.lavalamp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make a &#8216;lavalamp&#8217; scatter plot of many splicing events</p>
 <p>Useful for visualizing many splicing events at once.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>TODO.md: (n_events, n_samples).transpose()</strong></p>
-<p><strong>psi</strong> : array</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>psi</strong> : array</p>
 <blockquote>
 <div><p>A (n_events, n_samples) matrix either as a numpy array or as a pandas
 DataFrame</p>

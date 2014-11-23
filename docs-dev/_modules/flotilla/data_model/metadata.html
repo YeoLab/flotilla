@@ -264,7 +264,8 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="MetaData.sample_id_to_color"><a class="viewcode-back" href="../../../flotilla.data_model.metadata.html#flotilla.data_model.metadata.MetaData.sample_id_to_color">[docs]</a>    <span class="k">def</span> <span class="nf">sample_id_to_color</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">dict</span><span class="p">((</span><span class="n">sample_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">phenotype_to_color</span><span class="p">[</span><span class="n">p</span><span class="p">])</span>
-                    <span class="k">for</span> <span class="n">sample_id</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_id_to_phenotype</span><span class="o">.</span><span class="n">iteritems</span><span class="p">())</span>
+                    <span class="k">for</span> <span class="n">sample_id</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">sample_id_to_phenotype</span><span class="o">.</span><span class="n">iteritems</span><span class="p">())</span>
 </div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="MetaData.phenotype_transitions"><a class="viewcode-back" href="../../../flotilla.data_model.metadata.html#flotilla.data_model.metadata.MetaData.phenotype_transitions">[docs]</a>    <span class="k">def</span> <span class="nf">phenotype_transitions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -273,7 +274,11 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="MetaData.sample_subsets"><a class="viewcode-back" href="../../../flotilla.data_model.metadata.html#flotilla.data_model.metadata.MetaData.sample_subsets">[docs]</a>    <span class="k">def</span> <span class="nf">sample_subsets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">subsets_from_metadata</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">MINIMUM_SAMPLE_SUBSET</span><span class="p">,</span>
-                                     <span class="s">&#39;samples&#39;</span><span class="p">)</span></div></div>
+                                     <span class="s">&#39;samples&#39;</span><span class="p">)</span>
+</div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="MetaData.phenotype_series"><a class="viewcode-back" href="../../../flotilla.data_model.metadata.html#flotilla.data_model.metadata.MetaData.phenotype_series">[docs]</a>    <span class="k">def</span> <span class="nf">phenotype_series</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">phenotype_col</span><span class="p">]</span></div></div>
 </pre></div>
 
     </div>

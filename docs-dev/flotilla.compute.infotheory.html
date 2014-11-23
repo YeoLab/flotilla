@@ -212,6 +212,49 @@ nbins = len(bins) - 1</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="flotilla.compute.infotheory.binify_and_jsd">
+<tt class="descclassname">flotilla.compute.infotheory.</tt><tt class="descname">binify_and_jsd</tt><big>(</big><em>df1</em>, <em>df2</em>, <em>pair</em>, <em>bins</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/infotheory.html#binify_and_jsd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.infotheory.binify_and_jsd" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="flotilla.compute.infotheory.cross_phenotype_jsd">
+<tt class="descclassname">flotilla.compute.infotheory.</tt><tt class="descname">cross_phenotype_jsd</tt><big>(</big><em>data</em>, <em>groupby</em>, <em>bins</em>, <em>n_iter=100</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/infotheory.html#cross_phenotype_jsd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.infotheory.cross_phenotype_jsd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Jensen-Shannon divergence of features across phenotypes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A (n_samples, n_features) Dataframe</p>
+</div></blockquote>
+<p><strong>groupby</strong> : mappable</p>
+<blockquote>
+<div><p>A samples to phenotypes mapping</p>
+</div></blockquote>
+<p><strong>n_iter</strong> : int</p>
+<blockquote>
+<div><p>Number of bootstrap resampling iterations to perform for the
+within-group comparisons</p>
+</div></blockquote>
+<p><strong>n_bins</strong> : int</p>
+<blockquote>
+<div><p>Number of bins to binify the singles data on</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>jsd_df</strong> : pandas.DataFrame</p>
+<blockquote class="last">
+<div><p>A (n_features, n_phenotypes^2) dataframe of the JSD between each
+feature between and within phenotypes</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="flotilla.compute.infotheory.entropy">
 <tt class="descclassname">flotilla.compute.infotheory.</tt><tt class="descname">entropy</tt><big>(</big><em>binned</em>, <em>base=2</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/infotheory.html#entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.infotheory.entropy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find the entropy of each column of a dataframe</p>
@@ -288,6 +331,32 @@ negative values or its columns do not sum to 1, raise ValueError</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="flotilla.compute.infotheory.jsd_df_to_2d">
+<tt class="descclassname">flotilla.compute.infotheory.</tt><tt class="descname">jsd_df_to_2d</tt><big>(</big><em>jsd_df</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/infotheory.html#jsd_df_to_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.infotheory.jsd_df_to_2d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform a tall JSD dataframe to a square matrix of mean JSDs</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>jsd_df</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A (n_features, n_phenotypes^2) dataframe of the JSD between each
+feature between and within phenotypes</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>jsd_2d</strong> : pandas.DataFrame</p>
+<blockquote class="last">
+<div><p>A (n_phenotypes, n_phenotypes) symmetric dataframe of the mean JSD
+between and within phenotypes</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="flotilla.compute.infotheory.kld">
 <tt class="descclassname">flotilla.compute.infotheory.</tt><tt class="descname">kld</tt><big>(</big><em>p</em>, <em>q</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/infotheory.html#kld"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.infotheory.kld" title="Permalink to this definition">¶</a></dt>
 <dd><p>Kullback-Leiber divergence of two probability distributions pandas
@@ -298,11 +367,11 @@ dataframes, p and q</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>p</strong> : pandas.DataFrame</p>
 <blockquote>
-<div><p>An nbins x features DataFrame</p>
+<div><p>An nbins x features DataFrame, or (nbins,) Series</p>
 </div></blockquote>
 <p><strong>q</strong> : pandas.DataFrame</p>
 <blockquote>
-<div><p>An nbins x features DataFrame</p>
+<div><p>An nbins x features DataFrame, or (nbins,) Series</p>
 </div></blockquote>
 </td>
 </tr>

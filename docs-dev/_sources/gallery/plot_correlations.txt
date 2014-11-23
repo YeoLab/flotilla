@@ -1,0 +1,18 @@
+
+.. _plot_correlations:
+
+
+Visualize global correlations between samples or features
+
+See also
+--------
+:py:func:`Study.interactive_correlations`
+
+
+
+.. image:: _images/plot_correlations.png
+
+**Python source code:** :download:`[download source: plot_correlations.py]<plot_correlations.py>`
+
+.. literalinclude:: plot_correlations.py
+    :lines: 9-

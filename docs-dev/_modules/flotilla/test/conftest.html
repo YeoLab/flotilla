@@ -201,15 +201,10 @@
     <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">SHALEK2013_BASE_URL</span><span class="p">,</span> <span class="s">&#39;datapackage.json&#39;</span><span class="p">)</span>
 </div>
 <span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
-<div class="viewcode-block" id="chr22_datapackage_path"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.chr22_datapackage_path">[docs]</a><span class="k">def</span> <span class="nf">chr22_datapackage_path</span><span class="p">():</span>
-    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">CHR22_BASE_URL</span><span class="p">,</span> <span class="s">&#39;datapackage.json&#39;</span><span class="p">)</span>
-
-</div>
-<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
 <div class="viewcode-block" id="shalek2013_datapackage"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.shalek2013_datapackage">[docs]</a><span class="k">def</span> <span class="nf">shalek2013_datapackage</span><span class="p">(</span><span class="n">shalek2013_datapackage_path</span><span class="p">):</span>
-    <span class="kn">from</span> <span class="nn">flotilla.datapackage</span> <span class="kn">import</span> <span class="n">data_package_url_to_dict</span>
+    <span class="kn">from</span> <span class="nn">flotilla.datapackage</span> <span class="kn">import</span> <span class="n">datapackage_url_to_dict</span>
 
-    <span class="k">return</span> <span class="n">data_package_url_to_dict</span><span class="p">(</span><span class="n">shalek2013_datapackage_path</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">datapackage_url_to_dict</span><span class="p">(</span><span class="n">shalek2013_datapackage_path</span><span class="p">)</span>
 
 </div>
 <span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
@@ -224,12 +219,6 @@
     <span class="kn">import</span> <span class="nn">flotilla</span>
 
     <span class="k">return</span> <span class="n">flotilla</span><span class="o">.</span><span class="n">embark</span><span class="p">(</span><span class="n">shalek2013_datapackage_path</span><span class="p">)</span>
-</div>
-<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
-<div class="viewcode-block" id="chr22"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.chr22">[docs]</a><span class="k">def</span> <span class="nf">chr22</span><span class="p">(</span><span class="n">chr22_datapackage_path</span><span class="p">):</span>
-    <span class="kn">import</span> <span class="nn">flotilla</span>
-
-    <span class="k">return</span> <span class="n">flotilla</span><span class="o">.</span><span class="n">embark</span><span class="p">(</span><span class="n">chr22_datapackage_path</span><span class="p">)</span>
 
 </div>
 <span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
@@ -304,6 +293,43 @@
 </div>
 <span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">])</span>
 <div class="viewcode-block" id="featurewise"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.featurewise">[docs]</a><span class="k">def</span> <span class="nf">featurewise</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span>
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="base_data"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.base_data">[docs]</a><span class="k">def</span> <span class="nf">base_data</span><span class="p">(</span><span class="n">shalek2013_data</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">flotilla.data_model.base</span> <span class="kn">import</span> <span class="n">BaseData</span>
+    <span class="k">return</span> <span class="n">BaseData</span><span class="p">(</span><span class="n">shalek2013_data</span><span class="o">.</span><span class="n">expression</span><span class="p">)</span>
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;half&#39;</span><span class="p">,</span> <span class="s">&#39;all&#39;</span><span class="p">],</span> <span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="sample_ids"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.sample_ids">[docs]</a><span class="k">def</span> <span class="nf">sample_ids</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">base_data</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span>
+    <span class="k">elif</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span> <span class="o">==</span> <span class="s">&#39;some&#39;</span><span class="p">:</span>
+        <span class="n">half</span> <span class="o">=</span> <span class="n">base_data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">base_data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">[:</span><span class="n">half</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span> <span class="o">==</span> <span class="s">&#39;all&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">base_data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">index</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;half&#39;</span><span class="p">,</span> <span class="s">&#39;all&#39;</span><span class="p">],</span> <span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="feature_ids"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.feature_ids">[docs]</a><span class="k">def</span> <span class="nf">feature_ids</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">base_data</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span>
+    <span class="k">elif</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span> <span class="o">==</span> <span class="s">&#39;some&#39;</span><span class="p">:</span>
+        <span class="n">half</span> <span class="o">=</span> <span class="n">base_data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">base_data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">[:</span><span class="n">half</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span> <span class="o">==</span> <span class="s">&#39;all&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">base_data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span>
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">],</span> <span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="standardize"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.standardize">[docs]</a><span class="k">def</span> <span class="nf">standardize</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span>
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;phenotype: Immature BDMC&#39;</span><span class="p">,</span>
+                        <span class="s">&#39;not (phenotype: Immature BDMC)&#39;</span><span class="p">,</span>
+                        <span class="s">&#39;pooled&#39;</span><span class="p">],</span>
+                <span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="sample_subset"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.sample_subset">[docs]</a><span class="k">def</span> <span class="nf">sample_subset</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span></div>
 </pre></div>
 

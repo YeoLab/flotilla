@@ -110,7 +110,10 @@
   <ul class="dropdown-menu localtoc"
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">Visualize principal component analysis dimensionality reduction</a></li>
+<li><a class="reference internal" href="#">Visualize principal component analysis dimensionality reduction</a><ul>
+<li><a class="reference internal" href="#see-also">See also</a></li>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -148,12 +151,16 @@
       
   <div class="section" id="visualize-principal-component-analysis-dimensionality-reduction">
 <span id="plot-pca"></span><h1>Visualize principal component analysis dimensionality reduction<a class="headerlink" href="#visualize-principal-component-analysis-dimensionality-reduction" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="see-also">
+<h2>See also<a class="headerlink" href="#see-also" title="Permalink to this headline">¶</a></h2>
+<p><tt class="xref py py-func docutils literal"><span class="pre">Study.interactive_pca()</span></tt></p>
 <img alt="../_images/plot_pca.png" src="../_images/plot_pca.png" />
 <p><strong>Python source code:</strong> <a class="reference download internal" href="../_downloads/plot_pca.py"><tt class="xref download docutils literal"><span class="pre">[download</span> <span class="pre">source:</span> <span class="pre">plot_pca.py]</span></tt></a></p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">flotilla</span>
-<span class="n">study</span> <span class="o">=</span> <span class="n">flotilla</span><span class="o">.</span><span class="n">embark</span><span class="p">(</span><span class="n">flotilla</span><span class="o">.</span><span class="n">_neural_diff_chr22</span><span class="p">)</span>
+<span class="n">study</span> <span class="o">=</span> <span class="n">flotilla</span><span class="o">.</span><span class="n">embark</span><span class="p">(</span><span class="n">flotilla</span><span class="o">.</span><span class="n">_shalek2013</span><span class="p">)</span>
 <span class="n">study</span><span class="o">.</span><span class="n">plot_pca</span><span class="p">(</span><span class="n">plot_violins</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 </pre></div>
+</div>
 </div>
 </div>
 

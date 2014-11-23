@@ -141,15 +141,127 @@
     <div class="col-md-12">
       
   <h1>Source code for flotilla.compute.splicing</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Calculate modalities of splicing events.</span>
+
+<span class="sd">This code is crazy, sometimes using classes and sometimes just objects because</span>
+<span class="sd">for parallelization, you can&#39;t pickle anything that has state, like an</span>
+<span class="sd">instancemethod</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
 <span class="kn">import</span> <span class="nn">collections</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">cross_validation</span>
+<span class="kn">from</span> <span class="nn">joblib</span> <span class="kn">import</span> <span class="n">Parallel</span><span class="p">,</span> <span class="n">delayed</span>
 
+<span class="kn">from</span> <span class="nn">.infotheory</span> <span class="kn">import</span> <span class="n">jsd</span><span class="p">,</span> <span class="n">binify</span><span class="p">,</span> <span class="n">bin_range_strings</span>
 <span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">memoize</span>
-<span class="kn">from</span> <span class="nn">.infotheory</span> <span class="kn">import</span> <span class="n">jsd</span><span class="p">,</span> <span class="n">binify</span>
 
+<span class="n">MODALITIES_BINS</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>  <span class="c"># excluded</span>
+                            <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>  <span class="c"># middle</span>
+                            <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>  <span class="c"># included</span>
+                            <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>  <span class="c"># bimodal</span>
+                            <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>  <span class="c"># uniform</span>
+
+<span class="n">MODALITIES_NAMES</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;excluded&#39;</span><span class="p">,</span> <span class="s">&#39;middle&#39;</span><span class="p">,</span> <span class="s">&#39;included&#39;</span><span class="p">,</span> <span class="s">&#39;bimodal&#39;</span><span class="p">,</span>
+                    <span class="s">&#39;uniform&#39;</span><span class="p">]</span>
+
+<span class="n">TRUE_MODALITIES</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">MODALITIES_BINS</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">MODALITIES_NAMES</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_col_jsd_modalities</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">true_modalities</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate JSD between a single binned event and true modalities</span>
+
+<span class="sd">    Given a column of a binned splicing event, calculate its Jensen-Shannon</span>
+<span class="sd">    divergence to the true modalities</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    col : pandas.Series</span>
+<span class="sd">        A (n_bins,) sized series of a splicing event</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    jsd : pandas.Series</span>
+<span class="sd">        A (n_modalities,) sized series of JSD between this event and the</span>
+<span class="sd">        true modalities</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">col</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="n">true_modalities</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">jsd</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="n">col</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">true_modalities</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+
+<div class="viewcode-block" id="assignments"><a class="viewcode-back" href="../../../flotilla.compute.splicing.html#flotilla.compute.splicing.assignments">[docs]</a><span class="k">def</span> <span class="nf">assignments</span><span class="p">(</span><span class="n">sqrt_jsd_modalities</span><span class="p">,</span> <span class="n">true_modalities</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return the modality with the smallest square root JSD to each event</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sqrt_jsd_modalities : pandas.DataFrame</span>
+<span class="sd">        A modalities x features dataframe of the square root</span>
+<span class="sd">        Jensen-Shannon divergence between this event and each modality</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    assignments : pandas.Series</span>
+<span class="sd">        The closest modality to each splicing event</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">modalities</span> <span class="o">=</span> <span class="n">true_modalities</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">sqrt_jsd_modalities</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">modalities</span><span class="p">,</span> <span class="n">sqrt_jsd_modalities</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="sqrt_jsd_modalities"><a class="viewcode-back" href="../../../flotilla.compute.splicing.html#flotilla.compute.splicing.sqrt_jsd_modalities">[docs]</a><span class="k">def</span> <span class="nf">sqrt_jsd_modalities</span><span class="p">(</span><span class="n">binned</span><span class="p">,</span> <span class="n">true_modalities</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate JSD between all binned splicing events and true modalities</span>
+
+<span class="sd">    Use square root of JSD because it&#39;s a metric.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    binned : pandas.DataFrame</span>
+<span class="sd">        A (n_bins, n_events) sized DataFrame of binned splicing events</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    sqrt_jsd : pandas.DataFrame</span>
+<span class="sd">        A (n_modalities, n_events) sized DataFrame of the square root JSD</span>
+<span class="sd">        between splicing events and all modalities</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">binned</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">_col_jsd_modalities</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                <span class="n">true_modalities</span><span class="o">=</span><span class="n">true_modalities</span><span class="p">))</span>
+</div>
+<span class="k">def</span> <span class="nf">_single_fit_transform</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">true_modalities</span><span class="p">,</span>
+                          <span class="n">do_not_memoize</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Given psi scores, estimate the modality of each</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : pandas.DataFrame</span>
+<span class="sd">        A samples x features dataframe, where you want to find the</span>
+<span class="sd">        splicing modality of each column (feature)</span>
+<span class="sd">    do_not_memoize : bool</span>
+<span class="sd">        Whether or not to memoize the results of the _single_fit_transform</span>
+<span class="sd">        on this data (used by @memoize decorator)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    assignments : pandas.Series</span>
+<span class="sd">        Modality assignments of each column (feature)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">binned</span> <span class="o">=</span> <span class="n">binify</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">bins</span><span class="p">)</span>
+    <span class="n">sqrt_jsds</span> <span class="o">=</span> <span class="n">sqrt_jsd_modalities</span><span class="p">(</span><span class="n">binned</span><span class="p">,</span> <span class="n">true_modalities</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">assignments</span><span class="p">(</span><span class="n">sqrt_jsds</span><span class="p">,</span> <span class="n">true_modalities</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_cat_indices_and_fit_transform</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">true_modalities</span><span class="p">,</span>
+                                   <span class="n">min_samples</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">psi</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="p">:]</span><span class="c">#.copy().dropna(axis=1, thresh=min_samples)</span>
+    <span class="n">psi</span> <span class="o">=</span> <span class="n">psi</span><span class="o">.</span><span class="n">ix</span><span class="p">[:,</span> <span class="n">psi</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">min_samples</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">_single_fit_transform</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">true_modalities</span><span class="p">,</span>
+                                 <span class="n">do_not_memoize</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Modalities"><a class="viewcode-back" href="../../../flotilla.compute.splicing.html#flotilla.compute.splicing.Modalities">[docs]</a><span class="k">class</span> <span class="nc">Modalities</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -182,77 +294,16 @@
 
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">modalities_bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>  <span class="c"># excluded</span>
-                                <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>  <span class="c"># middle</span>
-                                <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>  <span class="c"># included</span>
-                                <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>  <span class="c"># bimodal</span>
-                                <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>  <span class="c"># uniform</span>
-
-    <span class="n">modalities_names</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;excluded&#39;</span><span class="p">,</span> <span class="s">&#39;middle&#39;</span><span class="p">,</span> <span class="s">&#39;included&#39;</span><span class="p">,</span> <span class="s">&#39;bimodal&#39;</span><span class="p">,</span>
-                        <span class="s">&#39;uniform&#39;</span><span class="p">]</span>
-
-    <span class="n">true_modalities</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">modalities_bins</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">modalities_names</span><span class="p">)</span>
+    <span class="n">true_modalities</span> <span class="o">=</span> <span class="n">TRUE_MODALITIES</span>
+    <span class="n">modalities_names</span> <span class="o">=</span> <span class="n">MODALITIES_NAMES</span>
+    <span class="n">modalities_bins</span> <span class="o">=</span> <span class="n">MODALITIES_BINS</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">excluded_max</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">included_min</span><span class="o">=</span><span class="mf">0.8</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bins</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">excluded_max</span><span class="p">,</span> <span class="n">included_min</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">true_modalities</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">bin_range_strings</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bins</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_col_jsd_modalities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">col</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Calculate JSD between a single binned event and true modalities</span>
-
-<span class="sd">        Given a column of a binned splicing event, calculate its Jensen-Shannon</span>
-<span class="sd">        divergence to the true modalities</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        col : pandas.Series</span>
-<span class="sd">            A (n_bins,) sized series of a splicing event</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        jsd : pandas.Series</span>
-<span class="sd">            A (n_modalities,) sized series of JSD between this event and the</span>
-<span class="sd">            true modalities</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">true_modalities</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">jsd</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="n">col</span><span class="p">)</span>
-
-<div class="viewcode-block" id="Modalities.sqrt_jsd_modalities"><a class="viewcode-back" href="../../../flotilla.compute.splicing.html#flotilla.compute.splicing.Modalities.sqrt_jsd_modalities">[docs]</a>    <span class="k">def</span> <span class="nf">sqrt_jsd_modalities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">binned</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Calculate JSD between all binned splicing events and true modalities</span>
-
-<span class="sd">        Use square root of JSD because it&#39;s a metric.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        binned : pandas.DataFrame</span>
-<span class="sd">            A (n_bins, n_events) sized DataFrame of binned splicing events</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        sqrt_jsd : pandas.DataFrame</span>
-<span class="sd">            A (n_modalities, n_events) sized DataFrame of the square root JSD</span>
-<span class="sd">            between splicing events and all modalities</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">binned</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_col_jsd_modalities</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
-</div>
-<div class="viewcode-block" id="Modalities.assignments"><a class="viewcode-back" href="../../../flotilla.compute.splicing.html#flotilla.compute.splicing.Modalities.assignments">[docs]</a>    <span class="k">def</span> <span class="nf">assignments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sqrt_jsd_modalities</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the modality with the smallest square root JSD to each event</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        sqrt_jsd_modalities : pandas.DataFrame</span>
-<span class="sd">            A modalities x features dataframe of the square root</span>
-<span class="sd">            Jensen-Shannon divergence between this event and each modality</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        assignments : pandas.Series</span>
-<span class="sd">            The closest modality to each splicing event</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">modalities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">true_modalities</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">sqrt_jsd_modalities</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)]</span>
-        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">modalities</span><span class="p">,</span> <span class="n">sqrt_jsd_modalities</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
-</div>
     <span class="nd">@memoize</span>
 <div class="viewcode-block" id="Modalities.fit_transform"><a class="viewcode-back" href="../../../flotilla.compute.splicing.html#flotilla.compute.splicing.Modalities.fit_transform">[docs]</a>    <span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">bootstrapped</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">bootstrapped_kws</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Given psi scores, estimate the modality of each</span>
@@ -272,54 +323,49 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
+
 <span class="sd">        assignments : pandas.Series</span>
 <span class="sd">            Modality assignments of each column (feature)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c"># import pdb; pdb.set_trace()</span>
         <span class="k">if</span> <span class="n">bootstrapped</span><span class="p">:</span>
             <span class="n">bootstrapped_kws</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">bootstrapped_kws</span> \
                                      <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">bootstrapped_kws</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bootstrapped_fit_transform</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">bootstrapped_kws</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_single_fit_transform</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">_single_fit_transform</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bins</span><span class="p">,</span>
+                                         <span class="n">true_modalities</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">true_modalities</span><span class="p">)</span>
 </div>
-    <span class="k">def</span> <span class="nf">_single_fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">do_not_memoize</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Given psi scores, estimate the modality of each</span>
+    <span class="k">def</span> <span class="nf">_bootstrapped_fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">thresh</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
+                                    <span class="n">min_samples</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Resample each splicing event to robustly estimate modalities.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        data : pandas.DataFrame</span>
-<span class="sd">            A samples x features dataframe, where you want to find the</span>
-<span class="sd">            splicing modality of each column (feature)</span>
-<span class="sd">        do_not_memoize : bool</span>
-<span class="sd">            Whether or not to memoize the results of the _single_fit_transform</span>
-<span class="sd">            on this data (used by @memoize decorator)</span>
+<span class="sd">            A (n_samples, n_features) dataframe of the splicing data</span>
+<span class="sd">        n_iter : int, optional (default=100)</span>
+<span class="sd">            Number of iterations (sampling with replacement)</span>
+<span class="sd">        thresh : float, optional (default=0.6)</span>
+<span class="sd">            Fraction of times that an event must be classified with a modality</span>
+<span class="sd">            for it to be considered robustly assigned</span>
+<span class="sd">        min_samples : int, optional (default=10)</span>
+<span class="sd">            Minimum number of samples for each resampled splicing event</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        assignments : pandas.Series</span>
 <span class="sd">            Modality assignments of each column (feature)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">binned</span> <span class="o">=</span> <span class="n">binify</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bins</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">true_modalities</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">binned</span><span class="o">.</span><span class="n">index</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">assignments</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sqrt_jsd_modalities</span><span class="p">(</span><span class="n">binned</span><span class="p">))</span>
-
-    <span class="k">def</span> <span class="nf">_bootstrapped_fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">thresh</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
-                                    <span class="n">min_samples</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Resample each splicing event n_iter times to robustly estimate</span>
-<span class="sd">        modalities.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">bs</span> <span class="o">=</span> <span class="n">cross_validation</span><span class="o">.</span><span class="n">Bootstrap</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">n_iter</span><span class="o">=</span><span class="n">n_iter</span><span class="p">)</span>
 
-        <span class="n">assignments</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
-                                   <span class="n">index</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="n">n_iter</span><span class="p">))</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_nbytes</span><span class="o">=</span><span class="mf">1e4</span><span class="p">)(</span>
+            <span class="n">delayed</span><span class="p">(</span><span class="n">_cat_indices_and_fit_transform</span><span class="p">)(</span>
+                <span class="n">x</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">true_modalities</span><span class="p">,</span> <span class="n">min_samples</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">bs</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">train_index</span><span class="p">,</span> <span class="n">test_index</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">bs</span><span class="p">):</span>
-            <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">train_index</span><span class="p">,</span> <span class="n">test_index</span><span class="p">])</span>
-            <span class="n">psi</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="p">:]</span>
-            <span class="n">psi</span> <span class="o">=</span> <span class="n">psi</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">thresh</span><span class="o">=</span><span class="n">min_samples</span><span class="p">)</span>
-            <span class="n">assignments</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_single_fit_transform</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span>
-                                                           <span class="n">do_not_memoize</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-
+        <span class="n">assignments</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
         <span class="n">counts</span> <span class="o">=</span> <span class="n">assignments</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
             <span class="n">collections</span><span class="o">.</span><span class="n">Counter</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">dropna</span><span class="p">())))</span>
         <span class="n">fractions</span> <span class="o">=</span> <span class="n">counts</span> <span class="o">/</span> <span class="n">counts</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>

@@ -160,8 +160,7 @@
 <div class="viewcode-block" id="PredictorBaseViz"><a class="viewcode-back" href="../../../flotilla.visualize.predict.html#flotilla.visualize.predict.PredictorBaseViz">[docs]</a><span class="k">class</span> <span class="nc">PredictorBaseViz</span><span class="p">(</span><span class="n">PredictorBase</span><span class="p">):</span>
     <span class="n">_reducer_plotting_args</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">pca_plotting_kwargs</span><span class="p">):</span>
-
+<div class="viewcode-block" id="PredictorBaseViz.plot"><a class="viewcode-back" href="../../../flotilla.visualize.predict.html#flotilla.visualize.predict.PredictorBaseViz.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">pca_plotting_kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_been_fit</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
 
@@ -192,7 +191,7 @@
         <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="n">pcaviz</span>
-
+</div>
 <div class="viewcode-block" id="PredictorBaseViz.set_reducer_plotting_args"><a class="viewcode-back" href="../../../flotilla.visualize.predict.html#flotilla.visualize.predict.PredictorBaseViz.set_reducer_plotting_args">[docs]</a>    <span class="k">def</span> <span class="nf">set_reducer_plotting_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rpa</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reducer_plotting_args</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">rpa</span><span class="p">)</span>
 
@@ -288,7 +287,7 @@
                                   <span class="c"># label_to_color=self.label_to_color,</span>
                                   <span class="c"># label_to_marker=self.label_to_marker,</span>
         <span class="p">)</span>
-        <span class="n">pcaviz</span><span class="p">(</span><span class="o">**</span><span class="n">local_plotting_kwargs</span><span class="p">)</span>
+        <span class="n">pcaviz</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">**</span><span class="n">local_plotting_kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">pcaviz</span>
 </div>
 <div class="viewcode-block" id="PredictorBaseViz.plot_scores"><a class="viewcode-back" href="../../../flotilla.visualize.predict.html#flotilla.visualize.predict.PredictorBaseViz.plot_scores">[docs]</a>    <span class="k">def</span> <span class="nf">plot_scores</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>

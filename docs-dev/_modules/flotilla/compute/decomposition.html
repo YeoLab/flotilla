@@ -311,11 +311,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_dataframe</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="n">X</span>
         <span class="c"># notice this is fit_transform, not fit</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">decomposition</span><span class="o">.</span><span class="n">NMF</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">reduced_space</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">decomposition</span><span class="o">.</span><span class="n">NMF</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">components_</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">components_</span><span class="p">,</span>
                                         <span class="n">columns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">.</span><span class="n">rename_axis</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">relabel_pcs</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">return</span> <span class="n">reduced_space</span>
 
 </div></div>
 <div class="viewcode-block" id="DataFrameICA"><a class="viewcode-back" href="../../../flotilla.compute.decomposition.html#flotilla.compute.decomposition.DataFrameICA">[docs]</a><span class="k">class</span> <span class="nc">DataFrameICA</span><span class="p">(</span><span class="n">DataFrameReducerBase</span><span class="p">,</span> <span class="n">decomposition</span><span class="o">.</span><span class="n">FastICA</span><span class="p">):</span>

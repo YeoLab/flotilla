@@ -141,6 +141,10 @@
     <div class="col-md-12">
       
   <h1>Source code for flotilla.datapackage</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Functions to deal with creation and loading of datapackages</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
 <span class="kn">import</span> <span class="nn">gzip</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
@@ -154,12 +158,12 @@
 <span class="n">FLOTILLA_DOWNLOAD_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s">&#39;~/flotilla_projects&#39;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="data_package_url_to_dict"><a class="viewcode-back" href="../../flotilla.datapackage.html#flotilla.datapackage.data_package_url_to_dict">[docs]</a><span class="k">def</span> <span class="nf">data_package_url_to_dict</span><span class="p">(</span><span class="n">data_package_url</span><span class="p">):</span>
-    <span class="n">filename</span> <span class="o">=</span> <span class="n">check_if_already_downloaded</span><span class="p">(</span><span class="n">data_package_url</span><span class="p">)</span>
+<div class="viewcode-block" id="datapackage_url_to_dict"><a class="viewcode-back" href="../../flotilla.datapackage.html#flotilla.datapackage.datapackage_url_to_dict">[docs]</a><span class="k">def</span> <span class="nf">datapackage_url_to_dict</span><span class="p">(</span><span class="n">datapackage_url</span><span class="p">):</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">check_if_already_downloaded</span><span class="p">(</span><span class="n">datapackage_url</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="n">data_package</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">data_package</span>
+        <span class="n">datapackage</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">datapackage</span>
 
 </div>
 <div class="viewcode-block" id="check_if_already_downloaded"><a class="viewcode-back" href="../../flotilla.datapackage.html#flotilla.datapackage.check_if_already_downloaded">[docs]</a><span class="k">def</span> <span class="nf">check_if_already_downloaded</span><span class="p">(</span><span class="n">url</span><span class="p">,</span>
@@ -246,12 +250,8 @@
     <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
         <span class="k">pass</span>
 
-    <span class="n">datapackage</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">datapackage</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
-    <span class="n">datapackage</span><span class="p">[</span><span class="s">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">title</span>
-    <span class="n">datapackage</span><span class="p">[</span><span class="s">&#39;sources&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sources</span>
-    <span class="n">datapackage</span><span class="p">[</span><span class="s">&#39;licenses&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">license</span>
-    <span class="n">datapackage</span><span class="p">[</span><span class="s">&#39;datapackage_version&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">version</span>
+    <span class="n">datapackage</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">title</span><span class="p">,</span> <span class="s">&#39;sources&#39;</span><span class="p">:</span> <span class="n">sources</span><span class="p">,</span>
+                   <span class="s">&#39;licenses&#39;</span><span class="p">:</span> <span class="n">license</span><span class="p">,</span> <span class="s">&#39;datapackage_version&#39;</span><span class="p">:</span> <span class="n">version</span><span class="p">}</span>
 
     <span class="k">if</span> <span class="n">species</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">datapackage</span><span class="p">[</span><span class="s">&#39;species&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">species</span>
@@ -274,7 +274,8 @@
         <span class="n">datapackage</span><span class="p">[</span><span class="s">&#39;resources&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">resource_name</span><span class="p">})</span>
         <span class="n">resource</span> <span class="o">=</span> <span class="n">datapackage</span><span class="p">[</span><span class="s">&#39;resources&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
-        <span class="n">data_filename</span> <span class="o">=</span> <span class="s">&#39;{}/{}.csv.gz&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datapackage_dir</span><span class="p">,</span> <span class="n">resource_name</span><span class="p">)</span>
+        <span class="n">basename</span> <span class="o">=</span> <span class="s">&#39;{}.csv.gz&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resource_name</span><span class="p">)</span>
+        <span class="n">data_filename</span> <span class="o">=</span> <span class="s">&#39;{}/{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datapackage_dir</span><span class="p">,</span> <span class="n">basename</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">data_filename</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
@@ -288,7 +289,7 @@
         <span class="c"># except Exception as e:</span>
         <span class="c">#     sys.stderr.write(&quot;error sending data to host: {}&quot;.format(e))</span>
 
-        <span class="n">resource</span><span class="p">[</span><span class="s">&#39;path&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_filename</span>
+        <span class="n">resource</span><span class="p">[</span><span class="s">&#39;path&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">basename</span>
         <span class="n">resource</span><span class="p">[</span><span class="s">&#39;compression&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;gzip&#39;</span>
         <span class="n">resource</span><span class="p">[</span><span class="s">&#39;format&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;csv&#39;</span>
         <span class="k">if</span> <span class="n">kws</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
@@ -329,10 +330,12 @@
             <span class="p">]}</span>
 
 </div>
-<div class="viewcode-block" id="get_resource_from_name"><a class="viewcode-back" href="../../flotilla.datapackage.html#flotilla.datapackage.get_resource_from_name">[docs]</a><span class="k">def</span> <span class="nf">get_resource_from_name</span><span class="p">(</span><span class="n">datapackage</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<div class="viewcode-block" id="name_to_resource"><a class="viewcode-back" href="../../flotilla.datapackage.html#flotilla.datapackage.name_to_resource">[docs]</a><span class="k">def</span> <span class="nf">name_to_resource</span><span class="p">(</span><span class="n">datapackage</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get resource with specified name in the datapackage&quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">resource</span> <span class="ow">in</span> <span class="n">datapackage</span><span class="p">[</span><span class="s">&#39;resources&#39;</span><span class="p">]:</span>
         <span class="k">if</span> <span class="n">resource</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">name</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">resource</span></div>
+            <span class="k">return</span> <span class="n">resource</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;No resource named {} in this datapackage&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span></div>
 </pre></div>
 
     </div>

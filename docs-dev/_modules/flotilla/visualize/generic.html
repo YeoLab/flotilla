@@ -169,7 +169,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># import pdb; pdb.set_trace()</span>
     <span class="n">data_type</span> <span class="o">=</span> <span class="s">&#39;none&#39;</span> <span class="k">if</span> <span class="n">data_type</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">data_type</span>
-    <span class="n">splicing</span> <span class="o">=</span> <span class="s">&#39;splicing&#39;</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">data_type</span><span class="p">)</span>
+    <span class="n">splicing</span> <span class="o">=</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s">&#39;splicing&#39;</span>
 
     <span class="n">violinplot_kws</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">violinplot_kws</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">violinplot_kws</span>
     <span class="n">violinplot_kws</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s">&#39;alpha&#39;</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">)</span>
@@ -395,7 +395,45 @@
     <span class="n">xmin</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">sample1</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">-</span> <span class="o">.</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">ymin</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="n">sample2</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">-</span> <span class="o">.</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">jointgrid</span><span class="o">.</span><span class="n">ax_joint</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">)</span>
-    <span class="n">jointgrid</span><span class="o">.</span><span class="n">ax_joint</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">)</span></div>
+    <span class="n">jointgrid</span><span class="o">.</span><span class="n">ax_joint</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="barplot"><a class="viewcode-back" href="../../../flotilla.visualize.generic.html#flotilla.visualize.generic.barplot">[docs]</a><span class="k">def</span> <span class="nf">barplot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">x_order</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">x_order</span><span class="o">=</span><span class="n">x_order</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">grouped</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">sizes</span> <span class="o">=</span> <span class="n">grouped</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
+    <span class="n">percents</span> <span class="o">=</span> <span class="n">sizes</span> <span class="o">/</span> <span class="n">sizes</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span>
+    <span class="n">xs</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_xticks</span><span class="p">()</span>
+
+    <span class="n">annotate_yrange_factor</span> <span class="o">=</span> <span class="mf">0.025</span>
+    <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_ylim</span><span class="p">()</span>
+    <span class="n">yrange</span> <span class="o">=</span> <span class="n">ymax</span> <span class="o">-</span> <span class="n">ymin</span>
+
+    <span class="c"># Reset ymax and ymin so there&#39;s enough room to see the annotation of</span>
+    <span class="c"># the top-most</span>
+    <span class="k">if</span> <span class="n">ymax</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">ymax</span> <span class="o">+=</span> <span class="n">yrange</span> <span class="o">*</span> <span class="mf">0.1</span>
+    <span class="k">if</span> <span class="n">ymin</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">ymin</span> <span class="o">-=</span> <span class="n">yrange</span> <span class="o">*</span> <span class="mf">0.1</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">)</span>
+    <span class="n">yrange</span> <span class="o">=</span> <span class="n">ymax</span> <span class="o">-</span> <span class="n">ymin</span>
+
+    <span class="n">offset_</span> <span class="o">=</span> <span class="n">yrange</span> <span class="o">*</span> <span class="n">annotate_yrange_factor</span>
+    <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">modality</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">x_order</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">sizes</span><span class="p">[</span><span class="n">modality</span><span class="p">]</span>
+            <span class="n">offset</span> <span class="o">=</span> <span class="n">offset_</span> <span class="k">if</span> <span class="n">y</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">offset_</span>
+            <span class="n">verticalalignment</span> <span class="o">=</span> <span class="s">&#39;bottom&#39;</span> <span class="k">if</span> <span class="n">y</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">else</span> <span class="s">&#39;top&#39;</span>
+            <span class="n">percent</span> <span class="o">=</span> <span class="n">percents</span><span class="p">[</span><span class="n">modality</span><span class="p">]</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="s">&#39;{} ({:.1f}%)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">percent</span><span class="p">),</span>
+                            <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">offset</span><span class="p">),</span>
+                            <span class="n">verticalalignment</span><span class="o">=</span><span class="n">verticalalignment</span><span class="p">,</span>
+                            <span class="n">horizontalalignment</span><span class="o">=</span><span class="s">&#39;center&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="s">&#39;0 (0%)&#39;</span><span class="p">,</span>
+                            <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">offset_</span><span class="p">),</span>
+                            <span class="n">verticalalignment</span><span class="o">=</span><span class="s">&#39;bottom&#39;</span><span class="p">,</span>
+                            <span class="n">horizontalalignment</span><span class="o">=</span><span class="s">&#39;center&#39;</span><span class="p">)</span></div>
 </pre></div>
 
     </div>

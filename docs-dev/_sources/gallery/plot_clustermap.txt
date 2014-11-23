@@ -1,0 +1,18 @@
+
+.. _plot_clustermap:
+
+
+Visualize hierarchical relationships between samples and features
+
+See also
+--------
+:py:func:`Study.interactive_clustermap`
+
+
+
+.. image:: _images/plot_clustermap.png
+
+**Python source code:** :download:`[download source: plot_clustermap.py]<plot_clustermap.py>`
+
+.. literalinclude:: plot_clustermap.py
+    :lines: 9-

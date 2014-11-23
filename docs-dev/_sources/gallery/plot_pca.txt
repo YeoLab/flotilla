@@ -5,6 +5,10 @@
 Visualize principal component analysis dimensionality reduction
 ================================================================
 
+See also
+--------
+:py:func:`Study.interactive_pca`
+
 
 
 .. image:: _images/plot_pca.png
@@ -12,4 +16,4 @@ Visualize principal component analysis dimensionality reduction
 **Python source code:** :download:`[download source: plot_pca.py]<plot_pca.py>`
 
 .. literalinclude:: plot_pca.py
-    :lines: 6-
+    :lines: 10-
