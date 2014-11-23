@@ -17,6 +17,7 @@ import matplotlib.pyplot as plt
 
 
 
+
 # from ..compute.predict import default_classifier
 from flotilla.util import link_to_list
 from ..visualize.color import red
@@ -285,8 +286,7 @@ class Interactive(object):
                         feature_subset,
                         predictor_type=default_classifier,
                         categorical_variable='outlier',
-                        score_coefficient=2,
-                        savefile='figures/last.clf.pdf'):
+                        score_coefficient=2):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -323,8 +323,7 @@ class Interactive(object):
                        categorical_variable=categorical_variables,
                        score_coefficient=score_coefficient,
                        draw_labels=draw_labels,
-                       predictor_type=predictor_types,
-                       savefile=savefile)
+                       predictor_type=predictor_types)
 
         def save(w):
             # Make the directory if it's not already there
