@@ -1,6 +1,10 @@
 """
-Visualize principal component analysis dimensionality reduction
-================================================================
+Perform classification on categorical traits
+============================================
+
+See also
+--------
+:py:func:`Study.interactive_classifier`
 
 """
 import flotilla
