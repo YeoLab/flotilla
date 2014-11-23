@@ -1352,7 +1352,7 @@ class BaseData(object):
                 simple_twoway_scatter(x, y, joint_kws=joint_kws, **kwargs)
 
     @staticmethod
-    def _figsizer(shape, multiplier=0.5):
+    def _figsizer(shape, multiplier=0.25):
         """Scale a heatmap figure based on the dataframe shape"""
         return reversed(map(lambda x: min(x * multiplier, 40),
                             shape))
@@ -1361,7 +1361,7 @@ class BaseData(object):
     def plot_clustermap(self, sample_ids=None, feature_ids=None, data=None,
                         feature_colors=None, sample_id_to_color=None,
                         featurewise=False, metric='euclidean',
-                        method='average', **kwargs):
+                        method='average', scale_fig_by_data=True, **kwargs):
         # data = self._subset_ids_or_data(sample_ids, feature_ids, data)
         if data is None:
             data = self._subset(self.data, sample_ids, feature_ids,
@@ -1375,23 +1375,22 @@ class BaseData(object):
             col_colors = sample_colors
             row_colors = feature_colors
             data.index = data.index.map(self.feature_renamer)
-            # xticklabels = data.columns
         else:
             col_colors = feature_colors
             row_colors = sample_colors
-            # yticklabels = data.index
             data.columns = data.columns.map(self.feature_renamer)
 
-        figsize = kwargs.pop('figsize', self._figsizer(data.shape))
-
-        # import pdb; pdb.set_trace()set_trace
+        if scale_fig_by_data:
+            figsize = kwargs.pop('figsize', self._figsizer(data.shape))
+        else:
+            figsize = kwargs.pop('figsize', None)
         return sns.clustermap(data, linewidth=0, col_colors=col_colors,
                               row_colors=row_colors, metric=metric,
                               method=method, figsize=figsize, **kwargs)
 
     def plot_correlations(self, sample_ids=None, feature_ids=None, data=None,
                           featurewise=False, colors=None, metric='euclidean',
-                          method='average', **kwargs):
+                          method='average', scale_fig_by_data=True, **kwargs):
         data = self._subset_ids_or_data(sample_ids, feature_ids, data)
 
         if featurewise:
@@ -1399,8 +1398,10 @@ class BaseData(object):
         else:
             corr = data.corr()
 
-        figsize = kwargs.pop('figsize', self.figsizer(corr.shape))
-
+        if scale_fig_by_data:
+            figsize = kwargs.pop('figsize', self._figsizer(data.shape))
+        else:
+            figsize = kwargs.pop('figsize', None)
         return sns.clustermap(corr, linewidth=0, col_colors=colors,
                               row_colors=colors, figsize=figsize,
                               method=method, metric=metric, **kwargs)
