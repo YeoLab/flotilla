@@ -10,6 +10,7 @@ from IPython.html.widgets import interact, TextWidget, ButtonWidget
 import matplotlib.pyplot as plt
 
 
+
 # from ..compute.predict import default_classifier
 from flotilla.util import link_to_list
 from ..visualize.color import red
@@ -587,7 +588,6 @@ class Interactive(object):
 
         interact(do_interact, **outlier_columns)
 
-
     @staticmethod
     def interactive_clustermap(self):
         def do_interact(data_type='expression',
@@ -636,6 +636,59 @@ class Interactive(object):
                        feature_subset=feature_subsets,
                        metric=metric,
                        method=method)
+
+        def save(w):
+            filename, extension = os.path.splitext(savefile.value)
+            self.maybe_make_directory(savefile.value)
+            gui.widget.result.savefig(savefile.value, format=extension)
+
+        savefile = TextWidget(description='savefile')
+        save_widget = ButtonWidget(description='save')
+        gui.widget.children = list(gui.widget.children) + \
+                              [savefile, save_widget]
+        save_widget.on_click(save)
+        return gui
+
+    @staticmethod
+    def interactive_correlations(self):
+        def do_interact(data_type='expression',
+                        sample_subset=self.default_sample_subsets,
+                        feature_subset=self.default_feature_subset,
+                        list_link='',
+                        savefile='data/last.clustermap.pdf',
+                        scale_fig_by_data=True,
+                        fig_width='', fig_height=''):
+
+            for k, v in locals().iteritems():
+                if k == 'self':
+                    continue
+                sys.stdout.write('{} : {}\n'.format(k, v))
+
+            if feature_subset != "custom" and list_link != "":
+                raise ValueError(
+                    "set feature_subset to \"custom\" to use list_link")
+
+            if feature_subset == "custom" and list_link == "":
+                raise ValueError("use a custom list name please")
+
+            if feature_subset == 'custom':
+                feature_subset = list_link
+            elif feature_subset not in self.default_feature_subsets[data_type]:
+                warnings.warn("This feature_subset ('{}') is not available in "
+                              "this data type ('{}'). Falling back on all "
+                              "features.".format(feature_subset, data_type))
+            return self.plot_correlations(
+                sample_subset=sample_subset, feature_subset=feature_subset,
+                data_type=data_type, scale_fig_by_data=scale_fig_by_data)
+
+
+        feature_subsets = Interactive.get_feature_subsets(self,
+                                                          ['expression',
+                                                           'splicing'])
+        gui = interact(do_interact,
+                       data_type=('expression', 'splicing'),
+                       sample_subset=self.default_sample_subsets,
+                       feature_subset=feature_subsets)
 
         def save(w):
             filename, extension = os.path.splitext(savefile.value)
