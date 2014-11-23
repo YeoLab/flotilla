@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 
 
 
+
 # from ..compute.predict import default_classifier
 from flotilla.util import link_to_list
 from ..visualize.color import red
@@ -706,7 +707,7 @@ class Interactive(object):
                         metric='euclidean', method='average',
                         list_link='',
                         scale_fig_by_data=True,
-                        fig_width='', fig_height=''):
+                        fig_width='', fig_height='', featurewise=False):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -729,7 +730,7 @@ class Interactive(object):
             return self.plot_correlations(
                 sample_subset=sample_subset, feature_subset=feature_subset,
                 data_type=data_type, scale_fig_by_data=scale_fig_by_data,
-                method=method, metric=metric)
+                method=method, metric=metric, featurewise=featurewise)
 
 
         feature_subsets = Interactive.get_feature_subsets(self,
@@ -743,7 +744,8 @@ class Interactive(object):
                        sample_subset=self.default_sample_subsets,
                        feature_subset=feature_subsets,
                        metric=metric,
-                       method=method)
+                       method=method,
+                       featurewise=False)
 
         def save(w):
             filename, extension = os.path.splitext(savefile.value)
