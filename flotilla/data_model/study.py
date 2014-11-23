@@ -1246,13 +1246,13 @@ class Study(object):
 
     def plot_clustermap(self, sample_subset=None, feature_subset=None,
                         data_type='expression', metric='euclidean',
-                        method='average', figsize=None, **kwargs):
+                        method='average', figsize=None,
+                        scale_figure_by_data=True, **kwargs):
 
         if feature_subset is None:
             feature_subset = self.default_feature_subset
 
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
-        # sample_colors = [self.phenotype_to_color[self.sample_id_to_phenotype[x]] for x in sample_ids]
         feature_ids = self.feature_subset_to_feature_ids(data_type,
                                                          feature_subset,
                                                          rename=False)
@@ -1261,12 +1261,42 @@ class Study(object):
             return self.expression.plot_clustermap(
                 sample_ids=sample_ids, feature_ids=feature_ids, method=method,
                 metric=metric, sample_id_to_color=self.sample_id_to_color,
-                figsize=figsize, **kwargs)
+                figsize=figsize, scale_figure_by_data, **kwargs)
         elif data_type == "splicing":
             return self.splicing.plot_clustermap(
                 sample_ids=sample_ids, feature_ids=feature_ids, method=method,
                 metric=metric, sample_id_to_color=self.sample_id_to_color,
-                figsize=figsize, **kwargs)
+                figsize=figsize, scale_figure_by_data, **kwargs)
+
+    def plot_correlations(self, sample_subset=None, feature_subset=None,
+                        data_type='expression', metric='euclidean',
+                        method='average', figsize=None,
+                        scale_figure_by_data=True, **kwargs):
+
+        if feature_subset is None:
+            feature_subset = self.default_feature_subset
+
+        sample_ids = self.sample_subset_to_sample_ids(sample_subset)
+        feature_ids = self.feature_subset_to_feature_ids(data_type,
+                                                         feature_subset,
+                                                         rename=False)
+
+        if figsize is not None and scale_figure_by_data:
+            raise ValueError('If "scale_figure_by_data" is true, then cannot '
+                             'also specify "figsize"')
+
+        if data_type == "expression":
+            return self.expression.plot_correlations(
+                sample_ids=sample_ids, feature_ids=feature_ids,
+                sample_id_to_color=self.sample_id_to_color,
+                figsize=figsize, scale_figure_by_data=scale_figure_by_data,
+                **kwargs)
+        elif data_type == "splicing":
+            return self.splicing.plot_correlations(
+                sample_ids=sample_ids, feature_ids=feature_ids, method=method,
+                metric=metric, sample_id_to_color=self.sample_id_to_color,
+                figsize=figsize, scale_figure_by_data=scale_figure_by_data,
+                **kwargs)
 
     def plot_lavalamps(self, sample_subset=None, feature_subset=None,
                        expression_thresh=-np.inf):
