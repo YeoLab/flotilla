@@ -9,4 +9,4 @@ See also
 """
 import flotilla
 study = flotilla.embark(flotilla._shalek2013)
-study.plot_classifier(plot_violins=False)
+study.plot_classifier('maturity: immature')
