@@ -58,11 +58,6 @@ def shalek2013_datapackage_path():
     return os.path.join(SHALEK2013_BASE_URL, 'datapackage.json')
 
 @pytest.fixture(scope='module')
-def chr22_datapackage_path():
-    return os.path.join(CHR22_BASE_URL, 'datapackage.json')
-
-
-@pytest.fixture(scope='module')
 def shalek2013_datapackage(shalek2013_datapackage_path):
     from flotilla.datapackage import datapackage_url_to_dict
 
@@ -81,12 +76,6 @@ def shalek2013(shalek2013_datapackage_path):
     import flotilla
 
     return flotilla.embark(shalek2013_datapackage_path)
-
-@pytest.fixture(scope='module')
-def chr22(chr22_datapackage_path):
-    import flotilla
-
-    return flotilla.embark(chr22_datapackage_path)
 
 
 @pytest.fixture(scope='module')
@@ -161,4 +150,41 @@ def minimum_samples(request):
 
 @pytest.fixture(params=[True, False])
 def featurewise(request):
+    return request.param
+
+@pytest.fixture(scope='module')
+def base_data(shalek2013_data):
+    from flotilla.data_model.base import BaseData
+    return BaseData(shalek2013_data.expression)
+
+@pytest.fixture(params=[None, 'half', 'all'], scope='module')
+def sample_ids(request, base_data):
+    if request.param is None:
+        return request.param
+    elif request.param == 'some':
+        half = base_data.data.shape[0] / 2
+        return base_data.data.index[:half]
+    elif request.param == 'all':
+        return base_data.data.index
+
+
+@pytest.fixture(params=[None, 'half', 'all'], scope='module')
+def feature_ids(request, base_data):
+    if request.param is None:
+        return request.param
+    elif request.param == 'some':
+        half = base_data.data.shape[1] / 2
+        return base_data.data.columns[:half]
+    elif request.param == 'all':
+        return base_data.data.columns
+
+@pytest.fixture(params=[True, False], scope='module')
+def standardize(request):
+    return request.param
+
+@pytest.fixture(params=['phenotype: Immature BDMC',
+                        'not (phenotype: Immature BDMC)',
+                        'pooled'],
+                scope='module')
+def sample_subset(request):
     return request.param

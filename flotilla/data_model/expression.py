@@ -32,8 +32,7 @@ class ExpressionData(BaseData):
             thresh=thresh,
             outliers=outliers, pooled=pooled, minimum_samples=minimum_samples,
             predictor_config_manager=predictor_config_manager,
-            technical_outliers=technical_outliers)
-        self.data_type = 'expression'
+            technical_outliers=technical_outliers, data_type='expression')
         self.thresh = thresh
         self.plus_one = plus_one
 

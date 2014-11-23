@@ -725,6 +725,22 @@ class BaseData(object):
 
         return singles, pooled
 
+    # def _subset_ids_or_data(self, sample_ids, feature_ids, data,
+    #                            singles=False):
+    #     if data is None:
+    #         if singles:
+    #             data = self.singles
+    #         else:
+    #             data = self.data
+    #         return self._subset(data, sample_ids, feature_ids,
+    #                             require_min_samples=False)
+    #     else:
+    #         if feature_ids is not None and sample_ids is not None:
+    #             raise ValueError('Can only specify `sample_ids` and '
+    #                              '`feature_ids` or `data`, but not both.')
+    #         else:
+    #             return data
+
     def _subset_and_standardize(self, data, sample_ids=None,
                                 feature_ids=None,
                                 standardize=True, return_means=False,
@@ -1334,6 +1350,85 @@ class BaseData(object):
                         joint_kws['color'] = [label_to_color[groupby[i]]
                                               for i in x.index]
                 simple_twoway_scatter(x, y, joint_kws=joint_kws, **kwargs)
+
+    @staticmethod
+    def _figsizer(shape, multiplier=0.25):
+        """Scale a heatmap figure based on the dataframe shape"""
+        return tuple(reversed(map(lambda x: min(x * multiplier, 40),
+                                  shape)))
+
+
+    def plot_clustermap(self, sample_ids=None, feature_ids=None, data=None,
+                        feature_colors=None, sample_id_to_color=None,
+                        metric='euclidean', method='average',
+                        scale_fig_by_data=True, **kwargs):
+        # data = self._subset_ids_or_data(sample_ids, feature_ids, data)
+        if data is None:
+            data = self._subset(self.data, sample_ids, feature_ids,
+                                require_min_samples=False)
+        # Get a mask of what values are NA, then replace them because
+        # clustering doesn't work if there's NAs
+        data = data.dropna(how='all', axis=1).dropna(how='all', axis=0)
+        mask = data.isnull()
+        data = data.fillna(data.mean())
+
+        if sample_id_to_color is not None:
+            sample_colors = [sample_id_to_color[x] for x in data.index]
+
+        col_colors = feature_colors
+        row_colors = sample_colors
+        data.columns = data.columns.map(self.feature_renamer)
+
+        if scale_fig_by_data:
+            figsize = self._figsizer(data.shape)
+            kwargs.pop('figsize')
+        else:
+            figsize = kwargs.pop('figsize', None)
+
+
+        return sns.clustermap(data, linewidth=0, col_colors=col_colors,
+                              row_colors=row_colors, metric=metric,
+                              method=method, figsize=figsize, mask=mask,
+                              **kwargs)
+
+    def plot_correlations(self, sample_ids=None, feature_ids=None, data=None,
+                          featurewise=False, sample_id_to_color=None,
+                          metric='euclidean', method='average',
+                          scale_fig_by_data=True, **kwargs):
+        if data is None:
+            data = self._subset(self.data, sample_ids, feature_ids,
+                                require_min_samples=False)
+
+        if sample_id_to_color is not None and not featurewise:
+            colors = [sample_id_to_color[x] for x in data.index]
+        else:
+            colors = None
+
+        if not featurewise:
+            data = data.T
+        corr = data.corr()
+        corr = corr.dropna(how='all', axis=0).dropna(how='all', axis=1)
+
+        # Get a mask of what values are NA, then replace them because
+        # clustering doesn't work if there's NAs
+        mask = corr.isnull()
+        corr = corr.fillna(data.mean())
+
+        if featurewise:
+            corr.index = corr.index.map(self.feature_renamer)
+            corr.columns = corr.columns.map(self.feature_renamer)
+
+        if scale_fig_by_data:
+            figsize = self._figsizer(corr.shape)
+            kwargs.pop('figsize')
+        else:
+            figsize = kwargs.pop('figsize', None)
+
+        return sns.clustermap(corr, linewidth=0, col_colors=colors,
+                              row_colors=colors, figsize=figsize,
+                              method=method, metric=metric, mask=mask,
+                              **kwargs)
+
 
 def subsets_from_metadata(metadata, minimum, subset_type, ignore=None):
     """
