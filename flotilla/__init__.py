@@ -7,7 +7,7 @@ import data_model
 from flotilla.datapackage import make_study_datapackage
 import visualize
 
-__version__ = '0.2.4dev'
+__version__ = '0.2.4'
 
 _shalek2013 = 'https://raw.githubusercontent.com/YeoLab/shalek2013/master/' \
               'datapackage.json'
