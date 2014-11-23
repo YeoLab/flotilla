@@ -1354,8 +1354,8 @@ class BaseData(object):
     @staticmethod
     def _figsizer(shape, multiplier=0.25):
         """Scale a heatmap figure based on the dataframe shape"""
-        return reversed(map(lambda x: min(x * multiplier, 40),
-                            shape))
+        return tuple(reversed(map(lambda x: min(x * multiplier, 40),
+                                  shape)))
 
 
     def plot_clustermap(self, sample_ids=None, feature_ids=None, data=None,
