@@ -1385,9 +1385,16 @@ class BaseData(object):
             kwargs.pop('figsize')
         else:
             figsize = kwargs.pop('figsize', None)
+
+        # Get a mask of what values are NA, then replace them because
+        # clustering doesn't work if there's NAs
+        mask = data.isnull()
+        data = data.fillna(data.mean())
+
         return sns.clustermap(data, linewidth=0, col_colors=col_colors,
                               row_colors=row_colors, metric=metric,
-                              method=method, figsize=figsize, **kwargs)
+                              method=method, figsize=figsize, mask=mask,
+                              **kwargs)
 
     def plot_correlations(self, sample_ids=None, feature_ids=None, data=None,
                           featurewise=False, sample_id_to_color=None,
@@ -1397,7 +1404,7 @@ class BaseData(object):
             data = self._subset(self.data, sample_ids, feature_ids,
                                 require_min_samples=False)
 
-        if sample_id_to_color is not None:
+        if sample_id_to_color is not None and not featurewise:
             colors = [sample_id_to_color[x] for x in data.index]
         else:
             colors = None
@@ -1415,9 +1422,15 @@ class BaseData(object):
             kwargs.pop('figsize')
         else:
             figsize = kwargs.pop('figsize', None)
+
+        # Get a mask of what values are NA, then replace them because
+        # clustering doesn't work if there's NAs
+        mask = corr.isnull()
+        corr = corr.fillna(data.mean())
         return sns.clustermap(corr, linewidth=0, col_colors=colors,
                               row_colors=colors, figsize=figsize,
-                              method=method, metric=metric, **kwargs)
+                              method=method, metric=metric, mask=mask,
+                              **kwargs)
 
 
 def subsets_from_metadata(metadata, minimum, subset_type, ignore=None):
