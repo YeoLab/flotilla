@@ -596,8 +596,7 @@ class SplicingData(BaseData):
 
 
 class SpliceJunctionData(SplicingData):
-    """Class to hold splice junction information from SJ.out.tab files from
-    STAR
+    """Class for splice junction information from SJ.out.tab files from STAR
 
     Attributes
     ----------
