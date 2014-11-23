@@ -273,11 +273,7 @@ class ExampleGenerator(object):
         self.html = "<img src=../%s>" % self.pngfilename
         cluster_or_correls = 'plot_clustermap' in self.filename or \
                              'plot_correlations' in self.filename
-        if cluster_or_correls:
-            fig.savefig(pngfile, dpi=75, format='png', bbox_inches='tight')
-        else:
-            fig.tight_layout()
-            fig.savefig(pngfile, dpi=75, format="png")
+        fig.savefig(pngfile, dpi=75, format="png", bbox_inches='tight')
 
         cx, cy = self.thumbloc
         create_thumbnail(pngfile, thumbfile, cx=cx, cy=cy)
