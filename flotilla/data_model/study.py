@@ -875,6 +875,8 @@ class Study(object):
             raise ValueError("All samples are True (or all samples are "
                              "False) or all are the same, cannot classify"
                              "when all samples are the same")
+        trait_data = pd.Series(trait_data, name=trait,
+                               index=self.metadata.data.index)
 
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
         feature_ids = self.feature_subset_to_feature_ids(data_type,
