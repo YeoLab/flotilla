@@ -1411,7 +1411,7 @@ class BaseData(object):
             corr.columns = corr.columns.map(self.feature_renamer)
 
         if scale_fig_by_data:
-            figsize = self._figsizer(data.shape)
+            figsize = self._figsizer(corr.shape)
             kwargs.pop('figsize')
         else:
             figsize = kwargs.pop('figsize', None)
