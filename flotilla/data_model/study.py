@@ -1261,12 +1261,14 @@ class Study(object):
             return self.expression.plot_clustermap(
                 sample_ids=sample_ids, feature_ids=feature_ids, method=method,
                 metric=metric, sample_id_to_color=self.sample_id_to_color,
-                figsize=figsize, scale_figure_by_data, **kwargs)
+                figsize=figsize, scale_figure_by_data=scale_figure_by_data,
+                **kwargs)
         elif data_type == "splicing":
             return self.splicing.plot_clustermap(
                 sample_ids=sample_ids, feature_ids=feature_ids, method=method,
                 metric=metric, sample_id_to_color=self.sample_id_to_color,
-                figsize=figsize, scale_figure_by_data, **kwargs)
+                figsize=figsize, scale_figure_by_data=scale_figure_by_data,
+                **kwargs)
 
     def plot_correlations(self, sample_subset=None, feature_subset=None,
                         data_type='expression', metric='euclidean',
