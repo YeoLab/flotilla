@@ -4,7 +4,7 @@ import pandas.util.testing as pdt
 import pytest
 from sklearn.decomposition import PCA, NMF
 
-@pytest.fixture(params=[None, 2, 10])
+@pytest.fixture(params=[None, 2])
 def n_components(request):
     return request.param
 
