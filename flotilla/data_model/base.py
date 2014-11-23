@@ -1360,8 +1360,8 @@ class BaseData(object):
 
     def plot_clustermap(self, sample_ids=None, feature_ids=None, data=None,
                         feature_colors=None, sample_id_to_color=None,
-                        featurewise=False, metric='euclidean',
-                        method='average', scale_fig_by_data=True, **kwargs):
+                        metric='euclidean', method='average',
+                        scale_fig_by_data=True, **kwargs):
         # data = self._subset_ids_or_data(sample_ids, feature_ids, data)
         if data is None:
             data = self._subset(self.data, sample_ids, feature_ids,
@@ -1370,15 +1370,9 @@ class BaseData(object):
         if sample_id_to_color is not None:
             sample_colors = [sample_id_to_color[x] for x in data.index]
 
-        if featurewise:
-            data = data.T
-            col_colors = sample_colors
-            row_colors = feature_colors
-            data.index = data.index.map(self.feature_renamer)
-        else:
-            col_colors = feature_colors
-            row_colors = sample_colors
-            data.columns = data.columns.map(self.feature_renamer)
+        col_colors = feature_colors
+        row_colors = sample_colors
+        data.columns = data.columns.map(self.feature_renamer)
 
         if scale_fig_by_data:
             figsize = self._figsizer(data.shape)
