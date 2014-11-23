@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 
 
 
+
 # from ..compute.predict import default_classifier
 from flotilla.util import link_to_list
 from ..visualize.color import red
@@ -618,7 +619,7 @@ class Interactive(object):
                 warnings.warn("This feature_subset ('{}') is not available in "
                               "this data type ('{}'). Falling back on all "
                               "features.".format(feature_subset, data_type))
-            return self.plot_clusteredheatmap(
+            return self.plot_clustermap(
                 sample_subset=sample_subset, feature_subset=feature_subset,
                 data_type=data_type, metric=metric, method=method,
                 scale_fig_by_data=scale_fig_by_data)
