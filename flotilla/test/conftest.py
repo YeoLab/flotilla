@@ -182,7 +182,9 @@ def feature_ids(request, base_data):
 def standardize(request):
     return request.param
 
-@pytest.fixture(params=['Mature BDMC', 'not (Mature BDMC)', 'pooled'],
+@pytest.fixture(params=['phenotype: Immature BDMC',
+                        'not (phenotype: Immature BDMC)',
+                        'pooled'],
                 scope='module')
 def sample_subset(request):
     return request.param
