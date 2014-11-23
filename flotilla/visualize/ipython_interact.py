@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 
 
 
+
 # from ..compute.predict import default_classifier
 from flotilla.util import link_to_list
 from ..visualize.color import red
@@ -205,8 +206,7 @@ class Interactive(object):
                         use_pc_4=True, degree_cut=1,
                         cov_std_cut=1.8, n_pcs=5,
                         feature_of_interest="RBFOX2",
-                        draw_labels=False,
-                        savefile='figures/last.graph.pdf'):
+                        draw_labels=False):
 
             for k, v in locals().iteritems():
                 if k == 'self':
