@@ -1390,11 +1390,17 @@ class BaseData(object):
                               method=method, figsize=figsize, **kwargs)
 
     def plot_correlations(self, sample_ids=None, feature_ids=None, data=None,
-                          featurewise=False, colors=None, metric='euclidean',
-                          method='average', scale_fig_by_data=True, **kwargs):
+                          featurewise=False, sample_id_to_color=None,
+                          metric='euclidean', method='average',
+                          scale_fig_by_data=True, **kwargs):
         if data is None:
             data = self._subset(self.data, sample_ids, feature_ids,
                                 require_min_samples=False)
+
+        if sample_id_to_color is not None:
+            colors = [sample_id_to_color[x] for x in data.index]
+        else:
+            colors = None
 
         if featurewise:
             corr = data.corr()
