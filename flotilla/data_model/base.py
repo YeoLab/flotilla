@@ -143,7 +143,7 @@ class BaseData(object):
         self.minimum_samples = minimum_samples
         self.data_type = data_type
 
-        if technical_outliers is not None:
+        if technical_outliers is not None and len(technical_outliers) > 0:
             sys.stderr.write("Removing technical outliers from consideration "
                              "in {0}:\n\t{1}\n".format(
                 self.data_type, ", ".join(technical_outliers)))
