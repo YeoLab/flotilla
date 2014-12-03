@@ -1609,6 +1609,7 @@ class Study(object):
             rename_columns[splicing_index_name] = sample_id
         if splicing_columns_name == 'columns':
             rename_columns[splicing_columns_name] = event_name
+            splicing_columns_name = event_name
         splicing_tidy = splicing_tidy.rename(columns=rename_columns)
 
         # Create a column of the common id on which to join splicing
