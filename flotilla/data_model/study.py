@@ -1596,6 +1596,8 @@ class Study(object):
         sample_id = 'sample_id'
         event_name = 'event_name'
 
+        splicing_common_id = self.splicing.feature_data[self.splicing.feature_expression_id_col]
+
         # Tidify splicing
         splicing = self.splicing.data
         splicing_index_name = self._maybe_get_axis_name(splicing, axis=0)
@@ -1618,10 +1620,10 @@ class Study(object):
         splicing_names = splicing_tidy[splicing_columns_name]
         if isinstance(splicing_names, pd.Series):
             splicing_tidy[common_id] = splicing_tidy[
-                splicing_columns_name].map(self.splicing.feature_renamer)
+                splicing_columns_name].map(splicing_common_id)
         else:
             splicing_tidy[common_id] = [
-                self.splicing.feature_renamer(x)
+                splicing_common_id[x]
                 for x in splicing_names.itertuples(index=False)]
 
         splicing_tidy = splicing_tidy.dropna()
