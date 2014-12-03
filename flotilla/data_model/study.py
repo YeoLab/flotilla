@@ -1576,10 +1576,11 @@ class Study(object):
     @staticmethod
     def _maybe_get_axis_name(df, axis=0):
         alt_name = 'columns' if axis == 1 else 'index'
-        if isinstance(df.columns, pd.MultiIndex):
-            name = df.columns.names
+        axis = df.columns if axis == 1 else df.index
+        if isinstance(axis, pd.MultiIndex):
+            name = axis.names
         else:
-            name = df.columns.name
+            name = axis.name
         name = alt_name if name is None else name
         return name
 
