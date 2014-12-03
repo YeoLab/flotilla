@@ -283,7 +283,7 @@ class BaseData(object):
         """Data from only the outlier samples"""
         return self.data.ix[self.outlier_samples]
 
-    @property
+    @cached_property()
     def feature_renamer_series(self):
         """A pandas Series of the original feature ids to the renamed ids"""
         try:
