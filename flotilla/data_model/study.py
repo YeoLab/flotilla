@@ -1593,6 +1593,8 @@ class Study(object):
             splicing_columns_name = splicing.columns.names
         else:
             splicing_columns_name = splicing.columns.name
+        splicing_columns_name = 'columns' if splicing_columns_name is None \
+            else splicing_columns_name
 
         splicing_tidy = pd.melt(splicing.reset_index(),
                                 id_vars=splicing_index_name,
