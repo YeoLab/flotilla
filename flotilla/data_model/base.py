@@ -236,7 +236,7 @@ class BaseData(object):
             else:
                 return rename
         else:
-            return x
+            return '_'.join(x)
 
     @staticmethod
     def _shortener(x, renamer=None, max_char_len=20):
