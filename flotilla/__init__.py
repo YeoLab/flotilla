@@ -9,8 +9,12 @@ import visualize
 
 __version__ = '0.2.4'
 
+# 18 cells, multiindex on the splicing data features, features already renamed
+# in the matrices
 _shalek2013 = 'https://raw.githubusercontent.com/YeoLab/shalek2013/master/' \
               'datapackage.json'
+
+# 250 cells, ensembl and miso ids on index, need renaming, lots of celltypes
 _test_data = 'https://raw.githubusercontent.com/YeoLab/flotilla_test_data/' \
              'master/datapackage.json'
 
