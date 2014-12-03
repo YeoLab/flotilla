@@ -1580,6 +1580,10 @@ class Study(object):
         :return:
         :rtype:
         """
+        # Establish common strings
+        common_id = 'common_id'
+        sample_id = 'sample_id'
+
         # Tidify splicing
         splicing = self.splicing.data
         splicing_index_name = splicing.index.name
@@ -1595,9 +1599,18 @@ class Study(object):
                                 value_name='psi',
                                 var_name=splicing_columns_name)
         splicing_tidy = splicing_tidy.rename(columns={
-            splicing_index_name: 'sample_id'})
-        splicing_tidy['common_id'] = splicing_tidy[splicing_columns_name].map(
-            self.splicing.feature_data[self.splicing.feature_expression_id_col])
+            splicing_index_name: sample_id})
+
+        # Create a column of the common id on which to join splicing
+        # and expression
+        splicing_names = splicing_tidy[splicing_columns_name]
+        if isinstance(splicing_names, pd.Series):
+            splicing_tidy[common_id] = splicing_tidy[
+                splicing_columns_name].map(self.splicing.feature_renamer)
+        else:
+            splicing_tidy[common_id] = [
+                self.splicing.feature_renamer(x)
+                for x in splicing_names.itertuples(index=False)]
 
         splicing_tidy = splicing_tidy.dropna()
 
@@ -1610,13 +1623,14 @@ class Study(object):
         expression_tidy = pd.melt(expression.reset_index(),
                                   id_vars=expression_index_name,
                                   value_name='expression',
-                                  var_name='common_id')
-        # if expression_index_name == 'index':
-        expression_tidy = expression_tidy.rename(columns={'index': 'sample_id'})
+                                  var_name=common_id)
+        # This will only do anything if there is a column named "index" so
+        # no need to check anything
+        expression_tidy = expression_tidy.rename(columns={'index': sample_id})
         expression_tidy = expression_tidy.dropna()
 
-        splicing_tidy.set_index(['sample_id', 'common_id'], inplace=True)
-        expression_tidy.set_index(['sample_id', 'common_id'], inplace=True)
+        splicing_tidy.set_index([sample_id, common_id], inplace=True)
+        expression_tidy.set_index([sample_id, common_id], inplace=True)
 
         return splicing_tidy.join(expression_tidy, how='inner').reset_index()
 
