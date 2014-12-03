@@ -459,9 +459,10 @@ class Study(object):
             compression = None if 'compression' not in resource else \
                 resource['compression']
             header = resource.pop('header', 0)
+            index_col = resource.pop('index_col', 0)
 
             dfs[name] = reader(filename, compression=compression,
-                               header=header)
+                               header=header, index_col=index_col)
 
             for key in set(resource.keys()).difference(
                     DATAPACKAGE_RESOURCE_COMMON_KWS):
