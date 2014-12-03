@@ -11,6 +11,8 @@ __version__ = '0.2.4'
 
 _shalek2013 = 'https://raw.githubusercontent.com/YeoLab/shalek2013/master/' \
               'datapackage.json'
+_test_data = 'https://raw.githubusercontent.com/YeoLab/flotilla_test_data/' \
+             'master/datapackage.json'
 
 def embark(study_name, load_species_data=True):
     """
