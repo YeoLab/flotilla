@@ -1573,6 +1573,16 @@ class Study(object):
                                       version=version,
                                       flotilla_dir=flotilla_dir)
 
+    @staticmethod
+    def _maybe_get_axis_name(df, axis=0):
+        alt_name = 'columns' if axis == 1 else 'index'
+        if isinstance(df.columns, pd.MultiIndex):
+            name = df.columns.names
+        else:
+            name = df.columns.name
+        name = alt_name if name is None else name
+        return name
+
     @cached_property()
     def tidy_splicing_with_expression(self):
         """A tall 'tidy' dataframe of samples with expression and splicing
@@ -1583,25 +1593,23 @@ class Study(object):
         # Establish common strings
         common_id = 'common_id'
         sample_id = 'sample_id'
+        event_name = 'event_name'
 
         # Tidify splicing
         splicing = self.splicing.data
-        splicing_index_name = splicing.index.name
-        splicing_index_name = 'index' if splicing_index_name is None \
-            else splicing_index_name
-        if isinstance(splicing.columns, pd.MultiIndex):
-            splicing_columns_name = splicing.columns.names
-        else:
-            splicing_columns_name = splicing.columns.name
-        splicing_columns_name = 'columns' if splicing_columns_name is None \
-            else splicing_columns_name
+        splicing_index_name = self._maybe_get_axis_name(splicing, axis=0)
+        splicing_columns_name = self._maybe_get_axis_name(splicing, axis=1)
 
         splicing_tidy = pd.melt(splicing.reset_index(),
                                 id_vars=splicing_index_name,
                                 value_name='psi',
                                 var_name=splicing_columns_name)
-        splicing_tidy = splicing_tidy.rename(columns={
-            splicing_index_name: sample_id})
+        rename_columns = {}
+        if splicing_index_name == 'index':
+            rename_columns[splicing_index_name] = sample_id
+        if splicing_columns_name == 'columns':
+            rename_columns[splicing_columns_name] = event_name
+        splicing_tidy = splicing_tidy.rename(columns=rename_columns)
 
         # Create a column of the common id on which to join splicing
         # and expression
@@ -1618,9 +1626,8 @@ class Study(object):
 
         # Tidify expression
         expression = self.expression.data_original
-        expression_index_name = expression.index.name
-        expression_index_name = 'index' if expression_index_name is None \
-            else expression_index_name
+        expression_index_name = self._maybe_get_axis_name(expression, axis=0)
+        expression_columns_name = self._maybe_get_axis_name(expression, axis=1)
 
         expression_tidy = pd.melt(expression.reset_index(),
                                   id_vars=expression_index_name,
