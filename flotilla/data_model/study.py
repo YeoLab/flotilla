@@ -1622,8 +1622,10 @@ class Study(object):
             splicing_tidy[common_id] = splicing_tidy[
                 splicing_columns_name].map(splicing_common_id)
         else:
+            # Splicing ids are a multi-index, so the feature renamer will get
+            # the name of the feature.
             splicing_tidy[common_id] = [
-                splicing_common_id[x]
+                self.splicing.feature_renamer(x)
                 for x in splicing_names.itertuples(index=False)]
 
         splicing_tidy = splicing_tidy.dropna()
