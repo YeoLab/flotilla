@@ -603,9 +603,10 @@
             <span class="n">compression</span> <span class="o">=</span> <span class="bp">None</span> <span class="k">if</span> <span class="s">&#39;compression&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">resource</span> <span class="k">else</span> \
                 <span class="n">resource</span><span class="p">[</span><span class="s">&#39;compression&#39;</span><span class="p">]</span>
             <span class="n">header</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;header&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">index_col</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;index_col&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
             <span class="n">dfs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">reader</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="n">compression</span><span class="p">,</span>
-                               <span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">)</span>
+                               <span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="n">index_col</span><span class="p">)</span>
 
             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span>
                     <span class="n">DATAPACKAGE_RESOURCE_COMMON_KWS</span><span class="p">):</span>
@@ -1716,6 +1717,17 @@
                                       <span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="p">,</span>
                                       <span class="n">flotilla_dir</span><span class="o">=</span><span class="n">flotilla_dir</span><span class="p">)</span>
 </div>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_maybe_get_axis_name</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="n">alt_name</span> <span class="o">=</span> <span class="s">&#39;columns&#39;</span> <span class="k">if</span> <span class="n">axis</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s">&#39;index&#39;</span>
+        <span class="n">axis</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">axis</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="p">):</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">axis</span><span class="o">.</span><span class="n">names</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">axis</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">alt_name</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">name</span>
+        <span class="k">return</span> <span class="n">name</span>
+
     <span class="nd">@cached_property</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">tidy_splicing_with_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A tall &#39;tidy&#39; dataframe of samples with expression and splicing</span>
@@ -1723,43 +1735,61 @@
 <span class="sd">        :return:</span>
 <span class="sd">        :rtype:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Establish common strings</span>
+        <span class="n">common_id</span> <span class="o">=</span> <span class="s">&#39;common_id&#39;</span>
+        <span class="n">sample_id</span> <span class="o">=</span> <span class="s">&#39;sample_id&#39;</span>
+        <span class="n">event_name</span> <span class="o">=</span> <span class="s">&#39;event_name&#39;</span>
+
+        <span class="n">splicing_common_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">splicing</span><span class="o">.</span><span class="n">feature_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">splicing</span><span class="o">.</span><span class="n">feature_expression_id_col</span><span class="p">]</span>
+
         <span class="c"># Tidify splicing</span>
         <span class="n">splicing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">splicing</span><span class="o">.</span><span class="n">data</span>
-        <span class="n">splicing_index_name</span> <span class="o">=</span> <span class="n">splicing</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span>
-        <span class="n">splicing_index_name</span> <span class="o">=</span> <span class="s">&#39;index&#39;</span> <span class="k">if</span> <span class="n">splicing_index_name</span> <span class="ow">is</span> <span class="bp">None</span> \
-            <span class="k">else</span> <span class="n">splicing_index_name</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">splicing</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="p">):</span>
-            <span class="n">splicing_columns_name</span> <span class="o">=</span> <span class="n">splicing</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">names</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">splicing_columns_name</span> <span class="o">=</span> <span class="n">splicing</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">splicing_index_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_maybe_get_axis_name</span><span class="p">(</span><span class="n">splicing</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">splicing_columns_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_maybe_get_axis_name</span><span class="p">(</span><span class="n">splicing</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="n">splicing_tidy</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">melt</span><span class="p">(</span><span class="n">splicing</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(),</span>
                                 <span class="n">id_vars</span><span class="o">=</span><span class="n">splicing_index_name</span><span class="p">,</span>
                                 <span class="n">value_name</span><span class="o">=</span><span class="s">&#39;psi&#39;</span><span class="p">,</span>
                                 <span class="n">var_name</span><span class="o">=</span><span class="n">splicing_columns_name</span><span class="p">)</span>
-        <span class="n">splicing_tidy</span> <span class="o">=</span> <span class="n">splicing_tidy</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span>
-            <span class="n">splicing_index_name</span><span class="p">:</span> <span class="s">&#39;sample_id&#39;</span><span class="p">})</span>
-        <span class="n">splicing_tidy</span><span class="p">[</span><span class="s">&#39;common_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">splicing_tidy</span><span class="p">[</span><span class="n">splicing_columns_name</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">splicing</span><span class="o">.</span><span class="n">feature_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">splicing</span><span class="o">.</span><span class="n">feature_expression_id_col</span><span class="p">])</span>
+        <span class="n">rename_columns</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">splicing_index_name</span> <span class="o">==</span> <span class="s">&#39;index&#39;</span><span class="p">:</span>
+            <span class="n">rename_columns</span><span class="p">[</span><span class="n">splicing_index_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">sample_id</span>
+        <span class="k">if</span> <span class="n">splicing_columns_name</span> <span class="o">==</span> <span class="s">&#39;columns&#39;</span><span class="p">:</span>
+            <span class="n">rename_columns</span><span class="p">[</span><span class="n">splicing_columns_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">event_name</span>
+            <span class="n">splicing_columns_name</span> <span class="o">=</span> <span class="n">event_name</span>
+        <span class="n">splicing_tidy</span> <span class="o">=</span> <span class="n">splicing_tidy</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">rename_columns</span><span class="p">)</span>
+
+        <span class="c"># Create a column of the common id on which to join splicing</span>
+        <span class="c"># and expression</span>
+        <span class="n">splicing_names</span> <span class="o">=</span> <span class="n">splicing_tidy</span><span class="p">[</span><span class="n">splicing_columns_name</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">splicing_names</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+            <span class="n">splicing_tidy</span><span class="p">[</span><span class="n">common_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">splicing_tidy</span><span class="p">[</span>
+                <span class="n">splicing_columns_name</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">splicing_common_id</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># Splicing ids are a multi-index, so the feature renamer will get</span>
+            <span class="c"># the name of the feature.</span>
+            <span class="n">splicing_tidy</span><span class="p">[</span><span class="n">common_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">splicing</span><span class="o">.</span><span class="n">feature_renamer</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">splicing_names</span><span class="o">.</span><span class="n">itertuples</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="bp">False</span><span class="p">)]</span>
 
         <span class="n">splicing_tidy</span> <span class="o">=</span> <span class="n">splicing_tidy</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
 
         <span class="c"># Tidify expression</span>
         <span class="n">expression</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">data_original</span>
-        <span class="n">expression_index_name</span> <span class="o">=</span> <span class="n">expression</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span>
-        <span class="n">expression_index_name</span> <span class="o">=</span> <span class="s">&#39;index&#39;</span> <span class="k">if</span> <span class="n">expression_index_name</span> <span class="ow">is</span> <span class="bp">None</span> \
-            <span class="k">else</span> <span class="n">expression_index_name</span>
+        <span class="n">expression_index_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_maybe_get_axis_name</span><span class="p">(</span><span class="n">expression</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">expression_columns_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_maybe_get_axis_name</span><span class="p">(</span><span class="n">expression</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="n">expression_tidy</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">melt</span><span class="p">(</span><span class="n">expression</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(),</span>
                                   <span class="n">id_vars</span><span class="o">=</span><span class="n">expression_index_name</span><span class="p">,</span>
                                   <span class="n">value_name</span><span class="o">=</span><span class="s">&#39;expression&#39;</span><span class="p">,</span>
-                                  <span class="n">var_name</span><span class="o">=</span><span class="s">&#39;common_id&#39;</span><span class="p">)</span>
-        <span class="c"># if expression_index_name == &#39;index&#39;:</span>
-        <span class="n">expression_tidy</span> <span class="o">=</span> <span class="n">expression_tidy</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;index&#39;</span><span class="p">:</span> <span class="s">&#39;sample_id&#39;</span><span class="p">})</span>
+                                  <span class="n">var_name</span><span class="o">=</span><span class="n">common_id</span><span class="p">)</span>
+        <span class="c"># This will only do anything if there is a column named &quot;index&quot; so</span>
+        <span class="c"># no need to check anything</span>
+        <span class="n">expression_tidy</span> <span class="o">=</span> <span class="n">expression_tidy</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;index&#39;</span><span class="p">:</span> <span class="n">sample_id</span><span class="p">})</span>
         <span class="n">expression_tidy</span> <span class="o">=</span> <span class="n">expression_tidy</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
 
-        <span class="n">splicing_tidy</span><span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="s">&#39;sample_id&#39;</span><span class="p">,</span> <span class="s">&#39;common_id&#39;</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-        <span class="n">expression_tidy</span><span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="s">&#39;sample_id&#39;</span><span class="p">,</span> <span class="s">&#39;common_id&#39;</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">splicing_tidy</span><span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="n">sample_id</span><span class="p">,</span> <span class="n">common_id</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">expression_tidy</span><span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="n">sample_id</span><span class="p">,</span> <span class="n">common_id</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">splicing_tidy</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">expression_tidy</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s">&#39;inner&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
 

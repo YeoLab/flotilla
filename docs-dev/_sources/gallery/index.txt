@@ -74,19 +74,19 @@ Example gallery
 .. toctree::
    :hidden:
 
-   ./plot_two_samples
-
-   ./plot_two_features
+   ./plot_graph
 
    ./plot_pca
 
-   ./plot_graph
+   ./plot_correlations
 
    ./plot_gene
 
-   ./plot_correlations
-
    ./plot_clustermap
+
+   ./plot_two_features
+
+   ./plot_two_samples
 
    ./plot_classifier
 
@@ -97,21 +97,8 @@ Example gallery
 .. raw:: html
 
     <div class='figure align-center'>
-    <a href=./plot_two_samples.html>
-    <img src=../_static/plot_two_samples_thumb.png>
-    <span class='figure-label'>
-    <p></p>
-    </span>
-    </a>
-    </div>
-
-
-
-.. raw:: html
-
-    <div class='figure align-center'>
-    <a href=./plot_two_features.html>
-    <img src=../_static/plot_two_features_thumb.png>
+    <a href=./plot_graph.html>
+    <img src=../_static/plot_graph_thumb.png>
     <span class='figure-label'>
     <p></p>
     </span>
@@ -136,8 +123,8 @@ Example gallery
 .. raw:: html
 
     <div class='figure align-center'>
-    <a href=./plot_graph.html>
-    <img src=../_static/plot_graph_thumb.png>
+    <a href=./plot_correlations.html>
+    <img src=../_static/plot_correlations_thumb.png>
     <span class='figure-label'>
     <p></p>
     </span>
@@ -162,8 +149,8 @@ Example gallery
 .. raw:: html
 
     <div class='figure align-center'>
-    <a href=./plot_correlations.html>
-    <img src=../_static/plot_correlations_thumb.png>
+    <a href=./plot_clustermap.html>
+    <img src=../_static/plot_clustermap_thumb.png>
     <span class='figure-label'>
     <p></p>
     </span>
@@ -175,8 +162,21 @@ Example gallery
 .. raw:: html
 
     <div class='figure align-center'>
-    <a href=./plot_clustermap.html>
-    <img src=../_static/plot_clustermap_thumb.png>
+    <a href=./plot_two_features.html>
+    <img src=../_static/plot_two_features_thumb.png>
+    <span class='figure-label'>
+    <p></p>
+    </span>
+    </a>
+    </div>
+
+
+
+.. raw:: html
+
+    <div class='figure align-center'>
+    <a href=./plot_two_samples.html>
+    <img src=../_static/plot_two_samples_thumb.png>
     <span class='figure-label'>
     <p></p>
     </span>

@@ -380,7 +380,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">rename</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">x</span>
+            <span class="k">return</span> <span class="s">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_shortener</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">renamer</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">max_char_len</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
@@ -427,15 +427,15 @@
         <span class="sd">&quot;&quot;&quot;Data from only the outlier samples&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">outlier_samples</span><span class="p">]</span>
 </div>
-    <span class="nd">@property</span>
-<div class="viewcode-block" id="BaseData.feature_renamer_series"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.feature_renamer_series">[docs]</a>    <span class="k">def</span> <span class="nf">feature_renamer_series</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@cached_property</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">feature_renamer_series</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A pandas Series of the original feature ids to the renamed ids&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_rename_col</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
                              <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
-</div>
+
 <div class="viewcode-block" id="BaseData.maybe_renamed_to_feature_id"><a class="viewcode-back" href="../../../flotilla.data_model.base.html#flotilla.data_model.base.BaseData.maybe_renamed_to_feature_id">[docs]</a>    <span class="k">def</span> <span class="nf">maybe_renamed_to_feature_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_id</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;To be able to give a simple gene name, e.g. &quot;RBFOX2&quot; and get the</span>
 <span class="sd">        official ENSG ids or MISO ids</span>
