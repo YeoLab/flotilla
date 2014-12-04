@@ -45,10 +45,11 @@ def shalek2013_data():
 
 
 @pytest.fixture(scope='module')
-def example_study(shalek2013_data):
-    from flotilla.data_model import Study
+def toy_study(shalek2013_data):
+    from flotilla import Study
 
     return Study(sample_metadata=shalek2013_data.metadata,
+                 version='0.1.0',
                  expression_data=shalek2013_data.expression,
                  splicing_data=shalek2013_data.splicing)
 
@@ -72,10 +73,24 @@ def expression(shalek2013_data):
 
 
 @pytest.fixture(scope='module')
-def shalek2013(shalek2013_datapackage_path):
+def shalek2013():
     import flotilla
 
-    return flotilla.embark(shalek2013_datapackage_path)
+    return flotilla.embark(flotilla._shalek2013)
+
+@pytest.fixture(scope='module')
+def scrambled_study():
+    import flotilla
+
+    return flotilla.embark(flotilla._test_data)
+
+@pytest.fixture(scope='module',
+                params=['shalek2013', 'scrambled_study'])
+def test_study(request, shalek2013, scrambled_study):
+    if request.param == 'shalek2013':
+        return shalek2013
+    if request.param == 'scrambled_study':
+        return scrambled_study
 
 
 @pytest.fixture(scope='module')
