@@ -7,21 +7,12 @@ import json
 import os
 
 import matplotlib.pyplot as plt
+import pandas as pd
 import pandas.util.testing as pdt
 import pytest
 import semantic_version
 
 from flotilla.datapackage import name_to_resource
-
-
-@pytest.fixture
-def toy_study(shalek2013_data):
-    from flotilla import Study
-
-    return Study(sample_metadata=shalek2013_data.metadata,
-                 version='0.1.0',
-                 expression_data=shalek2013_data.expression,
-                 splicing_data=shalek2013_data.splicing)
 
 
 @pytest.fixture(params=['expression', 'splicing'])
@@ -71,6 +62,69 @@ class TestStudy(object):
         shalek2013.plot_correlations(data_type=data_type,
                                      featurewise=featurewise)
         plt.close('all')
+
+
+    def test_tidy_splicing_with_expression(self, test_study):
+        test = test_study.tidy_splicing_with_expression
+
+        common_id = 'common_id'
+        sample_id = 'sample_id'
+        event_name = 'event_name'
+
+        splicing_common_id = test_study.splicing.feature_data[
+            test_study.splicing.feature_expression_id_col]
+
+        # Tidify splicing
+        splicing = test_study.splicing.data
+        splicing_index_name = test_study._maybe_get_axis_name(splicing, axis=0)
+        splicing_columns_name = test_study._maybe_get_axis_name(splicing, axis=1)
+
+        splicing_tidy = pd.melt(splicing.reset_index(),
+                                id_vars=splicing_index_name,
+                                value_name='psi',
+                                var_name=splicing_columns_name)
+        rename_columns = {}
+        if splicing_index_name == 'index':
+            rename_columns[splicing_index_name] = sample_id
+        if splicing_columns_name == 'columns':
+            rename_columns[splicing_columns_name] = event_name
+            splicing_columns_name = event_name
+        splicing_tidy = splicing_tidy.rename(columns=rename_columns)
+
+        # Create a column of the common id on which to join splicing
+        # and expression
+        splicing_names = splicing_tidy[splicing_columns_name]
+        if isinstance(splicing_names, pd.Series):
+            splicing_tidy[common_id] = splicing_tidy[
+                splicing_columns_name].map(splicing_common_id)
+        else:
+            splicing_tidy[common_id] = [
+                splicing_common_id[x]
+                for x in splicing_names.itertuples(index=False)]
+
+        splicing_tidy = splicing_tidy.dropna()
+
+        # Tidify expression
+        expression = test_study.expression.data_original
+        expression_index_name = test_study._maybe_get_axis_name(expression, axis=0)
+        expression_columns_name = test_study._maybe_get_axis_name(expression, axis=1)
+
+        expression_tidy = pd.melt(expression.reset_index(),
+                                  id_vars=expression_index_name,
+                                  value_name='expression',
+                                  var_name=common_id)
+        # This will only do anything if there is a column named "index" so
+        # no need to check anything
+        expression_tidy = expression_tidy.rename(columns={'index': sample_id})
+        expression_tidy = expression_tidy.dropna()
+
+        splicing_tidy.set_index([sample_id, common_id], inplace=True)
+        expression_tidy.set_index([sample_id, common_id], inplace=True)
+
+        true = splicing_tidy.join(expression_tidy, how='inner').reset_index()
+        
+        pdt.assert_frame_equal(test, true)
+
 
     @pytest.fixture(params=[None, 'pooled_col', 'phenotype_col'])
     def metadata_none_key(self, request):
