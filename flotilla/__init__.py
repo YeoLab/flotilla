@@ -7,7 +7,7 @@ import data_model
 from .datapackage import make_study_datapackage, FLOTILLA_DOWNLOAD_DIR
 import visualize
 
-__version__ = '0.2.4'
+__version__ = '0.2.5dev'
 
 # 18 cells, multiindex on the splicing data features, features already renamed
 # in the matrices
