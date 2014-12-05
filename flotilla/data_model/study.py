@@ -459,9 +459,10 @@ class Study(object):
             compression = None if 'compression' not in resource else \
                 resource['compression']
             header = resource.pop('header', 0)
+            index_col = resource.pop('index_col', 0)
 
             dfs[name] = reader(filename, compression=compression,
-                               header=header)
+                               header=header, index_col=index_col)
 
             for key in set(resource.keys()).difference(
                     DATAPACKAGE_RESOURCE_COMMON_KWS):
@@ -1572,6 +1573,17 @@ class Study(object):
                                       version=version,
                                       flotilla_dir=flotilla_dir)
 
+    @staticmethod
+    def _maybe_get_axis_name(df, axis=0):
+        alt_name = 'columns' if axis == 1 else 'index'
+        axis = df.columns if axis == 1 else df.index
+        if isinstance(axis, pd.MultiIndex):
+            name = axis.names
+        else:
+            name = axis.name
+        name = alt_name if name is None else name
+        return name
+
     @cached_property()
     def tidy_splicing_with_expression(self):
         """A tall 'tidy' dataframe of samples with expression and splicing
@@ -1579,43 +1591,61 @@ class Study(object):
         :return:
         :rtype:
         """
+        # Establish common strings
+        common_id = 'common_id'
+        sample_id = 'sample_id'
+        event_name = 'event_name'
+
+        splicing_common_id = self.splicing.feature_data[self.splicing.feature_expression_id_col]
+
         # Tidify splicing
         splicing = self.splicing.data
-        splicing_index_name = splicing.index.name
-        splicing_index_name = 'index' if splicing_index_name is None \
-            else splicing_index_name
-        if isinstance(splicing.columns, pd.MultiIndex):
-            splicing_columns_name = splicing.columns.names
-        else:
-            splicing_columns_name = splicing.columns.name
+        splicing_index_name = self._maybe_get_axis_name(splicing, axis=0)
+        splicing_columns_name = self._maybe_get_axis_name(splicing, axis=1)
 
         splicing_tidy = pd.melt(splicing.reset_index(),
                                 id_vars=splicing_index_name,
                                 value_name='psi',
                                 var_name=splicing_columns_name)
-        splicing_tidy = splicing_tidy.rename(columns={
-            splicing_index_name: 'sample_id'})
-        splicing_tidy['common_id'] = splicing_tidy[splicing_columns_name].map(
-            self.splicing.feature_data[self.splicing.feature_expression_id_col])
+        rename_columns = {}
+        if splicing_index_name == 'index':
+            rename_columns[splicing_index_name] = sample_id
+        if splicing_columns_name == 'columns':
+            rename_columns[splicing_columns_name] = event_name
+            splicing_columns_name = event_name
+        splicing_tidy = splicing_tidy.rename(columns=rename_columns)
+
+        # Create a column of the common id on which to join splicing
+        # and expression
+        splicing_names = splicing_tidy[splicing_columns_name]
+        if isinstance(splicing_names, pd.Series):
+            splicing_tidy[common_id] = splicing_tidy[
+                splicing_columns_name].map(splicing_common_id)
+        else:
+            # Splicing ids are a multi-index, so the feature renamer will get
+            # the name of the feature.
+            splicing_tidy[common_id] = [
+                self.splicing.feature_renamer(x)
+                for x in splicing_names.itertuples(index=False)]
 
         splicing_tidy = splicing_tidy.dropna()
 
         # Tidify expression
         expression = self.expression.data_original
-        expression_index_name = expression.index.name
-        expression_index_name = 'index' if expression_index_name is None \
-            else expression_index_name
+        expression_index_name = self._maybe_get_axis_name(expression, axis=0)
+        expression_columns_name = self._maybe_get_axis_name(expression, axis=1)
 
         expression_tidy = pd.melt(expression.reset_index(),
                                   id_vars=expression_index_name,
                                   value_name='expression',
-                                  var_name='common_id')
-        # if expression_index_name == 'index':
-        expression_tidy = expression_tidy.rename(columns={'index': 'sample_id'})
+                                  var_name=common_id)
+        # This will only do anything if there is a column named "index" so
+        # no need to check anything
+        expression_tidy = expression_tidy.rename(columns={'index': sample_id})
         expression_tidy = expression_tidy.dropna()
 
-        splicing_tidy.set_index(['sample_id', 'common_id'], inplace=True)
-        expression_tidy.set_index(['sample_id', 'common_id'], inplace=True)
+        splicing_tidy.set_index([sample_id, common_id], inplace=True)
+        expression_tidy.set_index([sample_id, common_id], inplace=True)
 
         return splicing_tidy.join(expression_tidy, how='inner').reset_index()
 

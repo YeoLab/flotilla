@@ -138,6 +138,8 @@ def make_study_datapackage(name, metadata,
 
         if isinstance(data.columns, pd.MultiIndex):
             resource['header'] = range(len(data.columns.levels))
+        if isinstance(data.index, pd.MultiIndex):
+            resource['index_col'] = range(len(data.index.levels))
         # try:
         # # TODO: only transmit data if it has been updated
         # subprocess.call(
