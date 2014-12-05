@@ -39,8 +39,8 @@ script: make coverage
 after_script:
   - coveralls
   # For building the docs
-  - pip install sphinx numpydoc sphinx_bootstrap_theme runipy
   - sudo apt-get install pandoc
+  - pip install sphinx numpydoc sphinx_bootstrap_theme runipy
   - pip install pep8
   - pip install https://github.com/dcramer/pyflakes/tarball/master
   - pip install .
