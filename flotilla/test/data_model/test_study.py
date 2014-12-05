@@ -99,7 +99,7 @@ class TestStudy(object):
                 splicing_columns_name].map(splicing_common_id)
         else:
             splicing_tidy[common_id] = [
-                splicing_common_id[x]
+                self.splicing.feature_renamer(x)
                 for x in splicing_names.itertuples(index=False)]
 
         splicing_tidy = splicing_tidy.dropna()
