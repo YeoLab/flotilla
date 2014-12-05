@@ -720,7 +720,7 @@ class BaseData(object):
                 # These are Seriessssss
                 singles = singles.dropna()
                 pooled = pooled.dropna()
-        except AttributeError:
+        except (AttributeError, ValueError):
             pooled = None
 
         return singles, pooled
