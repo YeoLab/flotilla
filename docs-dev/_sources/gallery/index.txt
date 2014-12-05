@@ -76,17 +76,17 @@ Example gallery
 
    ./plot_two_features
 
-   ./plot_classifier
-
-   ./plot_pca
-
-   ./plot_correlations
-
-   ./plot_two_samples
-
    ./plot_graph
 
    ./plot_clustermap
+
+   ./plot_correlations
+
+   ./plot_pca
+
+   ./plot_two_samples
+
+   ./plot_classifier
 
    ./plot_gene
 
@@ -99,58 +99,6 @@ Example gallery
     <div class='figure align-center'>
     <a href=./plot_two_features.html>
     <img src=../_static/plot_two_features_thumb.png>
-    <span class='figure-label'>
-    <p></p>
-    </span>
-    </a>
-    </div>
-
-
-
-.. raw:: html
-
-    <div class='figure align-center'>
-    <a href=./plot_classifier.html>
-    <img src=../_static/plot_classifier_thumb.png>
-    <span class='figure-label'>
-    <p></p>
-    </span>
-    </a>
-    </div>
-
-
-
-.. raw:: html
-
-    <div class='figure align-center'>
-    <a href=./plot_pca.html>
-    <img src=../_static/plot_pca_thumb.png>
-    <span class='figure-label'>
-    <p></p>
-    </span>
-    </a>
-    </div>
-
-
-
-.. raw:: html
-
-    <div class='figure align-center'>
-    <a href=./plot_correlations.html>
-    <img src=../_static/plot_correlations_thumb.png>
-    <span class='figure-label'>
-    <p></p>
-    </span>
-    </a>
-    </div>
-
-
-
-.. raw:: html
-
-    <div class='figure align-center'>
-    <a href=./plot_two_samples.html>
-    <img src=../_static/plot_two_samples_thumb.png>
     <span class='figure-label'>
     <p></p>
     </span>
@@ -177,6 +125,58 @@ Example gallery
     <div class='figure align-center'>
     <a href=./plot_clustermap.html>
     <img src=../_static/plot_clustermap_thumb.png>
+    <span class='figure-label'>
+    <p></p>
+    </span>
+    </a>
+    </div>
+
+
+
+.. raw:: html
+
+    <div class='figure align-center'>
+    <a href=./plot_correlations.html>
+    <img src=../_static/plot_correlations_thumb.png>
+    <span class='figure-label'>
+    <p></p>
+    </span>
+    </a>
+    </div>
+
+
+
+.. raw:: html
+
+    <div class='figure align-center'>
+    <a href=./plot_pca.html>
+    <img src=../_static/plot_pca_thumb.png>
+    <span class='figure-label'>
+    <p></p>
+    </span>
+    </a>
+    </div>
+
+
+
+.. raw:: html
+
+    <div class='figure align-center'>
+    <a href=./plot_two_samples.html>
+    <img src=../_static/plot_two_samples_thumb.png>
+    <span class='figure-label'>
+    <p></p>
+    </span>
+    </a>
+    </div>
+
+
+
+.. raw:: html
+
+    <div class='figure align-center'>
+    <a href=./plot_classifier.html>
+    <img src=../_static/plot_classifier_thumb.png>
     <span class='figure-label'>
     <p></p>
     </span>
