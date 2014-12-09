@@ -755,7 +755,7 @@ class Study(object):
                 groupby = self.sample_id_to_phenotype
                 order = self.phenotype_order
             else:
-                label_to_color = self.metadata.data[color_samples_by]
+                groupby = self.metadata.data[color_samples_by]
 
         if "expression".startswith(data_type):
             reducer = self.expression.plot_pca(
