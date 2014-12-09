@@ -20,6 +20,7 @@ import matplotlib.pyplot as plt
 
 
 
+
 # from ..compute.predict import default_classifier
 from flotilla.util import link_to_list
 from ..visualize.color import red
@@ -112,7 +113,8 @@ class Interactive(object):
                         list_link='',
                         x_pc=1, y_pc=2,
                         plot_violins=False,
-                        show_point_labels=False):
+                        show_point_labels=False,
+                        color_samples_by=self.metadata.phenotype_col):
             for k, v in locals().iteritems():
                 if k == 'self':
                     continue
