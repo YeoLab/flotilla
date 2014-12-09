@@ -19,6 +19,7 @@ import matplotlib.pyplot as plt
 
 
 
+
 # from ..compute.predict import default_classifier
 from flotilla.util import link_to_list
 from ..visualize.color import red
@@ -150,7 +151,7 @@ class Interactive(object):
         if sample_subsets is None:
             sample_subsets = self.default_sample_subsets
 
-        color_samples_by = self.metadata.data.columns
+        color_samples_by = self.metadata.data.columns.tolist()
 
         gui = interact(do_interact,
                        data_type=data_types,
