@@ -1431,7 +1431,7 @@ class BaseData(object):
 
 
 def subsets_from_metadata(metadata, minimum, subset_type, ignore=None):
-    """
+    """Get subsets from metadata, including boolean and categorical columns
 
     Parameters
     ----------
