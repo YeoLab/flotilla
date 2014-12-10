@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import semantic_version
+import seaborn as sns
 
 from .metadata import MetaData, PHENOTYPE_COL, POOLED_COL
 from .expression import ExpressionData, SpikeInData
@@ -1254,8 +1255,44 @@ class Study(object):
             percents[phenotype] = percent
         return percents
 
-    def plot_expression_vs_inconsistent_splicing(self):
-        pass
+    def expression_vs_inconsistent_splicng(self, bins=None):
+        """Percentage of events inconsistent with pooled at expression threshs
+
+        Parameters
+        ----------
+        bins : list-like
+            List of expression cutoffs
+
+        Returns
+        -------
+        expression_vs_inconsistent : pd.DataFrame
+            A (len(bins), n_phenotypes) dataframe of the percentage of events
+            in single cells that are inconsistent with pooled
+        """
+
+        if bins is None:
+            emin = int(np.floor(self.expression.data.min().min()))
+            emax = int(np.ceil(self.expression.data.max().max()))
+            bins = np.arange(emin, emax)
+
+        expression_vs_inconsistent = pd.Series(bins).apply(
+            lambda x: self.percent_pooled_inconsistent(expression_thresh=x))
+        return expression_vs_inconsistent
+
+    def plot_expression_vs_inconsistent_splicing(self, bins=None, ax=None):
+
+        expression_vs_inconsistent = self.expression_vs_inconsistent(bins=bins)
+
+        if ax is None:
+            ax = plt.gcf()
+
+        for phenotype in expression_vs_inconsistent:
+            s = expression_vs_inconsistent[phenotype]
+            color = self.phenotype_to_color[phenotype]
+            ax.plot(s, 'o-', color=color)
+        ax.set_xlabel('Expression threshold')
+        ax.set_ylabel('Percent events inconsistent with pooled')
+        sns.despine()
 
     def plot_clustermap(self, sample_subset=None, feature_subset=None,
                         data_type='expression', metric='euclidean',
