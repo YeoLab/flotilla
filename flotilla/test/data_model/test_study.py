@@ -19,6 +19,10 @@ from flotilla.datapackage import name_to_resource
 def data_type(request):
     return request.param
 
+@pytest.fixture(params=[None, 'phenotype', 'maturity', 'pooled'])
+def color_samples_by(request):
+    return request.param
+
 class TestStudy(object):
     def test_toy_init(self, toy_study, shalek2013_data):
         from flotilla.data_model import ExpressionData, SplicingData
@@ -43,8 +47,9 @@ class TestStudy(object):
 
         flotilla.embark(shalek2013_datapackage_path, load_species_data=False)
 
-    def test_plot_pca(self, shalek2013, data_type):
-        shalek2013.plot_pca(data_type=data_type)
+    def test_plot_pca(self, shalek2013, data_type, color_samples_by):
+        shalek2013.plot_pca(data_type=data_type,
+                            color_samples_by=color_samples_by)
 
     def test_plot_graph(self, shalek2013):
         shalek2013.plot_graph(feature_of_interest=None)
