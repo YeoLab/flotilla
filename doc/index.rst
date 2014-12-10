@@ -1,19 +1,34 @@
-.. flotilla documentation master file, created by
-sphinx-quickstart on Thu Jul 10 10:03:26 2014.
-You can adapt this file completely to your liking, but it should at least
-contain the root `toctree` directive.
 
 Welcome to flotilla's documentation!
 ====================================
-.. include:: ../flotilla.png
-.. include:: ../README.rst
+
+.. image:: _static/flotilla.png
+
+Flotilla is a Python package for reproducible machine learning analysis on
+gene expression and alternative splicing data.
+
+Check out `what's new`_
+
+Check out the `API Reference`_
+
+To check out the code, report a bug, or contribute a new feature, please visit
+the `github repository <https://github.com/YeoLab/flotilla>`_. You can also get
+in touch on `twitter <https://twitter.com/olgabot>`_.
 
 Contents:
 
 .. toctree::
-:maxdepth: 4
+    :maxdepth: 1
 
-   flotilla
+    modules
+    whatsnew
+    installation
+    api
+    create_datapackage
+    tutorial
+
+.. _what's new: whatsnew
+.. _API Reference: api
 
 
 Indices and tables

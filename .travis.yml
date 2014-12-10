@@ -37,22 +37,20 @@ before_script:
 script: make coverage
 
 after_script:
+  - coveralls
   # For building the docs
-  - pip install sphinx numpydoc sphinx_bootstrap_theme runipy
   - sudo apt-get install pandoc
+  - pip install sphinx numpydoc sphinx_bootstrap_theme runipy
   - pip install pep8
   - pip install https://github.com/dcramer/pyflakes/tarball/master
   - pip install .
-  - sudo pip install -r doc/requirements.txt --use-mirrors # change this to the right project path
-  # Make sure README.rst is always synced with README.md
-  - pandoc -f markdown README.md -t rst > README.rst
-  - cd doc
-  - make setup_gh_pages
-  - make generate
-  - make deploy
-
-after_success:
-  coveralls
+  - make lint
+  - sudo pip install -r doc/requirements.txt --use-mirrors
+  - RELEASE=release
+  - MASTER=master
+  - if [[ $TRAVIS_BRANCH == "v*.*.*" ]] ; then export DEPLOY_HTML_DIR=docs ; fi
+  - if [[ $TRAVIS_BRANCH == "$MASTER" ]] ; then export DEPLOY_HTML_DIR=docs-dev ; fi
+  - if [[ $TRAVIS_BRANCH == "v*.*.*" ]] || [[ $TRAVIS_BRANCH == "$MASTER" ]] ; then cd doc ; make setup_gh_pages ; make generate ; make deploy ; fi
 
 # For slack notifications
 notifications:
