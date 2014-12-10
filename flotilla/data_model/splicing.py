@@ -466,8 +466,8 @@ class SplicingData(BaseData):
             A (n_pooled, n_features) Dataframe of the summed (or scaled if
             scaled=True)
         """
-        singles, pooled = self._subset_singles_and_pooled(feature_ids,
-                                                          data=data)
+        singles, pooled = self._subset_singles_and_pooled(
+            feature_ids, data=data, require_min_samples=False)
         if pooled is None:
             not_measured_in_pooled = None
             diff_from_singles = None
