@@ -1584,8 +1584,9 @@ class Study(object):
                                       flotilla_dir=flotilla_dir)
 
     @staticmethod
-    def _maybe_get_axis_name(df, axis=0):
-        alt_name = 'columns' if axis == 1 else 'index'
+    def _maybe_get_axis_name(df, axis=0, alt_name=None):
+        if alt_name is None:
+            alt_name = 'columns' if axis == 1 else 'index'
         axis = df.columns if axis == 1 else df.index
         if isinstance(axis, pd.MultiIndex):
             name = axis.names
@@ -1674,11 +1675,8 @@ class Study(object):
 
         """
 
-        columns = self._maybe_get_axis_name(self.splicing.data, axis=1)
-        index = self._maybe_get_axis_name(self.splicing.data, axis=0)
-
-        columns = columns if columns is not None else self._event_name
-        index = index if index is not None else self._sample_id
+        columns = self._maybe_get_axis_name(self.splicing.data, axis=1, alt_name=self._event_name)
+        index = self._maybe_get_axis_name(self.splicing.data, axis=0, alt_name=self._sample_id)
 
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
         splicing_with_expression = \
