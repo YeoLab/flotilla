@@ -1249,7 +1249,7 @@ class Study(object):
             singles, pooled, not_measured_in_pooled, pooled_inconsistent =\
                 self.splicing.pooled_inconsistent(data, feature_ids,
                                               fraction_diff_thresh)
-            percent = self._percent_pooled_inconsistent(pooled,
+            percent = self.splicing._percent_pooled_inconsistent(pooled,
                                                         pooled_inconsistent)
             percents[phenotype] = percent
         return percents
