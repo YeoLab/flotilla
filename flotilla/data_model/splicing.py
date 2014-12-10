@@ -436,18 +436,40 @@ class SplicingData(BaseData):
     @memoize
     def _diff_from_singles(self, data,
                            feature_ids=None, scaled=True, dropna=True):
-        """
+        """Calculate the difference between pooled and singles' psis
+
         Parameters
         ----------
-
+        data : pandas.DataFrame
+            A (n_samples, n_features) DataFrame
+        feature_ids : list-like
+            Subset of the features you want
+        scaled : bool
+            If True, then take the average difference between each pooled
+            sample and all singles. If False, then get the summed difference
+        dropna : bool
+            If True, remove events which were not measured in the pooled
+            samples
 
         Returns
         -------
-
-
+        singles : pandas.DataFrame
+            Subset of the data that's only the single-cell samples
+        pooled : pandas.DataFrame
+            Subset of the data that's only the pooled samples
+        not_measured_in_pooled : list-like
+            List of features not measured in the pooled samples
+        diff_from_singles : pandas.DataFrame
+            A (n_pooled, n_features) Dataframe of the summed (or scaled if
+            scaled=True)
         """
         singles, pooled = self._subset_singles_and_pooled(feature_ids,
                                                           data=data)
+        if pooled is None:
+            pooled = pd.DataFrame(index=singles.index)
+            not_measured_in_pooled = singles.columns
+            diff_from_singles = pd.DataFrame(index=singles.index)
+            return singles, pooled, not_measured_in_pooled, diff_from_singles
 
         # Make sure "pooled" is always a dataframe
         if isinstance(pooled, pd.Series):
