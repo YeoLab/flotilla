@@ -1234,7 +1234,7 @@ class Study(object):
                                                          feature_subset=feature_subset)
 
         celltype_and_sample_ids = celltype_groups.groups.iteritems()
-        percents = pd.Series(celltype_groups.groups.keys())
+        percents = pd.Series(index=celltype_groups.groups.keys())
         for i, (phenotype, sample_ids) in enumerate(celltype_and_sample_ids):
             # import pdb; pdb.set_trace()
 
