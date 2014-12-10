@@ -427,10 +427,13 @@ class SplicingData(BaseData):
         singles, pooled, not_measured_in_pooled, diff_from_singles = \
             self._diff_from_singles(data, feature_ids, scaled=True)
 
-        large_diff = \
-            diff_from_singles[diff_from_singles.abs()
-                              >= fraction_diff_thresh].dropna(axis=1,
-                                                              how='all')
+        try:
+            large_diff = \
+                diff_from_singles[diff_from_singles.abs()
+                                  >= fraction_diff_thresh].dropna(axis=1,
+                                                                  how='all')
+        except AttributeError:
+            large_diff = None
         return singles, pooled, not_measured_in_pooled, large_diff
 
     @memoize
@@ -561,6 +564,8 @@ class SplicingData(BaseData):
     @staticmethod
     def _divide_inconsistent_and_pooled(pooled, pooled_inconsistent):
         """The percent of events with pooled psi different from singles"""
+        if pooled_inconsistent is None:
+            return np.nan
         if pooled_inconsistent.shape[1] == 0:
             return 0.0
         try:
