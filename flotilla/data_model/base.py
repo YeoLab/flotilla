@@ -137,6 +137,11 @@ class BaseData(object):
         are considered as single-cell samples.
 
         """
+        if isinstance(data.index, pd.MultiIndex) \
+                or isinstance(data.columns, pd.MultiIndex):
+            raise ValueError('flotilla does not currently support '
+                             'multi-indexed dataframes')
+
         self.data = data
         self.data_original = self.data
         self.thresh = thresh
