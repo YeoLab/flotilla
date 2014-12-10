@@ -520,7 +520,7 @@ class SplicingData(BaseData):
         singles, pooled, not_measured_in_pooled, pooled_inconsistent = \
             self.pooled_inconsistent(data, feature_ids,
                                      fraction_diff_thresh)
-        percent = self._percent_pooled_inconsistent(pooled,
+        percent = self._divide_inconsistent_and_pooled(pooled,
                                                     pooled_inconsistent)
         lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
                                      color=color, percent=percent)
@@ -537,7 +537,8 @@ class SplicingData(BaseData):
                                    diff_from_singles_scaled, color=color,
                                    title=title, hist_kws=hist_kws)
 
-    def _percent_pooled_inconsistent(self, pooled, pooled_inconsistent):
+    @staticmethod
+    def _divide_inconsistent_and_pooled(pooled, pooled_inconsistent):
         """The percent of events with pooled psi different from singles"""
         if pooled_inconsistent.shape[1] == 0:
             return 0.0

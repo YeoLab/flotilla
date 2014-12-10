@@ -1249,12 +1249,12 @@ class Study(object):
             singles, pooled, not_measured_in_pooled, pooled_inconsistent =\
                 self.splicing.pooled_inconsistent(data, feature_ids,
                                               fraction_diff_thresh)
-            percent = self.splicing._percent_pooled_inconsistent(pooled,
+            percent = self.splicing._divide_inconsistent_and_pooled(pooled,
                                                         pooled_inconsistent)
             percents[phenotype] = percent
         return percents
 
-    def plot_expression_vs_inconsistent_splicint(self):
+    def plot_expression_vs_inconsistent_splicing(self):
         pass
 
     def plot_clustermap(self, sample_subset=None, feature_subset=None,
