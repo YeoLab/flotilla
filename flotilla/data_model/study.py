@@ -1271,8 +1271,8 @@ class Study(object):
         """
 
         if bins is None:
-            emin = int(np.floor(self.expression.data.min().min()))
-            emax = int(np.ceil(self.expression.data.max().max()))
+            emin = int(np.floor(self.expression.data_original.min().min()))
+            emax = int(np.ceil(self.expression.data_original.max().max()))
             bins = np.arange(emin, emax)
 
         expression_vs_inconsistent = pd.Series(bins).apply(
