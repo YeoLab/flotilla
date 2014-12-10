@@ -528,6 +528,7 @@ class SplicingData(BaseData):
     def plot_hist_single_vs_pooled_diff(self, data, feature_ids=None,
                                         color=None, title='',
                                         hist_kws=None):
+        """Plot histogram of distances between singles and pooled"""
         singles, pooled, not_measured_in_pooled, diff_from_singles = \
             self._diff_from_singles(data, feature_ids)
         singles, pooled, not_measured_in_pooled, diff_from_singles_scaled = \

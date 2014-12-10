@@ -18,6 +18,9 @@ import matplotlib.pyplot as plt
 
 
 
+
+
+
 # from ..compute.predict import default_classifier
 from flotilla.util import link_to_list
 from ..visualize.color import red
@@ -96,6 +99,7 @@ class Interactive(object):
     def interactive_pca(self, data_types=('expression', 'splicing'),
                         sample_subsets=None,
                         feature_subsets=None,
+                        color_samples_by=None,
                         featurewise=False,
                         x_pc=(1, 10), y_pc=(1, 10),
                         show_point_labels=False,
@@ -109,7 +113,8 @@ class Interactive(object):
                         list_link='',
                         x_pc=1, y_pc=2,
                         plot_violins=False,
-                        show_point_labels=False):
+                        show_point_labels=False,
+                        color_samples_by=self.metadata.phenotype_col):
             for k, v in locals().iteritems():
                 if k == 'self':
                     continue
@@ -137,7 +142,8 @@ class Interactive(object):
                                  x_pc=x_pc, y_pc=y_pc,
                                  show_point_labels=show_point_labels,
                                  feature_subset=feature_subset,
-                                 plot_violins=plot_violins)
+                                 plot_violins=plot_violins,
+                                 color_samples_by=color_samples_by)
 
         # self.plot_study_sample_legend()
 
@@ -147,6 +153,8 @@ class Interactive(object):
         if sample_subsets is None:
             sample_subsets = self.default_sample_subsets
 
+        color_samples_by = self.metadata.data.columns.tolist()
+
         gui = interact(do_interact,
                        data_type=data_types,
                        sample_subset=sample_subsets,
@@ -154,7 +162,8 @@ class Interactive(object):
                        featurewise=featurewise,
                        x_pc=x_pc, y_pc=y_pc,
                        show_point_labels=show_point_labels,
-                       list_link=list_link, plot_violins=plot_violins)
+                       list_link=list_link, plot_violins=plot_violins,
+                       color_samples_by=color_samples_by)
 
         def save(w):
             # Make the directory if it's not already there

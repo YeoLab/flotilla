@@ -703,6 +703,7 @@ class Study(object):
                  sample_subset=None, feature_subset=None,
                  title='', featurewise=False, plot_violins=False,
                  show_point_labels=False, reduce_kwargs=None,
+                 color_samples_by=None,
                  **kwargs):
         """Performs DataFramePCA on both expression and splicing study_data
 
@@ -743,16 +744,19 @@ class Study(object):
                                                          feature_subset,
                                                          rename=False)
 
+        label_to_color = None
+        label_to_marker = None
+        groupby = None
+        order = None
         if not featurewise:
-            label_to_color = self.phenotype_to_color
-            label_to_marker = self.phenotype_to_marker
-            groupby = self.sample_id_to_phenotype
-            order = self.phenotype_order
-        else:
-            label_to_color = None
-            label_to_marker = None
-            groupby = None
-            order = None
+            if color_samples_by is None and \
+                            color_samples_by != self.metadata.phenotype_col:
+                label_to_color = self.phenotype_to_color
+                label_to_marker = self.phenotype_to_marker
+                groupby = self.sample_id_to_phenotype
+                order = self.phenotype_order
+            else:
+                groupby = self.metadata.data[color_samples_by]
 
         if "expression".startswith(data_type):
             reducer = self.expression.plot_pca(
