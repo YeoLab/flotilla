@@ -58,6 +58,9 @@ class Study(object):
     _default_reducer_kwargs = {'whiten': False,
                                'show_point_labels': False,
                                'show_vectors': False}
+    _common_id = 'common_id'
+    _sample_id = 'sample_id'
+    _event_name = 'event_name'
 
     _default_plot_kwargs = {'marker': 'o', 'color': blue}
 
@@ -1251,6 +1254,8 @@ class Study(object):
             percents[phenotype] = percent
         return percents
 
+    def plot_expression_vs_inconsistent_splicint(self):
+        pass
 
     def plot_clustermap(self, sample_subset=None, feature_subset=None,
                         data_type='expression', metric='euclidean',
@@ -1597,9 +1602,6 @@ class Study(object):
         :rtype:
         """
         # Establish common strings
-        common_id = 'common_id'
-        sample_id = 'sample_id'
-        event_name = 'event_name'
 
         splicing_common_id = self.splicing.feature_data[self.splicing.feature_expression_id_col]
 
@@ -1614,22 +1616,22 @@ class Study(object):
                                 var_name=splicing_columns_name)
         rename_columns = {}
         if splicing_index_name == 'index':
-            rename_columns[splicing_index_name] = sample_id
+            rename_columns[splicing_index_name] = self._sample_id
         if splicing_columns_name == 'columns':
-            rename_columns[splicing_columns_name] = event_name
-            splicing_columns_name = event_name
+            rename_columns[splicing_columns_name] = self._event_name
+            splicing_columns_name = self._event_name
         splicing_tidy = splicing_tidy.rename(columns=rename_columns)
 
         # Create a column of the common id on which to join splicing
         # and expression
         splicing_names = splicing_tidy[splicing_columns_name]
         if isinstance(splicing_names, pd.Series):
-            splicing_tidy[common_id] = splicing_tidy[
+            splicing_tidy[self._common_id] = splicing_tidy[
                 splicing_columns_name].map(splicing_common_id)
         else:
             # Splicing ids are a multi-index, so the feature renamer will get
             # the name of the feature.
-            splicing_tidy[common_id] = [
+            splicing_tidy[self._common_id] = [
                 self.splicing.feature_renamer(x)
                 for x in splicing_names.itertuples(index=False)]
 
@@ -1643,14 +1645,14 @@ class Study(object):
         expression_tidy = pd.melt(expression.reset_index(),
                                   id_vars=expression_index_name,
                                   value_name='expression',
-                                  var_name=common_id)
+                                  var_name=self._common_id)
         # This will only do anything if there is a column named "index" so
         # no need to check anything
-        expression_tidy = expression_tidy.rename(columns={'index': sample_id})
+        expression_tidy = expression_tidy.rename(columns={'index': self._sample_id})
         expression_tidy = expression_tidy.dropna()
 
-        splicing_tidy.set_index([sample_id, common_id], inplace=True)
-        expression_tidy.set_index([sample_id, common_id], inplace=True)
+        splicing_tidy.set_index([self._sample_id, self._common_id], inplace=True)
+        expression_tidy.set_index([self._sample_id, self._common_id], inplace=True)
 
         return splicing_tidy.join(expression_tidy, how='inner').reset_index()
 
@@ -1671,6 +1673,13 @@ class Study(object):
             A (n_samples, n_features)
 
         """
+
+        columns = self._maybe_get_axis_name(self.splicing, axis=1)
+        index = self._maybe_get_axis_name(self.splicing, axis=0)
+
+        columns = columns if columns is not None else self._event_name
+        index = index if index is not None else self._sample_id
+
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
         splicing_with_expression = \
             self.tidy_splicing_with_expression.ix[
@@ -1679,7 +1688,7 @@ class Study(object):
         splicing_high_expression = splicing_with_expression.ix[ind]
         splicing_high_expression = splicing_high_expression.reset_index().dropna()
         filtered_psi = splicing_high_expression.pivot(
-            columns='miso_id', index='sample_id', values='psi')
+            columns=columns, index=index, values='psi')
         return filtered_psi
 
 
