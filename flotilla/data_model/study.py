@@ -1675,20 +1675,22 @@ class Study(object):
 
         """
 
-        columns = self._maybe_get_axis_name(self.splicing.data, axis=1, alt_name=self._event_name)
-        index = self._maybe_get_axis_name(self.splicing.data, axis=0, alt_name=self._sample_id)
+        if expression_thresh > -np.inf:
+            columns = self._maybe_get_axis_name(self.splicing.data, axis=1, alt_name=self._event_name)
+            index = self._maybe_get_axis_name(self.splicing.data, axis=0, alt_name=self._sample_id)
 
-        sample_ids = self.sample_subset_to_sample_ids(sample_subset)
-        splicing_with_expression = \
-            self.tidy_splicing_with_expression.ix[
-                self.tidy_splicing_with_expression.sample_id.isin(sample_ids)]
-        ind = splicing_with_expression.expression >= expression_thresh
-        splicing_high_expression = splicing_with_expression.ix[ind]
-        splicing_high_expression = splicing_high_expression.reset_index().dropna()
-        filtered_psi = splicing_high_expression.pivot(
-            columns=columns, index=index, values='psi')
-        return filtered_psi
-
+            sample_ids = self.sample_subset_to_sample_ids(sample_subset)
+            splicing_with_expression = \
+                self.tidy_splicing_with_expression.ix[
+                    self.tidy_splicing_with_expression.sample_id.isin(sample_ids)]
+            ind = splicing_with_expression.expression >= expression_thresh
+            splicing_high_expression = splicing_with_expression.ix[ind]
+            splicing_high_expression = splicing_high_expression.reset_index().dropna()
+            filtered_psi = splicing_high_expression.pivot(
+                columns=columns, index=index, values='psi')
+            return filtered_psi
+        else:
+            return self.splicing.data
 
 
 # Add interactive visualizations
