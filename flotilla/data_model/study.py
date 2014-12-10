@@ -1285,7 +1285,7 @@ class Study(object):
             bins=bins)
 
         if ax is None:
-            ax = plt.gcf()
+            ax = plt.gca()
 
         for phenotype in expression_vs_inconsistent:
             s = expression_vs_inconsistent[phenotype]
