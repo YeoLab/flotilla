@@ -1697,7 +1697,6 @@ class Study(object):
 
         splicing_tidy.set_index([self._sample_id, self._common_id], inplace=True)
         expression_tidy.set_index([self._sample_id, self._common_id], inplace=True)
-        import pdb; pdb.set_trace()
         return splicing_tidy.join(expression_tidy, how='inner').reset_index()
 
     def filter_splicing_on_expression(self, expression_thresh,
