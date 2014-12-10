@@ -215,7 +215,8 @@ class Modalities(object):
         assignments : pandas.Series
             Modality assignments of each column (feature)
         """
-        bs = cross_validation.Bootstrap(data.shape[0], n_iter=n_iter)
+        bs = cross_validation.ShuffleSplit(data.shape[0], n_folds=n_iter,
+                                           shuffle=True)
 
         results = Parallel(n_jobs=-1, max_nbytes=1e4)(
             delayed(_cat_indices_and_fit_transform)(
