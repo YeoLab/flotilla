@@ -847,6 +847,7 @@
                  <span class="n">sample_subset</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">feature_subset</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">title</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">featurewise</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">plot_violins</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
                  <span class="n">show_point_labels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">reduce_kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">color_samples_by</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Performs DataFramePCA on both expression and splicing study_data</span>
 
@@ -887,16 +888,19 @@
                                                          <span class="n">feature_subset</span><span class="p">,</span>
                                                          <span class="n">rename</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 
+        <span class="n">label_to_color</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">label_to_marker</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">groupby</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">featurewise</span><span class="p">:</span>
-            <span class="n">label_to_color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">phenotype_to_color</span>
-            <span class="n">label_to_marker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">phenotype_to_marker</span>
-            <span class="n">groupby</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_id_to_phenotype</span>
-            <span class="n">order</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">phenotype_order</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">label_to_color</span> <span class="o">=</span> <span class="bp">None</span>
-            <span class="n">label_to_marker</span> <span class="o">=</span> <span class="bp">None</span>
-            <span class="n">groupby</span> <span class="o">=</span> <span class="bp">None</span>
-            <span class="n">order</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">if</span> <span class="n">color_samples_by</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> \
+                            <span class="n">color_samples_by</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">phenotype_col</span><span class="p">:</span>
+                <span class="n">label_to_color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">phenotype_to_color</span>
+                <span class="n">label_to_marker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">phenotype_to_marker</span>
+                <span class="n">groupby</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_id_to_phenotype</span>
+                <span class="n">order</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">phenotype_order</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">groupby</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">color_samples_by</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="s">&quot;expression&quot;</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">data_type</span><span class="p">):</span>
             <span class="n">reducer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">plot_pca</span><span class="p">(</span>

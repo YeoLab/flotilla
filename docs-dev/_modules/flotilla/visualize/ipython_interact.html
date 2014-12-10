@@ -162,6 +162,9 @@
 
 
 
+
+
+
 <span class="c"># from ..compute.predict import default_classifier</span>
 <span class="kn">from</span> <span class="nn">flotilla.util</span> <span class="kn">import</span> <span class="n">link_to_list</span>
 <span class="kn">from</span> <span class="nn">..visualize.color</span> <span class="kn">import</span> <span class="n">red</span>
@@ -240,6 +243,7 @@
 <div class="viewcode-block" id="Interactive.interactive_pca"><a class="viewcode-back" href="../../../flotilla.visualize.ipython_interact.html#flotilla.visualize.ipython_interact.Interactive.interactive_pca">[docs]</a>    <span class="k">def</span> <span class="nf">interactive_pca</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_types</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;expression&#39;</span><span class="p">,</span> <span class="s">&#39;splicing&#39;</span><span class="p">),</span>
                         <span class="n">sample_subsets</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                         <span class="n">feature_subsets</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                        <span class="n">color_samples_by</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                         <span class="n">featurewise</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
                         <span class="n">x_pc</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">y_pc</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
                         <span class="n">show_point_labels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
@@ -253,7 +257,8 @@
                         <span class="n">list_link</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span>
                         <span class="n">x_pc</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y_pc</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
                         <span class="n">plot_violins</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                        <span class="n">show_point_labels</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+                        <span class="n">show_point_labels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                        <span class="n">color_samples_by</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">phenotype_col</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s">&#39;self&#39;</span><span class="p">:</span>
                     <span class="k">continue</span>
@@ -281,7 +286,8 @@
                                  <span class="n">x_pc</span><span class="o">=</span><span class="n">x_pc</span><span class="p">,</span> <span class="n">y_pc</span><span class="o">=</span><span class="n">y_pc</span><span class="p">,</span>
                                  <span class="n">show_point_labels</span><span class="o">=</span><span class="n">show_point_labels</span><span class="p">,</span>
                                  <span class="n">feature_subset</span><span class="o">=</span><span class="n">feature_subset</span><span class="p">,</span>
-                                 <span class="n">plot_violins</span><span class="o">=</span><span class="n">plot_violins</span><span class="p">)</span>
+                                 <span class="n">plot_violins</span><span class="o">=</span><span class="n">plot_violins</span><span class="p">,</span>
+                                 <span class="n">color_samples_by</span><span class="o">=</span><span class="n">color_samples_by</span><span class="p">)</span>
 
         <span class="c"># self.plot_study_sample_legend()</span>
 
@@ -291,6 +297,8 @@
         <span class="k">if</span> <span class="n">sample_subsets</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">sample_subsets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_sample_subsets</span>
 
+        <span class="n">color_samples_by</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
         <span class="n">gui</span> <span class="o">=</span> <span class="n">interact</span><span class="p">(</span><span class="n">do_interact</span><span class="p">,</span>
                        <span class="n">data_type</span><span class="o">=</span><span class="n">data_types</span><span class="p">,</span>
                        <span class="n">sample_subset</span><span class="o">=</span><span class="n">sample_subsets</span><span class="p">,</span>
@@ -298,7 +306,8 @@
                        <span class="n">featurewise</span><span class="o">=</span><span class="n">featurewise</span><span class="p">,</span>
                        <span class="n">x_pc</span><span class="o">=</span><span class="n">x_pc</span><span class="p">,</span> <span class="n">y_pc</span><span class="o">=</span><span class="n">y_pc</span><span class="p">,</span>
                        <span class="n">show_point_labels</span><span class="o">=</span><span class="n">show_point_labels</span><span class="p">,</span>
-                       <span class="n">list_link</span><span class="o">=</span><span class="n">list_link</span><span class="p">,</span> <span class="n">plot_violins</span><span class="o">=</span><span class="n">plot_violins</span><span class="p">)</span>
+                       <span class="n">list_link</span><span class="o">=</span><span class="n">list_link</span><span class="p">,</span> <span class="n">plot_violins</span><span class="o">=</span><span class="n">plot_violins</span><span class="p">,</span>
+                       <span class="n">color_samples_by</span><span class="o">=</span><span class="n">color_samples_by</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="n">w</span><span class="p">):</span>
             <span class="c"># Make the directory if it&#39;s not already there</span>
