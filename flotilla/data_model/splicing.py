@@ -466,9 +466,8 @@ class SplicingData(BaseData):
         singles, pooled = self._subset_singles_and_pooled(feature_ids,
                                                           data=data)
         if pooled is None:
-            pooled = pd.DataFrame(columns=singles.index)
-            not_measured_in_pooled = singles.columns
-            diff_from_singles = pd.DataFrame(index=singles.index)
+            not_measured_in_pooled = None
+            diff_from_singles = None
             return singles, pooled, not_measured_in_pooled, diff_from_singles
 
         # Make sure "pooled" is always a dataframe
