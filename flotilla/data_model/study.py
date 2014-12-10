@@ -1255,7 +1255,7 @@ class Study(object):
             percents[phenotype] = percent
         return percents
 
-    def expression_vs_inconsistent_splicng(self, bins=None):
+    def expression_vs_inconsistent_splicing(self, bins=None):
         """Percentage of events inconsistent with pooled at expression threshs
 
         Parameters
@@ -1281,7 +1281,8 @@ class Study(object):
 
     def plot_expression_vs_inconsistent_splicing(self, bins=None, ax=None):
 
-        expression_vs_inconsistent = self.expression_vs_inconsistent(bins=bins)
+        expression_vs_inconsistent = self.expression_vs_inconsistent_splicing(
+            bins=bins)
 
         if ax is None:
             ax = plt.gcf()
