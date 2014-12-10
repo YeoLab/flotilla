@@ -900,7 +900,7 @@ class Study(object):
         color = self.phenotype_color_ordered
 
         if data_type == "expression":
-            self.expression.plot_classifier(
+            return self.expression.plot_classifier(
                 data_name=data_name, trait=trait_data,
                 sample_ids=sample_ids, feature_ids=feature_ids,
                 label_to_color=label_to_color,
@@ -909,7 +909,7 @@ class Study(object):
                 order=order, color=color,
                 **kwargs)
         elif data_type == "splicing":
-            self.splicing.plot_classifier(
+            return self.splicing.plot_classifier(
                 data_name=data_name, trait=trait_data,
                 sample_ids=sample_ids, feature_ids=feature_ids,
                 label_to_color=label_to_color,
