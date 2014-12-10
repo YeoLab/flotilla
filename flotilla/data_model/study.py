@@ -1726,8 +1726,13 @@ class Study(object):
             ind = splicing_with_expression.expression >= expression_thresh
             splicing_high_expression = splicing_with_expression.ix[ind]
             splicing_high_expression = splicing_high_expression.reset_index().dropna()
-            filtered_psi = splicing_high_expression.pivot(
-                columns=columns, index=index, values='psi')
+
+            if isinstance(columns, list) or isinstance(index, list):
+                filtered_psi = splicing_high_expression.pivot_table(
+                    columns=columns, index=index, values='psi')
+            else:
+                filtered_psi = splicing_high_expression.pivot(
+                    columns=columns, index=index, values='psi')
             return filtered_psi
         else:
             return self.splicing.data
