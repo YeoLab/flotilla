@@ -8,7 +8,7 @@ seaborn.set_style({'axes.axisbelow': True,
                    'axes.grid': False,
                    'axes.labelcolor': '.15',
                    'axes.linewidth': 1.25,
-                   'font.family': 'Helvetica',
+                   'font.family': ['Helvetica', 'Arial'],
                    'grid.color': '.8',
                    'grid.linestyle': '-',
                    'image.cmap': 'Greys',
@@ -27,6 +27,11 @@ seaborn.set_style({'axes.axisbelow': True,
                    'ytick.minor.size': 0})
 
 seaborn.set_context('talk')
+
+try:
+    get_ipython().magic('matplotlib inline')
+except:
+    pass
 
 from .ipython_interact import Interactive
 from .predict import PredictorBaseViz

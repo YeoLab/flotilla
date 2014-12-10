@@ -1,15 +1,3 @@
-We use the [`gitflow`](https://github.com/nvie/gitflow) model of branching
-and features. The "production release" repo is `master` and the "development"
-repo is `dev`. Everything else is default:
-
-```
-How to name your supporting branch prefixes?
-Feature branches? [feature/]
-Release branches? [release/]
-Hotfix branches? [hotfix/]
-Support branches? [support/]
-Version tag prefix? []
-```
 
 For developers
 ==============
@@ -18,29 +6,36 @@ Please put ALL import statements at the top of the `*.py` file (potentially unde
 The only exception is if a package is not listed in `requirements.txt`,then a "function-only" import may be allowed.
 If this doesn't make sense to you, just put the import at the top of the file.
 
+
+Install in development mode
+---------------------------
+
+First clone the repository,
+
+    git clone git@github.com:YeoLab/flotilla
+
+Change directories to the flotilla directory you just made,
+
+    cd flotilla
+
+Now install via `pip` in "editable" mode, aka "develop" mode:
+
+    pip install -e .
+
 Git branching
 -------------
 
-We use the [git-flow](http://nvie
-.com/posts/a-successful-git-branching-model/) model. So if you have a feature
-(called `myfeature` as an example) you want to add, please add it off of the
-`dev` branch, as so:
+We use the [GitHub-Flow](http://scottchacon.com/2011/08/31/github-flow.html) model.
 
-    git checkout -b myfeature dev
+To contribute:
 
-When you're done working on your feature, merge it back to `dev` via:
+1.    Make a branch off of the master.
 
-    $ git checkout develop
-    Switched to branch 'dev'
-    $ git merge --no-ff myfeature
-    Updating ea1b82a..05e9557
-    (Summary of changes)
-    $ git branch -d myfeature
-    Deleted branch myfeature (was 05e9557).
-    $ git push origin dev
+2.    Commit updates exclusively to your branch.
 
-The reason for the `--no-ff` flag is because it makes it easy to reverse
-changes in case there was a simple mistake.
+3.    When changes on that branch are finished, open a [pull request](https://help.github.com/articles/using-pull-requests/).
+
+4.    Once someone has reviewed and approved of the changes on your branch, you should immediately merge your branch into the master.
 
 Naming conventions
 ------------------
@@ -63,8 +58,7 @@ We will attempt to stick to the [`numpy` docstring specification](https://github
 
 To make this easier, I use ["Live Templates" in PyCharm]
 (http://peter-hoffmann.com/2010/python-live-templates-for-pycharm.html),
-check out the instructions [here](https://github
-.com/YeoLab/PyCharm-Python-Templates) for how to install and use them.
+check out the instructions [here](https://github.com/YeoLab/PyCharm-Python-Templates) for how to install and use them.
 
 Testing
 =======
@@ -95,12 +89,3 @@ To run `pep8` and `pyflakes` over the code, make sure you have [this fork]
 
     make lint
 
-
-
-What flotilla is not
-====================
-
-Flotilla does not claim to solve the data management problem of biology,
-i.e. how you store all the data associated with a particular study that was
-investigating a specific biological question. Flotilla only makes it easy to
-integrate all those data parts together.

@@ -1,11 +1,15 @@
 export SHELL := /bin/bash
 
-tests:
+test:
+	cp testing/matplotlibrc .
 	py.test
+	rm matplotlibrc
 
 coverage:
-	py.test --cov flotilla test/
+	cp testing/matplotlibrc .
+	py.test --cov flotilla --cov-report term-missing flotilla/test/
+	rm matplotlibrc
 
 lint:
-	pyflakes -x W flotilla test
-	pep8 flotilla test
+	pyflakes -x W flotilla flotilla/test
+	pep8 flotilla flotilla/test

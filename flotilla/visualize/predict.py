@@ -17,8 +17,7 @@ from .decomposition import DecompositionViz
 class PredictorBaseViz(PredictorBase):
     _reducer_plotting_args = {}
 
-    def __call__(self, **pca_plotting_kwargs):
-
+    def plot(self, **pca_plotting_kwargs):
         if not self.has_been_fit:
             self.fit()
 
@@ -131,21 +130,21 @@ class PredictorBaseViz(PredictorBase):
         pca = self.pca()
 
         if self.categorical:
-            groupby = self.y.map(lambda x: self.dataset.traitset[x])
+            groupby = self.dataset.trait.align(self.y, join='right')[0]
         else:
             groupby = self.y
 
         pcaviz = DecompositionViz(pca.reduced_space, pca.components_,
                                   pca.explained_variance_ratio_,
-                                  self.DataModel,
+                                  feature_renamer=self.feature_renamer,
                                   groupby=groupby,
+                                  singles=self.singles,
+                                  pooled=self.pooled,
+                                  outliers=self.outliers,
                                   # label_to_color=self.label_to_color,
                                   # label_to_marker=self.label_to_marker,
-                                  # groupby=self.groupby,
-                                  # color=self.color,
-                                  # order=self.order
         )
-        pcaviz(**local_plotting_kwargs)
+        pcaviz.plot(**local_plotting_kwargs)
         return pcaviz
 
     def plot_scores(self, ax=None):

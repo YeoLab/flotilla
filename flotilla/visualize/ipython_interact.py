@@ -2,21 +2,31 @@
 Named `ipython_interact.py` rather than just `interact.py` to differentiate
 between IPython interactive visualizations vs D3 interactive visualizations.
 """
-import itertools
+import os
 import sys
 import warnings
 
-from IPython.html.widgets import interact
+from IPython.html.widgets import interact, TextWidget, ButtonWidget
 import matplotlib.pyplot as plt
 
 
 
+
+
+
+
+
+
+
+
+
+
 # from ..compute.predict import default_classifier
+from flotilla.util import link_to_list
 from ..visualize.color import red
 from .network import NetworkerViz
 from .color import str_to_color
 from ..util import natural_sort
-from ..external import link_to_list
 
 default_classifier = 'ExtraTreesClassifier'
 default_regressor = 'ExtraTreesRegressor'
@@ -89,21 +99,22 @@ class Interactive(object):
     def interactive_pca(self, data_types=('expression', 'splicing'),
                         sample_subsets=None,
                         feature_subsets=None,
+                        color_samples_by=None,
                         featurewise=False,
                         x_pc=(1, 10), y_pc=(1, 10),
                         show_point_labels=False,
-                        list_link = '',
-                        savefile='data/last.pca.pdf'):
+                        list_link='', plot_violins=False,
+                        savefile='figures/last.pca.pdf'):
 
         def do_interact(data_type='expression',
                         sample_subset=self.default_sample_subsets,
-                        feature_subset=self.default_feature_subset,
+                        feature_subset=self.default_feature_subsets,
                         featurewise=False,
                         list_link='',
                         x_pc=1, y_pc=2,
+                        plot_violins=False,
                         show_point_labels=False,
-                        savefile='data/last.pca.pdf'):
-
+                        color_samples_by=self.metadata.phenotype_col):
             for k, v in locals().iteritems():
                 if k == 'self':
                     continue
@@ -125,25 +136,14 @@ class Interactive(object):
 
                               "features.".format(feature_subset, data_type))
 
-            pca = self.plot_pca(sample_subset=sample_subset,
-                                data_type=data_type,
-                                featurewise=featurewise,
-                                x_pc=x_pc, y_pc=y_pc,
-                                show_point_labels=show_point_labels,
-                                feature_subset=feature_subset)
-            if savefile != '':
-                # Make the directory if it's not already there
-                self.maybe_make_directory(savefile)
-                # f = plt.gcf()
-                pca.reduced_fig.savefig(savefile)
-                violins_file = "_".join([".".join(savefile.split('.')[:-1]),
-                                         'violins']) + "." + \
-                                         savefile.split('.')[-1]
-                pca.violins_fig.savefig(violins_file)
-
-            feature_subsets = list(
-                set(itertools.chain(*self.default_feature_subsets
-                                    .values())))
+            return self.plot_pca(sample_subset=sample_subset,
+                                 data_type=data_type,
+                                 featurewise=featurewise,
+                                 x_pc=x_pc, y_pc=y_pc,
+                                 show_point_labels=show_point_labels,
+                                 feature_subset=feature_subset,
+                                 plot_violins=plot_violins,
+                                 color_samples_by=color_samples_by)
 
         # self.plot_study_sample_legend()
 
@@ -153,15 +153,43 @@ class Interactive(object):
         if sample_subsets is None:
             sample_subsets = self.default_sample_subsets
 
-        return interact(do_interact,
-                 data_type=data_types,
-                 sample_subset=sample_subsets,
-                 feature_subset=feature_subsets + ['custom'],
-                 featurewise=featurewise,
-                 x_pc=x_pc, y_pc=y_pc,
-                 show_point_labels=show_point_labels,
-                 list_link=list_link,
-                 savefile=savefile)
+        color_samples_by = self.metadata.data.columns.tolist()
+
+        gui = interact(do_interact,
+                       data_type=data_types,
+                       sample_subset=sample_subsets,
+                       feature_subset=feature_subsets + ['custom'],
+                       featurewise=featurewise,
+                       x_pc=x_pc, y_pc=y_pc,
+                       show_point_labels=show_point_labels,
+                       list_link=list_link, plot_violins=plot_violins,
+                       color_samples_by=color_samples_by)
+
+        def save(w):
+            # Make the directory if it's not already there
+            filename, extension = os.path.splitext(savefile.value)
+            self.maybe_make_directory(savefile.value)
+
+            gui.widget.result.reduced_fig.savefig(savefile.value,
+                                                  format=extension)
+
+            # add "violins" after the provided filename, but before the
+            # extension
+            violins_file = '{}.{}'.format("_".join([filename, 'violins']),
+                                          extension)
+            try:
+                gui.widget.result.violins_fig.savefig(violins_file,
+                                                      format=extension.lstrip('.'))
+            except AttributeError:
+                pass
+
+        savefile = TextWidget(description='savefile')
+        save_widget = ButtonWidget(description='save')
+        gui.widget.children = list(gui.widget.children) + \
+                              [savefile, save_widget]
+        save_widget.on_click(save)
+        return gui
+
 
     @staticmethod
     def interactive_graph(self, data_types=('expression', 'splicing'),
@@ -176,7 +204,7 @@ class Interactive(object):
                           weight_fun=None,
                           use_pc_1=True, use_pc_2=True, use_pc_3=True,
                           use_pc_4=True,
-                          savefile='data/last.graph.pdf'):
+                          savefile='figures/last.graph.pdf'):
 
         from IPython.html.widgets import interact
 
@@ -191,8 +219,7 @@ class Interactive(object):
                         use_pc_4=True, degree_cut=1,
                         cov_std_cut=1.8, n_pcs=5,
                         feature_of_interest="RBFOX2",
-                        draw_labels=False,
-                        savefile='data/last.graph.pdf'):
+                        draw_labels=False):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -217,9 +244,6 @@ class Interactive(object):
                             use_pc_3=use_pc_3,
                             use_pc_4=use_pc_4,
                             weight_function=weight_fun)
-            if savefile is not '':
-                self.maybe_make_directory(savefile)
-                plt.gcf().savefig(savefile)
 
         if feature_subsets is None:
             feature_subsets = Interactive.get_feature_subsets(self, data_types)
@@ -229,23 +253,33 @@ class Interactive(object):
         if weight_fun is None:
             weight_fun = NetworkerViz.weight_funs
 
-        # if not featurewise:
-        #     self.plot_study_sample_legend()
+        gui = interact(do_interact,
+                       data_type=data_types,
+                       sample_subset=sample_subsets,
+                       feature_subset=feature_subsets,
+                       featurewise=featurewise,
+                       cov_std_cut=cov_std_cut,
+                       degree_cut=degree_cut,
+                       n_pcs=n_pcs,
+                       draw_labels=draw_labels,
+                       weight_fun=weight_fun,
+                       feature_of_interest=feature_of_interest,
+                       use_pc_1=use_pc_1, use_pc_2=use_pc_2,
+                       use_pc_3=use_pc_3, use_pc_4=use_pc_4)
 
-        return interact(do_interact,
-                 data_type=data_types,
-                 sample_subset=sample_subsets,
-                 feature_subset=feature_subsets,
-                 featurewise=featurewise,
-                 cov_std_cut=cov_std_cut,
-                 degree_cut=degree_cut,
-                 n_pcs=n_pcs,
-                 draw_labels=draw_labels,
-                 weight_fun=weight_fun,
-                 feature_of_interest=feature_of_interest,
-                 use_pc_1=use_pc_1, use_pc_2=use_pc_2,
-                 use_pc_3=use_pc_3, use_pc_4=use_pc_4,
-                 savefile=savefile)
+        def save(w):
+            # Make the directory if it's not already there
+            filename, extension = os.path.splitext(savefile.value)
+            self.maybe_make_directory(savefile.value)
+            plt.gcf().savefig(savefile, format=extension.lstrip('.'))
+
+        savefile = TextWidget(description='savefile')
+        save_widget = ButtonWidget(description='save')
+        gui.widget.children = list(gui.widget.children) + \
+                              [savefile, save_widget]
+        save_widget.on_click(save)
+
+        return gui
 
     @staticmethod
     def interactive_classifier(self, data_types=('expression', 'splicing'),
@@ -254,16 +288,14 @@ class Interactive(object):
                                categorical_variables=None,
                                predictor_types=None,
                                score_coefficient=(0.1, 20),
-                               draw_labels=False,
-                               savefile='data/last.clf.pdf'):
+                               draw_labels=False):
 
         def do_interact(data_type,
                         sample_subset,
                         feature_subset,
                         predictor_type=default_classifier,
                         categorical_variable='outlier',
-                        score_coefficient=2,
-                        savefile='data/last.clf.pdf'):
+                        score_coefficient=2):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -276,10 +308,6 @@ class Interactive(object):
                                  predictor_name=predictor_type,
                                  score_coefficient=score_coefficient,
                                  data_type=data_type)
-
-            if savefile is not '':
-                self.maybe_make_directory(savefile)
-                plt.gcf().savefig(savefile)
 
         if feature_subsets is None:
             feature_subsets = Interactive.get_feature_subsets(self, data_types)
@@ -297,15 +325,39 @@ class Interactive(object):
 
         # self.plot_study_sample_legend()
 
-        return interact(do_interact,
-                 data_type=data_types,
-                 sample_subset=sample_subsets,
-                 feature_subset=feature_subsets,
-                 categorical_variable=categorical_variables,
-                 score_coefficient=score_coefficient,
-                 draw_labels=draw_labels,
-                 predictor_type=predictor_types,
-                 savefile=savefile)
+        gui = interact(do_interact,
+                       data_type=data_types,
+                       sample_subset=sample_subsets,
+                       feature_subset=feature_subsets,
+                       categorical_variable=categorical_variables,
+                       score_coefficient=score_coefficient,
+                       draw_labels=draw_labels,
+                       predictor_type=predictor_types)
+
+        def save(w):
+            # Make the directory if it's not already there
+            filename, extension = os.path.splitext(savefile.value)
+            self.maybe_make_directory(savefile.value)
+
+            gui.widget.result.reduced_fig.savefig(savefile.value,
+                                                  format=extension)
+
+            # add "violins" after the provided filename, but before the
+            # extension
+            violins_file = '{}.{}'.format("_".join([filename, 'violins']),
+                                          extension)
+            try:
+                gui.widget.result.violins_fig.savefig(violins_file,
+                                                      format=extension.lstrip('.'))
+            except AttributeError:
+                pass
+
+        savefile = TextWidget(description='savefile')
+        save_widget = ButtonWidget(description='save')
+        gui.widget.children = list(gui.widget.children) + [savefile,
+                                                           save_widget]
+        save_widget.on_click(save)
+        return gui
 
     @staticmethod
     def interactive_localZ(self):
@@ -347,10 +399,10 @@ class Interactive(object):
                              "<this_object>.localZ_result_")
 
         return interact(do_interact,
-                 data_type=('expression', 'splicing'),
-                 sample1='replaceme',
-                 sample2='replaceme',
-                 pCut='0.01')
+                        data_type=('expression', 'splicing'),
+                        sample1='replaceme',
+                        sample2='replaceme',
+                        pCut='0.01')
 
     @staticmethod
     def interactive_plot_modalities_lavalamps(self, sample_subsets=None,
@@ -402,9 +454,6 @@ class Interactive(object):
                 bootstrapped=bootstrapped, bootstrapped_kws=bootstrapped_kws,
                 ax=None)
             plt.tight_layout()
-            if savefile is not '':
-                self.maybe_make_directory(savefile)
-                plt.gcf().savefig(savefile)
 
         if feature_subsets is None:
             feature_subsets = Interactive.get_feature_subsets(self,
@@ -416,12 +465,27 @@ class Interactive(object):
         if bootstrapped_kws is None:
             bootstrapped_kws = {}
 
-        return interact(do_interact,
-                 sample_subset=sample_subsets, feature_subset=feature_subsets,
-                 color=color, x_offset=x_offset,
-                 use_these_modalities=use_these_modalities,
-                 bootstrapped=bootstrapped, bootstrapped_kws=bootstrapped_kws,
-                 savefile=savefile)
+        gui = interact(do_interact,
+                        sample_subset=sample_subsets,
+                        feature_subset=feature_subsets,
+                        color=color, x_offset=x_offset,
+                        use_these_modalities=use_these_modalities,
+                        bootstrapped=bootstrapped,
+                        bootstrapped_kws=bootstrapped_kws,
+                        savefile=savefile)
+
+        def save(w):
+            filename, extension = os.path.splitext(savefile.value)
+            self.maybe_make_directory(savefile.value)
+            gui.widget.result.savefig(savefile.value, format=extension.lstrip('.'))
+
+        savefile = TextWidget(description='savefile',
+                              value='figures/clustermap.pdf')
+        save_widget = ButtonWidget(description='save')
+        gui.widget.children = list(gui.widget.children) + [savefile,
+                                                           save_widget]
+        save_widget.on_click(save)
+
 
     @staticmethod
     def interactive_lavalamp_pooled_inconsistent(
@@ -436,7 +500,7 @@ class Interactive(object):
                         feature_subset=self.default_feature_subsets,
                         difference_threshold=0.1,
                         color=red,
-                        savefile='data/last.lavalamp_pooled_inconsistent.pdf'):
+                        savefile='figures/last.lavalamp_pooled_inconsistent.pdf'):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -452,75 +516,255 @@ class Interactive(object):
             self.splicing.plot_lavalamp_pooled_inconsistent(
                 sample_ids, feature_ids, difference_threshold, color=color)
             plt.tight_layout()
-            if savefile is not '':
-                self.maybe_make_directory(savefile)
-                plt.gcf().savefig(savefile)
 
         if feature_subsets is None:
-            feature_subsets = Interactive.get_feature_subsets(self,
-                                                              ['splicing',
-                                                               'expression'])
+            feature_subsets = Interactive.get_feature_subsets(
+                self, ['splicing', 'expression'])
+        if sample_subsets is None:
+            sample_subsets = self.default_sample_subsets
+
+        gui = interact(do_interact,
+                        sample_subset=sample_subsets,
+                        feature_subset=feature_subsets,
+                        difference_threshold=difference_threshold,
+                        color=colors,
+                        savefile='')
+
+        def save(w):
+            filename, extension = os.path.splitext(savefile.value)
+            self.maybe_make_directory(savefile.value)
+            gui.widget.result.savefig(savefile.value, format=extension.lstrip('.'))
+
+        savefile = TextWidget(description='savefile',
+                              value='figures/clustermap.pdf')
+        save_widget = ButtonWidget(description='save')
+        gui.widget.children = list(gui.widget.children) + [savefile,
+                                                           save_widget]
+        save_widget.on_click(save)
+
+
+    @staticmethod
+    def interactive_choose_outliers(self,
+                                    data_types=('expression', 'splicing'),
+                                    sample_subsets=None,
+                                    feature_subsets=None,
+                                    featurewise=False,
+                                    x_pc=(1, 3), y_pc=(1, 3),
+                                    show_point_labels=False,
+                                    kernel=('rbf', 'linear', 'poly',
+                                            'sigmoid'),
+                                    gamma=(0, 25),
+                                    nu=(0.1, 9.9),
+    ):
+
+        def do_interact(data_type='expression',
+                        sample_subset=self.default_sample_subset,
+                        feature_subset=self.default_feature_subset,
+                        x_pc=1, y_pc=2,
+                        show_point_labels=False,
+                        kernel='rbf',
+                        gamma=16,
+                        nu=.2):
+            print "transforming input gamma by 2^-(input): %f" % gamma
+            gamma = 2 ** -float(gamma)
+            print "transforming input nu by input/10: %f" % nu
+            nu = float(nu) / 10
+            kernel = str(kernel)
+            for k, v in locals().iteritems():
+                if k == 'self':
+                    continue
+                sys.stdout.write('{} : {}\n'.format(k, v))
+
+            else:
+                renamer = lambda x: x
+                data_model = None
+
+            if feature_subset not in self.default_feature_subsets[data_type]:
+                warnings.warn("This feature_subset ('{}') is not available in "
+                              "this data type ('{}'). Falling back on all "
+                              "features.".format(feature_subset, data_type))
+
+            reducer, outlier_detector = self.detect_outliers(
+                data_type=data_type,
+                sample_subset=sample_subset,
+                feature_subset=feature_subset,
+                reducer=None,
+                reducer_kwargs=None,
+                outlier_detection_method=None,
+                outlier_detection_method_kwargs={'gamma': gamma,
+                                                 'nu': nu,
+                                                 'kernel': kernel})
+
+            if data_type == "expression":
+                datamodel = self.expression
+            elif data_type == "splicing":
+                datamodel = self.splicing
+            else:
+                raise ValueError('No valid data type provided')
+            datamodel.plot_outliers(reducer, outlier_detector,
+                              feature_renamer=renamer,
+                              show_point_labels=show_point_labels,
+                              x_pc="pc_" + str(x_pc),
+                              y_pc="pc_" + str(y_pc))
+
+            print "total samples:", len(outlier_detector.outliers)
+            print "outlier samples:", outlier_detector.outliers.sum()
+            print "metadata column name:", outlier_detector.title
+
+        if feature_subsets is None:
+            feature_subsets = Interactive.get_feature_subsets(self, data_types)
 
         if sample_subsets is None:
             sample_subsets = self.default_sample_subsets
 
         return interact(do_interact,
-                 sample_subset=sample_subsets,
-                 feature_subset=feature_subsets,
-                 difference_threshold=difference_threshold,
-                 color=colors,
-                 savefile='')
+                        data_type=data_types,
+                        sample_subset=sample_subsets,
+                        feature_subset=feature_subsets,
+                        x_pc=x_pc, y_pc=y_pc,
+                        show_point_labels=show_point_labels,
+                        kernel=kernel,
+                        nu=nu,
+                        gamma=gamma)
 
-    # @staticmethod
-    # def interactive_clusteredheatmap(self):
-    #     def do_interact(data_type='expression',
-    #                     sample_subset=self.default_sample_subsets,
-    #                     feature_subset=self.default_feature_subset,
-    #                     metric='euclidean',
-    #                     linkage_method='median',
-    #                     list_link='',
-    #                     savefile='data/last.clusteredheatmap.pdf'):
-    #
-    #         for k, v in locals().iteritems():
-    #             if k == 'self':
-    #                 continue
-    #             sys.stdout.write('{} : {}\n'.format(k, v))
-    #
-    #         if feature_subset != "custom" and list_link != "":
-    #             raise ValueError(
-    #                 "set feature_subset to \"custom\" to use list_link")
-    #
-    #         if feature_subset == "custom" and list_link == "":
-    #             raise ValueError("use a custom list name please")
-    #
-    #         if feature_subset == 'custom':
-    #             feature_subset = list_link
-    #         elif feature_subset not in self.default_feature_subsets[data_type]:
-    #             warnings.warn("This feature_subset ('{}') is not available in "
-    #                           "this data type ('{}'). Falling back on all "
-    #                           "features.".format(feature_subset, data_type))
-    #
-    #         self.plot_clusteredheatmap(sample_subset=sample_subset,
-    #                                    feature_subset=feature_subset,
-    #                                    data_type=data_type,
-    #                                    metric=metric,
-    #                                    linkage_method=linkage_method)
-    #         plt.tight_layout()
-    #         if savefile != '':
-    #             # Make the directory if it's not already there
-    #             self.maybe_make_directory(savefile)
-    #             f = plt.gcf()
-    #             f.savefig(savefile)
-    #
-    #     feature_subsets = Interactive.get_feature_subsets(self,
-    #                                                       ['expression',
-    #                                                        'splicing'])
-    #
-    #     linkage_method = ('single', 'median', 'centroid')
-    #     metric = ('euclidean', 'seuclidean')
-    #     interact(do_interact,
-    #              data_type=('expression', 'splicing'),
-    #              sample_subset=self.default_sample_subsets,
-    #              feature_subset=feature_subsets,
-    #              metric=metric,
-    #              linkage_method=linkage_method)
+    @staticmethod
+    def interactive_reset_outliers(self):
+        """User selects from columns that start with 'outlier_' to merge
+        multiple outlier classifications"""
+        outlier_columns = dict()
+
+        for column in self.metadata.data.columns:
+            if column.startswith("outlier_"):
+                outlier_columns[column] = False
+
+        def do_interact(**columns):
+            if len(columns.keys()) == 0:
+                print "You have not specified any 'outlier_' columns in study.metadata.data... \n" \
+                      "This function will do nothing to your data."
+            else:
+                self.metadata.set_outliers_by_merging_columns(
+                    [k for (k, v) in columns.items() if v])
+
+        interact(do_interact, **outlier_columns)
+
+    @staticmethod
+    def interactive_clustermap(self):
+        def do_interact(data_type='expression',
+                        sample_subset=self.default_sample_subsets,
+                        feature_subset=self.default_feature_subset,
+                        metric='euclidean',
+                        method='median',
+                        list_link='',
+                        scale_fig_by_data=True,
+                        fig_width='', fig_height=''):
+
+            for k, v in locals().iteritems():
+                if k == 'self':
+                    continue
+                sys.stdout.write('{} : {}\n'.format(k, v))
+
+            if feature_subset != "custom" and list_link != "":
+                raise ValueError(
+                    "set feature_subset to \"custom\" to use list_link")
+
+            if feature_subset == "custom" and list_link == "":
+                raise ValueError("use a custom list name please")
+
+            if feature_subset == 'custom':
+                feature_subset = list_link
+            elif feature_subset not in self.default_feature_subsets[data_type]:
+                warnings.warn("This feature_subset ('{}') is not available in "
+                              "this data type ('{}'). Falling back on all "
+                              "features.".format(feature_subset, data_type))
+            return self.plot_clustermap(
+                sample_subset=sample_subset, feature_subset=feature_subset,
+                data_type=data_type, metric=metric, method=method,
+                scale_fig_by_data=scale_fig_by_data)
+
+
+        feature_subsets = Interactive.get_feature_subsets(self,
+                                                          ['expression',
+                                                           'splicing'])
+        method = ('average', 'weighted', 'single', 'complete', 'ward')
+        metric = ('euclidean', 'seuclidean', 'sqeuclidean', 'chebyshev',
+                  'cosine', 'cityblock', 'mahalonobis', 'minowski', 'jaccard')
+        gui = interact(do_interact,
+                       data_type=('expression', 'splicing'),
+                       sample_subset=self.default_sample_subsets,
+                       feature_subset=feature_subsets,
+                       metric=metric,
+                       method=method)
+
+        def save(w):
+            filename, extension = os.path.splitext(savefile.value)
+            self.maybe_make_directory(savefile.value)
+            gui.widget.result.savefig(savefile.value, format=extension.lstrip('.'))
+
+        savefile = TextWidget(description='savefile',
+                              value='figures/clustermap.pdf')
+        save_widget = ButtonWidget(description='save')
+        gui.widget.children = list(gui.widget.children) + [savefile,
+                                                           save_widget]
+        save_widget.on_click(save)
+        return gui
+
+    @staticmethod
+    def interactive_correlations(self):
+        def do_interact(data_type='expression',
+                        sample_subset=self.default_sample_subsets,
+                        feature_subset=self.default_feature_subset,
+                        metric='euclidean', method='average',
+                        list_link='',
+                        scale_fig_by_data=True,
+                        fig_width='', fig_height='', featurewise=False):
+
+            for k, v in locals().iteritems():
+                if k == 'self':
+                    continue
+                sys.stdout.write('{} : {}\n'.format(k, v))
+
+            if feature_subset != "custom" and list_link != "":
+                raise ValueError(
+                    "set feature_subset to \"custom\" to use list_link")
+
+            if feature_subset == "custom" and list_link == "":
+                raise ValueError("use a custom list name please")
+
+            if feature_subset == 'custom':
+                feature_subset = list_link
+            elif feature_subset not in self.default_feature_subsets[data_type]:
+                warnings.warn("This feature_subset ('{}') is not available in "
+                              "this data type ('{}'). Falling back on all "
+                              "features.".format(feature_subset, data_type))
+            return self.plot_correlations(
+                sample_subset=sample_subset, feature_subset=feature_subset,
+                data_type=data_type, scale_fig_by_data=scale_fig_by_data,
+                method=method, metric=metric, featurewise=featurewise)
+
+
+        feature_subsets = Interactive.get_feature_subsets(self,
+                                                          ['expression',
+                                                           'splicing'])
+        method = ('average', 'weighted', 'single', 'complete', 'ward')
+        metric = ('euclidean', 'seuclidean', 'sqeuclidean', 'chebyshev',
+                  'cosine', 'cityblock', 'mahalonobis', 'minowski', 'jaccard')
+        gui = interact(do_interact,
+                       data_type=('expression', 'splicing'),
+                       sample_subset=self.default_sample_subsets,
+                       feature_subset=feature_subsets,
+                       metric=metric,
+                       method=method,
+                       featurewise=False)
+
+        def save(w):
+            filename, extension = os.path.splitext(savefile.value)
+            self.maybe_make_directory(savefile.value)
+            gui.widget.result.savefig(savefile.value, format=extension.lstrip('.'))
+
+        savefile = TextWidget(description='savefile',
+                              value='figures/correlations.pdf')
+        save_widget = ButtonWidget(description='save')
+        gui.widget.children = list(gui.widget.children) + \
+                              [savefile, save_widget]
+        save_widget.on_click(save)
+        return gui

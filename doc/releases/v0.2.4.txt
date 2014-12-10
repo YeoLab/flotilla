@@ -1,0 +1,18 @@
+v0.2.4 (November 23rd, 2014)
+---------------------------
+
+This is a patch release, with non-breaking changes from v0.2.3.
+
+Plotting functions
+~~~~~~~~~~~~~~~~~~
+
+- New clustered heatmap and :py:func:`.data_model.Study.plot_clustermap` and
+  :py:func:`.data_model.Study.plot_correlations`
+
+API changes
+~~~~~~~~~~~
+
+- :py:func:`.data_model.Study.save()` now saves relative instead of absolute
+  paths, which makes for more portable ``datapackages``
+- Underlying code for :py:class:`.visualize.DecompositionViz` and
+  :py:class:`.visualize.ClassifierViz` now plots via ``plot()``

@@ -7,104 +7,190 @@ import sys
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from scipy.spatial.distance import pdist, squareform
 import seaborn as sns
 from sklearn.preprocessing import StandardScaler
 
 from ..compute.decomposition import DataFramePCA, DataFrameNMF
-# from ..compute.clustering import Cluster
-from ..compute.infotheory import binify
-from ..compute.predict import PredictorConfigManager, PredictorDataSetManager
+from ..compute.infotheory import binify, cross_phenotype_jsd, jsd_df_to_2d
+from ..compute.predict import PredictorConfigManager, PredictorDataSetManager, \
+    CLASSIFIER
 from ..visualize.decomposition import DecompositionViz
-from ..visualize.generic import violinplot, nmf_space_transitions
+from ..visualize.generic import violinplot, nmf_space_transitions, \
+    simple_twoway_scatter
 from ..visualize.network import NetworkerViz
 from ..visualize.predict import ClassifierViz
 from ..util import memoize, cached_property
+from ..compute.outlier import OutlierDetection
 
-MINIMUM_SAMPLES = 10
-default_predictor_name = "ExtraTreesClassifier"
+MINIMUM_FEATURE_SUBSET = 20
 
 
 class BaseData(object):
-    """Generic study_data model for both splicing and expression study_data
+    """Base class for biological data measurements.
+
+    All data types in flotilla inherit from this, and have all functionality
+    described here
 
     Attributes
     ----------
+    data : pandas.DataFrame
+        A (n_samples, m_features) sized DataFrame of filtered input data, with
+        features with too few samples (``minimum_samples``) detected at
+        ``thresh`` removed. Compared to :py:attr:`.data_original`,
+        ``m_features <= n_features`
+    data_type : str
+        String indicating what kind of data this is, e.g. "splicing" or
+        "expression"
+    data_original : pandas.DataFrame
+        A (n_samples, n_features) sized DataFrame of all input data, before
+        removing features for having too few samples
+    feature_data : pandas.DataFrame
+        A (k_features, n_features_about_features) sized DataFrame of features
+        about the feature data. Notice that this DataFrame does not need to be
+        the same size as the data, but must at least include all the features
+        from :py:attr:`data`. Compared to :py:attr:`.data`,
+        ``k_features >= m_features``
+    feature_subsets : dict
+        Dict of {"subset_name" : list_of_feature_ids} for feature subsets
+        specified as either boolean columns in ``feature_data``. All columns in
+        ``feature_ignore_subset_cols`` are ignored
+    predictor_config_manager : PredictorConfigManager
+        Manage different combinations of predictor on different data subtypes
+    variant : pandas.Index
+        Genes whose variance among all cells is 2 standard deviations away
+        from the mean variance
 
 
     Methods
     -------
+    feature_renamer
+        If ``feature_rename_col`` is specified in :py:meth:`BaseData.__init__`,
+        this will rename the feature ID to a new name. If
+        ``feature_rename_col`` is not specified, then this will return the
+        original id
+    maybe_renamed_to_feature_id
+        Convert a weird feature ID to your known gene names
 
     """
 
-    def __init__(self, data=None, metadata=None,
-                 species=None, feature_rename_col=None, outliers=None,
-                 min_samples=MINIMUM_SAMPLES, pooled=None,
+    def __init__(self, data, thresh=-np.inf,
+                 minimum_samples=0,
+                 feature_data=None,
+                 feature_rename_col=None,
+                 feature_ignore_subset_cols=None,
                  technical_outliers=None,
-                 predictor_config_manager=None):
-        """Base class for biological data measurements
+                 outliers=None,
+                 pooled=None,
+                 predictor_config_manager=None,
+                 data_type=None):
+        """Abstract base class for biological measurements
 
         Parameters
         ----------
         data : pandas.DataFrame
-            A dataframe of samples x features (samples on rows, features on
-            columns) with some kind of measurements of cells,
+            A samples x features (samples on rows, features on columns)
+            dataframe with some kind of measurements of cells,
             e.g. gene expression values such as TPM, RPKM or FPKM, alternative
             splicing "Percent-spliced-in" (PSI) values, or RNA editing scores.
+            Note: If the columns are a multi-index, the "level 0" is assumed to
+            be the unique, crazy ID like 'ENSG00000100320', and "level 1" is
+            assumed to be the convenient gene name like "RBFOX2"
+        thresh : float, optional (default=-np.inf)
+            Minimum value to accept for this data.
+        minimum_samples : int, optional (default=0)
+            Minimum number of samples with values greater than ``thresh``.
+            E.g., for use with "at least 3 single cells expressing the gene at
+            greater than 1 TPM."
+        feature_data : pandas.DataFrame, optional (default=None)
+            A features x attributes dataframe of metadata about the features,
+            e.g. annotating whether the gene is a housekeeping gene
+        feature_rename_col : str, optional (default=None)
+            Which column in the feature_data to use to rename feature IDs
+            from a crazy ID to a common gene symbol, e.g. to transform
+            'ENSG00000100320' into 'RBFOX2'
+        feature_ignore_subset_cols : list-like (default=None)
+            Columns in the feature data to ignore when making subsets,
+            e.g. "gene_name" shouldn't be used to create subsets, since it's
+            just a small number of them.
+        technical_outliers : list-like, optional (default=None)
+            List of sample IDs which should be completely ignored because
+            they didn't pass the technical quality control
+        outliers : list-like, optional (default=None)
+            List of sample IDs which should be marked as outliers for
+            plotting and interpretation purposes
+        pooled : list-like, optional (default=None)
+            List of sample IDs which should be marked as pooled for plotting
+            and interpretation purposes.
+        predictor_config_manager : PredictorConfigManager, optional
+            (default=None)
+            Object used to organize inputs to
+            :py:class:`compute.predict.Regressor` and
+            :py:class:`compute.predict.Classifier`. If None, one is initialized
+            for this instance.
+        data_type : str, optional (default=None)
+            A string indicating what kind of data this is, e.g. "expression" or
+            "splicing"
+
+        Notes
+        -----
+        Any cells not marked as "technical_outliers", "outliers" or "pooled"
+        are considered as single-cell samples.
+
         """
         self.data = data
+        self.data_original = self.data
+        self.thresh = thresh
+        self.minimum_samples = minimum_samples
+        self.data_type = data_type
 
-        if technical_outliers is not None:
+        if technical_outliers is not None and len(technical_outliers) > 0:
+            sys.stderr.write("Removing technical outliers from consideration "
+                             "in {0}:\n\t{1}\n".format(
+                self.data_type, ", ".join(technical_outliers)))
             good_samples = ~self.data.index.isin(technical_outliers)
             self.data = self.data.ix[good_samples]
 
-        if pooled is not None:
-            self.pooled = self.data.ix[pooled]
-            self.data = self.data.ix[~self.data.index.isin(pooled)]
+        self.pooled_samples = pooled if pooled is not None else []
+        self.outlier_samples = outliers if outliers is not None else []
+        self.single_samples = self.data.index[~self.data.index.isin(
+            self.pooled_samples)]
 
-        if outliers is not None:
-            self.data, self.outliers = self.drop_outliers(self.data,
-                                                          outliers)
-        self.feature_data = metadata
-        if self.feature_data is None:
-            self.feature_data = pd.DataFrame(index=self.data.columns)
-        self.feature_rename_col = feature_rename_col
-        self.min_samples = min_samples
-        self.default_feature_sets = []
-        self.data_type = None
-
-        # self.clusterer = Cluster()
-
-        self.species = species
-
-        def shortener(renamer, x):
-            renamed = renamer(x)
-            if isinstance(renamed, float):
-                return renamed
-            elif len(renamed) > 20:
-                return '{}...'.format(renamed[:20])
+        if self.thresh > -np.inf or self.minimum_samples > 0:
+            self.data_original = self.data.copy()
+            if not self.singles.empty:
+                self.data = self._threshold(self.data, self.singles)
             else:
-                return renamed
+                self.data = self._threshold(self.data)
+
+        self.feature_data = feature_data
+        self.feature_ignore_subset_cols = [] if feature_ignore_subset_cols is \
+                                                None else feature_ignore_subset_cols
+        # if self.feature_data is None:
+        # self.feature_data = pd.DataFrame(index=self.data.columns)
+        self.feature_rename_col = feature_rename_col
+        self.default_feature_sets = []
+
+        if isinstance(self.data.columns, pd.MultiIndex):
+            feature_ids, renamed = zip(*self.data.columns.values)
+            self.feature_rename_col = 'gene_name'
+            column = pd.Series(renamed, index=self.data.columns,
+                               name=self.feature_rename_col)
+            if self.feature_data is None:
+                self.feature_data = pd.DataFrame(column,
+                                                 index=self.data.columns)
+            else:
+                if self.feature_rename_col not in self.feature_data:
+                    self.feature_data = self.feature_data.join(column,
+                                                               rsuffix='_right')
+                    if self.feature_rename_col + '_right' in self.feature_data:
+                        self.feature_rename_col += '_right'
 
         if self.feature_data is not None and self.feature_rename_col is not \
                 None:
-            def feature_renamer(x):
-                if x in self.feature_renamer_series.index:
-                    rename = self.feature_renamer_series[x]
-                    if isinstance(rename, pd.Series):
-                        return rename.values[0]
-                    # elif not isinstance(rename, float) and ':' in x:
-                    #     # Check for NaN and ":" (then it's a splicing event
-                    #     # name)
-                    #     return ":".join(x.split("@")[1].split(":")[:2])
-                    else:
-                        return rename
-                else:
-                    return x
-
-            self.feature_renamer = lambda x: shortener(feature_renamer, x)
+            self.feature_renamer = \
+                lambda x: self._shortener(x, renamer=self._feature_renamer)
         else:
-            self.feature_renamer = lambda x: shortener(lambda y: y, x)
+            self.feature_renamer = self._shortener
 
         if predictor_config_manager is None:
             self.predictor_config_manager = PredictorConfigManager()
@@ -116,22 +202,105 @@ class BaseData(object):
 
         self.networks = NetworkerViz(self)
 
+    def _threshold(self, data, other=None):
+        """Only take features with expression greater than the threshold,
+        in at least the minimum number of samples.
+
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            The data to filter, make smaller
+        other : pandas.DataFrame, optional
+            If provided, use this DataFrame to filter data. E.g. use the
+            genes expressed in only single cells to filter the whole dataset.
+
+        Returns
+        -------
+        filtered : pandas.DataFrame
+            "data" filtered with expression values at least self.thresh
+            in least self.minimum_samples
+        """
+        if other is None:
+            other = data
+        filtered = data.ix[:, other[other > self.thresh].count() >=
+                              self.minimum_samples]
+        return filtered
+
+    def _feature_renamer(self, x):
+        """Rename a feature from a crazy ID like 'ENSG00000100320' to 'RBFOX2'
+        """
+        if x in self.feature_renamer_series.index:
+            rename = self.feature_renamer_series[x]
+            if isinstance(rename, pd.Series):
+                return rename.values[0]
+            else:
+                return rename
+        else:
+            return '_'.join(x)
+
+    @staticmethod
+    def _shortener(x, renamer=None, max_char_len=20):
+        """Shorten a feature ID to minimize the amount of messy text on plots
+
+        Parameters
+        ----------
+        x : str
+            A feature ID
+        renamer : function, optional (default=None)
+            A function to rename feature IDs to known gene symbols
+        max_char_len : int, optional (default=20)
+            Maximum length of the feature ids
+
+        Returns
+        -------
+        shortened : str
+            A potentially renamed, shortened string
+        """
+        if renamer is not None:
+            renamed = renamer(x)
+        else:
+            renamed = x
+
+        if isinstance(renamed, float):
+            return renamed
+        elif len(renamed) > max_char_len:
+            return '{}...'.format(renamed[:max_char_len])
+        else:
+            return renamed
+
     @property
+    def singles(self):
+        """Data from only the single cells"""
+        return self.data.ix[self.single_samples]
+
+    @property
+    def pooled(self):
+        """Data from only the pooled samples"""
+        return self.data.ix[self.pooled_samples]
+
+    @property
+    def outliers(self):
+        """Data from only the outlier samples"""
+        return self.data.ix[self.outlier_samples]
+
+    @cached_property()
     def feature_renamer_series(self):
+        """A pandas Series of the original feature ids to the renamed ids"""
         try:
             return self.feature_data[self.feature_rename_col].dropna()
-        except TypeError:
-            return pd.Series(self.data.columns,
+        except (TypeError, ValueError):
+            return pd.Series(self.data.columns.values,
                              index=self.data.columns)
 
     def maybe_renamed_to_feature_id(self, feature_id):
         """To be able to give a simple gene name, e.g. "RBFOX2" and get the
-        official ENSG ids or MISO
+        official ENSG ids or MISO ids
 
         Parameters
         ----------
         feature_id : str
-            The
+            The name of a feature ID. Could be either a common gene name, as in
+            what the crazy IDs are :py:meth:`.feature_renamer` to, or
 
         Returns
         -------
@@ -148,68 +317,39 @@ class BaseData(object):
         else:
             raise ValueError('{} is not a valid feature identifier (it may '
                              'not have been measured in this dataset!)'
-                             .format(
-                feature_id))
+                             .format(feature_id))
 
     @property
     def _var_cut(self):
+        """Variance cutoff, 2 std devs away from mean variance"""
         return self.data.var().dropna().mean() + 2 * self.data.var() \
             .dropna().std()
 
     @property
     def variant(self):
-        return pd.Index([i for i, j in (self.data.var().dropna()
-                                        > self._var_cut).iteritems() if j])
+        """Features whose variance is 2 std devs away from mean variance"""
+        return self.data.columns[self.data.var() > self._var_cut]
 
-    def drop_outliers(self, df, outliers):
-        # assert 'outlier' in self.experiment_design_data.columns
-        outliers = set(outliers).intersection(df.index)
-        try:
-            # Remove pooled samples, if there are any
-            outliers = outliers.difference(self.pooled.index)
-        except AttributeError:
-            pass
-        sys.stdout.write("dropping {}\n".format(outliers))
-        data = df.drop(outliers)
-        outlier_data = df.ix[outliers]
-        return data, outlier_data
+    # def drop_outliers(self, data, outliers):
+    #     # assert 'outlier' din self.experiment_design_data.columns
+    #     outliers = set(outliers).intersection(data.index)
+    #     sys.stdout.write("Dropping {}\n".format(outliers))
+    #     data = data.drop(outliers)
+    #     outlier_data = data.ix[outliers]
+    #     return data, outlier_data
 
     @property
     def feature_subsets(self):
-        feature_subsets = {}
-        if self.feature_data is not None:
-            for col in self.feature_data:
-                if self.feature_data[col].dtype != bool:
-                    continue
-                feature_subset = self.feature_data.index[self.feature_data[col]]
-                if len(feature_subset) > 1:
-                    feature_subsets[col] = feature_subset
-            categories = [  # 'tag',
-                            'gene_type', 'splice_type']  #, 'gene_status']
-            try:
-                filtered = self.feature_data.groupby('gene_type').filter(
-                    lambda x: len(x) > 20)
-            except KeyError:
-                filtered = self.feature_data
-            for category in categories:
-                if category in filtered:
-                    feature_subsets.update(
-                        self.feature_data.groupby(category).groups)
-
-        for feature_subset in feature_subsets.keys():
-            not_feature_subset = 'not {}'.format(feature_subset)
-            if not_feature_subset not in feature_subsets:
-                in_features = self.feature_data.index.isin(feature_subsets[
-                    feature_subset])
-
-                feature_subsets[not_feature_subset] = \
-                    self.feature_data.index[~in_features]
-
-        feature_subsets['all_genes'] = self.data.columns
+        """Dict of feature subset names to their list of feature ids"""
+        feature_subsets = subsets_from_metadata(
+            self.feature_data, MINIMUM_FEATURE_SUBSET, 'features',
+            ignore=self.feature_ignore_subset_cols)
         feature_subsets['variant'] = self.variant
         return feature_subsets
 
     def feature_subset_to_feature_ids(self, feature_subset, rename=True):
+        """Convert a feature subset name to a list of feature ids"""
+        feature_ids = pd.Index([])
         if feature_subset is not None:
             try:
                 if feature_subset in self.feature_subsets:
@@ -233,68 +373,131 @@ class BaseData(object):
             feature_ids = self.data.columns
         return feature_ids
 
-    def calculate_distances(self, metric='euclidean'):
-        """Creates a squareform distance matrix for clustering fun
+    # def calculate_distances(self, metric='euclidean'):
+    #     """Creates a squareform distance matrix for clustering fun
+    #
+    #     Needed for some clustering algorithms
+    #
+    #     Parameters
+    #     ----------
+    #     metric : str, optional
+    #         One of any valid scipy.distance metric strings. Default 'euclidean'
+    #     """
+    #     raise NotImplementedError
+    #     self.pdist = squareform(pdist(self.binned, metric=metric))
+    #     return self
+    #
+    # def correlate(self, method='spearman', between='features'):
+    #     """Find correlations between either splicing/expression measurements
+    #     or cells
+    #
+    #     Parameters
+    #     ----------
+    #     method : str
+    #         Specify to calculate either 'spearman' (rank-based) or 'pearson'
+    #         (linear) correlation. Default 'spearman'
+    #     between : str
+    #         Either 'features' or 'samples'. Default 'features'
+    #     """
+    #     raise NotImplementedError
+    #     # Stub for choosing between features or samples
+    #     if 'features'.startswith(between):
+    #         pass
+    #     elif 'samples'.startswith(between):
+    #         pass
 
-        Needed for some clustering algorithms
+    def jsd_df(self, groupby=None, n_iter=100, n_bins=10):
+        """Jensen-Shannon divergence of features across phenotypes
 
         Parameters
         ----------
-        metric : str, optional
-            One of any valid scipy.distance metric strings. Default 'euclidean'
-        """
-        raise NotImplementedError
-        self.pdist = squareform(pdist(self.binned, metric=metric))
-        return self
-
-    def correlate(self, method='spearman', between='features'):
-        """Find correlations between either splicing/expression measurements
-        or cells
-
-        Parameters
-        ----------
-        method : str
-            Specify to calculate either 'spearman' (rank-based) or 'pearson'
-            (linear) correlation. Default 'spearman'
-        between : str
-            Either 'features' or 'samples'. Default 'features'
-        """
-        raise NotImplementedError
-        # Stub for choosing between features or samples
-        if 'features'.startswith(between):
-            pass
-        elif 'samples'.startswith(between):
-            pass
-
-    def jsd(self):
-        """Jensen-Shannon divergence showing most varying measurements within a
-        celltype and between celltypes
-        """
-        raise NotImplementedError
-
-    # TODO.md: Specify dtypes in docstring
-    def plot_classifier(self, trait, sample_ids=None, feature_ids=None,
-                        predictor_name=None,
-                        standardize=True, score_coefficient=None,
-                        data_name=None,
-                        label_to_color=None,
-                        label_to_marker=None,
-                        groupby=None, order=None, color=None,
-                        **plotting_kwargs):
-        """Principal component-like analysis of measurements
-
-        Params
-        -------
-        trait - a pandas series with categorical features, indexed like self.data
-        sample_ids - an iterable of row IDs to use
-        feature_ids - an iterable of column IDs to use
-        standardize - 0-center, 1-variance
-        score_coefficient - for calculating score cutoff, default == 2
-        data_name - a name (str) for this subset of the data
+        groupby : mappable
+            A samples to phenotypes mapping
+        n_iter : int
+            Number of bootstrap resampling iterations to perform for the
+            within-group comparisons
+        n_bins : int
+            Number of bins to binify the singles data on
 
         Returns
         -------
-        self
+        jsd_df : pandas.DataFrame
+            A (n_features, n_phenotypes^2) dataframe of the JSD between each
+            feature between and within phenotypes
+        """
+        bins = np.linspace(self.singles.min().min(), self.singles.max().max(),
+                           n_bins)
+        return cross_phenotype_jsd(self.singles, groupby=groupby,
+                                   bins=bins, n_iter=n_iter)
+
+    def jsd_2d(self, groupby=None, n_iter=100, n_bins=10):
+        """Mean Jensen-Shannon divergence of features across phenotypes
+
+        Parameters
+        ----------
+        groupby : mappable
+            A samples to phenotypes mapping
+        n_iter : int
+            Number of bootstrap resampling iterations to perform for the
+            within-group comparisons
+        n_bins : int
+            Number of bins to binify the singles data on
+
+        Returns
+        -------
+        jsd_2d : pandas.DataFrame
+            A (n_phenotypes, n_phenotypes) symmetric dataframe of the mean JSD
+            between and within phenotypes
+        """
+        return jsd_df_to_2d(self.jsd_df(groupby=groupby, n_iter=n_iter,
+                                        n_bins=n_bins))
+
+
+    def plot_classifier(self, trait, sample_ids=None, feature_ids=None,
+                        predictor_name=None, standardize=True,
+                        score_coefficient=None, data_name=None, groupby=None,
+                        label_to_color=None, label_to_marker=None, order=None,
+                        color=None, **plotting_kwargs):
+        """Classify samples on boolean or categorical traits
+
+        Parameters
+        ----------
+        trait : pandas.Series
+            A (n_samples,) series of categorical features. Must have the same
+            index as :py:attr:`.data`
+        sample_ids : list-like, optional (default=None)
+            Which samples to use to classify
+        feature_ids : list-like, optional (default=None)
+            Which features to use
+        predictor_name : str
+            Name of the predictor to use, in
+            :py:attr:`.predictor_config_manager`
+        standardize : bool, optional (default=True)
+            If True, mean-center the data so the mean of all features is 0,
+            and divide by the standard deviation so the standard deviation of
+            all features is 1. This allows us to compare lowly expressed
+            features and highly expressed features on the same playing field
+        data_name : str, optional (default=None)
+            Name for this subset of the data
+        groupby : mappable, optional (default=None)
+            Map each sample id to a group, such as a phenotype label
+        label_to_color : dict, optional (default=None)
+            For each phenotype label, assign a color
+        label_to_marker : dict, optional (default=None)
+            For each phenotype label, assign a plotting marker symbol/shape
+        order : list, optional (default=None)
+            For violinplots, the order of the phenotype groups
+        color : list, optional (default=None)
+            For violinplots, the colors of the phenotypes in their order
+        plotting_kwargs : other keyword arguments
+            All other keyword arguments are passed to
+            :py:meth:`.Classifier.__call__`, which passes them to
+            :py:meth:`DecomopsitionViz.__call__`
+
+        Returns
+        -------
+        cv : ClassifierViz
+            Visualziation of the classifier
         """
         # print trait
         plotting_kwargs = {} if plotting_kwargs is None else plotting_kwargs
@@ -302,9 +505,9 @@ class BaseData(object):
         # local_plotting_args = self.pca_plotting_args.copy()
         # local_plotting_args.update(plotting_kwargs)
         if predictor_name is None:
-            predictor_name = default_predictor_name
+            predictor_name = CLASSIFIER
 
-        clf = self.classify(trait, sample_ids=sample_ids,
+        classifier = self.classify(trait, sample_ids=sample_ids,
                             feature_ids=feature_ids,
                             data_name=data_name,
                             standardize=standardize,
@@ -312,111 +515,129 @@ class BaseData(object):
                             groupby=groupby, label_to_marker=label_to_marker,
                             label_to_color=label_to_color, order=order,
                             color=color)
-        if score_coefficient is not None:
-            clf.score_coefficient = score_coefficient
-        clf(**plotting_kwargs)
-        return self
 
-    def plot_dimensionality_reduction(self, x_pc=1, y_pc=2,
-                                      sample_ids=None, feature_ids=None,
-                                      featurewise=False, reducer=DataFramePCA,
-                                      label_to_color=None,
-                                      label_to_marker=None,
-                                      groupby=None, order=None, color=None,
-                                      reduce_kwargs=None,
-                                      title='',
+        if score_coefficient is not None:
+            classifier.score_coefficient = score_coefficient
+        classifier.plot(**plotting_kwargs)
+        return classifier
+
+    def plot_dimensionality_reduction(self, x_pc=1, y_pc=2, sample_ids=None,
+                                      feature_ids=None, featurewise=False,
+                                      reducer=None, plot_violins=True,
+                                      groupby=None, label_to_color=None,
+                                      label_to_marker=None, order=None,
+                                      reduce_kwargs=None, title='',
                                       **plotting_kwargs):
         """Principal component-like analysis of measurements
 
         Parameters
         ----------
-        x_pc : int
+        x_pc : int, optional (default=1)
             Which principal component to plot on the x-axis
-        y_pc : int
+        y_pc : int, optional (default=2)
             Which principal component to plot on the y-axis
-        sample_ids : None or list of strings
+        sample_ids : list, optional (default=None)
             If None, plot all the samples. If a list of strings, must be
-            valid sample ids of the data
-        feature_ids : None or list of strings
-            If None, plot all the features. If a list of strings
-        featurewise : bool
+            valid sample ids of the data.
+        feature_ids : list, optional (default=None)
+            If None, plot all the features. If a list of strings, perform and
+            plot dimensionality reduction on only these feature ids
+        featurewise : bool, optional (default=False)
             Whether to keep the features and reduce on the samples (default
             is to keep the samples and reduce the features)
-        reducer : flotilla.visualize.DecompositionViz
-            Which decomposition object to use. Must be a flotilla object,
-            as this has built-in compatibility with pandas.DataFrames.
-
+        reducer : :py:class:`.DataFrameReducerBase`, optional
+            (default=:py:class:`.DataFramePCA`)
+            Which decomposition object to use. Must be a child of
+            :py:class:`.DataFrameReducerBase` as this has built-in
+            compatibility with pandas.DataFrames.
+        plot_violins : bool, optional (default=True)
+            If True, plot the violinplots of the top features. This
+            can take a long time, so to save time you can turn it off if you
+            just want a quick look at the PCA.
+        groupby : mappable, optional (default=None)
+            Map each sample id to a group, such as a phenotype label
+        label_to_color : dict, optional (default=None)
+            For each phenotype label, assign a color
+        label_to_marker : dict, optional (default=None)
+            For each phenotype label, assign a plotting marker symbol/shape
+        order : list, optional (default=None)
+            For violinplots, the order of the phenotype groups
+        color : list, optional (default=None)
+            For violinplots, the colors of the phenotypes in their order
+        plotting_kwargs : other keyword arguments
+            All other keyword arguments are passed to
+            :py:meth:`DecomopsitionViz.__call__`
 
         Returns
         -------
-        self
-
-        Raises
-        ------
-
+        viz : :py:class:`.DecompositionViz`
+            Object with plotted dimensionality reduction
         """
         reduce_kwargs = {} if reduce_kwargs is None else reduce_kwargs
 
         reduced = self.reduce(sample_ids, feature_ids,
                               featurewise=featurewise,
                               reducer=reducer, **reduce_kwargs)
+
         visualized = DecompositionViz(reduced.reduced_space,
                                       reduced.components_,
                                       reduced.explained_variance_ratio_,
+                                      singles=self.singles,
+                                      pooled=self.pooled,
+                                      outliers=self.outliers,
+                                      feature_renamer=self.feature_renamer,
                                       featurewise=featurewise,
-                                      DataModel=self,
                                       label_to_color=label_to_color,
                                       label_to_marker=label_to_marker,
-                                      groupby=groupby, order=order, color=color,
+                                      groupby=groupby, order=order,
+                                      data_type=self.data_type,
                                       x_pc="pc_" + str(x_pc),
                                       y_pc="pc_" + str(y_pc))
         # pca(show_vectors=True,
-        #     **plotting_kwargs)
-        return visualized(title=title, **plotting_kwargs)
+        # **plotting_kwargs)
+        return visualized.plot(title=title,
+                          plot_violins=plot_violins, **plotting_kwargs)
 
     def plot_pca(self, **kwargs):
+        """Call ``plot_dimensionality_reduction`` with PCA specifically"""
         return self.plot_dimensionality_reduction(reducer=DataFramePCA,
                                                   **kwargs)
 
-    @property
-    def min_samples(self):
-        return self._min_samples
-
-    @min_samples.setter
-    def min_samples(self, values):
-        self._min_samples = values
-
     def _subset(self, data, sample_ids=None, feature_ids=None,
                 require_min_samples=True):
-        """Take only a subset of the data, and require at least the minimum
+        """Smartly subset the data given sample and feature ids
+
+        Take only a subset of the data, and require at least the minimum
         samples observed to be not NA for each feature.
 
         Parameters
         ----------
         data : pandas.DataFrame
             Data to subset
-        sample_ids : list of str
+        sample_ids : list-like, optional (default=None)
             Which samples to use. If None, use all.
-        feature_ids : list of str
+        feature_ids : list-like, optional (default=None)
             Which features to use. If None, use all.
+        require_min_samples : bool, optional (default=True)
+            If True, then require `minimum_samples` for each feature
 
         Returns
         -------
         subset : pandas.DataFrame
+            The subset of data with only these sample ids and feature ides
         """
         if feature_ids is None:
             feature_ids = data.columns
+        else:
+            feature_ids = pd.Index(set(feature_ids).intersection(data.columns))
         if sample_ids is None:
             sample_ids = data.index
+        else:
+            sample_ids = pd.Index(set(sample_ids).intersection(data.index))
 
-        sample_ids = pd.Index(set(sample_ids).intersection(data.index))
-        feature_ids = pd.Index(set(feature_ids).intersection(data.columns))
 
         if len(sample_ids) == 1:
             sample_ids = sample_ids[0]
-            single_sample = True
-        else:
-            single_sample = False
 
         if len(feature_ids) == 1:
             feature_ids = feature_ids[0]
@@ -424,11 +645,11 @@ class BaseData(object):
         else:
             single_feature = False
 
-        subset = data.ix[sample_ids]
-        subset = subset.T.ix[feature_ids].T
+        subset = data.ix[sample_ids, feature_ids]
+        # subset = subset.T.ix[feature_ids].T
 
         if require_min_samples and not single_feature:
-            subset = subset.ix[:, subset.count() >= self.min_samples]
+            subset = subset.ix[:, subset.count() >= self.minimum_samples]
 
         if subset.empty:
             raise ValueError('This data subset is empty. Please double-check '
@@ -436,24 +657,62 @@ class BaseData(object):
         return subset
 
     def _subset_singles_and_pooled(self, sample_ids=None,
-                                   feature_ids=None):
+                                   feature_ids=None, data=None):
+        """Subset singles and pooled, taking only features that appear in both
+        
+        Parameters
+        ----------
+        sample_ids : list-like, optional (default=None)
+            List of samples to use. If None, use all. If none of the sample ids
+            overlap with pooled samples, will assume you want all the pooled
+            samples
+        feature_ids : list-like, optional (default=None)
+            List of feature ids to use. If None, use all
+        data : pandas.DataFrame, optional (default=None)
+            If provided, use this ``data`` instead of this instance's 
+            py:attr:`BaseData.data`. Convenient for when you filtered based on
+            some other criteria, e.g. for splicing events with expression 
+            greater than some threshold
+        
+        Returns
+        -------
+        singles : pandas.DataFrame
+            DataFrame of only single-cell samples, with only features that
+            appear in both these single cell and pooled samples
+        pooled : pandas.DataFrame
+            DataFrame of only pooled samples, with only features that appear
+            in both these single cell and pooled samples
+        """
         # singles_ids = self.data.index.intersection(sample_ids)
         # pooled_ids = self.pooled.index.intersection(sample_ids)
         # import pdb; pdb.set_trace()
-        singles = self._subset(self.data, sample_ids, feature_ids,
-                               require_min_samples=True)
+        if data is None:
+            singles = self._subset(self.singles, sample_ids, feature_ids,
+                                   require_min_samples=True)
+        else:
+            sample_ids = data.index.intersection(self.singles.index)
+            singles = self._subset(data, sample_ids,
+                                   require_min_samples=True)
 
         try:
             # If the sample ids don't overlap with the pooled sample, assume you
             # want all the pooled samples
-            if sample_ids is not None and sum(
-                    self.pooled.index.isin(sample_ids)) \
-                    > 0:
+            n_pooled_sample_ids = sum(self.pooled.index.isin(sample_ids))
+
+            if sample_ids is not None and n_pooled_sample_ids > 0:
                 pooled_sample_ids = sample_ids
             else:
                 pooled_sample_ids = None
-            pooled = self._subset(self.pooled, pooled_sample_ids, feature_ids,
-                                  require_min_samples=False)
+
+            if data is None:
+                pooled = self._subset(self.pooled, pooled_sample_ids,
+                                      feature_ids,
+                                      require_min_samples=False)
+            else:
+                sample_ids = data.index.intersection(self.pooled.index)
+                pooled = self._subset(data, sample_ids,
+                                      require_min_samples=False)
+
             if feature_ids is None or len(feature_ids) > 1:
                 # These are DataFrames
                 singles, pooled = singles.align(pooled, axis=1, join='inner')
@@ -461,10 +720,26 @@ class BaseData(object):
                 # These are Seriessssss
                 singles = singles.dropna()
                 pooled = pooled.dropna()
-        except AttributeError:
+        except (AttributeError, ValueError):
             pooled = None
 
         return singles, pooled
+
+    # def _subset_ids_or_data(self, sample_ids, feature_ids, data,
+    #                            singles=False):
+    #     if data is None:
+    #         if singles:
+    #             data = self.singles
+    #         else:
+    #             data = self.data
+    #         return self._subset(data, sample_ids, feature_ids,
+    #                             require_min_samples=False)
+    #     else:
+    #         if feature_ids is not None and sample_ids is not None:
+    #             raise ValueError('Can only specify `sample_ids` and '
+    #                              '`feature_ids` or `data`, but not both.')
+    #         else:
+    #             return data
 
     def _subset_and_standardize(self, data, sample_ids=None,
                                 feature_ids=None,
@@ -480,15 +755,20 @@ class BaseData(object):
         ----------
         data : pandas.DataFrame
             The data you want to standardize
-        sample_ids : None or list of strings
+        sample_ids : list-like, optional (default=None)
             If None, all sample ids will be used, else only the sample ids
             specified
-        feature_ids : None or list of strings
+        feature_ids : list-like, optional (default=None)
             If None, all features will be used, else only the features
             specified
-        standardize : bool
+        standardize : bool, optional (default=True)
             Whether or not to "whiten" (make all variables uncorrelated) and
             mean-center via sklearn.preprocessing.StandardScaler
+        return_means : bool, optional (default=False)
+            If True, return a tuple of (subset, means), otherwise just return
+            the subset
+        rename : bool, optional (default=False)
+            Whether or not to rename the feature ids using ``feature_renamer``
 
         Returns
         -------
@@ -496,10 +776,8 @@ class BaseData(object):
             Subset of the dataframe with the requested samples and features,
             and standardized as described
         means : pandas.DataFrame
-            Mean values of the features (columns). Ignores NAs.
-
+            (Only if return_means=True) Mean values of the features (columns).
         """
-
         # fill na with mean for each event
         subset = self._subset(data, sample_ids, feature_ids)
         means = subset.mean()
@@ -524,28 +802,90 @@ class BaseData(object):
         else:
             return subset
 
-    def plot_clusteredheatmap(self, sample_ids, feature_ids,
-                              metric='euclidean',
-                              linkage_method='average',
-                              sample_colors=None,
-                              feature_colors=None, figsize=None,
-                              require_min_samples=True):
-        subset, row_linkage, col_linkage = self._calculate_linkage(
-            sample_ids, feature_ids, linkage_method=linkage_method,
-            metric=metric)
+    # def plot_clusteredheatmap(self, sample_ids, feature_ids,
+    #                           metric='euclidean',
+    #                           linkage_method='average',
+    #                           sample_colors=None,
+    #                           feature_colors=None, figsize=None,
+    #                           require_min_samples=True):
+    #     """
+    #
+    #     """
+    #     subset, row_linkage, col_linkage = self._calculate_linkage(
+    #         sample_ids, feature_ids, linkage_method=linkage_method,
+    #         metric=metric)
+    #
+    #     if figsize is None:
+    #         figsize = reversed(subset.shape)
+    #         figsize = map(lambda x: max(.25 * x, 1000), figsize)
+    #
+    #     col_kws = dict(linkage_matrix=col_linkage, side_colors=feature_colors,
+    #                    label=map(self.feature_renamer, subset.columns))
+    #     row_kws = dict(linkage_matrix=row_linkage, side_colors=sample_colors)
+    #     return sns.clusteredheatmap(subset, row_kws=row_kws, col_kws=col_kws,
+    #                                 pcolormesh_kws=dict(linewidth=0.01),
+    #                                 figsize=figsize)
 
-        if figsize is None:
-            figsize = reversed(subset.shape)
-            figsize = map(lambda x: max(.25 * x, 1000), figsize)
+    #@memoize
+    def detect_outliers(self,
+                        sample_ids=None, feature_ids=None,
+                        featurewise=False,
+                        reducer=None,
+                        standardize=True,
+                        reducer_kwargs=None,
+                        bins=None,
+                        outlier_detection_method=None,
+                        outlier_detection_method_kwargs=None):
 
-        col_kws = dict(linkage_matrix=col_linkage, side_colors=feature_colors,
-                       label=map(self.feature_renamer, subset.columns))
-        row_kws = dict(linkage_matrix=row_linkage, side_colors=sample_colors)
-        return sns.clusteredheatmap(subset, row_kws=row_kws, col_kws=col_kws,
-                                    pcolormesh_kws=dict(linewidth=0.01),
-                                    figsize=figsize)
+        default_reducer_args = {"n_components": 2}
 
-    @memoize
+        if reducer_kwargs is None:
+            reducer_kwargs = default_reducer_args
+        else:
+            default_reducer_args.update(reducer_kwargs)
+            reducer_kwargs = default_reducer_args
+
+        reducer = self.reduce(sample_ids, feature_ids,
+                              featurewise, reducer,
+                              standardize, reducer_kwargs,
+                              bins)
+
+        outlier_detector = OutlierDetection(reducer.reduced_space,
+                                            method=outlier_detection_method,
+                                            **outlier_detection_method_kwargs)
+
+        return reducer, outlier_detector
+
+    def plot_outliers(self, reducer, outlier_detector, **pca_args):
+        show_point_labels = pca_args['show_point_labels']
+        del pca_args['show_point_labels']
+        dv = DecompositionViz(reducer.reduced_space,
+                              reducer.components_,
+                              reducer.explained_variance_ratio_,
+                              groupby=outlier_detector.outliers,
+                              )
+
+        dv.plot(show_point_labels=show_point_labels)
+        #self.plot_pca(self, groupby=outlier_detector.outliers,
+        #              title=outlier_detector.title,
+        #              **pca_args)
+
+        # DecompositionViz(reducer.reduced_space,
+        # reducer.components_,
+        #                       reducer.explained_variance_ratio_,
+        #                       DataModel=self,
+        #                       feature_renamer=feature_renamer,
+        #                       groupby=outlier_detector.outliers,
+        #                       featurewise=False,
+        #                       order=None, violinplot_kws=None,
+        #                       data_type=None, label_to_color=None,
+        #                       label_to_marker=None,
+        #                       scale_by_variance=True, x_pc=x_pc,
+        #                       y_pc=y_pc, n_vectors=0, distance='L1',
+        #                       n_top_pc_features=50)
+        #dv(show_point_labels=show_point_labels, title=outlier_detector.title)
+
+    # @memoize
     def reduce(self, sample_ids=None, feature_ids=None,
                featurewise=False,
                reducer=DataFramePCA,
@@ -606,13 +946,11 @@ class BaseData(object):
                  predictor_obj=None,
                  predictor_scoring_fun=None,
                  score_cutoff_fun=None,
-                 n_features_dependent_parameters=None,
-                 constant_parameters=None,
+                 n_features_dependent_kwargs=None,
+                 constant_kwargs=None,
                  plotting_kwargs=None,
                  color=None, groupby=None, label_to_color=None,
                  label_to_marker=None, order=None, bins=None):
-        #Should all this be exposed to the user???
-
         """Make and memoize a predictor on a categorical trait (associated
         with samples) subset of genes
 
@@ -652,21 +990,21 @@ class BaseData(object):
         subset = self._subset_and_standardize(self.data, sample_ids,
                                               feature_ids, standardize)
         # subset.rename_axis(self.feature_renamer, 1, inplace=True)
-        if plotting_kwargs is None:
-            plotting_kwargs = {}
+        plotting_kwargs = {} if plotting_kwargs is None else plotting_kwargs
 
         classifier = ClassifierViz(
             data_name, trait.name, predictor_name=predictor_name,
             X_data=subset, trait=trait, predictor_obj=predictor_obj,
             predictor_scoring_fun=predictor_scoring_fun,
             score_cutoff_fun=score_cutoff_fun,
-            n_features_dependent_parameters=n_features_dependent_parameters,
-            constant_parameters=constant_parameters,
+            n_features_dependent_kwargs=n_features_dependent_kwargs,
+            constant_kwargs=constant_kwargs,
             predictor_dataset_manager=self.predictor_dataset_manager,
             data_type=self.data_type, color=color,
             groupby=groupby, label_to_color=label_to_color,
             label_to_marker=label_to_marker, order=order,
-            DataModel=self, feature_renamer=self.feature_renamer,
+            feature_renamer=self.feature_renamer,
+            singles=self.singles, pooled=self.pooled, outliers=self.outliers,
             **plotting_kwargs)
         return classifier
 
@@ -683,8 +1021,7 @@ class BaseData(object):
         return subset, row_linkage, col_linkage
 
     def binify(self, data, bins=None):
-        return binify(data, bins).dropna(how='all', axis=0).dropna(how='all',
-                                                                   axis=1)
+        return binify(data, bins).dropna(how='all', axis=1)
 
 
     def _violinplot(self, feature_id, sample_ids=None,
@@ -699,15 +1036,20 @@ class BaseData(object):
         outliers = None
         try:
             if not self.outliers.empty:
-                outliers = self._subset(self.outliers, feature_ids=[feature_id])
+                outliers = self._subset(self.outliers,
+                                        feature_ids=[feature_id])
         except AttributeError:
             pass
 
         renamed = self.feature_renamer(feature_id)
+        # if isinstance(self.data.columns, pd.MultiIndex):
+        # feature_id, renamed = feature_id
+        # else:
+        # renamed = self.feature_renamer(feature_id)
         title = '{}\n{}'.format(renamed, ':'.join(
             feature_id.split('@')[0].split(':')[:2]))
 
-        violinplot(singles, groupby=phenotype_groupby, color=color,
+        violinplot(singles, groupby=phenotype_groupby, color_ordered=color,
                    pooled_data=pooled, order=phenotype_order,
                    title=title, data_type=self.data_type, ax=ax,
                    label_pooled=label_pooled, outliers=outliers)
@@ -718,11 +1060,11 @@ class BaseData(object):
         return DataFrameNMF(self.binify(data).T, n_components=2)
 
     @memoize
-    def binned_nmf_reduced(self, sample_ids=None, feature_ids=None):
-        """
-
-        """
-        data = self._subset(self.data, sample_ids, feature_ids, require_min_samples=False)
+    def binned_nmf_reduced(self, sample_ids=None, feature_ids=None,
+                           data=None):
+        if data is None:
+            data = self._subset(self.data, sample_ids, feature_ids,
+                                require_min_samples=False)
         binned = self.binify(data)
         reduced = self.nmf.transform(binned.T)
         return reduced
@@ -731,42 +1073,71 @@ class BaseData(object):
                      phenotype_groupby=None,
                      phenotype_order=None, color=None,
                      phenotype_to_color=None,
-                     phenotype_to_marker=None, xlabel=None, ylabel=None):
-
+                     phenotype_to_marker=None, nmf_xlabel=None, nmf_ylabel=None,
+                     nmf_space=False, fig=None, axesgrid=None):
         """
-        Plot the violinplot of a splicing event (should also show DataFrameNMF movement)
+        Plot the violinplot of a feature. Have the option to show NMF movement
         """
         feature_ids = self.maybe_renamed_to_feature_id(feature_id)
 
         if not isinstance(feature_ids, pd.Index):
             feature_ids = [feature_id]
 
-        ncols = 2  #if self.data_type == 'splicing' else 1
+        if fig is None and axesgrid is None:
+            nrows = len(feature_ids)
+            ncols = 2 if nmf_space else 1
+            figsize = 4*ncols, 4*nrows
 
-        for feature_id in feature_ids:
-            fig, axes = plt.subplots(ncols=ncols, figsize=(4 * ncols, 4))
+            fig, axesgrid = plt.subplots(nrows=nrows, ncols=ncols,
+                                         figsize=figsize)
+            if nrows == 1:
+                axesgrid = [axesgrid]
+
+        for feature_id, axes in zip(feature_ids, axesgrid):
+            if not nmf_space:
+                axes = [axes]
             # if self.data_type == 'expression':
-            #     axes = [axes]
+            # axes = [axes]
 
             self._violinplot(feature_id, sample_ids=sample_ids,
                              phenotype_groupby=phenotype_groupby,
                              phenotype_order=phenotype_order, ax=axes[0],
                              color=color)
-            # if self.data_type == 'splicing':
-            try:
-                self.plot_nmf_space_transitions(
-                    feature_id, groupby=phenotype_groupby,
-                    phenotype_to_color=phenotype_to_color,
-                    phenotype_to_marker=phenotype_to_marker,
-                    order=phenotype_order, ax=axes[1],
-                    xlabel=xlabel, ylabel=ylabel)
-            except KeyError:
-                continue
-            sns.despine()
 
-    def nmf_space_positions(self, groupby, min_samples_per_group=5):
-        data = self.data.groupby(groupby).filter(lambda x: len(x) >= min_samples_per_group)
-        df = data.groupby(groupby).apply(lambda x: self.binned_nmf_reduced(sample_ids=x.index))
+            if nmf_space:
+                try:
+                    self.plot_nmf_space_transitions(
+                        feature_id, groupby=phenotype_groupby,
+                        phenotype_to_color=phenotype_to_color,
+                        phenotype_to_marker=phenotype_to_marker,
+                        order=phenotype_order, ax=axes[1],
+                        xlabel=nmf_xlabel, ylabel=nmf_ylabel)
+                except KeyError:
+                    continue
+            sns.despine()
+        fig.tight_layout()
+
+    def nmf_space_positions(self, groupby, n=5):
+        """Calculate NMF-space position of splicing events in phenotype groups
+
+        Parameters
+        ----------
+        groupby : mappable
+            A sample id to phenotype mapping
+        n : int
+            Minimum samples required per group
+
+        Returns
+        -------
+        df : pandas.DataFrame
+            A (n_events, n_groups) dataframe of NMF positions
+        """
+        grouped = self.singles.groupby(groupby)
+        at_least_n_per_group_per_event = grouped.transform(
+            lambda x: x if x.count() >= n else pd.Series(np.nan,
+                                                         index=x.index))
+        df = at_least_n_per_group_per_event.groupby(groupby).apply(
+            lambda x: self.binned_nmf_reduced(data=x))
         df = df.swaplevel(0, 1)
         df = df.sort_index()
         return df
@@ -783,28 +1154,99 @@ class BaseData(object):
                               ax, xlabel, ylabel)
 
     @staticmethod
-    def transition_distances(df, transitions):
-        df.index = df.index.droplevel(0)
+    def transition_distances(positions, transitions):
+        """Get NMF distance of features between phenotype transitions
+
+        Parameters
+        ----------
+        positions : pandas.DataFrame
+            A ((n_features, phenotypes), 2) MultiIndex dataframe of the NMF
+            positions of splicing events for different phenotypes
+        transitions : list of 2-string tuples
+            List of (phenotype1, phenotype2) transitions
+
+        Returns
+        -------
+        transitions : pandas.DataFrame
+            A (n_features, n_transitions) DataFrame of the NMF distances
+            of features between different phenotypes
+        """
+        positions_phenotype = positions.copy()
+        positions_phenotype.index = positions_phenotype.index.droplevel(0)
         distances = pd.Series(index=transitions)
         for transition in transitions:
             try:
                 phenotype1, phenotype2 = transition
-                norm = np.linalg.norm(df.ix[phenotype2] - df.ix[phenotype1])
-                #             print phenotype1, phenotype2, norm
+                norm = np.linalg.norm(positions_phenotype.ix[phenotype2] -
+                                      positions_phenotype.ix[phenotype1])
+                # print phenotype1, phenotype2, norm
                 distances[transition] = norm
             except KeyError:
                 pass
         return distances
 
-    def big_nmf_space_transitions(self, groupby, phenotype_transitions):
-        nmf_space_positions = self.nmf_space_positions(groupby)
-        nmf_space_transitions = nmf_space_positions.groupby(
-            level=0, axis=0, as_index=False, group_keys=False).apply(
-            self.transition_distances,
-            transitions=phenotype_transitions)
+    def nmf_space_transitions(self, groupby, phenotype_transitions, n=5):
+        """Get distance in NMF space of different splicing events
 
-        mean = nmf_space_transitions.mean()
-        std = nmf_space_transitions.std()
+        Parameters
+        ----------
+        groupby : mappable
+            A sample id to phenotype mapping
+        phenotype_transitions : list of str pairs
+            Which phenotype follows from one to the next, for calculating
+            distances between
+        n : int
+            Minimum number of samples per phenotype, per event
+
+        Returns
+        -------
+        nmf_space_transitions : pandas.DataFrame
+            A (n_events, n_phenotype_transitions) sized DataFrame of the
+            distances of these events in NMF space
+        """
+        nmf_space_positions = self.nmf_space_positions(groupby, n=n)
+
+        # Take only splicing events that have at least two phenotypes
+        nmf_space_positions = nmf_space_positions.groupby(
+            level=0, axis=0).filter(lambda x: len(x) > 1)
+
+        nmf_space_transitions = nmf_space_positions.groupby(
+            level=0, axis=0, as_index=True, group_keys=False).apply(
+            self.transition_distances, transitions=phenotype_transitions)
+
+        # Remove any events that didn't have phenotype pairs from
+        # the transitions
+        nmf_space_transitions = nmf_space_transitions.dropna(how='all',
+                                                             axis=0)
+        return nmf_space_transitions
+
+    def big_nmf_space_transitions(self, groupby, phenotype_transitions, n=5):
+        """Get features whose change in NMF space between phenotypes is large
+
+        Parameters
+        ----------
+        groupby : mappable
+            A sample id to phenotype group mapping
+        phenotype_transitions : list of length-2 tuples of str
+            List of ('phenotype1', 'phenotype2') transitions whose change in
+            distribution you are interested in
+        n : int
+            Minimum number of samples per phenotype, per event
+
+        Returns
+        -------
+        big_transitions : pandas.DataFrame
+            A (n_events, n_transitions) dataframe of the NMF distances between
+            splicing events
+        """
+        nmf_space_transitions = self.nmf_space_transitions(
+            groupby, phenotype_transitions, n=n)
+
+        # get the mean and standard dev of the whole array
+        n = nmf_space_transitions.count().sum()
+        mean = nmf_space_transitions.sum().sum() / n
+        std = np.sqrt(np.square(nmf_space_transitions - mean).sum().sum() / n)
+
         big_transitions = nmf_space_transitions[
             nmf_space_transitions > (mean + 2 * std)].dropna(how='all')
         return big_transitions
@@ -813,11 +1255,227 @@ class BaseData(object):
                                        phenotype_transitions,
                                        phenotype_order, color,
                                        phenotype_to_color,
-                                       phenotype_to_marker):
+                                       phenotype_to_marker, n=5):
+        """Violinplots and NMF transitions of features different in phenotypes
+
+        Plot violinplots and NMF-space transitions of features that have large
+        NMF-space transitions between different phenotypes
+
+        Parameters
+        ----------
+        n : int
+            Minimum number of samples per phenotype, per event
+
+
+        Returns
+        -------
+
+
+        Raises
+        ------
+        """
         big_transitions = self.big_nmf_space_transitions(phenotype_groupby,
-                                                         phenotype_transitions)
+                                                         phenotype_transitions,
+                                                         n=n)
+        nrows = big_transitions.shape[0]
+        ncols = 2
+        figsize = 4 * ncols, 4 * nrows
+
+        fig, axesgrid = plt.subplots(nrows=nrows, ncols=ncols,
+                                     figsize=figsize)
+        if nrows == 1:
+            axesgrid = [axesgrid]
         for feature_id in big_transitions.index:
             self.plot_feature(feature_id, phenotype_groupby=phenotype_groupby,
                               phenotype_order=phenotype_order, color=color,
                               phenotype_to_color=phenotype_to_color,
-                              phenotype_to_marker=phenotype_to_marker)
+                              phenotype_to_marker=phenotype_to_marker,
+                              nmf_space=True, fig=fig, axesgrid=axesgrid)
+
+
+    def plot_two_samples(self, sample1, sample2, fillna=None,
+                         **kwargs):
+        """
+
+        Parameters
+        ----------
+        sample1 : str
+            Name of the sample to plot on the x-axis
+        sample2 : str
+            Name of the sample to plot on the y-axis
+        fillna : float
+            Value to replace NAs with
+        Any other keyword arguments valid for seaborn.jointplot
+
+        Returns
+        -------
+        jointgrid : seaborn.axisgrid.JointGrid
+            Returns a JointGrid instance
+
+        See Also
+        -------
+        seaborn.jointplot
+
+        """
+        x = self.data.ix[sample1]
+        y = self.data.ix[sample2]
+
+        if fillna is not None:
+            x = x.fillna(fillna)
+            y = y.fillna(fillna)
+        return simple_twoway_scatter(x, y, **kwargs)
+
+    def plot_two_features(self, feature1, feature2, groupby=None,
+                          label_to_color=None, fillna=None, **kwargs):
+        """Plot the values of two features
+        """
+        feature1s = self.maybe_renamed_to_feature_id(feature1)
+        feature2s = self.maybe_renamed_to_feature_id(feature2)
+        for f1 in feature1s:
+            for f2 in feature2s:
+                x = self.data.ix[:, f1].copy()
+                y = self.data.ix[:, f2].copy()
+
+                if fillna is not None:
+                    x = x.fillna(fillna)
+                    y = y.fillna(fillna)
+
+                x.name = feature1
+                y.name = feature2
+                x, y = x.align(y, 'inner')
+
+                joint_kws = {}
+                if groupby is not None:
+                    if label_to_color is not None:
+                        joint_kws['color'] = [label_to_color[groupby[i]]
+                                              for i in x.index]
+                simple_twoway_scatter(x, y, joint_kws=joint_kws, **kwargs)
+
+    @staticmethod
+    def _figsizer(shape, multiplier=0.25):
+        """Scale a heatmap figure based on the dataframe shape"""
+        return tuple(reversed(map(lambda x: min(x * multiplier, 40),
+                                  shape)))
+
+
+    def plot_clustermap(self, sample_ids=None, feature_ids=None, data=None,
+                        feature_colors=None, sample_id_to_color=None,
+                        metric='euclidean', method='average',
+                        scale_fig_by_data=True, **kwargs):
+        # data = self._subset_ids_or_data(sample_ids, feature_ids, data)
+        if data is None:
+            data = self._subset(self.data, sample_ids, feature_ids,
+                                require_min_samples=False)
+        # Get a mask of what values are NA, then replace them because
+        # clustering doesn't work if there's NAs
+        data = data.dropna(how='all', axis=1).dropna(how='all', axis=0)
+        mask = data.isnull()
+        data = data.fillna(data.mean())
+
+        if sample_id_to_color is not None:
+            sample_colors = [sample_id_to_color[x] for x in data.index]
+
+        col_colors = feature_colors
+        row_colors = sample_colors
+        data.columns = data.columns.map(self.feature_renamer)
+
+        if scale_fig_by_data:
+            figsize = self._figsizer(data.shape)
+            kwargs.pop('figsize')
+        else:
+            figsize = kwargs.pop('figsize', None)
+
+
+        return sns.clustermap(data, linewidth=0, col_colors=col_colors,
+                              row_colors=row_colors, metric=metric,
+                              method=method, figsize=figsize, mask=mask,
+                              **kwargs)
+
+    def plot_correlations(self, sample_ids=None, feature_ids=None, data=None,
+                          featurewise=False, sample_id_to_color=None,
+                          metric='euclidean', method='average',
+                          scale_fig_by_data=True, **kwargs):
+        if data is None:
+            data = self._subset(self.data, sample_ids, feature_ids,
+                                require_min_samples=False)
+
+        if sample_id_to_color is not None and not featurewise:
+            colors = [sample_id_to_color[x] for x in data.index]
+        else:
+            colors = None
+
+        if not featurewise:
+            data = data.T
+        corr = data.corr()
+        corr = corr.dropna(how='all', axis=0).dropna(how='all', axis=1)
+
+        # Get a mask of what values are NA, then replace them because
+        # clustering doesn't work if there's NAs
+        mask = corr.isnull()
+        corr = corr.fillna(data.mean())
+
+        if featurewise:
+            corr.index = corr.index.map(self.feature_renamer)
+            corr.columns = corr.columns.map(self.feature_renamer)
+
+        if scale_fig_by_data:
+            figsize = self._figsizer(corr.shape)
+            kwargs.pop('figsize')
+        else:
+            figsize = kwargs.pop('figsize', None)
+
+        return sns.clustermap(corr, linewidth=0, col_colors=colors,
+                              row_colors=colors, figsize=figsize,
+                              method=method, metric=metric, mask=mask,
+                              **kwargs)
+
+
+def subsets_from_metadata(metadata, minimum, subset_type, ignore=None):
+    """Get subsets from metadata, including boolean and categorical columns
+
+    Parameters
+    ----------
+    metadata : pandas.DataFrame
+        The dataframe whose columns to use to create subsets of the rows
+    minimum : int
+        Minimum number of rows required for a column or group in the column
+        to be included
+    subset_type : str
+        The name of the kind of subset. e.g. "samples" or "features"
+    ignore : list-like
+        List of columns to ignore
+
+    Returns
+    -------
+    subsets : dict
+        A name: row_ids mapping of which samples correspond to which group
+    """
+    subsets = {}
+    ignore = () if ignore is None else ignore
+    if metadata is not None:
+        for col in metadata:
+            if col in ignore:
+                continue
+            if metadata[col].dtype == bool:
+                sample_subset = metadata.index[metadata[col]]
+                subsets[col] = sample_subset
+            else:
+                grouped = metadata.groupby(col)
+                sizes = grouped.size()
+                filtered_sizes = sizes[sizes >= minimum]
+                for group in filtered_sizes.keys():
+                    if isinstance(group, bool):
+                        continue
+                    name = '{}: {}'.format(col, group)
+                    subsets[name] = grouped.groups[group]
+        for sample_subset in subsets.keys():
+            name = 'not ({})'.format(sample_subset)
+            if 'False' in name or 'True' in name:
+                continue
+            if name not in subsets:
+                in_features = metadata.index.isin(subsets[
+                    sample_subset])
+                subsets[name] = metadata.index[~in_features]
+        subsets['all {}'.format(subset_type)] = metadata.index
+    return subsets
+
