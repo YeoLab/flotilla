@@ -1293,6 +1293,8 @@ class Study(object):
             ax.plot(s, 'o-', color=color)
         ax.set_xlabel('Expression threshold')
         ax.set_ylabel('Percent events inconsistent with pooled')
+        ymin, ymax = ax.get_ylim()
+        ax.set_ylim(0, ymax)
         sns.despine()
 
     def plot_clustermap(self, sample_subset=None, feature_subset=None,
