@@ -1674,8 +1674,8 @@ class Study(object):
 
         """
 
-        columns = self._maybe_get_axis_name(self.splicing, axis=1)
-        index = self._maybe_get_axis_name(self.splicing, axis=0)
+        columns = self._maybe_get_axis_name(self.splicing.data, axis=1)
+        index = self._maybe_get_axis_name(self.splicing.data, axis=0)
 
         columns = columns if columns is not None else self._event_name
         index = index if index is not None else self._sample_id
