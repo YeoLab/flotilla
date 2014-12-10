@@ -383,7 +383,7 @@ class Study(object):
             resources of metadata, expression, and splicing.
         """
         datapackage = datapackage_url_to_dict(datapackage_url)
-        datapackage_dir = '{}/{}'.format(FLOTILLA_DOWNLOAD_DIR, 
+        datapackage_dir = '{}/{}'.format(FLOTILLA_DOWNLOAD_DIR,
                                          datapackage['name'])
         return cls.from_datapackage(
             datapackage, load_species_data=load_species_data,
@@ -1247,11 +1247,14 @@ class Study(object):
                 continue
             data = self.filter_splicing_on_expression(expression_thresh)
             data = data.ix[sample_ids, :]
-            singles, pooled, not_measured_in_pooled, pooled_inconsistent =\
-                self.splicing.pooled_inconsistent(data, feature_ids,
-                                              fraction_diff_thresh)
-            percent = self.splicing._divide_inconsistent_and_pooled(pooled,
-                                                        pooled_inconsistent)
+            if not data.empty:
+                singles, pooled, not_measured_in_pooled, pooled_inconsistent =\
+                    self.splicing.pooled_inconsistent(data, feature_ids,
+                                                  fraction_diff_thresh)
+                percent = self.splicing._divide_inconsistent_and_pooled(pooled,
+                                                            pooled_inconsistent)
+            else:
+                percent = np.nan
             percents[phenotype] = percent
         return percents
 
