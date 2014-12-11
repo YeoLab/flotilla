@@ -46,8 +46,6 @@ class MetaData(BaseData):
             self.phenotype_order = None
             self.phenotype_to_color = None
 
-        import pdb; pdb.set_trace()
-
         # Convert color strings to non-default matplotlib colors
         if self.phenotype_to_color is not None:
             # colors = iter(self._colors)
@@ -122,11 +120,12 @@ class MetaData(BaseData):
 
     @property
     def phenotype_to_color(self):
-        if len(set(self._phenotype_order) & set(self.unique_phenotypes)) > 0:
+        if len(set(self._phenotype_to_color.keys()) & set(self.unique_phenotypes)) > 0:
+            all_phenotypes = self._phenotype_to_color.keys().extend(self.unique_phenotypes)
             return dict((k, self._phenotype_to_color[k])
                         if k in self._phenotype_to_color else
                         (k, self._default_phenotype_to_color[k])
-                        for k in self.unique_phenotypes)
+                        for k in all_phenotypes)
         else:
             return self._default_phenotype_to_color
 
