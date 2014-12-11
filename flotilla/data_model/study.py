@@ -1285,22 +1285,35 @@ class Study(object):
             lambda x: self.percent_pooled_inconsistent(expression_thresh=x))
         return expression_vs_inconsistent
 
-    def plot_expression_vs_inconsistent_splicing(self, bins=None, ax=None):
+    def plot_expression_vs_inconsistent_splicing(self, bins=None):
 
         expression_vs_inconsistent = self.expression_vs_inconsistent_splicing(
             bins=bins)
 
-        if ax is None:
-            ax = plt.gca()
+        fig, axes = plt.subplots(nrows=2, figsize=(4, 6))
 
-        for phenotype in expression_vs_inconsistent:
-            s = expression_vs_inconsistent[phenotype]
+        # Plot the percent inconsistent
+        ax = axes[0]
+        for phenotype in self.phenotype_order:
+            s = expression_vs_inconsistent[(phenotype, 'percent')]
             color = self.phenotype_to_color[phenotype]
             ax.plot(s, 'o-', color=color)
         ax.set_xlabel('Expression threshold')
         ax.set_ylabel('Percent events inconsistent with pooled')
         ymin, ymax = ax.get_ylim()
         ax.set_ylim(0, ymax)
+
+        # Plot number of events at each cutoff
+        ax = axes[1]
+        for phenotype in self.phenotype_order:
+            s = expression_vs_inconsistent[(phenotype, 'n_events')]
+            color = self.phenotype_to_color[phenotype]
+            ax.plot(s, 'o-', color=color)
+        ax.set_xlabel('Expression threshold')
+        ax.set_ylabel('Number of events')
+        ymin, ymax = ax.get_ylim()
+        ax.set_ylim(0, ymax)
+
         sns.despine()
 
     def plot_clustermap(self, sample_subset=None, feature_subset=None,
