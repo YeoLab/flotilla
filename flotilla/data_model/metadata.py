@@ -103,15 +103,22 @@ class MetaData(BaseData):
         return self.sample_id_to_phenotype.unique()
 
     @property
+    def _default_phenotype_order(self):
+        return list(sorted(self.unique_phenotypes))
+
+    @property
     def phenotype_order(self):
-        return self._phenotype_order
+        if len(set(self._phenotype_order) & set(self.unique_phenotypes)) > 0:
+            return [v for v in self._phenotype_order if v in self.unique_phenotypes]
+        else:
+            self._phenotype_order = self._default_phenotype_order
 
     @phenotype_order.setter
     def phenotype_order(self, value):
         if value is not None:
             self._phenotype_order = value
         else:
-            self._phenotype_order = list(sorted(self.unique_phenotypes))
+            self._phenotype_order = self._default_phenotype_order
 
     @property
     def phenotype_color_order(self):
