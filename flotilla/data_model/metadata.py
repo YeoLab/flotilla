@@ -56,7 +56,7 @@ class MetaData(BaseData):
                     sys.stderr.write(
                         'No color was assigned to the phenotype {}, '
                         'assigning a random color'.format(phenotype))
-                    color = self._colors.next()
+                    color = colors.next()
                 try:
                     color = str_to_color[color]
                 except KeyError:
