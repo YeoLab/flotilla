@@ -1235,8 +1235,9 @@ class Study(object):
                                                          feature_subset=feature_subset)
 
         celltype_and_sample_ids = celltype_groups.groups.iteritems()
-        percents = pd.Series(index=celltype_groups.groups.keys())
-        n_events = pd.Series(index=celltype_groups.groups.keys())
+        index = pd.MultiIndex.from_product([celltype_groups.groups.keys(),
+                                            ['n_events', 'percent']])
+        percents = pd.Series(index=index)
         for i, (phenotype, sample_ids) in enumerate(celltype_and_sample_ids):
             # import pdb; pdb.set_trace()
 
@@ -1256,9 +1257,9 @@ class Study(object):
                                                             pooled_inconsistent)
             else:
                 percent = np.nan
-            percents[phenotype] = percent
-            n_events[phenotype] = data.shape[1]
-        return pd.DataFrame({'percent': percents, 'n_events': n_events})
+            percents[phenotype, 'percent'] = percent
+            percents[phenotype, 'n_events'] = data.shape[1]
+        return percents
 
     def expression_vs_inconsistent_splicing(self, bins=None):
         """Percentage of events inconsistent with pooled at expression threshs
