@@ -49,7 +49,7 @@ class MetaData(BaseData):
             colors = iter(map(mpl.colors.rgb2hex,
                               sns.color_palette('husl',
                                                 n_colors=self.n_phenotypes)))
-            for phenotype in self.unique_phenotypes:
+            for phenotype in sorted(self.unique_phenotypes):
                 try:
                     color = self.phenotype_to_color[phenotype]
                 except KeyError:
@@ -67,7 +67,7 @@ class MetaData(BaseData):
             self.phenotype_to_color = {}
             colors = map(mpl.colors.rgb2hex,
                          sns.color_palette('husl', n_colors=self.n_phenotypes))
-            for phenotype, color in zip(self.unique_phenotypes, colors):
+            for phenotype, color in zip(sorted(self.unique_phenotypes), colors):
                 self.phenotype_to_color[phenotype] = color
 
         self.phenotype_to_marker = phenotype_to_marker
