@@ -1313,6 +1313,7 @@ class Study(object):
         ax.set_ylabel('Number of events')
         ymin, ymax = ax.get_ylim()
         ax.set_ylim(0, ymax)
+        ax.legend()
 
         sns.despine()
 
