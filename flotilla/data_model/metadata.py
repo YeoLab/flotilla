@@ -46,6 +46,8 @@ class MetaData(BaseData):
             self.phenotype_order = None
             self.phenotype_to_color = None
 
+        import pdb; pdb.set_trace()
+
         # Convert color strings to non-default matplotlib colors
         if self.phenotype_to_color is not None:
             colors = iter(self._colors)
@@ -55,7 +57,7 @@ class MetaData(BaseData):
                 except KeyError:
                     sys.stderr.write(
                         'No color was assigned to the phenotype {}, '
-                        'assigning a random color'.format(phenotype))
+                        'assiqgning a random color'.format(phenotype))
                     color = colors.next()
                 try:
                     color = str_to_color[color]
