@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
-from .color import dark2, deep
+from .color import deep
 from .generic import violinplot
 
 
@@ -125,9 +125,14 @@ class DecompositionViz(object):
         self.feature_renamer = feature_renamer
         self.max_char_width = max_char_width
 
-        if self.label_to_color is None:
-            colors = cycle(dark2)
 
+        if self.groupby is None:
+            self.groupby = dict.fromkeys(self.reduced_space.index, 'all')
+        self.grouped = self.reduced_space.groupby(self.groupby, axis=0)
+
+        if self.label_to_color is None:
+            colors = iter(sns.color_palette('husl',
+                                            n_colors=len(self.grouped)))
             def color_factory():
                 return colors.next()
 
@@ -141,9 +146,6 @@ class DecompositionViz(object):
 
             self.label_to_marker = defaultdict(marker_factory)
 
-        if self.groupby is None:
-            self.groupby = dict.fromkeys(self.reduced_space.index, 'all')
-        self.grouped = self.reduced_space.groupby(self.groupby, axis=0)
         if order is not None:
             self.color_ordered = [self.label_to_color[x] for x in self.order]
         else:
