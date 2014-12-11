@@ -1,0 +1,29 @@
+v0.2.5 (......)
+---------------------------
+
+This is a patch release, with non-breaking changes from v0.2.4.
+
+Plotting functions
+~~~~~~~~~~~~~~~~~~
+
+- New function
+  :py:func:`.data_model.Study.plot_expression_vs_inconsistent_splicing()`
+  shows the percent
+- Add option to :py:func:`.data_model.Study.interactive_pca` to color samples
+  by different columns in the metadata.
+
+API changes
+~~~~~~~~~~~
+
+- :py:func:`.data_model.Study.plot_classifier` returns a
+  :py:func:`.visualize.predict.ClassifierViz` object
+- Multi-index columns for data matrices are no longer supported
+
+Bug fixes
+~~~~~~~~~
+
+- Fixed issue with
+  :py:func:`.data_model.Study.tidy_splicing_with_expression` and
+  :py:func:`.data_model.Study.filter_splicing_on_expression` which
+  had an issue with when the index names are not `"miso_id"` or
+  `"sample_id"`.
