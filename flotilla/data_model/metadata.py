@@ -1,3 +1,4 @@
+from collections import defaultdict
 import sys
 
 import matplotlib as mpl
@@ -67,7 +68,7 @@ class MetaData(BaseData):
             self.phenotype_to_color = {}
             colors = map(mpl.colors.rgb2hex,
                          sns.color_palette('husl', n_colors=self.n_phenotypes))
-            for phenotype, color in zip(sorted(self.unique_phenotypes), colors):
+            for phenotype, color in zip(self.unique_phenotypes, self._colors):
                 self.phenotype_to_color[phenotype] = color
 
         self.phenotype_to_marker = phenotype_to_marker
@@ -99,8 +100,13 @@ class MetaData(BaseData):
         return len(self.unique_phenotypes)
 
     @property
+    def _colors(self):
+        return iter(map(mpl.colors.rgb2hex,
+                        sns.color_palette('husl', n_colors=self.n_phenotypes)))
+
+    @property
     def unique_phenotypes(self):
-        return self.sample_id_to_phenotype.unique()
+        return sorted(self.sample_id_to_phenotype.unique())
 
     @property
     def _default_phenotype_order(self):
@@ -111,7 +117,7 @@ class MetaData(BaseData):
         if len(set(self._phenotype_order) & set(self.unique_phenotypes)) > 0:
             return [v for v in self._phenotype_order if v in self.unique_phenotypes]
         else:
-            self._phenotype_order = self._default_phenotype_order
+            return self._default_phenotype_order
 
     @phenotype_order.setter
     def phenotype_order(self, value):
@@ -119,6 +125,25 @@ class MetaData(BaseData):
             self._phenotype_order = value
         else:
             self._phenotype_order = self._default_phenotype_order
+
+    @property
+    def _default_phenotype_to_color(self):
+        color_factory = lambda: self._colors.next()
+        return defaultdict(color_factory)
+
+    @property
+    def phenotype_to_color(self):
+        if len(set(self._phenotype_order) & set(self.unique_phenotypes)) > 0:
+            return [v for v in self._phenotype_order if v in self.unique_phenotypes]
+        else:
+            return self._default_phenotype_to_color
+
+    @phenotype_to_color.setter
+    def phenotype_to_color(self, value):
+        if value is not None:
+            self._phenotype_to_color = value
+        else:
+            self._phenotype_to_color = self._default_phenotype_to_color
 
     @property
     def phenotype_color_order(self):
