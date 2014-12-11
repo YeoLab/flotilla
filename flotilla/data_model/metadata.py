@@ -15,7 +15,6 @@ MINIMUM_SAMPLE_SUBSET = 10
 # Any informational data goes here
 
 class MetaData(BaseData):
-
     def __init__(self, data, phenotype_order=None, phenotype_to_color=None,
                  phenotype_to_marker=None,
                  phenotype_col=PHENOTYPE_COL,
@@ -30,7 +29,8 @@ class MetaData(BaseData):
         self.phenotype_to_color = phenotype_to_color
         self.pooled_col = pooled_col
 
-        phenotypes_not_in_order = set(self.unique_phenotypes).difference(set(self.phenotype_order))
+        phenotypes_not_in_order = set(self.unique_phenotypes).difference(
+            set(self.phenotype_order))
 
         if len(phenotypes_not_in_order) > 0:
             self.phenotype_order.extend(phenotypes_not_in_order)
@@ -40,7 +40,8 @@ class MetaData(BaseData):
                              'the sample metadata. All samples will be '
                              'treated as the same phenotype. You may also '
                              'specify "phenotype_col" in the metadata section '
-                             'of the datapackage.\n'.format(self.phenotype_col))
+                             'of the datapackage.\n'.format(
+                self.phenotype_col))
             self.data[self.phenotype_col] = 'phenotype'
             self.phenotype_order = None
             self.phenotype_to_color = None
@@ -52,15 +53,15 @@ class MetaData(BaseData):
                 try:
                     color = self.phenotype_to_color[phenotype]
                 except KeyError:
-                    sys.stderr.write('No color was assigned to the phenotype {}, '
-                                  'assigning a random color'.format(phenotype))
+                    sys.stderr.write(
+                        'No color was assigned to the phenotype {}, '
+                        'assigning a random color'.format(phenotype))
                     color = self._colors.next()
                 try:
                     color = str_to_color[color]
                 except KeyError:
                     pass
                 self.phenotype_to_color[phenotype] = color
-
 
         self.phenotype_to_marker = phenotype_to_marker
         if self.phenotype_to_marker is not None:
@@ -93,7 +94,7 @@ class MetaData(BaseData):
     @property
     def _colors(self):
         return map(mpl.colors.rgb2hex,
-                        sns.color_palette('husl', n_colors=self.n_phenotypes))
+                   sns.color_palette('husl', n_colors=self.n_phenotypes))
 
     @property
     def unique_phenotypes(self):
@@ -106,7 +107,8 @@ class MetaData(BaseData):
     @property
     def phenotype_order(self):
         if len(set(self._phenotype_order) & set(self.unique_phenotypes)) > 0:
-            return [v for v in self._phenotype_order if v in self.unique_phenotypes]
+            return [v for v in self._phenotype_order if
+                    v in self.unique_phenotypes]
         else:
             return self._default_phenotype_order
 
@@ -126,7 +128,8 @@ class MetaData(BaseData):
     @property
     def phenotype_to_color(self):
         if len(set(self._phenotype_order) & set(self.unique_phenotypes)) > 0:
-            return [v for v in self._phenotype_order if v in self.unique_phenotypes]
+            return dict((k, v) for k, v in self._phenotype_to_color.iteritems()
+                        if v in self.unique_phenotypes)
         else:
             return self._default_phenotype_to_color
 
