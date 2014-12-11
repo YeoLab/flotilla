@@ -120,15 +120,12 @@ class MetaData(BaseData):
 
     @property
     def phenotype_to_color(self):
-        if len(set(self._phenotype_to_color.keys()) & set(self.unique_phenotypes)) > 0:
-            all_phenotypes = self._phenotype_to_color.keys()
-            all_phenotypes.extend(self.unique_phenotypes)
-            return dict((k, self._phenotype_to_color[k])
-                        if k in self._phenotype_to_color else
-                        (k, self._default_phenotype_to_color[k])
-                        for k in all_phenotypes)
-        else:
-            return self._default_phenotype_to_color
+        all_phenotypes = self._phenotype_to_color.keys()
+        all_phenotypes.extend(self.unique_phenotypes)
+        return dict((k, self._phenotype_to_color[k])
+                    if k in self._phenotype_to_color else
+                    (k, self._default_phenotype_to_color[k])
+                    for k in all_phenotypes)
 
     @phenotype_to_color.setter
     def phenotype_to_color(self, value):
