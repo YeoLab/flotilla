@@ -156,6 +156,8 @@ def make_study_datapackage(name, metadata,
             for key, value in kws.iteritems():
                 if key == 'phenotype_to_color':
                     value = dict((k, mpl.colors.rgb2hex(v))
+                                 if isinstance(v, tuple) else
+                                 (k, v)
                                  for k,v in value.iteritems())
                 resource[key] = value
 
