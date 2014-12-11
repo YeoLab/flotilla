@@ -1290,7 +1290,7 @@ class Study(object):
         expression_vs_inconsistent = self.expression_vs_inconsistent_splicing(
             bins=bins)
 
-        fig, axes = plt.subplots(nrows=2, figsize=(4, 6))
+        fig, axes = plt.subplots(nrows=2, figsize=(6, 6))
 
         # Plot the percent inconsistent
         ax = axes[0]
