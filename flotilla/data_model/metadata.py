@@ -46,14 +46,16 @@ class MetaData(BaseData):
 
         # Convert color strings to non-default matplotlib colors
         if self.phenotype_to_color is not None:
-            colors = iter(sns.color_palette('Dark2', n_colors=self.n_phenotypes))
+            colors = iter(map(mpl.colors.rgb2hex,
+                              sns.color_palette('husl',
+                                                n_colors=self.n_phenotypes)))
             for phenotype in self.unique_phenotypes:
                 try:
                     color = self.phenotype_to_color[phenotype]
                 except KeyError:
                     sys.stderr.write('No color was assigned to the phenotype {}, '
                                   'assigning a random color'.format(phenotype))
-                    color = mpl.colors.rgb2hex(colors.next())
+                    color = colors.next()
                 try:
                     color = str_to_color[color]
                 except KeyError:
@@ -63,9 +65,10 @@ class MetaData(BaseData):
             sys.stderr.write('No phenotype to color mapping was provided, '
                              'so coming up with reasonable defaults\n')
             self.phenotype_to_color = {}
-            colors = sns.color_palette('Dark2', n_colors=self.n_phenotypes)
+            colors = map(mpl.colors.rgb2hex,
+                         sns.color_palette('husl', n_colors=self.n_phenotypes))
             for phenotype, color in zip(self.unique_phenotypes, colors):
-                self.phenotype_to_color[phenotype] = mpl.colors.rgb2hex(color)
+                self.phenotype_to_color[phenotype] = color
 
         self.phenotype_to_marker = phenotype_to_marker
         if self.phenotype_to_marker is not None:
