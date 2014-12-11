@@ -47,29 +47,20 @@ class MetaData(BaseData):
 
         # Convert color strings to non-default matplotlib colors
         if self.phenotype_to_color is not None:
-            colors = iter(map(mpl.colors.rgb2hex,
-                              sns.color_palette('husl',
-                                                n_colors=self.n_phenotypes)))
+            colors = iter(self._colors)
             for phenotype in sorted(self.unique_phenotypes):
                 try:
                     color = self.phenotype_to_color[phenotype]
                 except KeyError:
                     sys.stderr.write('No color was assigned to the phenotype {}, '
                                   'assigning a random color'.format(phenotype))
-                    color = colors.next()
+                    color = self._colors.next()
                 try:
                     color = str_to_color[color]
                 except KeyError:
                     pass
                 self.phenotype_to_color[phenotype] = color
-        else:
-            sys.stderr.write('No phenotype to color mapping was provided, '
-                             'so coming up with reasonable defaults\n')
-            self.phenotype_to_color = {}
-            colors = map(mpl.colors.rgb2hex,
-                         sns.color_palette('husl', n_colors=self.n_phenotypes))
-            for phenotype, color in zip(self.unique_phenotypes, self._colors):
-                self.phenotype_to_color[phenotype] = color
+
 
         self.phenotype_to_marker = phenotype_to_marker
         if self.phenotype_to_marker is not None:
@@ -101,8 +92,8 @@ class MetaData(BaseData):
 
     @property
     def _colors(self):
-        return iter(map(mpl.colors.rgb2hex,
-                        sns.color_palette('husl', n_colors=self.n_phenotypes)))
+        return map(mpl.colors.rgb2hex,
+                        sns.color_palette('husl', n_colors=self.n_phenotypes))
 
     @property
     def unique_phenotypes(self):
@@ -128,7 +119,8 @@ class MetaData(BaseData):
 
     @property
     def _default_phenotype_to_color(self):
-        color_factory = lambda: self._colors.next()
+        colors = iter(self._colors)
+        color_factory = lambda: colors.next()
         return defaultdict(color_factory)
 
     @property
