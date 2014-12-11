@@ -50,15 +50,8 @@ class MetaData(BaseData):
 
         # Convert color strings to non-default matplotlib colors
         if self.phenotype_to_color is not None:
-            colors = iter(self._colors)
-            for phenotype in sorted(self.unique_phenotypes):
-                try:
-                    color = self.phenotype_to_color[phenotype]
-                except KeyError:
-                    sys.stderr.write(
-                        'No color was assigned to the phenotype {}, '
-                        'assiqgning a random color'.format(phenotype))
-                    color = colors.next()
+            # colors = iter(self._colors)
+            for phenotype, color in self.phenotype_to_color.iteritems():
                 try:
                     color = str_to_color[color]
                 except KeyError:
