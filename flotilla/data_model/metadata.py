@@ -61,7 +61,7 @@ class MetaData(BaseData):
                     color = str_to_color[color]
                 except KeyError:
                     pass
-                self.phenotype_to_color[phenotype] = color
+                self._phenotype_to_color[phenotype] = color
 
         self.phenotype_to_marker = phenotype_to_marker
         if self.phenotype_to_marker is not None:
