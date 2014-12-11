@@ -27,3 +27,9 @@ Bug fixes
   :py:func:`.data_model.Study.filter_splicing_on_expression` which
   had an issue with when the index names are not `"miso_id"` or
   `"sample_id"`.
+
+Miscellaneous
+~~~~~~~~~~~~~
+
+- Add link to PyData NYC talk
+- Add scrambled dataset with ~300 samples and both expression and splicing
