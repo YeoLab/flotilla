@@ -143,3 +143,5 @@ class TestMetaData(object):
                                 test_metadata.phenotype_to_color)
         pdt.assert_contains_all(metadata.phenotype2.unique(),
                                 test_metadata.phenotype_to_marker)
+        pdt.assert_array_equal(test_metadata.phenotype_order,
+                               list(sorted(metadata.phenotype2.unique())))
