@@ -207,15 +207,6 @@ class Study(object):
             phenotype_col=metadata_phenotype_col,
             predictor_config_manager=self.predictor_config_manager)
 
-        self.phenotype_col = self.metadata.phenotype_col
-        self.phenotype_order = self.metadata.phenotype_order
-        self.phenotype_to_color = self.metadata.phenotype_to_color
-        self.phenotype_to_marker = self.metadata.phenotype_to_marker
-        self.phenotype_color_ordered = self.metadata.phenotype_color_order
-        self.sample_id_to_phenotype = self.metadata.sample_id_to_phenotype
-        self.sample_id_to_color = self.metadata.sample_id_to_color
-        self.phenotype_transitions = self.metadata.phenotype_transitions
-
         self.default_feature_subset = default_feature_subset
         self.default_sample_subset = default_sample_subset
 
@@ -327,6 +318,34 @@ class Study(object):
         if hasattr(self, key):
             warnings.warn('Over-writing attribute {}'.format(key))
         super(Study, self).__setattr__(key, value)
+
+    @property
+    def phenotype_col(self):
+        return self.metadata.phenotype_col
+
+    @property
+    def phenotype_order(self):
+        return self.metadata.phenotype_order
+
+    @property
+    def phenotype_to_color(self):
+        return self.metadata.phenotype_to_color
+
+    @property
+    def phenotype_to_marker(self):
+        return self.metadata.phenotype_to_marker
+
+    @property
+    def sample_id_to_phenotype(self):
+        return self.metadata.sample_id_to_phenotype
+
+    @property
+    def sample_id_to_color(self):
+        return self.metadata.sample_id_to_color
+
+    @property
+    def phenotype_transitions(self):
+        return self.metadata.phenotype_transitions
 
     @property
     def default_sample_subsets(self):
@@ -574,6 +593,8 @@ class Study(object):
             datamodel = self.expression
         elif data_type == "splicing":
             datamodel = self.splicing
+        else:
+            raise TypeError('{} not a supported data type'.format(data_type))
 
         reducer, outlier_detector = datamodel.detect_outliers(
             sample_ids=sample_ids, feature_ids=feature_ids,
