@@ -749,8 +749,8 @@ class Study(object):
         groupby = None
         order = None
         if not featurewise:
-            if color_samples_by is None and \
-                            color_samples_by != self.metadata.phenotype_col:
+            if color_samples_by is None or \
+                            color_samples_by == self.metadata.phenotype_col:
                 label_to_color = self.phenotype_to_color
                 label_to_marker = self.phenotype_to_marker
                 groupby = self.sample_id_to_phenotype
