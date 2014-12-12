@@ -348,6 +348,10 @@ class Study(object):
         return self.metadata.phenotype_transitions
 
     @property
+    def phenotype_color_ordered(self):
+        return self.metadata.phenotype_color_order
+
+    @property
     def default_sample_subsets(self):
         #move default_sample_subset to the front of the list, sort the rest
         sorted_sample_subsets = list(sorted(list(set(
