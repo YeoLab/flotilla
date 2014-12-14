@@ -1117,15 +1117,19 @@ class BaseData(object):
             sns.despine()
         fig.tight_layout()
 
-    def nmf_space_positions(self, groupby, n=5):
+    def nmf_space_positions(self, groupby, n=0.5):
         """Calculate NMF-space position of splicing events in phenotype groups
 
         Parameters
         ----------
         groupby : mappable
             A sample id to phenotype mapping
-        n : int
-            Minimum samples required per group
+        n : int or float
+            If int, then this is the absolute number of cells that are minimum
+            required to calculate modalities. If a float, then require this
+            fraction of samples to calculate modalities, e.g. if 0.6, then at
+            least 60% of samples must have an event detected for modality
+            detection
 
         Returns
         -------
@@ -1133,9 +1137,16 @@ class BaseData(object):
             A (n_events, n_groups) dataframe of NMF positions
         """
         grouped = self.singles.groupby(groupby)
-        at_least_n_per_group_per_event = grouped.transform(
-            lambda x: x if x.count() >= n else pd.Series(np.nan,
-                                                         index=x.index))
+        if isinstance(n, int):
+            thresh = lambda x: n
+        elif isinstance(n, float):
+            thresh = lambda x: n * x.shape[0]
+
+        at_least_n_per_group_per_event = pd.concat(
+            [df.dropna(thresh=thresh(df), axis=1) for name, df in grouped])
+        # at_least_n_per_group_per_event = grouped.transform(
+        #     lambda x: x if x.count() >= n else pd.Series(np.nan,
+        #                                                  index=x.index))
         df = at_least_n_per_group_per_event.groupby(groupby).apply(
             lambda x: self.binned_nmf_reduced(data=x))
         df = df.swaplevel(0, 1)
@@ -1185,7 +1196,7 @@ class BaseData(object):
                 pass
         return distances
 
-    def nmf_space_transitions(self, groupby, phenotype_transitions, n=5):
+    def nmf_space_transitions(self, groupby, phenotype_transitions, n=0.5):
         """Get distance in NMF space of different splicing events
 
         Parameters
@@ -1195,8 +1206,12 @@ class BaseData(object):
         phenotype_transitions : list of str pairs
             Which phenotype follows from one to the next, for calculating
             distances between
-        n : int
-            Minimum number of samples per phenotype, per event
+        n : int or float
+            If int, then this is the absolute number of cells that are minimum
+            required to calculate modalities. If a float, then require this
+            fraction of samples to calculate modalities, e.g. if 0.6, then at
+            least 60% of samples must have an event detected for modality
+            detection
 
         Returns
         -------

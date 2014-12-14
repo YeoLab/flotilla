@@ -83,7 +83,7 @@ class SplicingData(BaseData):
                                                 included_min=included_min)
         self.modalities_visualizer = ModalitiesViz()
 
-    @memoize
+    # @memoize
     def modalities(self, sample_ids=None, feature_ids=None, data=None,
                    groupby=None, min_samples=0.5,
                    bootstrapped=False, bootstrapped_kws=None):
@@ -142,7 +142,7 @@ class SplicingData(BaseData):
 
     # @memoize
     def modalities_counts(self, sample_ids=None, feature_ids=None, data=None,
-                          groupby=None,
+                          groupby=None, min_samples=0.5,
                           bootstrapped=False, bootstrapped_kws=False):
         """Count the number of each modalities of these samples and features
 
@@ -159,6 +159,12 @@ class SplicingData(BaseData):
             Whether or not to use bootstrapping, i.e. resample each splicing
             event several times to get a better estimate of its true modality.
             Default False.
+        min_samples : int or float
+            If int, then this is the absolute number of cells that are minimum
+            required to calculate modalities. If a float, then require this
+            fraction of samples to calculate modalities, e.g. if 0.6, then at
+            least 60% of samples must have an event detected for modality
+            detection
         bootstrapped_kws : dict
             Valid arguments to _bootstrapped_fit_transform. If None, default is
             dict(n_iter=100, thresh=0.6, minimum_samples=10)
@@ -176,6 +182,17 @@ class SplicingData(BaseData):
                 raise ValueError('Can only specify `sample_ids` and '
                                  '`feature_ids` or `data`, but not both.')
 
+        grouped = data.groupby(groupby)
+        if isinstance(min_samples, int):
+            thresh = lambda x: min_samples
+        elif isinstance(min_samples, float):
+            thresh = lambda x: min_samples * x.shape[0]
+        else:
+            raise TypeError('Threshold for minimum samples for modality '
+                            'detection can only be int or float, '
+                            'not {}'.format(type(min_samples)))
+        data = pd.concat([df.dropna(thresh=thresh(df), axis=1)
+                          for name, df in grouped])
         counts = data.groupby(groupby).apply(
             self.modalities_calculator.counts, bootstrapped=bootstrapped,
             bootstrapped_kws=bootstrapped_kws)
