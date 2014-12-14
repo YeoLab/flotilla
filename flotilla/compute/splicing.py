@@ -25,6 +25,7 @@ MODALITIES_NAMES = ['excluded', 'middle', 'included', 'bimodal',
                     'uniform']
 
 TRUE_MODALITIES = pd.DataFrame(MODALITIES_BINS.T, columns=MODALITIES_NAMES)
+TRUE_MODALITIES = TRUE_MODALITIES/TRUE_MODALITIES.sum()
 
 
 def _col_jsd_modalities(col, true_modalities):
@@ -49,7 +50,7 @@ def _col_jsd_modalities(col, true_modalities):
     else:
         return pd.Series(np.nan, index=true_modalities.columns)
 
-def assignments(sqrt_jsd_modalities, true_modalities):
+def assignments(sqrt_jsds):
     """Return the modality with the smallest square root JSD to each event
 
     Parameters
@@ -63,10 +64,7 @@ def assignments(sqrt_jsd_modalities, true_modalities):
     assignments : pandas.Series
         The closest modality to each splicing event
     """
-    modalities = true_modalities.columns[
-        np.argmin(sqrt_jsd_modalities.values, axis=0)]
-    return pd.Series(modalities, sqrt_jsd_modalities.columns)
-
+    return sqrt_jsds.idxmin(axis=0)
 
 def sqrt_jsd_modalities(binned, true_modalities):
     """Calculate JSD between all binned splicing events and true modalities
@@ -88,6 +86,10 @@ def sqrt_jsd_modalities(binned, true_modalities):
     return np.sqrt(binned.apply(_col_jsd_modalities, axis=0,
                                 true_modalities=true_modalities))
 
+def _binned_to_assignments(binned, true_modalities):
+    sqrt_jsds = sqrt_jsd_modalities(binned, true_modalities)
+    return assignments(sqrt_jsds)
+
 def _single_fit_transform(data, bins, true_modalities,
                           do_not_memoize=False):
     """Given psi scores, estimate the modality of each
@@ -107,9 +109,7 @@ def _single_fit_transform(data, bins, true_modalities,
         Modality assignments of each column (feature)
     """
     binned = binify(data, bins)
-    sqrt_jsds = sqrt_jsd_modalities(binned, true_modalities)
-    import pdb; pdb.set_trace()
-    return assignments(sqrt_jsds, true_modalities)
+    return _binned_to_assignments(binned, true_modalities)
 
 def _cat_indices_and_fit_transform(indices, data, bins, true_modalities,
                                    min_samples=10):
