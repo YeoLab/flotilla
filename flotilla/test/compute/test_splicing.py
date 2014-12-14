@@ -60,4 +60,10 @@ class TestModalities:
             npt.assert_equal(test_modalities.bins, (0, kwargs['excluded_max'],
                                                     kwargs['included_min'], 1))
 
-    # def test_col_jsd_modalities(self, ):
+def test_binned_to_assignments():
+    from flotilla.compute.splicing import TRUE_MODALITIES, \
+        _binned_to_assignments
+
+    assignments = _binned_to_assignments(TRUE_MODALITIES, TRUE_MODALITIES)
+
+    npt.assert_array_equal(assignments.values, assignments.index)
