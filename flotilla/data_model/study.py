@@ -1014,7 +1014,7 @@ class Study(object):
                                         min_samples=min_samples)
 
     def modalities_counts(self, sample_subset=None, feature_subset=None,
-                          expression_thresh=-np.inf, bootstrapped=True,
+                          expression_thresh=-np.inf, bootstrapped=False,
                           bootstrapped_kws=None):
         """Get counts of each resampled splicing event assigned to a modality
 
