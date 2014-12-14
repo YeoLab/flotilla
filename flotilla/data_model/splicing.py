@@ -85,7 +85,7 @@ class SplicingData(BaseData):
 
     @memoize
     def modalities(self, sample_ids=None, feature_ids=None, data=None,
-                   groupby=None,
+                   groupby=None, min_samples=0.5,
                    bootstrapped=False, bootstrapped_kws=None):
         """Assigned modalities for these samples and features.
 
@@ -101,7 +101,13 @@ class SplicingData(BaseData):
         bootstrapped : bool, optional (default=False)
             Whether or not to use bootstrapping, i.e. resample each splicing
             event several times to get a better estimate of its true modality.
-        bootstrappped_kws : dict, optional
+        min_samples : int or float
+            If int, then this is the absolute number of cells that are minimum
+            required to calculate modalities. If a float, then require this
+            fraction of samples to calculate modalities, e.g. if 0.6, then at
+            least 60% of samples must have an event detected for modality
+            detection
+        bootstrapped_kws : dict, optional
             Valid arguments to _bootstrapped_fit_transform. If None, default is
             dict(n_iter=100, thresh=0.6, minimum_samples=10)
 
@@ -117,6 +123,18 @@ class SplicingData(BaseData):
             if feature_ids is not None and sample_ids is not None:
                 raise ValueError('Can only specify `sample_ids` and '
                                  '`feature_ids` or `data`, but not both.')
+
+        grouped = data.groupby(groupby)
+        if isinstance(min_samples, int):
+            thresh = lambda x: min_samples
+        elif isinstance(min_samples, float):
+            thresh = lambda x: min_samples * x.shape[0]
+        else:
+            raise TypeError('Threshold for minimum samples for modality '
+                            'detection can only be int or float, '
+                            'not {}'.format(type(min_samples)))
+        data = pd.concat([df.dropna(thresh=thresh(df), axis=1)
+                         for name, df in grouped])
         assignments = data.groupby(groupby).apply(
             self.modalities_calculator.fit_transform,
             bootstrapped=bootstrapped, bootstrapped_kws=bootstrapped_kws)
