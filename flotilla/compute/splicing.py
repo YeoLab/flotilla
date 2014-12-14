@@ -14,7 +14,6 @@ from sklearn import cross_validation
 from joblib import Parallel, delayed
 
 from .infotheory import jsd, binify, bin_range_strings
-from ..util import memoize
 
 MODALITIES_BINS = np.array([[1, 0, 0],  # excluded
                             [0, 1, 0],  # middle
@@ -109,14 +108,15 @@ def _single_fit_transform(data, bins, true_modalities,
     """
     binned = binify(data, bins)
     sqrt_jsds = sqrt_jsd_modalities(binned, true_modalities)
+    import pdb; pdb.set_trace()
     return assignments(sqrt_jsds, true_modalities)
 
 def _cat_indices_and_fit_transform(indices, data, bins, true_modalities,
                                    min_samples=10):
     i = np.concatenate(indices)
-    index = data.index[i]
-    psi = data.copy().ix[index, :]#.copy().dropna(axis=1, thresh=min_samples)
-    psi = psi.ix[:, psi.count() >= min_samples]
+    # index = data.index[i]
+    psi = data.copy().iloc[i, :].dropna(axis=1, thresh=min_samples)
+    # psi = psi.ix[:, psi.count() >= min_samples]
     return _single_fit_transform(psi, bins, true_modalities,
                                  do_not_memoize=True)
 
@@ -161,7 +161,7 @@ class Modalities(object):
         self.bins = (0, excluded_max, included_min, 1)
         self.true_modalities.index = bin_range_strings(self.bins)
 
-    @memoize
+    # @memoize
     def fit_transform(self, data, bootstrapped=False, bootstrapped_kws=None):
         """Given psi scores, estimate the modality of each
 
@@ -215,13 +215,14 @@ class Modalities(object):
         assignments : pandas.Series
             Modality assignments of each column (feature)
         """
-        bs = cross_validation.Bootstrap(data.shape[0], n_iter=n_iter)
+        bs = cross_validation.ShuffleSplit(data.shape[0], n_iter=n_iter)
 
         results = Parallel(n_jobs=-1, max_nbytes=1e4)(
             delayed(_cat_indices_and_fit_transform)(
                 x, data, self.bins, self.true_modalities, min_samples)
             for x in bs)
 
+        # import pdb; pdb.set_trace()
         assignments = pd.concat(results, axis=1).T
         counts = assignments.apply(lambda x: pd.Series(
             collections.Counter(x.dropna())))
