@@ -732,7 +732,8 @@ class Study(object):
                  sample_subset=None, feature_subset=None,
                  title='', featurewise=False, plot_violins=False,
                  show_point_labels=False, reduce_kwargs=None,
-                 color_samples_by=None,
+                 color_samples_by=None, bokeh=False,
+                 most_variant_features=False, std_multiplier=2,
                  **kwargs):
         """Performs DataFramePCA on both expression and splicing study_data
 
@@ -793,10 +794,12 @@ class Study(object):
                 feature_ids=feature_ids,
                 label_to_color=label_to_color,
                 label_to_marker=label_to_marker, groupby=groupby,
-                order=order,
+                order=order, std_multiplier=std_multiplier,
                 featurewise=featurewise, show_point_labels=show_point_labels,
                 title=title, reduce_kwargs=reduce_kwargs,
-                plot_violins=plot_violins, **kwargs)
+                plot_violins=plot_violins, metadata=self.metadata.data,
+                bokeh=bokeh, most_variant_features=most_variant_features,
+                **kwargs)
 
         elif "splicing".startswith(data_type):
             reducer = self.splicing.plot_pca(
@@ -804,10 +807,12 @@ class Study(object):
                 feature_ids=feature_ids,
                 label_to_color=label_to_color,
                 label_to_marker=label_to_marker, groupby=groupby,
-                order=order,
+                order=order, std_multiplier=std_multiplier,
                 featurewise=featurewise, show_point_labels=show_point_labels,
                 title=title, reduce_kwargs=reduce_kwargs,
-                plot_violins=plot_violins, **kwargs)
+                plot_violins=plot_violins, metadata=self.metadata.data,
+                bokeh=bokeh, most_variant_features=most_variant_features,
+                **kwargs)
         else:
             raise ValueError('The data type {} does not exist in this study'
                              .format(data_type))
