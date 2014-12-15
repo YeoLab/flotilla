@@ -1474,7 +1474,7 @@ class Study(object):
                 self.sample_id_to_phenotype)
 
     def nmf_space_transitions(self, phenotype_transitions='all',
-                              data_type='splicing', n=5):
+                              data_type='splicing', n=0.5):
         """The change in NMF space of splicing events across phenotypes
 
         Parameters
@@ -1500,7 +1500,7 @@ class Study(object):
                 self.sample_id_to_phenotype, phenotype_transitions, n=n)
 
     def big_nmf_space_transitions(self, phenotype_transitions='all',
-                                  data_type='splicing', n=5):
+                                  data_type='splicing', n=0.5):
         """Splicing events whose change in NMF space is large
 
         By large, we mean that difference is 2 standard deviations away from
