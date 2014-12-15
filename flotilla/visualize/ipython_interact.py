@@ -11,22 +11,11 @@ import matplotlib.pyplot as plt
 
 
 
-
-
-
-
-
-
-
-
-
-
 # from ..compute.predict import default_classifier
-from flotilla.util import link_to_list
 from ..visualize.color import red
 from .network import NetworkerViz
 from .color import str_to_color
-from ..util import natural_sort
+from ..util import natural_sort, link_to_list
 
 default_classifier = 'ExtraTreesClassifier'
 default_regressor = 'ExtraTreesRegressor'
@@ -114,7 +103,10 @@ class Interactive(object):
                         x_pc=1, y_pc=2,
                         plot_violins=False,
                         show_point_labels=False,
-                        color_samples_by=self.metadata.phenotype_col):
+                        color_samples_by=self.metadata.phenotype_col,
+                        bokeh=False,
+                        most_variant_features=False,
+                        std_multiplier=(0, 5.0)):
             for k, v in locals().iteritems():
                 if k == 'self':
                     continue
@@ -143,7 +135,9 @@ class Interactive(object):
                                  show_point_labels=show_point_labels,
                                  feature_subset=feature_subset,
                                  plot_violins=plot_violins,
-                                 color_samples_by=color_samples_by)
+                                 color_samples_by=color_samples_by,
+                                 bokeh=bokeh, std_multiplier=std_multiplier,
+                                 most_variant_features=most_variant_features)
 
         # self.plot_study_sample_legend()
 
@@ -295,7 +289,9 @@ class Interactive(object):
                         feature_subset,
                         predictor_type=default_classifier,
                         categorical_variable='outlier',
-                        score_coefficient=2):
+                        score_coefficient=2,
+                        plot_violins=False,
+                        show_point_labels=False):
 
             for k, v in locals().iteritems():
                 if k == 'self':
@@ -307,7 +303,9 @@ class Interactive(object):
                                  sample_subset=sample_subset,
                                  predictor_name=predictor_type,
                                  score_coefficient=score_coefficient,
-                                 data_type=data_type)
+                                 data_type=data_type,
+                                 plot_violins=plot_violins,
+                                 show_point_labels=show_point_labels)
 
         if feature_subsets is None:
             feature_subsets = Interactive.get_feature_subsets(self, data_types)

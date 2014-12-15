@@ -532,6 +532,8 @@ class BaseData(object):
                                       groupby=None, label_to_color=None,
                                       label_to_marker=None, order=None,
                                       reduce_kwargs=None, title='',
+                                      most_variant_features=False,
+                                      std_multiplier=2,
                                       **plotting_kwargs):
         """Principal component-like analysis of measurements
 
@@ -582,7 +584,9 @@ class BaseData(object):
 
         reduced = self.reduce(sample_ids, feature_ids,
                               featurewise=featurewise,
-                              reducer=reducer, **reduce_kwargs)
+                              reducer=reducer,
+                              most_variant_features=most_variant_features,
+                              **reduce_kwargs)
 
         visualized = DecompositionViz(reduced.reduced_space,
                                       reduced.components_,
@@ -899,7 +903,8 @@ class BaseData(object):
                featurewise=False,
                reducer=DataFramePCA,
                standardize=True,
-               reducer_kwargs=None, bins=None):
+               reducer_kwargs=None, bins=None,
+               most_variant_features=False, std_multiplier=2):
         """Make and memoize a reduced dimensionality representation of data
 
         Parameters
@@ -936,6 +941,12 @@ class BaseData(object):
                                                      sample_ids, feature_ids,
                                                      standardize,
                                                      return_means=True)
+        if most_variant_features:
+            var = subset.var()
+            ind = var >= (var.mean() + std_multiplier*var.std())
+            subset = subset.ix[:, ind]
+            means = means[ind]
+
         if bins is not None:
             subset = self.binify(subset, bins)
 
