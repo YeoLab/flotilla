@@ -1,3 +1,5 @@
+from __future__ import division
+
 from collections import defaultdict
 from itertools import cycle
 import math
@@ -28,7 +30,8 @@ class DecompositionViz(object):
                  label_to_marker=None,
                  scale_by_variance=True, x_pc='pc_1',
                  y_pc='pc_2', n_vectors=20, distance='L1',
-                 n_top_pc_features=50, max_char_width=30):
+                 n_top_pc_features=50, max_char_width=30,
+                 metadata=None):
         """Plot the results of a decomposition visualization
 
         Parameters
@@ -124,7 +127,8 @@ class DecompositionViz(object):
         self.featurewise = featurewise
         self.feature_renamer = feature_renamer
         self.max_char_width = max_char_width
-
+        self.metadata = metadata if metadata is not None else pd.DataFrame(
+            index=self.reduced_space.index)
 
         if self.groupby is None:
             self.groupby = dict.fromkeys(self.reduced_space.index, 'all')
@@ -197,35 +201,87 @@ class DecompositionViz(object):
                  show_point_labels=False,
                  show_vectors=True,
                  show_vector_labels=True,
-                 markersize=10, legend=True):
-        gs_x = 14
-        gs_y = 12
+                 markersize=10, legend=True, bokeh=False):
 
-        if ax is None:
-            self.reduced_fig, ax = plt.subplots(1, 1, figsize=(20, 10))
-            gs = GridSpec(gs_x, gs_y)
-
+        if bokeh:
+            self._plot_bokeh(title)
         else:
-            gs = GridSpecFromSubplotSpec(gs_x, gs_y, ax.get_subplotspec())
-            self.reduced_fig = plt.gcf()
+            gs_x = 14
+            gs_y = 12
 
-        ax_components = plt.subplot(gs[:, :5])
-        ax_loading1 = plt.subplot(gs[:, 6:8])
-        ax_loading2 = plt.subplot(gs[:, 10:14])
+            if ax is None:
+                self.reduced_fig, ax = plt.subplots(1, 1, figsize=(20, 10))
+                gs = GridSpec(gs_x, gs_y)
 
-        self.plot_samples(show_point_labels=show_point_labels,
-                          title=title, show_vectors=show_vectors,
-                          show_vector_labels=show_vector_labels,
-                          markersize=markersize, legend=legend,
-                          ax=ax_components)
-        self.plot_loadings(pc=self.x_pc, ax=ax_loading1)
-        self.plot_loadings(pc=self.y_pc, ax=ax_loading2)
-        sns.despine()
-        self.reduced_fig.tight_layout()
+            else:
+                gs = GridSpecFromSubplotSpec(gs_x, gs_y, ax.get_subplotspec())
+                self.reduced_fig = plt.gcf()
 
-        if plot_violins and not self.featurewise and self.singles is not None:
-            self.plot_violins()
-        return self
+            ax_components = plt.subplot(gs[:, :5])
+            ax_loading1 = plt.subplot(gs[:, 6:8])
+            ax_loading2 = plt.subplot(gs[:, 10:14])
+
+            self.plot_samples(show_point_labels=show_point_labels,
+                              title=title, show_vectors=show_vectors,
+                              show_vector_labels=show_vector_labels,
+                              markersize=markersize, legend=legend,
+                              ax=ax_components)
+            self.plot_loadings(pc=self.x_pc, ax=ax_loading1)
+            self.plot_loadings(pc=self.y_pc, ax=ax_loading2)
+            sns.despine()
+            self.reduced_fig.tight_layout()
+
+            if plot_violins and not self.featurewise and self.singles is not None:
+                self.plot_violins()
+            return self
+
+    def _plot_bokeh(self, title=''):
+        # Clean alias
+        import bokeh.plotting as bk
+        from bokeh.plotting import ColumnDataSource, figure, show
+        from bokeh.models import HoverTool
+
+        # Plots can be displayed inline in an IPython Notebook
+        bk.output_notebook()
+
+
+        # Create a set of tools to use
+        TOOLS = "pan,wheel_zoom,box_zoom,reset,hover"
+
+        x = self.reduced_space[self.x_pc]
+        y = self.reduced_space[self.y_pc]
+
+        radii = np.ones(x.shape)
+
+        colors = self.reduced_space.index.map(
+            lambda x: self.label_to_color[self.groupby[x]])
+        sample_ids = self.reduced_space.index
+
+        data = dict(
+            (col, self.metadata[col][self.reduced_space.index]) for
+            col in self.metadata)
+        tooltips = [('sample_id', '@sample_ids')]
+        tooltips.extend([(k, '@{}'.format(k)) for k in data.keys()])
+
+        data.update(dict(
+            x=x,
+            y=y,
+            colors=colors,
+            sample_ids=sample_ids
+        ))
+
+        source = ColumnDataSource(
+            data=data
+        )
+
+        p = figure(title=title, tools=TOOLS)
+
+        p.circle(x, y, radius=radii, source=source,
+                 fill_color=colors, fill_alpha=0.6, line_color=None)
+        hover = p.select(dict(type=HoverTool))
+        hover.tooltips = tooltips
+
+        show(p)
 
 
     def shorten(self, x):
