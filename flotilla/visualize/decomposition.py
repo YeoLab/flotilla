@@ -257,8 +257,8 @@ class DecompositionViz(object):
         sample_ids = self.reduced_space.index
 
         data = dict(
-            (col, self.metadata[col][self.reduced_space.index]) for
-            col in self.metadata)
+            (col, metadata[col][self.reduced_space.index]) for
+            col in metadata)
         tooltips = [('sample_id', '@sample_ids')]
         tooltips.extend([(k, '@{}'.format(k)) for k in data.keys()])
 
