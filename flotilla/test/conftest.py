@@ -11,7 +11,7 @@ import pandas as pd
 
 
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
-SHALEK2013_BASE_URL = 'https://raw.githubusercontent.com/YeoLab/shalek2013/master'
+SHALEK2013_BASE_URL = 'http://raw.githubusercontent.com/YeoLab/shalek2013/master'
 # SHALEK2013_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects/shalek2013'
 CHR22_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22'
 

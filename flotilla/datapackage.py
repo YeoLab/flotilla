@@ -10,6 +10,7 @@ import sys
 import urllib2
 
 import pandas as pd
+import matplotlib as mpl
 
 
 FLOTILLA_DOWNLOAD_DIR = os.path.expanduser('~/flotilla_projects')
@@ -153,6 +154,11 @@ def make_study_datapackage(name, metadata,
         resource['format'] = 'csv'
         if kws is not None:
             for key, value in kws.iteritems():
+                if key == 'phenotype_to_color':
+                    value = dict((k, mpl.colors.rgb2hex(v))
+                                 if isinstance(v, tuple) else
+                                 (k, v)
+                                 for k,v in value.iteritems())
                 resource[key] = value
 
     filename = '{}/datapackage.json'.format(datapackage_dir)

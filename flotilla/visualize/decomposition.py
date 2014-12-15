@@ -1,3 +1,5 @@
+from __future__ import division
+
 from collections import defaultdict
 from itertools import cycle
 import math
@@ -8,7 +10,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
-from .color import dark2, deep
+from .color import deep
 from .generic import violinplot
 
 
@@ -125,9 +127,13 @@ class DecompositionViz(object):
         self.feature_renamer = feature_renamer
         self.max_char_width = max_char_width
 
-        if self.label_to_color is None:
-            colors = cycle(dark2)
+        if self.groupby is None:
+            self.groupby = dict.fromkeys(self.reduced_space.index, 'all')
+        self.grouped = self.reduced_space.groupby(self.groupby, axis=0)
 
+        if self.label_to_color is None:
+            colors = iter(sns.color_palette('husl',
+                                            n_colors=len(self.grouped)))
             def color_factory():
                 return colors.next()
 
@@ -141,9 +147,6 @@ class DecompositionViz(object):
 
             self.label_to_marker = defaultdict(marker_factory)
 
-        if self.groupby is None:
-            self.groupby = dict.fromkeys(self.reduced_space.index, 'all')
-        self.grouped = self.reduced_space.groupby(self.groupby, axis=0)
         if order is not None:
             self.color_ordered = [self.label_to_color[x] for x in self.order]
         else:
@@ -195,35 +198,89 @@ class DecompositionViz(object):
                  show_point_labels=False,
                  show_vectors=True,
                  show_vector_labels=True,
-                 markersize=10, legend=True):
-        gs_x = 14
-        gs_y = 12
+                 markersize=10, legend=True, bokeh=False, metadata=None):
 
-        if ax is None:
-            self.reduced_fig, ax = plt.subplots(1, 1, figsize=(20, 10))
-            gs = GridSpec(gs_x, gs_y)
-
+        if bokeh:
+            self._plot_bokeh(metadata, title)
         else:
-            gs = GridSpecFromSubplotSpec(gs_x, gs_y, ax.get_subplotspec())
-            self.reduced_fig = plt.gcf()
+            gs_x = 14
+            gs_y = 12
 
-        ax_components = plt.subplot(gs[:, :5])
-        ax_loading1 = plt.subplot(gs[:, 6:8])
-        ax_loading2 = plt.subplot(gs[:, 10:14])
+            if ax is None:
+                self.reduced_fig, ax = plt.subplots(1, 1, figsize=(20, 10))
+                gs = GridSpec(gs_x, gs_y)
 
-        self.plot_samples(show_point_labels=show_point_labels,
-                          title=title, show_vectors=show_vectors,
-                          show_vector_labels=show_vector_labels,
-                          markersize=markersize, legend=legend,
-                          ax=ax_components)
-        self.plot_loadings(pc=self.x_pc, ax=ax_loading1)
-        self.plot_loadings(pc=self.y_pc, ax=ax_loading2)
-        sns.despine()
-        self.reduced_fig.tight_layout()
+            else:
+                gs = GridSpecFromSubplotSpec(gs_x, gs_y, ax.get_subplotspec())
+                self.reduced_fig = plt.gcf()
 
-        if plot_violins and not self.featurewise and self.singles is not None:
-            self.plot_violins()
-        return self
+            ax_components = plt.subplot(gs[:, :5])
+            ax_loading1 = plt.subplot(gs[:, 6:8])
+            ax_loading2 = plt.subplot(gs[:, 10:14])
+
+            self.plot_samples(show_point_labels=show_point_labels,
+                              title=title, show_vectors=show_vectors,
+                              show_vector_labels=show_vector_labels,
+                              markersize=markersize, legend=legend,
+                              ax=ax_components)
+            self.plot_loadings(pc=self.x_pc, ax=ax_loading1)
+            self.plot_loadings(pc=self.y_pc, ax=ax_loading2)
+            sns.despine()
+            self.reduced_fig.tight_layout()
+
+            if plot_violins and not self.featurewise and self.singles is not None:
+                self.plot_violins()
+            return self
+
+    def _plot_bokeh(self, metadata=None, title=''):
+        metadata = metadata if metadata is not None else pd.DataFrame(
+            index=self.reduced_space.index)
+        # Clean alias
+        import bokeh.plotting as bk
+        from bokeh.plotting import ColumnDataSource, figure, show
+        from bokeh.models import HoverTool
+
+        # Plots can be displayed inline in an IPython Notebook
+        bk.output_notebook(force=True)
+
+
+        # Create a set of tools to use
+        TOOLS = "pan,wheel_zoom,box_zoom,reset,hover"
+
+        x = self.reduced_space[self.x_pc]
+        y = self.reduced_space[self.y_pc]
+
+        radii = np.ones(x.shape)
+
+        colors = self.reduced_space.index.map(
+            lambda x: self.label_to_color[self.groupby[x]])
+        sample_ids = self.reduced_space.index
+
+        data = dict(
+            (col, metadata[col][self.reduced_space.index]) for
+            col in metadata)
+        tooltips = [('sample_id', '@sample_ids')]
+        tooltips.extend([(k, '@{}'.format(k)) for k in data.keys()])
+
+        data.update(dict(
+            x=x,
+            y=y,
+            colors=colors,
+            sample_ids=sample_ids
+        ))
+
+        source = ColumnDataSource(
+            data=data
+        )
+
+        p = figure(title=title, tools=TOOLS)
+
+        p.circle(x, y, radius=radii, source=source,
+                 fill_color=colors, fill_alpha=0.6, line_color=None)
+        hover = p.select(dict(type=HoverTool))
+        hover.tooltips = tooltips
+
+        show(p)
 
 
     def shorten(self, x):
