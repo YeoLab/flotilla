@@ -1235,7 +1235,7 @@ class BaseData(object):
                                                              axis=0)
         return nmf_space_transitions
 
-    def big_nmf_space_transitions(self, groupby, phenotype_transitions, n=5):
+    def big_nmf_space_transitions(self, groupby, phenotype_transitions, n=0.5):
         """Get features whose change in NMF space between phenotypes is large
 
         Parameters
@@ -1270,7 +1270,7 @@ class BaseData(object):
                                        phenotype_transitions,
                                        phenotype_order, color,
                                        phenotype_to_color,
-                                       phenotype_to_marker, n=5):
+                                       phenotype_to_marker, n=0.5):
         """Violinplots and NMF transitions of features different in phenotypes
 
         Plot violinplots and NMF-space transitions of features that have large
