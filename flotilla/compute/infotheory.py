@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 from sklearn import cross_validation
 
-EPSILON = 10 * np.finfo(float).eps
+EPSILON = 100 * np.finfo(float).eps
 
 
 def bin_range_strings(bins):
@@ -32,11 +32,11 @@ def _check_prob_dist(x):
         raise ValueError('Each column of the input dataframes must be '
                          '**non-negative** probability distributions')
     try:
-        if np.any(x.sum() - np.ones(x.shape[1]) > EPSILON):
+        if np.any(np.abs(x.sum() - np.ones(x.shape[1])) > EPSILON):
             raise ValueError('Each column of the input dataframe must be '
                              'probability distributions that **sum to 1**')
     except IndexError:
-        if np.any(x.sum() - np.ones(x.shape[0]) > EPSILON):
+        if np.any(np.abs(x.sum() - 1) > EPSILON):
             raise ValueError('Each column of the input dataframe must be '
                              'probability distributions that **sum to 1**')
 

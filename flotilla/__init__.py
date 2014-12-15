@@ -11,11 +11,11 @@ __version__ = '0.2.5dev'
 
 # 18 cells, multiindex on the splicing data features, features already renamed
 # in the matrices
-_shalek2013 = 'https://raw.githubusercontent.com/YeoLab/shalek2013/master/' \
+_shalek2013 = 'http://raw.githubusercontent.com/YeoLab/shalek2013/master/' \
               'datapackage.json'
 
 # 250 cells, ensembl and miso ids on index, need renaming, lots of celltypes
-_test_data = 'https://raw.githubusercontent.com/YeoLab/flotilla_test_data/' \
+_test_data = 'http://raw.githubusercontent.com/YeoLab/flotilla_test_data/' \
              'master/datapackage.json'
 
 def embark(study_name, load_species_data=True):

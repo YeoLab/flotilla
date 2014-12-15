@@ -83,9 +83,9 @@ class SplicingData(BaseData):
                                                 included_min=included_min)
         self.modalities_visualizer = ModalitiesViz()
 
-    @memoize
+    # @memoize
     def modalities(self, sample_ids=None, feature_ids=None, data=None,
-                   groupby=None,
+                   groupby=None, min_samples=0.5,
                    bootstrapped=False, bootstrapped_kws=None):
         """Assigned modalities for these samples and features.
 
@@ -101,7 +101,13 @@ class SplicingData(BaseData):
         bootstrapped : bool, optional (default=False)
             Whether or not to use bootstrapping, i.e. resample each splicing
             event several times to get a better estimate of its true modality.
-        bootstrappped_kws : dict, optional
+        min_samples : int or float
+            If int, then this is the absolute number of cells that are minimum
+            required to calculate modalities. If a float, then require this
+            fraction of samples to calculate modalities, e.g. if 0.6, then at
+            least 60% of samples must have an event detected for modality
+            detection
+        bootstrapped_kws : dict, optional
             Valid arguments to _bootstrapped_fit_transform. If None, default is
             dict(n_iter=100, thresh=0.6, minimum_samples=10)
 
@@ -117,6 +123,18 @@ class SplicingData(BaseData):
             if feature_ids is not None and sample_ids is not None:
                 raise ValueError('Can only specify `sample_ids` and '
                                  '`feature_ids` or `data`, but not both.')
+
+        grouped = data.groupby(groupby)
+        if isinstance(min_samples, int):
+            thresh = lambda x: min_samples
+        elif isinstance(min_samples, float):
+            thresh = lambda x: min_samples * x.shape[0]
+        else:
+            raise TypeError('Threshold for minimum samples for modality '
+                            'detection can only be int or float, '
+                            'not {}'.format(type(min_samples)))
+        data = pd.concat([df.dropna(thresh=thresh(df), axis=1)
+                         for name, df in grouped])
         assignments = data.groupby(groupby).apply(
             self.modalities_calculator.fit_transform,
             bootstrapped=bootstrapped, bootstrapped_kws=bootstrapped_kws)
@@ -124,7 +142,7 @@ class SplicingData(BaseData):
 
     # @memoize
     def modalities_counts(self, sample_ids=None, feature_ids=None, data=None,
-                          groupby=None,
+                          groupby=None, min_samples=0.5,
                           bootstrapped=False, bootstrapped_kws=False):
         """Count the number of each modalities of these samples and features
 
@@ -141,6 +159,12 @@ class SplicingData(BaseData):
             Whether or not to use bootstrapping, i.e. resample each splicing
             event several times to get a better estimate of its true modality.
             Default False.
+        min_samples : int or float
+            If int, then this is the absolute number of cells that are minimum
+            required to calculate modalities. If a float, then require this
+            fraction of samples to calculate modalities, e.g. if 0.6, then at
+            least 60% of samples must have an event detected for modality
+            detection
         bootstrapped_kws : dict
             Valid arguments to _bootstrapped_fit_transform. If None, default is
             dict(n_iter=100, thresh=0.6, minimum_samples=10)
@@ -158,6 +182,17 @@ class SplicingData(BaseData):
                 raise ValueError('Can only specify `sample_ids` and '
                                  '`feature_ids` or `data`, but not both.')
 
+        grouped = data.groupby(groupby)
+        if isinstance(min_samples, int):
+            thresh = lambda x: min_samples
+        elif isinstance(min_samples, float):
+            thresh = lambda x: min_samples * x.shape[0]
+        else:
+            raise TypeError('Threshold for minimum samples for modality '
+                            'detection can only be int or float, '
+                            'not {}'.format(type(min_samples)))
+        data = pd.concat([df.dropna(thresh=thresh(df), axis=1)
+                          for name, df in grouped])
         counts = data.groupby(groupby).apply(
             self.modalities_calculator.counts, bootstrapped=bootstrapped,
             bootstrapped_kws=bootstrapped_kws)
@@ -427,27 +462,51 @@ class SplicingData(BaseData):
         singles, pooled, not_measured_in_pooled, diff_from_singles = \
             self._diff_from_singles(data, feature_ids, scaled=True)
 
-        large_diff = \
-            diff_from_singles[diff_from_singles.abs()
-                              >= fraction_diff_thresh].dropna(axis=1,
-                                                              how='all')
+        try:
+            large_diff = \
+                diff_from_singles[diff_from_singles.abs()
+                                  >= fraction_diff_thresh].dropna(axis=1,
+                                                                  how='all')
+        except AttributeError:
+            large_diff = None
         return singles, pooled, not_measured_in_pooled, large_diff
 
     @memoize
     def _diff_from_singles(self, data,
                            feature_ids=None, scaled=True, dropna=True):
-        """
+        """Calculate the difference between pooled and singles' psis
+
         Parameters
         ----------
-
+        data : pandas.DataFrame
+            A (n_samples, n_features) DataFrame
+        feature_ids : list-like
+            Subset of the features you want
+        scaled : bool
+            If True, then take the average difference between each pooled
+            sample and all singles. If False, then get the summed difference
+        dropna : bool
+            If True, remove events which were not measured in the pooled
+            samples
 
         Returns
         -------
-
-
+        singles : pandas.DataFrame
+            Subset of the data that's only the single-cell samples
+        pooled : pandas.DataFrame
+            Subset of the data that's only the pooled samples
+        not_measured_in_pooled : list-like
+            List of features not measured in the pooled samples
+        diff_from_singles : pandas.DataFrame
+            A (n_pooled, n_features) Dataframe of the summed (or scaled if
+            scaled=True)
         """
-        singles, pooled = self._subset_singles_and_pooled(feature_ids,
-                                                          data=data)
+        singles, pooled = self._subset_singles_and_pooled(
+            feature_ids, data=data, require_min_samples=False)
+        if pooled is None:
+            not_measured_in_pooled = None
+            diff_from_singles = None
+            return singles, pooled, not_measured_in_pooled, diff_from_singles
 
         # Make sure "pooled" is always a dataframe
         if isinstance(pooled, pd.Series):
@@ -520,7 +579,7 @@ class SplicingData(BaseData):
         singles, pooled, not_measured_in_pooled, pooled_inconsistent = \
             self.pooled_inconsistent(data, feature_ids,
                                      fraction_diff_thresh)
-        percent = self._percent_pooled_inconsistent(pooled,
+        percent = self._divide_inconsistent_and_pooled(pooled,
                                                     pooled_inconsistent)
         lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
                                      color=color, percent=percent)
@@ -537,8 +596,11 @@ class SplicingData(BaseData):
                                    diff_from_singles_scaled, color=color,
                                    title=title, hist_kws=hist_kws)
 
-    def _percent_pooled_inconsistent(self, pooled, pooled_inconsistent):
+    @staticmethod
+    def _divide_inconsistent_and_pooled(pooled, pooled_inconsistent):
         """The percent of events with pooled psi different from singles"""
+        if pooled_inconsistent is None:
+            return np.nan
         if pooled_inconsistent.shape[1] == 0:
             return 0.0
         try:
