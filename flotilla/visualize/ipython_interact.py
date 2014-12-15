@@ -10,24 +10,11 @@ from IPython.html.widgets import interact, TextWidget, ButtonWidget
 import matplotlib.pyplot as plt
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 # from ..compute.predict import default_classifier
-from flotilla.util import link_to_list
 from ..visualize.color import red
 from .network import NetworkerViz
 from .color import str_to_color
-from ..util import natural_sort
+from ..util import natural_sort, link_to_list
 
 default_classifier = 'ExtraTreesClassifier'
 default_regressor = 'ExtraTreesRegressor'
@@ -116,7 +103,8 @@ class Interactive(object):
                         plot_violins=False,
                         show_point_labels=False,
                         color_samples_by=self.metadata.phenotype_col,
-                        bokeh=False):
+                        bokeh=False,
+                        most_variant_features=False):
             for k, v in locals().iteritems():
                 if k == 'self':
                     continue
@@ -146,7 +134,8 @@ class Interactive(object):
                                  feature_subset=feature_subset,
                                  plot_violins=plot_violins,
                                  color_samples_by=color_samples_by,
-                                 bokeh=bokeh)
+                                 bokeh=bokeh,
+                                 most_variant_features=most_variant_features)
 
         # self.plot_study_sample_legend()
 
