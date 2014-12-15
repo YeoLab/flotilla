@@ -241,7 +241,7 @@ class DecompositionViz(object):
         from bokeh.models import HoverTool
 
         # Plots can be displayed inline in an IPython Notebook
-        bk.output_notebook()
+        bk.output_notebook(force=True)
 
 
         # Create a set of tools to use
