@@ -14,7 +14,6 @@ from sklearn import cross_validation
 from joblib import Parallel, delayed
 
 from .infotheory import jsd, binify, bin_range_strings
-from ..util import memoize
 
 MODALITIES_BINS = np.array([[1, 0, 0],  # excluded
                             [0, 1, 0],  # middle
@@ -26,6 +25,7 @@ MODALITIES_NAMES = ['excluded', 'middle', 'included', 'bimodal',
                     'uniform']
 
 TRUE_MODALITIES = pd.DataFrame(MODALITIES_BINS.T, columns=MODALITIES_NAMES)
+TRUE_MODALITIES = TRUE_MODALITIES/TRUE_MODALITIES.sum()
 
 
 def _col_jsd_modalities(col, true_modalities):
@@ -50,7 +50,7 @@ def _col_jsd_modalities(col, true_modalities):
     else:
         return pd.Series(np.nan, index=true_modalities.columns)
 
-def assignments(sqrt_jsd_modalities, true_modalities):
+def assignments(sqrt_jsds):
     """Return the modality with the smallest square root JSD to each event
 
     Parameters
@@ -64,10 +64,7 @@ def assignments(sqrt_jsd_modalities, true_modalities):
     assignments : pandas.Series
         The closest modality to each splicing event
     """
-    modalities = true_modalities.columns[
-        np.argmin(sqrt_jsd_modalities.values, axis=0)]
-    return pd.Series(modalities, sqrt_jsd_modalities.columns)
-
+    return sqrt_jsds.idxmin(axis=0)
 
 def sqrt_jsd_modalities(binned, true_modalities):
     """Calculate JSD between all binned splicing events and true modalities
@@ -89,6 +86,10 @@ def sqrt_jsd_modalities(binned, true_modalities):
     return np.sqrt(binned.apply(_col_jsd_modalities, axis=0,
                                 true_modalities=true_modalities))
 
+def _binned_to_assignments(binned, true_modalities):
+    sqrt_jsds = sqrt_jsd_modalities(binned, true_modalities)
+    return assignments(sqrt_jsds)
+
 def _single_fit_transform(data, bins, true_modalities,
                           do_not_memoize=False):
     """Given psi scores, estimate the modality of each
@@ -108,15 +109,14 @@ def _single_fit_transform(data, bins, true_modalities,
         Modality assignments of each column (feature)
     """
     binned = binify(data, bins)
-    sqrt_jsds = sqrt_jsd_modalities(binned, true_modalities)
-    return assignments(sqrt_jsds, true_modalities)
+    return _binned_to_assignments(binned, true_modalities)
 
 def _cat_indices_and_fit_transform(indices, data, bins, true_modalities,
                                    min_samples=10):
     i = np.concatenate(indices)
-    index = data.index[i]
-    psi = data.copy().ix[index, :]#.copy().dropna(axis=1, thresh=min_samples)
-    psi = psi.ix[:, psi.count() >= min_samples]
+    # index = data.index[i]
+    psi = data.copy().iloc[i, :].dropna(axis=1, thresh=min_samples)
+    # psi = psi.ix[:, psi.count() >= min_samples]
     return _single_fit_transform(psi, bins, true_modalities,
                                  do_not_memoize=True)
 
@@ -161,7 +161,7 @@ class Modalities(object):
         self.bins = (0, excluded_max, included_min, 1)
         self.true_modalities.index = bin_range_strings(self.bins)
 
-    @memoize
+    # @memoize
     def fit_transform(self, data, bootstrapped=False, bootstrapped_kws=None):
         """Given psi scores, estimate the modality of each
 
@@ -215,13 +215,14 @@ class Modalities(object):
         assignments : pandas.Series
             Modality assignments of each column (feature)
         """
-        bs = cross_validation.Bootstrap(data.shape[0], n_iter=n_iter)
+        bs = cross_validation.ShuffleSplit(data.shape[0], n_iter=n_iter)
 
         results = Parallel(n_jobs=-1, max_nbytes=1e4)(
             delayed(_cat_indices_and_fit_transform)(
                 x, data, self.bins, self.true_modalities, min_samples)
             for x in bs)
 
+        # import pdb; pdb.set_trace()
         assignments = pd.concat(results, axis=1).T
         counts = assignments.apply(lambda x: pd.Series(
             collections.Counter(x.dropna())))

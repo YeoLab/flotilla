@@ -239,7 +239,8 @@ class Study(object):
             if len(self.technical_outliers) > 0:
                 sys.stderr.write('Samples had too few mapped reads (<{'
                                  ':.1e} reads):\n\t{}\n'.format(
-                    mapping_stats_min_reads, ', '.join(self.technical_outliers)))
+                    mapping_stats_min_reads,
+                    ', '.join(self.technical_outliers)))
         else:
             self.technical_outliers = None
 
@@ -248,8 +249,9 @@ class Study(object):
             sys.stdout.write('{}\tLoading species metadata from '
                              '~/flotilla_packages\n'.format(timestamp()))
             species_kws = self.load_species_data(self.species, self.readers)
-            expression_feature_data = species_kws.pop('expression_feature_data',
-                                                      None)
+            expression_feature_data = species_kws.pop(
+                'expression_feature_data',
+                None)
             expression_feature_rename_col = species_kws.pop(
                 'expression_feature_rename_col', None)
             splicing_feature_data = species_kws.pop('splicing_feature_data',
@@ -353,7 +355,7 @@ class Study(object):
 
     @property
     def default_sample_subsets(self):
-        #move default_sample_subset to the front of the list, sort the rest
+        # move default_sample_subset to the front of the list, sort the rest
         sorted_sample_subsets = list(sorted(list(set(
             self.metadata.sample_subsets.keys()).difference(
             set(self.default_sample_subset)))))
@@ -402,7 +404,7 @@ class Study(object):
             resources of metadata, expression, and splicing.
         """
         datapackage = datapackage_url_to_dict(datapackage_url)
-        datapackage_dir = '{}/{}'.format(FLOTILLA_DOWNLOAD_DIR, 
+        datapackage_dir = '{}/{}'.format(FLOTILLA_DOWNLOAD_DIR,
                                          datapackage['name'])
         return cls.from_datapackage(
             datapackage, load_species_data=load_species_data,
@@ -954,7 +956,7 @@ class Study(object):
 
     def modalities(self, sample_subset=None, feature_subset=None,
                    expression_thresh=-np.inf, bootstrapped=False,
-                   bootstrapped_kws=None):
+                   bootstrapped_kws=None, min_samples=0.5):
         """Get splicing modality assignments of data
 
         Parameters
@@ -977,6 +979,12 @@ class Study(object):
         bootstrapped_kws : dict, optional
             Valid arguments to _bootstrapped_fit_transform. If None, default is
             dict(n_iter=100, thresh=0.6, minimum_samples=10)
+        min_samples : int or float
+            If int, then this is the absolute number of cells that are minimum
+            required to calculate modalities. If a float, then require this
+            fraction of samples to calculate modalities, e.g. if 0.6, then at
+            least 60% of samples must have an event detected for modality
+            detection
 
         Returns
         -------
@@ -986,7 +994,8 @@ class Study(object):
             case of bootstrapped=True
 
         """
-        if expression_thresh > -np.inf:
+        if expression_thresh > -np.inf and \
+                        expression_thresh > self.expression.data.min().min():
             data = self.filter_splicing_on_expression(
                 expression_thresh=expression_thresh,
                 sample_subset=sample_subset)
@@ -1001,11 +1010,12 @@ class Study(object):
         return self.splicing.modalities(sample_ids, feature_ids, data=data,
                                         bootstrapped=bootstrapped,
                                         groupby=self.sample_id_to_phenotype,
-                                        bootstrapped_kws=bootstrapped_kws)
+                                        bootstrapped_kws=bootstrapped_kws,
+                                        min_samples=min_samples)
 
     def modalities_counts(self, sample_subset=None, feature_subset=None,
-                   expression_thresh=-np.inf, bootstrapped=True,
-                   bootstrapped_kws=None):
+                          expression_thresh=-np.inf, bootstrapped=False,
+                          bootstrapped_kws=None):
         """Get counts of each resampled splicing event assigned to a modality
 
         Parameters
@@ -1084,10 +1094,10 @@ class Study(object):
                                               bootstrapped=bootstrapped,
                                               bootstrapped_kws=bootstrapped_kws)
         self.splicing.plot_modalities_stacked_bar(sample_ids, feature_ids,
-                                          bar_ax, i=0, normed=normed,
-                                          legend=False,
-                                          bootstrapped=bootstrapped,
-                                          bootstrapped_kws=bootstrapped_kws)
+                                                  bar_ax, i=0, normed=normed,
+                                                  legend=False,
+                                                  bootstrapped=bootstrapped,
+                                                  bootstrapped_kws=bootstrapped_kws)
 
         axes = axes[2:]
         for i, ((celltype, series), ax) in enumerate(zip(grouped, axes)):
@@ -1096,8 +1106,9 @@ class Study(object):
             samples = series.index.intersection(sample_ids)
             # legend = i == 0
             self.splicing.plot_modalities_stacked_bar(samples, feature_ids,
-                                              bar_ax, i + 1, normed=normed,
-                                              legend=False)
+                                                      bar_ax, i + 1,
+                                                      normed=normed,
+                                                      legend=False)
 
             self.splicing.plot_modalities_reduced(samples, feature_ids,
                                                   ax, title=celltype)
@@ -1135,7 +1146,7 @@ class Study(object):
 
     # @property
     # def celltype_modalities(self):
-    #     """Return modality assignments of each celltype
+    # """Return modality assignments of each celltype
     #     """
     #     return self.splicing.data.groupby(
     #         self.sample_id_to_phenotype, axis=0).apply(
@@ -1221,7 +1232,7 @@ class Study(object):
             celltype_samples = self.sample_subset_to_sample_ids(sample_subset)
 
         feature_ids = self.feature_subset_to_feature_ids('splicing',
-                                                            feature_subset=feature_subset)
+                                                         feature_subset=feature_subset)
 
         celltype_and_sample_ids = celltype_groups.groups.iteritems()
         for i, (phenotype, sample_ids) in enumerate(celltype_and_sample_ids):
@@ -1236,7 +1247,9 @@ class Study(object):
             data = self.filter_splicing_on_expression(expression_thresh)
             data = data.ix[sample_ids, :]
             self.splicing.plot_lavalamp_pooled_inconsistent(data,
-                feature_ids, fraction_diff_thresh, color=color)
+                                                            feature_ids,
+                                                            fraction_diff_thresh,
+                                                            color=color)
 
     def percent_pooled_inconsistent(
             self, sample_subset=None, feature_subset=None,
@@ -1268,9 +1281,9 @@ class Study(object):
                 continue
             data = self.filter_splicing_on_expression(expression_thresh)
             data = data.ix[sample_ids, :]
-            singles, pooled, not_measured_in_pooled, pooled_inconsistent =\
+            singles, pooled, not_measured_in_pooled, pooled_inconsistent = \
                 self.splicing.pooled_inconsistent(data, feature_ids,
-                                              fraction_diff_thresh)
+                                                  fraction_diff_thresh)
             percent = self._percent_pooled_inconsistent(pooled,
                                                         pooled_inconsistent)
             percents[phenotype] = percent
@@ -1317,9 +1330,9 @@ class Study(object):
                 **kwargs)
 
     def plot_correlations(self, sample_subset=None, feature_subset=None,
-                        data_type='expression', metric='euclidean',
-                        method='average', figsize=None, featurewise=False,
-                        scale_fig_by_data=True, **kwargs):
+                          data_type='expression', metric='euclidean',
+                          method='average', figsize=None, featurewise=False,
+                          scale_fig_by_data=True, **kwargs):
         """Visualize clustered correlations of samples across features
 
         Parameters
@@ -1461,7 +1474,7 @@ class Study(object):
                 self.sample_id_to_phenotype)
 
     def nmf_space_transitions(self, phenotype_transitions='all',
-                              data_type='splicing', n=5):
+                              data_type='splicing', n=0.5):
         """The change in NMF space of splicing events across phenotypes
 
         Parameters
@@ -1487,7 +1500,7 @@ class Study(object):
                 self.sample_id_to_phenotype, phenotype_transitions, n=n)
 
     def big_nmf_space_transitions(self, phenotype_transitions='all',
-                                  data_type='splicing', n=5):
+                                  data_type='splicing', n=0.5):
         """Splicing events whose change in NMF space is large
 
         By large, we mean that difference is 2 standard deviations away from
@@ -1626,7 +1639,8 @@ class Study(object):
         sample_id = 'sample_id'
         event_name = 'event_name'
 
-        splicing_common_id = self.splicing.feature_data[self.splicing.feature_expression_id_col]
+        splicing_common_id = self.splicing.feature_data[
+            self.splicing.feature_expression_id_col]
 
         # Tidify splicing
         splicing = self.splicing.data
@@ -1706,7 +1720,6 @@ class Study(object):
         filtered_psi = splicing_high_expression.pivot(
             columns='miso_id', index='sample_id', values='psi')
         return filtered_psi
-
 
 
 # Add interactive visualizations
