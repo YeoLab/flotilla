@@ -137,6 +137,11 @@ class BaseData(object):
         are considered as single-cell samples.
 
         """
+        if isinstance(data.index, pd.MultiIndex) \
+                or isinstance(data.columns, pd.MultiIndex):
+            raise ValueError('flotilla does not currently support '
+                             'multi-indexed dataframes')
+
         self.data = data
         self.data_original = self.data
         self.thresh = thresh
@@ -527,6 +532,8 @@ class BaseData(object):
                                       groupby=None, label_to_color=None,
                                       label_to_marker=None, order=None,
                                       reduce_kwargs=None, title='',
+                                      most_variant_features=False,
+                                      std_multiplier=2,
                                       **plotting_kwargs):
         """Principal component-like analysis of measurements
 
@@ -577,7 +584,9 @@ class BaseData(object):
 
         reduced = self.reduce(sample_ids, feature_ids,
                               featurewise=featurewise,
-                              reducer=reducer, **reduce_kwargs)
+                              reducer=reducer,
+                              most_variant_features=most_variant_features,
+                              **reduce_kwargs)
 
         visualized = DecompositionViz(reduced.reduced_space,
                                       reduced.components_,
@@ -657,7 +666,8 @@ class BaseData(object):
         return subset
 
     def _subset_singles_and_pooled(self, sample_ids=None,
-                                   feature_ids=None, data=None):
+                                   feature_ids=None, data=None,
+                                   require_min_samples=True):
         """Subset singles and pooled, taking only features that appear in both
         
         Parameters
@@ -673,7 +683,10 @@ class BaseData(object):
             py:attr:`BaseData.data`. Convenient for when you filtered based on
             some other criteria, e.g. for splicing events with expression 
             greater than some threshold
-        
+        require_min_samples : bool
+            If True, then require the study-default minimum number of samples,
+            but only for singles.
+
         Returns
         -------
         singles : pandas.DataFrame
@@ -688,11 +701,11 @@ class BaseData(object):
         # import pdb; pdb.set_trace()
         if data is None:
             singles = self._subset(self.singles, sample_ids, feature_ids,
-                                   require_min_samples=True)
+                                   require_min_samples=require_min_samples)
         else:
             sample_ids = data.index.intersection(self.singles.index)
             singles = self._subset(data, sample_ids,
-                                   require_min_samples=True)
+                                   require_min_samples=require_min_samples)
 
         try:
             # If the sample ids don't overlap with the pooled sample, assume you
@@ -890,7 +903,8 @@ class BaseData(object):
                featurewise=False,
                reducer=DataFramePCA,
                standardize=True,
-               reducer_kwargs=None, bins=None):
+               reducer_kwargs=None, bins=None,
+               most_variant_features=False, std_multiplier=2):
         """Make and memoize a reduced dimensionality representation of data
 
         Parameters
@@ -927,6 +941,12 @@ class BaseData(object):
                                                      sample_ids, feature_ids,
                                                      standardize,
                                                      return_means=True)
+        if most_variant_features:
+            var = subset.var()
+            ind = var >= (var.mean() + std_multiplier*var.std())
+            subset = subset.ix[:, ind]
+            means = means[ind]
+
         if bins is not None:
             subset = self.binify(subset, bins)
 

@@ -25,4 +25,4 @@ python-coveralls
 jinja2
 #fastcluster
 semantic_version
-joblib
+joblib >= 0.8.4
