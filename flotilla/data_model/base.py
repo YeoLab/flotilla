@@ -137,6 +137,11 @@ class BaseData(object):
         are considered as single-cell samples.
 
         """
+        if isinstance(data.index, pd.MultiIndex) \
+                or isinstance(data.columns, pd.MultiIndex):
+            raise ValueError('flotilla does not currently support '
+                             'multi-indexed dataframes')
+
         self.data = data
         self.data_original = self.data
         self.thresh = thresh
@@ -657,7 +662,8 @@ class BaseData(object):
         return subset
 
     def _subset_singles_and_pooled(self, sample_ids=None,
-                                   feature_ids=None, data=None):
+                                   feature_ids=None, data=None,
+                                   require_min_samples=True):
         """Subset singles and pooled, taking only features that appear in both
         
         Parameters
@@ -673,7 +679,10 @@ class BaseData(object):
             py:attr:`BaseData.data`. Convenient for when you filtered based on
             some other criteria, e.g. for splicing events with expression 
             greater than some threshold
-        
+        require_min_samples : bool
+            If True, then require the study-default minimum number of samples,
+            but only for singles.
+
         Returns
         -------
         singles : pandas.DataFrame
@@ -688,11 +697,11 @@ class BaseData(object):
         # import pdb; pdb.set_trace()
         if data is None:
             singles = self._subset(self.singles, sample_ids, feature_ids,
-                                   require_min_samples=True)
+                                   require_min_samples=require_min_samples)
         else:
             sample_ids = data.index.intersection(self.singles.index)
             singles = self._subset(data, sample_ids,
-                                   require_min_samples=True)
+                                   require_min_samples=require_min_samples)
 
         try:
             # If the sample ids don't overlap with the pooled sample, assume you

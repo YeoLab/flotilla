@@ -427,27 +427,51 @@ class SplicingData(BaseData):
         singles, pooled, not_measured_in_pooled, diff_from_singles = \
             self._diff_from_singles(data, feature_ids, scaled=True)
 
-        large_diff = \
-            diff_from_singles[diff_from_singles.abs()
-                              >= fraction_diff_thresh].dropna(axis=1,
-                                                              how='all')
+        try:
+            large_diff = \
+                diff_from_singles[diff_from_singles.abs()
+                                  >= fraction_diff_thresh].dropna(axis=1,
+                                                                  how='all')
+        except AttributeError:
+            large_diff = None
         return singles, pooled, not_measured_in_pooled, large_diff
 
     @memoize
     def _diff_from_singles(self, data,
                            feature_ids=None, scaled=True, dropna=True):
-        """
+        """Calculate the difference between pooled and singles' psis
+
         Parameters
         ----------
-
+        data : pandas.DataFrame
+            A (n_samples, n_features) DataFrame
+        feature_ids : list-like
+            Subset of the features you want
+        scaled : bool
+            If True, then take the average difference between each pooled
+            sample and all singles. If False, then get the summed difference
+        dropna : bool
+            If True, remove events which were not measured in the pooled
+            samples
 
         Returns
         -------
-
-
+        singles : pandas.DataFrame
+            Subset of the data that's only the single-cell samples
+        pooled : pandas.DataFrame
+            Subset of the data that's only the pooled samples
+        not_measured_in_pooled : list-like
+            List of features not measured in the pooled samples
+        diff_from_singles : pandas.DataFrame
+            A (n_pooled, n_features) Dataframe of the summed (or scaled if
+            scaled=True)
         """
-        singles, pooled = self._subset_singles_and_pooled(feature_ids,
-                                                          data=data)
+        singles, pooled = self._subset_singles_and_pooled(
+            feature_ids, data=data, require_min_samples=False)
+        if pooled is None:
+            not_measured_in_pooled = None
+            diff_from_singles = None
+            return singles, pooled, not_measured_in_pooled, diff_from_singles
 
         # Make sure "pooled" is always a dataframe
         if isinstance(pooled, pd.Series):
@@ -520,7 +544,7 @@ class SplicingData(BaseData):
         singles, pooled, not_measured_in_pooled, pooled_inconsistent = \
             self.pooled_inconsistent(data, feature_ids,
                                      fraction_diff_thresh)
-        percent = self._percent_pooled_inconsistent(pooled,
+        percent = self._divide_inconsistent_and_pooled(pooled,
                                                     pooled_inconsistent)
         lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
                                      color=color, percent=percent)
@@ -537,8 +561,11 @@ class SplicingData(BaseData):
                                    diff_from_singles_scaled, color=color,
                                    title=title, hist_kws=hist_kws)
 
-    def _percent_pooled_inconsistent(self, pooled, pooled_inconsistent):
+    @staticmethod
+    def _divide_inconsistent_and_pooled(pooled, pooled_inconsistent):
         """The percent of events with pooled psi different from singles"""
+        if pooled_inconsistent is None:
+            return np.nan
         if pooled_inconsistent.shape[1] == 0:
             return 0.0
         try:
