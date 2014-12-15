@@ -30,8 +30,7 @@ class DecompositionViz(object):
                  label_to_marker=None,
                  scale_by_variance=True, x_pc='pc_1',
                  y_pc='pc_2', n_vectors=20, distance='L1',
-                 n_top_pc_features=50, max_char_width=30,
-                 metadata=None):
+                 n_top_pc_features=50, max_char_width=30):
         """Plot the results of a decomposition visualization
 
         Parameters
@@ -127,8 +126,6 @@ class DecompositionViz(object):
         self.featurewise = featurewise
         self.feature_renamer = feature_renamer
         self.max_char_width = max_char_width
-        self.metadata = metadata if metadata is not None else pd.DataFrame(
-            index=self.reduced_space.index)
 
         if self.groupby is None:
             self.groupby = dict.fromkeys(self.reduced_space.index, 'all')
@@ -201,7 +198,7 @@ class DecompositionViz(object):
                  show_point_labels=False,
                  show_vectors=True,
                  show_vector_labels=True,
-                 markersize=10, legend=True, bokeh=False):
+                 markersize=10, legend=True, bokeh=False, metadata=None):
 
         if bokeh:
             self._plot_bokeh(title)
@@ -235,7 +232,9 @@ class DecompositionViz(object):
                 self.plot_violins()
             return self
 
-    def _plot_bokeh(self, title=''):
+    def _plot_bokeh(self, metadata=None, title=''):
+        metadata = metadata if metadata is not None else pd.DataFrame(
+            index=self.reduced_space.index)
         # Clean alias
         import bokeh.plotting as bk
         from bokeh.plotting import ColumnDataSource, figure, show
