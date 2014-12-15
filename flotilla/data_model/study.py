@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import semantic_version
+import seaborn as sns
 
 from .metadata import MetaData, PHENOTYPE_COL, POOLED_COL
 from .expression import ExpressionData, SpikeInData
@@ -58,6 +59,9 @@ class Study(object):
     _default_reducer_kwargs = {'whiten': False,
                                'show_point_labels': False,
                                'show_vectors': False}
+    _common_id = 'common_id'
+    _sample_id = 'sample_id'
+    _event_name = 'event_name'
 
     _default_plot_kwargs = {'marker': 'o', 'color': blue}
 
@@ -730,7 +734,8 @@ class Study(object):
                  sample_subset=None, feature_subset=None,
                  title='', featurewise=False, plot_violins=False,
                  show_point_labels=False, reduce_kwargs=None,
-                 color_samples_by=None,
+                 color_samples_by=None, bokeh=False,
+                 most_variant_features=False, std_multiplier=2,
                  **kwargs):
         """Performs DataFramePCA on both expression and splicing study_data
 
@@ -791,10 +796,12 @@ class Study(object):
                 feature_ids=feature_ids,
                 label_to_color=label_to_color,
                 label_to_marker=label_to_marker, groupby=groupby,
-                order=order,
+                order=order, std_multiplier=std_multiplier,
                 featurewise=featurewise, show_point_labels=show_point_labels,
                 title=title, reduce_kwargs=reduce_kwargs,
-                plot_violins=plot_violins, **kwargs)
+                plot_violins=plot_violins, metadata=self.metadata.data,
+                bokeh=bokeh, most_variant_features=most_variant_features,
+                **kwargs)
 
         elif "splicing".startswith(data_type):
             reducer = self.splicing.plot_pca(
@@ -802,10 +809,12 @@ class Study(object):
                 feature_ids=feature_ids,
                 label_to_color=label_to_color,
                 label_to_marker=label_to_marker, groupby=groupby,
-                order=order,
+                order=order, std_multiplier=std_multiplier,
                 featurewise=featurewise, show_point_labels=show_point_labels,
                 title=title, reduce_kwargs=reduce_kwargs,
-                plot_violins=plot_violins, **kwargs)
+                plot_violins=plot_violins, metadata=self.metadata.data,
+                bokeh=bokeh, most_variant_features=most_variant_features,
+                **kwargs)
         else:
             raise ValueError('The data type {} does not exist in this study'
                              .format(data_type))
@@ -979,12 +988,6 @@ class Study(object):
         bootstrapped_kws : dict, optional
             Valid arguments to _bootstrapped_fit_transform. If None, default is
             dict(n_iter=100, thresh=0.6, minimum_samples=10)
-        min_samples : int or float
-            If int, then this is the absolute number of cells that are minimum
-            required to calculate modalities. If a float, then require this
-            fraction of samples to calculate modalities, e.g. if 0.6, then at
-            least 60% of samples must have an event detected for modality
-            detection
 
         Returns
         -------
@@ -1146,7 +1149,7 @@ class Study(object):
 
     # @property
     # def celltype_modalities(self):
-    # """Return modality assignments of each celltype
+    #     """Return modality assignments of each celltype
     #     """
     #     return self.splicing.data.groupby(
     #         self.sample_id_to_phenotype, axis=0).apply(
@@ -1232,7 +1235,7 @@ class Study(object):
             celltype_samples = self.sample_subset_to_sample_ids(sample_subset)
 
         feature_ids = self.feature_subset_to_feature_ids('splicing',
-                                                         feature_subset=feature_subset)
+                                                            feature_subset=feature_subset)
 
         celltype_and_sample_ids = celltype_groups.groups.iteritems()
         for i, (phenotype, sample_ids) in enumerate(celltype_and_sample_ids):
@@ -1247,9 +1250,7 @@ class Study(object):
             data = self.filter_splicing_on_expression(expression_thresh)
             data = data.ix[sample_ids, :]
             self.splicing.plot_lavalamp_pooled_inconsistent(data,
-                                                            feature_ids,
-                                                            fraction_diff_thresh,
-                                                            color=color)
+                feature_ids, fraction_diff_thresh, color=color)
 
     def percent_pooled_inconsistent(
             self, sample_subset=None, feature_subset=None,
@@ -1269,7 +1270,9 @@ class Study(object):
                                                          feature_subset=feature_subset)
 
         celltype_and_sample_ids = celltype_groups.groups.iteritems()
-        percents = pd.Series(celltype_groups.groups.keys())
+        index = pd.MultiIndex.from_product([celltype_groups.groups.keys(),
+                                            ['n_events', 'percent']])
+        percents = pd.Series(index=index)
         for i, (phenotype, sample_ids) in enumerate(celltype_and_sample_ids):
             # import pdb; pdb.set_trace()
 
@@ -1281,14 +1284,73 @@ class Study(object):
                 continue
             data = self.filter_splicing_on_expression(expression_thresh)
             data = data.ix[sample_ids, :]
-            singles, pooled, not_measured_in_pooled, pooled_inconsistent = \
-                self.splicing.pooled_inconsistent(data, feature_ids,
+            if not data.empty:
+                singles, pooled, not_measured_in_pooled, pooled_inconsistent =\
+                    self.splicing.pooled_inconsistent(data, feature_ids,
                                                   fraction_diff_thresh)
-            percent = self._percent_pooled_inconsistent(pooled,
-                                                        pooled_inconsistent)
-            percents[phenotype] = percent
+                percent = self.splicing._divide_inconsistent_and_pooled(pooled,
+                                                            pooled_inconsistent)
+            else:
+                percent = np.nan
+            percents[phenotype, 'percent'] = percent
+            percents[phenotype, 'n_events'] = data.shape[1]
         return percents
 
+    def expression_vs_inconsistent_splicing(self, bins=None):
+        """Percentage of events inconsistent with pooled at expression threshs
+
+        Parameters
+        ----------
+        bins : list-like
+            List of expression cutoffs
+
+        Returns
+        -------
+        expression_vs_inconsistent : pd.DataFrame
+            A (len(bins), n_phenotypes) dataframe of the percentage of events
+            in single cells that are inconsistent with pooled
+        """
+
+        if bins is None:
+            emin = int(np.floor(self.expression.data_original.min().min()))
+            emax = int(np.ceil(self.expression.data_original.max().max()))
+            bins = np.arange(emin, emax)
+
+        expression_vs_inconsistent = pd.Series(bins).apply(
+            lambda x: self.percent_pooled_inconsistent(expression_thresh=x))
+        return expression_vs_inconsistent
+
+    def plot_expression_vs_inconsistent_splicing(self, bins=None):
+
+        expression_vs_inconsistent = self.expression_vs_inconsistent_splicing(
+            bins=bins)
+
+        fig, axes = plt.subplots(nrows=2, figsize=(6, 6))
+
+        # Plot the percent inconsistent
+        ax = axes[0]
+        for phenotype in self.phenotype_order:
+            s = expression_vs_inconsistent[(phenotype, 'percent')]
+            color = self.phenotype_to_color[phenotype]
+            ax.plot(s, 'o-', color=color)
+        ax.set_xlabel('Expression threshold')
+        ax.set_ylabel('Percent events inconsistent with pooled')
+        ymin, ymax = ax.get_ylim()
+        ax.set_ylim(0, ymax)
+
+        # Plot number of events at each cutoff
+        ax = axes[1]
+        for phenotype in self.phenotype_order:
+            s = expression_vs_inconsistent[(phenotype, 'n_events')]
+            color = self.phenotype_to_color[phenotype]
+            ax.plot(s, 'o-', color=color)
+        ax.set_xlabel('Expression threshold')
+        ax.set_ylabel('Number of events')
+        ymin, ymax = ax.get_ylim()
+        ax.set_ylim(0, ymax)
+        ax.legend()
+
+        sns.despine()
 
     def plot_clustermap(self, sample_subset=None, feature_subset=None,
                         data_type='expression', metric='euclidean',
@@ -1617,8 +1679,9 @@ class Study(object):
                                       flotilla_dir=flotilla_dir)
 
     @staticmethod
-    def _maybe_get_axis_name(df, axis=0):
-        alt_name = 'columns' if axis == 1 else 'index'
+    def _maybe_get_axis_name(df, axis=0, alt_name=None):
+        if alt_name is None:
+            alt_name = 'columns' if axis == 1 else 'index'
         axis = df.columns if axis == 1 else df.index
         if isinstance(axis, pd.MultiIndex):
             name = axis.names
@@ -1635,9 +1698,6 @@ class Study(object):
         :rtype:
         """
         # Establish common strings
-        common_id = 'common_id'
-        sample_id = 'sample_id'
-        event_name = 'event_name'
 
         splicing_common_id = self.splicing.feature_data[
             self.splicing.feature_expression_id_col]
@@ -1653,22 +1713,22 @@ class Study(object):
                                 var_name=splicing_columns_name)
         rename_columns = {}
         if splicing_index_name == 'index':
-            rename_columns[splicing_index_name] = sample_id
+            rename_columns[splicing_index_name] = self._sample_id
         if splicing_columns_name == 'columns':
-            rename_columns[splicing_columns_name] = event_name
-            splicing_columns_name = event_name
+            rename_columns[splicing_columns_name] = self._event_name
+            splicing_columns_name = self._event_name
         splicing_tidy = splicing_tidy.rename(columns=rename_columns)
 
         # Create a column of the common id on which to join splicing
         # and expression
         splicing_names = splicing_tidy[splicing_columns_name]
         if isinstance(splicing_names, pd.Series):
-            splicing_tidy[common_id] = splicing_tidy[
+            splicing_tidy[self._common_id] = splicing_tidy[
                 splicing_columns_name].map(splicing_common_id)
         else:
             # Splicing ids are a multi-index, so the feature renamer will get
             # the name of the feature.
-            splicing_tidy[common_id] = [
+            splicing_tidy[self._common_id] = [
                 self.splicing.feature_renamer(x)
                 for x in splicing_names.itertuples(index=False)]
 
@@ -1682,15 +1742,14 @@ class Study(object):
         expression_tidy = pd.melt(expression.reset_index(),
                                   id_vars=expression_index_name,
                                   value_name='expression',
-                                  var_name=common_id)
+                                  var_name=self._common_id)
         # This will only do anything if there is a column named "index" so
         # no need to check anything
-        expression_tidy = expression_tidy.rename(columns={'index': sample_id})
+        expression_tidy = expression_tidy.rename(columns={'index': self._sample_id})
         expression_tidy = expression_tidy.dropna()
 
-        splicing_tidy.set_index([sample_id, common_id], inplace=True)
-        expression_tidy.set_index([sample_id, common_id], inplace=True)
-
+        splicing_tidy.set_index([self._sample_id, self._common_id], inplace=True)
+        expression_tidy.set_index([self._sample_id, self._common_id], inplace=True)
         return splicing_tidy.join(expression_tidy, how='inner').reset_index()
 
     def filter_splicing_on_expression(self, expression_thresh,
@@ -1710,16 +1769,29 @@ class Study(object):
             A (n_samples, n_features)
 
         """
-        sample_ids = self.sample_subset_to_sample_ids(sample_subset)
-        splicing_with_expression = \
-            self.tidy_splicing_with_expression.ix[
-                self.tidy_splicing_with_expression.sample_id.isin(sample_ids)]
-        ind = splicing_with_expression.expression >= expression_thresh
-        splicing_high_expression = splicing_with_expression.ix[ind]
-        splicing_high_expression = splicing_high_expression.reset_index().dropna()
-        filtered_psi = splicing_high_expression.pivot(
-            columns='miso_id', index='sample_id', values='psi')
-        return filtered_psi
+
+        if expression_thresh > -np.inf \
+                and expression_thresh > self.expression.data_original.min().min():
+            columns = self._maybe_get_axis_name(self.splicing.data, axis=1, alt_name=self._event_name)
+            index = self._maybe_get_axis_name(self.splicing.data, axis=0, alt_name=self._sample_id)
+
+            sample_ids = self.sample_subset_to_sample_ids(sample_subset)
+            splicing_with_expression = \
+                self.tidy_splicing_with_expression.ix[
+                    self.tidy_splicing_with_expression.sample_id.isin(sample_ids)]
+            ind = splicing_with_expression.expression >= expression_thresh
+            splicing_high_expression = splicing_with_expression.ix[ind]
+            splicing_high_expression = splicing_high_expression.reset_index().dropna()
+
+            if isinstance(columns, list) or isinstance(index, list):
+                filtered_psi = splicing_high_expression.pivot_table(
+                    columns=columns, index=index, values='psi')
+            else:
+                filtered_psi = splicing_high_expression.pivot(
+                    columns=columns, index=index, values='psi')
+            return filtered_psi
+        else:
+            return self.splicing.data
 
 
 # Add interactive visualizations

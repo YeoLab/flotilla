@@ -66,6 +66,7 @@ def assignments(sqrt_jsds):
     """
     return sqrt_jsds.idxmin(axis=0)
 
+
 def sqrt_jsd_modalities(binned, true_modalities):
     """Calculate JSD between all binned splicing events and true modalities
 
@@ -222,7 +223,6 @@ class Modalities(object):
                 x, data, self.bins, self.true_modalities, min_samples)
             for x in bs)
 
-        # import pdb; pdb.set_trace()
         assignments = pd.concat(results, axis=1).T
         counts = assignments.apply(lambda x: pd.Series(
             collections.Counter(x.dropna())))
