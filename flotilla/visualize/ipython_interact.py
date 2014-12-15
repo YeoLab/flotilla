@@ -10,6 +10,7 @@ from IPython.html.widgets import interact, TextWidget, ButtonWidget
 import matplotlib.pyplot as plt
 
 
+
 # from ..compute.predict import default_classifier
 from ..visualize.color import red
 from .network import NetworkerViz
@@ -104,7 +105,8 @@ class Interactive(object):
                         show_point_labels=False,
                         color_samples_by=self.metadata.phenotype_col,
                         bokeh=False,
-                        most_variant_features=False):
+                        most_variant_features=False,
+                        std_multiplier=(0, 5.0)):
             for k, v in locals().iteritems():
                 if k == 'self':
                     continue
@@ -134,7 +136,7 @@ class Interactive(object):
                                  feature_subset=feature_subset,
                                  plot_violins=plot_violins,
                                  color_samples_by=color_samples_by,
-                                 bokeh=bokeh,
+                                 bokeh=bokeh, std_multiplier=std_multiplier,
                                  most_variant_features=most_variant_features)
 
         # self.plot_study_sample_legend()

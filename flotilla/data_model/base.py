@@ -528,6 +528,7 @@ class BaseData(object):
                                       label_to_marker=None, order=None,
                                       reduce_kwargs=None, title='',
                                       most_variant_features=False,
+                                      std_multiplier=2,
                                       **plotting_kwargs):
         """Principal component-like analysis of measurements
 
@@ -894,7 +895,7 @@ class BaseData(object):
                reducer=DataFramePCA,
                standardize=True,
                reducer_kwargs=None, bins=None,
-               most_variant_features=False):
+               most_variant_features=False, std_multiplier=2):
         """Make and memoize a reduced dimensionality representation of data
 
         Parameters
@@ -933,7 +934,7 @@ class BaseData(object):
                                                      return_means=True)
         if most_variant_features:
             var = subset.var()
-            ind = var > (var.mean() + 2*var.std())
+            ind = var >= (var.mean() + std_multiplier*var.std())
             subset = subset.ix[:, ind]
             means = means[ind]
 
