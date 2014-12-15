@@ -201,7 +201,7 @@ class DecompositionViz(object):
                  markersize=10, legend=True, bokeh=False, metadata=None):
 
         if bokeh:
-            self._plot_bokeh(title, metadata=metadata)
+            self._plot_bokeh(metadata, title)
         else:
             gs_x = 14
             gs_y = 12
