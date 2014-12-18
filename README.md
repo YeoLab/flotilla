@@ -89,7 +89,8 @@ Now at the beginning of your terminal prompt, you should see:
     (flotilla_env)
 
 Which indicates that you are now in the `flotilla_env` virtual environment. Now
- that you're in the environment, follow along with 
+ that you're in the environment, follow along with the non-sandbox
+installation instructions.
 
 ### Non-sandbox install
 
