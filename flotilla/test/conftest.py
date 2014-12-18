@@ -2,91 +2,121 @@
 This file will be auto-imported for every testing session, so you can use
 these objects and functions across test files.
 """
-import os
 import subprocess
 
 import numpy as np
 import pytest
 import pandas as pd
+from scipy import stats
 
 
-CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
-SHALEK2013_BASE_URL = 'http://raw.githubusercontent.com/YeoLab/shalek2013/master'
-# SHALEK2013_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects/shalek2013'
-CHR22_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22'
+# CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
+# SHALEK2013_BASE_URL = 'http://raw.githubusercontent.com/YeoLab/shalek2013/master'
+# # SHALEK2013_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects/shalek2013'
+# CHR22_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22'
 
 @pytest.fixture(scope='module')
 def RANDOM_STATE():
     return 0
 
-class ExampleData(object):
-    __slots__ = ('metadata', 'expression', 'splicing', 'data')
-
-    def __init__(self, metadata, expression, splicing):
-        self.metadata = metadata
-        self.expression = expression
-        self.splicing = splicing
-        self.data = (metadata, expression, splicing)
-
+@pytest.fixture(scope='module', params=[True, False])
+def BOOLEAN(request):
+    return request.param
 
 @pytest.fixture(scope='module')
-def data_dir():
-    return '{}/example_data'.format(CURRENT_DIR.rstrip('/'))
+def n_samples():
+    return 50
 
 @pytest.fixture(scope='module')
-def shalek2013_data():
-    expression = pd.read_csv('{}/expression.csv'.format(SHALEK2013_BASE_URL),
-                             index_col=0)
-    splicing = pd.read_csv('{}/splicing.csv'.format(SHALEK2013_BASE_URL),
-                           index_col=0, header=[0, 1])
-    metadata = pd.read_csv('{}/metadata.csv'.format(SHALEK2013_BASE_URL),
-                           index_col=0)
-    return ExampleData(metadata, expression, splicing)
+def samples(n_samples):
+    return ['sample_{}'.format(i+1) for i in np.arange(n_samples)]
 
+@pytest.fixture(scope='module', params=[2, 3])
+def n_groups(request):
+    return request.param
 
 @pytest.fixture(scope='module')
-def toy_study(shalek2013_data):
-    from flotilla import Study
-
-    return Study(sample_metadata=shalek2013_data.metadata,
-                 version='0.1.0',
-                 expression_data=shalek2013_data.expression,
-                 splicing_data=shalek2013_data.splicing)
-
+def groups(n_groups):
+    return ['group{}'.format(i+1) for i in np.arange(n_groups)]
 
 @pytest.fixture(scope='module')
-def shalek2013_datapackage_path():
-    return os.path.join(SHALEK2013_BASE_URL, 'datapackage.json')
+def n_genes():
+    return 50
 
 @pytest.fixture(scope='module')
-def shalek2013_datapackage(shalek2013_datapackage_path):
-    from flotilla.datapackage import datapackage_url_to_dict
-
-    return datapackage_url_to_dict(shalek2013_datapackage_path)
-
+def genes(n_genes):
+    return ['gene_{}'.format(i+1) for i in np.arange(n_genes)]
 
 @pytest.fixture(scope='module')
-def expression(shalek2013_data):
-    from flotilla.data_model import ExpressionData
-
-    return ExpressionData(shalek2013_data.expression)
-
+def n_events():
+    return 1000
 
 @pytest.fixture(scope='module')
-def shalek2013():
-    import flotilla
-
-    return flotilla.embark(flotilla._shalek2013)
+def events(n_events):
+    return ['event_{}'.format(i+1) for i in np.arange(n_events)]
 
 @pytest.fixture(scope='module')
-def scrambled_study():
-    import flotilla
+def groupby(groups, samples):
+    return dict((sample, np.random.choice(groups)) for sample in samples)
 
-    return flotilla.embark(flotilla._test_data)
+@pytest.fixture(scope='module')
+def modality_models():
+    rv_included = stats.beta(2, 1)
+    rv_excluded = stats.beta(1, 2)
+    rv_middle = stats.beta(2, 2)
+    rv_uniform = stats.uniform(0, 1)
+    rv_bimodal = stats.beta(.5, .5)
+
+    models = {'included': rv_included,
+              'excluded': rv_excluded,
+              'middle': rv_middle,
+              'uniform': rv_uniform,
+              'bimodal': rv_bimodal}
+    return models
+
+@pytest.fixture(scope='module', params=[0, 0.5, 0.75, 1])
+def na_thresh(request):
+    return request.param
+
+@pytest.fixture(scope='module')
+def true_modalities(events, modality_models, groups, na_thresh):
+    data = dict((e, dict((g, (np.random.choice(modality_models.keys())))
+                         for g in groups)) for e in events)
+    df = pd.DataFrame(data)
+    if na_thresh > 0:
+        df = df.apply(
+            lambda x: x.map(lambda i: i if np.random.uniform() >
+                                           np.random.uniform(0, na_thresh/10)
+            else np.nan), axis=1)
+    return df
+
+@pytest.fixture(scope='module')
+def splicing_data(samples, events, true_modalities, modality_models,
+                  na_thresh, groupby):
+    data = np.vstack(
+        [modality_models[m].rvs(n_samples) for m in true_modalities]).T
+    df = pd.DataFrame(data, index=samples, columns=events)
+    if na_thresh > 0:
+        df = df.apply(lambda x: x.map(
+            lambda i: i if np.random.uniform() >
+                           np.random.uniform(0, na_thresh)
+            else np.nan), axis=1)
+        df = pd.concat([d.apply(
+            lambda x: x if np.random.uniform() >
+                           np.random.uniform(0, na_thresh)
+            else pd.Series(np.nan, index=x.index), axis=1) for group, d in
+                   df.groupby(groupby)], axis=1)
+    return df
+
+@pytest.fixture(scope='module')
+def splicing_feature_data(events, genes):
+    df = pd.DataFrame(index=events)
+    df['gene_name'] = df.index.map(lambda x: np.random.choice(genes))
+    return df
 
 @pytest.fixture(scope='module',
                 params=['shalek2013', 'scrambled_study'])
-def test_study(request, shalek2013, scrambled_study):
+def study(request, shalek2013, scrambled_study):
     if request.param == 'shalek2013':
         return shalek2013
     if request.param == 'scrambled_study':
