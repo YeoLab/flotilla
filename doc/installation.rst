@@ -41,8 +41,8 @@ Which indicates that you are now in the ``flotilla_env`` virtual environment. No
 that you're in the environment, follow along with the non-sandbox
 installation instructions.
 
-Install all packages in your environment
-----------------------------------------
+Install and update all packages in your environment
+---------------------------------------------------
 
 To make sure you have the latest packages, on the command line in your
 terminal, enter this command:
