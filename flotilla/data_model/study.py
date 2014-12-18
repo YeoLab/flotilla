@@ -13,7 +13,7 @@ import pandas as pd
 import semantic_version
 import seaborn as sns
 
-from .metadata import MetaData, PHENOTYPE_COL, POOLED_COL
+from .metadata import MetaData, PHENOTYPE_COL, POOLED_COL, OUTLIER_COL
 from .expression import ExpressionData, SpikeInData
 from .quality_control import MappingStatsData, MIN_READS
 from .splicing import SplicingData, FRACTION_DIFF_THRESH
@@ -90,6 +90,7 @@ class Study(object):
                  metadata_phenotype_order=None,
                  metadata_phenotype_to_color=None,
                  metadata_phenotype_to_marker=None,
+                 metadata_outlier_col=OUTLIER_COL,
                  license=None, title=None, sources=None,
                  default_sample_subset="all_samples",
                  default_feature_subset="variant",
@@ -208,18 +209,19 @@ class Study(object):
             sample_metadata, metadata_phenotype_order,
             metadata_phenotype_to_color,
             metadata_phenotype_to_marker, pooled_col=metadata_pooled_col,
+            outlier_col=metadata_outlier_col,
             phenotype_col=metadata_phenotype_col,
             predictor_config_manager=self.predictor_config_manager)
 
         self.default_feature_subset = default_feature_subset
         self.default_sample_subset = default_sample_subset
 
-        if 'outlier' in self.metadata.data and drop_outliers:
+        if self.metadata.outlier_col in self.metadata.data and drop_outliers:
             outliers = self.metadata.data.index[
-                self.metadata.data.outlier.astype(bool)]
+                self.metadata.data[self.metadata.outlier_col].astype(bool)]
         else:
             outliers = None
-            self.metadata.data['outlier'] = False
+            self.metadata.data[self.metadata.outlier_col] = False
 
         # Get pooled samples
         pooled = None
@@ -1601,7 +1603,8 @@ class Study(object):
                             self.metadata.phenotype_to_color,
                         'phenotype_to_marker':
                             self.metadata.phenotype_to_marker,
-                        'minimum_samples': self.metadata.minimum_samples}
+                        'minimum_samples': self.metadata.minimum_samples,
+                        'outlier_col': self.metadata.outlier_col}
 
         try:
             expression = self.expression.data_original

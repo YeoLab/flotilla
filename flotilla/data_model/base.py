@@ -1055,7 +1055,8 @@ class BaseData(object):
                                                               feature_id])
         outliers = None
         try:
-            if not self.outliers.empty:
+            outliers_in_data = self.outliers.index.intersection(sample_ids)
+            if len(outliers_in_data) > 0:
                 outliers = self._subset(self.outliers,
                                         feature_ids=[feature_id])
         except AttributeError:
@@ -1093,7 +1094,8 @@ class BaseData(object):
                      phenotype_groupby=None,
                      phenotype_order=None, color=None,
                      phenotype_to_color=None,
-                     phenotype_to_marker=None, nmf_xlabel=None, nmf_ylabel=None,
+                     phenotype_to_marker=None, nmf_xlabel=None,
+                     nmf_ylabel=None,
                      nmf_space=False, fig=None, axesgrid=None):
         """
         Plot the violinplot of a feature. Have the option to show NMF movement
