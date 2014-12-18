@@ -131,15 +131,20 @@ Old OSX Installation instructions
 -  Go back to the real world
 
 .. code::
-   ``source deactivate``
+
+   source deactivate
 
 -  switch to virtual environment
 
-   ``source activate flotilla_env``
+.. code::
+
+   source activate flotilla_env
 
 -  start an ipython notebook:
 
-   ``ipython notebook --notebook-dir=~/flotilla_scratch``
+.. code::
+
+   ipython notebook --notebook-dir=~/flotilla_scratch
 
 -  create a new notebook by clicking ``New Notebook``
 -  rename your notebook from "Untitled" to something more informative by
