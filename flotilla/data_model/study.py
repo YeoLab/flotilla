@@ -1610,7 +1610,7 @@ class Study(object):
             expression = self.expression.data_original
             expression_kws = {
                 'log_base': self.expression.log_base,
-                'thresh': self.expression.thresh,
+                'thresh': self.expression.thresh_original,
                 'plus_one': self.expression.plus_one}
         except AttributeError:
             expression = None

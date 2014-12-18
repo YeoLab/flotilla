@@ -33,12 +33,12 @@ class ExpressionData(BaseData):
             outliers=outliers, pooled=pooled, minimum_samples=minimum_samples,
             predictor_config_manager=predictor_config_manager,
             technical_outliers=technical_outliers, data_type='expression')
-        self.thresh = thresh
+        self.thresh_original = thresh
         self.plus_one = plus_one
 
         if plus_one:
             self.data += 1
-            self.thresh += 1
+            self.thresh = self.thresh_original + 1
         # self.original_data = self.data
         # import pdb; pdb.set_trace()
         # self.data = self._threshold(data, thresh)
