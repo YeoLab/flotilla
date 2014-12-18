@@ -12,6 +12,7 @@ from ..visualize.color import str_to_color
 POOLED_COL = 'pooled'
 PHENOTYPE_COL = 'phenotype'
 MINIMUM_SAMPLE_SUBSET = 10
+OUTLIER_COL = 'outlier'
 
 # Any informational data goes here
 
@@ -20,6 +21,7 @@ class MetaData(BaseData):
                  phenotype_to_marker=None,
                  phenotype_col=PHENOTYPE_COL,
                  pooled_col=POOLED_COL,
+                 outlier_col=OUTLIER_COL,
                  predictor_config_manager=None,
                  minimum_sample_subset=MINIMUM_SAMPLE_SUBSET):
         super(MetaData, self).__init__(data, outliers=None,
@@ -31,6 +33,7 @@ class MetaData(BaseData):
         self.phenotype_to_color = phenotype_to_color
         self.pooled_col = pooled_col
         self.minimum_sample_subset = minimum_sample_subset
+        self.outlier_col = outlier_col
 
         phenotypes_not_in_order = set(self.unique_phenotypes).difference(
             set(self.phenotype_order))
