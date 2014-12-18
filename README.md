@@ -5,10 +5,6 @@ flotilla
 
 ![flotilla Logo](flotilla.png)
 
-Getting flotilla
-================
-
-Instructions for the best way to obtain `flotilla` are [here](INSTALL.md).
 
 What is flotilla?
 =================
@@ -55,7 +51,71 @@ Please refer to our [talks](talks.md) to learn more
  about how you can
 apply our tools to your data.
 
-Quick Start:
+
+Installation
+============
+
+Docker Installation Instructions
+--------------------------------
+
+[Docker](https://www.docker.com/whatisdocker/) is the preferred method to obtain the most up-to-date
+version of `flotilla`. Every change we make to the source code triggers a new build of a virtual
+ machine that contains flotilla and all its dependencies.
+ 
+Please follow instructions [here](docker/docker_instructions.md) to get, install, and run the `flotilla` image.
+
+Local install (on your computer)
+--------------------------------
+
+To install, first install the 
+[Anaconda Python Distribution](http://continuum.io/downloads), which comes
+pre-packaged with a bunch of the scientific packages we use all the time, 
+pre-installed.
+
+### Flotilla sandbox
+    
+We recommend creating a "sandbox" where you can install any and all packages
+without disturbing the rest of the Python distribution. You can do this with
+
+    conda create --yes flotilla_env pip numpy scipy cython matplotlib nose six scikit-learn ipython networkx pandas tornado statsmodels setuptools pytest pyzmq jinja2 pyyaml
+
+You've now just created a "virtual environment" called `flotilla_env` (the first
+argument). Now activate that environment with,
+
+    source activate flotilla_env
+
+Now at the beginning of your terminal prompt, you should see:
+
+    (flotilla_env)
+
+Which indicates that you are now in the `flotilla_env` virtual environment. Now
+ that you're in the environment, follow along with 
+
+### Non-sandbox install
+
+To make sure you have the latest packages, on the command line in your 
+terminal, enter this command:
+
+    conda update --yes pip numpy scipy cython matplotlib nose six scikit-learn ipython networkx pandas tornado statsmodels setuptools pytest pyzmq jinja2 pyyaml
+
+Not all packages are available using `conda`, so we'll install the rest using
+`pip`, which is a Python package installer and installs from 
+[PyPI](https://pypi.python.org/), the Python Package Index.
+
+    pip install seaborn fastcluster brewer2mpl pymongo gspread husl semantic_version joblib
+    
+Next, to install the latest release of `flotilla`, do
+
+    pip install flotilla
+    
+If you want the bleeding-edge master version (that we work really hard to make
+sure it's always working but could be buggy!), then install the `git` master
+with,
+
+    pip install git+git://github.com/yeolab/flotilla.git
+
+
+Test dataset
 ============
 
 We have prepared a slice of the full dataset for testing and demonstration purposes.
@@ -63,15 +123,15 @@ We have prepared a slice of the full dataset for testing and demonstration purpo
 Run each of the following code lines in its own ipython notebook cell for an interactive feature.
 
     import flotilla
-    test_study = flotilla.embark(flotilla._shalek2013)
+    study = flotilla.embark(flotilla._shalek2013)
 
-    test_study.interactive_pca()
+    study.interactive_pca()
 
-    test_study.interactive_graph()
+    study.interactive_graph()
 
-    test_study.interactive_classifier()
+    study.interactive_classifier()
 
-    test_study.interactive_lavalamp_pooled_inconsistent()
+    study.interactive_lavalamp_pooled_inconsistent()
 
 IMPORTANT NOTE: for this test,several failures are expected since the test set is small.
 Adjust parameters to explore valid parameter spaces.
