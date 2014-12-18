@@ -72,7 +72,7 @@ To install, first install the
 pre-packaged with a bunch of the scientific packages we use all the time, 
 pre-installed.
 
-### Flotilla sandbox
+### Create a Flotilla sandbox
     
 We recommend creating a "sandbox" where you can install any and all packages
 without disturbing the rest of the Python distribution. You can do this with
@@ -92,7 +92,7 @@ Which indicates that you are now in the `flotilla_env` virtual environment. Now
  that you're in the environment, follow along with the non-sandbox
 installation instructions.
 
-### Non-sandbox install
+### Install and update all packages in your environment
 
 To make sure you have the latest packages, on the command line in your 
 terminal, enter this command:
