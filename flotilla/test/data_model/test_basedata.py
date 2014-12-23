@@ -1,6 +1,8 @@
 import numpy as np
 import numpy.testing as npt
+import pandas as pd
 import pandas.util.testing as pdt
+from sklearn.preprocessing import StandardScaler
 
 # @pytest.fixture(params=['expression', 'splicing'])
 # def data_type(request):
@@ -41,18 +43,24 @@ class TestBaseData:
                              thresh=expression_thresh,
                              minimum_samples=metadata_minimum_samples,
                              feature_rename_col=expression_feature_rename_col)
+        data = expression_data
         if expression_thresh > -np.inf or metadata_minimum_samples > 0:
             data = base_data._threshold(expression_data)
+
+        if expression_feature_rename_col is not None:
+            feature_renamer_series = expression_feature_data[
+                expression_feature_rename_col]
+        else:
+            feature_renamer_series = pd.Series(expression_feature_data.index,
+                                               index=expression_feature_data.index)
 
         pdt.assert_frame_equal(base_data.data_original, expression_data)
         pdt.assert_frame_equal(base_data.feature_data, expression_feature_data)
         pdt.assert_frame_equal(base_data.data, data)
-        pdt.assert_frame_equal(base_data.feature_renamer_series,
-                               )
+        pdt.assert_series_equal(base_data.feature_renamer_series,
+                               feature_renamer_series)
 
-    def test_subset(self, base_data, sample_ids, feature_ids):
-        import pandas as pd
-
+    def test__subset(self, base_data, sample_ids, feature_ids):
         subset = base_data._subset(base_data.data, sample_ids=sample_ids,
                                    feature_ids=feature_ids)
 
@@ -72,8 +80,7 @@ class TestBaseData:
 
     def test__subset_and_standardize(self, base_data, standardize, feature_ids,
                                      sample_ids):
-        from sklearn.preprocessing import StandardScaler
-        import pandas as pd
+
 
         base_data.subset, base_data.means = \
             base_data._subset_and_standardize(base_data.data,
@@ -100,11 +107,11 @@ class TestBaseData:
         pdt.assert_series_equal(means, base_data.means)
 
 
-    def test_reduce(self, shalek2013_data, featurewise):
+    def test_reduce(self, expression_data, featurewise):
         # TODO: parameterize and test with featurewise and subsets
         from flotilla.compute.decomposition import DataFramePCA
         from flotilla.data_model.base import BaseData
-        expression = BaseData(shalek2013_data.expression)
+        expression = BaseData(expression_data)
         test_reduced = expression.reduce(featurewise=featurewise)
 
         subset, means = expression._subset_and_standardize(
