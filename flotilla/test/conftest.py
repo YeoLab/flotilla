@@ -109,6 +109,7 @@ def true_modalities(events, modality_models, groups):
                          for g in groups)) for e in events)
     return pd.DataFrame(data)
 
+
 @pytest.fixture(scope='module')
 def expression_data(samples, genes, groupby, na_thresh):
     df = pd.DataFrame(index=samples, columns=genes)
