@@ -273,7 +273,7 @@ def switchy_score(array):
 
     Returns
     -------
-    float
+    switchy_score : float
         The "switchy score" of the study_data which can then be compared to
         other splicing event study_data
 
@@ -294,7 +294,7 @@ def get_switchy_score_order(x):
 
     Returns
     -------
-    numpy.array
+    score_order : numpy.array
         A 1-D array of the ordered indices, in switchy score order
     """
     switchy_scores = np.apply_along_axis(switchy_score, axis=0, arr=x)
