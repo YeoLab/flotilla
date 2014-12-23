@@ -19,10 +19,6 @@ from scipy import stats
 def RANDOM_STATE():
     return 0
 
-@pytest.fixture(scope='module', params=[True, False])
-def BOOLEAN(request):
-    return request.param
-
 @pytest.fixture(scope='module')
 def n_samples():
     return 50
@@ -79,23 +75,95 @@ def na_thresh(request):
     return request.param
 
 @pytest.fixture(scope='module')
-def true_modalities(events, modality_models, groups, na_thresh):
+def gene_name():
+    return 'gene_name'
+
+@pytest.fixture(scope='module')
+def event_name():
+    return 'event_name'
+
+@pytest.fixture(scope='module')
+def gene_categories():
+    return list('ABCDE')
+
+@pytest.fixture(scope='module')
+def boolean_gene_categories():
+    return list('WXYZ')
+
+@pytest.fixture(scope='module', params=[False, True])
+def pooled(request):
+    return request.param
+
+@pytest.fixture(scope='module', params=[False, True])
+def outlier(request):
+    return request.param
+
+@pytest.fixture(scope='module', params=[False, True])
+def renamed(request):
+    return request.param
+
+@pytest.fixture(scope='module')
+def true_modalities(events, modality_models, groups):
     data = dict((e, dict((g, (np.random.choice(modality_models.keys())))
                          for g in groups)) for e in events)
-    df = pd.DataFrame(data)
+    return pd.DataFrame(data)
+
+@pytest.fixture(scope='module')
+def expression_data(samples, genes, groupby, na_thresh):
+    df = pd.DataFrame(index=samples, columns=genes)
+    df = pd.concat([pd.DataFrame(np.vstack([
+        np.random.lognormal(np.random.uniform(0, 5), np.random.uniform(0, 2),
+                            df.shape[0]) for _ in df.columns]).T,
+                            index=df.index, columns=df.columns) for name, df in
+               df.groupby(groupby)]).sort_index()
     if na_thresh > 0:
-        df = df.apply(
-            lambda x: x.map(lambda i: i if np.random.uniform() >
-                                           np.random.uniform(0, na_thresh/10)
+        df = df.apply(lambda x: x.map(
+            lambda i: i if np.random.uniform() >
+                           np.random.uniform(0, na_thresh)
             else np.nan), axis=1)
     return df
 
 @pytest.fixture(scope='module')
+def expression_feature_data(genes, gene_categories,
+                            boolean_gene_categories, renamed):
+    df = pd.DataFrame(index=genes)
+    if renamed:
+        df['renamed'] = df.index.map(lambda x: x.replace('gene', 'renamed'))
+    df['gene_category'] = df.index.map(lambda x:
+                                       np.random.choice(gene_categories))
+    for category in boolean_gene_categories:
+        p = np.random.uniform()
+        df[category] = np.random.choice([True, False], size=df.shape[0], p=p)
+    return df
+
+@pytest.fixture(scope='module')
+def expression_feature_rename_col(renamed):
+    if renamed:
+        return 'renamed'
+    else:
+        return None
+
+@pytest.fixture(scope='module', params=[None, 2, 10])
+def expression_log_base(request):
+    return request.param
+
+@pytest.fixture(scope='module', params=[True, False])
+def expression_plus_one(request):
+    return request.param
+
+@pytest.fixture(scope='module', params=[-np.inf, 0, 2])
+def expression_plus_one(request):
+    return request.param
+
+@pytest.fixture(scope='module')
 def splicing_data(samples, events, true_modalities, modality_models,
                   na_thresh, groupby):
-    data = np.vstack(
-        [modality_models[m].rvs(n_samples) for m in true_modalities]).T
-    df = pd.DataFrame(data, index=samples, columns=events)
+    df = pd.DataFrame(index=samples, columns=events)
+    df = pd.concat([pd.DataFrame(
+        np.vstack([modality_models[modality].rvs(df.shape[0])
+                   for modality in true_modalities.ix[group]]).T,
+                            index=df.index, columns=df.columns)
+               for group, df in df.groupby(groupby)])
     if na_thresh > 0:
         df = df.apply(lambda x: x.map(
             lambda i: i if np.random.uniform() >
@@ -103,19 +171,26 @@ def splicing_data(samples, events, true_modalities, modality_models,
             else np.nan), axis=1)
         df = pd.concat([d.apply(
             lambda x: x if np.random.uniform() >
-                           np.random.uniform(0, na_thresh)
+                           np.random.uniform(0, na_thresh/10)
             else pd.Series(np.nan, index=x.index), axis=1) for group, d in
                    df.groupby(groupby)], axis=1)
     return df
 
 @pytest.fixture(scope='module')
-def splicing_feature_data(events, genes):
+def splicing_feature_data(events, genes, gene_name, expression_feature_data,
+                          splicing_feature_common_id,
+                          renamed):
     df = pd.DataFrame(index=events)
-    df['gene_name'] = df.index.map(lambda x: np.random.choice(genes))
+    df[gene_name] = df.index.map(lambda x: np.random.choice(genes))
+    df = df.join(expression_feature_data, on=splicing_feature_common_id)
     return df
 
-@pytest.fixture(scope='module',
-                params=['shalek2013', 'scrambled_study'])
+@pytest.fixture(scope='module')
+def splicing_feature_common_id(gene_name):
+    return gene_name
+
+
+@pytest.fixture(scope='module')
 def study(request, shalek2013, scrambled_study):
     if request.param == 'shalek2013':
         return shalek2013
@@ -142,7 +217,7 @@ def genelist_link(request, genelist_path, genelist_dropbox_link):
         return genelist_dropbox_link
 
 
-@pytest.fixture(params=[None, 'gene_category: LPS Response',
+@pytest.fixture(params=[None, 'gene_category: A',
                         'link',
                         'path'], scope='module')
 def feature_subset(request, genelist_dropbox_link, genelist_path):
@@ -190,7 +265,7 @@ def df_nonneg(df_norm):
     return df_norm.abs()
 
 @pytest.fixture(scope='module', params=[0, 5])
-def minimum_samples(request):
+def metadata_minimum_samples(request):
     return request.param
 
 @pytest.fixture(params=[True, False])
