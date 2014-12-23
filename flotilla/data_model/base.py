@@ -276,9 +276,13 @@ class BaseData(object):
     @cached_property()
     def feature_renamer_series(self):
         """A pandas Series of the original feature ids to the renamed ids"""
-        try:
-            return self.feature_data[self.feature_rename_col].dropna()
-        except (TypeError, ValueError):
+        if self.feature_data is not None:
+            if self.feature_rename_col is not None:
+                return self.feature_data[self.feature_rename_col].dropna()
+            else:
+                return pd.Series(self.feature_data.index,
+                                 index=self.feature_data.index)
+        else:
             return pd.Series(self.data.columns.values,
                              index=self.data.columns)
 
