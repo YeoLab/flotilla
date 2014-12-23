@@ -37,7 +37,7 @@ def groups(n_groups):
 
 @pytest.fixture(scope='module')
 def n_genes():
-    return 50
+    return 500
 
 @pytest.fixture(scope='module')
 def genes(n_genes):
@@ -57,11 +57,12 @@ def groupby(groups, samples):
 
 @pytest.fixture(scope='module')
 def modality_models():
-    rv_included = stats.beta(2, 1)
-    rv_excluded = stats.beta(1, 2)
-    rv_middle = stats.beta(2, 2)
+    parameter = 20.
+    rv_included = stats.beta(parameter, 1)
+    rv_excluded = stats.beta(1, parameter)
+    rv_middle = stats.beta(parameter, parameter)
     rv_uniform = stats.uniform(0, 1)
-    rv_bimodal = stats.beta(.5, .5)
+    rv_bimodal = stats.beta(1./parameter, 1./parameter)
 
     models = {'included': rv_included,
               'excluded': rv_excluded,
@@ -133,7 +134,8 @@ def expression_feature_data(genes, gene_categories,
                                        np.random.choice(gene_categories))
     for category in boolean_gene_categories:
         p = np.random.uniform()
-        df[category] = np.random.choice([True, False], size=df.shape[0], p=p)
+        df[category] = np.random.choice([True, False], size=df.shape[0],
+                                        p=[p, 1-p])
     return df
 
 @pytest.fixture(scope='module')
@@ -152,7 +154,7 @@ def expression_plus_one(request):
     return request.param
 
 @pytest.fixture(scope='module', params=[-np.inf, 0, 2])
-def expression_plus_one(request):
+def expression_thresh(request):
     return request.param
 
 @pytest.fixture(scope='module')
@@ -273,9 +275,9 @@ def featurewise(request):
     return request.param
 
 @pytest.fixture(scope='module')
-def base_data(shalek2013_data):
+def base_data(expression_data):
     from flotilla.data_model.base import BaseData
-    return BaseData(shalek2013_data.expression)
+    return BaseData(expression_data)
 
 @pytest.fixture(params=[None, 'half', 'all'], scope='module')
 def sample_ids(request, base_data):
