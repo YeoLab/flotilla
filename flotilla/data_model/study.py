@@ -86,6 +86,7 @@ class Study(object):
                  gene_ontology_data=None,
                  predictor_config_manager=None,
                  metadata_pooled_col=POOLED_COL,
+                 metadata_minimum_samples=0,
                  metadata_phenotype_col=PHENOTYPE_COL,
                  metadata_phenotype_order=None,
                  metadata_phenotype_to_color=None,
@@ -93,8 +94,7 @@ class Study(object):
                  metadata_outlier_col=OUTLIER_COL,
                  license=None, title=None, sources=None,
                  default_sample_subset="all_samples",
-                 default_feature_subset="variant",
-                 metadata_minimum_samples=0):
+                 default_feature_subset="variant"):
         """Construct a biological study
 
         This class only accepts data, no filenames. All data must already
