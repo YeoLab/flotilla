@@ -3,6 +3,7 @@ import numpy.testing as npt
 import pandas as pd
 import pandas.util.testing as pdt
 from sklearn.preprocessing import StandardScaler
+import pytest
 
 # @pytest.fixture(params=['expression', 'splicing'])
 # def data_type(request):
@@ -59,6 +60,15 @@ class TestBaseData:
         pdt.assert_frame_equal(base_data.data, data)
         pdt.assert_series_equal(base_data.feature_renamer_series,
                                feature_renamer_series)
+
+    @pytest.mark.xfail
+    def test__init_multiindex(self, expression_data):
+        from flotilla.data_model.base import BaseData
+        data = expression_data.copy()
+        level1 = data.columns.map(lambda x: 'level1_{}'.format(x))
+        data.columns = pd.MultiIndex.from_arrays([data.columns, level1])
+
+        BaseData(data)
 
     def test__subset(self, base_data, sample_ids, feature_ids):
         subset = base_data._subset(base_data.data, sample_ids=sample_ids,
