@@ -175,21 +175,6 @@ class BaseData(object):
         self.feature_rename_col = feature_rename_col
         self.default_feature_sets = []
 
-        if isinstance(self.data.columns, pd.MultiIndex):
-            feature_ids, renamed = zip(*self.data.columns.values)
-            self.feature_rename_col = 'gene_name'
-            column = pd.Series(renamed, index=self.data.columns,
-                               name=self.feature_rename_col)
-            if self.feature_data is None:
-                self.feature_data = pd.DataFrame(column,
-                                                 index=self.data.columns)
-            else:
-                if self.feature_rename_col not in self.feature_data:
-                    self.feature_data = self.feature_data.join(column,
-                                                               rsuffix='_right')
-                    if self.feature_rename_col + '_right' in self.feature_data:
-                        self.feature_rename_col += '_right'
-
         if self.feature_data is not None and self.feature_rename_col is not \
                 None:
             self.feature_renamer = \
