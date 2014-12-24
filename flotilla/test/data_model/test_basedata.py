@@ -35,18 +35,24 @@ import pytest
 
 
 class TestBaseData:
-    def test_basedata_init(self, expression_data, expression_feature_data,
+    def test__init(self, expression_data, expression_feature_data,
                            expression_thresh, expression_feature_rename_col,
-                           metadata_minimum_samples):
+                           metadata_minimum_samples, technical_outliers):
         from flotilla.data_model.base import BaseData
         base_data = BaseData(expression_data,
                              feature_data=expression_feature_data,
                              thresh=expression_thresh,
                              minimum_samples=metadata_minimum_samples,
-                             feature_rename_col=expression_feature_rename_col)
-        data = expression_data
+                             feature_rename_col=expression_feature_rename_col,
+                             technical_outliers=technical_outliers)
+        data = expression_data.copy()
+        if technical_outliers is not None:
+            good_samples = ~data.index.isin(technical_outliers)
+            data = data.ix[good_samples]
+
         if expression_thresh > -np.inf or metadata_minimum_samples > 0:
-            data = base_data._threshold(expression_data)
+            data = base_data._threshold(data)
+
 
         if expression_feature_rename_col is not None:
             feature_renamer_series = expression_feature_data[
@@ -62,9 +68,9 @@ class TestBaseData:
                                feature_renamer_series)
 
     @pytest.mark.xfail
-    def test__init_multiindex(self, expression_data):
+    def test__init_multiindex(self, df_norm):
         from flotilla.data_model.base import BaseData
-        data = expression_data.copy()
+        data = df_norm.copy()
         level1 = data.columns.map(lambda x: 'level1_{}'.format(x))
         data.columns = pd.MultiIndex.from_arrays([data.columns, level1])
 
