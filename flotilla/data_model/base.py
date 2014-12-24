@@ -144,8 +144,9 @@ class BaseData(object):
 
         self.data = data
         self.data_original = self.data.copy()
-        self.thresh = thresh
-        self.minimum_samples = minimum_samples
+        self.thresh = thresh if thresh is not None else -np.inf
+        self.minimum_samples = minimum_samples if minimum_samples \
+                                                  is not None else 0
         self.data_type = data_type
         self.technical_outliers = technical_outliers
 
@@ -284,8 +285,8 @@ class BaseData(object):
                 return pd.Series(self.feature_data.index,
                                  index=self.feature_data.index)
         else:
-            return pd.Series(self.data.columns.values,
-                             index=self.data.columns)
+            return pd.Series(self.data_original.columns.values,
+                             index=self.data_original.columns)
 
     def maybe_renamed_to_feature_id(self, feature_id):
         """To be able to give a simple gene name, e.g. "RBFOX2" and get the
