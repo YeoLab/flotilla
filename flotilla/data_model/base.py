@@ -143,16 +143,17 @@ class BaseData(object):
                              'multi-indexed dataframes')
 
         self.data = data
-        self.data_original = self.data
+        self.data_original = self.data.copy()
         self.thresh = thresh
         self.minimum_samples = minimum_samples
         self.data_type = data_type
+        self.technical_outliers = technical_outliers
 
-        if technical_outliers is not None and len(technical_outliers) > 0:
+        if self.technical_outliers is not None and len(self.technical_outliers) > 0:
             sys.stderr.write("Removing technical outliers from consideration "
                              "in {0}:\n\t{1}\n".format(
-                self.data_type, ", ".join(technical_outliers)))
-            good_samples = ~self.data.index.isin(technical_outliers)
+                self.data_type, ", ".join(self.technical_outliers)))
+            good_samples = ~self.data.index.isin(self.technical_outliers)
             self.data = self.data.ix[good_samples]
 
         self.pooled_samples = pooled if pooled is not None else []
@@ -161,7 +162,7 @@ class BaseData(object):
             self.pooled_samples)]
 
         if self.thresh > -np.inf or self.minimum_samples > 0:
-            self.data_original = self.data.copy()
+            # self.data_original = self.data.copy()
             if not self.singles.empty:
                 self.data = self._threshold(self.data, self.singles)
             else:
