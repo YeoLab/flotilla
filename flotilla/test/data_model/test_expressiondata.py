@@ -2,7 +2,6 @@ import numpy as np
 import pandas.util.testing as pdt
 
 
-
 class TestExpressionData:
     def test_init(self, expression_data_no_groups,
                   expression_log_base,
