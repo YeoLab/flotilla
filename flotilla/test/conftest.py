@@ -27,15 +27,29 @@ def n_samples():
 def samples(n_samples):
     return ['sample_{}'.format(i+1) for i in np.arange(n_samples)]
 
+@pytest.fixture(scope='module')
+def technical_outliers(n_samples, samples):
+    return np.random.choice(samples,
+                            size=np.random.randint(1, int(n_samples/10.)),
+                            replace=False)
+
 @pytest.fixture(scope='module', params=[True, False])
-def technical_outliers(request, n_samples, samples):
+def pooled(request, n_samples, samples):
     if request.param:
         return np.random.choice(samples,
-                                size=np.random.randint(int(n_samples/10.)),
+                                size=np.random.randint(1, int(n_samples/10.)),
                                 replace=False)
     else:
         return None
 
+@pytest.fixture(scope='module', params=[True, False])
+def outliers(request, n_samples, samples):
+    if request.param:
+        return np.random.choice(samples,
+                                size=np.random.randint(1, int(n_samples/10.)),
+                                replace=False)
+    else:
+        return None
 
 @pytest.fixture(scope='module', params=[2, 3])
 def n_groups(request):
@@ -81,7 +95,7 @@ def modality_models():
               'bimodal': rv_bimodal}
     return models
 
-@pytest.fixture(scope='module', params=[0, 0.5, 0.75, 1])
+@pytest.fixture(scope='module', params=[0, 1])
 def na_thresh(request):
     return request.param
 
@@ -101,13 +115,13 @@ def gene_categories():
 def boolean_gene_categories():
     return list('WXYZ')
 
-@pytest.fixture(scope='module', params=[False, True])
-def pooled(request):
-    return request.param
-
-@pytest.fixture(scope='module', params=[False, True])
-def outlier(request):
-    return request.param
+# @pytest.fixture(scope='module', params=[False, True])
+# def pooled(request):
+#     return request.param
+#
+# @pytest.fixture(scope='module', params=[False, True])
+# def outlier(request):
+#     return request.param
 
 @pytest.fixture(scope='module', params=[False, True])
 def renamed(request):
@@ -134,6 +148,11 @@ def expression_data(samples, genes, groupby, na_thresh):
                            np.random.uniform(0, na_thresh)
             else np.nan), axis=1)
     return df
+
+@pytest.fixture(scope='module')
+def expression_data_no_groups(samples, genes):
+    data = np.random.lognormal(5, 2, size=(len(samples), len(genes)))
+    return pd.DataFrame(data, index=samples, columns=genes)
 
 @pytest.fixture(scope='module')
 def expression_feature_data(genes, gene_categories,
