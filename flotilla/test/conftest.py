@@ -27,6 +27,16 @@ def n_samples():
 def samples(n_samples):
     return ['sample_{}'.format(i+1) for i in np.arange(n_samples)]
 
+@pytest.fixture(scope='module', params=[True, False])
+def technical_outliers(request, n_samples, samples):
+    if request.param:
+        return np.random.choice(samples,
+                                size=np.random.randint(int(n_samples/10.)),
+                                replace=False)
+    else:
+        return None
+
+
 @pytest.fixture(scope='module', params=[2, 3])
 def n_groups(request):
     return request.param
