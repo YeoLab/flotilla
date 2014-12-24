@@ -1041,6 +1041,7 @@ class BaseData(object):
                     label_pooled=False):
         """For compatiblity across data types, can specify _violinplot
         """
+        sample_ids = self.data.index if sample_ids is None else sample_ids
         singles, pooled = self._subset_singles_and_pooled(sample_ids,
                                                           feature_ids=[
                                                               feature_id])
