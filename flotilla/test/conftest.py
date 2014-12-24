@@ -2,12 +2,16 @@
 This file will be auto-imported for every testing session, so you can use
 these objects and functions across test files.
 """
+from collections import defaultdict
 import subprocess
 
+import matplotlib as mpl
 import numpy as np
 import pytest
 import pandas as pd
 from scipy import stats
+import seaborn as sns
+
 
 
 # CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -19,65 +23,116 @@ from scipy import stats
 def RANDOM_STATE():
     return 0
 
+
 @pytest.fixture(scope='module')
 def n_samples():
     return 50
 
+
 @pytest.fixture(scope='module')
 def samples(n_samples):
-    return ['sample_{}'.format(i+1) for i in np.arange(n_samples)]
+    return ['sample_{}'.format(i + 1) for i in np.arange(n_samples)]
+
 
 @pytest.fixture(scope='module')
 def technical_outliers(n_samples, samples):
     return np.random.choice(samples,
-                            size=np.random.randint(1, int(n_samples/10.)),
+                            size=np.random.randint(1, int(n_samples / 10.)),
                             replace=False)
+
 
 @pytest.fixture(scope='module', params=[True, False])
 def pooled(request, n_samples, samples):
     if request.param:
         return np.random.choice(samples,
-                                size=np.random.randint(1, int(n_samples/10.)),
+                                size=np.random.randint(1,
+                                                       int(n_samples / 10.)),
                                 replace=False)
     else:
         return None
+
 
 @pytest.fixture(scope='module', params=[True, False])
 def outliers(request, n_samples, samples):
     if request.param:
         return np.random.choice(samples,
-                                size=np.random.randint(1, int(n_samples/10.)),
+                                size=np.random.randint(1,
+                                                       int(n_samples / 10.)),
                                 replace=False)
     else:
         return None
+
 
 @pytest.fixture(scope='module', params=[2, 3])
 def n_groups(request):
     return request.param
 
+
 @pytest.fixture(scope='module')
 def groups(n_groups):
-    return ['group{}'.format(i+1) for i in np.arange(n_groups)]
+    return ['group{}'.format(i + 1) for i in np.arange(n_groups)]
+
+
+@pytest.fixture(scope='module', params=['sorted', 'random'])
+def group_order(request, groups):
+    if request.param == 'sorted':
+        return list(sorted(groups))
+    else:
+        return np.random.permutation(groups.copy())
+
+
+@pytest.fixture(scope='module')
+def colors(n_groups):
+    return map(mpl.colors.rgb2hex,
+               sns.color_palette('husl', n_colors=n_groups))
+
+
+@pytest.fixture(scope='module')
+def group_to_color(group_order, colors):
+    return dict(zip(group_order, colors))
+
+@pytest.fixture(scope='module')
+def color_ordered(group_order, group_to_color):
+    return [group_to_color[g] for g in group_order]
+
+@pytest.fixture(scope='module', params=['simple', 'different'])
+def group_to_marker(request):
+    if request.param == 'simple':
+        return defaultdict(lambda: 'o')
+    else:
+        marker_iter = iter(list('ov^<>8sp*hHDd'))
+        return defaultdict(lambda: marker_iter.next())
+
+
+@pytest.fixture(scope='module')
+def group_transitions(group_order):
+    return zip(group_order[:-1], group_order[1:])
+
 
 @pytest.fixture(scope='module')
 def n_genes():
     return 500
 
+
 @pytest.fixture(scope='module')
 def genes(n_genes):
-    return ['gene_{}'.format(i+1) for i in np.arange(n_genes)]
+    return ['gene_{}'.format(i + 1) for i in np.arange(n_genes)]
+
 
 @pytest.fixture(scope='module')
 def n_events():
     return 1000
 
+
 @pytest.fixture(scope='module')
 def events(n_events):
-    return ['event_{}'.format(i+1) for i in np.arange(n_events)]
+    return ['event_{}'.format(i + 1) for i in np.arange(n_events)]
+
 
 @pytest.fixture(scope='module')
 def groupby(groups, samples):
     return dict((sample, np.random.choice(groups)) for sample in samples)
+
 
 @pytest.fixture(scope='module')
 def modality_models():
@@ -86,7 +141,7 @@ def modality_models():
     rv_excluded = stats.beta(1, parameter)
     rv_middle = stats.beta(parameter, parameter)
     rv_uniform = stats.uniform(0, 1)
-    rv_bimodal = stats.beta(1./parameter, 1./parameter)
+    rv_bimodal = stats.beta(1. / parameter, 1. / parameter)
 
     models = {'included': rv_included,
               'excluded': rv_excluded,
@@ -95,29 +150,35 @@ def modality_models():
               'bimodal': rv_bimodal}
     return models
 
+
 @pytest.fixture(scope='module', params=[0, 1])
 def na_thresh(request):
     return request.param
+
 
 @pytest.fixture(scope='module')
 def gene_name():
     return 'gene_name'
 
+
 @pytest.fixture(scope='module')
 def event_name():
     return 'event_name'
+
 
 @pytest.fixture(scope='module')
 def gene_categories():
     return list('ABCDE')
 
+
 @pytest.fixture(scope='module')
 def boolean_gene_categories():
     return list('WXYZ')
 
+
 # @pytest.fixture(scope='module', params=[False, True])
 # def pooled(request):
-#     return request.param
+# return request.param
 #
 # @pytest.fixture(scope='module', params=[False, True])
 # def outlier(request):
@@ -126,6 +187,7 @@ def boolean_gene_categories():
 @pytest.fixture(scope='module', params=[False, True])
 def renamed(request):
     return request.param
+
 
 @pytest.fixture(scope='module')
 def true_modalities(events, modality_models, groups):
@@ -140,8 +202,9 @@ def expression_data(samples, genes, groupby, na_thresh):
     df = pd.concat([pd.DataFrame(np.vstack([
         np.random.lognormal(np.random.uniform(0, 5), np.random.uniform(0, 2),
                             df.shape[0]) for _ in df.columns]).T,
-                            index=df.index, columns=df.columns) for name, df in
-               df.groupby(groupby)]).sort_index()
+                                 index=df.index, columns=df.columns) for
+                    name, df in
+                    df.groupby(groupby)]).sort_index()
     if na_thresh > 0:
         df = df.apply(lambda x: x.map(
             lambda i: i if np.random.uniform() >
@@ -149,10 +212,12 @@ def expression_data(samples, genes, groupby, na_thresh):
             else np.nan), axis=1)
     return df
 
+
 @pytest.fixture(scope='module')
 def expression_data_no_groups(samples, genes):
     data = np.random.lognormal(5, 2, size=(len(samples), len(genes)))
     return pd.DataFrame(data, index=samples, columns=genes)
+
 
 @pytest.fixture(scope='module')
 def expression_feature_data(genes, gene_categories,
@@ -165,8 +230,9 @@ def expression_feature_data(genes, gene_categories,
     for category in boolean_gene_categories:
         p = np.random.uniform()
         df[category] = np.random.choice([True, False], size=df.shape[0],
-                                        p=[p, 1-p])
+                                        p=[p, 1 - p])
     return df
+
 
 @pytest.fixture(scope='module')
 def expression_feature_rename_col(renamed):
@@ -175,17 +241,21 @@ def expression_feature_rename_col(renamed):
     else:
         return None
 
+
 @pytest.fixture(scope='module', params=[None, 2, 10])
 def expression_log_base(request):
     return request.param
+
 
 @pytest.fixture(scope='module', params=[True, False])
 def expression_plus_one(request):
     return request.param
 
+
 @pytest.fixture(scope='module', params=[-np.inf, 0, 2])
 def expression_thresh(request):
     return request.param
+
 
 @pytest.fixture(scope='module')
 def splicing_data(samples, events, true_modalities, modality_models,
@@ -194,8 +264,8 @@ def splicing_data(samples, events, true_modalities, modality_models,
     df = pd.concat([pd.DataFrame(
         np.vstack([modality_models[modality].rvs(df.shape[0])
                    for modality in true_modalities.ix[group]]).T,
-                            index=df.index, columns=df.columns)
-               for group, df in df.groupby(groupby)])
+        index=df.index, columns=df.columns)
+                    for group, df in df.groupby(groupby)])
     if na_thresh > 0:
         df = df.apply(lambda x: x.map(
             lambda i: i if np.random.uniform() >
@@ -203,10 +273,11 @@ def splicing_data(samples, events, true_modalities, modality_models,
             else np.nan), axis=1)
         df = pd.concat([d.apply(
             lambda x: x if np.random.uniform() >
-                           np.random.uniform(0, na_thresh/10)
+                           np.random.uniform(0, na_thresh / 10)
             else pd.Series(np.nan, index=x.index), axis=1) for group, d in
-                   df.groupby(groupby)], axis=1)
+                        df.groupby(groupby)], axis=1)
     return df
+
 
 @pytest.fixture(scope='module')
 def splicing_feature_data(events, genes, gene_name, expression_feature_data,
@@ -216,6 +287,7 @@ def splicing_feature_data(events, genes, gene_name, expression_feature_data,
     df[gene_name] = df.index.map(lambda x: np.random.choice(genes))
     df = df.join(expression_feature_data, on=splicing_feature_common_id)
     return df
+
 
 @pytest.fixture(scope='module')
 def splicing_feature_common_id(gene_name):
@@ -272,6 +344,7 @@ def feature_subset(request, genelist_dropbox_link, genelist_path):
         # Otherwise, this is a name of a subset
         return request.param
 
+
 @pytest.fixture(scope='module')
 def x_norm():
     """Normally distributed numpy array"""
@@ -291,23 +364,29 @@ def df_norm(x_norm):
     df = pd.DataFrame(x_norm, index=index, columns=columns)
     return df
 
+
 @pytest.fixture(scope='module')
 def df_nonneg(df_norm):
     """Non-negative data for testing NMF"""
     return df_norm.abs()
 
+
 @pytest.fixture(scope='module', params=[0, 5])
 def metadata_minimum_samples(request):
     return request.param
+
 
 @pytest.fixture(params=[True, False])
 def featurewise(request):
     return request.param
 
+
 @pytest.fixture(scope='module')
 def base_data(expression_data):
     from flotilla.data_model.base import BaseData
+
     return BaseData(expression_data)
+
 
 @pytest.fixture(params=[None, 'half', 'all'], scope='module')
 def sample_ids(request, base_data):
@@ -330,9 +409,11 @@ def feature_ids(request, base_data):
     elif request.param == 'all':
         return base_data.data.columns
 
+
 @pytest.fixture(params=[True, False], scope='module')
 def standardize(request):
     return request.param
+
 
 @pytest.fixture(params=['phenotype: Immature BDMC',
                         'not (phenotype: Immature BDMC)',
