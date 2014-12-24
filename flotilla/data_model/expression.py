@@ -45,7 +45,7 @@ class ExpressionData(BaseData):
         self.log_base = log_base
 
         if self.log_base is not None:
-            self.data = np.log(self.data) / np.log(self.log_base)
+            self.data = np.divide(np.log(self.data), np.log(self.log_base))
 
         self.feature_data = feature_data
 
