@@ -2,7 +2,6 @@
 This tests whether the SplicingData object was created correctly. No
 computation or visualization tests yet.
 """
-import copy
 
 import matplotlib.pyplot as plt
 
@@ -25,20 +24,23 @@ class TestSplicingData:
 
         return SplicingData(splicing_data)
 
-    @pytest.fixture(params=[None, 100])
-    def data_for_binned_nmf_reduced(self, request, splicing):
-        if request.param is None:
-            return None
-        else:
-            psi = copy.deepcopy(splicing.data)
-            max_index = np.prod(map(lambda x: x - 1, psi.shape))
-            random_flat_indices = np.random.randint(0, max_index, 100)
-            psi.values[
-                np.unravel_index(random_flat_indices, psi.shape)] = np.nan
-            return psi
+    # @pytest.fixture(params=[None, 100])
+    # def data_for_binned_nmf_reduced(self, request, splicing):
+    #     if request.param is None:
+    #         return None
+    #     else:
+    #         psi = copy.deepcopy(splicing.data)
+    #         max_index = np.prod(map(lambda x: x - 1, psi.shape))
+    #         random_flat_indices = np.random.randint(0, max_index, 100)
+    #         psi.values[
+    #             np.unravel_index(random_flat_indices, psi.shape)] = np.nan
+    #         return psi
 
-    def test_modality_assignments(self, splicing):
-        pass
+    # def test_modality_assignments(self, splicing, groupby, true_modalities):
+    #     assignments = splicing.modalities(groupby=groupby)
+    #
+    #     pdt.assert_frame_equal(assignments.sort_index(axis=1),
+    #                            true_modalities.sort_index(axis=1))
 
     def test_binify(self, splicing):
         from flotilla.compute.infotheory import binify
@@ -50,16 +52,10 @@ class TestSplicingData:
 
         pdt.assert_frame_equal(test_binned, true_binned)
 
-    def test_binned_nmf_reduced(self, splicing,
-                                data_for_binned_nmf_reduced):
-        test_binned_nmf_reduced = splicing.binned_nmf_reduced(
-            data=data_for_binned_nmf_reduced)
+    def test_binned_nmf_reduced(self, splicing):
+        test_binned_nmf_reduced = splicing.binned_nmf_reduced()
 
-        if data_for_binned_nmf_reduced is None:
-            data = splicing.data
-        else:
-            data = data_for_binned_nmf_reduced
-
+        data = splicing.data
         binned = splicing.binify(data)
         true_binned_nmf_reduced = splicing.nmf.transform(binned.T)
 
@@ -69,12 +65,11 @@ class TestSplicingData:
 
     def test_nmf_space_positions(self, splicing, groupby, n):
         if n is None:
+            n = 0.5
             test_positions = splicing.nmf_space_positions(groupby)
         else:
             test_positions = splicing.nmf_space_positions(groupby, n=n)
 
-        if n is None:
-            n = 5
         grouped = splicing.singles.groupby(groupby)
         at_least_n_per_group_per_event = grouped.transform(
             lambda x: x if x.count() >= n

@@ -14,8 +14,9 @@ import seaborn as sns
 
 
 
+
 # CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
-# SHALEK2013_BASE_URL = 'http://raw.githubusercontent.com/YeoLab/shalek2013/master'
+# SHALEK2013_BASE_URL = 'http://oraw.githubusercontent.com/YeoLab/shalek2013/master'
 # # SHALEK2013_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects/shalek2013'
 # CHR22_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22'
 
@@ -78,7 +79,7 @@ def group_order(request, groups):
     if request.param == 'sorted':
         return list(sorted(groups))
     else:
-        return np.random.permutation(groups.copy())
+        return np.random.permutation(groups)
 
 
 @pytest.fixture(scope='module')
@@ -188,14 +189,6 @@ def boolean_gene_categories():
 def renamed(request):
     return request.param
 
-
-@pytest.fixture(scope='module')
-def true_modalities(events, modality_models, groups):
-    data = dict((e, dict((g, (np.random.choice(modality_models.keys())))
-                         for g in groups)) for e in events)
-    return pd.DataFrame(data)
-
-
 @pytest.fixture(scope='module')
 def expression_data(samples, genes, groupby, na_thresh):
     df = pd.DataFrame(index=samples, columns=genes)
@@ -204,7 +197,7 @@ def expression_data(samples, genes, groupby, na_thresh):
                             df.shape[0]) for _ in df.columns]).T,
                                  index=df.index, columns=df.columns) for
                     name, df in
-                    df.groupby(groupby)]).sort_index()
+                    df.groupby(groupby)], axis=0).sort_index()
     if na_thresh > 0:
         df = df.apply(lambda x: x.map(
             lambda i: i if np.random.uniform() >
@@ -256,6 +249,11 @@ def expression_plus_one(request):
 def expression_thresh(request):
     return request.param
 
+@pytest.fixture(scope='module')
+def true_modalities(events, modality_models, groups):
+    data = dict((e, dict((g, (np.random.choice(modality_models.keys())))
+                         for g in groups)) for e in events)
+    return pd.DataFrame(data)
 
 @pytest.fixture(scope='module')
 def splicing_data(samples, events, true_modalities, modality_models,
@@ -265,7 +263,7 @@ def splicing_data(samples, events, true_modalities, modality_models,
         np.vstack([modality_models[modality].rvs(df.shape[0])
                    for modality in true_modalities.ix[group]]).T,
         index=df.index, columns=df.columns)
-                    for group, df in df.groupby(groupby)])
+                    for group, df in df.groupby(groupby)], axis=0)
     if na_thresh > 0:
         df = df.apply(lambda x: x.map(
             lambda i: i if np.random.uniform() >
@@ -275,9 +273,8 @@ def splicing_data(samples, events, true_modalities, modality_models,
             lambda x: x if np.random.uniform() >
                            np.random.uniform(0, na_thresh / 10)
             else pd.Series(np.nan, index=x.index), axis=1) for group, d in
-                        df.groupby(groupby)], axis=1)
-    return df
-
+                        df.groupby(groupby)], axis=0)
+    return df.sort_index()
 
 @pytest.fixture(scope='module')
 def splicing_feature_data(events, genes, gene_name, expression_feature_data,
