@@ -1277,7 +1277,7 @@ class BaseData(object):
         std = np.sqrt(np.square(nmf_space_transitions - mean).sum().sum() / n)
 
         big_transitions = nmf_space_transitions[
-            nmf_space_transitions > (mean + 2 * std)].dropna(how='all')
+            nmf_space_transitions > (mean + std)].dropna(how='all')
         return big_transitions
 
     def plot_big_nmf_space_transitions(self, phenotype_groupby,
