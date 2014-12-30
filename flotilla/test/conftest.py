@@ -15,6 +15,7 @@ import seaborn as sns
 
 
 
+
 # CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
 # SHALEK2013_BASE_URL = 'http://oraw.githubusercontent.com/YeoLab/shalek2013/master'
 # # SHALEK2013_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects/shalek2013'
@@ -112,7 +113,7 @@ def group_transitions(group_order):
 
 @pytest.fixture(scope='module')
 def n_genes():
-    return 500
+    return 100
 
 
 @pytest.fixture(scope='module')
@@ -122,7 +123,7 @@ def genes(n_genes):
 
 @pytest.fixture(scope='module')
 def n_events():
-    return 1000
+    return 200
 
 
 @pytest.fixture(scope='module')
