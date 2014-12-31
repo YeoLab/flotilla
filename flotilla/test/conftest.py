@@ -16,6 +16,7 @@ import seaborn as sns
 
 
 
+
 # CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
 # SHALEK2013_BASE_URL = 'http://oraw.githubusercontent.com/YeoLab/shalek2013/master'
 # # SHALEK2013_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects/shalek2013'
@@ -110,6 +111,41 @@ def group_to_marker(request):
 def group_transitions(group_order):
     return zip(group_order[:-1], group_order[1:])
 
+@pytest.fixture(scope='module')
+def metadata_data(groupby, outliers, pooled, samples):
+    df = pd.DataFrame(index=samples)
+    df['outlier'] = df.index.isin(outliers)
+    df['pooled'] = df.index.isin(pooled)
+    df['phenotype'] = groupby
+    return df
+
+@pytest.fixture(scope='module')
+def mapping_stats_number_mapped_col():
+    return 'mapped_reads'
+
+@pytest.fixture(scope='module')
+def mapping_stats_min_reads_default():
+    return 5e5
+
+@pytest.fixture(scope='module', params=[None, 1e6])
+def mapping_stats_kws(request, mapping_stats_number_mapped_col):
+    kws = {'mapping_stats_number_mapped_col': mapping_stats_number_mapped_col}
+    if request.param is not None:
+        kws['mapping_stats_min_reads'] = request.param
+    return kws
+
+@pytest.fixture(scope='module')
+def mapping_stats_data(samples, technical_outliers,
+                       mapping_stats_min_reads_default,
+                       mapping_stats_kws,
+                       mapping_stats_number_mapped_col):
+    min_reads = mapping_stats_kws.get(mapping_stats_number_mapped_col,
+                                      mapping_stats_min_reads_default)
+    df = pd.DataFrame(index=samples)
+    df[mapping_stats_number_mapped_col] = 2 * min_reads
+    df.ix[technical_outliers, mapping_stats_number_mapped_col] = \
+        .5 * min_reads
+    return df
 
 @pytest.fixture(scope='module')
 def n_genes():
@@ -208,7 +244,7 @@ def expression_data(samples, genes, groupby, na_thresh):
 
 
 @pytest.fixture(scope='module')
-def expression_data_no_groups(samples, genes):
+def expression_data_no_na(samples, genes):
     data = np.random.lognormal(5, 2, size=(len(samples), len(genes)))
     return pd.DataFrame(data, index=samples, columns=genes)
 
@@ -275,6 +311,17 @@ def splicing_data(samples, events, true_modalities, modality_models,
                            np.random.uniform(0, na_thresh / 10)
             else pd.Series(np.nan, index=x.index), axis=1) for group, d in
                         df.groupby(groupby)], axis=0)
+    return df.sort_index()
+
+@pytest.fixture(scope='module')
+def splicing_data_no_na(samples, events,
+                         true_modalities, modality_models, na_thresh, groupby):
+    df = pd.DataFrame(index=samples, columns=events)
+    df = pd.concat([pd.DataFrame(
+        np.vstack([modality_models[modality].rvs(df.shape[0])
+                   for modality in true_modalities.ix[group]]).T,
+        index=df.index, columns=df.columns)
+                    for group, df in df.groupby(groupby)], axis=0)
     return df.sort_index()
 
 @pytest.fixture(scope='module')
