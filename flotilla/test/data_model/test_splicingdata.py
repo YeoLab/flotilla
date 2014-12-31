@@ -2,7 +2,7 @@
 This tests whether the SplicingData object was created correctly. No
 computation or visualization tests yet.
 """
-
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import pandas.util.testing as pdt
@@ -21,6 +21,12 @@ class TestSplicingData:
         from flotilla.data_model.splicing import SplicingData
 
         return SplicingData(splicing_data)
+
+    @pytest.fixture
+    def splicing_no_na(self, splicing_data_no_na):
+        from flotilla.data_model.splicing import SplicingData
+
+        return SplicingData(splicing_data_no_na)
 
     # @pytest.fixture(params=[None, 100])
     # def data_for_binned_nmf_reduced(self, request, splicing):
@@ -178,10 +184,10 @@ class TestSplicingData:
 
         pdt.assert_equal(test_ylabel, true_ylabel)
 
-    # def test_plot_big_nmf_space(self, splicing, groupby, group_transitions,
-    #                             group_order, group_to_color,
-    #                             color_ordered, group_to_marker):
-    #     splicing.plot_big_nmf_space_transitions(
-    #         groupby, group_transitions, group_order, color_ordered,
-    #         group_to_color, group_to_marker)
-    #     plt.close('all')
+    def test_plot_big_nmf_space(self, splicing_no_na, groupby, group_transitions,
+                                group_order, group_to_color,
+                                color_ordered, group_to_marker):
+        splicing_no_na.plot_big_nmf_space_transitions(
+            groupby, group_transitions, group_order, color_ordered,
+            group_to_color, group_to_marker)
+        plt.close('all')
