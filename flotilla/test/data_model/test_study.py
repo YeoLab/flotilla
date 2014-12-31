@@ -2,7 +2,9 @@
 This tests whether the Study object was created correctly. No
 computation or visualization tests yet.
 """
-
+import numpy.testing as npt
+import pandas as pd
+import pandas.util.testing as pdt
 import pytest
 
 
@@ -14,24 +16,42 @@ def data_type(request):
 def color_samples_by(request):
     return request.param
 
-# class TestStudy(object):
-#     def test_toy_init(self, ):
-#         from flotilla.data_model import ExpressionData, SplicingData
-#
-#         outliers = shalek2013_data.metadata.index[
-#             shalek2013_data.metadata.outlier.astype(bool)]
-#         expression = ExpressionData(data=shalek2013_data.expression,
-#                                     outliers=outliers)
-#         splicing = SplicingData(data=shalek2013_data.splicing,
-#                                 outliers=outliers)
-#
-#         pdt.assert_frame_equal(toy_study.metadata.data,
-#                                shalek2013_data.metadata)
-#         pdt.assert_frame_equal(toy_study.expression.data,
-#                                expression.data)
-#         pdt.assert_frame_equal(toy_study.splicing.data, splicing.data)
-#         # There's more to test for correct initialization but this is barebones
-#         # for now
+class TestStudy(object):
+    def test__init(self, metadata_data,
+                   metadata_kws,
+                   mapping_stats_data,
+                   mapping_stats_kws,
+                   expression_data_no_na,
+                   expression_kws,
+                   splicing_data_no_na,
+                   splicing_kws, pooled, technical_outliers):
+        # Also need to check for when these are NAs
+        from flotilla.data_model import Study
+        kwargs = {}
+        kw_pairs = (('metadata', metadata_kws),
+                    ('mapping_stats', mapping_stats_kws),
+                    ('expression', expression_kws),
+                    ('splicing', splicing_kws))
+        for data_type, kws in kw_pairs:
+            for kw_name, kw_value in kws.iteritems():
+                kwargs['{}_{}'.format(data_type, kw_name)] = kw_value
+
+        study = Study(metadata_data, mapping_stats_data=mapping_stats_data,
+                      expression_data=expression_data_no_na,
+                      splicing_data=splicing_data_no_na, **kwargs)
+
+        if pooled is None:
+            npt.assert_equal(study.pooled, None)
+        else:
+            npt.assert_array_equal(sorted(study.pooled), sorted(pooled))
+        if technical_outliers is None:
+            pdt.assert_array_equal(study.technical_outliers, pd.Index([]))
+        else:
+            pdt.assert_array_equal(sorted(study.technical_outliers),
+                                   sorted(technical_outliers))
+
+        # There's more to test for correct initialization but this is barebones
+        # for now
 #
 #     def test_real_init(self, shalek2013_datapackage_path):
 #         import flotilla
