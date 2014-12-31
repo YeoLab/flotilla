@@ -38,6 +38,9 @@ import pytest
 class TestBaseData:
     def test__init(self, expression_data_no_na, outliers):
         from flotilla.data_model.base import BaseData
+        from flotilla.compute.predict import PredictorConfigManager, \
+            PredictorDataSetManager
+
 
         base_data = BaseData(expression_data_no_na, outliers=outliers)
         outlier_samples = outliers.copy() if outliers is not None else []
@@ -53,6 +56,8 @@ class TestBaseData:
                                 feature_renamer_series)
         pdt.assert_frame_equal(base_data.outliers, outliers_df)
         pdt.assert_array_equal(base_data.outlier_samples, outlier_samples)
+        assert isinstance(base_data.predictor_config_manager, PredictorConfigManager)
+        assert isinstance(base_data.predictor_dataset_manager, PredictorDataSetManager)
 
     def test__init_technical_outliers(self, expression_data_no_na,
                                       technical_outliers):
