@@ -3,8 +3,6 @@ This tests whether the SplicingData object was created correctly. No
 computation or visualization tests yet.
 """
 
-import matplotlib.pyplot as plt
-
 import numpy as np
 import pandas as pd
 import pandas.util.testing as pdt
@@ -66,14 +64,15 @@ class TestSplicingData:
     def test_nmf_space_positions(self, splicing, groupby, n):
         if n is None:
             n = 0.5
+            thresh = lambda x: n * x.shape[0]
             test_positions = splicing.nmf_space_positions(groupby)
         else:
             test_positions = splicing.nmf_space_positions(groupby, n=n)
+            thresh = lambda x: n
 
         grouped = splicing.singles.groupby(groupby)
-        at_least_n_per_group_per_event = grouped.transform(
-            lambda x: x if x.count() >= n
-            else pd.Series(np.nan, index=x.index))
+        at_least_n_per_group_per_event = pd.concat(
+            [df.dropna(thresh=thresh(df), axis=1) for name, df in grouped])
         df = at_least_n_per_group_per_event.groupby(groupby).apply(
             lambda x: splicing.binned_nmf_reduced(data=x))
         df = df.swaplevel(0, 1)
@@ -136,7 +135,7 @@ class TestSplicingData:
         std = np.sqrt(np.square(nmf_space_transitions - mean).sum().sum() / n)
 
         true_big_transitions = nmf_space_transitions[
-            nmf_space_transitions > (mean + 2 * std)].dropna(how='all')
+            nmf_space_transitions > (mean +  std)].dropna(how='all')
 
         pdt.assert_frame_equal(test_big_transitions, true_big_transitions)
 
@@ -179,10 +178,10 @@ class TestSplicingData:
 
         pdt.assert_equal(test_ylabel, true_ylabel)
 
-    def test_plot_big_nmf_space(self, splicing, groupby, group_transitions,
-                                group_order, group_to_color,
-                                color_ordered, group_to_marker):
-        splicing.plot_big_nmf_space_transitions(
-            groupby, group_transitions, group_order, color_ordered,
-            group_to_color, group_to_marker)
-        plt.close('all')
+    # def test_plot_big_nmf_space(self, splicing, groupby, group_transitions,
+    #                             group_order, group_to_color,
+    #                             color_ordered, group_to_marker):
+    #     splicing.plot_big_nmf_space_transitions(
+    #         groupby, group_transitions, group_order, color_ordered,
+    #         group_to_color, group_to_marker)
+    #     plt.close('all')
