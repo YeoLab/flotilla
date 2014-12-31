@@ -17,6 +17,7 @@ import seaborn as sns
 
 
 
+
 # CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
 # SHALEK2013_BASE_URL = 'http://oraw.githubusercontent.com/YeoLab/shalek2013/master'
 # # SHALEK2013_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects/shalek2013'
@@ -393,8 +394,8 @@ def feature_subset(request, genelist_dropbox_link, genelist_path):
 @pytest.fixture(scope='module')
 def x_norm():
     """Normally distributed numpy array"""
-    n_samples = 50
-    n_features = 1000
+    n_samples = 20
+    n_features = 50
     x = np.random.randn(n_samples * n_features)
     x = x.reshape(n_samples, n_features)
     return x
