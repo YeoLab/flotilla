@@ -36,38 +36,38 @@ import pytest
 
 
 class TestBaseData:
-    def test__init(self, expression_data_no_groups, outliers):
+    def test__init(self, expression_data_no_na, outliers):
         from flotilla.data_model.base import BaseData
 
-        base_data = BaseData(expression_data_no_groups, outliers=outliers)
+        base_data = BaseData(expression_data_no_na, outliers=outliers)
         outlier_samples = outliers.copy() if outliers is not None else []
-        outliers_df = expression_data_no_groups.ix[outlier_samples]
+        outliers_df = expression_data_no_na.ix[outlier_samples]
 
-        feature_renamer_series = pd.Series(expression_data_no_groups.columns,
-                                           index=expression_data_no_groups.columns)
+        feature_renamer_series = pd.Series(expression_data_no_na.columns,
+                                           index=expression_data_no_na.columns)
 
-        pdt.assert_frame_equal(base_data.data_original, expression_data_no_groups)
+        pdt.assert_frame_equal(base_data.data_original, expression_data_no_na)
         pdt.assert_equal(base_data.feature_data, None)
-        pdt.assert_frame_equal(base_data.data, expression_data_no_groups)
+        pdt.assert_frame_equal(base_data.data, expression_data_no_na)
         pdt.assert_series_equal(base_data.feature_renamer_series,
                                 feature_renamer_series)
         pdt.assert_frame_equal(base_data.outliers, outliers_df)
         pdt.assert_array_equal(base_data.outlier_samples, outlier_samples)
 
-    def test__init_technical_outliers(self, expression_data_no_groups,
+    def test__init_technical_outliers(self, expression_data_no_na,
                                       technical_outliers):
         from flotilla.data_model.base import BaseData
 
-        base_data = BaseData(expression_data_no_groups,
+        base_data = BaseData(expression_data_no_na,
                              technical_outliers=technical_outliers)
 
-        data = expression_data_no_groups.copy()
+        data = expression_data_no_na.copy()
         if technical_outliers is not None:
             good_samples = ~data.index.isin(technical_outliers)
             data = data.ix[good_samples]
         pdt.assert_frame_equal(base_data.data, data)
         pdt.assert_frame_equal(base_data.data_original,
-                               expression_data_no_groups)
+                               expression_data_no_na)
 
     def test__init_sample_thresholds(self, expression_data,
                                       expression_thresh,
@@ -100,13 +100,13 @@ class TestBaseData:
         pdt.assert_frame_equal(base_data.pooled, pooled_df)
         pdt.assert_frame_equal(base_data.singles, singles_df)
 
-    def test__init__featuredata(self, expression_data_no_groups,
+    def test__init__featuredata(self, expression_data_no_na,
                                 expression_feature_data,
                                 expression_feature_rename_col):
         from flotilla.data_model.base import BaseData, \
             subsets_from_metadata, MINIMUM_FEATURE_SUBSET
 
-        base_data = BaseData(expression_data_no_groups,
+        base_data = BaseData(expression_data_no_na,
                              feature_data=expression_feature_data,
                              feature_rename_col=expression_feature_rename_col)
 
@@ -121,9 +121,9 @@ class TestBaseData:
                                                 'features')
         feature_subsets['variant'] = base_data.variant
 
-        pdt.assert_frame_equal(base_data.data_original, expression_data_no_groups)
+        pdt.assert_frame_equal(base_data.data_original, expression_data_no_na)
         pdt.assert_frame_equal(base_data.feature_data, expression_feature_data)
-        pdt.assert_frame_equal(base_data.data, expression_data_no_groups)
+        pdt.assert_frame_equal(base_data.data, expression_data_no_na)
         pdt.assert_series_equal(base_data.feature_renamer_series,
                                 feature_renamer_series)
         pdt.assert_dict_equal(base_data.feature_subsets, feature_subsets)
@@ -151,10 +151,10 @@ class TestBaseData:
         pdt.assert_equal(base_data._var_cut, var_cut)
         pdt.assert_array_equal(base_data.variant, variant)
 
-    def test__subset(self, expression_data_no_groups, sample_ids, feature_ids):
+    def test__subset(self, expression_data_no_na, sample_ids, feature_ids):
         from flotilla.data_model.base import BaseData
 
-        base_data = BaseData(expression_data_no_groups)
+        base_data = BaseData(expression_data_no_na)
         subset = base_data._subset(base_data.data, sample_ids=sample_ids,
                                    feature_ids=feature_ids)
         data = base_data.data
@@ -171,12 +171,12 @@ class TestBaseData:
 
         pdt.assert_frame_equal(subset, true_subset)
 
-    def test__subset_and_standardize(self, expression_data_no_groups,
+    def test__subset_and_standardize(self, expression_data_no_na,
                                      standardize, feature_ids,
                                      sample_ids):
         from flotilla.data_model.base import BaseData
 
-        base_data = BaseData(expression_data_no_groups)
+        base_data = BaseData(expression_data_no_na)
         base_data.subset, base_data.means = \
             base_data._subset_and_standardize(base_data.data,
                                               sample_ids=sample_ids,
@@ -201,14 +201,14 @@ class TestBaseData:
         pdt.assert_frame_equal(subset_standardized, base_data.subset)
         pdt.assert_series_equal(means, base_data.means)
 
-    def test__threshold(self, expression_data_no_groups, pooled):
+    def test__threshold(self, expression_data_no_na, pooled):
         from flotilla.data_model.base import BaseData
 
         thresh = 0.5
         minimum_samples = 5
-        base_data = BaseData(expression_data_no_groups, thresh=thresh,
+        base_data = BaseData(expression_data_no_na, thresh=thresh,
                              minimum_samples=minimum_samples, pooled=pooled)
-        data = expression_data_no_groups.copy()
+        data = expression_data_no_na.copy()
         if pooled is not None:
             other = base_data.singles
         else:
@@ -217,12 +217,12 @@ class TestBaseData:
         filtered = data.ix[:, other[other > thresh].count() >= minimum_samples]
         pdt.assert_frame_equal(base_data.data, filtered)
 
-    def test_reduce(self, expression_data_no_groups, featurewise):
+    def test_reduce(self, expression_data_no_na, featurewise):
         # TODO: parameterize and test with featurewise and subsets
         from flotilla.compute.decomposition import DataFramePCA
         from flotilla.data_model.base import BaseData
 
-        expression = BaseData(expression_data_no_groups)
+        expression = BaseData(expression_data_no_na)
         test_reduced = expression.reduce(featurewise=featurewise)
 
         subset, means = expression._subset_and_standardize(
