@@ -18,6 +18,7 @@ import seaborn as sns
 
 
 
+
 # CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
 # SHALEK2013_BASE_URL = 'http://oraw.githubusercontent.com/YeoLab/shalek2013/master'
 # # SHALEK2013_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects/shalek2013'
@@ -130,9 +131,9 @@ def mapping_stats_min_reads_default():
 
 @pytest.fixture(scope='module', params=[None, 1e6])
 def mapping_stats_kws(request, mapping_stats_number_mapped_col):
-    kws = {'mapping_stats_number_mapped_col': mapping_stats_number_mapped_col}
+    kws = {'number_mapped_col': mapping_stats_number_mapped_col}
     if request.param is not None:
-        kws['mapping_stats_min_reads'] = request.param
+        kws['min_reads'] = request.param
     return kws
 
 @pytest.fixture(scope='module')
@@ -140,7 +141,7 @@ def mapping_stats_data(samples, technical_outliers,
                        mapping_stats_min_reads_default,
                        mapping_stats_kws,
                        mapping_stats_number_mapped_col):
-    min_reads = mapping_stats_kws.get(mapping_stats_number_mapped_col,
+    min_reads = mapping_stats_kws.get('min_reads',
                                       mapping_stats_min_reads_default)
     df = pd.DataFrame(index=samples)
     df[mapping_stats_number_mapped_col] = 2 * min_reads
