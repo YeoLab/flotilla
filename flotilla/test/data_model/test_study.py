@@ -17,6 +17,12 @@ def color_samples_by(request):
     return request.param
 
 class TestStudy(object):
+
+    @pytest.fixture
+    def n_groups(self):
+        return 3
+
+    # @pytest.mark.parameterize('n_groups', '3_groups')
     def test__init(self, metadata_data,
                    metadata_kws,
                    mapping_stats_data,
