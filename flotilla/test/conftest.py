@@ -20,6 +20,7 @@ import seaborn as sns
 
 
 
+
 # CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
 # SHALEK2013_BASE_URL = 'http://oraw.githubusercontent.com/YeoLab/shalek2013/master'
 # # SHALEK2013_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects/shalek2013'
@@ -43,7 +44,9 @@ def samples(n_samples):
     return ['sample_{}'.format(i + 1) for i in np.arange(n_samples)]
 
 
-@pytest.fixture(scope='module', params=[True, False])
+@pytest.fixture(scope='module', params=[True, False],
+                ids=['with_technical_outliers',
+                     'without_technical_outliers'])
 def technical_outliers(request, n_samples, samples):
     """If request.param is True, return randomly chosen samples as technical
     outliers, otherwise None"""
@@ -55,7 +58,9 @@ def technical_outliers(request, n_samples, samples):
         return None
 
 
-@pytest.fixture(scope='module', params=[True, False])
+@pytest.fixture(scope='module', params=[True, False],
+                ids=['with_pooled',
+                     'without_pooled'])
 def pooled(request, n_samples, samples):
     """If request.param is True, return randomly chosen samples as pooled,
     otherwise None"""
@@ -67,7 +72,9 @@ def pooled(request, n_samples, samples):
     else:
         return None
 
-@pytest.fixture(scope='module', params=[True, False])
+@pytest.fixture(scope='module', params=[True, False],
+                ids=['with_outliers',
+                     'without_outliers'])
 def outliers(request, n_samples, samples):
     """If request.param is True, return randomly chosen samples as outliers,
     otherwise None"""
@@ -80,14 +87,19 @@ def outliers(request, n_samples, samples):
         return None
 
 
-@pytest.fixture(scope='module', params=[2, 3])
+@pytest.fixture(scope='module', params=[2, 3],
+                ids=['2_groups', '3_groups'])
 def n_groups(request):
     """Number of phenotype groups.
 
-    For testing that functions work when there's only a few groups
+    For testing that functions work when there's only 2 groups
     """
     return request.param
 
+@pytest.fixture(scope='module')
+def n_groups_fixed():
+    """Fixed number of phenotype groups (3)"""
+    return 3
 
 @pytest.fixture(scope='module')
 def groups(n_groups):
@@ -127,7 +139,8 @@ def color_ordered(group_order, group_to_color):
     return [group_to_color[g] for g in group_order]
 
 
-@pytest.fixture(scope='module', params=['simple', 'different'])
+@pytest.fixture(scope='module', params=['simple', 'different'],
+                ids=['simple_markers', 'different_markers'])
 def group_to_marker(request):
     """Mapping of groups to plotting markers"""
     if request.param == 'simple':
