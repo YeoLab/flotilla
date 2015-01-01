@@ -21,6 +21,7 @@ import seaborn as sns
 
 
 
+
 # CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
 # SHALEK2013_BASE_URL = 'http://oraw.githubusercontent.com/YeoLab/shalek2013/master'
 # # SHALEK2013_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects/shalek2013'
@@ -107,6 +108,12 @@ def groups(n_groups):
     return ['group{}'.format(i + 1) for i in np.arange(n_groups)]
 
 
+@pytest.fixture(scope='module')
+def groups_fixed(n_groups_fixed):
+    """Phenotype group names"""
+    return ['group{}'.format(i + 1) for i in np.arange(n_groups_fixed)]
+
+
 @pytest.fixture(scope='module', params=['sorted', 'random'])
 def group_order(request, groups):
     """so-called 'logical' order of groups for plotting.
@@ -161,6 +168,13 @@ def metadata_phenotype_col(request):
     """Which column in the metadata specifies the phenotype"""
     return request.param
 
+@pytest.fixture(scope='module')
+def groupby(groups, samples):
+    return dict((sample, np.random.choice(groups)) for sample in samples)
+
+@pytest.fixture(scope='module')
+def groupby_fixed(groups_fixed, samples):
+    return dict((sample, np.random.choice(groups_fixed)) for sample in samples)
 
 @pytest.fixture(scope='module')
 def metadata_data(groupby, outliers, pooled, samples,
@@ -172,6 +186,19 @@ def metadata_data(groupby, outliers, pooled, samples,
     if pooled is not None:
         df['pooled'] = df.index.isin(pooled)
     df[metadata_phenotype_col] = groupby
+    df['subset1'] = np.random.choice([True, False], size=n_samples)
+    return df
+
+@pytest.fixture(scope='module')
+def metadata_data_groups_fixed(groupby_fixed, outliers, pooled, samples,
+                  n_samples,
+                  metadata_phenotype_col):
+    df = pd.DataFrame(index=samples)
+    if outliers is not None:
+        df['outlier'] = df.index.isin(outliers)
+    if pooled is not None:
+        df['pooled'] = df.index.isin(pooled)
+    df[metadata_phenotype_col] = groupby_fixed
     df['subset1'] = np.random.choice([True, False], size=n_samples)
     return df
 
@@ -198,7 +225,8 @@ def mapping_stats_min_reads_default():
     return 5e5
 
 
-@pytest.fixture(scope='module', params=[None, 1e6])
+@pytest.fixture(scope='module', params=[None, 1e6],
+                ids=['min_reads_none', 'min_reads_1e6'])
 def mapping_stats_kws(request, mapping_stats_number_mapped_col):
     kws = {'number_mapped_col': mapping_stats_number_mapped_col}
     if request.param is not None:
@@ -240,12 +268,6 @@ def n_events():
 def events(n_events):
     return ['event_{}'.format(i + 1) for i in np.arange(n_events)]
 
-
-@pytest.fixture(scope='module')
-def groupby(groups, samples):
-    return dict((sample, np.random.choice(groups)) for sample in samples)
-
-
 @pytest.fixture(scope='module')
 def modality_models():
     parameter = 20.
@@ -263,7 +285,8 @@ def modality_models():
     return models
 
 
-@pytest.fixture(scope='module', params=[0, 1])
+@pytest.fixture(scope='module', params=[0, 1], ids=['na_thresh0',
+                                                    'na_thresh1'])
 def na_thresh(request):
     return request.param
 
@@ -296,7 +319,8 @@ def boolean_gene_categories():
 # def outlier(request):
 # return request.param
 
-@pytest.fixture(scope='module', params=[False, True])
+@pytest.fixture(scope='module', params=[False, True],
+                ids=['renamed', 'not_renamed'])
 def renamed(request):
     return request.param
 
@@ -347,12 +371,14 @@ def expression_feature_rename_col(renamed):
         return None
 
 
-@pytest.fixture(scope='module', params=[None, 2, 10])
+@pytest.fixture(scope='module', params=[None, 2, 10],
+                ids=['log_base_None', 'log_base2', 'log_base10'])
 def expression_log_base(request):
     return request.param
 
 
-@pytest.fixture(scope='module', params=[True, False])
+@pytest.fixture(scope='module', params=[True, False],
+                ids=['plus_one_true', 'plus_one_false'])
 def expression_plus_one(request):
     return request.param
 
@@ -406,7 +432,7 @@ def splicing_data(samples, events, true_modalities, modality_models,
 
 @pytest.fixture(scope='module')
 def splicing_data_no_na(samples, events,
-                        true_modalities, modality_models, na_thresh, groupby):
+                        true_modalities, modality_models, groupby):
     df = pd.DataFrame(index=samples, columns=events)
     df = pd.concat([pd.DataFrame(
         np.vstack([modality_models[modality].rvs(df.shape[0])
@@ -418,8 +444,7 @@ def splicing_data_no_na(samples, events,
 
 @pytest.fixture(scope='module')
 def splicing_feature_data(events, genes, gene_name, expression_feature_data,
-                          splicing_feature_common_id,
-                          renamed):
+                          splicing_feature_common_id):
     df = pd.DataFrame(index=events)
     df[gene_name] = df.index.map(lambda x: np.random.choice(genes))
     df = df.join(expression_feature_data, on=splicing_feature_common_id)

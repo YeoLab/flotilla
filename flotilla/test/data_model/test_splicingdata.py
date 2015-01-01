@@ -9,7 +9,8 @@ import pandas.util.testing as pdt
 import pytest
 
 
-@pytest.fixture(params=[None, 10])
+@pytest.fixture(params=[None, 10],
+                ids=['n_none', 'n_10'])
 def n(request):
     return request.param
 
@@ -128,6 +129,7 @@ class TestSplicingData:
 
         pdt.assert_frame_equal(test_transitions, true_transitions)
 
+    # @pytest.mark.parameterize('n_groups', 2)
     def test_big_nmf_space_transitions(self, splicing, groupby, group_transitions):
         test_big_transitions = splicing.big_nmf_space_transitions(
             groupby, group_transitions)
@@ -145,6 +147,7 @@ class TestSplicingData:
 
         pdt.assert_frame_equal(test_big_transitions, true_big_transitions)
 
+    # @pytest.mark.parameterize('n_groups', 2)
     def test_is_nmf_space_x_axis_included(self, splicing, groupby):
         test_is_nmf_space_x_axis_included = \
             splicing._is_nmf_space_x_axis_excluded(groupby)
@@ -164,6 +167,7 @@ class TestSplicingData:
         pdt.assert_equal(test_is_nmf_space_x_axis_included,
                          true_is_nmf_space_x_axis_included)
 
+    # @pytest.mark.parameterize('n_groups', 2)
     def test_nmf_space_xlabel(self, splicing, groupby):
         test_xlabel = splicing._nmf_space_xlabel(groupby)
 
@@ -174,6 +178,7 @@ class TestSplicingData:
 
         pdt.assert_equal(test_xlabel, true_xlabel)
 
+    # @pytest.mark.parameterize('n_groups', 2)
     def test_nmf_space_ylabel(self, splicing, groupby):
         test_ylabel = splicing._nmf_space_ylabel(groupby)
 
@@ -184,6 +189,7 @@ class TestSplicingData:
 
         pdt.assert_equal(test_ylabel, true_ylabel)
 
+    # @pytest.mark.parameterize('n_groups', 3)
     def test_plot_big_nmf_space(self, splicing_no_na, groupby, group_transitions,
                                 group_order, group_to_color,
                                 color_ordered, group_to_marker):
