@@ -10,6 +10,8 @@ import collections
 
 import numpy as np
 import pandas as pd
+from scipy import stats
+from scipy.misc import logsumexp
 from sklearn import cross_validation
 from joblib import Parallel, delayed
 
@@ -257,6 +259,92 @@ class Modalities(object):
         """
         assignments = self.fit_transform(psi, bootstrapped, bootstrapped_kws)
         return assignments.groupby(assignments).size()
+
+
+from collections import Iterable
+
+
+class ModalityModel(object):
+    """Object to model modalities from beta distributions"""
+    def __init__(self, alphas, betas):
+        self.alphas = alphas if isinstance(alphas, Iterable) else np.ones(
+            len(betas)) * alphas
+        self.betas = betas if isinstance(betas, Iterable) else np.ones(
+            len(alphas)) * betas
+
+        self.rvs = [stats.beta(a, b) for a, b in
+                    zip(self.alphas, self.betas)]
+        self.scores = np.arange(len(self.rvs)).astype(float) + .1
+        self.scaled_scores = self.scores / self.scores.max()
+        self.prob_parameters = self.scaled_scores / self.scaled_scores.sum()
+
+        # def logpdf_sum(self, x):
+
+        #         return np.array([rv.logpdf(x).sum() for rv in self.rvs])
+
+
+    def logliks(self, x):
+        x = x.copy()
+        x[x == 0] = 0.001
+        x[x == 1] = 0.999
+
+        return np.array([np.log(prob) + rv.logpdf(x).sum() for prob, rv in
+                         zip(self.prob_parameters, self.rvs)])
+
+    def logsumexp_logliks(self, x):
+        return logsumexp(self.logliks(x))
+    
+class ModalityEstimator(object):
+    """Use Bayesian methods to estimate modalities of splicing events"""
+
+    # colors = dict(
+    #     zip(['excluded', 'middle', 'included', 'bimodal', 'uniform'],
+    #         sns.color_palette('deep', n_colors=5)))
+    
+    def __init__(self, step, vmax, logbf_thresh=3):
+        """Initialize an object with models to estimate splicing modality
+
+        Parameters
+        ----------
+        step : float
+            Distance between parameter values
+        vmax : float
+            Maximum parameter value
+        """
+        self.step = step
+        self.vmax = vmax
+        self.logbf_thresh = logbf_thresh
+
+        self.parameters = np.arange(2, self.vmax + self.step,
+                                    self.step).astype(float)
+        self.exclusion_model = ModalityModel(1, self.parameters)
+        self.inclusion_model = ModalityModel(self.parameters, 1)
+        self.middle_model = ModalityModel(self.parameters, self.parameters)
+        self.bimodal_model = ModalityModel(1 / self.parameters, 1 / self.parameters)
+        
+        self.models = {'included': self.inclusion_model,
+                  'excluded': self.exclusion_model,
+                  'bimodal': self.bimodal_model,
+                  'middle': self.middle_model}
+
+    def _loglik(self, event):
+        return dict((name, m.logliks(event))
+                    for name, m in self.models.iteritems())
+
+    def _logsumexp(self, logliks):
+        return pd.Series(dict((name, logsumexp(loglik))
+                              for name, loglik in logliks.iteritems()))
+
+    def _guess_modality(self, logsumexps):
+        logsumexps['uniform'] = 3
+        return logsumexps.idxmax()
+
+    def fit_transform(self, data):
+        logsumexp_logliks = data.apply(lambda x:
+                                       pd.Series({k: v._logsumexp(v.loglik_(x))
+                                       for k, v in self.models.iteritems()}), axis=0)
+        logsumexp_logliks.ix['uniform'] = self.logbf_thresh
+        return logsumexp_logliks.idxmax()
 
 
 def switchy_score(array):
