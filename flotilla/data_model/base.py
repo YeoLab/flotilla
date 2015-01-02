@@ -810,6 +810,11 @@ class BaseData(object):
         else:
             return subset
 
+    def _standardize(self, data):
+        """Rescale data so mean is 0 and variance is 1"""
+        data = StandardScaler().fit_transform(data)
+        return pd.DataFrame(data, index=data.index, columns=data.columns)
+
     # def plot_clusteredheatmap(self, sample_ids, feature_ids,
     #                           metric='euclidean',
     #                           linkage_method='average',
@@ -899,7 +904,8 @@ class BaseData(object):
                reducer=DataFramePCA,
                standardize=True,
                reducer_kwargs=None, bins=None,
-               most_variant_features=False, std_multiplier=2):
+               most_variant_features=False, std_multiplier=2,
+               cosine_transform=False):
         """Make and memoize a reduced dimensionality representation of data
 
         Parameters
@@ -929,13 +935,26 @@ class BaseData(object):
         reducer_object : flotilla.compute.reduce.ReducerViz
             A ready-to-plot object containing the reduced space
         """
+        if cosine_transform and standardize:
+            raise ValueError("Cannot specify both 'cosine_transform' and "
+                             "'standardize' to be true")
 
         reducer_kwargs = {} if reducer_kwargs is None else reducer_kwargs
 
-        subset, means = self._subset_and_standardize(self.data,
-                                                     sample_ids, feature_ids,
-                                                     standardize,
-                                                     return_means=True)
+
+        subset = self._subset(self.data, sample_ids, feature_ids)
+        subset = subset.dropna(how='all', axis=1).dropna(how='all', axis=0)
+
+        if cosine_transform:
+            subset = subset.fillna(0.5)
+            subset = -2 * np.arccos(subset * 2 - 1) + np.pi
+
+        if standardize:
+            subset = subset.fillna(subset.mean())
+            subset = self._standardize(subset)
+
+        means = subset.means()
+
         if most_variant_features:
             var = subset.var()
             ind = var >= (var.mean() + std_multiplier*var.std())
@@ -945,10 +964,10 @@ class BaseData(object):
         if bins is not None:
             subset = self.binify(subset, bins)
 
-        # compute reduction
         if featurewise:
             subset = subset.T
 
+        # Compute dimensionality reduction
         reducer_object = reducer(subset, **reducer_kwargs)
         reducer_object.means = means
         return reducer_object
