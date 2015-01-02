@@ -95,15 +95,15 @@ class TestStudy(object):
                          feature_subset='all', featurewise=featurewise)
         plt.close('all')
 
-    def test_plot_classifier(self, study):
-        study.plot_classifier(study.metadata.phenotype_col, feature_subset='all')
-        plt.close('all')
-
-    def test_plot_classifier_splicing(self, study):
-        study.plot_classifier(study.metadata.phenotype_col,
-                              feature_subset='all',
-                              data_type='splicing')
-        plt.close('all')
+    # def test_plot_classifier(self, study):
+    #     study.plot_classifier(study.metadata.phenotype_col, feature_subset='all')
+    #     plt.close('all')
+    #
+    # def test_plot_classifier_splicing(self, study):
+    #     study.plot_classifier(study.metadata.phenotype_col,
+    #                           feature_subset='all',
+    #                           data_type='splicing')
+    #     plt.close('all')
 
     def test_plot_clustermap(self, study):
         study.plot_clustermap(feature_subset='all')
