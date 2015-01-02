@@ -14,7 +14,8 @@ def data_type(request):
     return request.param
 
 
-@pytest.fixture(params=[None, 'phenotype', 'subset1'])
+@pytest.fixture(params=[None, 'subset1'],
+                ids=['color_samples_by_none', 'color_samples_by_subset1'])
 def color_samples_by(request, metadata_phenotype_col):
     if request.param == 'phenotype':
         return metadata_phenotype_col
