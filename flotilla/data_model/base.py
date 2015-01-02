@@ -364,7 +364,7 @@ class BaseData(object):
                         "There are no {} features in this data: "
                         "{}".format(feature_subset, self))
             if rename:
-                feature_ids = feature_ids.map(self.feature_renamer)
+                feature_ids = map(self.feature_renamer, feature_ids)
         else:
             feature_ids = self.data.columns
         return feature_ids

@@ -253,7 +253,7 @@ class TestBaseData:
         expression = BaseData(expression_data_no_na,
                               feature_data=expression_feature_data)
         test_feature_ids = expression.feature_subset_to_feature_ids(
-            feature_subset)
+            feature_subset, rename=False)
 
 
         true_feature_ids = pd.Index([])
