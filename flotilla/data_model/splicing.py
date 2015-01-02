@@ -624,7 +624,8 @@ class SplicingData(BaseData):
                featurewise=False,
                reducer=DataFramePCA,
                standardize=True,
-               reducer_kwargs=None, bins=None):
+               reducer_kwargs=None, bins=None,
+               most_variant_features=False):
         """
         :param sample_ids: list of sample ids
         :param feature_ids: list of features
@@ -641,7 +642,8 @@ class SplicingData(BaseData):
                                                 featurewise, reducer,
                                                 standardize=False,
                                                 reducer_kwargs=reducer_kwargs,
-                                                bins=bins)
+                                                bins=bins,
+                                                most_variant_features=most_variant_features)
 
     def plot_two_features(self, feature1, feature2, groupby=None,
                           label_to_color=None, fillna=None, **kwargs):

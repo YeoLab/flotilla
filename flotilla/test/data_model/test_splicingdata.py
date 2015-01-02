@@ -189,11 +189,12 @@ class TestSplicingData:
 
         pdt.assert_equal(test_ylabel, true_ylabel)
 
-    # @pytest.mark.parameterize('n_groups', 3)
-    def test_plot_big_nmf_space(self, splicing_no_na, groupby, group_transitions,
-                                group_order, group_to_color,
+    # @pytest.mark.parameterize(n_groups=3)
+    def test_plot_big_nmf_space(self, splicing_no_na,
+                                groupby_fixed, group_transitions,
+                                group_order_fixed, group_to_color,
                                 color_ordered, group_to_marker):
         splicing_no_na.plot_big_nmf_space_transitions(
-            groupby, group_transitions, group_order, color_ordered,
+            groupby_fixed, group_transitions, group_order_fixed, color_ordered,
             group_to_color, group_to_marker)
         plt.close('all')
