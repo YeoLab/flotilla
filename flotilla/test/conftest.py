@@ -3,7 +3,6 @@ This file will be auto-imported for every testing session, so you can use
 these objects and functions across test files.
 """
 from collections import defaultdict
-import subprocess
 
 import matplotlib as mpl
 import numpy as np
@@ -74,14 +73,10 @@ def outliers(request, n_samples, samples):
         return None
 
 
-@pytest.fixture(scope='module', params=[2, 3],
-                ids=['2_groups', '3_groups'])
-def n_groups(request):
-    """Number of phenotype groups.
-
-    For testing that functions work when there's only 2 groups
-    """
-    return request.param
+@pytest.fixture(scope='module')
+def n_groups():
+    """Number of phenotype groups."""
+    return 2
 
 @pytest.fixture(scope='module')
 def n_groups_fixed():
@@ -278,7 +273,7 @@ def mapping_stats_data(samples, technical_outliers,
 
 @pytest.fixture(scope='module')
 def n_genes():
-    return 500
+    return 100
 
 
 @pytest.fixture(scope='module')
@@ -288,7 +283,7 @@ def genes(n_genes):
 
 @pytest.fixture(scope='module')
 def n_events():
-    return 500
+    return 200
 
 
 @pytest.fixture(scope='module')
@@ -370,10 +365,15 @@ def expression_data(samples, genes, groupby, na_thresh):
 
 
 @pytest.fixture(scope='module')
-def expression_data_no_na(samples, genes):
-    data = np.random.lognormal(5, 2, size=(len(samples), len(genes)))
-    return pd.DataFrame(data, index=samples, columns=genes)
-
+def expression_data_no_na(samples, genes, groupby_fixed):
+    df = pd.DataFrame(index=samples, columns=genes)
+    df = pd.concat([pd.DataFrame(np.vstack([
+        np.random.lognormal(np.random.uniform(0, 5), np.random.uniform(0, 2),
+                            df.shape[0]) for _ in df.columns]).T,
+                                 index=df.index, columns=df.columns) for
+                    name, df in
+                    df.groupby(groupby_fixed)], axis=0).sort_index()
+    return df
 
 @pytest.fixture(scope='module')
 def expression_feature_data(genes, gene_categories,
@@ -463,12 +463,12 @@ def splicing_data(samples, events, true_modalities, modality_models,
     return df.sort_index()
 
 @pytest.fixture(scope='module')
-def splicing_data_fixed(samples, events, true_modalities, modality_models,
+def splicing_data_fixed(samples, events, true_modalities_fixed, modality_models,
                         groupby_fixed):
     df = pd.DataFrame(index=samples, columns=events)
     df = pd.concat([pd.DataFrame(
         np.vstack([modality_models[modality].rvs(df.shape[0])
-                   for modality in true_modalities.ix[group]]).T,
+                   for modality in true_modalities_fixed.ix[group]]).T,
         index=df.index, columns=df.columns)
                     for group, df in df.groupby(groupby_fixed)], axis=0)
     df = df.apply(lambda x: x.map(
@@ -485,13 +485,13 @@ def splicing_data_fixed(samples, events, true_modalities, modality_models,
 
 @pytest.fixture(scope='module')
 def splicing_data_no_na(samples, events,
-                        true_modalities, modality_models, groupby):
+                        true_modalities_fixed, modality_models, groupby_fixed):
     df = pd.DataFrame(index=samples, columns=events)
     df = pd.concat([pd.DataFrame(
         np.vstack([modality_models[modality].rvs(df.shape[0])
-                   for modality in true_modalities.ix[group]]).T,
+                   for modality in true_modalities_fixed.ix[group]]).T,
         index=df.index, columns=df.columns)
-                    for group, df in df.groupby(groupby)], axis=0)
+                    for group, df in df.groupby(groupby_fixed)], axis=0)
     return df.sort_index()
 
 
@@ -544,28 +544,28 @@ def genelist_link(request, genelist_path, genelist_dropbox_link):
         return genelist_dropbox_link
 
 
-@pytest.fixture(params=[None, 'gene_category: A',
-                        'link',
-                        'path'], scope='module')
-def feature_subset(request, genelist_dropbox_link, genelist_path):
-    from flotilla.util import link_to_list
-
-    name_to_location = {'link': genelist_dropbox_link,
-                        'path': genelist_path}
-
-    if request.param is None:
-        return request.param
-    elif request.param in ('link', 'path'):
-
-        try:
-            return link_to_list(name_to_location[request.param])
-        except subprocess.CalledProcessError:
-            # Downloading the dropbox link failed, aka not connected to the
-            # internet, so just test "None" again
-            return None
-    else:
-        # Otherwise, this is a name of a subset
-        return request.param
+# @pytest.fixture(params=[None, 'gene_category: A',
+#                         'link',
+#                         'path'], scope='module')
+# def feature_subset(request, genelist_dropbox_link, genelist_path):
+#     from flotilla.util import link_to_list
+#
+#     name_to_location = {'link': genelist_dropbox_link,
+#                         'path': genelist_path}
+#
+#     if request.param is None:
+#         return request.param
+#     elif request.param in ('link', 'path'):
+#
+#         try:
+#             return link_to_list(name_to_location[request.param])
+#         except subprocess.CalledProcessError:
+#             # Downloading the dropbox link failed, aka not connected to the
+#             # internet, so just test "None" again
+#             return None
+#     else:
+#         # Otherwise, this is a name of a subset
+#         return request.param
 
 
 @pytest.fixture(scope='module')
@@ -638,9 +638,30 @@ def standardize(request):
     return request.param
 
 
-@pytest.fixture(params=['phenotype: Immature BDMC',
-                        'not (phenotype: Immature BDMC)',
-                        'pooled'],
+@pytest.fixture(params=['subset1',
+                        'phenotype: group1'],
                 scope='module')
 def sample_subset(request):
     return request.param
+
+@pytest.fixture(
+    params=[None, 'all', 'gene_category: A', 'W', pytest.mark.xfail('asdf')],
+    ids=['none', 'all_features', 'categorical_gene_category',
+         'boolean_gene_category', 'nonexistent_gene_category'],
+    scope='module')
+def feature_subset(request):
+    return request.param
+
+
+@pytest.fixture(scope='module')
+def splicing(splicing_data):
+    from flotilla.data_model.splicing import SplicingData
+
+    return SplicingData(splicing_data)
+
+
+@pytest.fixture(scope='module')
+def splicing_fixed(splicing_data_fixed):
+    from flotilla.data_model.splicing import SplicingData
+
+    return SplicingData(splicing_data_fixed)
