@@ -17,17 +17,6 @@ def n(request):
 
 class TestSplicingData:
 
-    @pytest.fixture
-    def splicing(self, splicing_data):
-        from flotilla.data_model.splicing import SplicingData
-
-        return SplicingData(splicing_data)
-
-    @pytest.fixture
-    def splicing_no_na(self, splicing_data_no_na):
-        from flotilla.data_model.splicing import SplicingData
-
-        return SplicingData(splicing_data_no_na)
 
     # @pytest.fixture(params=[None, 100])
     # def data_for_binned_nmf_reduced(self, request, splicing):
@@ -130,12 +119,13 @@ class TestSplicingData:
         pdt.assert_frame_equal(test_transitions, true_transitions)
 
     # @pytest.mark.parameterize('n_groups', 2)
-    def test_big_nmf_space_transitions(self, splicing, groupby, group_transitions):
-        test_big_transitions = splicing.big_nmf_space_transitions(
-            groupby, group_transitions)
+    def test_big_nmf_space_transitions(self, splicing_fixed, groupby_fixed,
+                                       group_transitions_fixed):
+        test_big_transitions = splicing_fixed.big_nmf_space_transitions(
+            groupby_fixed, group_transitions_fixed)
 
-        nmf_space_transitions = splicing.nmf_space_transitions(
-            groupby, group_transitions)
+        nmf_space_transitions = splicing_fixed.nmf_space_transitions(
+            groupby_fixed, group_transitions_fixed)
 
         # get the mean and standard dev of the whole array
         n = nmf_space_transitions.count().sum()
@@ -148,53 +138,53 @@ class TestSplicingData:
         pdt.assert_frame_equal(test_big_transitions, true_big_transitions)
 
     # @pytest.mark.parameterize('n_groups', 2)
-    def test_is_nmf_space_x_axis_included(self, splicing, groupby):
+    def test_is_nmf_space_x_axis_included(self, splicing_fixed, groupby_fixed):
         test_is_nmf_space_x_axis_included = \
-            splicing._is_nmf_space_x_axis_excluded(groupby)
+            splicing_fixed._is_nmf_space_x_axis_excluded(groupby_fixed)
 
-        nmf_space_positions = splicing.nmf_space_positions(groupby)
+        nmf_space_positions = splicing_fixed.nmf_space_positions(groupby_fixed)
 
         # Get the correct included/excluded labeling for the x and y axes
         event, phenotype = nmf_space_positions.pc_1.argmax()
-        top_pc1_samples = splicing.data.groupby(groupby).groups[
+        top_pc1_samples = splicing_fixed.data.groupby(groupby_fixed).groups[
             phenotype]
 
-        data = splicing._subset(splicing.data,
+        data = splicing_fixed._subset(splicing_fixed.data,
                                       sample_ids=top_pc1_samples)
-        binned = splicing.binify(data)
+        binned = splicing_fixed.binify(data)
         true_is_nmf_space_x_axis_included = bool(binned[event][0])
 
         pdt.assert_equal(test_is_nmf_space_x_axis_included,
                          true_is_nmf_space_x_axis_included)
 
     # @pytest.mark.parameterize('n_groups', 2)
-    def test_nmf_space_xlabel(self, splicing, groupby):
-        test_xlabel = splicing._nmf_space_xlabel(groupby)
+    def test_nmf_space_xlabel(self, splicing_fixed, groupby_fixed):
+        test_xlabel = splicing_fixed._nmf_space_xlabel(groupby_fixed)
 
-        if splicing._is_nmf_space_x_axis_excluded(groupby):
-            true_xlabel = splicing.excluded_label
+        if splicing_fixed._is_nmf_space_x_axis_excluded(groupby_fixed):
+            true_xlabel = splicing_fixed.excluded_label
         else:
-            true_xlabel = splicing.included_label
+            true_xlabel = splicing_fixed.included_label
 
         pdt.assert_equal(test_xlabel, true_xlabel)
 
     # @pytest.mark.parameterize('n_groups', 2)
-    def test_nmf_space_ylabel(self, splicing, groupby):
-        test_ylabel = splicing._nmf_space_ylabel(groupby)
+    def test_nmf_space_ylabel(self, splicing_fixed, groupby_fixed):
+        test_ylabel = splicing_fixed._nmf_space_ylabel(groupby_fixed)
 
-        if splicing._is_nmf_space_x_axis_excluded(groupby):
-            true_ylabel = splicing.included_label
+        if splicing_fixed._is_nmf_space_x_axis_excluded(groupby_fixed):
+            true_ylabel = splicing_fixed.included_label
         else:
-            true_ylabel = splicing.excluded_label
+            true_ylabel = splicing_fixed.excluded_label
 
         pdt.assert_equal(test_ylabel, true_ylabel)
 
     # @pytest.mark.parameterize(n_groups=3)
-    def test_plot_big_nmf_space(self, splicing_no_na,
-                                groupby_fixed, group_transitions,
-                                group_order_fixed, group_to_color,
-                                color_ordered, group_to_marker):
-        splicing_no_na.plot_big_nmf_space_transitions(
-            groupby_fixed, group_transitions, group_order_fixed, color_ordered,
-            group_to_color, group_to_marker)
+    def test_plot_big_nmf_space(self, splicing_fixed,
+                                groupby_fixed, group_to_color_fixed,
+                                group_order_fixed, group_transitions_fixed,
+                                color_ordered_fixed, group_to_marker):
+        splicing_fixed.plot_big_nmf_space_transitions(
+            groupby_fixed, group_transitions_fixed, group_order_fixed,
+            color_ordered_fixed, group_to_color_fixed, group_to_marker)
         plt.close('all')
