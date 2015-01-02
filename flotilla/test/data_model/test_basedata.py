@@ -244,3 +244,36 @@ class TestBaseData:
                                true_reduced.reduced_space)
         pdt.assert_series_equal(test_reduced.means,
                                 true_reduced.means)
+
+    def test_feature_subset_to_feature_ids(self, expression_data_no_na,
+                                           expression_feature_data,
+                                           feature_subset):
+        from flotilla.data_model.base import BaseData
+
+        expression = BaseData(expression_data_no_na,
+                              feature_data=expression_feature_data)
+        test_feature_ids = expression.feature_subset_to_feature_ids(
+            feature_subset)
+
+
+        true_feature_ids = pd.Index([])
+        if feature_subset is not None:
+            try:
+                if feature_subset in expression.feature_subsets:
+                    true_feature_ids = expression.feature_subsets[feature_subset]
+                elif feature_subset.startswith('all'):
+                    true_feature_ids = expression.data.columns
+            except TypeError:
+                if not isinstance(feature_subset, str):
+                    feature_ids = feature_subset
+                    n_custom = expression.feature_data.columns.map(
+                        lambda x: x.startswith('custom')).sum()
+                    expression.feature_data['custom_{}'.format(n_custom + 1)] = \
+                        expression.feature_data.index.isin(feature_ids)
+                else:
+                    raise ValueError(
+                        "There are no {} features in this data: "
+                        "{}".format(feature_subset, self))
+        else:
+            true_feature_ids = expression.data.columns
+        pdt.assert_array_equal(test_feature_ids, true_feature_ids)
