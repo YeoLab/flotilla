@@ -350,7 +350,7 @@ class BaseData(object):
             try:
                 if feature_subset in self.feature_subsets:
                     feature_ids = self.feature_subsets[feature_subset]
-                elif feature_subset == 'all_genes':
+                elif feature_subset.startswith('all'):
                     feature_ids = self.data.columns
             except TypeError:
                 if not isinstance(feature_subset, str):
