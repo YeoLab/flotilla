@@ -5,8 +5,6 @@ import numpy as np
 import pandas as pd
 import pytest
 import seaborn as sns
-
-import numpy.testing as npt
 import pandas.util.testing as pdt
 
 
@@ -24,7 +22,6 @@ class TestMetaData(object):
     @pytest.fixture(params=[None, list('CAB')])
     def phenotype_order(self, request):
         return request.param
-
 
     @pytest.fixture(params=[None, {'A': 'blue', 'B': 'red', 'C': 'green'},
                             {'A': '#f66ab5', 'B': '#f77189', 'C': '#6cad31'}])
