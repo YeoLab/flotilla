@@ -50,10 +50,28 @@ class TestStudy(object):
                      expression_data=expression_data_no_na,
                      splicing_data=splicing_data_fixed, **kwargs)
 
+    @pytest.fixture
+    def study_no_mapping_stats(self, metadata_data_groups_fixed,
+                               metadata_kws_fixed,
+                               expression_data_no_na, expression_kws,
+                               splicing_data_fixed, splicing_kws):
+        from flotilla.data_model import Study
+
+        kwargs = {}
+        kw_pairs = (('metadata', metadata_kws_fixed),
+                    ('expression', expression_kws),
+                    ('splicing', splicing_kws))
+        for data_type, kws in kw_pairs:
+            for kw_name, kw_value in kws.iteritems():
+                kwargs['{}_{}'.format(data_type, kw_name)] = kw_value
+
+        return Study(metadata_data_groups_fixed,
+                     expression_data=expression_data_no_na,
+                     splicing_data=splicing_data_fixed, **kwargs)
+
     # @pytest.mark.parameterize('n_groups', '3_groups')
     def test__init(self, study, pooled, technical_outliers):
         # Also need to check for when these are NAs
-
 
         if pooled is None:
             npt.assert_equal(study.pooled, None)
@@ -74,13 +92,15 @@ class TestStudy(object):
         #         flotilla.embark(shalek2013_datapackage_path, load_species_data=False)
         #
 
-    def test_plot_pca(self, study, color_samples_by):
-        study.plot_pca(color_samples_by=color_samples_by, feature_subset='all')
+    def test_plot_pca(self, study_no_mapping_stats, color_samples_by):
+        study_no_mapping_stats.plot_pca(color_samples_by=color_samples_by,
+                                        feature_subset='all')
         plt.close('all')
 
-    def test_plot_pca_splicing(self, study, color_samples_by):
-        study.plot_pca(color_samples_by=color_samples_by, data_type='splicing',
-                       feature_subset='all')
+    def test_plot_pca_splicing(self, study_no_mapping_stats, color_samples_by):
+        study_no_mapping_stats.plot_pca(color_samples_by=color_samples_by,
+                                        data_type='splicing',
+                                        feature_subset='all')
         plt.close('all')
 
     @pytest.fixture(params=[None, 'gene'])
@@ -90,101 +110,101 @@ class TestStudy(object):
         else:
             return request.param
 
-    def test_plot_graph(self, study, gene_of_interest, featurewise):
-        study.plot_graph(feature_of_interest=gene_of_interest,
-                         feature_subset='all', featurewise=featurewise)
-        plt.close('all')
-
-    # def test_plot_classifier(self, study):
-    #     study.plot_classifier(study.metadata.phenotype_col, feature_subset='all')
+    # def test_plot_graph(self, study, gene_of_interest, featurewise):
+    #     study.plot_graph(feature_of_interest=gene_of_interest,
+    #                      feature_subset='all', featurewise=featurewise)
     #     plt.close('all')
     #
-    # def test_plot_classifier_splicing(self, study):
-    #     study.plot_classifier(study.metadata.phenotype_col,
-    #                           feature_subset='all',
+    # # def test_plot_classifier(self, study):
+    # #     study.plot_classifier(study.metadata.phenotype_col, feature_subset='all')
+    # #     plt.close('all')
+    # #
+    # # def test_plot_classifier_splicing(self, study):
+    # #     study.plot_classifier(study.metadata.phenotype_col,
+    # #                           feature_subset='all',
+    # #                           data_type='splicing')
+    # #     plt.close('all')
+    #
+    # def test_plot_clustermap(self, study):
+    #     study.plot_clustermap(feature_subset='all')
+    #     plt.close('all')
+    #
+    # def test_plot_clustermap_splicing(self, study):
+    #     study.plot_clustermap(feature_subset='all',
     #                           data_type='splicing')
     #     plt.close('all')
-
-    def test_plot_clustermap(self, study):
-        study.plot_clustermap(feature_subset='all')
-        plt.close('all')
-
-    def test_plot_clustermap_splicing(self, study):
-        study.plot_clustermap(feature_subset='all',
-                              data_type='splicing')
-        plt.close('all')
-
-    def test_plot_correlations(self, study, featurewise):
-        study.plot_correlations(featurewise=featurewise,
-                                feature_subset='all')
-        plt.close('all')
-
-    def test_plot_correlations_splicing(self, study, featurewise):
-        study.plot_correlations(featurewise=featurewise, data_type='splicing',
-                                feature_subset='all')
-        plt.close('all')
-
-    def test_tidy_splicing_with_expression(self, study):
-        test = study.tidy_splicing_with_expression
-
-        common_id = 'common_id'
-        sample_id = 'sample_id'
-        event_name = 'event_name'
-
-        splicing_common_id = study.splicing.feature_data[
-            study.splicing.feature_expression_id_col]
-
-        # Tidify splicing
-        splicing = study.splicing.data
-        splicing_index_name = study._maybe_get_axis_name(splicing, axis=0)
-        splicing_columns_name = study._maybe_get_axis_name(splicing, axis=1)
-
-        splicing_tidy = pd.melt(splicing.reset_index(),
-                                id_vars=splicing_index_name,
-                                value_name='psi',
-                                var_name=splicing_columns_name)
-        rename_columns = {}
-        if splicing_index_name == 'index':
-            rename_columns[splicing_index_name] = sample_id
-        if splicing_columns_name == 'columns':
-            rename_columns[splicing_columns_name] = event_name
-            splicing_columns_name = event_name
-        splicing_tidy = splicing_tidy.rename(columns=rename_columns)
-
-        # Create a column of the common id on which to join splicing
-        # and expression
-        splicing_names = splicing_tidy[splicing_columns_name]
-        if isinstance(splicing_names, pd.Series):
-            splicing_tidy[common_id] = splicing_tidy[
-                splicing_columns_name].map(splicing_common_id)
-        else:
-            splicing_tidy[common_id] = [
-                study.splicing.feature_renamer(x)
-                for x in splicing_names.itertuples(index=False)]
-
-        splicing_tidy = splicing_tidy.dropna()
-
-        # Tidify expression
-        expression = study.expression.data_original
-        expression_index_name = study._maybe_get_axis_name(expression, axis=0)
-        expression_columns_name = study._maybe_get_axis_name(expression,
-                                                             axis=1)
-
-        expression_tidy = pd.melt(expression.reset_index(),
-                                  id_vars=expression_index_name,
-                                  value_name='expression',
-                                  var_name=common_id)
-        # This will only do anything if there is a column named "index" so
-        # no need to check anything
-        expression_tidy = expression_tidy.rename(columns={'index': sample_id})
-        expression_tidy = expression_tidy.dropna()
-
-        splicing_tidy.set_index([sample_id, common_id], inplace=True)
-        expression_tidy.set_index([sample_id, common_id], inplace=True)
-
-        true = splicing_tidy.join(expression_tidy, how='inner').reset_index()
-
-        pdt.assert_frame_equal(test, true)
+    #
+    # def test_plot_correlations(self, study, featurewise):
+    #     study.plot_correlations(featurewise=featurewise,
+    #                             feature_subset='all')
+    #     plt.close('all')
+    #
+    # def test_plot_correlations_splicing(self, study, featurewise):
+    #     study.plot_correlations(featurewise=featurewise, data_type='splicing',
+    #                             feature_subset='all')
+    #     plt.close('all')
+    #
+    # def test_tidy_splicing_with_expression(self, study):
+    #     test = study.tidy_splicing_with_expression
+    #
+    #     common_id = 'common_id'
+    #     sample_id = 'sample_id'
+    #     event_name = 'event_name'
+    #
+    #     splicing_common_id = study.splicing.feature_data[
+    #         study.splicing.feature_expression_id_col]
+    #
+    #     # Tidify splicing
+    #     splicing = study.splicing.data
+    #     splicing_index_name = study._maybe_get_axis_name(splicing, axis=0)
+    #     splicing_columns_name = study._maybe_get_axis_name(splicing, axis=1)
+    #
+    #     splicing_tidy = pd.melt(splicing.reset_index(),
+    #                             id_vars=splicing_index_name,
+    #                             value_name='psi',
+    #                             var_name=splicing_columns_name)
+    #     rename_columns = {}
+    #     if splicing_index_name == 'index':
+    #         rename_columns[splicing_index_name] = sample_id
+    #     if splicing_columns_name == 'columns':
+    #         rename_columns[splicing_columns_name] = event_name
+    #         splicing_columns_name = event_name
+    #     splicing_tidy = splicing_tidy.rename(columns=rename_columns)
+    #
+    #     # Create a column of the common id on which to join splicing
+    #     # and expression
+    #     splicing_names = splicing_tidy[splicing_columns_name]
+    #     if isinstance(splicing_names, pd.Series):
+    #         splicing_tidy[common_id] = splicing_tidy[
+    #             splicing_columns_name].map(splicing_common_id)
+    #     else:
+    #         splicing_tidy[common_id] = [
+    #             study.splicing.feature_renamer(x)
+    #             for x in splicing_names.itertuples(index=False)]
+    #
+    #     splicing_tidy = splicing_tidy.dropna()
+    #
+    #     # Tidify expression
+    #     expression = study.expression.data_original
+    #     expression_index_name = study._maybe_get_axis_name(expression, axis=0)
+    #     expression_columns_name = study._maybe_get_axis_name(expression,
+    #                                                          axis=1)
+    #
+    #     expression_tidy = pd.melt(expression.reset_index(),
+    #                               id_vars=expression_index_name,
+    #                               value_name='expression',
+    #                               var_name=common_id)
+    #     # This will only do anything if there is a column named "index" so
+    #     # no need to check anything
+    #     expression_tidy = expression_tidy.rename(columns={'index': sample_id})
+    #     expression_tidy = expression_tidy.dropna()
+    #
+    #     splicing_tidy.set_index([sample_id, common_id], inplace=True)
+    #     expression_tidy.set_index([sample_id, common_id], inplace=True)
+    #
+    #     true = splicing_tidy.join(expression_tidy, how='inner').reset_index()
+    #
+    #     pdt.assert_frame_equal(test, true)
 
     #
     #
