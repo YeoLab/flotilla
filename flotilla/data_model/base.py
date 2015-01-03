@@ -143,16 +143,18 @@ class BaseData(object):
                              'multi-indexed dataframes')
 
         self.data = data
-        self.data_original = self.data
-        self.thresh = thresh
-        self.minimum_samples = minimum_samples
+        self.data_original = self.data.copy()
+        self.thresh = thresh if thresh is not None else -np.inf
+        self.minimum_samples = minimum_samples if minimum_samples \
+                                                  is not None else 0
         self.data_type = data_type
+        self.technical_outliers = technical_outliers
 
-        if technical_outliers is not None and len(technical_outliers) > 0:
+        if self.technical_outliers is not None and len(self.technical_outliers) > 0:
             sys.stderr.write("Removing technical outliers from consideration "
                              "in {0}:\n\t{1}\n".format(
-                self.data_type, ", ".join(technical_outliers)))
-            good_samples = ~self.data.index.isin(technical_outliers)
+                self.data_type, ", ".join(self.technical_outliers)))
+            good_samples = ~self.data.index.isin(self.technical_outliers)
             self.data = self.data.ix[good_samples]
 
         self.pooled_samples = pooled if pooled is not None else []
@@ -161,7 +163,7 @@ class BaseData(object):
             self.pooled_samples)]
 
         if self.thresh > -np.inf or self.minimum_samples > 0:
-            self.data_original = self.data.copy()
+            # self.data_original = self.data.copy()
             if not self.singles.empty:
                 self.data = self._threshold(self.data, self.singles)
             else:
@@ -174,21 +176,6 @@ class BaseData(object):
         # self.feature_data = pd.DataFrame(index=self.data.columns)
         self.feature_rename_col = feature_rename_col
         self.default_feature_sets = []
-
-        if isinstance(self.data.columns, pd.MultiIndex):
-            feature_ids, renamed = zip(*self.data.columns.values)
-            self.feature_rename_col = 'gene_name'
-            column = pd.Series(renamed, index=self.data.columns,
-                               name=self.feature_rename_col)
-            if self.feature_data is None:
-                self.feature_data = pd.DataFrame(column,
-                                                 index=self.data.columns)
-            else:
-                if self.feature_rename_col not in self.feature_data:
-                    self.feature_data = self.feature_data.join(column,
-                                                               rsuffix='_right')
-                    if self.feature_rename_col + '_right' in self.feature_data:
-                        self.feature_rename_col += '_right'
 
         if self.feature_data is not None and self.feature_rename_col is not \
                 None:
@@ -291,11 +278,15 @@ class BaseData(object):
     @cached_property()
     def feature_renamer_series(self):
         """A pandas Series of the original feature ids to the renamed ids"""
-        try:
-            return self.feature_data[self.feature_rename_col].dropna()
-        except (TypeError, ValueError):
-            return pd.Series(self.data.columns.values,
-                             index=self.data.columns)
+        if self.feature_data is not None:
+            if self.feature_rename_col is not None:
+                return self.feature_data[self.feature_rename_col].dropna()
+            else:
+                return pd.Series(self.feature_data.index,
+                                 index=self.feature_data.index)
+        else:
+            return pd.Series(self.data_original.columns.values,
+                             index=self.data_original.columns)
 
     def maybe_renamed_to_feature_id(self, feature_id):
         """To be able to give a simple gene name, e.g. "RBFOX2" and get the
@@ -359,7 +350,7 @@ class BaseData(object):
             try:
                 if feature_subset in self.feature_subsets:
                     feature_ids = self.feature_subsets[feature_subset]
-                elif feature_subset == 'all_genes':
+                elif feature_subset.startswith('all'):
                     feature_ids = self.data.columns
             except TypeError:
                 if not isinstance(feature_subset, str):
@@ -373,7 +364,7 @@ class BaseData(object):
                         "There are no {} features in this data: "
                         "{}".format(feature_subset, self))
             if rename:
-                feature_ids = feature_ids.map(self.feature_renamer)
+                feature_ids = map(self.feature_renamer, feature_ids)
         else:
             feature_ids = self.data.columns
         return feature_ids
@@ -1050,6 +1041,7 @@ class BaseData(object):
                     label_pooled=False):
         """For compatiblity across data types, can specify _violinplot
         """
+        sample_ids = self.data.index if sample_ids is None else sample_ids
         singles, pooled = self._subset_singles_and_pooled(sample_ids,
                                                           feature_ids=[
                                                               feature_id])
@@ -1285,7 +1277,7 @@ class BaseData(object):
         std = np.sqrt(np.square(nmf_space_transitions - mean).sum().sum() / n)
 
         big_transitions = nmf_space_transitions[
-            nmf_space_transitions > (mean + 2 * std)].dropna(how='all')
+            nmf_space_transitions > (mean + std)].dropna(how='all')
         return big_transitions
 
     def plot_big_nmf_space_transitions(self, phenotype_groupby,
