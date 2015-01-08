@@ -11,8 +11,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import semantic_version
+import seaborn as sns
 
-from .metadata import MetaData, PHENOTYPE_COL, POOLED_COL
+from .metadata import MetaData, PHENOTYPE_COL, POOLED_COL, OUTLIER_COL
 from .expression import ExpressionData, SpikeInData
 from .quality_control import MappingStatsData, MIN_READS
 from .splicing import SplicingData, FRACTION_DIFF_THRESH
@@ -58,6 +59,9 @@ class Study(object):
     _default_reducer_kwargs = {'whiten': False,
                                'show_point_labels': False,
                                'show_vectors': False}
+    _common_id = 'common_id'
+    _sample_id = 'sample_id'
+    _event_name = 'event_name'
 
     _default_plot_kwargs = {'marker': 'o', 'color': blue}
 
@@ -82,14 +86,15 @@ class Study(object):
                  gene_ontology_data=None,
                  predictor_config_manager=None,
                  metadata_pooled_col=POOLED_COL,
+                 metadata_minimum_samples=0,
                  metadata_phenotype_col=PHENOTYPE_COL,
                  metadata_phenotype_order=None,
                  metadata_phenotype_to_color=None,
                  metadata_phenotype_to_marker=None,
+                 metadata_outlier_col=OUTLIER_COL,
                  license=None, title=None, sources=None,
                  default_sample_subset="all_samples",
-                 default_feature_subset="variant",
-                 metadata_minimum_samples=0):
+                 default_feature_subset="variant"):
         """Construct a biological study
 
         This class only accepts data, no filenames. All data must already
@@ -204,27 +209,19 @@ class Study(object):
             sample_metadata, metadata_phenotype_order,
             metadata_phenotype_to_color,
             metadata_phenotype_to_marker, pooled_col=metadata_pooled_col,
+            outlier_col=metadata_outlier_col,
             phenotype_col=metadata_phenotype_col,
             predictor_config_manager=self.predictor_config_manager)
-
-        self.phenotype_col = self.metadata.phenotype_col
-        self.phenotype_order = self.metadata.phenotype_order
-        self.phenotype_to_color = self.metadata.phenotype_to_color
-        self.phenotype_to_marker = self.metadata.phenotype_to_marker
-        self.phenotype_color_ordered = self.metadata.phenotype_color_order
-        self.sample_id_to_phenotype = self.metadata.sample_id_to_phenotype
-        self.sample_id_to_color = self.metadata.sample_id_to_color
-        self.phenotype_transitions = self.metadata.phenotype_transitions
 
         self.default_feature_subset = default_feature_subset
         self.default_sample_subset = default_sample_subset
 
-        if 'outlier' in self.metadata.data and drop_outliers:
+        if self.metadata.outlier_col in self.metadata.data and drop_outliers:
             outliers = self.metadata.data.index[
-                self.metadata.data.outlier.astype(bool)]
+                self.metadata.data[self.metadata.outlier_col].astype(bool)]
         else:
             outliers = None
-            self.metadata.data['outlier'] = False
+            self.metadata.data[self.metadata.outlier_col] = False
 
         # Get pooled samples
         pooled = None
@@ -245,9 +242,11 @@ class Study(object):
                 predictor_config_manager=self.predictor_config_manager,
                 min_reads=mapping_stats_min_reads)
             self.technical_outliers = self.mapping_stats.too_few_mapped
-            sys.stderr.write('Samples had too few mapped reads (<{'
-                             ':.1e} reads):\n\t{}\n'.format(
-                mapping_stats_min_reads, ', '.join(self.technical_outliers)))
+            if len(self.technical_outliers) > 0:
+                sys.stderr.write('Samples had too few mapped reads (<{'
+                                 ':.1e} reads):\n\t{}\n'.format(
+                    mapping_stats_min_reads,
+                    ', '.join(self.technical_outliers)))
         else:
             self.technical_outliers = None
 
@@ -256,8 +255,9 @@ class Study(object):
             sys.stdout.write('{}\tLoading species metadata from '
                              '~/flotilla_packages\n'.format(timestamp()))
             species_kws = self.load_species_data(self.species, self.readers)
-            expression_feature_data = species_kws.pop('expression_feature_data',
-                                                      None)
+            expression_feature_data = species_kws.pop(
+                'expression_feature_data',
+                None)
             expression_feature_rename_col = species_kws.pop(
                 'expression_feature_rename_col', None)
             splicing_feature_data = species_kws.pop('splicing_feature_data',
@@ -328,8 +328,40 @@ class Study(object):
         super(Study, self).__setattr__(key, value)
 
     @property
+    def phenotype_col(self):
+        return self.metadata.phenotype_col
+
+    @property
+    def phenotype_order(self):
+        return self.metadata.phenotype_order
+
+    @property
+    def phenotype_to_color(self):
+        return self.metadata.phenotype_to_color
+
+    @property
+    def phenotype_to_marker(self):
+        return self.metadata.phenotype_to_marker
+
+    @property
+    def sample_id_to_phenotype(self):
+        return self.metadata.sample_id_to_phenotype
+
+    @property
+    def sample_id_to_color(self):
+        return self.metadata.sample_id_to_color
+
+    @property
+    def phenotype_transitions(self):
+        return self.metadata.phenotype_transitions
+
+    @property
+    def phenotype_color_ordered(self):
+        return self.metadata.phenotype_color_order
+
+    @property
     def default_sample_subsets(self):
-        #move default_sample_subset to the front of the list, sort the rest
+        # move default_sample_subset to the front of the list, sort the rest
         sorted_sample_subsets = list(sorted(list(set(
             self.metadata.sample_subsets.keys()).difference(
             set(self.default_sample_subset)))))
@@ -378,7 +410,7 @@ class Study(object):
             resources of metadata, expression, and splicing.
         """
         datapackage = datapackage_url_to_dict(datapackage_url)
-        datapackage_dir = '{}/{}'.format(FLOTILLA_DOWNLOAD_DIR, 
+        datapackage_dir = '{}/{}'.format(FLOTILLA_DOWNLOAD_DIR,
                                          datapackage['name'])
         return cls.from_datapackage(
             datapackage, load_species_data=load_species_data,
@@ -459,9 +491,10 @@ class Study(object):
             compression = None if 'compression' not in resource else \
                 resource['compression']
             header = resource.pop('header', 0)
+            index_col = resource.pop('index_col', 0)
 
             dfs[name] = reader(filename, compression=compression,
-                               header=header)
+                               header=header, index_col=index_col)
 
             for key in set(resource.keys()).difference(
                     DATAPACKAGE_RESOURCE_COMMON_KWS):
@@ -572,6 +605,8 @@ class Study(object):
             datamodel = self.expression
         elif data_type == "splicing":
             datamodel = self.splicing
+        else:
+            raise TypeError('{} not a supported data type'.format(data_type))
 
         reducer, outlier_detector = datamodel.detect_outliers(
             sample_ids=sample_ids, feature_ids=feature_ids,
@@ -699,8 +734,10 @@ class Study(object):
 
     def plot_pca(self, data_type='expression', x_pc=1, y_pc=2,
                  sample_subset=None, feature_subset=None,
-                 title='', featurewise=False, plot_violins=True,
+                 title='', featurewise=False, plot_violins=False,
                  show_point_labels=False, reduce_kwargs=None,
+                 color_samples_by=None, bokeh=False,
+                 most_variant_features=False, std_multiplier=2,
                  **kwargs):
         """Performs DataFramePCA on both expression and splicing study_data
 
@@ -741,16 +778,19 @@ class Study(object):
                                                          feature_subset,
                                                          rename=False)
 
+        label_to_color = None
+        label_to_marker = None
+        groupby = None
+        order = None
         if not featurewise:
-            label_to_color = self.phenotype_to_color
-            label_to_marker = self.phenotype_to_marker
-            groupby = self.sample_id_to_phenotype
-            order = self.phenotype_order
-        else:
-            label_to_color = None
-            label_to_marker = None
-            groupby = None
-            order = None
+            if color_samples_by is None or \
+                            color_samples_by == self.metadata.phenotype_col:
+                label_to_color = self.phenotype_to_color
+                label_to_marker = self.phenotype_to_marker
+                groupby = self.sample_id_to_phenotype
+                order = self.phenotype_order
+            else:
+                groupby = self.metadata.data[color_samples_by]
 
         if "expression".startswith(data_type):
             reducer = self.expression.plot_pca(
@@ -758,10 +798,12 @@ class Study(object):
                 feature_ids=feature_ids,
                 label_to_color=label_to_color,
                 label_to_marker=label_to_marker, groupby=groupby,
-                order=order,
+                order=order, std_multiplier=std_multiplier,
                 featurewise=featurewise, show_point_labels=show_point_labels,
                 title=title, reduce_kwargs=reduce_kwargs,
-                plot_violins=plot_violins, **kwargs)
+                plot_violins=plot_violins, metadata=self.metadata.data,
+                bokeh=bokeh, most_variant_features=most_variant_features,
+                **kwargs)
 
         elif "splicing".startswith(data_type):
             reducer = self.splicing.plot_pca(
@@ -769,10 +811,12 @@ class Study(object):
                 feature_ids=feature_ids,
                 label_to_color=label_to_color,
                 label_to_marker=label_to_marker, groupby=groupby,
-                order=order,
+                order=order, std_multiplier=std_multiplier,
                 featurewise=featurewise, show_point_labels=show_point_labels,
                 title=title, reduce_kwargs=reduce_kwargs,
-                plot_violins=plot_violins, **kwargs)
+                plot_violins=plot_violins, metadata=self.metadata.data,
+                bokeh=bokeh, most_variant_features=most_variant_features,
+                **kwargs)
         else:
             raise ValueError('The data type {} does not exist in this study'
                              .format(data_type))
@@ -875,6 +919,8 @@ class Study(object):
             raise ValueError("All samples are True (or all samples are "
                              "False) or all are the same, cannot classify"
                              "when all samples are the same")
+        trait_data = pd.Series(trait_data, name=trait,
+                               index=self.metadata.data.index)
 
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
         feature_ids = self.feature_subset_to_feature_ids(data_type,
@@ -892,7 +938,7 @@ class Study(object):
         color = self.phenotype_color_ordered
 
         if data_type == "expression":
-            self.expression.plot_classifier(
+            return self.expression.plot_classifier(
                 data_name=data_name, trait=trait_data,
                 sample_ids=sample_ids, feature_ids=feature_ids,
                 label_to_color=label_to_color,
@@ -901,7 +947,7 @@ class Study(object):
                 order=order, color=color,
                 **kwargs)
         elif data_type == "splicing":
-            self.splicing.plot_classifier(
+            return self.splicing.plot_classifier(
                 data_name=data_name, trait=trait_data,
                 sample_ids=sample_ids, feature_ids=feature_ids,
                 label_to_color=label_to_color,
@@ -921,7 +967,7 @@ class Study(object):
 
     def modalities(self, sample_subset=None, feature_subset=None,
                    expression_thresh=-np.inf, bootstrapped=False,
-                   bootstrapped_kws=None):
+                   bootstrapped_kws=None, min_samples=0.5):
         """Get splicing modality assignments of data
 
         Parameters
@@ -953,7 +999,8 @@ class Study(object):
             case of bootstrapped=True
 
         """
-        if expression_thresh > -np.inf:
+        if expression_thresh > -np.inf and \
+                        expression_thresh > self.expression.data.min().min():
             data = self.filter_splicing_on_expression(
                 expression_thresh=expression_thresh,
                 sample_subset=sample_subset)
@@ -968,11 +1015,12 @@ class Study(object):
         return self.splicing.modalities(sample_ids, feature_ids, data=data,
                                         bootstrapped=bootstrapped,
                                         groupby=self.sample_id_to_phenotype,
-                                        bootstrapped_kws=bootstrapped_kws)
+                                        bootstrapped_kws=bootstrapped_kws,
+                                        min_samples=min_samples)
 
     def modalities_counts(self, sample_subset=None, feature_subset=None,
-                   expression_thresh=-np.inf, bootstrapped=True,
-                   bootstrapped_kws=None):
+                          expression_thresh=-np.inf, bootstrapped=False,
+                          bootstrapped_kws=None):
         """Get counts of each resampled splicing event assigned to a modality
 
         Parameters
@@ -1051,10 +1099,10 @@ class Study(object):
                                               bootstrapped=bootstrapped,
                                               bootstrapped_kws=bootstrapped_kws)
         self.splicing.plot_modalities_stacked_bar(sample_ids, feature_ids,
-                                          bar_ax, i=0, normed=normed,
-                                          legend=False,
-                                          bootstrapped=bootstrapped,
-                                          bootstrapped_kws=bootstrapped_kws)
+                                                  bar_ax, i=0, normed=normed,
+                                                  legend=False,
+                                                  bootstrapped=bootstrapped,
+                                                  bootstrapped_kws=bootstrapped_kws)
 
         axes = axes[2:]
         for i, ((celltype, series), ax) in enumerate(zip(grouped, axes)):
@@ -1063,8 +1111,9 @@ class Study(object):
             samples = series.index.intersection(sample_ids)
             # legend = i == 0
             self.splicing.plot_modalities_stacked_bar(samples, feature_ids,
-                                              bar_ax, i + 1, normed=normed,
-                                              legend=False)
+                                                      bar_ax, i + 1,
+                                                      normed=normed,
+                                                      legend=False)
 
             self.splicing.plot_modalities_reduced(samples, feature_ids,
                                                   ax, title=celltype)
@@ -1223,7 +1272,9 @@ class Study(object):
                                                          feature_subset=feature_subset)
 
         celltype_and_sample_ids = celltype_groups.groups.iteritems()
-        percents = pd.Series(celltype_groups.groups.keys())
+        index = pd.MultiIndex.from_product([celltype_groups.groups.keys(),
+                                            ['n_events', 'percent']])
+        percents = pd.Series(index=index)
         for i, (phenotype, sample_ids) in enumerate(celltype_and_sample_ids):
             # import pdb; pdb.set_trace()
 
@@ -1235,49 +1286,157 @@ class Study(object):
                 continue
             data = self.filter_splicing_on_expression(expression_thresh)
             data = data.ix[sample_ids, :]
-            singles, pooled, not_measured_in_pooled, pooled_inconsistent =\
-                self.splicing.pooled_inconsistent(data, feature_ids,
-                                              fraction_diff_thresh)
-            percent = self._percent_pooled_inconsistent(pooled,
-                                                        pooled_inconsistent)
-            percents[phenotype] = percent
+            if not data.empty:
+                singles, pooled, not_measured_in_pooled, pooled_inconsistent =\
+                    self.splicing.pooled_inconsistent(data, feature_ids,
+                                                  fraction_diff_thresh)
+                percent = self.splicing._divide_inconsistent_and_pooled(pooled,
+                                                            pooled_inconsistent)
+            else:
+                percent = np.nan
+            percents[phenotype, 'percent'] = percent
+            percents[phenotype, 'n_events'] = data.shape[1]
         return percents
 
+    def expression_vs_inconsistent_splicing(self, bins=None):
+        """Percentage of events inconsistent with pooled at expression threshs
 
-    # def plot_clusteredheatmap(self, sample_subset=None,
-    # feature_subset='variant',
-    # data_type='expression', metric='euclidean',
-    # linkage_method='median', figsize=None):
-    # if data_type == 'expression':
-    # data = self.expression.data
-    #     elif data_type == 'splicing':
-    #         data = self.splicing.data
-    #     celltype_groups = data.groupby(
-    #         self.sample_id_to_phenotype, axis=0)
-    #
-    #     if sample_subset is not None:
-    #         # Only plotting one sample_subset
-    #         try:
-    #             sample_ids = set(celltype_groups.groups[sample_subset])
-    #         except KeyError:
-    #             sample_ids = self.sample_subset_to_sample_ids(sample_subset)
-    #     else:
-    #         # Plotting all the celltypes
-    #         sample_ids = data.index
-    #
-    #     sample_colors = [self.sample_id_to_color[x] for x in sample_ids]
-    #     feature_ids = self.feature_subset_to_feature_ids(data_type,
-    #                                                      feature_subset,
-    #                                                      rename=False)
-    #
-    #     if data_type == "expression":
-    #         return self.expression.plot_clusteredheatmap(
-    #             sample_ids, feature_ids, linkage_method=linkage_method,
-    #             metric=metric, sample_colors=sample_colors, figsize=figsize)
-    #     elif data_type == "splicing":
-    #         return self.splicing.plot_clusteredheatmap(
-    #             sample_ids, feature_ids, linkage_method=linkage_method,
-    #             metric=metric, sample_colors=sample_colors, figsize=figsize)
+        Parameters
+        ----------
+        bins : list-like
+            List of expression cutoffs
+
+        Returns
+        -------
+        expression_vs_inconsistent : pd.DataFrame
+            A (len(bins), n_phenotypes) dataframe of the percentage of events
+            in single cells that are inconsistent with pooled
+        """
+
+        if bins is None:
+            emin = int(np.floor(self.expression.data_original.min().min()))
+            emax = int(np.ceil(self.expression.data_original.max().max()))
+            bins = np.arange(emin, emax)
+
+        expression_vs_inconsistent = pd.Series(bins).apply(
+            lambda x: self.percent_pooled_inconsistent(expression_thresh=x))
+        return expression_vs_inconsistent
+
+    def plot_expression_vs_inconsistent_splicing(self, bins=None):
+
+        expression_vs_inconsistent = self.expression_vs_inconsistent_splicing(
+            bins=bins)
+
+        fig, axes = plt.subplots(nrows=2, figsize=(6, 6))
+
+        # Plot the percent inconsistent
+        ax = axes[0]
+        for phenotype in self.phenotype_order:
+            s = expression_vs_inconsistent[(phenotype, 'percent')]
+            color = self.phenotype_to_color[phenotype]
+            ax.plot(s, 'o-', color=color)
+        ax.set_xlabel('Expression threshold')
+        ax.set_ylabel('Percent events inconsistent with pooled')
+        ymin, ymax = ax.get_ylim()
+        ax.set_ylim(0, ymax)
+
+        # Plot number of events at each cutoff
+        ax = axes[1]
+        for phenotype in self.phenotype_order:
+            s = expression_vs_inconsistent[(phenotype, 'n_events')]
+            color = self.phenotype_to_color[phenotype]
+            ax.plot(s, 'o-', color=color)
+        ax.set_xlabel('Expression threshold')
+        ax.set_ylabel('Number of events')
+        ymin, ymax = ax.get_ylim()
+        ax.set_ylim(0, ymax)
+        ax.legend()
+
+        sns.despine()
+
+    def plot_clustermap(self, sample_subset=None, feature_subset=None,
+                        data_type='expression', metric='euclidean',
+                        method='average', figsize=None,
+                        scale_fig_by_data=True, **kwargs):
+        """Visualize hierarchical relationships within samples and features
+
+        Parameters
+        ----------
+
+
+        Returns
+        -------
+
+
+        Raises
+        ------
+        """
+
+        if feature_subset is None:
+            feature_subset = self.default_feature_subset
+
+        sample_ids = self.sample_subset_to_sample_ids(sample_subset)
+        feature_ids = self.feature_subset_to_feature_ids(data_type,
+                                                         feature_subset,
+                                                         rename=False)
+
+        if data_type == "expression":
+            return self.expression.plot_clustermap(
+                sample_ids=sample_ids, feature_ids=feature_ids, method=method,
+                metric=metric, sample_id_to_color=self.sample_id_to_color,
+                figsize=figsize, scale_fig_by_data=scale_fig_by_data,
+                **kwargs)
+        elif data_type == "splicing":
+            return self.splicing.plot_clustermap(
+                sample_ids=sample_ids, feature_ids=feature_ids, method=method,
+                metric=metric, sample_id_to_color=self.sample_id_to_color,
+                figsize=figsize, scale_fig_by_data=scale_fig_by_data,
+                **kwargs)
+
+    def plot_correlations(self, sample_subset=None, feature_subset=None,
+                          data_type='expression', metric='euclidean',
+                          method='average', figsize=None, featurewise=False,
+                          scale_fig_by_data=True, **kwargs):
+        """Visualize clustered correlations of samples across features
+
+        Parameters
+        ----------
+
+
+        Returns
+        -------
+
+
+        Raises
+        ------
+
+        """
+
+        if feature_subset is None:
+            feature_subset = self.default_feature_subset
+
+        sample_ids = self.sample_subset_to_sample_ids(sample_subset)
+        feature_ids = self.feature_subset_to_feature_ids(data_type,
+                                                         feature_subset,
+                                                         rename=False)
+
+        if figsize is not None and scale_fig_by_data:
+            raise ValueError('If "scale_fig_by_data" is true, then cannot '
+                             'also specify "figsize"')
+
+        if data_type == "expression":
+            return self.expression.plot_correlations(
+                sample_ids=sample_ids, feature_ids=feature_ids,
+                sample_id_to_color=self.sample_id_to_color,
+                figsize=figsize, scale_fig_by_data=scale_fig_by_data,
+                metric=metric, method=method, featurewise=featurewise,
+                **kwargs)
+        elif data_type == "splicing":
+            return self.splicing.plot_correlations(
+                sample_ids=sample_ids, feature_ids=feature_ids, method=method,
+                metric=metric, sample_id_to_color=self.sample_id_to_color,
+                figsize=figsize, scale_fig_by_data=scale_fig_by_data,
+                featurewise=featurewise, **kwargs)
 
     def plot_lavalamps(self, sample_subset=None, feature_subset=None,
                        expression_thresh=-np.inf):
@@ -1379,7 +1538,7 @@ class Study(object):
                 self.sample_id_to_phenotype)
 
     def nmf_space_transitions(self, phenotype_transitions='all',
-                              data_type='splicing', n=5):
+                              data_type='splicing', n=0.5):
         """The change in NMF space of splicing events across phenotypes
 
         Parameters
@@ -1405,7 +1564,7 @@ class Study(object):
                 self.sample_id_to_phenotype, phenotype_transitions, n=n)
 
     def big_nmf_space_transitions(self, phenotype_transitions='all',
-                                  data_type='splicing', n=5):
+                                  data_type='splicing', n=0.5):
         """Splicing events whose change in NMF space is large
 
         By large, we mean that difference is 2 standard deviations away from
@@ -1444,13 +1603,14 @@ class Study(object):
                             self.metadata.phenotype_to_color,
                         'phenotype_to_marker':
                             self.metadata.phenotype_to_marker,
-                        'minimum_samples': self.metadata.minimum_samples}
+                        'minimum_samples': self.metadata.minimum_samples,
+                        'outlier_col': self.metadata.outlier_col}
 
         try:
             expression = self.expression.data_original
             expression_kws = {
                 'log_base': self.expression.log_base,
-                'thresh': self.expression.thresh,
+                'thresh': self.expression.thresh_original,
                 'plus_one': self.expression.plus_one}
         except AttributeError:
             expression = None
@@ -1521,6 +1681,18 @@ class Study(object):
                                       version=version,
                                       flotilla_dir=flotilla_dir)
 
+    @staticmethod
+    def _maybe_get_axis_name(df, axis=0, alt_name=None):
+        if alt_name is None:
+            alt_name = 'columns' if axis == 1 else 'index'
+        axis = df.columns if axis == 1 else df.index
+        if isinstance(axis, pd.MultiIndex):
+            name = axis.names
+        else:
+            name = axis.name
+        name = alt_name if name is None else name
+        return name
+
     @cached_property()
     def tidy_splicing_with_expression(self):
         """A tall 'tidy' dataframe of samples with expression and splicing
@@ -1528,44 +1700,59 @@ class Study(object):
         :return:
         :rtype:
         """
+        # Establish common strings
+
+        splicing_common_id = self.splicing.feature_data[
+            self.splicing.feature_expression_id_col]
+
         # Tidify splicing
         splicing = self.splicing.data
-        splicing_index_name = splicing.index.name
-        splicing_index_name = 'index' if splicing_index_name is None \
-            else splicing_index_name
-        if isinstance(splicing.columns, pd.MultiIndex):
-            splicing_columns_name = splicing.columns.names
-        else:
-            splicing_columns_name = splicing.columns.name
+        splicing_index_name = self._maybe_get_axis_name(splicing, axis=0)
+        splicing_columns_name = self._maybe_get_axis_name(splicing, axis=1)
 
         splicing_tidy = pd.melt(splicing.reset_index(),
                                 id_vars=splicing_index_name,
                                 value_name='psi',
                                 var_name=splicing_columns_name)
-        splicing_tidy = splicing_tidy.rename(columns={
-            splicing_index_name: 'sample_id'})
-        splicing_tidy['common_id'] = splicing_tidy[splicing_columns_name].map(
-            self.splicing.feature_data[self.splicing.feature_expression_id_col])
+        rename_columns = {}
+        if splicing_index_name == 'index':
+            rename_columns[splicing_index_name] = self._sample_id
+        if splicing_columns_name == 'columns':
+            rename_columns[splicing_columns_name] = self._event_name
+            splicing_columns_name = self._event_name
+        splicing_tidy = splicing_tidy.rename(columns=rename_columns)
+
+        # Create a column of the common id on which to join splicing
+        # and expression
+        splicing_names = splicing_tidy[splicing_columns_name]
+        if isinstance(splicing_names, pd.Series):
+            splicing_tidy[self._common_id] = splicing_tidy[
+                splicing_columns_name].map(splicing_common_id)
+        else:
+            # Splicing ids are a multi-index, so the feature renamer will get
+            # the name of the feature.
+            splicing_tidy[self._common_id] = [
+                self.splicing.feature_renamer(x)
+                for x in splicing_names.itertuples(index=False)]
 
         splicing_tidy = splicing_tidy.dropna()
 
         # Tidify expression
         expression = self.expression.data_original
-        expression_index_name = expression.index.name
-        expression_index_name = 'index' if expression_index_name is None \
-            else expression_index_name
+        expression_index_name = self._maybe_get_axis_name(expression, axis=0)
+        expression_columns_name = self._maybe_get_axis_name(expression, axis=1)
 
         expression_tidy = pd.melt(expression.reset_index(),
                                   id_vars=expression_index_name,
                                   value_name='expression',
-                                  var_name='common_id')
-        # if expression_index_name == 'index':
-        expression_tidy = expression_tidy.rename(columns={'index': 'sample_id'})
+                                  var_name=self._common_id)
+        # This will only do anything if there is a column named "index" so
+        # no need to check anything
+        expression_tidy = expression_tidy.rename(columns={'index': self._sample_id})
         expression_tidy = expression_tidy.dropna()
 
-        splicing_tidy.set_index(['sample_id', 'common_id'], inplace=True)
-        expression_tidy.set_index(['sample_id', 'common_id'], inplace=True)
-
+        splicing_tidy.set_index([self._sample_id, self._common_id], inplace=True)
+        expression_tidy.set_index([self._sample_id, self._common_id], inplace=True)
         return splicing_tidy.join(expression_tidy, how='inner').reset_index()
 
     def filter_splicing_on_expression(self, expression_thresh,
@@ -1585,17 +1772,29 @@ class Study(object):
             A (n_samples, n_features)
 
         """
-        sample_ids = self.sample_subset_to_sample_ids(sample_subset)
-        splicing_with_expression = \
-            self.tidy_splicing_with_expression.ix[
-                self.tidy_splicing_with_expression.sample_id.isin(sample_ids)]
-        ind = splicing_with_expression.expression >= expression_thresh
-        splicing_high_expression = splicing_with_expression.ix[ind]
-        splicing_high_expression = splicing_high_expression.reset_index().dropna()
-        filtered_psi = splicing_high_expression.pivot(
-            columns='miso_id', index='sample_id', values='psi')
-        return filtered_psi
 
+        if expression_thresh > -np.inf \
+                and expression_thresh > self.expression.data_original.min().min():
+            columns = self._maybe_get_axis_name(self.splicing.data, axis=1, alt_name=self._event_name)
+            index = self._maybe_get_axis_name(self.splicing.data, axis=0, alt_name=self._sample_id)
+
+            sample_ids = self.sample_subset_to_sample_ids(sample_subset)
+            splicing_with_expression = \
+                self.tidy_splicing_with_expression.ix[
+                    self.tidy_splicing_with_expression.sample_id.isin(sample_ids)]
+            ind = splicing_with_expression.expression >= expression_thresh
+            splicing_high_expression = splicing_with_expression.ix[ind]
+            splicing_high_expression = splicing_high_expression.reset_index().dropna()
+
+            if isinstance(columns, list) or isinstance(index, list):
+                filtered_psi = splicing_high_expression.pivot_table(
+                    columns=columns, index=index, values='psi')
+            else:
+                filtered_psi = splicing_high_expression.pivot(
+                    columns=columns, index=index, values='psi')
+            return filtered_psi
+        else:
+            return self.splicing.data
 
 
 # Add interactive visualizations
@@ -1607,4 +1806,5 @@ Study.interactive_lavalamp_pooled_inconsistent = \
     Interactive.interactive_lavalamp_pooled_inconsistent
 Study.interactive_choose_outliers = Interactive.interactive_choose_outliers
 Study.interactive_reset_outliers = Interactive.interactive_reset_outliers
-# Study.interactive_clusteredheatmap = Interactive.interactive_clusteredheatmap
+Study.interactive_clustermap = Interactive.interactive_clustermap
+Study.interactive_correlations = Interactive.interactive_correlations

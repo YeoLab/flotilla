@@ -203,13 +203,13 @@ class ExampleGenerator(object):
 
     @property
     def plotfunc(self):
-        match = re.search(r"sns\.(.+plot)\(", self.filetext)
+        match = re.search(r"flotilla.Study\.(plot.+)\(", self.filetext)
         if match:
             return match.group(1)
-        match = re.search(r"sns\.(.+map)\(", self.filetext)
+        match = re.search(r"flotilla.Study\.(.+map)\(", self.filetext)
         if match:
             return match.group(1)
-        match = re.search(r"sns\.(.+Grid)\(", self.filetext)
+        match = re.search(r"flotilla.Study\.(.+Grid)\(", self.filetext)
         if match:
             return match.group(1)
         return ""
@@ -271,8 +271,9 @@ class ExampleGenerator(object):
         thumbfile = os.path.join("gallery_thumbs",
                                  self.thumbfilename)
         self.html = "<img src=../%s>" % self.pngfilename
-        fig.tight_layout()
-        fig.savefig(pngfile, dpi=75, format="png")
+        cluster_or_correls = 'plot_clustermap' in self.filename or \
+                             'plot_correlations' in self.filename
+        fig.savefig(pngfile, dpi=75, format="png", bbox_inches='tight')
 
         cx, cy = self.thumbloc
         create_thumbnail(pngfile, thumbfile, cx=cx, cy=cy)
