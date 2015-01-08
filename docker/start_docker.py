@@ -12,11 +12,7 @@ import signal
 import argparse
 import json
 
-<<<<<<< HEAD
-DEFAULT_FLOTILLA_VERSION = "latest"
-=======
 DEFAULT_FLOTILLA_VERSION = "master"
->>>>>>> changed default docker image to master
 DEFAULT_FLOTILLA_NOTEBOOK_DIR = "~/flotilla_notebooks"
 DEFAULT_FLOTILLA_PROJECTS_DIR = "~/flotilla_projects"
 DEFAULT_MEMORY_REQUIREMENT = 3500
