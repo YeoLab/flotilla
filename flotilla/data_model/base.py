@@ -137,17 +137,24 @@ class BaseData(object):
         are considered as single-cell samples.
 
         """
-        self.data = data
-        self.data_original = self.data
-        self.thresh = thresh
-        self.minimum_samples = minimum_samples
-        self.data_type = data_type
+        if isinstance(data.index, pd.MultiIndex) \
+                or isinstance(data.columns, pd.MultiIndex):
+            raise ValueError('flotilla does not currently support '
+                             'multi-indexed dataframes')
 
-        if technical_outliers is not None:
+        self.data = data
+        self.data_original = self.data.copy()
+        self.thresh = thresh if thresh is not None else -np.inf
+        self.minimum_samples = minimum_samples if minimum_samples \
+                                                  is not None else 0
+        self.data_type = data_type
+        self.technical_outliers = technical_outliers
+
+        if self.technical_outliers is not None and len(self.technical_outliers) > 0:
             sys.stderr.write("Removing technical outliers from consideration "
                              "in {0}:\n\t{1}\n".format(
-                self.data_type, ", ".join(technical_outliers)))
-            good_samples = ~self.data.index.isin(technical_outliers)
+                self.data_type, ", ".join(self.technical_outliers)))
+            good_samples = ~self.data.index.isin(self.technical_outliers)
             self.data = self.data.ix[good_samples]
 
         self.pooled_samples = pooled if pooled is not None else []
@@ -156,7 +163,7 @@ class BaseData(object):
             self.pooled_samples)]
 
         if self.thresh > -np.inf or self.minimum_samples > 0:
-            self.data_original = self.data.copy()
+            # self.data_original = self.data.copy()
             if not self.singles.empty:
                 self.data = self._threshold(self.data, self.singles)
             else:
@@ -169,21 +176,6 @@ class BaseData(object):
         # self.feature_data = pd.DataFrame(index=self.data.columns)
         self.feature_rename_col = feature_rename_col
         self.default_feature_sets = []
-
-        if isinstance(self.data.columns, pd.MultiIndex):
-            feature_ids, renamed = zip(*self.data.columns.values)
-            self.feature_rename_col = 'gene_name'
-            column = pd.Series(renamed, index=self.data.columns,
-                               name=self.feature_rename_col)
-            if self.feature_data is None:
-                self.feature_data = pd.DataFrame(column,
-                                                 index=self.data.columns)
-            else:
-                if self.feature_rename_col not in self.feature_data:
-                    self.feature_data = self.feature_data.join(column,
-                                                               rsuffix='_right')
-                    if self.feature_rename_col + '_right' in self.feature_data:
-                        self.feature_rename_col += '_right'
 
         if self.feature_data is not None and self.feature_rename_col is not \
                 None:
@@ -236,7 +228,7 @@ class BaseData(object):
             else:
                 return rename
         else:
-            return x
+            return '_'.join(x)
 
     @staticmethod
     def _shortener(x, renamer=None, max_char_len=20):
@@ -283,14 +275,18 @@ class BaseData(object):
         """Data from only the outlier samples"""
         return self.data.ix[self.outlier_samples]
 
-    @property
+    @cached_property()
     def feature_renamer_series(self):
         """A pandas Series of the original feature ids to the renamed ids"""
-        try:
-            return self.feature_data[self.feature_rename_col].dropna()
-        except (TypeError, ValueError):
-            return pd.Series(self.data.columns.values,
-                             index=self.data.columns)
+        if self.feature_data is not None:
+            if self.feature_rename_col is not None:
+                return self.feature_data[self.feature_rename_col].dropna()
+            else:
+                return pd.Series(self.feature_data.index,
+                                 index=self.feature_data.index)
+        else:
+            return pd.Series(self.data_original.columns.values,
+                             index=self.data_original.columns)
 
     def maybe_renamed_to_feature_id(self, feature_id):
         """To be able to give a simple gene name, e.g. "RBFOX2" and get the
@@ -354,7 +350,7 @@ class BaseData(object):
             try:
                 if feature_subset in self.feature_subsets:
                     feature_ids = self.feature_subsets[feature_subset]
-                elif feature_subset == 'all_genes':
+                elif feature_subset.startswith('all'):
                     feature_ids = self.data.columns
             except TypeError:
                 if not isinstance(feature_subset, str):
@@ -368,7 +364,7 @@ class BaseData(object):
                         "There are no {} features in this data: "
                         "{}".format(feature_subset, self))
             if rename:
-                feature_ids = feature_ids.map(self.feature_renamer)
+                feature_ids = map(self.feature_renamer, feature_ids)
         else:
             feature_ids = self.data.columns
         return feature_ids
@@ -527,6 +523,8 @@ class BaseData(object):
                                       groupby=None, label_to_color=None,
                                       label_to_marker=None, order=None,
                                       reduce_kwargs=None, title='',
+                                      most_variant_features=False,
+                                      std_multiplier=2,
                                       **plotting_kwargs):
         """Principal component-like analysis of measurements
 
@@ -577,7 +575,9 @@ class BaseData(object):
 
         reduced = self.reduce(sample_ids, feature_ids,
                               featurewise=featurewise,
-                              reducer=reducer, **reduce_kwargs)
+                              reducer=reducer,
+                              most_variant_features=most_variant_features,
+                              **reduce_kwargs)
 
         visualized = DecompositionViz(reduced.reduced_space,
                                       reduced.components_,
@@ -657,7 +657,8 @@ class BaseData(object):
         return subset
 
     def _subset_singles_and_pooled(self, sample_ids=None,
-                                   feature_ids=None, data=None):
+                                   feature_ids=None, data=None,
+                                   require_min_samples=True):
         """Subset singles and pooled, taking only features that appear in both
         
         Parameters
@@ -673,7 +674,10 @@ class BaseData(object):
             py:attr:`BaseData.data`. Convenient for when you filtered based on
             some other criteria, e.g. for splicing events with expression 
             greater than some threshold
-        
+        require_min_samples : bool
+            If True, then require the study-default minimum number of samples,
+            but only for singles.
+
         Returns
         -------
         singles : pandas.DataFrame
@@ -688,11 +692,11 @@ class BaseData(object):
         # import pdb; pdb.set_trace()
         if data is None:
             singles = self._subset(self.singles, sample_ids, feature_ids,
-                                   require_min_samples=True)
+                                   require_min_samples=require_min_samples)
         else:
             sample_ids = data.index.intersection(self.singles.index)
             singles = self._subset(data, sample_ids,
-                                   require_min_samples=True)
+                                   require_min_samples=require_min_samples)
 
         try:
             # If the sample ids don't overlap with the pooled sample, assume you
@@ -720,10 +724,26 @@ class BaseData(object):
                 # These are Seriessssss
                 singles = singles.dropna()
                 pooled = pooled.dropna()
-        except AttributeError:
+        except (AttributeError, ValueError):
             pooled = None
 
         return singles, pooled
+
+    # def _subset_ids_or_data(self, sample_ids, feature_ids, data,
+    #                            singles=False):
+    #     if data is None:
+    #         if singles:
+    #             data = self.singles
+    #         else:
+    #             data = self.data
+    #         return self._subset(data, sample_ids, feature_ids,
+    #                             require_min_samples=False)
+    #     else:
+    #         if feature_ids is not None and sample_ids is not None:
+    #             raise ValueError('Can only specify `sample_ids` and '
+    #                              '`feature_ids` or `data`, but not both.')
+    #         else:
+    #             return data
 
     def _subset_and_standardize(self, data, sample_ids=None,
                                 feature_ids=None,
@@ -874,7 +894,8 @@ class BaseData(object):
                featurewise=False,
                reducer=DataFramePCA,
                standardize=True,
-               reducer_kwargs=None, bins=None):
+               reducer_kwargs=None, bins=None,
+               most_variant_features=False, std_multiplier=2):
         """Make and memoize a reduced dimensionality representation of data
 
         Parameters
@@ -911,6 +932,12 @@ class BaseData(object):
                                                      sample_ids, feature_ids,
                                                      standardize,
                                                      return_means=True)
+        if most_variant_features:
+            var = subset.var()
+            ind = var >= (var.mean() + std_multiplier*var.std())
+            subset = subset.ix[:, ind]
+            means = means[ind]
+
         if bins is not None:
             subset = self.binify(subset, bins)
 
@@ -1014,12 +1041,14 @@ class BaseData(object):
                     label_pooled=False):
         """For compatiblity across data types, can specify _violinplot
         """
+        sample_ids = self.data.index if sample_ids is None else sample_ids
         singles, pooled = self._subset_singles_and_pooled(sample_ids,
                                                           feature_ids=[
                                                               feature_id])
         outliers = None
         try:
-            if not self.outliers.empty:
+            outliers_in_data = self.outliers.index.intersection(sample_ids)
+            if len(outliers_in_data) > 0:
                 outliers = self._subset(self.outliers,
                                         feature_ids=[feature_id])
         except AttributeError:
@@ -1057,7 +1086,8 @@ class BaseData(object):
                      phenotype_groupby=None,
                      phenotype_order=None, color=None,
                      phenotype_to_color=None,
-                     phenotype_to_marker=None, nmf_xlabel=None, nmf_ylabel=None,
+                     phenotype_to_marker=None, nmf_xlabel=None,
+                     nmf_ylabel=None,
                      nmf_space=False, fig=None, axesgrid=None):
         """
         Plot the violinplot of a feature. Have the option to show NMF movement
@@ -1101,15 +1131,19 @@ class BaseData(object):
             sns.despine()
         fig.tight_layout()
 
-    def nmf_space_positions(self, groupby, n=5):
+    def nmf_space_positions(self, groupby, n=0.5):
         """Calculate NMF-space position of splicing events in phenotype groups
 
         Parameters
         ----------
         groupby : mappable
             A sample id to phenotype mapping
-        n : int
-            Minimum samples required per group
+        n : int or float
+            If int, then this is the absolute number of cells that are minimum
+            required to calculate modalities. If a float, then require this
+            fraction of samples to calculate modalities, e.g. if 0.6, then at
+            least 60% of samples must have an event detected for modality
+            detection
 
         Returns
         -------
@@ -1117,9 +1151,16 @@ class BaseData(object):
             A (n_events, n_groups) dataframe of NMF positions
         """
         grouped = self.singles.groupby(groupby)
-        at_least_n_per_group_per_event = grouped.transform(
-            lambda x: x if x.count() >= n else pd.Series(np.nan,
-                                                         index=x.index))
+        if isinstance(n, int):
+            thresh = lambda x: n
+        elif isinstance(n, float):
+            thresh = lambda x: n * x.shape[0]
+
+        at_least_n_per_group_per_event = pd.concat(
+            [df.dropna(thresh=thresh(df), axis=1) for name, df in grouped])
+        # at_least_n_per_group_per_event = grouped.transform(
+        #     lambda x: x if x.count() >= n else pd.Series(np.nan,
+        #                                                  index=x.index))
         df = at_least_n_per_group_per_event.groupby(groupby).apply(
             lambda x: self.binned_nmf_reduced(data=x))
         df = df.swaplevel(0, 1)
@@ -1169,7 +1210,7 @@ class BaseData(object):
                 pass
         return distances
 
-    def nmf_space_transitions(self, groupby, phenotype_transitions, n=5):
+    def nmf_space_transitions(self, groupby, phenotype_transitions, n=0.5):
         """Get distance in NMF space of different splicing events
 
         Parameters
@@ -1179,8 +1220,12 @@ class BaseData(object):
         phenotype_transitions : list of str pairs
             Which phenotype follows from one to the next, for calculating
             distances between
-        n : int
-            Minimum number of samples per phenotype, per event
+        n : int or float
+            If int, then this is the absolute number of cells that are minimum
+            required to calculate modalities. If a float, then require this
+            fraction of samples to calculate modalities, e.g. if 0.6, then at
+            least 60% of samples must have an event detected for modality
+            detection
 
         Returns
         -------
@@ -1204,7 +1249,7 @@ class BaseData(object):
                                                              axis=0)
         return nmf_space_transitions
 
-    def big_nmf_space_transitions(self, groupby, phenotype_transitions, n=5):
+    def big_nmf_space_transitions(self, groupby, phenotype_transitions, n=0.5):
         """Get features whose change in NMF space between phenotypes is large
 
         Parameters
@@ -1232,14 +1277,14 @@ class BaseData(object):
         std = np.sqrt(np.square(nmf_space_transitions - mean).sum().sum() / n)
 
         big_transitions = nmf_space_transitions[
-            nmf_space_transitions > (mean + 2 * std)].dropna(how='all')
+            nmf_space_transitions > (mean + std)].dropna(how='all')
         return big_transitions
 
     def plot_big_nmf_space_transitions(self, phenotype_groupby,
                                        phenotype_transitions,
                                        phenotype_order, color,
                                        phenotype_to_color,
-                                       phenotype_to_marker, n=5):
+                                       phenotype_to_marker, n=0.5):
         """Violinplots and NMF transitions of features different in phenotypes
 
         Plot violinplots and NMF-space transitions of features that have large
@@ -1335,8 +1380,87 @@ class BaseData(object):
                                               for i in x.index]
                 simple_twoway_scatter(x, y, joint_kws=joint_kws, **kwargs)
 
+    @staticmethod
+    def _figsizer(shape, multiplier=0.25):
+        """Scale a heatmap figure based on the dataframe shape"""
+        return tuple(reversed(map(lambda x: min(x * multiplier, 40),
+                                  shape)))
+
+
+    def plot_clustermap(self, sample_ids=None, feature_ids=None, data=None,
+                        feature_colors=None, sample_id_to_color=None,
+                        metric='euclidean', method='average',
+                        scale_fig_by_data=True, **kwargs):
+        # data = self._subset_ids_or_data(sample_ids, feature_ids, data)
+        if data is None:
+            data = self._subset(self.data, sample_ids, feature_ids,
+                                require_min_samples=False)
+        # Get a mask of what values are NA, then replace them because
+        # clustering doesn't work if there's NAs
+        data = data.dropna(how='all', axis=1).dropna(how='all', axis=0)
+        mask = data.isnull()
+        data = data.fillna(data.mean())
+
+        if sample_id_to_color is not None:
+            sample_colors = [sample_id_to_color[x] for x in data.index]
+
+        col_colors = feature_colors
+        row_colors = sample_colors
+        data.columns = data.columns.map(self.feature_renamer)
+
+        if scale_fig_by_data:
+            figsize = self._figsizer(data.shape)
+            kwargs.pop('figsize')
+        else:
+            figsize = kwargs.pop('figsize', None)
+
+
+        return sns.clustermap(data, linewidth=0, col_colors=col_colors,
+                              row_colors=row_colors, metric=metric,
+                              method=method, figsize=figsize, mask=mask,
+                              **kwargs)
+
+    def plot_correlations(self, sample_ids=None, feature_ids=None, data=None,
+                          featurewise=False, sample_id_to_color=None,
+                          metric='euclidean', method='average',
+                          scale_fig_by_data=True, **kwargs):
+        if data is None:
+            data = self._subset(self.data, sample_ids, feature_ids,
+                                require_min_samples=False)
+
+        if sample_id_to_color is not None and not featurewise:
+            colors = [sample_id_to_color[x] for x in data.index]
+        else:
+            colors = None
+
+        if not featurewise:
+            data = data.T
+        corr = data.corr()
+        corr = corr.dropna(how='all', axis=0).dropna(how='all', axis=1)
+
+        # Get a mask of what values are NA, then replace them because
+        # clustering doesn't work if there's NAs
+        mask = corr.isnull()
+        corr = corr.fillna(data.mean())
+
+        if featurewise:
+            corr.index = corr.index.map(self.feature_renamer)
+            corr.columns = corr.columns.map(self.feature_renamer)
+
+        if scale_fig_by_data:
+            figsize = self._figsizer(corr.shape)
+            kwargs.pop('figsize')
+        else:
+            figsize = kwargs.pop('figsize', None)
+
+        return sns.clustermap(corr, linewidth=0, col_colors=colors,
+                              row_colors=colors, figsize=figsize,
+                              method=method, metric=metric, mask=mask,
+                              **kwargs)
+
+
 def subsets_from_metadata(metadata, minimum, subset_type, ignore=None):
-    """
+    """Get subsets from metadata, including boolean and categorical columns
 
     Parameters
     ----------

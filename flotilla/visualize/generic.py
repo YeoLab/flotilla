@@ -24,7 +24,6 @@ def violinplot(data, groupby=None, color_ordered=None, ax=None,
     Raises
     ------
     """
-    # import pdb; pdb.set_trace()
     data_type = 'none' if data_type is None else data_type
     splicing = data_type == 'splicing'
 

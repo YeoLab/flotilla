@@ -232,12 +232,11 @@ def write_gzip_pickle_df(df, file_name):
     subprocess.call(['mv %s %s' % (tempfile, file_name)])
 
 
-def load_tsv(file_name, compression=None, header=0):
-    return pd.read_table(file_name, index_col=0, compression=compression,
-                         header=header)
+def load_tsv(file_name, **kwargs):
+    return pd.read_table(file_name, **kwargs)
 
 
-def load_json(filename, compression=None):
+def load_json(filename, **kwargs):
     """
     Parameters
     ----------
@@ -253,6 +252,7 @@ def load_json(filename, compression=None):
     Raises
     ------
     """
+    kwargs.pop('compression')
     return pd.read_json(filename)
 
 
@@ -260,9 +260,8 @@ def write_tsv(df, file_name):
     df.to_csv(file_name, sep='\t')
 
 
-def load_csv(file_name, compression=None, header=0):
-    return pd.read_csv(file_name, index_col=0, compression=compression,
-                       header=header)
+def load_csv(file_name, **kwargs):
+    return pd.read_csv(file_name, **kwargs)
 
 
 def write_csv(df, file_name):
@@ -274,8 +273,8 @@ def get_loading_method(self, file_name):
     return getattr(self, "_load_" + file_name)
 
 
-def load(self, file_name, file_type='pickle_df'):
-    return self._get_loading_method(file_type)(file_name)
+# def load(self, file_name, file_type='pickle_df'):
+#     return self._get_loading_method(file_type)(file_name)
 
 
 def timestamp():

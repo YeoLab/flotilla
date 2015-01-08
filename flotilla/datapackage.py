@@ -10,6 +10,7 @@ import sys
 import urllib2
 
 import pandas as pd
+import matplotlib as mpl
 
 
 FLOTILLA_DOWNLOAD_DIR = os.path.expanduser('~/flotilla_projects')
@@ -138,6 +139,8 @@ def make_study_datapackage(name, metadata,
 
         if isinstance(data.columns, pd.MultiIndex):
             resource['header'] = range(len(data.columns.levels))
+        if isinstance(data.index, pd.MultiIndex):
+            resource['index_col'] = range(len(data.index.levels))
         # try:
         # # TODO: only transmit data if it has been updated
         # subprocess.call(
@@ -151,6 +154,11 @@ def make_study_datapackage(name, metadata,
         resource['format'] = 'csv'
         if kws is not None:
             for key, value in kws.iteritems():
+                if key == 'phenotype_to_color':
+                    value = dict((k, mpl.colors.rgb2hex(v))
+                                 if isinstance(v, tuple) else
+                                 (k, v)
+                                 for k,v in value.iteritems())
                 resource[key] = value
 
     filename = '{}/datapackage.json'.format(datapackage_dir)
@@ -187,7 +195,9 @@ def make_feature_datapackage():
             ]}
 
 
-def get_resource_from_name(datapackage, name):
+def name_to_resource(datapackage, name):
+    """Get resource with specified name in the datapackage"""
     for resource in datapackage['resources']:
         if resource['name'] == name:
             return resource
+    raise ValueError('No resource named {} in this datapackage'.format(name))

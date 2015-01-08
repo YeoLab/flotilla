@@ -4,7 +4,7 @@ from setuptools import find_packages
 #from flotilla import __version__
 
 #version = __version__
-version = "0.2.4dev"
+version = "0.2.5dev"
 
 setup(
     name='flotilla',
@@ -41,7 +41,7 @@ setup(
                       "jinja2",
                       #"fastcluster",
                       "semantic_version",
-                      "joblib",
+                      "joblib >= 0.8.4",
     ],
     version=version,
     classifiers=['License :: OSI Approved :: BSD License',
