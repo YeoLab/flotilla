@@ -645,7 +645,7 @@ class BaseData(object):
         else:
             single_feature = False
 
-        subset = data.ix[sample_ids, feature_ids]
+        subset = data.ix[sample_ids,:].ix[:, feature_ids]
         # subset = subset.T.ix[feature_ids].T
 
         if require_min_samples and not single_feature:
