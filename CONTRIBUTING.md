@@ -61,7 +61,7 @@ To make this easier, I use ["Live Templates" in PyCharm]
 check out the instructions [here](https://github.com/YeoLab/PyCharm-Python-Templates) for how to install and use them.
 
 Testing
-=======
+-------
 
 In the source directory (wherever you cloned `flotilla` to that has this README.md file), do:
 
@@ -69,8 +69,7 @@ In the source directory (wherever you cloned `flotilla` to that has this README.
 
 This will run the unit test suite.
 
-Coverage
---------
+### Coverage
 
 To check coverage of the test suite, run
 
@@ -89,3 +88,20 @@ To run `pep8` and `pyflakes` over the code, make sure you have [this fork]
 
     make lint
 
+Pull Request Checklist
+----------------------
+
+When you make a pull request, please copy this text into your first message 
+of the pull request, which will create a checklist, which should be completed 
+before the pull request is merged.
+
+```
+- [ ] Is it mergable?
+- [ ] Did it pass the tests?
+- [ ] If it introduces new functionality in scripts/ is it tested?
+  Check for code coverage.
+- [ ] Is it well formatted? Look at `make pep8` and `make lint` output
+- [ ] Is it documented in the doc/releases/?
+- [ ] Was a spellchecker run on the source code and documentation after
+  changes were made?
+```
