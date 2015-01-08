@@ -12,7 +12,7 @@ import signal
 import argparse
 import json
 
-DEFAULT_FLOTILLA_VERSION = "master"
+DEFAULT_FLOTILLA_VERSION = "lastest"
 DEFAULT_FLOTILLA_NOTEBOOK_DIR = "~/flotilla_notebooks"
 DEFAULT_FLOTILLA_PROJECTS_DIR = "~/flotilla_projects"
 DEFAULT_MEMORY_REQUIREMENT = 3500
