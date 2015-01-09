@@ -100,6 +100,7 @@ before the pull request is merged.
 - [ ] Did it pass the tests?
 - [ ] If it introduces new functionality in scripts/ is it tested?
   Check for code coverage.
+- [ ] If it adds a new plot, is it documented in the gallery?
 - [ ] Is it well formatted? Look at `make pep8` and `make lint` output
 - [ ] Is it documented in the doc/releases/?
 - [ ] Was a spellchecker run on the source code and documentation after
