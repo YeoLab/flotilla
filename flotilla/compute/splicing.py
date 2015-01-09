@@ -22,6 +22,10 @@ MODALITIES_NAMES = ['excluded', 'middle', 'included', 'bimodal',
 class ModalityModel(object):
     """Object to model modalities from beta distributions"""
     def __init__(self, alphas, betas):
+        if not isinstance(alphas, Iterable) and not isinstance(betas, Iterable):
+            alphas = [alphas]
+            betas = [betas]
+
         self.alphas = alphas if isinstance(alphas, Iterable) else np.ones(
             len(betas)) * alphas
         self.betas = betas if isinstance(betas, Iterable) else np.ones(
@@ -60,6 +64,9 @@ class ModalityEstimator(object):
             Distance between parameter values
         vmax : float
             Maximum parameter value
+        logbf_thresh : float
+            Minimum threshold at which the bayes factor difference is defined
+            to be significant
         """
         self.step = step
         self.vmax = vmax
@@ -86,7 +93,7 @@ class ModalityEstimator(object):
                               for name, loglik in logliks.iteritems()))
 
     def _guess_modality(self, logsumexps):
-        logsumexps['uniform'] = 3
+        logsumexps['uniform'] = self.logbf_thresh
         return logsumexps.idxmax()
 
     def fit_transform(self, data):

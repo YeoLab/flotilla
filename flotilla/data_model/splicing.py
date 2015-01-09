@@ -7,7 +7,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 from .base import BaseData
-from ..compute.splicing import Modalities
+
+# from ..compute.splicing import Modalities
 from ..compute.decomposition import DataFramePCA
 from ..visualize.color import purples
 from ..visualize.splicing import ModalitiesViz
@@ -79,8 +80,8 @@ class SplicingData(BaseData):
                 
         self.bins = np.arange(0, 1 + self.binsize, self.binsize)
 
-        self.modalities_calculator = Modalities(excluded_max=excluded_max,
-                                                included_min=included_min)
+        # self.modalities_calculator = Modalities(excluded_max=excluded_max,
+        #                                         included_min=included_min)
         self.modalities_visualizer = ModalitiesViz()
 
     # @memoize
