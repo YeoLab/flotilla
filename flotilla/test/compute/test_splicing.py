@@ -209,6 +209,15 @@ class TestModalityEstimator(object):
 
         pdt.assert_series_equal(test_fit_transform, true_fit_transform)
 
+    def test_counts(self, estimator, splicing_data_fixed):
+        test_counts = estimator.counts(splicing_data_fixed)
+
+        assignments = estimator.fit_transform(splicing_data_fixed)
+        true_counts = assignments.groupby(assignments).size()
+
+        pdt.assert_series_equal(test_counts, true_counts)
+
+
 @pytest.fixture(params=['list', 'array', 'nan'])
 def array(request):
     x = np.arange(0, 1.1, .1)
