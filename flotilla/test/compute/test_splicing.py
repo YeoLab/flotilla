@@ -204,6 +204,7 @@ class TestModalityEstimator(object):
             lambda x: pd.Series({k: v.logsumexp_logliks(x)
                                  for k, v in estimator.models.iteritems()}),
             axis=0)
+        logsumexp_logliks.ix['uniform'] = estimator.logbf_thresh
         true_fit_transform = logsumexp_logliks.idxmax()
 
         pdt.assert_series_equal(test_fit_transform, true_fit_transform)
@@ -221,7 +222,7 @@ def array(request):
 
 def test_switchy_score(array):
     from flotilla.compute.splicing import switchy_score
-    test_switchy_score = switchy_score(x)
+    test_switchy_score = switchy_score(array)
 
     true_array = np.array(array)
     variance = 1 - np.std(np.sin(true_array[~np.isnan(true_array)] * np.pi))

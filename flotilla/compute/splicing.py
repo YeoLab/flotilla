@@ -46,7 +46,8 @@ class ModalityModel(object):
         x[x == 0] = 0.001
         x[x == 1] = 0.999
 
-        return np.array([np.log(prob) + rv.logpdf(x).sum() for prob, rv in
+        return np.array([np.log(prob) + rv.logpdf(x[np.isfinite(x)]).sum()
+                         for prob, rv in
                          zip(self.prob_parameters, self.rvs)])
 
     def logsumexp_logliks(self, x):
