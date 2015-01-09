@@ -18,6 +18,7 @@ API changes
 - :py:func:`.data_model.Study.plot_classifier` returns a
   :py:func:`.visualize.predict.ClassifierViz` object
 - Multi-index columns for data matrices are no longer supported
+- Modalities are now calculated using Bayesian methods
 
 Bug fixes
 ~~~~~~~~~
