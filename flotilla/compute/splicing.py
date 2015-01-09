@@ -103,7 +103,7 @@ class ModalityEstimator(object):
 
     def fit_transform(self, data):
         logsumexp_logliks = data.apply(lambda x:
-                                       pd.Series({k: v._logsumexp(v.loglik_(x))
+                                       pd.Series({k: v.logsumexp_logliks(x)
                                        for k, v in self.models.iteritems()}), axis=0)
         logsumexp_logliks.ix['uniform'] = self.logbf_thresh
         return logsumexp_logliks.idxmax()
