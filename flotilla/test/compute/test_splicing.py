@@ -4,7 +4,7 @@ import pytest
 import numpy as np
 import numpy.testing as npt
 from scipy import stats
-
+from scipy.misc import logsumexp
 
 class TestModalityModel(object):
 
@@ -15,16 +15,39 @@ class TestModalityModel(object):
     @pytest.fixture(params=[1, np.arange(1, 5)])
     def betas(self, request):
         return request.param
+    
+    @pytest.fixture()
+    def alpha(self):
+        return np.arange(1, 5)
+    
+    @pytest.fixture()
+    def beta(self):
+        return 1.
+    
+    @pytest.fixture()
+    def x(self):
+        return np.arange(0, 1.1, 0.1)
+
+    @pytest.fixture()
+    def model(self, alpha, beta):
+        from flotilla.compute.splicing import ModalityModel
+        return ModalityModel(alpha, beta)
 
     def test_init(self, alphas, betas):
         from flotilla.compute.splicing import ModalityModel
 
         model = ModalityModel(alphas, betas)
 
-        true_alphas = alphas if isinstance(alphas, Iterable) else np.ones(
-            len(betas)) * alphas
-        true_betas = betas if isinstance(betas, Iterable) else np.ones(
-            len(alphas)) * betas
+        true_alphas = alphas
+        true_betas = betas
+        if not isinstance(alphas, Iterable) and not isinstance(betas, Iterable):
+            true_alphas = [alphas]
+            true_betas = [betas]
+
+        true_alphas = true_alphas if isinstance(true_alphas, Iterable) else np.ones(
+            len(true_betas)) * true_alphas
+        true_betas = true_betas if isinstance(true_betas, Iterable) else np.ones(
+            len(true_alphas)) * true_betas
 
         true_rvs = [stats.beta(a, b) for a, b in
                     zip(true_alphas, true_betas)]
@@ -40,24 +63,23 @@ class TestModalityModel(object):
         for test_rv, true_rv in zip(model.rvs, true_rvs):
             npt.assert_array_equal(test_rv.args, true_rv.args)
 
+    def test_logliks(self, x, model):
+        test_logliks = model.logliks(x)
+        
+        true_x = x.copy()
+        true_x[true_x == 0] = 0.001
+        true_x[true_x == 1] = 0.999
+        true_logliks = np.array([np.log(prob) + rv.logpdf(true_x).sum()
+                                 for prob, rv in zip(model.prob_parameters,
+                                                     model.rvs)])
+        npt.assert_array_equal(test_logliks, true_logliks)
 
-# class TestModalities:
-#
-#     def test_init(self, kwargs):
-#         from flotilla.compute.splicing import Modalities
-#
-#         test_modalities = Modalities(**kwargs)
-#
-#         if kwargs == {}:
-#             npt.assert_equal(test_modalities.bins, (0, 0.2, 0.8, 1))
-#         else:
-#             npt.assert_equal(test_modalities.bins, (0, kwargs['excluded_max'],
-#                                                     kwargs['included_min'], 1))
-#
-# def test_binned_to_assignments():
-#     from flotilla.compute.splicing import TRUE_MODALITIES, \
-#         _binned_to_assignments
-#
-#     assignments = _binned_to_assignments(TRUE_MODALITIES, TRUE_MODALITIES)
-#
-#     npt.assert_array_equal(assignments.values, assignments.index)
+    def test_logsumexp_logliks(self, x, model):
+        test_logsumexp_logliks = model.logsumexp_logliks(x)
+
+        npt.assert_array_equal(test_logsumexp_logliks,
+                               logsumexp(model.logliks(x)))
+
+
+# class TestModalityEstimator(object):
+#     def test_init(self, splicing):
