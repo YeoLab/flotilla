@@ -7,8 +7,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 from .base import BaseData
-
-# from ..compute.splicing import Modalities
+from ..compute.splicing import ModalityEstimator
 from ..compute.decomposition import DataFramePCA
 from ..visualize.color import purples
 from ..visualize.splicing import ModalitiesViz
@@ -80,14 +79,15 @@ class SplicingData(BaseData):
                 
         self.bins = np.arange(0, 1 + self.binsize, self.binsize)
 
+        self.modality_estimator = ModalityEstimator()
         # self.modalities_calculator = Modalities(excluded_max=excluded_max,
         #                                         included_min=included_min)
-        self.modalities_visualizer = ModalitiesViz()
+        self.modality_visualizer = ModalitiesViz()
 
     # @memoize
-    def modalities(self, sample_ids=None, feature_ids=None, data=None,
-                   groupby=None, min_samples=0.5,
-                   bootstrapped=False, bootstrapped_kws=None):
+    def modality_assignments(self, sample_ids=None, feature_ids=None,
+                             data=None, groupby=None, min_samples=0.5,
+                             bootstrapped=False, bootstrapped_kws=None):
         """Assigned modalities for these samples and features.
 
         Parameters
@@ -137,8 +137,7 @@ class SplicingData(BaseData):
         data = pd.concat([df.dropna(thresh=thresh(df), axis=1)
                          for name, df in grouped])
         assignments = data.groupby(groupby).apply(
-            self.modalities_calculator.fit_transform,
-            bootstrapped=bootstrapped, bootstrapped_kws=bootstrapped_kws)
+            self.modality_estimator.fit_transform)
         return assignments
 
     # @memoize
