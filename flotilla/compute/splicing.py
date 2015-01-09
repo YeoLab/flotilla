@@ -109,6 +109,9 @@ class ModalityEstimator(object):
         logsumexp_logliks.ix['uniform'] = self.logbf_thresh
         return logsumexp_logliks.idxmax()
 
+    def counts(self, data):
+        assignments = self.fit_transform(data)
+        return assignments.groupby(assignments).size()
 
 def switchy_score(array):
     """Transform a 1D array of data scores to a vector of "switchy scores"
