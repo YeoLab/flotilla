@@ -1,69 +1,63 @@
-import itertools
+from collections import Iterable
 
 import pytest
 import numpy as np
 import numpy.testing as npt
-import pandas as pd
+from scipy import stats
 
 
-@pytest.fixture(params=[None, (0.3, 0.7)])
-def kwargs(request):
-    if request.param is None:
-        return {}
-    else:
-        return {'excluded_max': request.param[0],
-                'included_min': request.param[1]}
+class TestModalityModel(object):
 
-@pytest.fixture
-def binned(kwargs):
-    from flotilla.compute.infotheory import bin_range_strings
-    binned = np.array(list(itertools.product(np.arange(0, 1.1, .1), repeat=3)))
-    binned = binned[binned.sum(axis=1) == 1]
+    @pytest.fixture(params=[1, np.arange(1, 5)])
+    def alphas(self, request):
+        return request.param
 
-    if kwargs is None:
-        index = bin_range_strings((0, 0.2, 0.8, 1))
-    else:
-        index = bin_range_strings((0, kwargs['excluded_max'],
-                                  kwargs['included_min'], 1))
-    columns = ['event_{}'.format(i+1) for i in np.arange(binned.shape[0])]
-    return pd.DataFrame(binned.T, index=index, columns=columns)
+    @pytest.fixture(params=[1, np.arange(1, 5)])
+    def betas(self, request):
+        return request.param
 
-@pytest.fixture
-def psi(binned):
-    n_samples = 10
-    unbinned = (binned * n_samples).astype(int).cumsum()
-    psi = pd.DataFrame(index=np.arange(n_samples), columns=binned.columns)
+    def test_init(self, alphas, betas):
+        from flotilla.compute.splicing import ModalityModel
 
-    values = (0, 0.5, 1)
+        model = ModalityModel(alphas, betas)
 
-    for col in unbinned:
-        for i, row in enumerate(unbinned[col]):
-            if i == 0:
-                row_i = 0
-            else:
-                row_i = unbinned.ix[i - 1, col]
-            row_j = unbinned.ix[i, col]
-            psi.ix[row_i:row_j, col] = values[i]
-    return psi
+        true_alphas = alphas if isinstance(alphas, Iterable) else np.ones(
+            len(betas)) * alphas
+        true_betas = betas if isinstance(betas, Iterable) else np.ones(
+            len(alphas)) * betas
+
+        true_rvs = [stats.beta(a, b) for a, b in
+                    zip(true_alphas, true_betas)]
+        true_scores = np.arange(len(true_rvs)).astype(float) + .1
+        true_scaled_scores = true_scores / true_scores.max()
+        true_prob_parameters = true_scaled_scores / true_scaled_scores.sum()
+
+        npt.assert_array_equal(model.alphas, true_alphas)
+        npt.assert_array_equal(model.betas, true_betas)
+        npt.assert_array_equal(model.scores, true_scores)
+        npt.assert_array_equal(model.scaled_scores, true_scaled_scores)
+        npt.assert_array_equal(model.prob_parameters, true_prob_parameters)
+        for test_rv, true_rv in zip(model.rvs, true_rvs):
+            npt.assert_array_equal(test_rv.args, true_rv.args)
 
 
-class TestModalities:
-
-    def test_init(self, kwargs):
-        from flotilla.compute.splicing import Modalities
-
-        test_modalities = Modalities(**kwargs)
-
-        if kwargs == {}:
-            npt.assert_equal(test_modalities.bins, (0, 0.2, 0.8, 1))
-        else:
-            npt.assert_equal(test_modalities.bins, (0, kwargs['excluded_max'],
-                                                    kwargs['included_min'], 1))
-
-def test_binned_to_assignments():
-    from flotilla.compute.splicing import TRUE_MODALITIES, \
-        _binned_to_assignments
-
-    assignments = _binned_to_assignments(TRUE_MODALITIES, TRUE_MODALITIES)
-
-    npt.assert_array_equal(assignments.values, assignments.index)
+# class TestModalities:
+#
+#     def test_init(self, kwargs):
+#         from flotilla.compute.splicing import Modalities
+#
+#         test_modalities = Modalities(**kwargs)
+#
+#         if kwargs == {}:
+#             npt.assert_equal(test_modalities.bins, (0, 0.2, 0.8, 1))
+#         else:
+#             npt.assert_equal(test_modalities.bins, (0, kwargs['excluded_max'],
+#                                                     kwargs['included_min'], 1))
+#
+# def test_binned_to_assignments():
+#     from flotilla.compute.splicing import TRUE_MODALITIES, \
+#         _binned_to_assignments
+#
+#     assignments = _binned_to_assignments(TRUE_MODALITIES, TRUE_MODALITIES)
+#
+#     npt.assert_array_equal(assignments.values, assignments.index)
