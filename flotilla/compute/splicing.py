@@ -1,9 +1,5 @@
 """
 Calculate modalities of splicing events.
-
-This code is crazy, sometimes using classes and sometimes just objects because
-for parallelization, you can't pickle anything that has state, like an
-instancemethod
 """
 
 from collections import Iterable
@@ -34,8 +30,18 @@ class ModalityModel(object):
         self.rvs = [stats.beta(a, b) for a, b in
                     zip(self.alphas, self.betas)]
         self.scores = np.arange(len(self.rvs)).astype(float) + .1
-        self.scaled_scores = self.scores / self.scores.max()
-        self.prob_parameters = self.scaled_scores / self.scaled_scores.sum()
+        self.scores = self.scores / self.scores.max()
+        self.prob_parameters = self.scores / self.scores.sum()
+
+    def __eq__(self, other):
+        for a1, a2 in zip(self.alphas, other.alphas):
+            assert a1 == a2
+
+        for b1, b2 in zip(self.betas, other.betas):
+            assert b1 == b2
+
+        for p1, p2 in zip(self.prob_parameters, other.prob_parameters):
+            assert p1 == p2
 
     def logliks(self, x):
         x = x.copy()
@@ -77,7 +83,8 @@ class ModalityEstimator(object):
         self.exclusion_model = ModalityModel(1, self.parameters)
         self.inclusion_model = ModalityModel(self.parameters, 1)
         self.middle_model = ModalityModel(self.parameters, self.parameters)
-        self.bimodal_model = ModalityModel(1 / self.parameters, 1 / self.parameters)
+        self.bimodal_model = ModalityModel(1 / self.parameters,
+                                           1 / self.parameters)
         
         self.models = {'included': self.inclusion_model,
                   'excluded': self.exclusion_model,
