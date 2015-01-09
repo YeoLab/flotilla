@@ -3,6 +3,7 @@ from collections import Iterable
 import pytest
 import numpy as np
 import numpy.testing as npt
+import pandas as pd
 import pandas.util.testing as pdt
 from scipy import stats
 from scipy.misc import logsumexp
@@ -80,13 +81,31 @@ class TestModalityModel(object):
         npt.assert_array_equal(test_logsumexp_logliks,
                                logsumexp(model.logliks(x)))
 
+    def test_eq(self, alphas, betas):
+        from flotilla.compute.splicing import ModalityModel
+
+        model1 = ModalityModel(alphas, betas)
+        model2 = ModalityModel(alphas, betas)
+        assert model1 == model2
+
+    def test_ne(self, alphas, betas):
+        from flotilla.compute.splicing import ModalityModel
+
+        if np.all(alphas == betas):
+            assert 1
+            return
+
+        model1 = ModalityModel(alphas, betas)
+        model2 = ModalityModel(betas, alphas)
+        assert model1 != model2
+
 
 class TestModalityEstimator(object):
-    @pytest.fixture()
+    @pytest.fixture
     def step(self):
         return 1
 
-    @pytest.fixture()
+    @pytest.fixture
     def vmax(self):
         return 10
 
@@ -94,11 +113,21 @@ class TestModalityEstimator(object):
     def logbf_thresh(self, request):
         return request.param
 
-    @pytest.fixture()
+    @pytest.fixture
     def estimator(self, step, vmax):
         from flotilla.compute.splicing import ModalityEstimator
 
+
         return ModalityEstimator(step, vmax)
+
+    @pytest.fixture(params=['no_na', 'with_na'])
+    def event(self, request):
+        x = np.arange(0, 1.1, .1)
+        if request.param == 'no_na':
+            return x
+        elif request.param == 'with_na':
+            x[x < 0.5] = np.nan
+            return x
 
     def test_init(self, step, vmax, logbf_thresh):
         from flotilla.compute.splicing import ModalityEstimator, \
@@ -126,3 +155,43 @@ class TestModalityEstimator(object):
         npt.assert_equal(estimator.bimodal_model, true_bimodal)
         pdt.assert_dict_equal(estimator.models, true_models)
 
+    def test_loglik(self, event, estimator):
+        test_loglik = estimator._loglik(event)
+
+        true_loglik = dict((name, m.logliks(event))
+                           for name, m in estimator.models.iteritems())
+        pdt.assert_dict_equal(test_loglik, true_loglik)
+
+    def test_logsumexp(self, event, estimator):
+        logliks = estimator._loglik(event)
+        test_logsumexp = estimator._logsumexp(logliks)
+
+        true_logsumexp = pd.Series(
+            dict((name, logsumexp(loglik))
+                 for name, loglik in logliks.iteritems()))
+        pdt.assert_series_equal(test_logsumexp, true_logsumexp)
+
+    def test_guess_modality(self, event, estimator):
+        logsumexps = estimator._logsumexp(estimator._loglik(event))
+
+        test_guess_modality = estimator._guess_modality(logsumexps)
+
+        logsumexps['uniform'] = estimator.logbf_thresh
+        true_guess_modality = logsumexps.idxmax()
+
+        pdt.assert_equal(test_guess_modality, true_guess_modality)
+
+    def test_fit_transform_with_na(self, estimator, splicing_data_fixed):
+        test_fit_transform = estimator.fit_transform(splicing_data_fixed)
+
+        logsumexp_logliks = splicing_data_fixed.apply(
+            lambda x: pd.Series({k: v.logsumexp_logliks(x)
+                                 for k, v in estimator.models.iteritems()}),
+            axis=0)
+        true_fit_transform = logsumexp_logliks.idxmax()
+
+        pdt.assert_series_equal(test_fit_transform, true_fit_transform)
+
+
+    def test_fit_transform_with_na(self, estimator, splicing_data_no_na):
+        test_fit_transform = estimator.fit_transform(splicing_data_no_na)
