@@ -1018,56 +1018,7 @@ class Study(object):
                                         bootstrapped_kws=bootstrapped_kws,
                                         min_samples=min_samples)
 
-    def modalities_counts(self, sample_subset=None, feature_subset=None,
-                          expression_thresh=-np.inf, bootstrapped=False,
-                          bootstrapped_kws=None):
-        """Get counts of each resampled splicing event assigned to a modality
 
-        Parameters
-        ----------
-        sample_subset : str or None, optional
-            Which subset of the samples to use, based on some phenotype
-            column in the experiment design data. If None, all samples are
-            used.
-        feature_subset : str or None, optional
-            Which subset of the features to used, based on some feature type
-            in the expression data (e.g. "variant"). If None, all features
-            are used.
-        expression_thresh : float, optional
-            Minimum expression value, of the original input. E.g. if the
-            original input is already log-transformed, then this threshold is
-            on the log values.
-        bootstrapped : bool, optional
-            Whether or not to use bootstrap resampling of each splicing event
-            to robustly estimate its modality
-        bootstrapped_kws : dict, optional
-            Valid arguments to _bootstrapped_fit_transform. If None, default is
-            dict(n_iter=100, thresh=0.6, minimum_samples=10)
-
-        Returns
-        -------
-        modalities : pandas.Series
-            A (n_events,) shaped series of the assigned modality (in the case
-            of bootstrapped=False), or modality most commonly assigned, in the
-            case of bootstrapped=True
-
-        """
-        if expression_thresh > -np.inf:
-            data = self.filter_splicing_on_expression(
-                expression_thresh=expression_thresh,
-                sample_subset=sample_subset)
-            sample_ids = None
-            feature_ids = None
-        else:
-            sample_ids = self.sample_subset_to_sample_ids(sample_subset)
-            feature_ids = self.feature_subset_to_feature_ids(
-                'splicing', feature_subset, rename=False)
-            data = None
-
-        return self.splicing.modalities_counts(
-            sample_ids, feature_ids, data=data, bootstrapped=bootstrapped,
-            bootstrapped_kws=bootstrapped_kws,
-            groupby=self.sample_id_to_phenotype)
 
     def plot_modalities(self, sample_subset=None, feature_subset=None,
                         normed=True, bootstrapped=False,
