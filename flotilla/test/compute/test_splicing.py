@@ -8,7 +8,14 @@ import pandas.util.testing as pdt
 from scipy import stats
 from scipy.misc import logsumexp
 
+
+
+
 class TestModalityModel(object):
+
+    @pytest.fixture()
+    def x(self):
+        return np.arange(0, 1.1, 0.1)
 
     @pytest.fixture(params=[1, np.arange(1, 5)])
     def alphas(self, request):
@@ -25,10 +32,6 @@ class TestModalityModel(object):
     @pytest.fixture()
     def beta(self):
         return 1.
-    
-    @pytest.fixture()
-    def x(self):
-        return np.arange(0, 1.1, 0.1)
 
     @pytest.fixture()
     def model(self, alpha, beta):
@@ -188,10 +191,52 @@ class TestModalityEstimator(object):
             lambda x: pd.Series({k: v.logsumexp_logliks(x)
                                  for k, v in estimator.models.iteritems()}),
             axis=0)
+        logsumexp_logliks.ix['uniform'] = estimator.logbf_thresh
         true_fit_transform = logsumexp_logliks.idxmax()
 
         pdt.assert_series_equal(test_fit_transform, true_fit_transform)
 
 
-    def test_fit_transform_with_na(self, estimator, splicing_data_no_na):
+    def test_fit_transform_no_na(self, estimator, splicing_data_no_na):
         test_fit_transform = estimator.fit_transform(splicing_data_no_na)
+
+        logsumexp_logliks = splicing_data_no_na.apply(
+            lambda x: pd.Series({k: v.logsumexp_logliks(x)
+                                 for k, v in estimator.models.iteritems()}),
+            axis=0)
+        true_fit_transform = logsumexp_logliks.idxmax()
+
+        pdt.assert_series_equal(test_fit_transform, true_fit_transform)
+
+@pytest.fixture(params=['list', 'array', 'nan'])
+def array(request):
+    x = np.arange(0, 1.1, .1)
+    if request.param == 'list':
+        return list(x)
+    elif request.param == 'array':
+        return x
+    elif request.param == 'nan':
+        x[x > .8] = np.nan
+        return x
+
+def test_switchy_score(array):
+    from flotilla.compute.splicing import switchy_score
+    test_switchy_score = switchy_score(x)
+
+    true_array = np.array(array)
+    variance = 1 - np.std(np.sin(true_array[~np.isnan(true_array)] * np.pi))
+    mean_value = -np.mean(np.cos(true_array[~np.isnan(true_array)] * np.pi))
+    true_switchy_score = variance * mean_value
+
+    npt.assert_array_equal(test_switchy_score, true_switchy_score)
+
+def test_get_switchy_score_order(splicing_data_fixed):
+    from flotilla.compute.splicing import get_switchy_score_order, switchy_score
+
+    test_score_order = get_switchy_score_order(splicing_data_fixed)
+
+    switchy_scores = np.apply_along_axis(switchy_score, axis=0,
+                                         arr=splicing_data_fixed)
+    true_score_order = np.argsort(switchy_scores)
+
+    npt.assert_array_equal(test_score_order, true_score_order)
