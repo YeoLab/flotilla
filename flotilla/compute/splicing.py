@@ -34,14 +34,12 @@ class ModalityModel(object):
         self.prob_parameters = self.scores / self.scores.sum()
 
     def __eq__(self, other):
-        for a1, a2 in zip(self.alphas, other.alphas):
-            assert a1 == a2
+        return np.all(self.alphas == other.alphas) \
+                 and np.all(self.betas == other.betas) \
+                 and np.all(self.prob_parameters == other.prob_parameters)
 
-        for b1, b2 in zip(self.betas, other.betas):
-            assert b1 == b2
-
-        for p1, p2 in zip(self.prob_parameters, other.prob_parameters):
-            assert p1 == p2
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
     def logliks(self, x):
         x = x.copy()

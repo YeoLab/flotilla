@@ -3,6 +3,7 @@ from collections import Iterable
 import pytest
 import numpy as np
 import numpy.testing as npt
+import pandas.util.testing as pdt
 from scipy import stats
 from scipy.misc import logsumexp
 
@@ -52,13 +53,12 @@ class TestModalityModel(object):
         true_rvs = [stats.beta(a, b) for a, b in
                     zip(true_alphas, true_betas)]
         true_scores = np.arange(len(true_rvs)).astype(float) + .1
-        true_scaled_scores = true_scores / true_scores.max()
-        true_prob_parameters = true_scaled_scores / true_scaled_scores.sum()
+        true_scores = true_scores / true_scores.max()
+        true_prob_parameters = true_scores / true_scores.sum()
 
         npt.assert_array_equal(model.alphas, true_alphas)
         npt.assert_array_equal(model.betas, true_betas)
         npt.assert_array_equal(model.scores, true_scores)
-        npt.assert_array_equal(model.scaled_scores, true_scaled_scores)
         npt.assert_array_equal(model.prob_parameters, true_prob_parameters)
         for test_rv, true_rv in zip(model.rvs, true_rvs):
             npt.assert_array_equal(test_rv.args, true_rv.args)
@@ -81,5 +81,48 @@ class TestModalityModel(object):
                                logsumexp(model.logliks(x)))
 
 
-# class TestModalityEstimator(object):
-#     def test_init(self, splicing):
+class TestModalityEstimator(object):
+    @pytest.fixture()
+    def step(self):
+        return 1
+
+    @pytest.fixture()
+    def vmax(self):
+        return 10
+
+    @pytest.fixture(params=[2, 3])
+    def logbf_thresh(self, request):
+        return request.param
+
+    @pytest.fixture()
+    def estimator(self, step, vmax):
+        from flotilla.compute.splicing import ModalityEstimator
+
+        return ModalityEstimator(step, vmax)
+
+    def test_init(self, step, vmax, logbf_thresh):
+        from flotilla.compute.splicing import ModalityEstimator, \
+            ModalityModel
+
+        estimator = ModalityEstimator(step, vmax, logbf_thresh)
+
+        true_parameters = np.arange(2, vmax + step, step).astype(float)
+        true_exclusion = ModalityModel(1, true_parameters)
+        true_inclusion = ModalityModel(true_parameters, 1)
+        true_middle = ModalityModel(true_parameters, true_parameters)
+        true_bimodal = ModalityModel(1/true_parameters, 1/true_parameters)
+        true_models = {'included': true_inclusion,
+                       'excluded': true_exclusion,
+                       'bimodal': true_bimodal,
+                       'middle': true_middle}
+
+        npt.assert_equal(estimator.step, step)
+        npt.assert_equal(estimator.vmax, vmax)
+        npt.assert_equal(estimator.logbf_thresh, logbf_thresh)
+        npt.assert_equal(estimator.parameters, true_parameters)
+        npt.assert_equal(estimator.exclusion_model, true_exclusion)
+        npt.assert_equal(estimator.inclusion_model, true_inclusion)
+        npt.assert_equal(estimator.middle_model, true_middle)
+        npt.assert_equal(estimator.bimodal_model, true_bimodal)
+        pdt.assert_dict_equal(estimator.models, true_models)
+
