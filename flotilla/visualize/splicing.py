@@ -5,6 +5,7 @@ Splicing-specific visualization classes and methods
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import seaborn as sns
 
 # from .color import red, blue, purple, grey, green
@@ -13,22 +14,53 @@ from ..util import as_numpy
 
 seaborn_colors = map(mpl.colors.rgb2hex, sns.color_palette('deep'))
 
+class ModalityEstimatorPlotter(object):
+    def __init__(self):
+        self.fig = plt.figure(figsize=(5 * 2, 3 * 2))
+        self.ax_violin = plt.subplot2grid((3, 5), (0, 0), rowspan=3, colspan=1)
+        self.ax_loglik = plt.subplot2grid((3, 5), (0, 1), rowspan=3, colspan=3)
+        self.ax_bayesfactor = plt.subplot2grid((3, 5), (0, 4), rowspan=3, colspan=1)
+
+    def plot(self, logsumexps, event, modality_colors):
+        modality = logsumexps.idxmax()
+
+        sns.violinplot(event, bw=0.2, ax=self.ax_violin,
+                       color=self.modality_colors[modality])
+
+        self.ax_violin.set_ylim(0, 1)
+        ax1.set_title('Guess: {}'.format(modality))
+        ax1.set_xticks([])
+        ax1.set_xlabel('{} {}'.format(event.name))
+
+        for name, loglik in logliks.iteritems():
+            # print name,
+            ax2.plot(loglik, 'o-', label=name,
+                     color=self.modality_colors[name])
+            ax2.legend(loc='best')
+        ax2.set_title('Log likelihoods at different parameterizations')
+
+        for i, (name, height) in enumerate(logsumexps.iteritems()):
+            ax3.bar(i, height, label=name, color=self.modality_colors[name])
+        ax3.set_title('$\log$ Bayes factors')
+        ax3.set_xticks([])
+        fig.tight_layout()
+
 
 class ModalitiesViz(object):
     """Visualize results of modality assignments
     """
-    modalities_colors = {'bimodal': seaborn_colors[3],
+    modality_colors = {'bimodal': seaborn_colors[3],
                          'excluded': seaborn_colors[0],
                          'included': seaborn_colors[2],
                          'middle': seaborn_colors[1],
                          'ambiguous': 'lightgrey',
                          'uniform': seaborn_colors[4]}
 
-    modalities_order = ['excluded', 'uniform', 'bimodal', 'middle',
+    modality_order = ['excluded', 'uniform', 'bimodal', 'middle',
                         'included', 'ambiguous']
 
-    colors = [modalities_colors[modality] for modality in
-              modalities_order]
+    colors = [modality_colors[modality] for modality in
+              modality_order]
 
     def plot_reduced_space(self, binned_reduced, modalities_assignments,
                            ax=None, title=None, xlabel='', ylabel=''):
@@ -42,7 +74,7 @@ class ModalitiesViz(object):
         # pdb.set_trace()
 
         for modality, df in X.groupby(modalities_assignments, axis=0):
-            color = self.modalities_colors[modality]
+            color = self.modality_colors[modality]
             ax.plot(df.ix[:, 0], df.ix[:, 1], 'o', color=color, alpha=0.25,
                     label=modality)
 
@@ -56,7 +88,7 @@ class ModalitiesViz(object):
         if title is not None:
             ax.set_title(title)
 
-    def bar(self, modalities_counts, ax=None, i=0, normed=True, legend=True):
+    def bar(self, assignments):
         """Draw the barplot of a single modalities_count
 
         Parameters
@@ -71,38 +103,30 @@ class ModalitiesViz(object):
         ------
 
         """
-        if ax is None:
-            fig, ax = plt.subplots(figsize=(8, 8))
-
-        modalities_counts = modalities_counts[self.modalities_order]
-
-        if normed:
-            modalities_counts = \
-                modalities_counts / modalities_counts.sum().astype(float)
-
-        lefts = np.ones(modalities_counts.shape) * i
-
-        heights = modalities_counts
-        bottoms = np.zeros(modalities_counts.shape)
-        bottoms[1:] = modalities_counts.cumsum()[:-1]
-        labels = self.modalities_order
-
-        for left, height, bottom, color, label in zip(lefts, heights, bottoms,
-                                                      self.colors, labels):
-            ax.bar(left, height, bottom=bottom, color=color, label=label,
-                   alpha=0.75)
-
-        if legend:
-            ax.legend()
+        x_order = self.modality_order
+        id_vars = list(assignments.columns.names)
+        df = pd.melt(assignments.T.reset_index(),
+                     value_vars=assignments.index.tolist(),
+                     id_vars=id_vars)
+        sns.factorplot('value', hue=assignments.index.name, data=df,
+                       x_order=x_order)
         sns.despine()
 
-    def event(self, feature_id, sample_groupby, group_colors, group_order,
-              ax=None):
-        """Plot a single splicing event's changes in DataFrameNMF space, and its
-        violin plots
 
+    def event_estimation(self, event, logliks, logsumexps):
+        """Show the values underlying bayesian modality estimations of an event
+
+        Parameters
+        ----------
+
+
+        Returns
+        -------
+
+
+        Raises
+        ------
         """
-        pass
 
 
 def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
