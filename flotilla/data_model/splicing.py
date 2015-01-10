@@ -194,7 +194,7 @@ class SplicingData(BaseData):
         data = pd.concat([df.dropna(thresh=thresh(df), axis=1)
                           for name, df in grouped])
         counts = data.groupby(groupby).apply(
-            self.modalities_calculator.counts, bootstrapped=bootstrapped,
+            self.modality_estimator.counts, bootstrapped=bootstrapped,
             bootstrapped_kws=bootstrapped_kws)
         return counts
 
@@ -204,8 +204,7 @@ class SplicingData(BaseData):
 
 
     def plot_modalities_reduced(self, sample_ids=None, feature_ids=None,
-                                ax=None, title=None,
-                                bootstrapped=False, bootstrapped_kws=None):
+                                data=None, ax=None, title=None):
         """Plot modality assignments in DataFrameNMF space (option for lavalamp?)
 
         Parameters
@@ -226,16 +225,17 @@ class SplicingData(BaseData):
         Raises
         ------
         """
-        modalities_assignments = self.modalities(
-            sample_ids, feature_ids, bootstrapped=bootstrapped,
-            bootstrapped_kws=bootstrapped_kws)
-        self.modalities_visualizer.plot_reduced_space(
+        modalities_assignments = self.modality_assignments(sample_ids, feature_ids,
+                                                           data)
+        self.modality_visualizer.plot_reduced_space(
             self.binned_nmf_reduced(sample_ids, feature_ids),
             modalities_assignments, ax=ax, title=title,
             xlabel=self._nmf_space_xlabel(phenotype_groupby=None),
             ylabel=self._nmf_space_ylabel(phenotype_groupby=None))
 
-    def plot_modalities_stacked_bar(self, sample_ids=None, feature_ids=None, ax=None,
+    def plot_modalities_stacked_bar(self, sample_ids=None, feature_ids=None,
+                                    data=None,
+                                    ax=None,
                             i=0, normed=True, legend=True,
                             bootstrapped=False, bootstrapped_kws=None):
         """Plot stacked bar graph of each modality
@@ -258,10 +258,10 @@ class SplicingData(BaseData):
         Raises
         ------
         """
-        modalities_counts = self.modalities_counts(
-            sample_ids, feature_ids, bootstrapped=bootstrapped,
-            bootstrapped_kws=bootstrapped_kws)
-        self.modalities_visualizer.bar(modalities_counts, ax, i, normed,
+
+        modalities_counts = self.modalities_counts(sample_ids, feature_ids,
+                                                   data=data)
+        self.modality_visualizer.bar(modalities_counts, ax, i, normed,
                                        legend)
         modalities_fractions = \
             modalities_counts / modalities_counts.sum().astype(float)
@@ -269,8 +269,7 @@ class SplicingData(BaseData):
 
     def plot_modalities_bars(self, sample_ids=None, feature_ids=None,
                              data=None, groupby=None,
-                             phenotype_to_color=None,
-                             bootstrapped=False, bootstrapped_kws=None):
+                             phenotype_to_color=None):
         """Plot bar
 
         Parameters
@@ -298,21 +297,15 @@ class SplicingData(BaseData):
             Valid arguments to _bootstrapped_fit_transform. If None, default is
             dict(n_iter=100, thresh=0.6, minimum_samples=10)
         """
-        if data is not None:
-            assignments = self.modalities(data=data, groupby=groupby,
-                                          bootstrapped=bootstrapped,
-                                          bootstrapped_kws=bootstrapped_kws)
-        else:
-            assignments = self.modalities(
-                sample_ids, feature_ids, groupby=groupby,
-                bootstrapped=bootstrapped, bootstrapped_kws=bootstrapped_kws)
+        assignments = self.modality_assignments(
+            sample_ids, feature_ids, data=data, groupby=groupby)
 
         # make sure this is always a dataframe
         if isinstance(assignments, pd.Series):
             assignments = pd.DataFrame([assignments.values],
                                        index=assignments.name,
                                        columns=assignments.index)
-        x_order = self.modalities_visualizer.modalities_order
+        x_order = self.modality_visualizer.modality_order
         id_vars = list(self.data.columns.names)
         df = pd.melt(assignments.T.reset_index(),
                      value_vars=assignments.index.tolist(),
@@ -322,8 +315,7 @@ class SplicingData(BaseData):
 
     def plot_modalities_lavalamps(self, sample_ids=None, feature_ids=None,
                                   data=None, groupby=None,
-                                  phenotype_to_color=None,
-                                  bootstrapped=False, bootstrapped_kws=None):
+                                  phenotype_to_color=None):
         """Plot "lavalamp" scatterplot of each event
 
         Parameters
@@ -351,15 +343,8 @@ class SplicingData(BaseData):
             Valid arguments to _bootstrapped_fit_transform. If None, default is
             dict(n_iter=100, thresh=0.6, minimum_samples=10)
         """
-        if data is not None:
-            assignments = self.modalities(data=data, groupby=groupby,
-                bootstrapped=bootstrapped, bootstrapped_kws=bootstrapped_kws)
-        else:
-            data = self._subset(self.singles, sample_ids, feature_ids,
-                                require_min_samples=False)
-            assignments = self.modalities(
-                sample_ids, feature_ids, groupby=groupby,
-                bootstrapped=bootstrapped, bootstrapped_kws=bootstrapped_kws)
+        assignments = self.modality_assignments(
+            sample_ids, feature_ids, data=data, groupby=groupby)
 
         # make sure this is always a dataframe
         if isinstance(assignments, pd.Series):
