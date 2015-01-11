@@ -11,7 +11,7 @@ __version__ = '0.2.5dev'
 
 # 18 cells, multiindex on the splicing data features, features already renamed
 # in the matrices
-_shalek2013 = 'https://raw.githubusercontent.com/YeoLab/shalek2013/master/' \
+_shalek2013 = 'httpsgit://raw.githubusercontent.com/YeoLab/shalek2013/master/' \
               'datapackage.json'
 
 # 250 cells, ensembl and miso ids on index, need renaming, lots of celltypes
