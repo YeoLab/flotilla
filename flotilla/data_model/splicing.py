@@ -79,7 +79,7 @@ class SplicingData(BaseData):
                 
         self.bins = np.arange(0, 1 + self.binsize, self.binsize)
 
-        self.modality_estimator = ModalityEstimator()
+        self.modality_estimator = ModalityEstimator(step=1., vmax=20.)
         # self.modalities_calculator = Modalities(excluded_max=excluded_max,
         #                                         included_min=included_min)
         self.modality_visualizer = ModalitiesViz()
@@ -233,43 +233,8 @@ class SplicingData(BaseData):
             xlabel=self._nmf_space_xlabel(phenotype_groupby=None),
             ylabel=self._nmf_space_ylabel(phenotype_groupby=None))
 
-    def plot_modalities_stacked_bar(self, sample_ids=None, feature_ids=None,
-                                    data=None,
-                                    ax=None,
-                            i=0, normed=True, legend=True,
-                            bootstrapped=False, bootstrapped_kws=None):
-        """Plot stacked bar graph of each modality
-
-        Parameters
-        ----------
-        bootstrapped : bool
-            Whether or not to use bootstrapping, i.e. resample each splicing
-            event several times to get a better estimate of its true modality.
-            Default False.
-        bootstrappped_kws : dict
-            Valid arguments to _bootstrapped_fit_transform. If None, default is
-            dict(n_iter=100, thresh=0.6, minimum_samples=10)
-
-
-        Returns
-        -------
-
-
-        Raises
-        ------
-        """
-
-        modalities_counts = self.modalities_counts(sample_ids, feature_ids,
-                                                   data=data)
-        self.modality_visualizer.bar(modalities_counts, ax, i, normed,
-                                       legend)
-        modalities_fractions = \
-            modalities_counts / modalities_counts.sum().astype(float)
-        sys.stdout.write(str(modalities_fractions) + '\n')
-
     def plot_modalities_bars(self, sample_ids=None, feature_ids=None,
-                             data=None, groupby=None,
-                             phenotype_to_color=None):
+                             data=None, groupby=None, phenotype_to_color=None):
         """Plot bar
 
         Parameters
@@ -305,13 +270,7 @@ class SplicingData(BaseData):
             assignments = pd.DataFrame([assignments.values],
                                        index=assignments.name,
                                        columns=assignments.index)
-        x_order = self.modality_visualizer.modality_order
-        id_vars = list(self.data.columns.names)
-        df = pd.melt(assignments.T.reset_index(),
-                     value_vars=assignments.index.tolist(),
-                     id_vars=id_vars)
-        sns.factorplot('value', hue=assignments.index.name, data=df,
-                       x_order=x_order)
+        return self.modality_visualizer.bar(assignments, phenotype_to_color)
 
     def plot_modalities_lavalamps(self, sample_ids=None, feature_ids=None,
                                   data=None, groupby=None,
