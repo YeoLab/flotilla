@@ -52,11 +52,11 @@ class ModalitiesViz(object):
                          'excluded': seaborn_colors[0],
                          'included': seaborn_colors[2],
                          'middle': seaborn_colors[1],
-                         'ambiguous': 'lightgrey',
+                         # 'ambiguous': 'lightgrey',
                          'uniform': seaborn_colors[4]}
 
     modality_order = ['excluded', 'uniform', 'bimodal', 'middle',
-                        'included', 'ambiguous']
+                        'included'] #, 'ambiguous']
 
     colors = [modality_colors[modality] for modality in
               modality_order]
