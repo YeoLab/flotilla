@@ -91,27 +91,54 @@ class ModalityEstimator(object):
                   'middle': self.middle_model}
 
     def _loglik(self, event):
+        """Calculate log-likelihoods of an event, given the modality models"""
         return dict((name, m.logliks(event))
                     for name, m in self.models.iteritems())
 
     def _logsumexp(self, logliks):
+        """Calculate logsumexps of each modality's loglikelihood"""
         return pd.Series(dict((name, logsumexp(loglik))
                               for name, loglik in logliks.iteritems()))
 
     def _guess_modality(self, logsumexps):
+        """Guess the most likely modality.
+
+        If no modalilites have logsumexp'd logliks greater than the log Bayes
+        factor threshold, then they are assigned the 'uniform' modality,
+        which is the null hypothesis
+        """
         logsumexps['uniform'] = self.logbf_thresh
         return logsumexps.idxmax()
 
     def fit_transform(self, data):
+        """Get the modality assignments of each splicing event in the data
+
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            A (n_samples, n_events) dataframe of splicing events' PSI scores.
+            Must be psi scores which range from 0 to 1
+
+        Returns
+        -------
+        modality_assignments : pandas.Series
+            A (n_events,) series of the estimated modality for each splicing
+            event
+
+        Raises
+        ------
+        AssertionError
+            If ``data`` does not fall only between 0 and 1.
+        """
+        assert np.all(data.values.flat[np.isfinite(data.values.flat)] <= 1)
+        assert np.all(data.values.flat[np.isfinite(data.values.flat)] >= 0)
+
         logsumexp_logliks = data.apply(lambda x:
                                        pd.Series({k: v.logsumexp_logliks(x)
                                        for k, v in self.models.iteritems()}), axis=0)
         logsumexp_logliks.ix['uniform'] = self.logbf_thresh
         return logsumexp_logliks.idxmax()
 
-    def counts(self, data):
-        assignments = self.fit_transform(data)
-        return assignments.groupby(assignments).size()
 
 def switchy_score(array):
     """Transform a 1D array of data scores to a vector of "switchy scores"
