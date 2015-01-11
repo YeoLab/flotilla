@@ -116,7 +116,8 @@ class ModalitiesViz(object):
         else:
             factorplot = sns.factorplot('value',
                                         hue=assignments.index.name,
-                                        data=df, x_order=x_order)
+                                        data=df, x_order=x_order,
+                                        legend_out=True)
         sns.despine()
         return factorplot
 
