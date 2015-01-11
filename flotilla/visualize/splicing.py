@@ -5,7 +5,6 @@ Splicing-specific visualization classes and methods
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 import seaborn as sns
 
 # from .color import red, blue, purple, grey, green
@@ -87,41 +86,41 @@ class ModalitiesViz(object):
         if title is not None:
             ax.set_title(title)
 
-    def bar(self, assignments, phenotype_to_color=None):
-        """Draw barplots grouped by modality of the modality counts
+    # def bar(self, assignments, phenotype_to_color=None):
+    #     """Draw barplots grouped by modality of the modality counts
+    #
+    #     Parameters
+    #     ----------
+    #
+    #
+    #     Returns
+    #     -------
+    #
+    #
+    #     Raises
+    #     ------
+    #
+    #     """
+    #     x_order = self.modality_order
+    #     id_vars = list(assignments.columns.names)
+    #     df = pd.melt(assignments.T.reset_index(),
+    #                  value_vars=assignments.index.tolist(),
+    #                  id_vars=id_vars)
+    #     if phenotype_to_color is not None:
+    #         sorted_colors = [v for k, v in sorted(phenotype_to_color.iteritems())]
+    #         with sns.color_palette(sorted_colors):
+    #             factorplot = sns.factorplot('value',
+    #                                         hue=assignments.index.name,
+    #                                         data=df, x_order=x_order)
+    #     else:
+    #         factorplot = sns.factorplot('value',
+    #                                     hue=assignments.index.name,
+    #                                     data=df, x_order=x_order,
+    #                                     legend_out=True)
+    #     sns.despine()
+    #     return factorplot
 
-        Parameters
-        ----------
-
-
-        Returns
-        -------
-
-
-        Raises
-        ------
-
-        """
-        x_order = self.modality_order
-        id_vars = list(assignments.columns.names)
-        df = pd.melt(assignments.T.reset_index(),
-                     value_vars=assignments.index.tolist(),
-                     id_vars=id_vars)
-        if phenotype_to_color is not None:
-            sorted_colors = [v for k, v in sorted(phenotype_to_color.iteritems())]
-            with sns.color_palette(sorted_colors):
-                factorplot = sns.factorplot('value',
-                                            hue=assignments.index.name,
-                                            data=df, x_order=x_order)
-        else:
-            factorplot = sns.factorplot('value',
-                                        hue=assignments.index.name,
-                                        data=df, x_order=x_order,
-                                        legend_out=True)
-        sns.despine()
-        return factorplot
-
-    def bar_normed(self, counts, phenotype_to_color=None, ax=None):
+    def bar(self, counts, phenotype_to_color=None, ax=None, normed=True):
         """Draw barplots grouped by modality of modality percentage per group
 
         Parameters
@@ -136,6 +135,9 @@ class ModalitiesViz(object):
         ------
 
         """
+        if normed:
+            counts = (counts.T/counts.T.sum()).T
+
         with sns.set(style='whitegrid'):
             if ax is None:
                 ax = plt.gca()
