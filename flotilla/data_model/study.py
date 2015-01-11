@@ -889,6 +889,7 @@ class Study(object):
         legend = ax.legend(title='cell type', fontsize=20, )
         return legend
 
+
     def plot_classifier(self, trait, sample_subset=None,
                         feature_subset='all_genes',
                         data_type='expression', title='',
@@ -1018,13 +1019,52 @@ class Study(object):
                                         bootstrapped_kws=bootstrapped_kws,
                                         min_samples=min_samples)
 
-    def plot_modalities_bars(self):
-        pass
+    def plot_modalities_bars(self, sample_subset=None, feature_subset=None,
+                             expression_thresh=-np.inf):
+        """Make grouped barplots of the number of modalities per phenotype
+
+        Parameters
+        ----------
+        sample_subset : str
+            Name of the sample subset to calculate modalities on
+        feature_subset : str
+            Name of the feature subset to calculate modalities on
+        expression_thresh : float
+            If greater than -inf, then filter on splicing events in genes
+            with expression at least this value
+        """
+        if expression_thresh > -np.inf:
+            data = self.filter_splicing_on_expression(
+                expression_thresh=expression_thresh,
+                sample_subset=sample_subset)
+            sample_ids = None
+            feature_ids = None
+        else:
+            sample_ids = self.sample_subset_to_sample_ids(sample_subset)
+            feature_ids = self.feature_subset_to_feature_ids(
+                'splicing', feature_subset, rename=False)
+            data = None
+
+        self.splicing.plot_modalities_bars(sample_ids, feature_ids, data,
+                                           self.sample_id_to_phenotype,
+                                           self.phenotype_to_color)
 
 
     def plot_modalities_reduced(self, sample_subset=None, feature_subset=None,
-                        normed=True, expression_thresh=-np.inf):
-        # try:
+                                expression_thresh=-np.inf):
+        """Plot splicing events with modality assignments in NMF space
+
+        Parameters
+        ----------
+
+
+        Returns
+        -------
+
+
+        Raises
+        ------
+        """
         if expression_thresh > -np.inf:
             data = self.filter_splicing_on_expression(
                 expression_thresh=expression_thresh,
@@ -1046,7 +1086,8 @@ class Study(object):
         fig, axes = plt.subplots(ncols=n, figsize=(n * 4, 4))
         all_ax = axes[0]
         self.splicing.plot_modalities_reduced(sample_ids, feature_ids,
-                                              all_ax, title='all samples')
+                                              data=data,
+                                              ax=all_ax, title='all samples')
         axes = axes[2:]
         for i, ((celltype, series), ax) in enumerate(zip(grouped, axes)):
             groups.append(celltype)
@@ -1054,7 +1095,8 @@ class Study(object):
             samples = series.index.intersection(sample_ids)
             # legend = i == 0
             self.splicing.plot_modalities_reduced(samples, feature_ids,
-                                                  ax, title=celltype)
+                                                  data=data,
+                                                  ax=ax, title=celltype)
 
     def celltype_sizes(self, data_type='splicing'):
         if data_type == 'expression':
