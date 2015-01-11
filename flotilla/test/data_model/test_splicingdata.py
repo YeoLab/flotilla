@@ -43,7 +43,7 @@ class TestSplicingData:
         elif request.param == 'groupby_none':
             return None
 
-    @pytest.fixture(params=[0.6, 5])
+    @pytest.fixture(params=[0.9, 10])
     def min_samples(self, request):
         return request.param
 
