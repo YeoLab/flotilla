@@ -136,15 +136,16 @@ class ModalitiesViz(object):
         ------
 
         """
-        if ax is None:
-            ax = plt.gca()
+        with sns.set(style='whitegrid'):
+            if ax is None:
+                ax = plt.gca()
 
-        width = 0.8/counts.shape[0]
-        for i, (group, series) in enumerate(counts.itertuples()):
-            left = np.arange(counts.shape[1]) + i*width
-            height = [series[i] for i in self.modality_order]
-            color = phenotype_to_color[group]
-            ax.bar(left, height, color=color, label=group)
+            width = 0.8/counts.shape[0]
+            for i, (group, series) in enumerate(counts.itertuples()):
+                left = np.arange(counts.shape[1]) + i*width
+                height = [series[i] for i in self.modality_order]
+                color = phenotype_to_color[group]
+                ax.bar(left, height, color=color, label=group)
 
     def event_estimation(self, event, logliks, logsumexps):
         """Show the values underlying bayesian modality estimations of an event
