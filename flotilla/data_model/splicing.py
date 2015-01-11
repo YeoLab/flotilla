@@ -111,6 +111,8 @@ class SplicingData(BaseData):
             if feature_ids is not None and sample_ids is not None:
                 raise ValueError('Can only specify `sample_ids` and '
                                  '`feature_ids` or `data`, but not both.')
+        if groupby is None:
+            groupby = pd.Series(data.index, index=data.index)
 
         grouped = data.groupby(groupby)
         if isinstance(min_samples, int):
@@ -154,6 +156,10 @@ class SplicingData(BaseData):
             if feature_ids is not None and sample_ids is not None:
                 raise ValueError('Can only specify `sample_ids` and '
                                  '`feature_ids` or `data`, but not both.')
+
+
+        if groupby is None:
+            groupby = pd.Series(data.index, index=data.index)
 
         grouped = data.groupby(groupby)
         if isinstance(min_samples, int):
