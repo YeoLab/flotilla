@@ -226,28 +226,15 @@ class TestSplicingData:
 
         pdt.assert_frame_equal(test_modality_assignments, true_assignments)
 
-    def test_modality_counts(self, splicing_fixed, groupby,
-                                  min_samples):
+    def test_modality_counts(self, splicing_fixed, groupby_fixed):
         sample_ids = None
         feature_ids = None
         test_modality_counts = splicing_fixed.modality_counts(
             sample_ids=sample_ids, feature_ids=feature_ids,
-            groupby=groupby, min_samples=min_samples)
+            groupby=groupby_fixed)
 
-        data = splicing_fixed._subset(splicing_fixed.data, sample_ids,
-                                      feature_ids, require_min_samples=False)
-        grouped = data.groupby(groupby)
-        if isinstance(min_samples, int):
-            thresh = lambda x: min_samples
-        elif isinstance(min_samples, float):
-            thresh = lambda x: min_samples * x.shape[0]
-        else:
-            raise TypeError('Threshold for minimum samples for modality '
-                            'detection can only be int or float, '
-                            'not {}'.format(type(min_samples)))
-        data = pd.concat([df.dropna(thresh=thresh(df), axis=1)
-                         for name, df in grouped])
-        true_counts = data.groupby(groupby).apply(
-            splicing_fixed.modality_estimator.counts)
-
+        assignments = splicing_fixed.modality_assignments(sample_ids,
+                                                          feature_ids,
+                                                          groupby_fixed)
+        true_counts = assignments.groupby(assignments).size()
         pdt.assert_frame_equal(test_modality_counts, true_counts)
