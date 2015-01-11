@@ -1025,10 +1025,14 @@ class Study(object):
 
         Parameters
         ----------
-        sample_subset : str
-            Name of the sample subset to calculate modalities on
-        feature_subset : str
-            Name of the feature subset to calculate modalities on
+        sample_subset : str or None
+            Which subset of the samples to use, based on some phenotype
+            column in the experiment design data. If None, all samples are
+            used.
+        feature_subset : str or None
+            Which subset of the features to used, based on some feature type
+            in the expression data (e.g. "variant"). If None, all features
+            are used.
         expression_thresh : float
             If greater than -inf, then filter on splicing events in genes
             with expression at least this value
@@ -1056,14 +1060,17 @@ class Study(object):
 
         Parameters
         ----------
-
-
-        Returns
-        -------
-
-
-        Raises
-        ------
+        sample_subset : str or None
+            Which subset of the samples to use, based on some phenotype
+            column in the experiment design data. If None, all samples are
+            used.
+        feature_subset : str or None
+            Which subset of the features to used, based on some feature type
+            in the expression data (e.g. "variant"). If None, all features
+            are used.
+        expression_thresh : float
+            If greater than -inf, then filter on splicing events in genes
+            with expression at least this value
         """
         if expression_thresh > -np.inf:
             data = self.filter_splicing_on_expression(
@@ -1108,7 +1115,7 @@ class Study(object):
 
     @property
     def celltype_event_counts(self):
-        """Number of cells that detected this event in that celltype
+        """Number of cells that detected each event, per celltype
         """
         return self.splicing.data.groupby(
             self.sample_id_to_phenotype, axis=0).apply(
