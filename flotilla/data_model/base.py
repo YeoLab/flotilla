@@ -1093,6 +1093,8 @@ class BaseData(object):
         Plot the violinplot of a feature. Have the option to show NMF movement
         """
         feature_ids = self.maybe_renamed_to_feature_id(feature_id)
+        if phenotype_groupby is None:
+            phenotype_groupby = pd.Series('all', index=self.data.index)
 
         if not isinstance(feature_ids, pd.Index):
             feature_ids = [feature_id]

@@ -120,7 +120,7 @@ class ModalitiesViz(object):
     #     sns.despine()
     #     return factorplot
 
-    def bar(self, counts, phenotype_to_color=None, ax=None, normed=True):
+    def bar(self, counts, phenotype_to_color=None, ax=None, percentages=True):
         """Draw barplots grouped by modality of modality percentage per group
 
         Parameters
@@ -135,20 +135,20 @@ class ModalitiesViz(object):
         ------
 
         """
-        if normed:
-            counts = (counts.T/counts.T.sum()).T
+        if percentages:
+            counts = 100 * (counts.T/counts.T.sum()).T
 
-        with sns.set(style='whitegrid'):
-            if ax is None:
-                ax = plt.gca()
+        # with sns.set(style='whitegrid'):
+        if ax is None:
+            ax = plt.gca()
 
-            width = 0.8/counts.shape[0]
-            for i, (group, series) in enumerate(counts.itertuples()):
-                left = np.arange(counts.shape[1]) + i*width
-                height = [series[i] for i in self.modality_order]
-                color = phenotype_to_color[group]
-                ax.bar(left, height, color=color, label=group)
-            ax.legend()
+        width = 0.8/counts.shape[0]
+        for i, (group, series) in enumerate(counts.iterrows()):
+            left = np.arange(counts.shape[1]) + i*width
+            height = [series[i] for i in self.modality_order]
+            color = phenotype_to_color[group]
+            ax.bar(left, height, color=color, label=group)
+        ax.legend()
 
     def event_estimation(self, event, logliks, logsumexps):
         """Show the values underlying bayesian modality estimations of an event
