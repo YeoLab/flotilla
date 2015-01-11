@@ -1018,11 +1018,12 @@ class Study(object):
                                         bootstrapped_kws=bootstrapped_kws,
                                         min_samples=min_samples)
 
+    def plot_modalities_bars(self):
+        pass
 
 
-    def plot_modalities(self, sample_subset=None, feature_subset=None,
-                        normed=True, bootstrapped=False,
-                        bootstrapped_kws=None, expression_thresh=-np.inf):
+    def plot_modalities_reduced(self, sample_subset=None, feature_subset=None,
+                        normed=True, expression_thresh=-np.inf):
         # try:
         if expression_thresh > -np.inf:
             data = self.filter_splicing_on_expression(
@@ -1040,39 +1041,20 @@ class Study(object):
             self.sample_id_to_phenotype)
 
         # Account for bar plot and plot of the reduced space of ALL samples
-        n = grouped.ngroups + 2
+        n = grouped.ngroups + 1
         groups = ['all']
         fig, axes = plt.subplots(ncols=n, figsize=(n * 4, 4))
-        bar_ax = axes[0]
-        all_ax = axes[1]
+        all_ax = axes[0]
         self.splicing.plot_modalities_reduced(sample_ids, feature_ids,
-                                              all_ax, title='all samples',
-                                              bootstrapped=bootstrapped,
-                                              bootstrapped_kws=bootstrapped_kws)
-        self.splicing.plot_modalities_stacked_bar(sample_ids, feature_ids,
-                                                  bar_ax, i=0, normed=normed,
-                                                  legend=False,
-                                                  bootstrapped=bootstrapped,
-                                                  bootstrapped_kws=bootstrapped_kws)
-
+                                              all_ax, title='all samples')
         axes = axes[2:]
         for i, ((celltype, series), ax) in enumerate(zip(grouped, axes)):
             groups.append(celltype)
             sys.stdout.write('\n---- {} ----\n'.format(celltype))
             samples = series.index.intersection(sample_ids)
             # legend = i == 0
-            self.splicing.plot_modalities_stacked_bar(samples, feature_ids,
-                                                      bar_ax, i + 1,
-                                                      normed=normed,
-                                                      legend=False)
-
             self.splicing.plot_modalities_reduced(samples, feature_ids,
                                                   ax, title=celltype)
-
-        bar_ax.set_xticks(np.arange(len(groups)) + 0.4)
-        bar_ax.set_xticklabels(groups)
-        # except AttributeError:
-        # pass
 
     def celltype_sizes(self, data_type='splicing'):
         if data_type == 'expression':
