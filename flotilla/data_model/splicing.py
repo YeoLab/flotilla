@@ -86,8 +86,7 @@ class SplicingData(BaseData):
 
     # @memoize
     def modality_assignments(self, sample_ids=None, feature_ids=None,
-                             data=None, groupby=None, min_samples=0.5,
-                             bootstrapped=False, bootstrapped_kws=None):
+                             data=None, groupby=None, min_samples=0.5):
         """Assigned modalities for these samples and features.
 
         Parameters
@@ -99,18 +98,6 @@ class SplicingData(BaseData):
         data : pandas.DataFrame, optional
             If provided, use this dataframe instead of the sample_ids and
             feature_ids provided
-        bootstrapped : bool, optional (default=False)
-            Whether or not to use bootstrapping, i.e. resample each splicing
-            event several times to get a better estimate of its true modality.
-        min_samples : int or float
-            If int, then this is the absolute number of cells that are minimum
-            required to calculate modalities. If a float, then require this
-            fraction of samples to calculate modalities, e.g. if 0.6, then at
-            least 60% of samples must have an event detected for modality
-            detection
-        bootstrapped_kws : dict, optional
-            Valid arguments to _bootstrapped_fit_transform. If None, default is
-            dict(n_iter=100, thresh=0.6, minimum_samples=10)
 
         Returns
         -------
@@ -142,8 +129,7 @@ class SplicingData(BaseData):
 
     # @memoize
     def modalities_counts(self, sample_ids=None, feature_ids=None, data=None,
-                          groupby=None, min_samples=0.5,
-                          bootstrapped=False, bootstrapped_kws=False):
+                          groupby=None, min_samples=0.5):
         """Count the number of each modalities of these samples and features
 
         Parameters
@@ -155,19 +141,6 @@ class SplicingData(BaseData):
         data : pandas.DataFrame, optional
             If provided, use this dataframe instead of the sample_ids and
             feature_ids provided
-        bootstrapped : bool
-            Whether or not to use bootstrapping, i.e. resample each splicing
-            event several times to get a better estimate of its true modality.
-            Default False.
-        min_samples : int or float
-            If int, then this is the absolute number of cells that are minimum
-            required to calculate modalities. If a float, then require this
-            fraction of samples to calculate modalities, e.g. if 0.6, then at
-            least 60% of samples must have an event detected for modality
-            detection
-        bootstrapped_kws : dict
-            Valid arguments to _bootstrapped_fit_transform. If None, default is
-            dict(n_iter=100, thresh=0.6, minimum_samples=10)
 
         Returns
         -------
@@ -194,8 +167,7 @@ class SplicingData(BaseData):
         data = pd.concat([df.dropna(thresh=thresh(df), axis=1)
                           for name, df in grouped])
         counts = data.groupby(groupby).apply(
-            self.modality_estimator.counts, bootstrapped=bootstrapped,
-            bootstrapped_kws=bootstrapped_kws)
+            self.modality_estimator.counts)
         return counts
 
 
@@ -205,25 +177,21 @@ class SplicingData(BaseData):
 
     def plot_modalities_reduced(self, sample_ids=None, feature_ids=None,
                                 data=None, ax=None, title=None):
-        """Plot modality assignments in DataFrameNMF space (option for lavalamp?)
+        """Plot events modality assignments in NMF space
 
         Parameters
         ----------
-        bootstrapped : bool
-            Whether or not to use bootstrapping, i.e. resample each splicing
-            event several times to get a better estimate of its true modality.
-            Default False.
-        bootstrappped_kws : dict
-            Valid arguments to _bootstrapped_fit_transform. If None, default is
-            dict(n_iter=100, thresh=0.6, minimum_samples=10)
-
-
-        Returns
-        -------
-
-
-        Raises
-        ------
+        sample_ids : list of str
+            Which samples to use. If None, use all. Default None.
+        feature_ids : list of str
+            Which features to use. If None, use all. Default None.
+        data : pandas.DataFrame, optional
+            If provided, use this dataframe instead of the sample_ids and
+            feature_ids provided
+        ax : matplotlib.axes.Axes object
+            Axes to plot on. If none, gets current axes
+        title : str
+            Title of the reduced space plot
         """
         modalities_assignments = self.modality_assignments(sample_ids, feature_ids,
                                                            data)
@@ -235,7 +203,7 @@ class SplicingData(BaseData):
 
     def plot_modalities_bars(self, sample_ids=None, feature_ids=None,
                              data=None, groupby=None, phenotype_to_color=None):
-        """Plot bar
+        """Make grouped barplots of the number of modalities per group
 
         Parameters
         ----------
