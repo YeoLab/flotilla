@@ -129,6 +129,7 @@ class SplicingData(BaseData):
             self.modality_estimator.fit_transform)
         return assignments
 
+    @memoize
     def modality_counts(self, sample_ids=None, feature_ids=None, data=None,
                           groupby=None, min_samples=0.5):
         """Count the number of each modalities of these samples and features
@@ -150,7 +151,8 @@ class SplicingData(BaseData):
         """
         assignments = self.modality_assignments(sample_ids, feature_ids, data,
                                                 groupby, min_samples)
-        return assignments.groupby(assignments).size()
+        counts = assignments.apply(lambda x: x.groupby(x).size(), axis=1)
+        return counts
 
     def binify(self, data):
         return super(SplicingData, self).binify(data, self.bins)
