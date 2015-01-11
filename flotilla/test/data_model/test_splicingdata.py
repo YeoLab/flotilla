@@ -36,6 +36,17 @@ class TestSplicingData:
     #     pdt.assert_frame_equal(assignments.sort_index(axis=1),
     #                            true_modalities.sort_index(axis=1))
 
+    @pytest.fixture(params=['groupby_real', 'groupby_none'])
+    def groupby(self, request, groupby_fixed):
+        if request.param == 'groupby_real':
+            return groupby_fixed
+        elif request.param == 'groupby_none':
+            return None
+
+    @pytest.fixture(params=[0.6, 5])
+    def min_samples(self, request):
+        return request.param
+
     def test_binify(self, splicing):
         from flotilla.compute.infotheory import binify
 
@@ -188,3 +199,55 @@ class TestSplicingData:
             groupby_fixed, group_transitions_fixed, group_order_fixed,
             color_ordered_fixed, group_to_color_fixed, group_to_marker)
         plt.close('all')
+
+    def test_modality_assignments(self, splicing_fixed, groupby,
+                                  min_samples):
+        sample_ids = None
+        feature_ids = None
+        test_modality_assignments = splicing_fixed.modality_assignments(
+            sample_ids=sample_ids, feature_ids=feature_ids,
+            groupby=groupby, min_samples=min_samples)
+
+        data = splicing_fixed._subset(splicing_fixed.data, sample_ids,
+                                      feature_ids, require_min_samples=False)
+        grouped = data.groupby(groupby)
+        if isinstance(min_samples, int):
+            thresh = lambda x: min_samples
+        elif isinstance(min_samples, float):
+            thresh = lambda x: min_samples * x.shape[0]
+        else:
+            raise TypeError('Threshold for minimum samples for modality '
+                            'detection can only be int or float, '
+                            'not {}'.format(type(min_samples)))
+        data = pd.concat([df.dropna(thresh=thresh(df), axis=1)
+                         for name, df in grouped])
+        true_assignments = data.groupby(groupby).apply(
+            splicing_fixed.modality_estimator.fit_transform)
+
+        pdt.assert_frame_equal(test_modality_assignments, true_assignments)
+
+    def test_modality_counts(self, splicing_fixed, groupby,
+                                  min_samples):
+        sample_ids = None
+        feature_ids = None
+        test_modality_counts = splicing_fixed.modality_counts(
+            sample_ids=sample_ids, feature_ids=feature_ids,
+            groupby=groupby, min_samples=min_samples)
+
+        data = splicing_fixed._subset(splicing_fixed.data, sample_ids,
+                                      feature_ids, require_min_samples=False)
+        grouped = data.groupby(groupby)
+        if isinstance(min_samples, int):
+            thresh = lambda x: min_samples
+        elif isinstance(min_samples, float):
+            thresh = lambda x: min_samples * x.shape[0]
+        else:
+            raise TypeError('Threshold for minimum samples for modality '
+                            'detection can only be int or float, '
+                            'not {}'.format(type(min_samples)))
+        data = pd.concat([df.dropna(thresh=thresh(df), axis=1)
+                         for name, df in grouped])
+        true_counts = data.groupby(groupby).apply(
+            splicing_fixed.modality_estimator.counts)
+
+        pdt.assert_frame_equal(test_modality_counts, true_counts)
