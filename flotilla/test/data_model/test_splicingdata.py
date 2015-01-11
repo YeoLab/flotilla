@@ -37,13 +37,13 @@ class TestSplicingData:
     #                            true_modalities.sort_index(axis=1))
 
     @pytest.fixture(params=['groupby_real', 'groupby_none'])
-    def groupby(self, request, groupby_fixed):
+    def groupby_params(self, request, groupby_fixed):
         if request.param == 'groupby_real':
             return groupby_fixed
         elif request.param == 'groupby_none':
             return None
 
-    @pytest.fixture(params=[0.9, 10])
+    @pytest.fixture(params=[0.2, 5])
     def min_samples(self, request):
         return request.param
 
@@ -200,17 +200,22 @@ class TestSplicingData:
             color_ordered_fixed, group_to_color_fixed, group_to_marker)
         plt.close('all')
 
-    def test_modality_assignments(self, splicing_fixed, groupby,
+    def test_modality_assignments(self, splicing_fixed, groupby_params,
                                   min_samples):
         sample_ids = None
         feature_ids = None
         test_modality_assignments = splicing_fixed.modality_assignments(
             sample_ids=sample_ids, feature_ids=feature_ids,
-            groupby=groupby, min_samples=min_samples)
+            groupby=groupby_params, min_samples=min_samples)
 
         data = splicing_fixed._subset(splicing_fixed.data, sample_ids,
                                       feature_ids, require_min_samples=False)
-        grouped = data.groupby(groupby)
+        if groupby_params is None:
+            groupby_copy = pd.Series('all', index=data.index)
+        else:
+            groupby_copy = groupby_params
+
+        grouped = data.groupby(groupby_copy)
         if isinstance(min_samples, int):
             thresh = lambda x: min_samples
         elif isinstance(min_samples, float):
@@ -221,20 +226,17 @@ class TestSplicingData:
                             'not {}'.format(type(min_samples)))
         data = pd.concat([df.dropna(thresh=thresh(df), axis=1)
                          for name, df in grouped])
-        true_assignments = data.groupby(groupby).apply(
+        true_assignments = data.groupby(groupby_copy).apply(
             splicing_fixed.modality_estimator.fit_transform)
 
         pdt.assert_frame_equal(test_modality_assignments, true_assignments)
 
-    def test_modality_counts(self, splicing_fixed, groupby_fixed):
+    def test_modality_counts(self, splicing_fixed):
         sample_ids = None
         feature_ids = None
         test_modality_counts = splicing_fixed.modality_counts(
-            sample_ids=sample_ids, feature_ids=feature_ids,
-            groupby=groupby_fixed)
+            sample_ids=sample_ids, feature_ids=feature_ids)
 
-        assignments = splicing_fixed.modality_assignments(sample_ids,
-                                                          feature_ids,
-                                                          groupby_fixed)
-        true_counts = assignments.groupby(assignments).size()
+        assignments = splicing_fixed.modality_assignments(sample_ids, feature_ids)
+        true_counts = assignments.apply(lambda x: x.groupby(x).size(), axis=1)
         pdt.assert_frame_equal(test_modality_counts, true_counts)
