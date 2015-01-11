@@ -84,7 +84,7 @@ class SplicingData(BaseData):
         #                                         included_min=included_min)
         self.modality_visualizer = ModalitiesViz()
 
-    # @memoize
+    @memoize
     def modality_assignments(self, sample_ids=None, feature_ids=None,
                              data=None, groupby=None, min_samples=0.5):
         """Assigned modalities for these samples and features.
@@ -129,7 +129,6 @@ class SplicingData(BaseData):
             self.modality_estimator.fit_transform)
         return assignments
 
-    # @memoize
     def modality_counts(self, sample_ids=None, feature_ids=None, data=None,
                           groupby=None, min_samples=0.5):
         """Count the number of each modalities of these samples and features
@@ -149,33 +148,9 @@ class SplicingData(BaseData):
         modalities_counts : pandas.Series
             The number of events detected in each modality
         """
-        if data is None:
-            data = self._subset(self.singles, sample_ids, feature_ids,
-                                require_min_samples=False)
-        else:
-            if feature_ids is not None and sample_ids is not None:
-                raise ValueError('Can only specify `sample_ids` and '
-                                 '`feature_ids` or `data`, but not both.')
-
-
-        if groupby is None:
-            groupby = pd.Series(data.index, index=data.index)
-
-        grouped = data.groupby(groupby)
-        if isinstance(min_samples, int):
-            thresh = lambda x: min_samples
-        elif isinstance(min_samples, float):
-            thresh = lambda x: min_samples * x.shape[0]
-        else:
-            raise TypeError('Threshold for minimum samples for modality '
-                            'detection can only be int or float, '
-                            'not {}'.format(type(min_samples)))
-        data = pd.concat([df.dropna(thresh=thresh(df), axis=1)
-                          for name, df in grouped])
-        counts = data.groupby(groupby).apply(
-            self.modality_estimator.counts)
-        return counts
-
+        assignments = self.modality_assignments(sample_ids, feature_ids, data,
+                                                groupby, min_samples)
+        return assignments.groupby(assignments).size()
 
     def binify(self, data):
         return super(SplicingData, self).binify(data, self.bins)
@@ -208,7 +183,8 @@ class SplicingData(BaseData):
             ylabel=self._nmf_space_ylabel(phenotype_groupby=None))
 
     def plot_modalities_bars(self, sample_ids=None, feature_ids=None,
-                             data=None, groupby=None, phenotype_to_color=None):
+                             data=None, groupby=None, phenotype_to_color=None,
+                             percentages=False):
         """Make grouped barplots of the number of modalities per group
 
         Parameters
@@ -236,15 +212,22 @@ class SplicingData(BaseData):
             Valid arguments to _bootstrapped_fit_transform. If None, default is
             dict(n_iter=100, thresh=0.6, minimum_samples=10)
         """
-        assignments = self.modality_assignments(
-            sample_ids, feature_ids, data=data, groupby=groupby)
+        if percentages:
+            counts = self.modality_counts(sample_ids, feature_ids, data=data,
+                                          groupby=groupby)
+            return self.modality_visualizer.bar_normed(
+                counts, phenotype_to_color)
+        else:
+            assignments = self.modality_assignments(
+                sample_ids, feature_ids, data=data, groupby=groupby)
 
-        # make sure this is always a dataframe
-        if isinstance(assignments, pd.Series):
-            assignments = pd.DataFrame([assignments.values],
-                                       index=assignments.name,
-                                       columns=assignments.index)
-        return self.modality_visualizer.bar(assignments, phenotype_to_color)
+            # make sure this is always a dataframe
+            if isinstance(assignments, pd.Series):
+                assignments = pd.DataFrame([assignments.values],
+                                           index=assignments.name,
+                                           columns=assignments.index)
+            return self.modality_visualizer.bar(assignments, phenotype_to_color)
+
 
     def plot_modalities_lavalamps(self, sample_ids=None, feature_ids=None,
                                   data=None, groupby=None,
