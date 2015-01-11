@@ -130,7 +130,7 @@ class SplicingData(BaseData):
         return assignments
 
     # @memoize
-    def modalities_counts(self, sample_ids=None, feature_ids=None, data=None,
+    def modality_counts(self, sample_ids=None, feature_ids=None, data=None,
                           groupby=None, min_samples=0.5):
         """Count the number of each modalities of these samples and features
 
