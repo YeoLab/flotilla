@@ -14,41 +14,40 @@ from ..util import as_numpy
 
 seaborn_colors = map(mpl.colors.rgb2hex, sns.color_palette('deep'))
 
-class ModalityEstimatorPlotter(object):
+class _ModalityEstimatorPlotter(object):
     def __init__(self):
         self.fig = plt.figure(figsize=(5 * 2, 3 * 2))
         self.ax_violin = plt.subplot2grid((3, 5), (0, 0), rowspan=3, colspan=1)
         self.ax_loglik = plt.subplot2grid((3, 5), (0, 1), rowspan=3, colspan=3)
         self.ax_bayesfactor = plt.subplot2grid((3, 5), (0, 4), rowspan=3, colspan=1)
 
-    def plot(self, logsumexps, event, modality_colors):
+    def plot(self, event, logliks, logsumexps, modality_colors):
         modality = logsumexps.idxmax()
 
         sns.violinplot(event, bw=0.2, ax=self.ax_violin,
                        color=self.modality_colors[modality])
 
         self.ax_violin.set_ylim(0, 1)
-        ax1.set_title('Guess: {}'.format(modality))
-        ax1.set_xticks([])
-        ax1.set_xlabel('{} {}'.format(event.name))
+        self.ax_violin.set_title('Guess: {}'.format(modality))
+        self.ax_violin.set_xticks([])
+        self.ax_violin.set_xlabel('{} {}'.format(event.name))
 
         for name, loglik in logliks.iteritems():
             # print name,
-            ax2.plot(loglik, 'o-', label=name,
-                     color=self.modality_colors[name])
-            ax2.legend(loc='best')
-        ax2.set_title('Log likelihoods at different parameterizations')
+            self.ax_loglik.plot(loglik, 'o-', label=name,
+                     color=modality_colors[name])
+            self.ax_loglik.legend(loc='best')
+        self.ax_loglik.set_title('Log likelihoods at different parameterizations')
 
         for i, (name, height) in enumerate(logsumexps.iteritems()):
-            ax3.bar(i, height, label=name, color=self.modality_colors[name])
-        ax3.set_title('$\log$ Bayes factors')
-        ax3.set_xticks([])
-        fig.tight_layout()
+            self.ax_bayesfactor.bar(i, height, label=name, color=modality_colors[name])
+        self.ax_bayesfactor.set_title('$\log$ Bayes factors')
+        self.ax_bayesfactor.set_xticks([])
+        self.fig.tight_layout()
 
 
 class ModalitiesViz(object):
-    """Visualize results of modality assignments
-    """
+    """Visualize results of modality assignments"""
     modality_colors = {'bimodal': seaborn_colors[3],
                          'excluded': seaborn_colors[0],
                          'included': seaborn_colors[2],
@@ -88,7 +87,7 @@ class ModalitiesViz(object):
         if title is not None:
             ax.set_title(title)
 
-    def bar(self, assignments):
+    def bar(self, assignments, phenotype_to_color=None):
         """Draw the barplot of a single modalities_count
 
         Parameters
@@ -108,9 +107,18 @@ class ModalitiesViz(object):
         df = pd.melt(assignments.T.reset_index(),
                      value_vars=assignments.index.tolist(),
                      id_vars=id_vars)
-        sns.factorplot('value', hue=assignments.index.name, data=df,
-                       x_order=x_order)
+        if phenotype_to_color is not None:
+            sorted_colors = [v for k, v in sorted(phenotype_to_color.iteritems())]
+            with sns.color_palette(sorted_colors):
+                factorplot = sns.factorplot('value',
+                                            hue=assignments.index.name,
+                                            data=df, x_order=x_order)
+        else:
+            factorplot = sns.factorplot('value',
+                                        hue=assignments.index.name,
+                                        data=df, x_order=x_order)
         sns.despine()
+        return factorplot
 
 
     def event_estimation(self, event, logliks, logsumexps):
@@ -127,7 +135,9 @@ class ModalitiesViz(object):
         Raises
         ------
         """
-
+        plotter = _ModalityEstimatorPlotter()
+        plotter.plot(event, logliks, logsumexps)
+        return plotter
 
 def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
              switchy_score_psi=None, marker='o', plot_kws=None,
