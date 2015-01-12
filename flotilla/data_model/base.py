@@ -1406,6 +1406,7 @@ class BaseData(object):
         mask = data.isnull()
 
         if norm_features:
+            #try to get close to 0 center, unit variance for each feature
             x = data
             x[x<=0] = np.min(x[x>0]).min()
             z = whiten(x.apply(lambda x: np.log2(x / x.mean(axis=0)), 0))
