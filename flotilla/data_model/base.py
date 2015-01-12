@@ -21,6 +21,7 @@ from ..visualize.network import NetworkerViz
 from ..visualize.predict import ClassifierViz
 from ..util import memoize, cached_property
 from ..compute.outlier import OutlierDetection
+from scipy.cluster.vq import whiten
 
 MINIMUM_FEATURE_SUBSET = 20
 
@@ -1393,6 +1394,7 @@ class BaseData(object):
     def plot_clustermap(self, sample_ids=None, feature_ids=None, data=None,
                         feature_colors=None, sample_id_to_color=None,
                         metric='euclidean', method='average',
+                        norm_samples=True, norm_features=True,
                         scale_fig_by_data=True, **kwargs):
         # data = self._subset_ids_or_data(sample_ids, feature_ids, data)
         if data is None:
@@ -1402,8 +1404,14 @@ class BaseData(object):
         # clustering doesn't work if there's NAs
         data = data.dropna(how='all', axis=1).dropna(how='all', axis=0)
         mask = data.isnull()
-        data = data.fillna(data.mean())
 
+        if norm_features:
+            x = data
+            x[x<=0] = np.min(x[x>0]).min()
+            z = whiten(x.apply(lambda x: np.log2(x / x.mean(axis=0)), 0))
+            data = z
+
+        data = data.fillna(data.mean())
         if sample_id_to_color is not None:
             sample_colors = [sample_id_to_color[x] for x in data.index]
 
