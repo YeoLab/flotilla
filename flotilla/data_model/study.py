@@ -1093,6 +1093,9 @@ class Study(object):
                                 expression_thresh=-np.inf):
         """Plot splicing events with modality assignments in NMF space
 
+        This will plot a separate NMF space for each celltype in the data, as well
+        as one for all samples.
+
         Parameters
         ----------
         sample_subset : str or None
