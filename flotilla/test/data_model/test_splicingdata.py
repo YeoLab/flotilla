@@ -285,9 +285,12 @@ class TestSplicingData:
     def test_plot_lavalamp(self, splicing_fixed, group_to_color_fixed):
         splicing_fixed.plot_lavalamp(group_to_color_fixed)
 
-    def test_plot_two_features(self, splicing_fixed):
+    def test_plot_two_features(self, splicing_fixed, groupby_fixed,
+                               group_to_color_fixed):
         splicing_fixed.plot_two_features(splicing_fixed.data.columns[0],
-                                         splicing_fixed.data.columns[1])
+                                         splicing_fixed.data.columns[1],
+                                         groupby=groupby_fixed,
+                                         label_to_color=group_to_color_fixed)
 
     def test_plot_two_samples(self, splicing_fixed):
         splicing_fixed.plot_two_samples(splicing_fixed.data.index[0],
