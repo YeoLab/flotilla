@@ -156,6 +156,7 @@ class ModalitiesViz(object):
         ax.set_xticks(np.arange(len(self.modality_order)) + full_width/2)
         ax.set_xticklabels(self.modality_order)
         ax.set_xlabel('Splicing modality')
+        ax.set_xlim(0, len(self.modality_order))
         ax.legend(loc='best')
         ax.grid(axis='y', linestyle='-', linewidth=0.5)
         sns.despine()
