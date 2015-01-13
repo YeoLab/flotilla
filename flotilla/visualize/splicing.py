@@ -142,7 +142,8 @@ class ModalitiesViz(object):
         if ax is None:
             ax = plt.gca()
 
-        width = 0.8/counts.shape[0]
+        full_width = 0.8
+        width = full_width/counts.shape[0]
         for i, (group, series) in enumerate(counts.iterrows()):
             left = np.arange(len(self.modality_order)) + i*width
             height = [series[i] if i in series else 0
@@ -150,7 +151,10 @@ class ModalitiesViz(object):
             color = phenotype_to_color[group]
             ax.bar(left, height, width=width, color=color, label=group,
                    linewidth=.5, edgecolor='k')
+        ax.set_xticks(np.arange(len(self.modality_order))) + full_width/2
+        ax.set_xticklabels(self.modality_order)
         ax.legend(loc='best')
+        ax.grid(axis='y', linestyle='-', linewidth=0.5)
         sns.despine()
 
     def event_estimation(self, event, logliks, logsumexps):
