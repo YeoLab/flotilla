@@ -148,7 +148,7 @@ class ModalitiesViz(object):
             height = [series[i] for i in self.modality_order]
             color = phenotype_to_color[group]
             ax.bar(left, height, color=color, label=group)
-        ax.legend()
+        ax.legend(loc='best')
 
     def event_estimation(self, event, logliks, logsumexps):
         """Show the values underlying bayesian modality estimations of an event
