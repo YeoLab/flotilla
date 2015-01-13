@@ -158,7 +158,7 @@ class SplicingData(BaseData):
 
 
     def plot_modalities_reduced(self, sample_ids=None, feature_ids=None,
-                                data=None, ax=None, title=None):
+                                data=None, groupby=None, ax=None, title=None):
         """Plot events modality assignments in NMF space
 
         Parameters
@@ -175,13 +175,15 @@ class SplicingData(BaseData):
         title : str
             Title of the reduced space plot
         """
+        if groupby is None:
+            groupby = pd.Series('all', self.data.index)
         modalities_assignments = self.modality_assignments(sample_ids, feature_ids,
-                                                           data)
+                                                           data, groupby)
         self.modality_visualizer.plot_reduced_space(
             self.binned_nmf_reduced(sample_ids, feature_ids),
             modalities_assignments, ax=ax, title=title,
-            xlabel=self._nmf_space_xlabel(phenotype_groupby=None),
-            ylabel=self._nmf_space_ylabel(phenotype_groupby=None))
+            xlabel=self._nmf_space_xlabel(groupby),
+            ylabel=self._nmf_space_ylabel(groupby))
 
     def plot_modalities_bars(self, sample_ids=None, feature_ids=None,
                              data=None, groupby=None, phenotype_to_color=None,
