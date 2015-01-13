@@ -275,6 +275,34 @@ class SplicingData(BaseData):
         sns.despine()
         fig.tight_layout()
 
+    def plot_event_modality_estimation(self, event_id, sample_ids=None,
+                                       data=None,
+                                       groupby=None, min_samples=0.5):
+        if data is None:
+            data = self._subset(self.singles, sample_ids,
+                                require_min_samples=False)
+        else:
+            if sample_ids is not None:
+                raise ValueError('Can only specify `sample_ids` or `data`, but not both.')
+        if groupby is None:
+            groupby = pd.Series('all', index=data.index)
+
+        grouped = data.groupby(groupby)
+        if isinstance(min_samples, int):
+            thresh = lambda x: min_samples
+        elif isinstance(min_samples, float):
+            thresh = lambda x: min_samples * x.shape[0]
+        else:
+            raise TypeError('Threshold for minimum samples for modality '
+                            'detection can only be int or float, '
+                            'not {}'.format(type(min_samples)))
+        data = pd.concat([df.dropna(thresh=thresh(df), axis=1)
+                          for name, df in grouped])
+        event = data[event_id]
+        logliks = self.modality_estimator._loglik(event)
+        logsumexps = self.modality_estimator._logsumexp(event)
+        self.modality_visualizer.event(event, logliks, logsumexps)
+
     @memoize
     def _is_nmf_space_x_axis_excluded(self, phenotype_groupby):
         nmf_space_positions = self.nmf_space_positions(phenotype_groupby)
