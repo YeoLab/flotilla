@@ -1052,7 +1052,7 @@ class Study(object):
                                         min_samples=min_samples)
 
     def plot_modalities_bars(self, sample_subset=None, feature_subset=None,
-                             expression_thresh=-np.inf):
+                             expression_thresh=-np.inf, percentages=True):
         """Make grouped barplots of the number of modalities per phenotype
 
         Parameters
@@ -1068,6 +1068,8 @@ class Study(object):
         expression_thresh : float
             If greater than -inf, then filter on splicing events in genes
             with expression at least this value
+        percentages : bool
+            If True, plot percentages instead of counts
         """
         if expression_thresh > -np.inf:
             data = self.filter_splicing_on_expression(
@@ -1083,7 +1085,8 @@ class Study(object):
 
         self.splicing.plot_modalities_bars(sample_ids, feature_ids, data,
                                            self.sample_id_to_phenotype,
-                                           self.phenotype_to_color)
+                                           self.phenotype_to_color,
+                                           percentages=percentages)
 
 
     def plot_modalities_reduced(self, sample_subset=None, feature_subset=None,
