@@ -80,6 +80,8 @@ class ModalitiesViz(object):
         xmax, ymax = X.max()
         ax.set_xlim(0, 1.05 * xmax)
         ax.set_ylim(0, 1.05 * ymax)
+        ax.set_xticks([])
+        ax.set_yticks([])
         ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel)
         ax.legend()
