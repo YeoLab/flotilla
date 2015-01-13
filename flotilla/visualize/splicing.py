@@ -60,7 +60,7 @@ class ModalitiesViz(object):
     colors = [modality_colors[modality] for modality in
               modality_order]
 
-    def plot_reduced_space(self, binned_reduced, modalities_assignments,
+    def plot_reduced_space(self, binned_reduced, modality_assignments,
                            ax=None, title=None, xlabel='', ylabel=''):
         if ax is None:
             fig, ax = plt.subplots(figsize=(8, 8))
@@ -71,7 +71,7 @@ class ModalitiesViz(object):
         # import pdb
         # pdb.set_trace()
 
-        for modality, df in X.groupby(modalities_assignments, axis=0):
+        for modality, df in X.groupby(modality_assignments, axis=0):
             color = self.modality_colors[modality]
             ax.plot(df.ix[:, 0], df.ix[:, 1], 'o', color=color, alpha=0.25,
                     label=modality)
