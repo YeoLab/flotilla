@@ -145,7 +145,7 @@ class ModalitiesViz(object):
         width = 0.8/counts.shape[0]
         for i, (group, series) in enumerate(counts.iterrows()):
             left = np.arange(counts.shape[1]) + i*width
-            height = [series[i] for i in self.modality_order]
+            height = [series[i] if i in series else 0 for i in self.modality_order]
             color = phenotype_to_color[group]
             ax.bar(left, height, color=color, label=group)
         ax.legend(loc='best')
