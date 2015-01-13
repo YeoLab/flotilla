@@ -1128,7 +1128,7 @@ class Study(object):
         fig, axes = plt.subplots(ncols=n, figsize=(n * 4, 4))
         all_ax = axes[0]
         self.splicing.plot_modalities_reduced(sample_ids, feature_ids,
-                                              data=data, groupby=None,
+                                              data=data,
                                               ax=all_ax, title='all samples')
         axes = axes[2:]
         for i, ((celltype, series), ax) in enumerate(zip(grouped, axes)):
@@ -1138,7 +1138,6 @@ class Study(object):
             # legend = i == 0
             self.splicing.plot_modalities_reduced(samples, feature_ids,
                                                   data=data,
-                                                  groupby=None,
                                                   ax=ax, title=celltype)
 
     def celltype_sizes(self, data_type='splicing'):
