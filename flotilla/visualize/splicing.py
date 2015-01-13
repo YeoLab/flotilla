@@ -151,8 +151,11 @@ class ModalitiesViz(object):
             color = phenotype_to_color[group]
             ax.bar(left, height, width=width, color=color, label=group,
                    linewidth=.5, edgecolor='k')
+        ylabel = 'Percentage of events' if percentages else 'Number of events'
+        ax.set_ylabel(ylabel)
         ax.set_xticks(np.arange(len(self.modality_order)) + full_width/2)
         ax.set_xticklabels(self.modality_order)
+        ax.set_xlabel('Splicing modality')
         ax.legend(loc='best')
         ax.grid(axis='y', linestyle='-', linewidth=0.5)
         sns.despine()
