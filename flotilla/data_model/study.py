@@ -1136,7 +1136,7 @@ class Study(object):
         axes = axes[1:]
         for i, ((celltype, series), ax) in enumerate(zip(grouped, axes)):
             groups.append(celltype)
-            sys.stdout.write('\n---- {} ----\n'.format(celltype))
+            # sys.stdout.write('\n---- {} ----\n'.format(celltype))
             samples = series.index.intersection(sample_ids)
             # legend = i == 0
             self.splicing.plot_modalities_reduced(samples, feature_ids,
