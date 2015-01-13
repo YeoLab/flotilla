@@ -161,6 +161,10 @@ class SplicingData(BaseData):
                                 data=None, ax=None, title=None):
         """Plot events modality assignments in NMF space
 
+        This will calculate modalities on all samples provided, without
+        grouping them by celltype. This is because each NMF axis can only show
+        one set of sample ids' modalties.
+
         Parameters
         ----------
         sample_ids : list of str
