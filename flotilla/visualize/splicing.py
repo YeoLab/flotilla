@@ -73,7 +73,7 @@ class ModalitiesViz(object):
 
         for modality, df in X.groupby(modality_assignments, axis=0):
             color = self.modality_colors[modality]
-            ax.plot(df.ix[:, 0], df.ix[:, 1], 'o', color=color, alpha=0.25,
+            ax.plot(df.ix[:, 0], df.ix[:, 1], 'o', color=color, alpha=0.7,
                     label=modality)
 
         sns.despine()
