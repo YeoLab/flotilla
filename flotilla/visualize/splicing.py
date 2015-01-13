@@ -68,9 +68,6 @@ class ModalitiesViz(object):
         # For easy aliasing
         X = binned_reduced
 
-        # import pdb
-        # pdb.set_trace()
-
         for modality, df in X.groupby(modality_assignments, axis=0):
             color = self.modality_colors[modality]
             ax.plot(df.ix[:, 0], df.ix[:, 1], 'o', color=color, alpha=0.7,
