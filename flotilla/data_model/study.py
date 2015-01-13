@@ -1133,7 +1133,7 @@ class Study(object):
         self.splicing.plot_modalities_reduced(sample_ids, feature_ids,
                                               data=data,
                                               ax=all_ax, title='all samples')
-        axes = axes[2:]
+        axes = axes[1:]
         for i, ((celltype, series), ax) in enumerate(zip(grouped, axes)):
             groups.append(celltype)
             sys.stdout.write('\n---- {} ----\n'.format(celltype))
