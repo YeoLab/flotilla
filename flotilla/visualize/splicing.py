@@ -18,7 +18,8 @@ class _ModalityEstimatorPlotter(object):
         self.fig = plt.figure(figsize=(5 * 2, 3 * 2))
         self.ax_violin = plt.subplot2grid((3, 5), (0, 0), rowspan=3, colspan=1)
         self.ax_loglik = plt.subplot2grid((3, 5), (0, 1), rowspan=3, colspan=3)
-        self.ax_bayesfactor = plt.subplot2grid((3, 5), (0, 4), rowspan=3, colspan=1)
+        self.ax_bayesfactor = plt.subplot2grid((3, 5), (0, 4), rowspan=3,
+                                               colspan=1)
 
     def plot(self, event, logliks, logsumexps, modality_colors,
              renamed=''):
@@ -37,14 +38,19 @@ class _ModalityEstimatorPlotter(object):
             self.ax_loglik.plot(loglik, 'o-', label=name,
                      color=modality_colors[name])
             self.ax_loglik.legend(loc='best')
-        self.ax_loglik.set_title('Log likelihoods at different parameterizations')
-        self.ax_loglik.set_xlabel('{}'.format(event.name))
+        self.ax_loglik.set_title('Log likelihoods at different '
+                                 'parameterizations')
+        # self.ax_loglik.set_xlabel('{}'.format(event.name))
 
         for i, (name, height) in enumerate(logsumexps.iteritems()):
-            self.ax_bayesfactor.bar(i, height, label=name, color=modality_colors[name])
+            self.ax_bayesfactor.bar(i, height, label=name,
+                                    color=modality_colors[name])
         self.ax_bayesfactor.set_title('$\log$ Bayes factors')
         self.ax_bayesfactor.set_xticks([])
         self.fig.tight_layout()
+        self.fig.text(0.5, .025, event.name, fontsize=16, ha='center',
+                      va='bottom')
+        sns.despine()
 
 
 class ModalitiesViz(object):
