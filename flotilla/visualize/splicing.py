@@ -49,6 +49,7 @@ class _ModalityEstimatorPlotter(object):
                                     color=modality_colors[name])
         self.ax_bayesfactor.set_title('$\log$ Bayes factors')
         self.ax_bayesfactor.set_xticks([])
+        self.ax_bayesfactor.grid()
         self.fig.tight_layout()
         self.fig.text(0.5, .025, event.name, fontsize=12, ha='center',
                       va='bottom')
