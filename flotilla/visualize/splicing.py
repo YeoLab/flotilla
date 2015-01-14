@@ -23,7 +23,7 @@ class _ModalityEstimatorPlotter(object):
     def plot(self, event, logliks, logsumexps, modality_colors):
         modality = logsumexps.idxmax()
 
-        sns.violinplot(event, bw=0.2, ax=self.ax_violin,
+        sns.violinplot(event.dropna(), bw=0.2, ax=self.ax_violin,
                        color=modality_colors[modality])
 
         self.ax_violin.set_ylim(0, 1)
