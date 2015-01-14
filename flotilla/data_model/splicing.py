@@ -300,7 +300,7 @@ class SplicingData(BaseData):
                           for name, df in grouped])
         event = data[event_id]
         logliks = self.modality_estimator._loglik(event)
-        logsumexps = self.modality_estimator._logsumexp(event)
+        logsumexps = self.modality_estimator._logsumexp(logliks)
         self.modality_visualizer.event_estimation(event, logliks, logsumexps)
 
     @memoize
