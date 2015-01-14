@@ -42,7 +42,7 @@ class _ModalityEstimatorPlotter(object):
         self.ax_loglik.set_title('Log likelihoods at different '
                                  'parameterizations')
         self.ax_loglik.grid()
-        self.ax_loglik.set_xlabel(' ')
+        self.ax_loglik.set_xlabel('phantom', color='white')
 
         for i, (name, height) in enumerate(logsumexps.iteritems()):
             self.ax_bayesfactor.bar(i, height, label=name,
