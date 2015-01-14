@@ -51,8 +51,8 @@ class _ModalityEstimatorPlotter(object):
         self.ax_bayesfactor.set_xticks([])
         self.ax_bayesfactor.grid()
         self.fig.tight_layout()
-        self.fig.text(0.5, .025, event.name, fontsize=12, ha='center',
-                      va='bottom')
+        self.fig.text(0.5, .025, '{} ({})'.format(event.name, renamed),
+                      fontsize=10, ha='center', va='bottom')
         sns.despine()
         return self
 
