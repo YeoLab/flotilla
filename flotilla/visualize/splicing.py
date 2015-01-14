@@ -31,7 +31,8 @@ class _ModalityEstimatorPlotter(object):
         self.ax_violin.set_ylim(0, 1)
         self.ax_violin.set_title('Guess: {}'.format(modality))
         self.ax_violin.set_xticks([])
-        self.ax_violin.set_xlabel(renamed)
+        self.ax_violin.set_yticks([0, 0.5, 1])
+        # self.ax_violin.set_xlabel(renamed)
 
         for name, loglik in logliks.iteritems():
             # print name,
@@ -40,7 +41,8 @@ class _ModalityEstimatorPlotter(object):
             self.ax_loglik.legend(loc='best')
         self.ax_loglik.set_title('Log likelihoods at different '
                                  'parameterizations')
-        # self.ax_loglik.set_xlabel('{}'.format(event.name))
+        self.ax_loglik.grid()
+        self.ax_loglik.set_xlabel(' ')
 
         for i, (name, height) in enumerate(logsumexps.iteritems()):
             self.ax_bayesfactor.bar(i, height, label=name,
@@ -48,9 +50,10 @@ class _ModalityEstimatorPlotter(object):
         self.ax_bayesfactor.set_title('$\log$ Bayes factors')
         self.ax_bayesfactor.set_xticks([])
         self.fig.tight_layout()
-        self.fig.text(0.5, .025, event.name, fontsize=16, ha='center',
+        self.fig.text(0.5, .025, event.name, fontsize=12, ha='center',
                       va='bottom')
         sns.despine()
+        return self
 
 
 class ModalitiesViz(object):
