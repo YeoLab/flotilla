@@ -175,7 +175,7 @@ class ModalitiesViz(object):
         ------
         """
         plotter = _ModalityEstimatorPlotter()
-        plotter.plot(event, logliks, logsumexps)
+        plotter.plot(event, logliks, logsumexps, self.modality_colors)
         return plotter
 
 def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
