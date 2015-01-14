@@ -20,7 +20,8 @@ class _ModalityEstimatorPlotter(object):
         self.ax_loglik = plt.subplot2grid((3, 5), (0, 1), rowspan=3, colspan=3)
         self.ax_bayesfactor = plt.subplot2grid((3, 5), (0, 4), rowspan=3, colspan=1)
 
-    def plot(self, event, logliks, logsumexps, modality_colors):
+    def plot(self, event, logliks, logsumexps, modality_colors,
+             renamed=''):
         modality = logsumexps.idxmax()
 
         sns.violinplot(event.dropna(), bw=0.2, ax=self.ax_violin,
@@ -29,6 +30,7 @@ class _ModalityEstimatorPlotter(object):
         self.ax_violin.set_ylim(0, 1)
         self.ax_violin.set_title('Guess: {}'.format(modality))
         self.ax_violin.set_xticks([])
+        self.ax_violin.set_xlabel(renamed)
 
         for name, loglik in logliks.iteritems():
             # print name,
@@ -160,7 +162,7 @@ class ModalitiesViz(object):
         ax.grid(axis='y', linestyle='-', linewidth=0.5)
         sns.despine()
 
-    def event_estimation(self, event, logliks, logsumexps):
+    def event_estimation(self, event, logliks, logsumexps, renamed=''):
         """Show the values underlying bayesian modality estimations of an event
 
         Parameters
@@ -175,7 +177,8 @@ class ModalitiesViz(object):
         ------
         """
         plotter = _ModalityEstimatorPlotter()
-        plotter.plot(event, logliks, logsumexps, self.modality_colors)
+        plotter.plot(event, logliks, logsumexps, self.modality_colors,
+                     renamed=renamed)
         return plotter
 
 def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
