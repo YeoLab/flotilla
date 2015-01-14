@@ -299,9 +299,11 @@ class SplicingData(BaseData):
         data = pd.concat([df.dropna(thresh=thresh(df), axis=1)
                           for name, df in grouped])
         event = data[event_id]
+        renamed = self.feature_renamer(event_id)
         logliks = self.modality_estimator._loglik(event)
         logsumexps = self.modality_estimator._logsumexp(logliks)
-        self.modality_visualizer.event_estimation(event, logliks, logsumexps)
+        self.modality_visualizer.event_estimation(event, logliks, logsumexps,
+                                                  renamed=renamed)
 
     @memoize
     def _is_nmf_space_x_axis_excluded(self, phenotype_groupby):
