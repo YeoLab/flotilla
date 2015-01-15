@@ -97,8 +97,10 @@ class ModalityEstimator(object):
 
     def _logsumexp(self, logliks):
         """Calculate logsumexps of each modality's loglikelihood"""
-        return pd.Series(dict((name, logsumexp(loglik))
+        logsumexps = pd.Series(dict((name, logsumexp(loglik))
                               for name, loglik in logliks.iteritems()))
+        logsumexps['uniform'] = self.logbf_thresh
+        return logsumexps
 
     def _guess_modality(self, logsumexps):
         """Guess the most likely modality.
@@ -107,7 +109,6 @@ class ModalityEstimator(object):
         factor threshold, then they are assigned the 'uniform' modality,
         which is the null hypothesis
         """
-        logsumexps['uniform'] = self.logbf_thresh
         return logsumexps.idxmax()
 
     def fit_transform(self, data):
