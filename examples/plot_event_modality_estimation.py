@@ -9,4 +9,4 @@ See also
 """
 import flotilla
 study = flotilla.embark('shalek2013')
-study.plot_event_modality_estimation('chr11:106616096:106616365:+@chr11:106622497:106622610:+@chr11:106625170:106625262:+')
+study.plot_event_modality_estimation('chr8:97356415:97356600:-@chr8:97355689:97355825:-@chr8:97353054:97353130:-@chr8:97352177:97352339:-')
