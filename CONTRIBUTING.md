@@ -103,6 +103,9 @@ before the pull request is merged.
   for example `flotilla/compute/splicing.py`, use this command: 
   `py.test --cov flotilla/compute/splicing.py --cov-report term-missing flotilla/test/compute/test_splicing.py`
   which will show you which lines aren't covered by the tests.
+- [ ] Do the new functions have descriptive 
+  [numpydoc](https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt)
+  style docstrings?
 - [ ] If it adds a new plot, is it documented in the gallery?
 - [ ] Is it well formatted? Look at `make pep8` and `make lint` output
 - [ ] Is it documented in the doc/releases/?
