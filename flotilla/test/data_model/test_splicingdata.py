@@ -9,8 +9,7 @@ import pandas.util.testing as pdt
 import pytest
 
 
-@pytest.fixture(params=[None, 10],
-                ids=['n_none', 'n_10'])
+@pytest.fixture(params=[None, 10], ids=['n_none', 'n_10'])
 def n(request):
     return request.param
 
@@ -35,6 +34,21 @@ class TestSplicingData:
     #
     #     pdt.assert_frame_equal(assignments.sort_index(axis=1),
     #                            true_modalities.sort_index(axis=1))
+
+    @pytest.fixture(params=['groupby_real', 'groupby_none'])
+    def groupby_params(self, request, groupby_fixed):
+        if request.param == 'groupby_real':
+            return groupby_fixed
+        elif request.param == 'groupby_none':
+            return None
+
+    @pytest.fixture(params=[0.2, 5])
+    def min_samples(self, request):
+        return request.param
+
+    @pytest.fixture(params=[True, False])
+    def percentages(self, request):
+        return request.param
 
     def test_binify(self, splicing):
         from flotilla.compute.infotheory import binify
@@ -188,3 +202,96 @@ class TestSplicingData:
             groupby_fixed, group_transitions_fixed, group_order_fixed,
             color_ordered_fixed, group_to_color_fixed, group_to_marker)
         plt.close('all')
+
+    def test_modality_assignments(self, splicing_fixed, groupby_params,
+                                  min_samples):
+        sample_ids = None
+        feature_ids = None
+        test_modality_assignments = splicing_fixed.modality_assignments(
+            sample_ids=sample_ids, feature_ids=feature_ids,
+            groupby=groupby_params, min_samples=min_samples)
+
+        data = splicing_fixed._subset(splicing_fixed.data, sample_ids,
+                                      feature_ids, require_min_samples=False)
+        if groupby_params is None:
+            groupby_copy = pd.Series('all', index=data.index)
+        else:
+            groupby_copy = groupby_params
+
+        grouped = data.groupby(groupby_copy)
+        if isinstance(min_samples, int):
+            thresh = lambda x: min_samples
+        elif isinstance(min_samples, float):
+            thresh = lambda x: min_samples * x.shape[0]
+        else:
+            raise TypeError('Threshold for minimum samples for modality '
+                            'detection can only be int or float, '
+                            'not {}'.format(type(min_samples)))
+        data = pd.concat([df.dropna(thresh=thresh(df), axis=1)
+                         for name, df in grouped])
+        true_assignments = data.groupby(groupby_copy).apply(
+            splicing_fixed.modality_estimator.fit_transform)
+
+        pdt.assert_frame_equal(test_modality_assignments, true_assignments)
+
+    @pytest.mark.xfail
+    def test_modality_assignments_all_inputs_not_none(self, splicing_fixed,
+                                               groupby_fixed):
+        sample_ids = None
+        feature_ids = None
+        test_modality_assignments = splicing_fixed.modality_assignments(
+            sample_ids=sample_ids, feature_ids=feature_ids,
+            data=splicing_fixed.singles,
+            groupby=groupby_fixed)
+
+    @pytest.mark.xfail
+    def test_modality_assignments_invalid_thresh(self, splicing_fixed,
+                                               groupby_fixed):
+        sample_ids = None
+        feature_ids = None
+        test_modality_assignments = splicing_fixed.modality_assignments(
+            sample_ids=sample_ids, feature_ids=feature_ids, min_samples=None,
+            groupby=groupby_fixed)
+
+    def test_modality_counts(self, splicing_fixed):
+        sample_ids = None
+        feature_ids = None
+        test_modality_counts = splicing_fixed.modality_counts(
+            sample_ids=sample_ids, feature_ids=feature_ids)
+
+        assignments = splicing_fixed.modality_assignments(sample_ids, feature_ids)
+        true_counts = assignments.apply(lambda x: x.groupby(x).size(), axis=1)
+        pdt.assert_frame_equal(test_modality_counts, true_counts)
+
+    def test_plot_modalities_bars(self, splicing_fixed, groupby_fixed,
+                                  group_to_color_fixed, percentages):
+        splicing_fixed.plot_modalities_bars(groupby=groupby_fixed,
+                                            percentages=percentages,
+                                            phenotype_to_color=group_to_color_fixed)
+
+    def test_plot_modalities_reduced(self, splicing_fixed, groupby_fixed,
+                                  group_to_color_fixed):
+        splicing_fixed.plot_modalities_bars(groupby=groupby_fixed,
+                                            phenotype_to_color=group_to_color_fixed)
+
+    def test_plot_modalities_lavalamps(self, splicing_fixed, groupby_fixed,
+                                  group_to_color_fixed):
+        splicing_fixed.plot_modalities_lavalamps(groupby=groupby_fixed,
+                                            phenotype_to_color=group_to_color_fixed)
+
+    def test_plot_feature(self, splicing_fixed):
+        splicing_fixed.plot_feature(splicing_fixed.data.columns[0])
+
+    def test_plot_lavalamp(self, splicing_fixed, group_to_color_fixed):
+        splicing_fixed.plot_lavalamp(group_to_color_fixed)
+
+    def test_plot_two_features(self, splicing_fixed, groupby_fixed,
+                               group_to_color_fixed):
+        splicing_fixed.plot_two_features(splicing_fixed.data.columns[0],
+                                         splicing_fixed.data.columns[1],
+                                         groupby=groupby_fixed,
+                                         label_to_color=group_to_color_fixed)
+
+    def test_plot_two_samples(self, splicing_fixed):
+        splicing_fixed.plot_two_samples(splicing_fixed.data.index[0],
+                                         splicing_fixed.data.index[1])
