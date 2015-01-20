@@ -34,3 +34,4 @@ Miscellaneous
 
 - Add link to PyData NYC talk
 - Add scrambled dataset with ~300 samples and both expression and splicing
+- Fix build status badge in README
