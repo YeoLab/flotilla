@@ -8,7 +8,6 @@ import seaborn as sns
 
 from .base import BaseData
 from ..compute.splicing import ModalityEstimator
-from ..compute.decomposition import DataFramePCA
 from ..visualize.splicing import ModalitiesViz
 from ..util import memoize, timestamp
 from ..visualize.splicing import lavalamp, hist_single_vs_pooled_diff, \
@@ -564,32 +563,6 @@ class SplicingData(BaseData):
             return subset, means
         else:
             return subset
-
-
-    def reduce(self, sample_ids=None, feature_ids=None,
-               featurewise=False,
-               reducer=DataFramePCA,
-               standardize=True,
-               reducer_kwargs=None, bins=None,
-               most_variant_features=False):
-        """
-        :param sample_ids: list of sample ids
-        :param feature_ids: list of features
-        :param featurewise: reduce transpose (feature X sample) instead of sample X feature
-        :param reducer: DataFrameReducer object, defaults to DataFramePCA
-        :param standardize: standardize columns before reduction
-        :param reducer_kwargs: kwargs for reducer
-        :param bins: bins to use for binify
-        :return: reducer object
-
-        """
-
-        return super(SplicingData, self).reduce(sample_ids, feature_ids,
-                                                featurewise, reducer,
-                                                standardize=False,
-                                                reducer_kwargs=reducer_kwargs,
-                                                most_variant_features=most_variant_features,
-                                                bins=bins, cosine_transform=True)
 
     def plot_two_features(self, feature1, feature2, groupby=None,
                           label_to_color=None, fillna=None, **kwargs):
