@@ -9,6 +9,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from sklearn.preprocessing import StandardScaler
+from scipy.cluster.vq import whiten
 
 from ..compute.decomposition import DataFramePCA, DataFrameNMF
 from ..compute.infotheory import binify, cross_phenotype_jsd, jsd_df_to_2d
@@ -21,7 +22,6 @@ from ..visualize.network import NetworkerViz
 from ..visualize.predict import ClassifierViz
 from ..util import memoize, cached_property
 from ..compute.outlier import OutlierDetection
-from scipy.cluster.vq import whiten
 
 MINIMUM_FEATURE_SUBSET = 20
 
@@ -788,6 +788,7 @@ class BaseData(object):
         """
         # fill na with mean for each event
         subset = self._subset(data, sample_ids, feature_ids)
+        subset = subset.dropna(how='all', axis=1).dropna(how='all', axis=0)
         means = subset.mean()
         subset = subset.fillna(means).fillna(0)
 
@@ -935,25 +936,13 @@ class BaseData(object):
         reducer_object : flotilla.compute.reduce.ReducerViz
             A ready-to-plot object containing the reduced space
         """
-        if cosine_transform and standardize:
-            raise ValueError("Cannot specify both 'cosine_transform' and "
-                             "'standardize' to be true")
 
         reducer_kwargs = {} if reducer_kwargs is None else reducer_kwargs
 
 
-        subset = self._subset(self.data, sample_ids, feature_ids)
-        subset = subset.dropna(how='all', axis=1).dropna(how='all', axis=0)
-
-        if cosine_transform:
-            subset = subset.fillna(0.5)
-            subset = -2 * np.arccos(subset * 2 - 1) + np.pi
-
-        if standardize:
-            subset = subset.fillna(subset.mean())
-            subset = self._standardize(subset)
-
-        means = subset.means()
+        subset, means = self._subset_and_standardize(self.data, sample_ids,
+                                                     feature_ids,
+                                                     standardize=standardize)
 
         if most_variant_features:
             var = subset.var()
