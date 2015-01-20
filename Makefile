@@ -7,7 +7,7 @@ test:
 
 coverage:
 	cp testing/matplotlibrc .
-	py.test --cov flotilla --cov-report term-missing flotilla/test/
+	py.test --durations=20 --cov flotilla --cov-report term-missing flotilla/test/
 	rm matplotlibrc
 
 lint:

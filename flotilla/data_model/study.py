@@ -889,6 +889,7 @@ class Study(object):
         legend = ax.legend(title='cell type', fontsize=20, )
         return legend
 
+
     def plot_classifier(self, trait, sample_subset=None,
                         feature_subset='all_genes',
                         data_type='expression', title='',
@@ -965,10 +966,9 @@ class Study(object):
         elif data_type == "splicing":
             self.splicing.plot_regressor(**kwargs)
 
-    def modalities(self, sample_subset=None, feature_subset=None,
-                   expression_thresh=-np.inf, bootstrapped=False,
-                   bootstrapped_kws=None, min_samples=0.5):
-        """Get splicing modality assignments of data
+    def modality_assignments(self, sample_subset=None, feature_subset=None,
+                   expression_thresh=-np.inf, min_samples=0.5):
+        """Get modality assignments of splicing data
 
         Parameters
         ----------
@@ -984,20 +984,12 @@ class Study(object):
             Minimum expression value, of the original input. E.g. if the
             original input is already log-transformed, then this threshold is
             on the log values.
-        bootstrapped : bool, optional
-            Whether or not to use bootstrap resampling of each splicing event
-            to robustly estimate its modality
-        bootstrapped_kws : dict, optional
-            Valid arguments to _bootstrapped_fit_transform. If None, default is
-            dict(n_iter=100, thresh=0.6, minimum_samples=10)
 
         Returns
         -------
-        modalities : pandas.Series
-            A (n_events,) shaped series of the assigned modality (in the case
-            of bootstrapped=False), or modality most commonly assigned, in the
-            case of bootstrapped=True
-
+        modalities : pandas.DataFrame
+            A (n_phenotypes, n_events) shaped DataFrame of the assigned
+            modality
         """
         if expression_thresh > -np.inf and \
                         expression_thresh > self.expression.data.min().min():
@@ -1012,16 +1004,13 @@ class Study(object):
                 'splicing', feature_subset, rename=False)
             data = None
 
-        return self.splicing.modalities(sample_ids, feature_ids, data=data,
-                                        bootstrapped=bootstrapped,
+        return self.splicing.modality_assignments(sample_ids, feature_ids,
+                                                  data=data,
                                         groupby=self.sample_id_to_phenotype,
-                                        bootstrapped_kws=bootstrapped_kws,
                                         min_samples=min_samples)
-
-    def modalities_counts(self, sample_subset=None, feature_subset=None,
-                          expression_thresh=-np.inf, bootstrapped=False,
-                          bootstrapped_kws=None):
-        """Get counts of each resampled splicing event assigned to a modality
+    def modality_counts(self, sample_subset=None, feature_subset=None,
+                   expression_thresh=-np.inf, min_samples=0.5):
+        """Get number of splicing events in modality categories
 
         Parameters
         ----------
@@ -1037,20 +1026,50 @@ class Study(object):
             Minimum expression value, of the original input. E.g. if the
             original input is already log-transformed, then this threshold is
             on the log values.
-        bootstrapped : bool, optional
-            Whether or not to use bootstrap resampling of each splicing event
-            to robustly estimate its modality
-        bootstrapped_kws : dict, optional
-            Valid arguments to _bootstrapped_fit_transform. If None, default is
-            dict(n_iter=100, thresh=0.6, minimum_samples=10)
 
         Returns
         -------
-        modalities : pandas.Series
-            A (n_events,) shaped series of the assigned modality (in the case
-            of bootstrapped=False), or modality most commonly assigned, in the
-            case of bootstrapped=True
+        modalities : pandas.DataFrame
+            A (n_phenotypes, n_modalities) shaped DataFrame of the number of
+            events assigned to each modality
+        """
+        if expression_thresh > -np.inf and \
+                        expression_thresh > self.expression.data.min().min():
+            data = self.filter_splicing_on_expression(
+                expression_thresh=expression_thresh,
+                sample_subset=sample_subset)
+            sample_ids = None
+            feature_ids = None
+        else:
+            sample_ids = self.sample_subset_to_sample_ids(sample_subset)
+            feature_ids = self.feature_subset_to_feature_ids(
+                'splicing', feature_subset, rename=False)
+            data = None
 
+        return self.splicing.modality_assignments(sample_ids, feature_ids,
+                                                  data=data,
+                                        groupby=self.sample_id_to_phenotype,
+                                        min_samples=min_samples)
+
+    def plot_modalities_bars(self, sample_subset=None, feature_subset=None,
+                             expression_thresh=-np.inf, percentages=True):
+        """Make grouped barplots of the number of modalities per phenotype
+
+        Parameters
+        ----------
+        sample_subset : str or None
+            Which subset of the samples to use, based on some phenotype
+            column in the experiment design data. If None, all samples are
+            used.
+        feature_subset : str or None
+            Which subset of the features to used, based on some feature type
+            in the expression data (e.g. "variant"). If None, all features
+            are used.
+        expression_thresh : float
+            If greater than -inf, then filter on splicing events in genes
+            with expression at least this value
+        percentages : bool
+            If True, plot percentages instead of counts
         """
         if expression_thresh > -np.inf:
             data = self.filter_splicing_on_expression(
@@ -1064,15 +1083,33 @@ class Study(object):
                 'splicing', feature_subset, rename=False)
             data = None
 
-        return self.splicing.modalities_counts(
-            sample_ids, feature_ids, data=data, bootstrapped=bootstrapped,
-            bootstrapped_kws=bootstrapped_kws,
-            groupby=self.sample_id_to_phenotype)
+        self.splicing.plot_modalities_bars(sample_ids, feature_ids, data,
+                                           self.sample_id_to_phenotype,
+                                           self.phenotype_to_color,
+                                           percentages=percentages)
 
-    def plot_modalities(self, sample_subset=None, feature_subset=None,
-                        normed=True, bootstrapped=False,
-                        bootstrapped_kws=None, expression_thresh=-np.inf):
-        # try:
+
+    def plot_modalities_reduced(self, sample_subset=None, feature_subset=None,
+                                expression_thresh=-np.inf):
+        """Plot splicing events with modality assignments in NMF space
+
+        This will plot a separate NMF space for each celltype in the data, as well
+        as one for all samples.
+
+        Parameters
+        ----------
+        sample_subset : str or None
+            Which subset of the samples to use, based on some phenotype
+            column in the experiment design data. If None, all samples are
+            used.
+        feature_subset : str or None
+            Which subset of the features to used, based on some feature type
+            in the expression data (e.g. "variant"). If None, all features
+            are used.
+        expression_thresh : float
+            If greater than -inf, then filter on splicing events in genes
+            with expression at least this value
+        """
         if expression_thresh > -np.inf:
             data = self.filter_splicing_on_expression(
                 expression_thresh=expression_thresh,
@@ -1089,39 +1126,22 @@ class Study(object):
             self.sample_id_to_phenotype)
 
         # Account for bar plot and plot of the reduced space of ALL samples
-        n = grouped.ngroups + 2
+        n = grouped.ngroups + 1
         groups = ['all']
         fig, axes = plt.subplots(ncols=n, figsize=(n * 4, 4))
-        bar_ax = axes[0]
-        all_ax = axes[1]
+        all_ax = axes[0]
         self.splicing.plot_modalities_reduced(sample_ids, feature_ids,
-                                              all_ax, title='all samples',
-                                              bootstrapped=bootstrapped,
-                                              bootstrapped_kws=bootstrapped_kws)
-        self.splicing.plot_modalities_stacked_bar(sample_ids, feature_ids,
-                                                  bar_ax, i=0, normed=normed,
-                                                  legend=False,
-                                                  bootstrapped=bootstrapped,
-                                                  bootstrapped_kws=bootstrapped_kws)
-
-        axes = axes[2:]
+                                              data=data,
+                                              ax=all_ax, title='all samples')
+        axes = axes[1:]
         for i, ((celltype, series), ax) in enumerate(zip(grouped, axes)):
             groups.append(celltype)
-            sys.stdout.write('\n---- {} ----\n'.format(celltype))
+            # sys.stdout.write('\n---- {} ----\n'.format(celltype))
             samples = series.index.intersection(sample_ids)
             # legend = i == 0
-            self.splicing.plot_modalities_stacked_bar(samples, feature_ids,
-                                                      bar_ax, i + 1,
-                                                      normed=normed,
-                                                      legend=False)
-
             self.splicing.plot_modalities_reduced(samples, feature_ids,
-                                                  ax, title=celltype)
-
-        bar_ax.set_xticks(np.arange(len(groups)) + 0.4)
-        bar_ax.set_xticklabels(groups)
-        # except AttributeError:
-        # pass
+                                                  data=data,
+                                                  ax=ax, title=celltype)
 
     def celltype_sizes(self, data_type='splicing'):
         if data_type == 'expression':
@@ -1133,7 +1153,7 @@ class Study(object):
 
     @property
     def celltype_event_counts(self):
-        """Number of cells that detected this event in that celltype
+        """Number of cells that detected each event, per celltype
         """
         return self.splicing.data.groupby(
             self.sample_id_to_phenotype, axis=0).apply(
@@ -1157,23 +1177,44 @@ class Study(object):
     #         self.sample_id_to_phenotype, axis=0).apply(
     #         lambda x: self.splicing.modalities(x.index))
 
-    def plot_modalities_lavalamps(self, sample_subset=None, bootstrapped=False,
-                                  bootstrapped_kws=None,
+    def plot_modalities_lavalamps(self, sample_subset=None,
+                                  feature_subset=None,
                                   expression_thresh=-np.inf):
-        # grouped = self.splicing.singles.groupby(self.sample_id_to_phenotype,
-        #                                         axis=0)
-        # celltype_groups = self.splicing.singles.groupby(
-        #     self.sample_id_to_phenotype, axis=0)
-        #
-        # if sample_subset is not None:
-        #     # Only plotting one sample_subset, use the modality assignments
-        #     # from just the samples from this sample_subset
-        #     celltype_samples = set(celltype_groups.groups[sample_subset])
-        # else:
-        #     # Plotting all the celltypes, use the modality assignments from
-        #     # all celltypes together
-        #     celltype_samples = self.splicing.data.index
+        """Plot each modality in each celltype on a separate axes
 
+        Parameters
+        ----------
+        sample_subset : str or None
+            Which subset of the samples to use, based on some phenotype
+            column in the experiment design data. If None, all samples are
+            used.
+        feature_subset : str or None
+            Which subset of the features to used, based on some feature type
+            in the expression data (e.g. "variant"). If None, all features
+            are used.
+        expression_thresh : float
+            If greater than -inf, then filter on splicing events in genes
+            with expression at least this value
+        """
+        if expression_thresh > -np.inf:
+            data = self.filter_splicing_on_expression(
+                expression_thresh=expression_thresh,
+                sample_subset=sample_subset)
+            sample_ids = None
+            feature_ids = None
+        else:
+            sample_ids = self.sample_subset_to_sample_ids(sample_subset)
+            feature_ids = self.feature_subset_to_feature_ids(
+                'splicing', feature_subset, rename=False)
+            data = None
+
+        self.splicing.plot_modalities_lavalamps(
+            groupby=self.sample_id_to_phenotype,
+            phenotype_to_color=self.phenotype_to_color,
+            sample_ids=sample_ids, data=data, feature_ids=feature_ids)
+
+    def plot_event_modality_estimation(self, event_id, sample_subset=None,
+                                       expression_thresh=-np.inf):
         if expression_thresh > -np.inf:
             data = self.filter_splicing_on_expression(
                 expression_thresh=expression_thresh,
@@ -1183,20 +1224,9 @@ class Study(object):
             sample_ids = self.sample_subset_to_sample_ids(sample_subset)
             data = None
 
-        # for i, (phenotype, sample_ids) in enumerate(grouped.groups.iteritems()):
-        #     x_offset = 1. / (i + 1)
-        #     sample_ids = celltype_samples.intersection(sample_ids)
-        #     color = self.phenotype_to_color[phenotype]
-        #     if len(sample_ids) > 0:
-        self.splicing.plot_modalities_lavalamps(
-            groupby=self.sample_id_to_phenotype,
-            phenotype_to_color=self.phenotype_to_color,
-            sample_ids=sample_ids, data=data,
-            # color=color,
-            # x_offset=x_offset,
-            # title=phenotype,
-            bootstrapped=bootstrapped,
-            bootstrapped_kws=bootstrapped_kws)
+        self.splicing.plot_event_modality_estimation(
+            event_id, groupby=self.sample_id_to_phenotype,
+            sample_ids=sample_ids, data=data)
 
     def plot_event(self, feature_id, sample_subset=None, nmf_space=False):
         """Plot the violinplot and NMF transitions of a splicing event
