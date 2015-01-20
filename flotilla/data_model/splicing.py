@@ -541,6 +541,31 @@ class SplicingData(BaseData):
             standardize=standardize, metric=metric,
             linkage_method=linkage_method)
 
+    def _subset_and_standardize(self, data, sample_ids=None,
+                                feature_ids=None,
+                                standardize=True, return_means=False,
+                                rename=False):
+        subset = self._subset(self.data, sample_ids, feature_ids)
+        subset = subset.dropna(how='all', axis=1).dropna(how='all', axis=0)
+
+        # This is splicing data ranging from 0 to 1, so fill na with 0.5
+        # and perform an arc-cosine transform to make the data range from
+        # -pi to pi
+        if standardize:
+            subset = subset.fillna(0.5)
+            subset = -2 * np.arccos(subset * 2 - 1) + np.pi
+        means = subset.mean()
+
+        if rename:
+            means = means.rename_axis(self.feature_renamer)
+            subset = subset.rename_axis(self.feature_renamer, 1)
+
+        if return_means:
+            return subset, means
+        else:
+            return subset
+
+
     def reduce(self, sample_ids=None, feature_ids=None,
                featurewise=False,
                reducer=DataFramePCA,
