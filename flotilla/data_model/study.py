@@ -27,7 +27,8 @@ from ..util import load_csv, load_json, load_tsv, load_gzip_pickle_df, \
     load_pickle_df, timestamp, cached_property
 
 
-SPECIES_DATA_PACKAGE_BASE_URL = 'http://sauron.ucsd.edu/flotilla_projects'
+SPECIES_DATA_PACKAGE_BASE_URL = 'https://s3-us-west-2.amazonaws.com/' \
+                                'flotilla-projects'
 DATAPACKAGE_RESOURCE_COMMON_KWS = ('url', 'path', 'format', 'compression',
                                    'name')
 
@@ -395,7 +396,7 @@ class Study(object):
             expression, splicing
         species_data_pacakge_base_url : str
             Base URL to fetch species-specific gene and splicing event
-            metadata from. Default 'http://sauron.ucsd.edu/flotilla_projects'
+            metadata from. Default 'https://s3-us-west-2.amazonaws.com/flotilla-projects/'
 
         Returns
         -------
