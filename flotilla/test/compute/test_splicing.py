@@ -172,6 +172,7 @@ class TestModalityEstimator(object):
         true_logsumexp = pd.Series(
             dict((name, logsumexp(loglik))
                  for name, loglik in logliks.iteritems()))
+        true_logsumexp['uniform'] = estimator.logbf_thresh
         pdt.assert_series_equal(test_logsumexp, true_logsumexp)
 
     def test_guess_modality(self, event, estimator):
