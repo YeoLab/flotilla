@@ -942,7 +942,8 @@ class BaseData(object):
 
         subset, means = self._subset_and_standardize(self.data, sample_ids,
                                                      feature_ids,
-                                                     standardize=standardize)
+                                                     standardize=standardize,
+                                                     return_means=True)
 
         if most_variant_features:
             var = subset.var()
