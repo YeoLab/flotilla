@@ -50,6 +50,45 @@ class TestSplicingData:
     def percentages(self, request):
         return request.param
 
+    @pytest.fixture(params=[True, False])
+    def rename(self, request):
+        return request.param
+
+    @pytest.fixture(params=[True, False])
+    def return_means(self, request):
+        return request.param
+
+    def test__subset_and_standardize(self, splicing):
+        test_subset = splicing._subset_and_standardize(splicing.data)
+
+        true_subset = splicing._subset(splicing.data)
+        true_subset = true_subset.dropna(how='all', axis=1).dropna(how='all', axis=0)
+
+        true_subset = true_subset.fillna(0.5)
+        true_subset = -2 * np.arccos(true_subset*2-1) + np.pi
+
+        pdt.assert_frame_equal(test_subset, true_subset)
+
+    def test__subset_and_standardize_rename_means(self, splicing_fixed, rename):
+        test_subset, test_means = splicing_fixed._subset_and_standardize(
+            splicing_fixed.data, return_means=True, rename=rename)
+
+        true_subset = splicing_fixed._subset(splicing_fixed.data)
+        true_subset = true_subset.dropna(how='all', axis=1).dropna(how='all', axis=0)
+
+        true_subset = true_subset.fillna(0.5)
+        true_subset = -2 * np.arccos(true_subset*2-1) + np.pi
+
+        true_means = true_subset.mean()
+
+        if rename:
+            true_means = true_means.rename_axis(splicing_fixed.feature_renamer)
+            true_subset = true_subset.rename_axis(splicing_fixed.feature_renamer, 1)
+
+        pdt.assert_frame_equal(test_subset, true_subset)
+        pdt.assert_series_equal(test_means, true_means)
+
+
     def test_binify(self, splicing):
         from flotilla.compute.infotheory import binify
 
