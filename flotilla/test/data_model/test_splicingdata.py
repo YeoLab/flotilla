@@ -326,11 +326,15 @@ class TestSplicingData:
 
     def test_plot_two_features(self, splicing_fixed, groupby_fixed,
                                group_to_color_fixed):
-        splicing_fixed.plot_two_features(splicing_fixed.data.columns[0],
-                                         splicing_fixed.data.columns[1],
+        features = splicing_fixed.data.count() > 10
+        feature1 = features[0]
+        feature2 = features[1]
+        splicing_fixed.plot_two_features(feature1, feature2,
                                          groupby=groupby_fixed,
                                          label_to_color=group_to_color_fixed)
 
     def test_plot_two_samples(self, splicing_fixed):
-        splicing_fixed.plot_two_samples(splicing_fixed.data.index[0],
-                                         splicing_fixed.data.index[1])
+        samples = splicing_fixed.data.index[splicing_fixed.data.T.count() > 10]
+        sample1 = samples[0]
+        sample2 = samples[1]
+        splicing_fixed.plot_two_samples(sample1, sample2)
