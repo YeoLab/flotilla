@@ -12,4 +12,6 @@ coverage:
 
 lint:
 	pyflakes -x W flotilla flotilla/test
+
+pep8:
 	pep8 flotilla flotilla/test
