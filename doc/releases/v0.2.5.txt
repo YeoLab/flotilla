@@ -35,3 +35,9 @@ Miscellaneous
 - Add link to PyData NYC talk
 - Add scrambled dataset with ~300 samples and both expression and splicing
 - Fix build status badge in README
+- Removed auto-call to ``%matplotlib inline`` call within
+  :py:mod:`flotilla.visualize` because it messes up the ``make lint`` call
+  and it's dishonest to the user to be messing with their IPython under the
+  hood. It's possible they don't want the plotting to be inline, but rather
+  in a separate X-window as specified by their ``$DISPLAY`` environment
+  variable.
