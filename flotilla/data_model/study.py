@@ -734,6 +734,7 @@ class Study(object):
                  show_point_labels=False, reduce_kwargs=None,
                  color_samples_by=None, bokeh=False,
                  most_variant_features=False, std_multiplier=2,
+                 scale_by_variance=True,
                  **kwargs):
         """Performs DataFramePCA on both expression and splicing study_data
 
@@ -802,6 +803,7 @@ class Study(object):
                 title=title, reduce_kwargs=reduce_kwargs,
                 plot_violins=plot_violins, metadata=self.metadata.data,
                 bokeh=bokeh, most_variant_features=most_variant_features,
+                scale_by_variance=scale_by_variance
                 **kwargs)
 
         elif "splicing".startswith(data_type):
@@ -815,6 +817,7 @@ class Study(object):
                 title=title, reduce_kwargs=reduce_kwargs,
                 plot_violins=plot_violins, metadata=self.metadata.data,
                 bokeh=bokeh, most_variant_features=most_variant_features,
+                scale_by_variance=scale_by_variance,
                 **kwargs)
         else:
             raise ValueError('The data type {} does not exist in this study'
