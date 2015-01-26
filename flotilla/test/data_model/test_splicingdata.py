@@ -326,7 +326,8 @@ class TestSplicingData:
 
     def test_plot_two_features(self, splicing_fixed, groupby_fixed,
                                group_to_color_fixed):
-        features = splicing_fixed.data.count() > 10
+        features = splicing_fixed.data.columns[splicing_fixed.data.count()
+                                               > 10]
         feature1 = features[0]
         feature2 = features[1]
         splicing_fixed.plot_two_features(feature1, feature2,
