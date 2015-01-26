@@ -500,6 +500,7 @@ class BaseData(object):
                                       reduce_kwargs=None, title='',
                                       most_variant_features=False,
                                       std_multiplier=2,
+                                      scale_by_variance=True,
                                       **plotting_kwargs):
         """Principal component-like analysis of measurements
 
@@ -566,6 +567,7 @@ class BaseData(object):
                                       label_to_marker=label_to_marker,
                                       groupby=groupby, order=order,
                                       data_type=self.data_type,
+                                      scale_by_variance=scale_by_variance,
                                       x_pc="pc_" + str(x_pc),
                                       y_pc="pc_" + str(y_pc))
         # pca(show_vectors=True,
