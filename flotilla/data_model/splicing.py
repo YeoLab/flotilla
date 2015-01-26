@@ -8,7 +8,6 @@ import seaborn as sns
 
 from .base import BaseData
 from ..compute.splicing import ModalityEstimator
-from ..compute.decomposition import DataFramePCA
 from ..visualize.splicing import ModalitiesViz
 from ..util import memoize, timestamp
 from ..visualize.splicing import lavalamp, hist_single_vs_pooled_diff, \
@@ -541,30 +540,68 @@ class SplicingData(BaseData):
             standardize=standardize, metric=metric,
             linkage_method=linkage_method)
 
-    def reduce(self, sample_ids=None, feature_ids=None,
-               featurewise=False,
-               reducer=DataFramePCA,
-               standardize=True,
-               reducer_kwargs=None, bins=None,
-               most_variant_features=False):
-        """
-        :param sample_ids: list of sample ids
-        :param feature_ids: list of features
-        :param featurewise: reduce transpose (feature X sample) instead of sample X feature
-        :param reducer: DataFrameReducer object, defaults to DataFramePCA
-        :param standardize: standardize columns before reduction
-        :param reducer_kwargs: kwargs for reducer
-        :param bins: bins to use for binify
-        :return: reducer object
+    def _subset_and_standardize(self, data, sample_ids=None,
+                                feature_ids=None,
+                                standardize=True, return_means=False,
+                                rename=False):
+        """Grab a subset of the provided data and standardize/remove NAs
+
+        Take only the sample ids and feature ids from this data, require
+        at least some minimum samples. Standardization is performed by
+        replacing ``NA``s with the value 0.5. Then, all values for
+        that event are transformed with :math:`\arccos`/:math:`\cos^{-1}`/arc
+        cosine so that all values range from :math:`-\pi` to :math:`+\pi` and
+        are centered around :math:`0`. As much of single-cell alternative
+        splicing data is near-0 or near-1, this spreads out the values near 0
+        and 1, and squishes the values near 0.5.
+
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            Dataframe to subset
+        sample_ids : list-like, optional (default=None)
+            If None, all sample ids will be used, else only the sample ids
+            specified
+        feature_ids : list-like, optional (default=None)
+            If None, all features will be used, else only the features
+            specified
+        standardize : bool, optional (default=True)
+            If True, replaced NAs with 0.5 and perform an arccosine transform
+            to 0-center the splicing data.
+        return_means : bool, optional (default=False)
+            If True, return a tuple of (subset, means), otherwise just return
+            the subset
+        rename : bool, optional (default=False)
+            Whether or not to rename the feature ids using ``feature_renamer``
+
+        Returns
+        -------
+        subset : pandas.DataFrame
+            Subset of the dataframe with the requested samples and features,
+            and standardized as described
+        means : pandas.DataFrame
+            (Only if return_means=True) Mean values of the features (columns).
 
         """
+        subset = self._subset(self.data, sample_ids, feature_ids)
+        subset = subset.dropna(how='all', axis=1).dropna(how='all', axis=0)
 
-        return super(SplicingData, self).reduce(sample_ids, feature_ids,
-                                                featurewise, reducer,
-                                                standardize=False,
-                                                reducer_kwargs=reducer_kwargs,
-                                                bins=bins,
-                                                most_variant_features=most_variant_features)
+        # This is splicing data ranging from 0 to 1, so fill na with 0.5
+        # and perform an arc-cosine transform to make the data range from
+        # -pi to pi
+        if standardize:
+            subset = subset.fillna(0.5)
+            subset = -2 * np.arccos(subset * 2 - 1) + np.pi
+        means = subset.mean()
+
+        if rename:
+            means = means.rename_axis(self.feature_renamer)
+            subset = subset.rename_axis(self.feature_renamer, 1)
+
+        if return_means:
+            return subset, means
+        else:
+            return subset
 
     def plot_two_features(self, feature1, feature2, groupby=None,
                           label_to_color=None, fillna=None, **kwargs):

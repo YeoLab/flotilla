@@ -9,6 +9,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from sklearn.preprocessing import StandardScaler
+from scipy.cluster.vq import whiten
 
 from ..compute.decomposition import DataFramePCA, DataFrameNMF
 from ..compute.infotheory import binify, cross_phenotype_jsd, jsd_df_to_2d
@@ -21,7 +22,6 @@ from ..visualize.network import NetworkerViz
 from ..visualize.predict import ClassifierViz
 from ..util import memoize, cached_property
 from ..compute.outlier import OutlierDetection
-from scipy.cluster.vq import whiten
 
 MINIMUM_FEATURE_SUBSET = 20
 
@@ -754,7 +754,9 @@ class BaseData(object):
                                 standardize=True, return_means=False,
                                 rename=False):
 
-        """Take only the sample ids and feature ids from this data, require
+        """Grab a subset of the provided data and standardize/remove NAs
+
+        Take only the sample ids and feature ids from this data, require
         at least some minimum samples, and standardize data using
         scikit-learn. Will also fill na values with the mean of the feature
         (column)
@@ -770,7 +772,7 @@ class BaseData(object):
             If None, all features will be used, else only the features
             specified
         standardize : bool, optional (default=True)
-            Whether or not to "whiten" (make all variables uncorrelated) and
+            If True, "whiten" (make all variables uncorrelated) and
             mean-center via sklearn.preprocessing.StandardScaler
         return_means : bool, optional (default=False)
             If True, return a tuple of (subset, means), otherwise just return
@@ -788,6 +790,7 @@ class BaseData(object):
         """
         # fill na with mean for each event
         subset = self._subset(data, sample_ids, feature_ids)
+        subset = subset.dropna(how='all', axis=1).dropna(how='all', axis=0)
         means = subset.mean()
         subset = subset.fillna(means).fillna(0)
 
@@ -809,6 +812,11 @@ class BaseData(object):
             return subset, means
         else:
             return subset
+
+    def _standardize(self, data):
+        """Rescale data so mean is 0 and variance is 1"""
+        data = StandardScaler().fit_transform(data)
+        return pd.DataFrame(data, index=data.index, columns=data.columns)
 
     # def plot_clusteredheatmap(self, sample_ids, feature_ids,
     #                           metric='euclidean',
@@ -899,7 +907,8 @@ class BaseData(object):
                reducer=DataFramePCA,
                standardize=True,
                reducer_kwargs=None, bins=None,
-               most_variant_features=False, std_multiplier=2):
+               most_variant_features=False, std_multiplier=2,
+               cosine_transform=False):
         """Make and memoize a reduced dimensionality representation of data
 
         Parameters
@@ -929,13 +938,12 @@ class BaseData(object):
         reducer_object : flotilla.compute.reduce.ReducerViz
             A ready-to-plot object containing the reduced space
         """
-
         reducer_kwargs = {} if reducer_kwargs is None else reducer_kwargs
-
-        subset, means = self._subset_and_standardize(self.data,
-                                                     sample_ids, feature_ids,
-                                                     standardize,
+        subset, means = self._subset_and_standardize(self.data, sample_ids,
+                                                     feature_ids,
+                                                     standardize=standardize,
                                                      return_means=True)
+
         if most_variant_features:
             var = subset.var()
             ind = var >= (var.mean() + std_multiplier*var.std())
@@ -945,10 +953,10 @@ class BaseData(object):
         if bins is not None:
             subset = self.binify(subset, bins)
 
-        # compute reduction
         if featurewise:
             subset = subset.T
 
+        # Compute dimensionality reduction
         reducer_object = reducer(subset, **reducer_kwargs)
         reducer_object.means = means
         return reducer_object
