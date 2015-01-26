@@ -19,6 +19,12 @@ API changes
   :py:func:`.visualize.predict.ClassifierViz` object
 - Multi-index columns for data matrices are no longer supported
 - Modalities are now calculated using Bayesian methods
+- :py:func:`.data_model.Splicing._subset_and_standardize` now doesn't fill
+  ``NA``s with the mean Percent spliced-in/Psi/:math:`\Psi` score for the
+  event, but rather replaces ``NA`` with the value 0.5. Then, all values for
+  that event are transformed with :math:`\arccos`/:math:`\cos^{-1}`/arc cosine
+  so that all values range from :math:`-\pi` to :math:`+\pi` and are centered
+  around :math:`0`.
 
 Bug fixes
 ~~~~~~~~~
