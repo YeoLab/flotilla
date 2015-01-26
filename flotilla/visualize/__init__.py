@@ -30,7 +30,7 @@ seaborn.set_context('talk')
 
 try:
     get_ipython().magic('matplotlib inline')
-except:
+except NameError:
     pass
 
 from .ipython_interact import Interactive
