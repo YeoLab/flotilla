@@ -938,10 +938,7 @@ class BaseData(object):
         reducer_object : flotilla.compute.reduce.ReducerViz
             A ready-to-plot object containing the reduced space
         """
-
         reducer_kwargs = {} if reducer_kwargs is None else reducer_kwargs
-
-
         subset, means = self._subset_and_standardize(self.data, sample_ids,
                                                      feature_ids,
                                                      standardize=standardize,
