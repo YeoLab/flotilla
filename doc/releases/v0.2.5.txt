@@ -9,9 +9,19 @@ Plotting functions
 
 - New function
   :py:func:`.data_model.Study.plot_expression_vs_inconsistent_splicing()`
-  shows the percent
-- Add option to :py:func:`.data_model.Study.interactive_pca` to color samples
-  by different columns in the metadata.
+  shows the percent of splicing events in single cells that are inconsistent
+  with the pooled samples. Has the option to choose an expression cutoff.
+- Add options to :py:func:`.data_model.Study.plot_pca` and
+  :py:func:`.data_model.Study.interactive_pca`
+  - Keyword argument ``color_samples_by`` will take a column name from the
+    ``metadata`` DataFrame, to color samples by different columns in the
+    metadata.
+  - Keyword argument ``scale_by_variance`` is a boolean which when ``True``
+    (default) will scale the :math:`x` and :math:`y` axes by the explained
+    variance of their individual principal components (PC1 for :math:`x` and
+    PC2 for :math:`y`). If ``False``, then the axes are the same scale, by the
+    variance in PC1. Often this will "squish" down the samples in the :math:`y`
+    -axis.
 
 API changes
 ~~~~~~~~~~~
