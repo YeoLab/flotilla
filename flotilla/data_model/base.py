@@ -754,7 +754,9 @@ class BaseData(object):
                                 standardize=True, return_means=False,
                                 rename=False):
 
-        """Take only the sample ids and feature ids from this data, require
+        """Grab a subset of the provided data and standardize/remove NAs
+
+        Take only the sample ids and feature ids from this data, require
         at least some minimum samples, and standardize data using
         scikit-learn. Will also fill na values with the mean of the feature
         (column)
@@ -770,7 +772,7 @@ class BaseData(object):
             If None, all features will be used, else only the features
             specified
         standardize : bool, optional (default=True)
-            Whether or not to "whiten" (make all variables uncorrelated) and
+            If True, "whiten" (make all variables uncorrelated) and
             mean-center via sklearn.preprocessing.StandardScaler
         return_means : bool, optional (default=False)
             If True, return a tuple of (subset, means), otherwise just return
