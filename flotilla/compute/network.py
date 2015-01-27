@@ -46,8 +46,6 @@ class Networker(object):
             If `fun_name` is not one of the ones indicated above
         """
         _noweight = lambda x: x
-        _sq = lambda x: x ** 2
-        _arctan = lambda x: np.arctan(x)
         _arctan_sq = lambda x: np.arctan(x) ** 2
         if fun_name == 'no_weight':
             wt = _noweight

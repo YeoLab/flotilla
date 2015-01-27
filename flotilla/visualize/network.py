@@ -89,7 +89,7 @@ class NetworkerViz(Networker):
                                   ['use_pc_1', 'use_pc_2', 'use_pc_3',
                                    'use_pc_4', 'n_pcs', ])
 
-        f = plt.figure(figsize=(10, 10))
+        plt.figure(figsize=(10, 10))
 
         plt.axis((-0.2, 1.2, -0.2, 1.2))
         main_ax = plt.gca()
@@ -258,7 +258,7 @@ class NetworkerViz(Networker):
 
         adjacency_settings = dict(('non_reduced', True))
 
-        f = plt.figure(figsize=(10, 10))
+        plt.figure(figsize=(10, 10))
         plt.axis((-0.2, 1.2, -0.2, 1.2))
         main_ax = plt.gca()
         ax_cov = plt.axes([0.1, 0.1, .2, .15])

@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 
 
 
+
 # from ..compute.predict import default_classifier
 from ..visualize.color import red
 from .network import NetworkerViz
@@ -435,7 +436,6 @@ class Interactive(object):
             except:
                 raise RuntimeError("this sample designator is not binary")
 
-            sample_series = self.metadata.data[sample_subset]
             # TODO: cast non-boolean binary ids to boolean
             try:
                 assert self.experiment_design.data[
@@ -575,7 +575,6 @@ class Interactive(object):
 
             else:
                 renamer = lambda x: x
-                data_model = None
 
             if feature_subset not in self.default_feature_subsets[data_type]:
                 warnings.warn("This feature_subset ('{}') is not available in "
