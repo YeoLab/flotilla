@@ -1024,14 +1024,14 @@ class PredictorBase(object):
 
 
 class Regressor(PredictorBase):
-    __doc__ = "Regressor for continuous response variables.\n" + \
-              PredictorBase.__doc__
 
     categorical = False
 
     def __init__(self, data_name, trait_name,
                  predictor_name=None,
                  *args, **kwargs):
+        __doc__ = "Regressor for continuous response variables.\n" + \
+                  PredictorBase.__init__.__doc__
         if predictor_name is None:
             predictor_name = REGRESSOR
         kwargs['is_categorical_trait'] = False
@@ -1040,14 +1040,14 @@ class Regressor(PredictorBase):
 
 
 class Classifier(PredictorBase):
-    __doc__ = "Classifier for categorical response variables.\n" + \
-              PredictorBase.__doc__
 
     categorical = True
 
     def __init__(self, data_name, trait_name,
                  predictor_name=None,
                  *args, **kwargs):
+        __doc__ = "Classifier for categorical response variables.\n" + \
+                  PredictorBase.__init__.__doc__
         if predictor_name is None:
             predictor_name = CLASSIFIER
         kwargs['is_categorical_trait'] = True
