@@ -24,6 +24,8 @@ install:
   - conda install --yes pip numpy scipy cython matplotlib nose six scikit-learn ipython networkx pandas tornado statsmodels setuptools pytest pyzmq jinja2 pyyaml
   # Install the rest via pip (brewer2mpl, gspread, seaborn, etc)
   - pip install -r requirements.txt
+  - pip install pep8
+  - pip install https://github.com/dcramer/pyflakes/tarball/master
   - pip install coveralls
 
 before_script:
@@ -44,10 +46,6 @@ after_script:
   # For building the docs
   - sudo apt-get install pandoc
   - pip install sphinx numpydoc sphinx_bootstrap_theme runipy
-  - pip install pep8
-  - pip install https://github.com/dcramer/pyflakes/tarball/master
-  - pip install .
-  - make lint
   - sudo pip install -r doc/requirements.txt --use-mirrors
   - RELEASE=release
   - MASTER=master
