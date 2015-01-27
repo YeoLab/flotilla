@@ -20,8 +20,8 @@ class PredictorBaseViz(PredictorBase):
         gs_x = 18
         gs_y = 12
 
-        ax = None if not 'ax' in pca_plotting_kwargs else pca_plotting_kwargs[
-            'ax']
+        ax = None if 'ax' not in pca_plotting_kwargs \
+            else pca_plotting_kwargs['ax']
 
         if ax is None:
             fig, ax = plt.subplots(1, 1, figsize=(18, 8))
@@ -33,7 +33,7 @@ class PredictorBaseViz(PredictorBase):
         ax_scores.set_xlabel("Feature Importance")
         ax_scores.set_ylabel("Density Estimate")
 
-        if not 'show_vectors' in pca_plotting_kwargs:
+        if 'show_vectors' not in pca_plotting_kwargs:
             pca_plotting_kwargs['show_vectors'] = True
 
         ax_pca = plt.subplot(gs[:, 2:])
@@ -48,78 +48,13 @@ class PredictorBaseViz(PredictorBase):
     def set_reducer_plotting_args(self, rpa):
         self._reducer_plotting_args.update(rpa)
 
-    #
-    # def generate_scatter_table(self,
-    #                            excel_out=None, external_xref=[]):
-    #     """
-    #     make a table to make scatterplots... maybe for plot.ly
-    #     excelOut: full path to an excel output location for scatter data
-    #     external_xref: list of tuples containing (attribute name, function to
-    #     map row index -> an attribute)
-    #     """
-    #     raise NotImplementedError
-    #     trait, classifier_name = self.dataset.trait, self.predictor_name
-    #     X = self.X
-    #     sorter = np.array([np.median(i[1]) - np.median(j[1]) for (i, j) in
-    #                        itertools.izip(X[self.y[trait] == 0].iteritems(),
-    #                                       X[self.y[trait] == 1].iteritems())])
-    #
-    #     sort_by_sorter = X.columns[np.argsort(sorter)]
-    #     c0_values = X[sort_by_sorter][self.y[trait] == 0]
-    #     c1_values = X[sort_by_sorter][self.y[trait] == 1]
-    #
-    #     x = []
-    #     s = []
-    #     y1 = []
-    #     y2 = []
-    #     field_names = ['x-position', 'probe intensity', "condition0",
-    #                    "condition1"]
-    #     n_default_fields = len(field_names)
-    #     external_attrs = {}
-    #     for external_attr_name, external_attr_fun in external_xref:
-    #         external_attrs[external_attr_name] = []
-    #         field_names.append(external_attr_name)
-    #
-    #     for i, (a, b) in enumerate(
-    #             itertools.izip(c0_values.iteritems(), c1_values.iteritems())):
-    #
-    #         mn = np.mean(np.r_[a[1], b[1]])
-    #         _ = [x.append(i) for _ in a[1]]
-    #         _ = [s.append(mn) for val in a[1]]
-    #         _ = [y1.append(val - mn) for val in a[1]]
-    #         _ = [y2.append(np.nan) for val in a[1]]
-    #
-    #         _ = [x.append(i) for _ in b[1]]
-    #         _ = [s.append(mn) for val in b[1]]
-    #         _ = [y1.append(np.nan) for val in b[1]]
-    #         _ = [y2.append(val - mn) for val in b[1]]
-    #
-    #         for external_attr_name, external_attr_fun in external_xref:
-    #             external_attrs[external_attr_name].extend(
-    #                 [external_attr_fun(i) for i in a[1].index])
-    #             external_attrs[external_attr_name].extend(
-    #                 [external_attr_fun(i) for i in b[1].index])
-    #
-    #     zz = pd.DataFrame([x, s, y1, y2] + [external_attrs[attr] for attr in
-    #                                         field_names[n_default_fields:]],
-    #                       index=field_names)
-    #
-    #     if excel_out is not None:
-    #         try:
-    #             E = pd.ExcelWriter('%s' % excel_out)
-    #             zz.T.to_excel(E, self.descrip)
-    #             E.save()
-    #         except Exception as e:
-    #             print "excel save failed with error %s" % e
-    #
-    #     return zz
-
     def do_pca(self, **plotting_kwargs):
         # assert trait in self.traits
         assert self.has_been_fit
         assert self.has_been_scored
 
-        ax = plt.gca() if not 'ax' in plotting_kwargs else plotting_kwargs['ax']
+        ax = plt.gca() if 'ax' not in plotting_kwargs \
+            else plotting_kwargs['ax']
         # del plotting_kwargs['ax']
         local_plotting_kwargs = self._reducer_plotting_args
         local_plotting_kwargs.update(plotting_kwargs)
@@ -136,10 +71,7 @@ class PredictorBaseViz(PredictorBase):
                                   groupby=groupby,
                                   singles=self.singles,
                                   pooled=self.pooled,
-                                  outliers=self.outliers,
-                                  # label_to_color=self.label_to_color,
-                                  # label_to_marker=self.label_to_marker,
-        )
+                                  outliers=self.outliers)
         pcaviz.plot(ax=ax, **local_plotting_kwargs)
         return pcaviz
 
