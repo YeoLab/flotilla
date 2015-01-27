@@ -573,9 +573,8 @@ class Study(object):
                 for key in other_keys:
                     new_key = '{}_{}'.format(name_no_data, key)
                     dfs[new_key] = resource[key]
-        except (IOError, ValueError) as e:
+        except (IOError, ValueError):
             sys.stderr.write('Error loading species {} data '.format(species))
-            pass
         return dfs
 
     def detect_outliers(self, data_type='expression',
