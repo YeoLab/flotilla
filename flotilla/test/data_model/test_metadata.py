@@ -89,10 +89,8 @@ class TestMetaData(object):
             dict((i, true_phenotype_to_color[true_sample_id_to_phenotype[i]])
                  for i in self.metadata.index)
 
-        true_sample_subsets = subsets_from_metadata(self.metadata,
-                                                    self.kws[
-                                                        'minimum_sample_subset'],
-                                                    'samples')
+        true_sample_subsets = subsets_from_metadata(
+            self.metadata, self.kws['minimum_sample_subset'], 'samples')
 
         pdt.assert_frame_equal(test_metadata.data, self.metadata)
         pdt.assert_series_equal(test_metadata.sample_id_to_phenotype,

@@ -11,7 +11,7 @@
 # def study(shalek2013_data):
 # from flotilla.data_model import Study
 #
-#     return Study(sample_metadata=shalek2013_data.metadata,
+# return Study(sample_metadata=shalek2013_data.metadata,
 #                  expression_data=shalek2013_data.expression,
 #                  splicing_data=shalek2013_data.splicing)
 #
@@ -41,9 +41,12 @@
 #         pdt.assert_series_equal(predictorbase.trait, trait)
 #         assert not predictorbase.has_been_fit
 #         assert not predictorbase.has_been_scored
-#         assert predictorbase.default_predictor_kwargs == predictorbase.predictor_kwargs
-#         assert predictorbase.default_score_cutoff_fun == predictorbase.score_cutoff_fun
-#         assert predictorbase.default_predictor_scoring_fun == predictorbase.predictor_scoring_fun
+#         assert predictorbase.default_predictor_kwargs \
+#             == predictorbase.predictor_kwargs
+#         assert predictorbase.default_score_cutoff_fun \
+#             == predictorbase.score_cutoff_fun
+#         assert predictorbase.default_predictor_scoring_fun \
+#             == predictorbase.predictor_scoring_fun
 #
 #     def test_fit(self, predictorbase):
 #         with pytest.raises(ValueError):
@@ -101,7 +104,8 @@
 #
 #         true_regressor = ExtraTreesRegressor(**regressor.predictor_kwargs)
 #         true_regressor.fit(reduced, y)
-#         true_regressor.scores_ = regressor.predictor_scoring_fun(true_regressor)
+#         true_regressor.scores_ = regressor.predictor_scoring_fun(
+#             true_regressor)
 #
 #         npt.assert_array_equal(regressor.predictor_config.scores_,
 #                                true_regressor.scores_)
@@ -172,9 +176,8 @@
 #         reduced, y = reduced_y_aligned
 #
 #         classifier.fit()
-#         classifier.predictor_config.scores_ = classifier.predictor_scoring_fun(
-#             classifier
-#             .predictor_config)
+#         classifier.predictor_config.scores_ = \
+#             classifier.predictor_scoring_fun(classifier.predictor_config)
 #
 #         true_classifier = ExtraTreesClassifier(**classifier.predictor_kwargs)
 #         true_classifier.fit(reduced, y)
