@@ -278,7 +278,7 @@ class TestSplicingData:
                                                groupby_fixed):
         sample_ids = None
         feature_ids = None
-        test_modality_assignments = splicing_fixed.modality_assignments(
+        splicing_fixed.modality_assignments(
             sample_ids=sample_ids, feature_ids=feature_ids,
             data=splicing_fixed.singles,
             groupby=groupby_fixed)
@@ -288,7 +288,7 @@ class TestSplicingData:
                                                groupby_fixed):
         sample_ids = None
         feature_ids = None
-        test_modality_assignments = splicing_fixed.modality_assignments(
+        splicing_fixed.modality_assignments(
             sample_ids=sample_ids, feature_ids=feature_ids, min_samples=None,
             groupby=groupby_fixed)
 

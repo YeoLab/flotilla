@@ -1307,7 +1307,6 @@ class Study(object):
 
             # Assumes all samples of a sample_subset have the same color...
             # probably wrong
-            color = self.phenotype_to_color[phenotype]
             sample_ids = celltype_samples.intersection(sample_ids)
             if len(sample_ids) == 0:
                 continue
@@ -1767,7 +1766,6 @@ class Study(object):
         # Tidify expression
         expression = self.expression.data_original
         expression_index_name = self._maybe_get_axis_name(expression, axis=0)
-        expression_columns_name = self._maybe_get_axis_name(expression, axis=1)
 
         expression_tidy = pd.melt(expression.reset_index(),
                                   id_vars=expression_index_name,

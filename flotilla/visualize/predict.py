@@ -1,7 +1,6 @@
 """
 Visualize the result of a classifcation or regression algorithm on the data.
 """
-
 from matplotlib.gridspec import GridSpec, GridSpecFromSubplotSpec
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -141,7 +140,7 @@ class PredictorBaseViz(PredictorBase):
                                   # label_to_color=self.label_to_color,
                                   # label_to_marker=self.label_to_marker,
         )
-        pcaviz.plot(**local_plotting_kwargs)
+        pcaviz.plot(ax=ax, **local_plotting_kwargs)
         return pcaviz
 
     def plot_scores(self, ax=None):
