@@ -23,7 +23,6 @@ def color_samples_by(request, metadata_phenotype_col):
         return request.param
 
 
-
 class TestStudy(object):
     @pytest.fixture
     def n_groups(self):
@@ -83,15 +82,6 @@ class TestStudy(object):
             pdt.assert_array_equal(sorted(study.technical_outliers),
                                    sorted(technical_outliers))
 
-            # There's more to test for correct initialization but this is barebones
-            # for now
-        #
-        # def test_real_init(self, shalek2013_datapackage_path):
-        #         import flotilla
-        #
-        #         flotilla.embark(shalek2013_datapackage_path, load_species_data=False)
-        #
-
     def test_plot_pca(self, study_no_mapping_stats, color_samples_by):
         study_no_mapping_stats.plot_pca(color_samples_by=color_samples_by,
                                         feature_subset='all')
@@ -116,7 +106,8 @@ class TestStudy(object):
     #     plt.close('all')
     #
     # # def test_plot_classifier(self, study):
-    # #     study.plot_classifier(study.metadata.phenotype_col, feature_subset='all')
+    # #     study.plot_classifier(study.metadata.phenotype_col,
+    # #                           feature_subset='all')
     # #     plt.close('all')
     # #
     # # def test_plot_classifier_splicing(self, study):
@@ -140,7 +131,8 @@ class TestStudy(object):
     #     plt.close('all')
     #
     # def test_plot_correlations_splicing(self, study, featurewise):
-    #     study.plot_correlations(featurewise=featurewise, data_type='splicing',
+    #     study.plot_correlations(featurewise=featurewise,
+    #                             data_type='splicing',
     #                             feature_subset='all')
     #     plt.close('all')
     #
@@ -186,7 +178,8 @@ class TestStudy(object):
     #
     #     # Tidify expression
     #     expression = study.expression.data_original
-    #     expression_index_name = study._maybe_get_axis_name(expression, axis=0)
+    #     expression_index_name = study._maybe_get_axis_name(expression,
+    #                                                        axis=0)
     #     expression_columns_name = study._maybe_get_axis_name(expression,
     #                                                          axis=1)
     #
@@ -196,7 +189,8 @@ class TestStudy(object):
     #                               var_name=common_id)
     #     # This will only do anything if there is a column named "index" so
     #     # no need to check anything
-    #     expression_tidy = expression_tidy.rename(columns={'index': sample_id})
+    #     expression_tidy = expression_tidy.rename(
+    #         columns={'index': sample_id})
     #     expression_tidy = expression_tidy.dropna()
     #
     #     splicing_tidy.set_index([sample_id, common_id], inplace=True)
@@ -216,7 +210,8 @@ class TestStudy(object):
     #     def expression_none_key(self, request):
     #         return request.param
     #
-    #     @pytest.fixture(params=[None, pytest.mark.xfail('feature_rename_col')])
+    #     @pytest.fixture(params=[None,
+    #                             pytest.mark.xfail('feature_rename_col')])
     #     def splicing_none_key(self, request):
     #         return request.param
     #
@@ -241,18 +236,21 @@ class TestStudy(object):
     #     # def test_from_datapackage(self, datapackage, datapackage_dir):
     #     #     import flotilla
     #     #
-    #     #     study = flotilla.Study.from_datapackage(datapackage, datapackage_dir,
-    #     #                                             load_species_data=False)
+    #     #     study = flotilla.Study.from_datapackage(
+    #     #         datapackage, datapackage_dir, load_species_data=False)
     #     #
-    #     #     metadata_resource = get_resource_from_name(datapackage, 'metadata')
+    #     #     metadata_resource = get_resource_from_name(
+    #     #         datapackage, 'metadata')
     #     #     expression_resource = get_resource_from_name(datapackage,
     #     #                                                  'expression')
-    #     #     splicing_resource = get_resource_from_name(datapackage, 'splicing')
+    #     #     splicing_resource = get_resource_from_name(datapackage,
+    #     #                                                'splicing')
     #     #
     #     #     phenotype_col = 'phenotype' if 'phenotype_col' \
     #     #                                    not in metadata_resource else \
     #     #     metadata_resource['phenotype_col']
-    #     #     pooled_col = 'pooled' if 'pooled_col' not in metadata_resource else \
+    #     #     pooled_col = 'pooled' if 'pooled_col' not in
+    #     #         metadata_resource else \
     #     #         metadata_resource['pooled_col']
     #     #     expression_feature_rename_col = None if \
     #     #         'feature_rename_col' not in expression_resource \
@@ -265,9 +263,11 @@ class TestStudy(object):
     #     #     assert study.metadata.pooled_col == pooled_col
     #     #     assert study.expression.feature_rename_col \
     #     #            == expression_feature_rename_col
-    #     #     assert study.splicing.feature_rename_col == splicing_feature_rename_col
+    #     #     assert study.splicing.feature_rename_col \
+    #     #            == splicing_feature_rename_col
     #
-    #     def test_save(self, shalek2013_datapackage_path, shalek2013_datapackage,
+    #     def test_save(self, shalek2013_datapackage_path,
+    #     #             shalek2013_datapackage,
     #                   tmpdir, monkeypatch):
     #         import flotilla
     #         from flotilla.datapackage import name_to_resource
@@ -286,7 +286,8 @@ class TestStudy(object):
     #
     #         assert study_name == save_dir.purebasename
     #
-    #         resource_keys_to_ignore = ('compression', 'format', 'path', 'url')
+    #         resource_keys_to_ignore = ('compression', 'format', 'path',
+    #                                    'url')
     #         keys_from_study = {'splicing': [],
     #                            'expression': ['thresh',
     #                                           'log_base',
@@ -335,7 +336,8 @@ class TestStudy(object):
     #                 for key in resource_keys_to_ignore:
     #                     monkeypatch.delitem(resource, key, raising=False)
     #
-    #         # Have to check for resources separately because they could be in any
+    #         # Have to check for resources separately because they could be
+    #         # in any
     #         # order, it just matters that the contents are equal
     #         sorted_true = sorted(true_datapackage['resources'],
     #                              key=lambda x: x['name'])

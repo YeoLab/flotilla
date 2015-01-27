@@ -16,7 +16,6 @@ def n(request):
 
 class TestSplicingData:
 
-
     # @pytest.fixture(params=[None, 100])
     # def data_for_binned_nmf_reduced(self, request, splicing):
     #     if request.param is None:
@@ -62,19 +61,22 @@ class TestSplicingData:
         test_subset = splicing._subset_and_standardize(splicing.data)
 
         true_subset = splicing._subset(splicing.data)
-        true_subset = true_subset.dropna(how='all', axis=1).dropna(how='all', axis=0)
+        true_subset = true_subset.dropna(how='all', axis=1).dropna(how='all',
+                                                                   axis=0)
 
         true_subset = true_subset.fillna(0.5)
         true_subset = -2 * np.arccos(true_subset*2-1) + np.pi
 
         pdt.assert_frame_equal(test_subset, true_subset)
 
-    def test__subset_and_standardize_rename_means(self, splicing_fixed, rename):
+    def test__subset_and_standardize_rename_means(self, splicing_fixed,
+                                                  rename):
         test_subset, test_means = splicing_fixed._subset_and_standardize(
             splicing_fixed.data, return_means=True, rename=rename)
 
         true_subset = splicing_fixed._subset(splicing_fixed.data)
-        true_subset = true_subset.dropna(how='all', axis=1).dropna(how='all', axis=0)
+        true_subset = true_subset.dropna(how='all', axis=1).dropna(how='all',
+                                                                   axis=0)
 
         true_subset = true_subset.fillna(0.5)
         true_subset = -2 * np.arccos(true_subset*2-1) + np.pi
@@ -83,11 +85,11 @@ class TestSplicingData:
 
         if rename:
             true_means = true_means.rename_axis(splicing_fixed.feature_renamer)
-            true_subset = true_subset.rename_axis(splicing_fixed.feature_renamer, 1)
+            true_subset = true_subset.rename_axis(
+                splicing_fixed.feature_renamer, 1)
 
         pdt.assert_frame_equal(test_subset, true_subset)
         pdt.assert_series_equal(test_means, true_means)
-
 
     def test_binify(self, splicing):
         from flotilla.compute.infotheory import binify
@@ -133,7 +135,7 @@ class TestSplicingData:
         nmf_positions = splicing.nmf_space_positions(groupby=groupby)
 
         test_distances = splicing.transition_distances(nmf_positions,
-                                                             group_transitions)
+                                                       group_transitions)
 
         nmf_positions.index = nmf_positions.index.droplevel(0)
         true_distances = pd.Series(index=group_transitions)
@@ -186,7 +188,7 @@ class TestSplicingData:
         std = np.sqrt(np.square(nmf_space_transitions - mean).sum().sum() / n)
 
         true_big_transitions = nmf_space_transitions[
-            nmf_space_transitions > (mean +  std)].dropna(how='all')
+            nmf_space_transitions > (mean + std)].dropna(how='all')
 
         pdt.assert_frame_equal(test_big_transitions, true_big_transitions)
 
@@ -275,7 +277,7 @@ class TestSplicingData:
 
     @pytest.mark.xfail
     def test_modality_assignments_all_inputs_not_none(self, splicing_fixed,
-                                               groupby_fixed):
+                                                      groupby_fixed):
         sample_ids = None
         feature_ids = None
         splicing_fixed.modality_assignments(
@@ -285,7 +287,7 @@ class TestSplicingData:
 
     @pytest.mark.xfail
     def test_modality_assignments_invalid_thresh(self, splicing_fixed,
-                                               groupby_fixed):
+                                                 groupby_fixed):
         sample_ids = None
         feature_ids = None
         splicing_fixed.modality_assignments(
@@ -298,25 +300,26 @@ class TestSplicingData:
         test_modality_counts = splicing_fixed.modality_counts(
             sample_ids=sample_ids, feature_ids=feature_ids)
 
-        assignments = splicing_fixed.modality_assignments(sample_ids, feature_ids)
+        assignments = splicing_fixed.modality_assignments(sample_ids,
+                                                          feature_ids)
         true_counts = assignments.apply(lambda x: x.groupby(x).size(), axis=1)
         pdt.assert_frame_equal(test_modality_counts, true_counts)
 
     def test_plot_modalities_bars(self, splicing_fixed, groupby_fixed,
                                   group_to_color_fixed, percentages):
-        splicing_fixed.plot_modalities_bars(groupby=groupby_fixed,
-                                            percentages=percentages,
-                                            phenotype_to_color=group_to_color_fixed)
+        splicing_fixed.plot_modalities_bars(
+            groupby=groupby_fixed, percentages=percentages,
+            phenotype_to_color=group_to_color_fixed)
 
     def test_plot_modalities_reduced(self, splicing_fixed, groupby_fixed,
-                                  group_to_color_fixed):
-        splicing_fixed.plot_modalities_bars(groupby=groupby_fixed,
-                                            phenotype_to_color=group_to_color_fixed)
+                                     group_to_color_fixed):
+        splicing_fixed.plot_modalities_bars(
+            groupby=groupby_fixed, phenotype_to_color=group_to_color_fixed)
 
     def test_plot_modalities_lavalamps(self, splicing_fixed, groupby_fixed,
-                                  group_to_color_fixed):
-        splicing_fixed.plot_modalities_lavalamps(groupby=groupby_fixed,
-                                            phenotype_to_color=group_to_color_fixed)
+                                       group_to_color_fixed):
+        splicing_fixed.plot_modalities_lavalamps(
+            groupby=groupby_fixed, phenotype_to_color=group_to_color_fixed)
 
     def test_plot_feature(self, splicing_fixed):
         splicing_fixed.plot_feature(splicing_fixed.data.columns[0])
