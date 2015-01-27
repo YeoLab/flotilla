@@ -34,7 +34,10 @@ before_script:
   - echo $DEPLOY_HTML_DIR
 
 # command to run tests
-script: make coverage
+script:
+  - make coverage
+  - make lint
+  - make pep8
 
 after_script:
   - coveralls
