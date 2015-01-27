@@ -3,6 +3,8 @@
 flotilla
 ========
 
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/YeoLab/flotilla?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ![flotilla Logo](flotilla.png)
 
 
