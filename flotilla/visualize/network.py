@@ -105,7 +105,7 @@ class NetworkerViz(Networker):
 
         try:
             feature_id = self.DataModel.maybe_renamed_to_feature_id(
-                    feature_of_interest)[0]
+                feature_of_interest)[0]
         except (ValueError, KeyError):
             feature_id = ''
 
@@ -159,8 +159,6 @@ class NetworkerViz(Networker):
             ax=main_ax, alpha=0.5)
 
         try:
-
-
             node_color = map(lambda x: pca.X[feature_id].ix[x], graph.nodes())
 
             nx.draw_networkx_nodes(graph, pos, node_color=node_color,
@@ -268,7 +266,7 @@ class NetworkerViz(Networker):
 
         try:
             feature_id = self.DataModel.maybe_renamed_to_feature_id(
-                    feature_of_interest)[0]
+                feature_of_interest)[0]
         except (ValueError, KeyError):
             feature_id = ''
 

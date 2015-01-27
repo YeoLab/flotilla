@@ -13,6 +13,7 @@ from ..util import as_numpy
 
 seaborn_colors = map(mpl.colors.rgb2hex, sns.color_palette('deep'))
 
+
 class _ModalityEstimatorPlotter(object):
     def __init__(self):
         self.fig = plt.figure(figsize=(5 * 2, 3 * 2))
@@ -37,7 +38,7 @@ class _ModalityEstimatorPlotter(object):
         for name, loglik in logliks.iteritems():
             # print name,
             self.ax_loglik.plot(loglik, 'o-', label=name,
-                     color=modality_colors[name])
+                                color=modality_colors[name])
             self.ax_loglik.legend(loc='best')
         self.ax_loglik.set_title('Log likelihoods at different '
                                  'parameterizations')
@@ -60,14 +61,14 @@ class _ModalityEstimatorPlotter(object):
 class ModalitiesViz(object):
     """Visualize results of modality assignments"""
     modality_colors = {'bimodal': seaborn_colors[3],
-                         'excluded': seaborn_colors[0],
-                         'included': seaborn_colors[2],
-                         'middle': seaborn_colors[1],
-                         # 'ambiguous': 'lightgrey',
-                         'uniform': seaborn_colors[4]}
+                       'excluded': seaborn_colors[0],
+                       'included': seaborn_colors[2],
+                       'middle': seaborn_colors[1],
+                       # 'ambiguous': 'lightgrey',
+                       'uniform': seaborn_colors[4]}
 
     modality_order = ['excluded', 'uniform', 'bimodal', 'middle',
-                        'included'] #, 'ambiguous']
+                      'included']  # , 'ambiguous']
 
     colors = [modality_colors[modality] for modality in
               modality_order]
@@ -97,40 +98,6 @@ class ModalitiesViz(object):
         if title is not None:
             ax.set_title(title)
 
-    # def bar(self, assignments, phenotype_to_color=None):
-    #     """Draw barplots grouped by modality of the modality counts
-    #
-    #     Parameters
-    #     ----------
-    #
-    #
-    #     Returns
-    #     -------
-    #
-    #
-    #     Raises
-    #     ------
-    #
-    #     """
-    #     x_order = self.modality_order
-    #     id_vars = list(assignments.columns.names)
-    #     df = pd.melt(assignments.T.reset_index(),
-    #                  value_vars=assignments.index.tolist(),
-    #                  id_vars=id_vars)
-    #     if phenotype_to_color is not None:
-    #         sorted_colors = [v for k, v in sorted(phenotype_to_color.iteritems())]
-    #         with sns.color_palette(sorted_colors):
-    #             factorplot = sns.factorplot('value',
-    #                                         hue=assignments.index.name,
-    #                                         data=df, x_order=x_order)
-    #     else:
-    #         factorplot = sns.factorplot('value',
-    #                                     hue=assignments.index.name,
-    #                                     data=df, x_order=x_order,
-    #                                     legend_out=True)
-    #     sns.despine()
-    #     return factorplot
-
     def bar(self, counts, phenotype_to_color=None, ax=None, percentages=True):
         """Draw barplots grouped by modality of modality percentage per group
 
@@ -147,16 +114,16 @@ class ModalitiesViz(object):
 
         """
         if percentages:
-            counts = 100 * (counts.T/counts.T.sum()).T
+            counts = 100 * (counts.T / counts.T.sum()).T
 
         # with sns.set(style='whitegrid'):
         if ax is None:
             ax = plt.gca()
 
         full_width = 0.8
-        width = full_width/counts.shape[0]
+        width = full_width / counts.shape[0]
         for i, (group, series) in enumerate(counts.iterrows()):
-            left = np.arange(len(self.modality_order)) + i*width
+            left = np.arange(len(self.modality_order)) + i * width
             height = [series[i] if i in series else 0
                       for i in self.modality_order]
             color = phenotype_to_color[group]
@@ -164,7 +131,7 @@ class ModalitiesViz(object):
                    linewidth=.5, edgecolor='k')
         ylabel = 'Percentage of events' if percentages else 'Number of events'
         ax.set_ylabel(ylabel)
-        ax.set_xticks(np.arange(len(self.modality_order)) + full_width/2)
+        ax.set_xticks(np.arange(len(self.modality_order)) + full_width / 2)
         ax.set_xticklabels(self.modality_order)
         ax.set_xlabel('Splicing modality')
         ax.set_xlim(0, len(self.modality_order))
@@ -190,6 +157,7 @@ class ModalitiesViz(object):
         plotter.plot(event, logliks, logsumexps, self.modality_colors,
                      renamed=renamed)
         return plotter
+
 
 def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
              switchy_score_psi=None, marker='o', plot_kws=None,
@@ -346,4 +314,3 @@ def lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
     ax_consistent.set_title('Pooled splicing events consistent with singles{}'
                             .format(title_suffix))
     sns.despine()
-

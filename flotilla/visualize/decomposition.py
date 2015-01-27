@@ -134,6 +134,7 @@ class DecompositionViz(object):
         if self.label_to_color is None:
             colors = iter(sns.color_palette('husl',
                                             n_colors=len(self.grouped)))
+
             def color_factory():
                 return colors.next()
 
@@ -195,10 +196,10 @@ class DecompositionViz(object):
             self.top_features.update(labels)
 
     def plot(self, ax=None, title='', plot_violins=False,
-                 show_point_labels=False,
-                 show_vectors=True,
-                 show_vector_labels=True,
-                 markersize=10, legend=True, bokeh=False, metadata=None):
+             show_point_labels=False,
+             show_vectors=True,
+             show_vector_labels=True,
+             markersize=10, legend=True, bokeh=False, metadata=None):
 
         if bokeh:
             self._plot_bokeh(metadata, title)
@@ -228,7 +229,8 @@ class DecompositionViz(object):
             sns.despine()
             self.reduced_fig.tight_layout()
 
-            if plot_violins and not self.featurewise and self.singles is not None:
+            singles_none = self.singles is None
+            if plot_violins and not self.featurewise and not singles_none:
                 self.plot_violins()
             return self
 
@@ -242,7 +244,6 @@ class DecompositionViz(object):
 
         # Plots can be displayed inline in an IPython Notebook
         bk.output_notebook(force=True)
-
 
         # Create a set of tools to use
         TOOLS = "pan,wheel_zoom,box_zoom,reset,hover"
@@ -282,7 +283,6 @@ class DecompositionViz(object):
 
         show(p)
 
-
     def shorten(self, x):
         if len(x) > self.max_char_width:
             return '{}...'.format(x[:self.max_char_width])
@@ -293,10 +293,7 @@ class DecompositionViz(object):
                      title='DataFramePCA', show_vectors=True,
                      show_vector_labels=True, markersize=10,
                      three_d=False, legend=True, ax=None):
-
-        """
-        Given a pandas dataframe, performs DataFramePCA and plots the results in a
-        convenient single function.
+        """Plot PCA scatterplot
 
         Parameters
         ----------
@@ -345,7 +342,8 @@ class DecompositionViz(object):
                 if not self.pooled.empty:
                     pooled_ids = x.index.intersection(self.pooled.index)
                     pooled_x, pooled_y = x[pooled_ids], y[pooled_ids]
-                    ax.plot(pooled_x, pooled_y, 'o', color=color, marker=marker,
+                    ax.plot(pooled_x, pooled_y, 'o', color=color,
+                            marker=marker,
                             markeredgecolor='k', markeredgewidth=2,
                             label='{} pooled'.format(name),
                             markersize=markersize, alpha=0.75)
@@ -409,7 +407,7 @@ class DecompositionViz(object):
         y = np.arange(loadings.shape[0])
 
         ax.scatter(x, y, color=deep[0])
-        ax.set_ylim(-.5, y.max()+.5)
+        ax.set_ylim(-.5, y.max() + .5)
 
         ax.set_yticks(np.arange(max(loadings.shape[0], n_features)))
         ax.set_title("Component " + pc)

@@ -35,7 +35,8 @@ def violinplot(data, groupby=None, color_ordered=None, ax=None,
 
     _violinplot_single_dataset(data, groupby=groupby, color=color_ordered,
                                ax=ax, order=order,
-                               violinplot_kws=violinplot_kws, splicing=splicing)
+                               violinplot_kws=violinplot_kws,
+                               splicing=splicing)
     if pooled_data is not None and groupby is not None:
         grouped = pooled_data.groupby(groupby)
         if order is not None:
@@ -53,9 +54,8 @@ def violinplot(data, groupby=None, color_ordered=None, ax=None,
 
         # make sure this is behind the non outlier data
         outlier_violinplot_kws['zorder'] = -1
-        _violinplot_single_dataset(outliers, groupby=groupby, color='lightgrey',
-                                   ax=ax,
-                                   order=order,
+        _violinplot_single_dataset(outliers, groupby=groupby,
+                                   color='lightgrey', ax=ax, order=order,
                                    violinplot_kws=outlier_violinplot_kws,
                                    splicing=splicing)
 
@@ -253,6 +253,7 @@ def simple_twoway_scatter(sample1, sample2, **kwargs):
     jointgrid.ax_joint.set_xlim(xmin, xmax)
     jointgrid.ax_joint.set_ylim(ymin, ymax)
 
+
 def barplot(data, color=None, x_order=None, ax=None, title='', **kwargs):
     sns.barplot(data, color=color, x_order=x_order, ax=ax, **kwargs)
     grouped = data.groupby(data)
@@ -282,11 +283,11 @@ def barplot(data, color=None, x_order=None, ax=None, title='', **kwargs):
             verticalalignment = 'bottom' if y >= 0 else 'top'
             percent = percents[modality]
             ax.annotate('{} ({:.1f}%)'.format(y, percent),
-                            (x, y + offset),
-                            verticalalignment=verticalalignment,
-                            horizontalalignment='center')
+                        (x, y + offset),
+                        verticalalignment=verticalalignment,
+                        horizontalalignment='center')
         except KeyError:
             ax.annotate('0 (0%)',
-                            (x, offset_),
-                            verticalalignment='bottom',
-                            horizontalalignment='center')
+                        (x, offset_),
+                        verticalalignment='bottom',
+                        horizontalalignment='center')
