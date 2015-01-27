@@ -95,8 +95,7 @@ def make_study_datapackage(name, metadata,
                            splicing_feature_kws=None,
                            host="https://s3-us-west-2.amazonaws.com/",
                            host_destination='flotilla-projects/'):
-    """Example code for making a datapackage for a Study
-    """
+    """Example code for making a datapackage for a Study"""
     if ' ' in name:
         raise ValueError("Datapackage name cannot have any spaces")
     if set(string.uppercase) & set(name):
@@ -158,102 +157,13 @@ def make_study_datapackage(name, metadata,
                     value = dict((k, mpl.colors.rgb2hex(v))
                                  if isinstance(v, tuple) else
                                  (k, v)
-                                 for k,v in value.iteritems())
+                                 for k, v in value.iteritems())
                 resource[key] = value
 
     filename = '{}/datapackage.json'.format(datapackage_dir)
     with open(filename, 'w') as f:
         json.dump(datapackage, f, indent=2)
     sys.stdout.write('Wrote datapackage to {}'.format(filename))
-
-
-# def make_feature_datapackage():
-#     hg19 = {'name': 'hg19',
-#             'title': 'Metadata about genes and splicing events',
-#             'licences': None,
-#             'sources': 'Gencode and ENSEMBL genes',
-#             'datapackage_version': '0.1.0',
-#             'resources': [
-#                 {
-#                     'format': 'json',
-#                     'name': 'expression_feature_data',
-#                     'url': 'https://s3-us-west-2.amazonaws.com/flotilla-projects/hg19/'
-#                            'gencode.v19.annotation.gene.attributes.plus.json',
-#                     "rename_col":"gene_name",
-#                     "ignore_subset_cols":[
-#                     "ensembl_gene",
-#                     "gencode_gene",
-#                     "gencode_transcript",
-#                     "ensembl_transcript",
-#                     "gene_name",
-#                     "transcript_id",
-#                     "havana_gene",
-#                     "gencode_id"
-#                     ]
-#
-#                 },
-#                 {
-#                     'format': 'json',
-#                     'name': 'splicing_feature_data',
-#                     'url': 'https://s3-us-west-2.amazonaws.com/flotilla-projects/hg19/'
-#                            'miso_metadata_gencode_v19_plus.json',
-#                     "rename_col":"gene_name",
-#                     "ignore_subset_cols":[
-#                     "ensembl_gene",
-#                     "gencode_gene",
-#                     "gencode_transcript",
-#                     "ensembl_transcript",
-#                     "gene_name",
-#                     "transcript_id",
-#                     "havana_gene",
-#                     "gencode_id"
-#                   ]
-#
-#                 },
-#                 {
-#                     'format': 'json',
-#                     'name': 'gene_ontology_data',
-#                     'url': 'https://s3-us-west-2.amazonaws.com/flotilla-projects/hg19/'
-#                            'ens_to_go.json'
-#                 },
-#                 {
-#                      "url": "https://s3-us-west-2.amazonaws.com/flotilla"
-#                             "-projects/ercc/ERCC_Controls.json",
-#                      "name": "spikein_feature_data",
-#                      "format": "json"
-#                 },
-#             ]}
-#
-#     mm10 = {
-#         "name": "mm10",
-#         "title": "Metadata about genes and splicing events",
-#         "licences": None,
-#         "datapackage_version": "0.1.0",
-#         "sources": "Gencode and ENSEMBL genes",
-#         "resources": [{
-#             "url": "https://s3-us-west-2.amazonaws.com/flotilla-projects/mm10/gencode.vM2.annotation.gene.attributes.json",
-#             "name": "expression_feature_data",
-#             "format": "json"
-#         },
-#         {
-#             "url": "https://s3-us-west-2.amazonaws.com/flotilla-projects/ercc/ERCC_Controls.json",
-#             "name": "spikein_feature_data",
-#             "format": "json"
-#         },
-#         {
-#          "format":"json",
-#          "url":"https://s3-us-west-2.amazonaws.com/flotilla-projects/mm10/miso_metadata_gencode_m2.json",
-#          "name":"splicing_feature_data",
-#          "feature_rename_col" : "gene_name"
-#         },
-#           {
-#              "format":"json",
-#              "url":"https://s3-us-west-2.amazonaws.com/flotilla-projects/mm10/ens_to_go.txt.json",
-#              "name":"gene_ontology_data",
-#           }
-#         ]
-#     }
-
 
 
 def name_to_resource(datapackage, name):

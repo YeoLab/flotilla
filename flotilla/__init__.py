@@ -23,6 +23,7 @@ _shalek2013 = 'https://raw.githubusercontent.com/YeoLab/shalek2013/master/' \
 _test_data = 'https://raw.githubusercontent.com/YeoLab/flotilla_test_data/' \
              'master/datapackage.json'
 
+
 def embark(study_name, load_species_data=True):
     """
     Begin your journey of data exploration.
@@ -39,8 +40,8 @@ def embark(study_name, load_species_data=True):
     """
     try:
         try:
-            return Study.from_datapackage_file(study_name,
-                                               load_species_data=load_species_data)
+            return Study.from_datapackage_file(
+                study_name, load_species_data=load_species_data)
         except IOError:
             pass
         filename = os.path.abspath(os.path.expanduser(
