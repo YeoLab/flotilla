@@ -14,4 +14,4 @@ lint:
 	pyflakes flotilla
 
 pep8:
-	pep8 flotilla flotilla/test
+	pep8 flotilla
