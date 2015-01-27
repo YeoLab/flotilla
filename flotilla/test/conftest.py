@@ -538,7 +538,6 @@ def splicing_data_no_na(samples, events,
                           for modality in true_modalities.ix[group]]).T
         return pd.DataFrame(data, index=df.index, columns=df.columns)
 
-
     df = pd.concat([dataframe_maker(group, true_modalities_fixed,
                                     modality_models, df)
                     for group, df in df.groupby(groupby_fixed)], axis=0)
