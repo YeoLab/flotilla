@@ -480,10 +480,7 @@ class Study(object):
 
                     # Test if the file exists, if not, then add the datapackage
                     # file
-                    try:
-                        with open(filename) as f:
-                            pass
-                    except IOError:
+                    if not os.path.exists(filename):
                         filename = os.path.join(datapackage_dir, filename)
 
             name = resource['name']
