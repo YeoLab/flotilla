@@ -43,3 +43,4 @@ Miscellaneous
   variable.
 - Reformatted all code to pass ``make lint`` and ``make pep8``, and these
   standards will be enforced for all future enhancements.
+- Add Gitter chat room badge to README
