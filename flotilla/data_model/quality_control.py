@@ -32,8 +32,8 @@ class MappingStatsData(BaseData):
         ------
 
         """
-        super(MappingStatsData, self).__init__(data,
-                                               predictor_config_manager=predictor_config_manager)
+        super(MappingStatsData, self).__init__(
+            data, predictor_config_manager=predictor_config_manager)
         self.number_mapped_col = number_mapped_col
         self.min_reads = min_reads
 
