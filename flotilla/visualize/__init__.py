@@ -30,3 +30,5 @@ seaborn.set_context('talk')
 
 from .ipython_interact import Interactive
 from .predict import PredictorBaseViz
+
+__all__ = ['Interactive', 'PredictorBaseViz']

@@ -1,9 +1,16 @@
 import os
 
-from .data_model.study import Study
+from .data_model import Study, ExpressionData, SplicingData, MetaData, \
+    MappingStatsData, SpikeInData
 from .compute.predict import PredictorConfigManager, PredictorDataSetManager
 from .datapackage import make_study_datapackage, FLOTILLA_DOWNLOAD_DIR
 
+
+__all__ = ['Study', 'PredictorConfigManager', 'PredictorDataSetManager',
+           'make_study_datapackage', 'FLOTILLA_DOWNLOAD_DIR',
+           'compute', 'data_model', 'visualize', 'Study', 'ExpressionData',
+           'SplicingData', 'MetaData', 'SpikeInData', 'MappingStatsData',
+           'datapackage', 'go', 'util']
 
 __version__ = '0.2.5dev'
 
