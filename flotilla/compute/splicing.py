@@ -14,11 +14,12 @@ MODALITIES_NAMES = ['excluded', 'middle', 'included', 'bimodal',
                     'uniform']
 
 
-
 class ModalityModel(object):
     """Object to model modalities from beta distributions"""
+
     def __init__(self, alphas, betas):
-        if not isinstance(alphas, Iterable) and not isinstance(betas, Iterable):
+        if not isinstance(alphas, Iterable) and not isinstance(betas,
+                                                               Iterable):
             alphas = [alphas]
             betas = [betas]
 
@@ -35,8 +36,8 @@ class ModalityModel(object):
 
     def __eq__(self, other):
         return np.all(self.alphas == other.alphas) \
-                 and np.all(self.betas == other.betas) \
-                 and np.all(self.prob_parameters == other.prob_parameters)
+            and np.all(self.betas == other.betas) \
+            and np.all(self.prob_parameters == other.prob_parameters)
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -52,14 +53,15 @@ class ModalityModel(object):
 
     def logsumexp_logliks(self, x):
         return logsumexp(self.logliks(x))
-    
+
+
 class ModalityEstimator(object):
     """Use Bayesian methods to estimate modalities of splicing events"""
 
     # colors = dict(
-    #     zip(['excluded', 'middle', 'included', 'bimodal', 'uniform'],
+    # zip(['excluded', 'middle', 'included', 'bimodal', 'uniform'],
     #         sns.color_palette('deep', n_colors=5)))
-    
+
     def __init__(self, step, vmax, logbf_thresh=3):
         """Initialize an object with models to estimate splicing modality
 
@@ -84,11 +86,11 @@ class ModalityEstimator(object):
         self.middle_model = ModalityModel(self.parameters, self.parameters)
         self.bimodal_model = ModalityModel(1 / self.parameters,
                                            1 / self.parameters)
-        
+
         self.models = {'included': self.inclusion_model,
-                  'excluded': self.exclusion_model,
-                  'bimodal': self.bimodal_model,
-                  'middle': self.middle_model}
+                       'excluded': self.exclusion_model,
+                       'bimodal': self.bimodal_model,
+                       'middle': self.middle_model}
 
     def _loglik(self, event):
         """Calculate log-likelihoods of an event, given the modality models"""
@@ -98,7 +100,7 @@ class ModalityEstimator(object):
     def _logsumexp(self, logliks):
         """Calculate logsumexps of each modality's loglikelihood"""
         logsumexps = pd.Series(dict((name, logsumexp(loglik))
-                              for name, loglik in logliks.iteritems()))
+                                    for name, loglik in logliks.iteritems()))
         logsumexps['uniform'] = self.logbf_thresh
         return logsumexps
 
@@ -136,7 +138,9 @@ class ModalityEstimator(object):
 
         logsumexp_logliks = data.apply(lambda x:
                                        pd.Series({k: v.logsumexp_logliks(x)
-                                       for k, v in self.models.iteritems()}), axis=0)
+                                                  for k, v in
+                                                  self.models.iteritems()}),
+                                       axis=0)
         logsumexp_logliks.ix['uniform'] = self.logbf_thresh
         return logsumexp_logliks.idxmax()
 
