@@ -41,3 +41,5 @@ Miscellaneous
   hood. It's possible they don't want the plotting to be inline, but rather
   in a separate X-window as specified by their ``$DISPLAY`` environment
   variable.
+- Reformatted all code to pass ``make lint`` and ``make pep8``, and these
+  standards will be enforced for all future enhancements.
