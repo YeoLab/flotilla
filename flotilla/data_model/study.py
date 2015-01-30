@@ -803,7 +803,7 @@ class Study(object):
                 title=title, reduce_kwargs=reduce_kwargs,
                 plot_violins=plot_violins, metadata=self.metadata.data,
                 bokeh=bokeh, most_variant_features=most_variant_features,
-                scale_by_variance=scale_by_variance
+                scale_by_variance=scale_by_variance,
                 **kwargs)
 
         elif "splicing".startswith(data_type):
