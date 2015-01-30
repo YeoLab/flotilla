@@ -68,11 +68,11 @@ class DecompositionViz(object):
             instead of the gene ids. Essentially, the transpose of the
             original matrix. If True, then violins aren't plotted. (default
             False)
-        order : list-like
+        order : list-like, optional
             The order of the labels for the violinplots, e.g. if the data is
             from a differentiation timecourse, then this would be the labels
             of the phenotypes, in the differentiation order.
-        violinplot_kws : dict
+        violinplot_kws : dict, optional
             Any additional parameters to violinplot
         data_type : 'expression' | 'splicing', optional
             For violinplots only. The kind of data that was originally used
