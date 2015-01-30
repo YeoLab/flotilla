@@ -283,7 +283,7 @@ class BaseData(object):
         """Data from only the outlier samples"""
         return self.data.ix[self.outlier_samples]
 
-    @cached_property()
+    @property
     def feature_renamer_series(self):
         """A pandas Series of the original feature ids to the renamed ids"""
         if self.feature_data is not None:
@@ -724,7 +724,9 @@ class BaseData(object):
                                 standardize=True, return_means=False,
                                 rename=False):
 
-        """Take only the sample ids and feature ids from this data, require
+        """Grab a subset of the provided data and standardize/remove NAs
+
+        Take only the sample ids and feature ids from this data, require
         at least some minimum samples, and standardize data using
         scikit-learn. Will also fill na values with the mean of the feature
         (column)
@@ -740,7 +742,7 @@ class BaseData(object):
             If None, all features will be used, else only the features
             specified
         standardize : bool, optional (default=True)
-            Whether or not to "whiten" (make all variables uncorrelated) and
+            If True, "whiten" (make all variables uncorrelated) and
             mean-center via sklearn.preprocessing.StandardScaler
         return_means : bool, optional (default=False)
             If True, return a tuple of (subset, means), otherwise just return
@@ -861,9 +863,7 @@ class BaseData(object):
         reducer_object : flotilla.compute.reduce.ReducerViz
             A ready-to-plot object containing the reduced space
         """
-
         reducer_kwargs = {} if reducer_kwargs is None else reducer_kwargs
-
         subset, means = self._subset_and_standardize(self.data, sample_ids,
                                                      feature_ids,
                                                      standardize=standardize,

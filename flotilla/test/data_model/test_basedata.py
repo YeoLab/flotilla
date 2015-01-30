@@ -60,6 +60,27 @@ class TestBaseData:
         assert isinstance(base_data.predictor_dataset_manager,
                           PredictorDataSetManager)
 
+    def test_feature_renamer_series_change_col(self, expression_data_no_na,
+                                               expression_feature_data,
+                                               expression_feature_rename_col,
+                                               n_genes):
+        from flotilla.data_model.base import BaseData
+        expression_feature_data = expression_feature_data.copy()
+        gene_numbers = np.arange(n_genes)
+        new_renamer = 'new_renamer'
+        expression_feature_data[new_renamer] = \
+            expression_feature_data.index.map(
+                lambda x: 'new_renamed{}'.format(
+                    np.random.choice(gene_numbers)))
+
+        base_data = BaseData(expression_data_no_na,
+                             feature_data=expression_feature_data,
+                             feature_rename_col=expression_feature_rename_col)
+        base_data.feature_rename_col = new_renamer
+        pdt.assert_series_equal(base_data.feature_renamer_series,
+                                expression_feature_data[new_renamer])
+
+
     def test__init_technical_outliers(self, expression_data_no_na,
                                       technical_outliers):
         from flotilla.data_model.base import BaseData

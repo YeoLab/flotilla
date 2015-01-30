@@ -1,7 +1,8 @@
 v0.2.5 (......)
 ---------------------------
 
-This is a patch release, with non-breaking changes from v0.2.4.
+This is a patch release, with non-breaking changes from v0.2.4. This includes
+many changes and bugfixes. Upgrading to this version is highly recommended.
 
 Plotting functions
 ~~~~~~~~~~~~~~~~~~
@@ -19,6 +20,12 @@ API changes
   :py:func:`.visualize.predict.ClassifierViz` object
 - Multi-index columns for data matrices are no longer supported
 - Modalities are now calculated using Bayesian methods
+- :py:func:`.data_model.Splicing._subset_and_standardize` now doesn't fill
+  ``NA``s with the mean Percent spliced-in/Psi/:math:`\Psi` score for the
+  event, but rather replaces ``NA`` with the value 0.5. Then, all values for
+  that event are transformed with :math:`\arccos`/:math:`\cos^{-1}`/arc cosine
+  so that all values range from :math:`-\pi` to :math:`+\pi` and are centered
+  around :math:`0`.
 
 Bug fixes
 ~~~~~~~~~
@@ -28,6 +35,8 @@ Bug fixes
   :py:func:`.data_model.Study.filter_splicing_on_expression` which
   had an issue with when the index names are not `"miso_id"` or
   `"sample_id"`.
+- Don't cache :py:func:`.data_model.BaseData.feature_renamer_series`, so you
+  can change the column used to rename features
 
 Miscellaneous
 ~~~~~~~~~~~~~
