@@ -1,7 +1,8 @@
 v0.2.5 (......)
 ---------------------------
 
-This is a patch release, with non-breaking changes from v0.2.4.
+This is a patch release, with non-breaking changes from v0.2.4. This includes
+many changes and bugfixes. Upgrading to this version is highly recommended.
 
 Plotting functions
 ~~~~~~~~~~~~~~~~~~
@@ -34,6 +35,8 @@ Bug fixes
   :py:func:`.data_model.Study.filter_splicing_on_expression` which
   had an issue with when the index names are not `"miso_id"` or
   `"sample_id"`.
+- Don't cache :py:func:`.data_model.BaseData.feature_renamer_series`, so you
+  can change the column used to rename features
 
 Miscellaneous
 ~~~~~~~~~~~~~
