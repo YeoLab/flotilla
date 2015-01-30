@@ -15,6 +15,7 @@ def pca(df_norm):
 
     return DataFramePCA(df_norm)
 
+
 @pytest.fixture
 def kwargs():
     return dict(feature_renamer=None, groupby=None,
@@ -38,6 +39,7 @@ def large_dataframe():
                       columns=columns)
 
     return df
+
 
 @pytest.fixture
 def pca_large_dataframe(large_dataframe):
@@ -102,7 +104,7 @@ def test_init(pca, kwargs):
     for pc in pcs:
         x = pca.components_.ix[pc].copy()
         x.sort(ascending=True)
-        half_features = int(kwargs['n_top_pc_features']/2)
+        half_features = int(kwargs['n_top_pc_features'] / 2)
         if len(x) > kwargs['n_top_pc_features']:
             a = x[:half_features]
             b = x[-half_features:]
@@ -128,6 +130,7 @@ def test_init(pca, kwargs):
     pdt.assert_array_equal(dv.top_features, true_top_features)
     pdt.assert_dict_equal(dv.pc_loadings_labels, true_pc_loadings_labels)
     pdt.assert_dict_equal(dv.pc_loadings, true_pc_loadings)
+
 
 def test_large_dataframe(pca_large_dataframe, kwargs):
     from flotilla.visualize.decomposition import DecompositionViz
@@ -163,6 +166,7 @@ def test_large_dataframe(pca_large_dataframe, kwargs):
     pdt.assert_dict_equal(dv.pc_loadings_labels, true_pc_loadings_labels)
     pdt.assert_dict_equal(dv.pc_loadings, true_pc_loadings)
 
+
 def test_order(pca, kwargs):
     from flotilla.visualize.decomposition import DecompositionViz
 
@@ -195,6 +199,7 @@ def test_explained_variance_none(pca, kwargs):
     true_vars = pd.Series([1., 1.], index=[kwargs['x_pc'], kwargs['y_pc']])
     pdt.assert_series_equal(dv.vars, true_vars)
 
+
 def test_plot_samples(pca, kwargs):
     from flotilla.visualize.decomposition import DecompositionViz
 
@@ -202,8 +207,9 @@ def test_plot_samples(pca, kwargs):
                           pca.explained_variance_ratio_, **kwargs)
     dv.plot_samples()
     ax = plt.gca()
-    pdt.assert_equal(len(ax.lines), kwargs['n_vectors']+1)
+    pdt.assert_equal(len(ax.lines), kwargs['n_vectors'] + 1)
     plt.close('all')
+
 
 def test_plot_loadings(pca, kwargs):
     from flotilla.visualize.decomposition import DecompositionViz
@@ -215,6 +221,7 @@ def test_plot_loadings(pca, kwargs):
     pdt.assert_equal(len(ax.collections), 1)
     plt.close('all')
 
+
 def test_plot(pca, kwargs):
     from flotilla.visualize.decomposition import DecompositionViz
 
@@ -225,8 +232,10 @@ def test_plot(pca, kwargs):
     pdt.assert_equal(len(dv.fig_reduced.axes), 3)
     plt.close('all')
 
+
 def test_plot_violins(pca, kwargs, df_norm):
     from flotilla.visualize.decomposition import DecompositionViz
+
     kw = kwargs.copy()
     kw.pop('singles')
 
@@ -243,7 +252,7 @@ def test_plot_violins(pca, kwargs, df_norm):
     while ncols * nrows < len(vector_labels):
         nrows += 1
 
-    pdt.assert_equal(len(dv.fig_violins.axes), nrows*ncols)
+    pdt.assert_equal(len(dv.fig_violins.axes), nrows * ncols)
 
     for i in np.arange(len(top_features)):
         ax = dv.fig_violins.axes[i]

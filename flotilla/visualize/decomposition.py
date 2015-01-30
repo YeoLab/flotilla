@@ -212,7 +212,8 @@ class DecompositionViz(object):
                 self.gs = GridSpec(gs_x, gs_y)
 
             else:
-                self.gs = GridSpecFromSubplotSpec(gs_x, gs_y, ax.get_subplotspec())
+                self.gs = GridSpecFromSubplotSpec(gs_x, gs_y,
+                                                  ax.get_subplotspec())
                 self.fig_reduced = plt.gcf()
 
             self.ax_components = plt.subplot(self.gs[:, :5])
