@@ -11,5 +11,7 @@ coverage:
 	rm matplotlibrc
 
 lint:
-	pyflakes -x W flotilla flotilla/test
-	pep8 flotilla flotilla/test
+	pyflakes flotilla
+
+pep8:
+	pep8 flotilla

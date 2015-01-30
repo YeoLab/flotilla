@@ -2,8 +2,8 @@ import numpy.testing as npt
 import pandas.util.testing as pdt
 import pytest
 
-class TestMappingStatsData(object):
 
+class TestMappingStatsData(object):
     @pytest.fixture
     def mapping_stats(self, mapping_stats_data, mapping_stats_kws):
         from flotilla.data_model.quality_control import MappingStatsData

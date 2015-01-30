@@ -8,7 +8,6 @@ import seaborn as sns
 
 from .base import BaseData
 from ..compute.splicing import ModalityEstimator
-from ..compute.decomposition import DataFramePCA
 from ..visualize.splicing import ModalitiesViz
 from ..util import memoize, timestamp
 from ..visualize.splicing import lavalamp, hist_single_vs_pooled_diff, \
@@ -66,7 +65,8 @@ class SplicingData(BaseData):
             technical_outliers=technical_outliers,
             predictor_config_manager=predictor_config_manager,
             minimum_samples=minimum_samples, data_type='splicing')
-        sys.stdout.write("{}\tDone initializing splicing\n".format(timestamp()))
+        sys.stdout.write(
+            "{}\tDone initializing splicing\n".format(timestamp()))
 
         self.feature_expression_id_col = feature_expression_id_col \
             if feature_expression_id_col is not None \
@@ -75,12 +75,12 @@ class SplicingData(BaseData):
         self.binsize = binsize
         self.excluded_max = excluded_max
         self.included_min = included_min
-                
+
         self.bins = np.arange(0, 1 + self.binsize, self.binsize)
 
         self.modality_estimator = ModalityEstimator(step=2., vmax=20.)
         # self.modalities_calculator = Modalities(excluded_max=excluded_max,
-        #                                         included_min=included_min)
+        # included_min=included_min)
         self.modality_visualizer = ModalitiesViz()
 
     @memoize
@@ -123,14 +123,14 @@ class SplicingData(BaseData):
                             'detection can only be int or float, '
                             'not {}'.format(type(min_samples)))
         data = pd.concat([df.dropna(thresh=thresh(df), axis=1)
-                         for name, df in grouped])
+                          for name, df in grouped])
         assignments = data.groupby(groupby).apply(
             self.modality_estimator.fit_transform)
         return assignments
 
     @memoize
     def modality_counts(self, sample_ids=None, feature_ids=None, data=None,
-                          groupby=None, min_samples=0.5):
+                        groupby=None, min_samples=0.5):
         """Count the number of each modalities of these samples and features
 
         Parameters
@@ -156,7 +156,6 @@ class SplicingData(BaseData):
     def binify(self, data):
         return super(SplicingData, self).binify(data, self.bins)
 
-
     def plot_modalities_reduced(self, sample_ids=None, feature_ids=None,
                                 data=None, ax=None, title=None):
         """Plot events modality assignments in NMF space
@@ -180,10 +179,11 @@ class SplicingData(BaseData):
             Title of the reduced space plot
         """
         groupby = pd.Series('all', self.data.index)
-        modality_assignments = self.modality_assignments(sample_ids, feature_ids,
-                                                           data, groupby)
+        modality_assignments = self.modality_assignments(sample_ids,
+                                                         feature_ids,
+                                                         data, groupby)
         modality_assignments = pd.Series(modality_assignments.values[0],
-                                           index=modality_assignments.columns)
+                                         index=modality_assignments.columns)
 
         self.modality_visualizer.plot_reduced_space(
             self.binned_nmf_reduced(sample_ids, feature_ids),
@@ -217,11 +217,10 @@ class SplicingData(BaseData):
         # make sure this is always a dataframe
         if isinstance(counts, pd.Series):
             counts = pd.DataFrame([counts.values],
-                                       index=counts.name,
-                                       columns=counts.index)
+                                  index=counts.name,
+                                  columns=counts.index)
         return self.modality_visualizer.bar(counts, phenotype_to_color,
                                             percentages=percentages, ax=ax)
-
 
     def plot_modalities_lavalamps(self, sample_ids=None, feature_ids=None,
                                   data=None, groupby=None,
@@ -258,7 +257,7 @@ class SplicingData(BaseData):
         nrows = assignments.groupby(
             level=0, axis=0).apply(
             lambda x: np.unique(x.values)).apply(lambda x: len(x)).sum()
-        figsize = 10, nrows*4
+        figsize = 10, nrows * 4
         fig, axes = plt.subplots(nrows=nrows, figsize=figsize)
         axes_iter = axes.flat
 
@@ -283,7 +282,8 @@ class SplicingData(BaseData):
                                 require_min_samples=False)
         else:
             if sample_ids is not None:
-                raise ValueError('Can only specify `sample_ids` or `data`, but not both.')
+                raise ValueError(
+                    'Can only specify `sample_ids` or `data`, but not both.')
         if groupby is None:
             groupby = pd.Series('all', index=data.index)
 
@@ -317,7 +317,7 @@ class SplicingData(BaseData):
         data = self._subset(self.data, sample_ids=top_pc1_samples)
         binned = self.binify(data)
         return bool(binned[event][0])
-    
+
     def _nmf_space_xlabel(self, phenotype_groupby):
         if self._is_nmf_space_x_axis_excluded(phenotype_groupby):
             return self.excluded_label
@@ -334,7 +334,8 @@ class SplicingData(BaseData):
                      phenotype_groupby=None,
                      phenotype_order=None, color=None,
                      phenotype_to_color=None,
-                     phenotype_to_marker=None, nmf_xlabel=None, nmf_ylabel=None,
+                     phenotype_to_marker=None, nmf_xlabel=None,
+                     nmf_ylabel=None,
                      nmf_space=False, fig=None, axesgrid=None):
         if nmf_space:
             nmf_xlabel = self._nmf_space_xlabel(phenotype_groupby)
@@ -342,7 +343,7 @@ class SplicingData(BaseData):
         else:
             nmf_ylabel = None
             nmf_xlabel = None
-        
+
         super(SplicingData, self).plot_feature(feature_id, sample_ids,
                                                phenotype_groupby,
                                                phenotype_order, color,
@@ -444,7 +445,8 @@ class SplicingData(BaseData):
             diff_from_singles = diff_from_singles.dropna(axis=1, how='all')
         return singles, pooled, not_measured_in_pooled, diff_from_singles
 
-    def plot_lavalamp(self, phenotype_to_color, sample_ids=None, feature_ids=None,
+    def plot_lavalamp(self, phenotype_to_color, sample_ids=None,
+                      feature_ids=None,
                       data=None, groupby=None, order=None):
         if data is None:
             data = self._subset(self.data, sample_ids, feature_ids,
@@ -501,7 +503,7 @@ class SplicingData(BaseData):
             self.pooled_inconsistent(data, feature_ids,
                                      fraction_diff_thresh)
         percent = self._divide_inconsistent_and_pooled(pooled,
-                                                    pooled_inconsistent)
+                                                       pooled_inconsistent)
         lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
                                      color=color, percent=percent)
 
@@ -541,30 +543,29 @@ class SplicingData(BaseData):
             standardize=standardize, metric=metric,
             linkage_method=linkage_method)
 
-    def reduce(self, sample_ids=None, feature_ids=None,
-               featurewise=False,
-               reducer=DataFramePCA,
-               standardize=True,
-               reducer_kwargs=None, bins=None,
-               most_variant_features=False):
-        """
-        :param sample_ids: list of sample ids
-        :param feature_ids: list of features
-        :param featurewise: reduce transpose (feature X sample) instead of sample X feature
-        :param reducer: DataFrameReducer object, defaults to DataFramePCA
-        :param standardize: standardize columns before reduction
-        :param reducer_kwargs: kwargs for reducer
-        :param bins: bins to use for binify
-        :return: reducer object
+    def _subset_and_standardize(self, data, sample_ids=None,
+                                feature_ids=None,
+                                standardize=True, return_means=False,
+                                rename=False):
+        subset = self._subset(self.data, sample_ids, feature_ids)
+        subset = subset.dropna(how='all', axis=1).dropna(how='all', axis=0)
 
-        """
+        # This is splicing data ranging from 0 to 1, so fill na with 0.5
+        # and perform an arc-cosine transform to make the data range from
+        # -pi to pi
+        if standardize:
+            subset = subset.fillna(0.5)
+            subset = -2 * np.arccos(subset * 2 - 1) + np.pi
+        means = subset.mean()
 
-        return super(SplicingData, self).reduce(sample_ids, feature_ids,
-                                                featurewise, reducer,
-                                                standardize=False,
-                                                reducer_kwargs=reducer_kwargs,
-                                                bins=bins,
-                                                most_variant_features=most_variant_features)
+        if rename:
+            means = means.rename_axis(self.feature_renamer)
+            subset = subset.rename_axis(self.feature_renamer, 1)
+
+        if return_means:
+            return subset, means
+        else:
+            return subset
 
     def plot_two_features(self, feature1, feature2, groupby=None,
                           label_to_color=None, fillna=None, **kwargs):
@@ -582,7 +583,7 @@ class SplicingData(BaseData):
 
 
 # class SpliceJunctionData(SplicingData):
-#     """Class for splice junction information from SJ.out.tab files from STAR
+# """Class for splice junction information from SJ.out.tab files from STAR
 #
 #     Attributes
 #     ----------

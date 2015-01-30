@@ -8,8 +8,8 @@ def test_link_to_list():
     #
     # if genelist_link.startswith("http"):
     #     sys.stderr.write(
-    #         "WARNING, downloading things from the internet, potential danger "
-    #         "from untrusted sources\n")
+    #         "WARNING, downloading things from the internet, potential"
+    #         " danger from untrusted sources\n")
     #     filename = tempfile.NamedTemporaryFile(mode='w+')
     #     filename.write(subprocess.check_output(
     #         ["curl", "-k", '--location-trusted', genelist_link]))

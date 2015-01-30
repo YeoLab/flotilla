@@ -34,8 +34,6 @@ def benjamini_hochberg(p_values, fdr=0.1):
         Boolean array of whether or not the provided p-values are significant
         given the FDR cutoff
     """
-    ranks = np.argsort(np.argsort(p_values))
-
     nComps = len(p_values) + 0.0
     pSorter = np.argsort(p_values)
     pRank = np.argsort(np.argsort(p_values)) + 1

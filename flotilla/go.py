@@ -3,6 +3,7 @@ from __future__ import division
 
 from collections import defaultdict
 import gzip
+import itertools
 
 import numpy as np
 import pandas as pd
@@ -12,8 +13,6 @@ from flotilla.util import link_to_list
 
 
 def generateOntology(df):
-    from collections import defaultdict
-    import itertools
 
     ontology = defaultdict(
         lambda: {'genes': set(), 'name': set(), 'domain': set()})
