@@ -157,8 +157,8 @@ class DecompositionViz(object):
         self.loadings = self.components_.ix[[self.x_pc, self.y_pc]]
 
         # Get the explained variance
-        if explained_variance_ratio_ is not None:
-            self.vars = explained_variance_ratio_[[self.x_pc, self.y_pc]]
+        if self.explained_variance_ratio_ is not None:
+            self.vars = self.explained_variance_ratio_[[self.x_pc, self.y_pc]]
         else:
             self.vars = pd.Series([1., 1.], index=[self.x_pc, self.y_pc])
 
@@ -208,26 +208,26 @@ class DecompositionViz(object):
             gs_y = 12
 
             if ax is None:
-                self.reduced_fig, ax = plt.subplots(1, 1, figsize=(20, 10))
-                gs = GridSpec(gs_x, gs_y)
+                self.fig_reduced, ax = plt.subplots(1, 1, figsize=(20, 10))
+                self.gs = GridSpec(gs_x, gs_y)
 
             else:
-                gs = GridSpecFromSubplotSpec(gs_x, gs_y, ax.get_subplotspec())
-                self.reduced_fig = plt.gcf()
+                self.gs = GridSpecFromSubplotSpec(gs_x, gs_y, ax.get_subplotspec())
+                self.fig_reduced = plt.gcf()
 
-            ax_components = plt.subplot(gs[:, :5])
-            ax_loading1 = plt.subplot(gs[:, 6:8])
-            ax_loading2 = plt.subplot(gs[:, 10:14])
+            self.ax_components = plt.subplot(self.gs[:, :5])
+            self.ax_loading1 = plt.subplot(self.gs[:, 6:8])
+            self.ax_loading2 = plt.subplot(self.gs[:, 10:14])
 
             self.plot_samples(show_point_labels=show_point_labels,
                               title=title, show_vectors=show_vectors,
                               show_vector_labels=show_vector_labels,
                               markersize=markersize, legend=legend,
-                              ax=ax_components)
-            self.plot_loadings(pc=self.x_pc, ax=ax_loading1)
-            self.plot_loadings(pc=self.y_pc, ax=ax_loading2)
+                              ax=self.ax_components)
+            self.plot_loadings(pc=self.x_pc, ax=self.ax_loading1)
+            self.plot_loadings(pc=self.y_pc, ax=self.ax_loading2)
             sns.despine()
-            self.reduced_fig.tight_layout()
+            self.fig_reduced.tight_layout()
 
             singles_none = self.singles is None
             if plot_violins and not self.featurewise and not singles_none:
@@ -290,7 +290,7 @@ class DecompositionViz(object):
             return x
 
     def plot_samples(self, show_point_labels=True,
-                     title='DataFramePCA', show_vectors=True,
+                     title='PCA', show_vectors=True,
                      show_vector_labels=True, markersize=10,
                      three_d=False, legend=True, ax=None):
         """Plot PCA scatterplot
@@ -460,7 +460,7 @@ class DecompositionViz(object):
             pd.Index(self.top_features))))
         while ncols * nrows < len(vector_labels):
             nrows += 1
-        self.violins_fig, axes = plt.subplots(nrows=nrows, ncols=ncols,
+        self.fig_violins, axes = plt.subplots(nrows=nrows, ncols=ncols,
                                               figsize=(4 * ncols, 4 * nrows))
 
         if self.feature_renamer is not None:
@@ -487,8 +487,14 @@ class DecompositionViz(object):
             else:
                 title = feature_id
             singles.name = renamed
-            pooled.name = renamed
-            outliers.name = renamed
+            try:
+                pooled.name = renamed
+            except AttributeError:
+                pass
+            try:
+                outliers.name = renamed
+            except AttributeError:
+                pass
             # import pdb; pdb.set_trace()
             violinplot(singles, pooled_data=pooled, outliers=outliers,
                        groupby=self.groupby, color_ordered=self.color_ordered,
@@ -509,4 +515,4 @@ class DecompositionViz(object):
             # Check if the plotting space is empty
             if len(ax.collections) == 0 or len(ax.lines) == 0:
                 ax.axis('off')
-        self.violins_fig.tight_layout()
+        self.fig_violins.tight_layout()
