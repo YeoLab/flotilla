@@ -166,7 +166,7 @@ class Interactive(object):
             filename, extension = os.path.splitext(savefile.value)
             self.maybe_make_directory(savefile.value)
 
-            gui.widget.result.reduced_fig.savefig(savefile.value,
+            gui.widget.result.fig_reduced.savefig(savefile.value,
                                                   format=extension)
 
             # add "violins" after the provided filename, but before the
@@ -174,9 +174,8 @@ class Interactive(object):
             violins_file = '{}.{}'.format("_".join([filename, 'violins']),
                                           extension)
             try:
-                gui.widget.result.violins_fig.savefig(violins_file,
-                                                      format=extension.lstrip(
-                                                          '.'))
+                gui.widget.result.fig_violins.savefig(violins_file,
+                                                      format=extension.lstrip('.'))
             except AttributeError:
                 pass
 
@@ -340,7 +339,7 @@ class Interactive(object):
             filename, extension = os.path.splitext(savefile.value)
             self.maybe_make_directory(savefile.value)
 
-            gui.widget.result.reduced_fig.savefig(savefile.value,
+            gui.widget.result.fig_reduced.savefig(savefile.value,
                                                   format=extension)
 
             # add "violins" after the provided filename, but before the
@@ -348,9 +347,8 @@ class Interactive(object):
             violins_file = '{}.{}'.format("_".join([filename, 'violins']),
                                           extension)
             try:
-                gui.widget.result.violins_fig.savefig(violins_file,
-                                                      format=extension.lstrip(
-                                                          '.'))
+                gui.widget.result.fig_violins.savefig(violins_file,
+                                                      format=extension.lstrip('.'))
             except AttributeError:
                 pass
 
