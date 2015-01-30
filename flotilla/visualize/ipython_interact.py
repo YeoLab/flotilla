@@ -174,8 +174,8 @@ class Interactive(object):
             violins_file = '{}.{}'.format("_".join([filename, 'violins']),
                                           extension)
             try:
-                gui.widget.result.fig_violins.savefig(violins_file,
-                                                      format=extension.lstrip('.'))
+                gui.widget.result.fig_violins.savefig(
+                    violins_file, format=extension.lstrip('.'))
             except AttributeError:
                 pass
 
@@ -347,8 +347,8 @@ class Interactive(object):
             violins_file = '{}.{}'.format("_".join([filename, 'violins']),
                                           extension)
             try:
-                gui.widget.result.fig_violins.savefig(violins_file,
-                                                      format=extension.lstrip('.'))
+                gui.widget.result.fig_violins.savefig(
+                    violins_file, format=extension.lstrip('.'))
             except AttributeError:
                 pass
 
