@@ -14,7 +14,6 @@ PHENOTYPE_COL = 'phenotype'
 MINIMUM_SAMPLE_SUBSET = 10
 OUTLIER_COL = 'outlier'
 
-# Any informational data goes here
 
 class MetaData(BaseData):
     def __init__(self, data, phenotype_order=None, phenotype_to_color=None,
@@ -24,8 +23,9 @@ class MetaData(BaseData):
                  outlier_col=OUTLIER_COL,
                  predictor_config_manager=None,
                  minimum_sample_subset=MINIMUM_SAMPLE_SUBSET):
-        super(MetaData, self).__init__(data, outliers=None,
-                                       predictor_config_manager=predictor_config_manager)
+        super(MetaData, self).__init__(
+            data, outliers=None,
+            predictor_config_manager=predictor_config_manager)
 
         self.phenotype_col = phenotype_col if phenotype_col is not None else \
             self._default_phenotype_col
@@ -46,8 +46,8 @@ class MetaData(BaseData):
                              'the sample metadata. All samples will be '
                              'treated as the same phenotype. You may also '
                              'specify "phenotype_col" in the metadata section '
-                             'of the datapackage.\n'.format(
-                self.phenotype_col))
+                             'of the '
+                             'datapackage.\n'.format(self.phenotype_col))
             self.data[self.phenotype_col] = 'phenotype'
             self.phenotype_order = None
             self.phenotype_to_color = None
@@ -78,7 +78,6 @@ class MetaData(BaseData):
                         'falling back on "o" (circle)'.format(marker))
                     marker = 'o'
                 self.phenotype_to_marker[phenotype] = marker
-
 
     @property
     def sample_id_to_phenotype(self):

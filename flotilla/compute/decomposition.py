@@ -25,7 +25,7 @@ class DataFrameReducerBase(object):
         kwargs : keyword arguments
             Any other arguments to the reduction algorithm
         """
-        # This magically initializes the reducer like DataFramePCA or DataFrameNMF
+        # This magically initializes the reducer like PCA or NMF
         if df.shape[1] <= 3:
             raise ValueError(
                 "Too few features (n={}) to reduce".format(df.shape[1]))
@@ -153,12 +153,12 @@ class DataFramePCA(DataFrameReducerBase, decomposition.PCA):
 class DataFrameNMF(DataFrameReducerBase, decomposition.NMF):
     """Perform Non-Negative Matrix Factorization on a DataFrame
     """
+
     def __init__(self, df, n_components=None, **kwargs):
         kwargs.setdefault('init', 'nndsvd')
         super(decomposition.NMF, self).__init__(n_components,
-                                                   **kwargs)
+                                                **kwargs)
         self.reduced_space = self.fit_transform(df)
-
 
     def fit(self, X):
         """Override scikit-learn's fit() for our purposes

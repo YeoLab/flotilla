@@ -12,8 +12,8 @@ import pytest
 
 # @pytest.fixture
 # def data(data_type, expression_data, splicing_data):
-#     if data_type == 'expression':
-#         return expression_data
+# if data_type == 'expression':
+# return expression_data
 #     elif data_type == 'splicing':
 #         return splicing_data
 #
@@ -41,7 +41,6 @@ class TestBaseData:
         from flotilla.compute.predict import PredictorConfigManager, \
             PredictorDataSetManager
 
-
         base_data = BaseData(expression_data_no_na, outliers=outliers)
         outlier_samples = outliers.copy() if outliers is not None else []
         outliers_df = expression_data_no_na.ix[outlier_samples]
@@ -56,8 +55,10 @@ class TestBaseData:
                                 feature_renamer_series)
         pdt.assert_frame_equal(base_data.outliers, outliers_df)
         pdt.assert_array_equal(base_data.outlier_samples, outlier_samples)
-        assert isinstance(base_data.predictor_config_manager, PredictorConfigManager)
-        assert isinstance(base_data.predictor_dataset_manager, PredictorDataSetManager)
+        assert isinstance(base_data.predictor_config_manager,
+                          PredictorConfigManager)
+        assert isinstance(base_data.predictor_dataset_manager,
+                          PredictorDataSetManager)
 
     def test__init_technical_outliers(self, expression_data_no_na,
                                       technical_outliers):
@@ -75,9 +76,9 @@ class TestBaseData:
                                expression_data_no_na)
 
     def test__init_sample_thresholds(self, expression_data,
-                                      expression_thresh,
-                                      metadata_minimum_samples,
-                                      pooled):
+                                     expression_thresh,
+                                     metadata_minimum_samples,
+                                     pooled):
         from flotilla.data_model.base import BaseData
 
         base_data = BaseData(expression_data,
@@ -119,8 +120,9 @@ class TestBaseData:
             feature_renamer_series = expression_feature_data[
                 expression_feature_rename_col]
         else:
-            feature_renamer_series = pd.Series(expression_feature_data.index,
-                                               index=expression_feature_data.index)
+            feature_renamer_series = pd.Series(
+                expression_feature_data.index,
+                index=expression_feature_data.index)
         feature_subsets = subsets_from_metadata(expression_feature_data,
                                                 MINIMUM_FEATURE_SUBSET,
                                                 'features')
@@ -140,9 +142,7 @@ class TestBaseData:
         data = df_norm.copy()
         level1 = data.columns.map(lambda x: 'level1_{}'.format(x))
         data.columns = pd.MultiIndex.from_arrays([data.columns, level1])
-
         BaseData(data)
-
 
     def test__variant(self, expression_data):
         from flotilla.data_model.base import BaseData
@@ -150,7 +150,7 @@ class TestBaseData:
         base_data = BaseData(expression_data)
 
         var = expression_data.var()
-        var_cut = var.mean() + 2*var.std()
+        var_cut = var.mean() + 2 * var.std()
         variant = expression_data.columns[var > var_cut]
 
         pdt.assert_equal(base_data._var_cut, var_cut)
@@ -255,12 +255,12 @@ class TestBaseData:
         test_feature_ids = expression.feature_subset_to_feature_ids(
             feature_subset, rename=False)
 
-
         true_feature_ids = pd.Index([])
         if feature_subset is not None:
             try:
                 if feature_subset in expression.feature_subsets:
-                    true_feature_ids = expression.feature_subsets[feature_subset]
+                    true_feature_ids = expression.feature_subsets[
+                        feature_subset]
                 elif feature_subset.startswith('all'):
                     true_feature_ids = expression.data.columns
             except TypeError:

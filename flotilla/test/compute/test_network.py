@@ -41,8 +41,3 @@ class TestComputeNetwork:
 
     def test_graph(self):
         pass
-
-
-class TestVisualizeNetwork:
-    def test_init(self):
-        pass

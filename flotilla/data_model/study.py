@@ -244,15 +244,16 @@ class Study(object):
                 min_reads=mapping_stats_min_reads)
             self.technical_outliers = self.mapping_stats.too_few_mapped
             if len(self.technical_outliers) > 0:
-                sys.stderr.write('Samples had too few mapped reads (<{'
-                                 ':.1e} reads):\n\t{}\n'.format(
-                    mapping_stats_min_reads,
-                    ', '.join(self.technical_outliers)))
+                outliers_ids = ', '.join(self.technical_outliers)
+                sys.stderr.write(
+                    'Samples had too few mapped reads (<{:.1e} reads)'
+                    ':\n\t{}\n'.format(mapping_stats_min_reads, outliers_ids))
         else:
             self.technical_outliers = None
+        feature_data_none = expression_feature_data is None or \
+            splicing_feature_data is None
 
-        if self.species is not None and (expression_feature_data is None or
-                                                 splicing_feature_data is None):
+        if self.species is not None and feature_data_none:
             sys.stdout.write('{}\tLoading species metadata from '
                              '~/flotilla_packages\n'.format(timestamp()))
             species_kws = self.load_species_data(self.species, self.readers)
@@ -287,6 +288,7 @@ class Study(object):
         if expression_data is not None:
             sys.stdout.write(
                 "{}\tLoading expression data\n".format(timestamp()))
+            feature_ignore_subset_cols = expression_feature_ignore_subset_cols
             self.expression = ExpressionData(
                 expression_data,
                 feature_data=expression_feature_data,
@@ -297,7 +299,7 @@ class Study(object):
                 predictor_config_manager=self.predictor_config_manager,
                 technical_outliers=self.technical_outliers,
                 minimum_samples=metadata_minimum_samples,
-                feature_ignore_subset_cols=expression_feature_ignore_subset_cols)
+                feature_ignore_subset_cols=feature_ignore_subset_cols)
             self.default_feature_set_ids.extend(self.expression.feature_subsets
                                                 .keys())
         if splicing_data is not None:
@@ -396,7 +398,8 @@ class Study(object):
             expression, splicing
         species_data_pacakge_base_url : str
             Base URL to fetch species-specific gene and splicing event
-            metadata from. Default 'https://s3-us-west-2.amazonaws.com/flotilla-projects/'
+            metadata from.
+            Default 'https://s3-us-west-2.amazonaws.com/flotilla-projects/'
 
         Returns
         -------
@@ -480,10 +483,7 @@ class Study(object):
 
                     # Test if the file exists, if not, then add the datapackage
                     # file
-                    try:
-                        with open(filename) as f:
-                            pass
-                    except IOError:
+                    if not os.path.exists(filename):
                         filename = os.path.join(datapackage_dir, filename)
 
             name = resource['name']
@@ -530,23 +530,19 @@ class Study(object):
         version = None if 'datapackage_version' not in datapackage else \
             datapackage['datapackage_version']
         if not semantic_version.validate(version):
-            raise ValueError('{} is not a valid version string. Please use '
-                             'semantic versioning, with major.minor.patch, '
-                             'e.g. 0.1.2 is a valid version string'.format(
-                version))
-        study = Study(
-            sample_metadata=sample_metadata,
-            species=species,
-            license=license,
-            title=title,
-            sources=sources,
-            version=version,
-            **kwargs)
+            raise ValueError(
+                '{} is not a valid version string. Please use semantic '
+                'versioning, with major.minor.patch, e.g. 0.1.2 is a valid '
+                'version string'.format(version))
+        study = Study(sample_metadata=sample_metadata, species=species,
+                      license=license, title=title, sources=sources,
+                      version=version, **kwargs)
         return study
 
     @staticmethod
-    def load_species_data(species, readers,
-                          species_datapackage_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
+    def load_species_data(
+            species, readers,
+            species_datapackage_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
         dfs = {}
 
         try:
@@ -576,9 +572,8 @@ class Study(object):
                 for key in other_keys:
                     new_key = '{}_{}'.format(name_no_data, key)
                     dfs[new_key] = resource[key]
-        except (IOError, ValueError) as e:
+        except (IOError, ValueError):
             sys.stderr.write('Error loading species {} data '.format(species))
-            pass
         return dfs
 
     def detect_outliers(self, data_type='expression',
@@ -771,8 +766,10 @@ class Study(object):
             featurewise, then this labels the features.
         """
 
-        sample_subset = self.default_sample_subset if sample_subset is None else sample_subset
-        feature_subset = self.default_feature_subset if feature_subset is None else feature_subset
+        sample_subset = self.default_sample_subset \
+            if sample_subset is None else sample_subset
+        feature_subset = self.default_feature_subset \
+            if feature_subset is None else feature_subset
 
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
         feature_ids = self.feature_subset_to_feature_ids(data_type,
@@ -783,9 +780,10 @@ class Study(object):
         label_to_marker = None
         groupby = None
         order = None
+        color_samples_by_phenotype = color_samples_by \
+            == self.metadata.phenotype_col
         if not featurewise:
-            if color_samples_by is None or \
-                            color_samples_by == self.metadata.phenotype_col:
+            if color_samples_by is None or color_samples_by_phenotype:
                 label_to_color = self.phenotype_to_color
                 label_to_marker = self.phenotype_to_marker
                 groupby = self.sample_id_to_phenotype
@@ -890,7 +888,6 @@ class Study(object):
         legend = ax.legend(title='cell type', fontsize=20, )
         return legend
 
-
     def plot_classifier(self, trait, sample_subset=None,
                         feature_subset='all_genes',
                         data_type='expression', title='',
@@ -914,10 +911,15 @@ class Study(object):
         try:
             trait_data = self.metadata.data[trait]
         except KeyError:
-            trait_ids = self.metadata.sample_subsets[trait]
+            trait_ids = self.sample_subset_to_sample_ids(sample_subset)
             trait_data = self.metadata.data.index.isin(trait_ids)
-        if all(trait_data == True) or all(trait_data == False) or len(
-                set(trait_data)) <= 1:
+
+        all_true = np.all(trait_data)
+        all_false = np.all(~trait_data)
+        too_few_categories = len(set(trait_data)) <= 1
+        nothing_to_classify = all_true or all_false or too_few_categories
+
+        if nothing_to_classify:
             raise ValueError("All samples are True (or all samples are "
                              "False) or all are the same, cannot classify"
                              "when all samples are the same")
@@ -968,7 +970,7 @@ class Study(object):
             self.splicing.plot_regressor(**kwargs)
 
     def modality_assignments(self, sample_subset=None, feature_subset=None,
-                   expression_thresh=-np.inf, min_samples=0.5):
+                             expression_thresh=-np.inf, min_samples=0.5):
         """Get modality assignments of splicing data
 
         Parameters
@@ -992,8 +994,8 @@ class Study(object):
             A (n_phenotypes, n_events) shaped DataFrame of the assigned
             modality
         """
-        if expression_thresh > -np.inf and \
-                        expression_thresh > self.expression.data.min().min():
+        min_expression = self.expression.data.min().min()
+        if expression_thresh > -np.inf and expression_thresh > min_expression:
             data = self.filter_splicing_on_expression(
                 expression_thresh=expression_thresh,
                 sample_subset=sample_subset)
@@ -1005,12 +1007,12 @@ class Study(object):
                 'splicing', feature_subset, rename=False)
             data = None
 
-        return self.splicing.modality_assignments(sample_ids, feature_ids,
-                                                  data=data,
-                                        groupby=self.sample_id_to_phenotype,
-                                        min_samples=min_samples)
+        return self.splicing.modality_assignments(
+            sample_ids, feature_ids, data=data,
+            groupby=self.sample_id_to_phenotype, min_samples=min_samples)
+
     def modality_counts(self, sample_subset=None, feature_subset=None,
-                   expression_thresh=-np.inf, min_samples=0.5):
+                        expression_thresh=-np.inf, min_samples=0.5):
         """Get number of splicing events in modality categories
 
         Parameters
@@ -1034,8 +1036,8 @@ class Study(object):
             A (n_phenotypes, n_modalities) shaped DataFrame of the number of
             events assigned to each modality
         """
-        if expression_thresh > -np.inf and \
-                        expression_thresh > self.expression.data.min().min():
+        min_expression = self.expression.data.min().min()
+        if expression_thresh > -np.inf and expression_thresh > min_expression:
             data = self.filter_splicing_on_expression(
                 expression_thresh=expression_thresh,
                 sample_subset=sample_subset)
@@ -1047,10 +1049,9 @@ class Study(object):
                 'splicing', feature_subset, rename=False)
             data = None
 
-        return self.splicing.modality_assignments(sample_ids, feature_ids,
-                                                  data=data,
-                                        groupby=self.sample_id_to_phenotype,
-                                        min_samples=min_samples)
+        return self.splicing.modality_assignments(
+            sample_ids, feature_ids, data=data,
+            groupby=self.sample_id_to_phenotype, min_samples=min_samples)
 
     def plot_modalities_bars(self, sample_subset=None, feature_subset=None,
                              expression_thresh=-np.inf, percentages=True):
@@ -1089,13 +1090,12 @@ class Study(object):
                                            self.phenotype_to_color,
                                            percentages=percentages)
 
-
     def plot_modalities_reduced(self, sample_subset=None, feature_subset=None,
                                 expression_thresh=-np.inf):
         """Plot splicing events with modality assignments in NMF space
 
-        This will plot a separate NMF space for each celltype in the data, as well
-        as one for all samples.
+        This will plot a separate NMF space for each celltype in the data, as
+        well as one for all samples.
 
         Parameters
         ----------
@@ -1172,7 +1172,7 @@ class Study(object):
 
     # @property
     # def celltype_modalities(self):
-    #     """Return modality assignments of each celltype
+    # """Return modality assignments of each celltype
     #     """
     #     return self.splicing.data.groupby(
     #         self.sample_id_to_phenotype, axis=0).apply(
@@ -1233,13 +1233,13 @@ class Study(object):
         """Plot the violinplot and NMF transitions of a splicing event
         """
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
-        self.splicing.plot_feature(feature_id, sample_ids,
-                                   phenotype_groupby=self.sample_id_to_phenotype,
-                                   phenotype_order=self.phenotype_order,
-                                   color=self.phenotype_color_ordered,
-                                   phenotype_to_color=self.phenotype_to_color,
-                                   phenotype_to_marker=self.phenotype_to_marker,
-                                   nmf_space=nmf_space)
+        self.splicing.plot_feature(
+            feature_id, sample_ids,
+            phenotype_groupby=self.sample_id_to_phenotype,
+            phenotype_order=self.phenotype_order,
+            color=self.phenotype_color_ordered,
+            phenotype_to_color=self.phenotype_to_color,
+            phenotype_to_marker=self.phenotype_to_marker, nmf_space=nmf_space)
 
     def plot_gene(self, feature_id, sample_subset=None, nmf_space=False):
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
@@ -1267,8 +1267,8 @@ class Study(object):
             # Plotting all the celltypes
             celltype_samples = self.sample_subset_to_sample_ids(sample_subset)
 
-        feature_ids = self.feature_subset_to_feature_ids('splicing',
-                                                            feature_subset=feature_subset)
+        feature_ids = self.feature_subset_to_feature_ids(
+            'splicing', feature_subset=feature_subset)
 
         celltype_and_sample_ids = celltype_groups.groups.iteritems()
         for i, (phenotype, sample_ids) in enumerate(celltype_and_sample_ids):
@@ -1282,8 +1282,8 @@ class Study(object):
                 continue
             data = self.filter_splicing_on_expression(expression_thresh)
             data = data.ix[sample_ids, :]
-            self.splicing.plot_lavalamp_pooled_inconsistent(data,
-                feature_ids, fraction_diff_thresh, color=color)
+            self.splicing.plot_lavalamp_pooled_inconsistent(
+                data, feature_ids, fraction_diff_thresh, color=color)
 
     def percent_pooled_inconsistent(
             self, sample_subset=None, feature_subset=None,
@@ -1299,8 +1299,8 @@ class Study(object):
             # Plotting all the celltypes
             celltype_samples = self.sample_subset_to_sample_ids(sample_subset)
 
-        feature_ids = self.feature_subset_to_feature_ids('splicing',
-                                                         feature_subset=feature_subset)
+        feature_ids = self.feature_subset_to_feature_ids(
+            'splicing', feature_subset=feature_subset)
 
         celltype_and_sample_ids = celltype_groups.groups.iteritems()
         index = pd.MultiIndex.from_product([celltype_groups.groups.keys(),
@@ -1311,18 +1311,17 @@ class Study(object):
 
             # Assumes all samples of a sample_subset have the same color...
             # probably wrong
-            color = self.phenotype_to_color[phenotype]
             sample_ids = celltype_samples.intersection(sample_ids)
             if len(sample_ids) == 0:
                 continue
             data = self.filter_splicing_on_expression(expression_thresh)
             data = data.ix[sample_ids, :]
             if not data.empty:
-                singles, pooled, not_measured_in_pooled, pooled_inconsistent =\
-                    self.splicing.pooled_inconsistent(data, feature_ids,
-                                                  fraction_diff_thresh)
-                percent = self.splicing._divide_inconsistent_and_pooled(pooled,
-                                                            pooled_inconsistent)
+                singles, pooled, not_measured_in_pooled, pooled_inconsistent \
+                    = self.splicing.pooled_inconsistent(data, feature_ids,
+                                                        fraction_diff_thresh)
+                percent = self.splicing._divide_inconsistent_and_pooled(
+                    pooled, pooled_inconsistent)
             else:
                 percent = np.nan
             percents[phenotype, 'percent'] = percent
@@ -1500,7 +1499,6 @@ class Study(object):
                 self.phenotype_order, self.phenotype_color_ordered,
                 self.phenotype_to_color, self.phenotype_to_marker, n=n)
 
-
     def plot_two_samples(self, sample1, sample2, data_type='expression',
                          **kwargs):
         """Plot a scatterplot of two samples' data
@@ -1649,10 +1647,10 @@ class Study(object):
 
         try:
             expression_feature_data = self.expression.feature_data
-            expression_feature_kws = {'rename_col':
-                                          self.expression.feature_rename_col,
-                                      'ignore_subset_cols':
-                                          self.expression.feature_ignore_subset_cols}
+            expression_feature_kws = {
+                'rename_col': self.expression.feature_rename_col,
+                'ignore_subset_cols':
+                    self.expression.feature_ignore_subset_cols}
         except AttributeError:
             expression_feature_data = None
             expression_feature_kws = None
@@ -1666,12 +1664,11 @@ class Study(object):
 
         try:
             splicing_feature_data = self.splicing.feature_data
-            splicing_feature_kws = {'rename_col':
-                                        self.splicing.feature_rename_col,
-                                    'ignore_subset_cols':
-                                        self.splicing.feature_ignore_subset_cols,
-                                    'expression_id_col':
-                                        self.splicing.feature_expression_id_col}
+            splicing_feature_kws = \
+                {'rename_col': self.splicing.feature_rename_col,
+                 'ignore_subset_cols':
+                     self.splicing.feature_ignore_subset_cols,
+                 'expression_id_col': self.splicing.feature_expression_id_col}
         except AttributeError:
             splicing_feature_data = None
             splicing_feature_kws = None
@@ -1683,34 +1680,28 @@ class Study(object):
 
         try:
             mapping_stats = self.mapping_stats.data_original
-            mapping_stats_kws = {'number_mapped_col':
-                                     self.mapping_stats.number_mapped_col}
+            mapping_stats_kws = {
+                'number_mapped_col': self.mapping_stats.number_mapped_col}
         except AttributeError:
             mapping_stats = None
             mapping_stats_kws = None
-
 
         # Increase the version number
         version = semantic_version.Version(self.version)
         version.patch = version.patch + 1
         version = str(version)
 
-        return make_study_datapackage(name, metadata, expression, splicing,
-                                      spikein, mapping_stats,
-                                      metadata_kws=metadata_kws,
-                                      expression_kws=expression_kws,
-                                      splicing_kws=splicing_kws,
-                                      mapping_stats_kws=mapping_stats_kws,
-                                      expression_feature_kws=expression_feature_kws,
-                                      expression_feature_data=expression_feature_data,
-                                      splicing_feature_data=splicing_feature_data,
-                                      splicing_feature_kws=splicing_feature_kws,
-                                      species=self.species,
-                                      license=self.license,
-                                      title=self.title,
-                                      sources=self.sources,
-                                      version=version,
-                                      flotilla_dir=flotilla_dir)
+        return make_study_datapackage(
+            name, metadata, expression, splicing,
+            spikein, mapping_stats, metadata_kws=metadata_kws,
+            expression_kws=expression_kws, splicing_kws=splicing_kws,
+            mapping_stats_kws=mapping_stats_kws,
+            expression_feature_kws=expression_feature_kws,
+            expression_feature_data=expression_feature_data,
+            splicing_feature_data=splicing_feature_data,
+            splicing_feature_kws=splicing_feature_kws, species=self.species,
+            license=self.license, title=self.title, sources=self.sources,
+            version=version, flotilla_dir=flotilla_dir)
 
     @staticmethod
     def _maybe_get_axis_name(df, axis=0, alt_name=None):
@@ -1771,7 +1762,6 @@ class Study(object):
         # Tidify expression
         expression = self.expression.data_original
         expression_index_name = self._maybe_get_axis_name(expression, axis=0)
-        expression_columns_name = self._maybe_get_axis_name(expression, axis=1)
 
         expression_tidy = pd.melt(expression.reset_index(),
                                   id_vars=expression_index_name,
@@ -1779,11 +1769,14 @@ class Study(object):
                                   var_name=self._common_id)
         # This will only do anything if there is a column named "index" so
         # no need to check anything
-        expression_tidy = expression_tidy.rename(columns={'index': self._sample_id})
+        expression_tidy = expression_tidy.rename(
+            columns={'index': self._sample_id})
         expression_tidy = expression_tidy.dropna()
 
-        splicing_tidy.set_index([self._sample_id, self._common_id], inplace=True)
-        expression_tidy.set_index([self._sample_id, self._common_id], inplace=True)
+        splicing_tidy.set_index([self._sample_id, self._common_id],
+                                inplace=True)
+        expression_tidy.set_index([self._sample_id, self._common_id],
+                                  inplace=True)
         return splicing_tidy.join(expression_tidy, how='inner').reset_index()
 
     def filter_splicing_on_expression(self, expression_thresh,
@@ -1803,19 +1796,23 @@ class Study(object):
             A (n_samples, n_features)
 
         """
-
+        min_expression = self.expression.data_original.min().min()
         if expression_thresh > -np.inf \
-                and expression_thresh > self.expression.data_original.min().min():
-            columns = self._maybe_get_axis_name(self.splicing.data, axis=1, alt_name=self._event_name)
-            index = self._maybe_get_axis_name(self.splicing.data, axis=0, alt_name=self._sample_id)
+                and expression_thresh > min_expression:
+            columns = self._maybe_get_axis_name(self.splicing.data, axis=1,
+                                                alt_name=self._event_name)
+            index = self._maybe_get_axis_name(self.splicing.data, axis=0,
+                                              alt_name=self._sample_id)
 
             sample_ids = self.sample_subset_to_sample_ids(sample_subset)
             splicing_with_expression = \
                 self.tidy_splicing_with_expression.ix[
-                    self.tidy_splicing_with_expression.sample_id.isin(sample_ids)]
+                    self.tidy_splicing_with_expression.sample_id.isin(
+                        sample_ids)]
             ind = splicing_with_expression.expression >= expression_thresh
             splicing_high_expression = splicing_with_expression.ix[ind]
-            splicing_high_expression = splicing_high_expression.reset_index().dropna()
+            splicing_high_expression = \
+                splicing_high_expression.reset_index().dropna()
 
             if isinstance(columns, list) or isinstance(index, list):
                 filtered_psi = splicing_high_expression.pivot_table(

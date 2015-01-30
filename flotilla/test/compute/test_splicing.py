@@ -9,10 +9,7 @@ from scipy import stats
 from scipy.misc import logsumexp
 
 
-
-
 class TestModalityModel(object):
-
     @pytest.fixture()
     def x(self):
         return np.arange(0, 1.1, 0.1)
@@ -24,11 +21,11 @@ class TestModalityModel(object):
     @pytest.fixture(params=[1, np.arange(1, 5)])
     def betas(self, request):
         return request.param
-    
+
     @pytest.fixture()
     def alpha(self):
         return np.arange(1, 5)
-    
+
     @pytest.fixture()
     def beta(self):
         return 1.
@@ -36,6 +33,7 @@ class TestModalityModel(object):
     @pytest.fixture()
     def model(self, alpha, beta):
         from flotilla.compute.splicing import ModalityModel
+
         return ModalityModel(alpha, beta)
 
     def test_init(self, alphas, betas):
@@ -45,13 +43,16 @@ class TestModalityModel(object):
 
         true_alphas = alphas
         true_betas = betas
-        if not isinstance(alphas, Iterable) and not isinstance(betas, Iterable):
+        if not isinstance(alphas, Iterable) and not isinstance(betas,
+                                                               Iterable):
             true_alphas = [alphas]
             true_betas = [betas]
 
-        true_alphas = true_alphas if isinstance(true_alphas, Iterable) else np.ones(
+        true_alphas = true_alphas if isinstance(true_alphas,
+                                                Iterable) else np.ones(
             len(true_betas)) * true_alphas
-        true_betas = true_betas if isinstance(true_betas, Iterable) else np.ones(
+        true_betas = true_betas if isinstance(true_betas,
+                                              Iterable) else np.ones(
             len(true_alphas)) * true_betas
 
         true_rvs = [stats.beta(a, b) for a, b in
@@ -69,7 +70,7 @@ class TestModalityModel(object):
 
     def test_logliks(self, x, model):
         test_logliks = model.logliks(x)
-        
+
         true_x = x.copy()
         true_x[true_x == 0] = 0.001
         true_x[true_x == 1] = 0.999
@@ -120,7 +121,6 @@ class TestModalityEstimator(object):
     def estimator(self, step, vmax):
         from flotilla.compute.splicing import ModalityEstimator
 
-
         return ModalityEstimator(step, vmax)
 
     @pytest.fixture(params=['no_na', 'with_na'])
@@ -142,7 +142,7 @@ class TestModalityEstimator(object):
         true_exclusion = ModalityModel(1, true_parameters)
         true_inclusion = ModalityModel(true_parameters, 1)
         true_middle = ModalityModel(true_parameters, true_parameters)
-        true_bimodal = ModalityModel(1/true_parameters, 1/true_parameters)
+        true_bimodal = ModalityModel(1 / true_parameters, 1 / true_parameters)
         true_models = {'included': true_inclusion,
                        'excluded': true_exclusion,
                        'bimodal': true_bimodal,
@@ -197,7 +197,6 @@ class TestModalityEstimator(object):
 
         pdt.assert_series_equal(test_fit_transform, true_fit_transform)
 
-
     def test_fit_transform_no_na(self, estimator, splicing_data_no_na):
         test_fit_transform = estimator.fit_transform(splicing_data_no_na)
 
@@ -222,8 +221,10 @@ def array(request):
         x[x > .8] = np.nan
         return x
 
+
 def test_switchy_score(array):
     from flotilla.compute.splicing import switchy_score
+
     test_switchy_score = switchy_score(array)
 
     true_array = np.array(array)
@@ -233,8 +234,10 @@ def test_switchy_score(array):
 
     npt.assert_array_equal(test_switchy_score, true_switchy_score)
 
+
 def test_get_switchy_score_order(splicing_data_fixed):
-    from flotilla.compute.splicing import get_switchy_score_order, switchy_score
+    from flotilla.compute.splicing import get_switchy_score_order, \
+        switchy_score
 
     test_score_order = get_switchy_score_order(splicing_data_fixed)
 
