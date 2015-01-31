@@ -734,6 +734,7 @@ class Study(object):
                  show_point_labels=False, reduce_kwargs=None,
                  color_samples_by=None, bokeh=False,
                  most_variant_features=False, std_multiplier=2,
+                 scale_by_variance=True,
                  **kwargs):
         """Performs DataFramePCA on both expression and splicing study_data
 
@@ -741,29 +742,55 @@ class Study(object):
         ----------
         data_type : str
             One of the names of the data types, e.g. "expression" or
-            "splicing"
-        x_pc : int
-            Which principal component to plot on the x-axis
-        y_pc : int
-            Which principal component to plot on the y-axis
+            "splicing" (default "expression")
+        x_pc : int, optional
+            Which principal component to plot on the x-axis (default 1)
+        y_pc : int, optional
+            Which principal component to plot on the y-axis (default 2)
         sample_subset : str or None
             Which subset of the samples to use, based on some phenotype
             column in the experiment design data. If None, all samples are
-            used.
+            used. (default None)
         feature_subset : str or None
             Which subset of the features to used, based on some feature type
             in the expression data (e.g. "variant"). If None, all features
-            are used.
-        title : str
-            The title of the plot
+            are used. (default None)
+        title : str, optional
+            Title of the reduced space plot (default '')
+        featurewise : bool, optional
+            If True, the features are reduced on the samples, and the plotted
+            points are features, not samples. (default False)
         plot_violins : bool
             Whether or not to make the violinplots of the top features. This
             can take a long time, so to save time you can turn it off if you
-            just want a quick look at the PCA.
-        show_point_labels : bool
+            just want a quick look at the PCA. (default False)
+        show_point_labels : bool, optional
             Whether or not to show the labels of the points. If this is
             samplewise (default), then this labels the samples. If this is
-            featurewise, then this labels the features.
+            featurewise, then this labels the features. (default False)
+        reduce_kwargs : dict, optional
+            Keyword arguments to the reducer (default None)
+        color_samples_by : str, optional
+            Instead of coloring the samples by their phenotype, color them by
+            this column in the metadata. (default None)
+        bokeh : bool, optional
+            If True, plot a javascripty/interactive bokeh plot instead of a
+            static printable figure (default False)
+        most_variant_features : bool, optional
+            If True, then only take the most variant of the provided features.
+            The most variant are determined by taking the features whose
+            variance is ``std_multiplier``standard deviations away from the
+            mean feature variance (default False)
+        std_multiplier : float, optional
+            If ``most_variant_features`` is True, then use this as a cutoff
+            for the minimum variance of a feature to be included (default 2)
+        scale_by_variance : bool, optional
+            If True, then scale the x- and y-axes by the explained variance
+            ratio of the principal component dimensions. Only valid for PCA
+            and its variations, not for NMF or tSNE. (default True)
+        kwargs : other keyword arguments
+            All other keyword arguments are passed to
+            :py:meth:`DecomopsitionViz.plot`
         """
 
         sample_subset = self.default_sample_subset \
@@ -802,6 +829,7 @@ class Study(object):
                 title=title, reduce_kwargs=reduce_kwargs,
                 plot_violins=plot_violins, metadata=self.metadata.data,
                 bokeh=bokeh, most_variant_features=most_variant_features,
+                scale_by_variance=scale_by_variance,
                 **kwargs)
 
         elif "splicing".startswith(data_type):
@@ -815,6 +843,7 @@ class Study(object):
                 title=title, reduce_kwargs=reduce_kwargs,
                 plot_violins=plot_violins, metadata=self.metadata.data,
                 bokeh=bokeh, most_variant_features=most_variant_features,
+                scale_by_variance=scale_by_variance,
                 **kwargs)
         else:
             raise ValueError('The data type {} does not exist in this study'
