@@ -494,52 +494,71 @@ class BaseData(object):
 
     def plot_dimensionality_reduction(self, x_pc=1, y_pc=2, sample_ids=None,
                                       feature_ids=None, featurewise=False,
-                                      reducer=None, plot_violins=True,
+                                      reducer=None, plot_violins=False,
                                       groupby=None, label_to_color=None,
                                       label_to_marker=None, order=None,
                                       reduce_kwargs=None, title='',
                                       most_variant_features=False,
                                       std_multiplier=2,
+                                      scale_by_variance=True,
                                       **plotting_kwargs):
         """Principal component-like analysis of measurements
 
         Parameters
         ----------
-        x_pc : int, optional (default=1)
-            Which principal component to plot on the x-axis
-        y_pc : int, optional (default=2)
-            Which principal component to plot on the y-axis
-        sample_ids : list, optional (default=None)
+        x_pc : int, optional
+            Which principal component to plot on the x-axis (default 1)
+        y_pc : int, optional
+            Which principal component to plot on the y-axis (default 2)
+        sample_ids : list, optional
             If None, plot all the samples. If a list of strings, must be
-            valid sample ids of the data.
-        feature_ids : list, optional (default=None)
+            valid sample ids of the data. (default None)
+        feature_ids : list, optional
             If None, plot all the features. If a list of strings, perform and
             plot dimensionality reduction on only these feature ids
-        featurewise : bool, optional (default=False)
-            Whether to keep the features and reduce on the samples (default
-            is to keep the samples and reduce the features)
+        featurewise : bool, optional
+            If True, the features are reduced on the samples, and the plotted
+            points are features, not samples. (default False)
         reducer : :py:class:`.DataFrameReducerBase`, optional
-            (default=:py:class:`.DataFramePCA`)
             Which decomposition object to use. Must be a child of
             :py:class:`.DataFrameReducerBase` as this has built-in
             compatibility with pandas.DataFrames.
-        plot_violins : bool, optional (default=True)
+            (default=:py:class:`.DataFramePCA`)
+        plot_violins : bool, optional
             If True, plot the violinplots of the top features. This
             can take a long time, so to save time you can turn it off if you
-            just want a quick look at the PCA.
-        groupby : mappable, optional (default=None)
+            just want a quick look at the PCA. (default False)
+        groupby : mappable, optional
             Map each sample id to a group, such as a phenotype label
-        label_to_color : dict, optional (default=None)
+            (default None)
+        label_to_color : dict, optional
             For each phenotype label, assign a color
-        label_to_marker : dict, optional (default=None)
+            (default None)
+        label_to_marker : dict, optional
             For each phenotype label, assign a plotting marker symbol/shape
-        order : list, optional (default=None)
+            (default None)
+        order : list, optional
             For violinplots, the order of the phenotype groups
-        color : list, optional (default=None)
-            For violinplots, the colors of the phenotypes in their order
+            (default None)
+        reduce_kwargs : dict, optional
+            Keyword arguments to the reducer (default None)
+        title : str, optional
+            Title of the reduced space plot (default '')
+        most_variant_features : bool, optional
+            If True, then only take the most variant of the provided features.
+            The most variant are determined by taking the features whose
+            variance is ``std_multiplier``standard deviations away from the
+            mean feature variance (default False)
+        std_multiplier : float, optional
+            If ``most_variant_features`` is True, then use this as a cutoff
+            for the minimum variance of a feature to be included (default 2)
+        scale_by_variance : bool, optional
+            If True, then scale the x- and y-axes by the explained variance
+            ratio of the principal component dimensions. Only valid for PCA
+            and its variations, not for NMF or tSNE. (default True)
         plotting_kwargs : other keyword arguments
             All other keyword arguments are passed to
-            :py:meth:`DecomopsitionViz.__call__`
+            :py:meth:`DecomopsitionViz.plot`
 
         Returns
         -------
@@ -552,6 +571,7 @@ class BaseData(object):
                               featurewise=featurewise,
                               reducer=reducer,
                               most_variant_features=most_variant_features,
+                              std_multiplier=std_multiplier,
                               **reduce_kwargs)
 
         visualized = DecompositionViz(reduced.reduced_space,
@@ -566,6 +586,7 @@ class BaseData(object):
                                       label_to_marker=label_to_marker,
                                       groupby=groupby, order=order,
                                       data_type=self.data_type,
+                                      scale_by_variance=scale_by_variance,
                                       x_pc="pc_" + str(x_pc),
                                       y_pc="pc_" + str(y_pc))
         # pca(show_vectors=True,

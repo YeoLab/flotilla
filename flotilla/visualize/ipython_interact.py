@@ -91,6 +91,7 @@ class Interactive(object):
                         x_pc=(1, 10), y_pc=(1, 10),
                         show_point_labels=False,
                         list_link='', plot_violins=False,
+                        scale_by_variance=True,
                         savefile='figures/last.pca.pdf'):
 
         def do_interact(data_type='expression',
@@ -103,6 +104,7 @@ class Interactive(object):
                         show_point_labels=False,
                         color_samples_by=self.metadata.phenotype_col,
                         bokeh=False,
+                        scale_by_variance=True,
                         most_variant_features=False,
                         std_multiplier=(0, 5.0)):
             for k, v in locals().iteritems():
@@ -135,6 +137,7 @@ class Interactive(object):
                                  plot_violins=plot_violins,
                                  color_samples_by=color_samples_by,
                                  bokeh=bokeh, std_multiplier=std_multiplier,
+                                 scale_by_variance=scale_by_variance,
                                  most_variant_features=most_variant_features)
 
         # self.plot_study_sample_legend()
@@ -155,14 +158,15 @@ class Interactive(object):
                        x_pc=x_pc, y_pc=y_pc,
                        show_point_labels=show_point_labels,
                        list_link=list_link, plot_violins=plot_violins,
-                       color_samples_by=color_samples_by)
+                       color_samples_by=color_samples_by,
+                       scale_by_variance=scale_by_variance)
 
         def save(w):
             # Make the directory if it's not already there
             filename, extension = os.path.splitext(savefile.value)
             self.maybe_make_directory(savefile.value)
 
-            gui.widget.result.reduced_fig.savefig(savefile.value,
+            gui.widget.result.fig_reduced.savefig(savefile.value,
                                                   format=extension)
 
             # add "violins" after the provided filename, but before the
@@ -170,9 +174,8 @@ class Interactive(object):
             violins_file = '{}.{}'.format("_".join([filename, 'violins']),
                                           extension)
             try:
-                gui.widget.result.violins_fig.savefig(violins_file,
-                                                      format=extension.lstrip(
-                                                          '.'))
+                gui.widget.result.fig_violins.savefig(
+                    violins_file, format=extension.lstrip('.'))
             except AttributeError:
                 pass
 
@@ -336,7 +339,7 @@ class Interactive(object):
             filename, extension = os.path.splitext(savefile.value)
             self.maybe_make_directory(savefile.value)
 
-            gui.widget.result.reduced_fig.savefig(savefile.value,
+            gui.widget.result.fig_reduced.savefig(savefile.value,
                                                   format=extension)
 
             # add "violins" after the provided filename, but before the
@@ -344,9 +347,8 @@ class Interactive(object):
             violins_file = '{}.{}'.format("_".join([filename, 'violins']),
                                           extension)
             try:
-                gui.widget.result.violins_fig.savefig(violins_file,
-                                                      format=extension.lstrip(
-                                                          '.'))
+                gui.widget.result.fig_violins.savefig(
+                    violins_file, format=extension.lstrip('.'))
             except AttributeError:
                 pass
 

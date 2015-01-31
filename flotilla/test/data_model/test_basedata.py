@@ -14,7 +14,7 @@ import pytest
 # def data(data_type, expression_data, splicing_data):
 # if data_type == 'expression':
 # return expression_data
-#     elif data_type == 'splicing':
+# elif data_type == 'splicing':
 #         return splicing_data
 #
 # @pytest.fixture
@@ -65,6 +65,7 @@ class TestBaseData:
                                                expression_feature_rename_col,
                                                n_genes):
         from flotilla.data_model.base import BaseData
+
         expression_feature_data = expression_feature_data.copy()
         gene_numbers = np.arange(n_genes)
         new_renamer = 'new_renamer'
@@ -79,7 +80,6 @@ class TestBaseData:
         base_data.feature_rename_col = new_renamer
         pdt.assert_series_equal(base_data.feature_renamer_series,
                                 expression_feature_data[new_renamer])
-
 
     def test__init_technical_outliers(self, expression_data_no_na,
                                       technical_outliers):
