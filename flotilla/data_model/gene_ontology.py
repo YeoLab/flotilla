@@ -84,13 +84,8 @@ class GeneOntologyData(object):
             try:
                 if v[0] > p_value_cutoff:
                     continue
-                if if_print:
-                    print k, "|".join(ontology[k]['name']), "%.3e" % v[0], v[
-                        1], \
-                        v[2], v[3], "|".join(v[3])
-                    pass
                 y.append(
-                    [k, "|".join(ontology[k]['name']), v[0], v[1], v[2], v[3],
+                    [k, "|".join(self.ontology[k]['name']), v[0], v[1], v[2], v[3],
                      ",".join(v[4]), ",".join(v[5])])
 
             except:
@@ -113,3 +108,4 @@ class GeneOntologyData(object):
         return df
 
     def plot_enrichment(self, feature_ids, background, ):
+        pass
