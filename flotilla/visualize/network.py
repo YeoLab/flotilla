@@ -106,7 +106,7 @@ class NetworkerViz(Networker):
         try:
             feature_id = self.DataModel.maybe_renamed_to_feature_id(
                 feature_of_interest)[0]
-        except (ValueError, KeyError):
+        except (ValueError, KeyError, IndexError):
             feature_id = ''
 
         if featurewise:
