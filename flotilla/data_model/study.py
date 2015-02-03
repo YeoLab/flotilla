@@ -15,6 +15,7 @@ import seaborn as sns
 
 from .metadata import MetaData, PHENOTYPE_COL, POOLED_COL, OUTLIER_COL
 from .expression import ExpressionData, SpikeInData
+from .gene_ontology import GeneOntologyData
 from .quality_control import MappingStatsData, MIN_READS
 from .splicing import SplicingData, FRACTION_DIFF_THRESH
 from ..compute.predict import PredictorConfigManager
@@ -198,7 +199,7 @@ class Study(object):
         # self.predictor_config_manager = None
 
         self.species = species
-        self.gene_ontology_data = gene_ontology_data
+        self.gene_ontology = GeneOntologyData(gene_ontology_data)
 
         self.license = license
         self.title = title
@@ -1853,6 +1854,16 @@ class Study(object):
         else:
             return self.splicing.data
 
+    def go_enrichment(self, feature_ids, background=None):
+        """Calculate gene ontology enrichment of these
+
+        :param feature_ids:
+        :type feature_ids:
+        :return:
+        :rtype:
+        """
+        return self.gene_ontology.enrichment(feature_ids,
+                                             background=background)
 
 # Add interactive visualizations
 Study.interactive_classifier = Interactive.interactive_classifier
