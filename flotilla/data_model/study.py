@@ -940,7 +940,7 @@ class Study(object):
         try:
             trait_data = self.metadata.data[trait]
         except KeyError:
-            trait_ids = self.sample_subset_to_sample_ids(sample_subset)
+            trait_ids = self.sample_subset_to_sample_ids(trait)
             trait_data = self.metadata.data.index.isin(trait_ids)
 
         all_true = np.all(trait_data)
