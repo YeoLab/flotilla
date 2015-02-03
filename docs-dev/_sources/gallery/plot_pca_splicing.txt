@@ -1,0 +1,19 @@
+
+.. _plot_pca_splicing:
+
+
+Visualize principal component analysis dimensionality reduction
+================================================================
+
+See also
+--------
+:py:func:`Study.interactive_pca`
+
+
+
+.. image:: _images/plot_pca_splicing.png
+
+**Python source code:** :download:`[download source: plot_pca_splicing.py]<plot_pca_splicing.py>`
+
+.. literalinclude:: plot_pca_splicing.py
+    :lines: 10-

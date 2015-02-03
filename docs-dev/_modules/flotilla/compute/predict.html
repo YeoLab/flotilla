@@ -82,7 +82,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">OS X Installation instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#create-a-flotilla-sandbox">Create a flotilla sandbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#install-and-update-all-packages-in-your-environment">Install and update all packages in your environment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html#old-osx-installation-instructions">Old OSX Installation instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html#docker-instructions">Docker Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../api.html#general-use-plots">General use plots</a></li>
@@ -210,13 +215,13 @@
 
 </div>
 <div class="viewcode-block" id="PredictorConfig"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorConfig">[docs]</a><span class="k">class</span> <span class="nc">PredictorConfig</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A configuration for a predictor, names and tracks/sets parameters for predictor</span>
-<span class="sd">    Dynamically configures some args for predictor based on n_features (if this attribute exists)</span>
+    <span class="sd">&quot;&quot;&quot;A configuration for a predictor, names and tracks/sets parameters</span>
+
+<span class="sd">    Dynamically configures some args for predictor based on n_features</span>
+<span class="sd">    (if this attribute exists)</span>
 <span class="sd">    set general parameters with __init__</span>
 <span class="sd">    yield instances, set by your parameters, with __call__</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predictor_name</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span>
                  <span class="n">predictor_scoring_fun</span><span class="o">=</span><span class="n">default_predictor_scoring_fun</span><span class="p">,</span>
@@ -478,21 +483,21 @@
                                       <span class="s">&#39;oob_score&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
                                       <span class="s">&#39;verbose&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">}</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">predictor_config</span><span class="p">(</span><span class="s">&#39;ExtraTreesClassifier&#39;</span><span class="p">,</span>
-                              <span class="n">obj</span><span class="o">=</span><span class="n">ExtraTreesClassifier</span><span class="p">,</span>
-                              <span class="n">n_features_dependent_kwargs</span><span class="o">=</span><span class="p">{</span>
-                                  <span class="s">&#39;max_features&#39;</span><span class="p">:</span> <span class="n">PredictorConfigScalers</span><span class="o">.</span><span class="n">max_feature_scaler</span><span class="p">,</span>
-                                  <span class="s">&#39;n_estimators&#39;</span><span class="p">:</span> <span class="n">PredictorConfigScalers</span><span class="o">.</span><span class="n">n_estimators_scaler</span><span class="p">,</span>
-                                  <span class="s">&#39;n_jobs&#39;</span><span class="p">:</span> <span class="n">PredictorConfigScalers</span><span class="o">.</span><span class="n">n_jobs_scaler</span><span class="p">},</span>
-                              <span class="o">**</span><span class="n">constant_extratrees_kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">predictor_config</span><span class="p">(</span>
+            <span class="s">&#39;ExtraTreesClassifier&#39;</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="n">ExtraTreesClassifier</span><span class="p">,</span>
+            <span class="n">n_features_dependent_kwargs</span><span class="o">=</span><span class="p">{</span>
+                <span class="s">&#39;max_features&#39;</span><span class="p">:</span> <span class="n">PredictorConfigScalers</span><span class="o">.</span><span class="n">max_feature_scaler</span><span class="p">,</span>
+                <span class="s">&#39;n_estimators&#39;</span><span class="p">:</span> <span class="n">PredictorConfigScalers</span><span class="o">.</span><span class="n">n_estimators_scaler</span><span class="p">,</span>
+                <span class="s">&#39;n_jobs&#39;</span><span class="p">:</span> <span class="n">PredictorConfigScalers</span><span class="o">.</span><span class="n">n_jobs_scaler</span><span class="p">},</span>
+            <span class="o">**</span><span class="n">constant_extratrees_kwargs</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">predictor_config</span><span class="p">(</span><span class="s">&#39;ExtraTreesRegressor&#39;</span><span class="p">,</span>
-                              <span class="n">obj</span><span class="o">=</span><span class="n">ExtraTreesRegressor</span><span class="p">,</span>
-                              <span class="n">n_features_dependent_kwargs</span><span class="o">=</span><span class="p">{</span>
-                                  <span class="s">&#39;max_features&#39;</span><span class="p">:</span> <span class="n">PredictorConfigScalers</span><span class="o">.</span><span class="n">max_feature_scaler</span><span class="p">,</span>
-                                  <span class="s">&#39;n_estimators&#39;</span><span class="p">:</span> <span class="n">PredictorConfigScalers</span><span class="o">.</span><span class="n">n_estimators_scaler</span><span class="p">,</span>
-                                  <span class="s">&#39;n_jobs&#39;</span><span class="p">:</span> <span class="n">PredictorConfigScalers</span><span class="o">.</span><span class="n">n_jobs_scaler</span><span class="p">},</span>
-                              <span class="o">**</span><span class="n">constant_extratrees_kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">predictor_config</span><span class="p">(</span>
+            <span class="s">&#39;ExtraTreesRegressor&#39;</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="n">ExtraTreesRegressor</span><span class="p">,</span>
+            <span class="n">n_features_dependent_kwargs</span><span class="o">=</span><span class="p">{</span>
+                <span class="s">&#39;max_features&#39;</span><span class="p">:</span> <span class="n">PredictorConfigScalers</span><span class="o">.</span><span class="n">max_feature_scaler</span><span class="p">,</span>
+                <span class="s">&#39;n_estimators&#39;</span><span class="p">:</span> <span class="n">PredictorConfigScalers</span><span class="o">.</span><span class="n">n_estimators_scaler</span><span class="p">,</span>
+                <span class="s">&#39;n_jobs&#39;</span><span class="p">:</span> <span class="n">PredictorConfigScalers</span><span class="o">.</span><span class="n">n_jobs_scaler</span><span class="p">},</span>
+            <span class="o">**</span><span class="n">constant_extratrees_kwargs</span><span class="p">)</span>
 
         <span class="n">constant_boosting_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;n_estimators&#39;</span><span class="p">:</span> <span class="mi">80</span><span class="p">,</span> <span class="s">&#39;max_features&#39;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
                                     <span class="s">&#39;learning_rate&#39;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span> <span class="s">&#39;subsample&#39;</span><span class="p">:</span> <span class="mf">0.6</span><span class="p">,</span> <span class="p">}</span>
@@ -538,8 +543,8 @@
 <span class="sd">            An initalized scikit-learn predictor</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">predictor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_predictor_config</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictor_configs</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictor_configs</span><span class="p">[</span>
-            <span class="n">name</span><span class="p">]</span> <span class="o">!=</span> <span class="n">predictor</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictor_configs</span> <span class="ow">and</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">predictor_configs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">!=</span> <span class="n">predictor</span><span class="p">:</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
                 <span class="s">&quot;WARNING: over-writing predictor named: {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">predictor_configs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">predictor</span>
@@ -771,8 +776,8 @@
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
 <span class="sd">    datasets : dict</span>
-<span class="sd">        Dict of dicts of {data: {trait: {categorical: dataset}}}. For convenient</span>
-<span class="sd">        retrieval of predictors</span>
+<span class="sd">        Dict of dicts of {data: {trait: {categorical: dataset}}}. For</span>
+<span class="sd">        convenient retrieval of predictors</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predictor_config_manager</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
@@ -786,7 +791,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;_datasets&#39;</span><span class="p">):</span>
             <span class="c"># 3 layer deep (data, trait, categorical?)</span>
-            <span class="c"># will almost always be either categorical true or false, rarely both</span>
+            <span class="c"># will almost always be either categorical true or false, rarely</span>
+            <span class="c"># both</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_datasets</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_datasets</span>
 </div>
@@ -815,9 +821,9 @@
         <span class="k">if</span> <span class="n">data_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">datasets</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">trait_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">datasets</span><span class="p">[</span><span class="n">data_name</span><span class="p">]:</span>
                 <span class="k">if</span> <span class="n">categorical_trait</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">datasets</span><span class="p">[</span><span class="n">data_name</span><span class="p">][</span>
-                    <span class="n">trait_name</span><span class="p">]</span> <span class="ow">and</span> \
-                                <span class="bp">self</span><span class="o">.</span><span class="n">datasets</span><span class="p">[</span><span class="n">data_name</span><span class="p">][</span><span class="n">trait_name</span><span class="p">][</span>
-                                    <span class="n">categorical_trait</span><span class="p">]</span> <span class="o">!=</span> <span class="n">dataset</span><span class="p">:</span>
+                        <span class="n">trait_name</span><span class="p">]</span> <span class="ow">and</span> \
+                        <span class="bp">self</span><span class="o">.</span><span class="n">datasets</span><span class="p">[</span><span class="n">data_name</span><span class="p">][</span><span class="n">trait_name</span><span class="p">][</span>
+                            <span class="n">categorical_trait</span><span class="p">]</span> <span class="o">!=</span> <span class="n">dataset</span><span class="p">:</span>
                     <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
                         <span class="s">&quot;WARNING: over-writing dataset named: {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                             <span class="p">(</span><span class="n">data_name</span><span class="p">,</span>
@@ -868,7 +874,8 @@
             <span class="c"># try to get this dataset by key in the dictionary</span>
             <span class="n">args</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">data</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">predictor_config_manager</span><span class="p">])</span>
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">([</span><span class="n">i</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]):</span>
-                <span class="c"># if data is None, you&#39;d better not be asking to set other parameters</span>
+                <span class="c"># if data is None, you&#39;d better not be asking to set other</span>
+                <span class="c"># parameters</span>
                 <span class="k">raise</span> <span class="ne">Exception</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">datasets</span><span class="p">[</span><span class="n">data_name</span><span class="p">][</span><span class="n">trait_name</span><span class="p">][</span><span class="n">categorical_trait</span><span class="p">]</span>
@@ -885,52 +892,16 @@
         <span class="k">if</span> <span class="n">data_name</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">data_name</span> <span class="o">=</span> <span class="s">&quot;MyData&quot;</span>
 
-        <span class="n">predictor_config_manager</span> <span class="o">=</span> <span class="n">predictor_config_manager</span> <span class="k">if</span> <span class="n">predictor_config_manager</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> \
+        <span class="n">predictor_config_manager</span> <span class="o">=</span> <span class="n">predictor_config_manager</span> \
+            <span class="k">if</span> <span class="n">predictor_config_manager</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> \
             <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictor_config_manager</span>
 
-        <span class="k">return</span> <span class="n">PredictorDataSet</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">data_name</span><span class="p">,</span>
-                                <span class="n">categorical_trait</span><span class="o">=</span><span class="n">categorical_trait</span><span class="p">,</span>
-                                <span class="n">predictor_config_manager</span><span class="o">=</span><span class="n">predictor_config_manager</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">PredictorDataSet</span><span class="p">(</span>
+            <span class="n">data</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">data_name</span><span class="p">,</span> <span class="n">categorical_trait</span><span class="o">=</span><span class="n">categorical_trait</span><span class="p">,</span>
+            <span class="n">predictor_config_manager</span><span class="o">=</span><span class="n">predictor_config_manager</span><span class="p">)</span>
 
 </div></div>
 <div class="viewcode-block" id="PredictorBase"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorBase">[docs]</a><span class="k">class</span> <span class="nc">PredictorBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A dataset-predictor pair from PredictorDatasetManager</span>
-
-<span class="sd">    One datset, one predictor, from dataset manager.</span>
-
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    predictor_name : str</span>
-<span class="sd">        Name for predictor</span>
-<span class="sd">    data_name : str</span>
-<span class="sd">        Name for this (subset of the) data</span>
-<span class="sd">    trait_name : str</span>
-<span class="sd">        Name for this trait</span>
-<span class="sd">    X_data : pandas.DataFrame, optional</span>
-<span class="sd">        Samples-by-features (row x col) dataset to train the predictor on</span>
-<span class="sd">    trait : pandas.Series, optional</span>
-<span class="sd">        A variable you want to predict using X_data. Indexed like X_data.</span>
-<span class="sd">    predictor_obj : sklearn predictor, optional</span>
-<span class="sd">        A scikit-learn predictor that implements fit and score on (X_data,trait)</span>
-<span class="sd">        Which classifier to use. Default ExtraTreesClassifier</span>
-<span class="sd">    predictor_scoring_fun : function, optional</span>
-<span class="sd">        Function to get the feature scores for a scikit-learn classifier.</span>
-<span class="sd">        This can be different for different classifiers, e.g. for a</span>
-<span class="sd">        classifier named &quot;x&quot; it could be x.scores_, for other it&#39;s</span>
-<span class="sd">        x.feature_importances_. Default: lambda x: x.feature_importances_</span>
-<span class="sd">    score_cutoff_fun : function, optional</span>
-<span class="sd">        Function to cut off insignificant scores</span>
-<span class="sd">        Default: lambda scores: np.mean(x) + 2 * np.std(x)</span>
-<span class="sd">    n_features_dependent_kwargs : dict, optional</span>
-<span class="sd">        kwargs to the predictor that depend on n_features</span>
-<span class="sd">        Default: {}</span>
-<span class="sd">    constant_kwargs : dict, optional</span>
-<span class="sd">        kwargs to the predictor that are constant, i.e.:</span>
-<span class="sd">        {&#39;n_estimators&#39;: 100, &#39;bootstrap&#39;: True, &#39;max_features&#39;: &#39;auto&#39;,</span>
-<span class="sd">        &#39;random_state&#39;: 0, &#39;oob_score&#39;: True, &#39;n_jobs&#39;: 2, &#39;verbose&#39;: True}</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predictor_name</span><span class="p">,</span> <span class="n">data_name</span><span class="p">,</span> <span class="n">trait_name</span><span class="p">,</span>
                  <span class="n">X_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">trait</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
@@ -947,6 +918,42 @@
                  <span class="n">violinplot_kws</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">label_to_color</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">label_to_marker</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">singles</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">outliers</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A dataset-predictor pair from PredictorDatasetManager</span>
+
+<span class="sd">        One datset, one predictor, from dataset manager.</span>
+
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        predictor_name : str</span>
+<span class="sd">            Name for predictor</span>
+<span class="sd">        data_name : str</span>
+<span class="sd">            Name for this (subset of the) data</span>
+<span class="sd">        trait_name : str</span>
+<span class="sd">            Name for this trait</span>
+<span class="sd">        X_data : pandas.DataFrame, optional</span>
+<span class="sd">            Samples-by-features (row x col) dataset to train the predictor on</span>
+<span class="sd">        trait : pandas.Series, optional</span>
+<span class="sd">            A variable you want to predict using X_data. Indexed like X_data.</span>
+<span class="sd">        predictor_obj : sklearn predictor, optional</span>
+<span class="sd">            A scikit-learn predictor that implements fit and score on</span>
+<span class="sd">            (X_data,trait) Default ExtraTreesClassifier</span>
+<span class="sd">        predictor_scoring_fun : function, optional</span>
+<span class="sd">            Function to get the feature scores for a scikit-learn classifier.</span>
+<span class="sd">            This can be different for different classifiers, e.g. for a</span>
+<span class="sd">            classifier named &quot;x&quot; it could be x.scores_, for other it&#39;s</span>
+<span class="sd">            x.feature_importances_. Default: lambda x: x.feature_importances_</span>
+<span class="sd">        score_cutoff_fun : function, optional</span>
+<span class="sd">            Function to cut off insignificant scores</span>
+<span class="sd">            Default: lambda scores: np.mean(x) + 2 * np.std(x)</span>
+<span class="sd">        n_features_dependent_kwargs : dict, optional</span>
+<span class="sd">            kwargs to the predictor that depend on n_features</span>
+<span class="sd">            Default: {}</span>
+<span class="sd">        constant_kwargs : dict, optional</span>
+<span class="sd">            kwargs to the predictor that are constant, i.e.:</span>
+<span class="sd">            {&#39;n_estimators&#39;: 100, &#39;bootstrap&#39;: True, &#39;max_features&#39;: &#39;auto&#39;,</span>
+<span class="sd">            &#39;random_state&#39;: 0, &#39;oob_score&#39;: True, &#39;n_jobs&#39;: 2, &#39;verbose&#39;: True}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">predictor_name</span> <span class="o">=</span> <span class="n">predictor_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data_name</span> <span class="o">=</span> <span class="n">data_name</span>
@@ -988,8 +995,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">score_cutoff_fun</span> <span class="o">=</span> <span class="n">score_cutoff_fun</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">constant_kwargs</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">constant_kwargs</span> <span class="ow">is</span> <span class="bp">None</span> \
             <span class="k">else</span> <span class="n">constant_kwargs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_features_dependent_kwargs</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">n_features_dependent_kwargs</span> \
-                                                 <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> \
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_features_dependent_kwargs</span> <span class="o">=</span> <span class="p">{}</span> \
+            <span class="k">if</span> <span class="n">n_features_dependent_kwargs</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> \
             <span class="n">n_features_dependent_kwargs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">categorical_trait</span> <span class="o">=</span> <span class="n">is_categorical_trait</span> <span class="k">if</span> \
             <span class="n">is_categorical_trait</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="k">else</span> <span class="bp">False</span>
@@ -1024,12 +1031,12 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="PredictorBase.predictor"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorBase.predictor">[docs]</a>    <span class="k">def</span> <span class="nf">predictor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Thin reference to ``dataset.predictor``&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">predictor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predictor_name</span><span class="p">,</span>
-                                      <span class="n">obj</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">predictor_obj</span><span class="p">,</span>
-                                      <span class="n">predictor_scoring_fun</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">predictor_scoring_fun</span><span class="p">,</span>
-                                      <span class="n">score_cutoff_fun</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">score_cutoff_fun</span><span class="p">,</span>
-                                      <span class="n">n_features_dependent_kwargs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_features_dependent_kwargs</span><span class="p">,</span>
-                                      <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">constant_kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">predictor</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">predictor_name</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">predictor_obj</span><span class="p">,</span>
+            <span class="n">predictor_scoring_fun</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">predictor_scoring_fun</span><span class="p">,</span>
+            <span class="n">score_cutoff_fun</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">score_cutoff_fun</span><span class="p">,</span>
+            <span class="n">n_features_dependent_kwargs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_features_dependent_kwargs</span><span class="p">,</span>
+            <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">constant_kwargs</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="PredictorBase.fit"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorBase.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Fit predictor to the dataset&quot;&quot;&quot;</span>
@@ -1127,10 +1134,11 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_good_features_</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;cutoff: </span><span class="si">%.4f</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_cutoff_</span><span class="p">)</span>
             <span class="ne">UserWarning</span><span class="p">(</span><span class="s">&quot;These classifier settings produced &lt;= 1 important &quot;</span>
-                <span class="s">&quot;feature, consider reducing score_coefficient. DataFramePCA will fail &quot;</span>
-                <span class="s">&quot;with this error: </span><span class="se">\&quot;</span><span class="s">ValueError: failed to create intent(&quot;</span>
-                <span class="s">&quot;cache|hide)|optional array-- must have defined dimensions &quot;</span>
-                <span class="s">&quot;but got (0,)</span><span class="se">\&quot;\n</span><span class="s">&quot;</span><span class="p">)</span>
+                        <span class="s">&quot;feature, consider reducing score_coefficient. &quot;</span>
+                        <span class="s">&quot;DataFramePCA will fail with this error: &quot;</span>
+                        <span class="s">&quot;</span><span class="se">\&quot;</span><span class="s">ValueError: failed to create intent(&quot;</span>
+                        <span class="s">&quot;cache|hide)|optional array-- must have defined &quot;</span>
+                        <span class="s">&quot;dimensions but got (0,)</span><span class="se">\&quot;\n</span><span class="s">&quot;</span><span class="p">)</span>
 </div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="PredictorBase.score_cutoff_"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorBase.score_cutoff_">[docs]</a>    <span class="k">def</span> <span class="nf">score_cutoff_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1165,14 +1173,14 @@
 
 </div></div>
 <div class="viewcode-block" id="Regressor"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.Regressor">[docs]</a><span class="k">class</span> <span class="nc">Regressor</span><span class="p">(</span><span class="n">PredictorBase</span><span class="p">):</span>
-    <span class="n">__doc__</span> <span class="o">=</span> <span class="s">&quot;Regressor for continuous response variables.</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span> \
-              <span class="n">PredictorBase</span><span class="o">.</span><span class="n">__doc__</span>
 
     <span class="n">categorical</span> <span class="o">=</span> <span class="bp">False</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_name</span><span class="p">,</span> <span class="n">trait_name</span><span class="p">,</span>
                  <span class="n">predictor_name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">__doc__</span> <span class="o">=</span> <span class="s">&quot;Regressor for continuous response variables.</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span> \
+                  <span class="n">PredictorBase</span><span class="o">.</span><span class="n">__init__</span><span class="o">.</span><span class="n">__doc__</span>
         <span class="k">if</span> <span class="n">predictor_name</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">predictor_name</span> <span class="o">=</span> <span class="n">REGRESSOR</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;is_categorical_trait&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
@@ -1181,14 +1189,14 @@
 
 </div>
 <div class="viewcode-block" id="Classifier"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.Classifier">[docs]</a><span class="k">class</span> <span class="nc">Classifier</span><span class="p">(</span><span class="n">PredictorBase</span><span class="p">):</span>
-    <span class="n">__doc__</span> <span class="o">=</span> <span class="s">&quot;Classifier for categorical response variables.</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span> \
-              <span class="n">PredictorBase</span><span class="o">.</span><span class="n">__doc__</span>
 
     <span class="n">categorical</span> <span class="o">=</span> <span class="bp">True</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_name</span><span class="p">,</span> <span class="n">trait_name</span><span class="p">,</span>
                  <span class="n">predictor_name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">__doc__</span> <span class="o">=</span> <span class="s">&quot;Classifier for categorical response variables.</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span> \
+                  <span class="n">PredictorBase</span><span class="o">.</span><span class="n">__init__</span><span class="o">.</span><span class="n">__doc__</span>
         <span class="k">if</span> <span class="n">predictor_name</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">predictor_name</span> <span class="o">=</span> <span class="n">CLASSIFIER</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;is_categorical_trait&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>

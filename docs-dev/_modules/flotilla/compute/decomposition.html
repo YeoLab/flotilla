@@ -82,7 +82,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">OS X Installation instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#create-a-flotilla-sandbox">Create a flotilla sandbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#install-and-update-all-packages-in-your-environment">Install and update all packages in your environment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html#old-osx-installation-instructions">Old OSX Installation instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html#docker-instructions">Docker Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../api.html#general-use-plots">General use plots</a></li>
@@ -169,7 +174,7 @@
 <span class="sd">        kwargs : keyword arguments</span>
 <span class="sd">            Any other arguments to the reduction algorithm</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># This magically initializes the reducer like DataFramePCA or DataFrameNMF</span>
+        <span class="c"># This magically initializes the reducer like PCA or NMF</span>
         <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">3</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s">&quot;Too few features (n={}) to reduce&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
@@ -297,16 +302,23 @@
 <div class="viewcode-block" id="DataFrameNMF"><a class="viewcode-back" href="../../../flotilla.compute.decomposition.html#flotilla.compute.decomposition.DataFrameNMF">[docs]</a><span class="k">class</span> <span class="nc">DataFrameNMF</span><span class="p">(</span><span class="n">DataFrameReducerBase</span><span class="p">,</span> <span class="n">decomposition</span><span class="o">.</span><span class="n">NMF</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Perform Non-Negative Matrix Factorization on a DataFrame</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s">&#39;init&#39;</span><span class="p">,</span> <span class="s">&#39;nndsvd&#39;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">decomposition</span><span class="o">.</span><span class="n">NMF</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">n_components</span><span class="p">,</span>
+                                                <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reduced_space</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
 <div class="viewcode-block" id="DataFrameNMF.fit"><a class="viewcode-back" href="../../../flotilla.compute.decomposition.html#flotilla.compute.decomposition.DataFrameNMF.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Override scikit-learn&#39;s fit() for our purposes</span>
 
 <span class="sd">        Duplicated fit code for DataFrameNMF because sklearn&#39;s NMF cheats for</span>
 <span class="sd">        efficiency and calls fit_transform. Method resolution order (&quot;MRO&quot;)</span>
 <span class="sd">        resolves the closest (in this package)</span>
-<span class="sd">        _single_fit_transform first and so there&#39;s a recursion error:</span>
+<span class="sd">        _fit_transform first and so there&#39;s a recursion error:</span>
 
-<span class="sd">            def fit(self, X, y=None, **params):</span>
-<span class="sd">                self._single_fit_transform(X, **params)</span>
+<span class="sd">            def fit(self, X, y=None, **kwargs):</span>
+<span class="sd">                self._fit_transform(X, **kwargs)</span>
 <span class="sd">                return self</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_dataframe</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>

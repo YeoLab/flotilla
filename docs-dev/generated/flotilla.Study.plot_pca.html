@@ -84,7 +84,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../installation.html">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">OS X Installation instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#create-a-flotilla-sandbox">Create a flotilla sandbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#install-and-update-all-packages-in-your-environment">Install and update all packages in your environment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html#old-osx-installation-instructions">Old OSX Installation instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html#docker-instructions">Docker Instructions</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../api.html#general-use-plots">General use plots</a></li>
@@ -154,7 +159,7 @@
 <h1>flotilla.Study.plot_pca<a class="headerlink" href="#flotilla-study-plot-pca" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="flotilla.Study.plot_pca">
-<tt class="descclassname">Study.</tt><tt class="descname">plot_pca</tt><big>(</big><em>data_type='expression'</em>, <em>x_pc=1</em>, <em>y_pc=2</em>, <em>sample_subset=None</em>, <em>feature_subset=None</em>, <em>title=''</em>, <em>featurewise=False</em>, <em>plot_violins=False</em>, <em>show_point_labels=False</em>, <em>reduce_kwargs=None</em>, <em>color_samples_by=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#flotilla.Study.plot_pca" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">Study.</tt><tt class="descname">plot_pca</tt><big>(</big><em>data_type='expression'</em>, <em>x_pc=1</em>, <em>y_pc=2</em>, <em>sample_subset=None</em>, <em>feature_subset=None</em>, <em>title=''</em>, <em>featurewise=False</em>, <em>plot_violins=False</em>, <em>show_point_labels=False</em>, <em>reduce_kwargs=None</em>, <em>color_samples_by=None</em>, <em>bokeh=False</em>, <em>most_variant_features=False</em>, <em>std_multiplier=2</em>, <em>scale_by_variance=True</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#flotilla.Study.plot_pca" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performs DataFramePCA on both expression and splicing study_data</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -163,43 +168,85 @@
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data_type</strong> : str</p>
 <blockquote>
 <div><p>One of the names of the data types, e.g. &#8220;expression&#8221; or
-&#8220;splicing&#8221;</p>
+&#8220;splicing&#8221; (default &#8220;expression&#8221;)</p>
 </div></blockquote>
-<p><strong>x_pc</strong> : int</p>
+<p><strong>x_pc</strong> : int, optional</p>
 <blockquote>
-<div><p>Which principal component to plot on the x-axis</p>
+<div><p>Which principal component to plot on the x-axis (default 1)</p>
 </div></blockquote>
-<p><strong>y_pc</strong> : int</p>
+<p><strong>y_pc</strong> : int, optional</p>
 <blockquote>
-<div><p>Which principal component to plot on the y-axis</p>
+<div><p>Which principal component to plot on the y-axis (default 2)</p>
 </div></blockquote>
 <p><strong>sample_subset</strong> : str or None</p>
 <blockquote>
 <div><p>Which subset of the samples to use, based on some phenotype
 column in the experiment design data. If None, all samples are
-used.</p>
+used. (default None)</p>
 </div></blockquote>
 <p><strong>feature_subset</strong> : str or None</p>
 <blockquote>
 <div><p>Which subset of the features to used, based on some feature type
 in the expression data (e.g. &#8220;variant&#8221;). If None, all features
-are used.</p>
+are used. (default None)</p>
 </div></blockquote>
-<p><strong>title</strong> : str</p>
+<p><strong>title</strong> : str, optional</p>
 <blockquote>
-<div><p>The title of the plot</p>
+<div><p>Title of the reduced space plot (default &#8216;&#8217;)</p>
+</div></blockquote>
+<p><strong>featurewise</strong> : bool, optional</p>
+<blockquote>
+<div><p>If True, the features are reduced on the samples, and the plotted
+points are features, not samples. (default False)</p>
 </div></blockquote>
 <p><strong>plot_violins</strong> : bool</p>
 <blockquote>
 <div><p>Whether or not to make the violinplots of the top features. This
 can take a long time, so to save time you can turn it off if you
-just want a quick look at the PCA.</p>
+just want a quick look at the PCA. (default False)</p>
 </div></blockquote>
-<p><strong>show_point_labels</strong> : bool</p>
-<blockquote class="last">
+<p><strong>show_point_labels</strong> : bool, optional</p>
+<blockquote>
 <div><p>Whether or not to show the labels of the points. If this is
 samplewise (default), then this labels the samples. If this is
-featurewise, then this labels the features.</p>
+featurewise, then this labels the features. (default False)</p>
+</div></blockquote>
+<p><strong>reduce_kwargs</strong> : dict, optional</p>
+<blockquote>
+<div><p>Keyword arguments to the reducer (default None)</p>
+</div></blockquote>
+<p><strong>color_samples_by</strong> : str, optional</p>
+<blockquote>
+<div><p>Instead of coloring the samples by their phenotype, color them by
+this column in the metadata. (default None)</p>
+</div></blockquote>
+<p><strong>bokeh</strong> : bool, optional</p>
+<blockquote>
+<div><p>If True, plot a javascripty/interactive bokeh plot instead of a
+static printable figure (default False)</p>
+</div></blockquote>
+<p><strong>most_variant_features</strong> : bool, optional</p>
+<blockquote>
+<div><p>If True, then only take the most variant of the provided features.
+The most variant are determined by taking the features whose
+variance is <a href="#id1"><span class="problematic" id="id2">``</span></a>std_multiplier``standard deviations away from the
+mean feature variance (default False)</p>
+</div></blockquote>
+<p><strong>std_multiplier</strong> : float, optional</p>
+<blockquote>
+<div><p>If <tt class="docutils literal"><span class="pre">most_variant_features</span></tt> is True, then use this as a cutoff
+for the minimum variance of a feature to be included (default 2)</p>
+</div></blockquote>
+<p><strong>scale_by_variance</strong> : bool, optional</p>
+<blockquote>
+<div><p>If True, then scale the x- and y-axes by the explained variance
+ratio of the principal component dimensions. Only valid for PCA
+and its variations, not for NMF or tSNE. (default True)</p>
+</div></blockquote>
+<p><strong>kwargs</strong> : other keyword arguments</p>
+<blockquote class="last">
+<div><p>All other keyword arguments are passed to
+<tt class="xref py py-meth docutils literal"><span class="pre">DecomopsitionViz.plot()</span></tt></p>
 </div></blockquote>
 </td>
 </tr>

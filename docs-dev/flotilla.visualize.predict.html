@@ -84,7 +84,12 @@
 <li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">OS X Installation instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#create-a-flotilla-sandbox">Create a flotilla sandbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#install-and-update-all-packages-in-your-environment">Install and update all packages in your environment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#old-osx-installation-instructions">Old OSX Installation instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html#docker-instructions">Docker Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api.html#general-use-plots">General use plots</a></li>
@@ -176,19 +181,68 @@ sets</p>
 <dt id="flotilla.visualize.predict.PredictorBaseViz">
 <em class="property">class </em><tt class="descclassname">flotilla.visualize.predict.</tt><tt class="descname">PredictorBaseViz</tt><big>(</big><em>predictor_name</em>, <em>data_name</em>, <em>trait_name</em>, <em>X_data=None</em>, <em>trait=None</em>, <em>predictor_obj=None</em>, <em>predictor_scoring_fun=None</em>, <em>score_cutoff_fun=None</em>, <em>n_features_dependent_kwargs=None</em>, <em>constant_kwargs=None</em>, <em>is_categorical_trait=None</em>, <em>predictor_dataset_manager=None</em>, <em>predictor_config_manager=None</em>, <em>feature_renamer=None</em>, <em>groupby=None</em>, <em>color=None</em>, <em>pooled=None</em>, <em>order=None</em>, <em>violinplot_kws=None</em>, <em>data_type=None</em>, <em>label_to_color=None</em>, <em>label_to_marker=None</em>, <em>singles=None</em>, <em>outliers=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/predict.html#PredictorBaseViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.predict.PredictorBaseViz" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="flotilla.compute.predict.html#flotilla.compute.predict.PredictorBase" title="flotilla.compute.predict.PredictorBase"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.predict.PredictorBase</span></tt></a></p>
+<p>A dataset-predictor pair from PredictorDatasetManager</p>
+<p>One datset, one predictor, from dataset manager.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>predictor_name</strong> : str</p>
+<blockquote>
+<div><p>Name for predictor</p>
+</div></blockquote>
+<p><strong>data_name</strong> : str</p>
+<blockquote>
+<div><p>Name for this (subset of the) data</p>
+</div></blockquote>
+<p><strong>trait_name</strong> : str</p>
+<blockquote>
+<div><p>Name for this trait</p>
+</div></blockquote>
+<p><strong>X_data</strong> : pandas.DataFrame, optional</p>
+<blockquote>
+<div><p>Samples-by-features (row x col) dataset to train the predictor on</p>
+</div></blockquote>
+<p><strong>trait</strong> : pandas.Series, optional</p>
+<blockquote>
+<div><p>A variable you want to predict using X_data. Indexed like X_data.</p>
+</div></blockquote>
+<p><strong>predictor_obj</strong> : sklearn predictor, optional</p>
+<blockquote>
+<div><p>A scikit-learn predictor that implements fit and score on
+(X_data,trait) Default ExtraTreesClassifier</p>
+</div></blockquote>
+<p><strong>predictor_scoring_fun</strong> : function, optional</p>
+<blockquote>
+<div><p>Function to get the feature scores for a scikit-learn classifier.
+This can be different for different classifiers, e.g. for a
+classifier named &#8220;x&#8221; it could be <a href="#id1"><span class="problematic" id="id2">x.scores_</span></a>, for other it&#8217;s
+<a href="#id3"><span class="problematic" id="id4">x.feature_importances_</span></a>. Default: lambda x: <a href="#id5"><span class="problematic" id="id6">x.feature_importances_</span></a></p>
+</div></blockquote>
+<p><strong>score_cutoff_fun</strong> : function, optional</p>
+<blockquote>
+<div><p>Function to cut off insignificant scores
+Default: lambda scores: np.mean(x) + 2 * np.std(x)</p>
+</div></blockquote>
+<p><strong>n_features_dependent_kwargs</strong> : dict, optional</p>
+<blockquote>
+<div><p>kwargs to the predictor that depend on n_features
+Default: {}</p>
+</div></blockquote>
+<p><strong>constant_kwargs</strong> : dict, optional</p>
+<blockquote class="last">
+<div><p>kwargs to the predictor that are constant, i.e.:
+{&#8216;n_estimators&#8217;: 100, &#8216;bootstrap&#8217;: True, &#8216;max_features&#8217;: &#8216;auto&#8217;,
+&#8216;random_state&#8217;: 0, &#8216;oob_score&#8217;: True, &#8216;n_jobs&#8217;: 2, &#8216;verbose&#8217;: True}</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="flotilla.visualize.predict.PredictorBaseViz.do_pca">
 <tt class="descname">do_pca</tt><big>(</big><em>**plotting_kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/predict.html#PredictorBaseViz.do_pca"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.predict.PredictorBaseViz.do_pca" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-
-<dl class="method">
-<dt id="flotilla.visualize.predict.PredictorBaseViz.generate_scatter_table">
-<tt class="descname">generate_scatter_table</tt><big>(</big><em>excel_out=None</em>, <em>external_xref=[]</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/predict.html#PredictorBaseViz.generate_scatter_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.predict.PredictorBaseViz.generate_scatter_table" title="Permalink to this definition">¶</a></dt>
-<dd><p>make a table to make scatterplots... maybe for plot.ly
-excelOut: full path to an excel output location for scatter data
-external_xref: list of tuples containing (attribute name, function to
-map row index -&gt; an attribute)</p>
-</dd></dl>
 
 <dl class="method">
 <dt id="flotilla.visualize.predict.PredictorBaseViz.plot">

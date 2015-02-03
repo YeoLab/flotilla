@@ -84,7 +84,12 @@
 <li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">OS X Installation instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#create-a-flotilla-sandbox">Create a flotilla sandbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#install-and-update-all-packages-in-your-environment">Install and update all packages in your environment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#old-osx-installation-instructions">Old OSX Installation instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html#docker-instructions">Docker Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api.html#general-use-plots">General use plots</a></li>
@@ -160,40 +165,39 @@
 <p>Visualize results of modality assignments</p>
 <dl class="method">
 <dt id="flotilla.visualize.splicing.ModalitiesViz.bar">
-<tt class="descname">bar</tt><big>(</big><em>modalities_counts</em>, <em>ax=None</em>, <em>i=0</em>, <em>normed=True</em>, <em>legend=True</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#ModalitiesViz.bar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.bar" title="Permalink to this definition">¶</a></dt>
-<dd><p>Draw the barplot of a single modalities_count</p>
+<tt class="descname">bar</tt><big>(</big><em>counts</em>, <em>phenotype_to_color=None</em>, <em>ax=None</em>, <em>percentages=True</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#ModalitiesViz.bar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.bar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw barplots grouped by modality of modality percentage per group</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="flotilla.visualize.splicing.ModalitiesViz.colors">
-<tt class="descname">colors</tt><em class="property"> = [u'#4c72b0', u'#ccb974', u'#8172b2', u'#55a868', u'#c44e52', 'lightgrey']</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.colors" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">colors</tt><em class="property"> = [u'#4c72b0', u'#ccb974', u'#8172b2', u'#55a868', u'#c44e52']</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.colors" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="flotilla.visualize.splicing.ModalitiesViz.event">
-<tt class="descname">event</tt><big>(</big><em>feature_id</em>, <em>sample_groupby</em>, <em>group_colors</em>, <em>group_order</em>, <em>ax=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#ModalitiesViz.event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.event" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot a single splicing event&#8217;s changes in DataFrameNMF space, and its
-violin plots</p>
+<dt id="flotilla.visualize.splicing.ModalitiesViz.event_estimation">
+<tt class="descname">event_estimation</tt><big>(</big><em>event</em>, <em>logliks</em>, <em>logsumexps</em>, <em>renamed=''</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#ModalitiesViz.event_estimation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.event_estimation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show the values underlying bayesian modality estimations of an event</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="flotilla.visualize.splicing.ModalitiesViz.modalities_colors">
-<tt class="descname">modalities_colors</tt><em class="property"> = {'ambiguous': 'lightgrey', 'bimodal': u'#8172b2', 'uniform': u'#ccb974', 'middle': u'#55a868', 'excluded': u'#4c72b0', 'included': u'#c44e52'}</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.modalities_colors" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="flotilla.visualize.splicing.ModalitiesViz.modalities_order">
-<tt class="descname">modalities_order</tt><em class="property"> = ['excluded', 'uniform', 'bimodal', 'middle', 'included', 'ambiguous']</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.modalities_order" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
 <dt id="flotilla.visualize.splicing.ModalitiesViz.modality">
-<tt class="descname">modality</tt><em class="property"> = 'ambiguous'</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.modality" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">modality</tt><em class="property"> = 'included'</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.modality" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.visualize.splicing.ModalitiesViz.modality_colors">
+<tt class="descname">modality_colors</tt><em class="property"> = {'included': u'#c44e52', 'middle': u'#55a868', 'bimodal': u'#8172b2', 'excluded': u'#4c72b0', 'uniform': u'#ccb974'}</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.modality_colors" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.visualize.splicing.ModalitiesViz.modality_order">
+<tt class="descname">modality_order</tt><em class="property"> = ['excluded', 'uniform', 'bimodal', 'middle', 'included']</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.modality_order" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="flotilla.visualize.splicing.ModalitiesViz.plot_reduced_space">
-<tt class="descname">plot_reduced_space</tt><big>(</big><em>binned_reduced</em>, <em>modalities_assignments</em>, <em>ax=None</em>, <em>title=None</em>, <em>xlabel=''</em>, <em>ylabel=''</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#ModalitiesViz.plot_reduced_space"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.plot_reduced_space" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">plot_reduced_space</tt><big>(</big><em>binned_reduced</em>, <em>modality_assignments</em>, <em>ax=None</em>, <em>title=None</em>, <em>xlabel=''</em>, <em>ylabel=''</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#ModalitiesViz.plot_reduced_space"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.plot_reduced_space" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

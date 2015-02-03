@@ -84,7 +84,12 @@
 <li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">OS X Installation instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#create-a-flotilla-sandbox">Create a flotilla sandbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#install-and-update-all-packages-in-your-environment">Install and update all packages in your environment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#old-osx-installation-instructions">Old OSX Installation instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html#docker-instructions">Docker Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api.html#general-use-plots">General use plots</a></li>
@@ -156,7 +161,7 @@
 heavier in terms of data load</p>
 <dl class="class">
 <dt id="flotilla.data_model.study.Study">
-<em class="property">class </em><tt class="descclassname">flotilla.data_model.study.</tt><tt class="descname">Study</tt><big>(</big><em>sample_metadata</em>, <em>version='0.1.0'</em>, <em>expression_data=None</em>, <em>expression_feature_data=None</em>, <em>expression_feature_rename_col=None</em>, <em>expression_feature_ignore_subset_cols=None</em>, <em>expression_log_base=None</em>, <em>expression_thresh=-inf</em>, <em>expression_plus_one=False</em>, <em>splicing_data=None</em>, <em>splicing_feature_data=None</em>, <em>splicing_feature_rename_col=None</em>, <em>splicing_feature_ignore_subset_cols=None</em>, <em>splicing_feature_expression_id_col=None</em>, <em>mapping_stats_data=None</em>, <em>mapping_stats_number_mapped_col=None</em>, <em>mapping_stats_min_reads=500000.0</em>, <em>spikein_data=None</em>, <em>spikein_feature_data=None</em>, <em>drop_outliers=True</em>, <em>species=None</em>, <em>gene_ontology_data=None</em>, <em>predictor_config_manager=None</em>, <em>metadata_pooled_col='pooled'</em>, <em>metadata_phenotype_col='phenotype'</em>, <em>metadata_phenotype_order=None</em>, <em>metadata_phenotype_to_color=None</em>, <em>metadata_phenotype_to_marker=None</em>, <em>license=None</em>, <em>title=None</em>, <em>sources=None</em>, <em>default_sample_subset='all_samples'</em>, <em>default_feature_subset='variant'</em>, <em>metadata_minimum_samples=0</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">flotilla.data_model.study.</tt><tt class="descname">Study</tt><big>(</big><em>sample_metadata</em>, <em>version='0.1.0'</em>, <em>expression_data=None</em>, <em>expression_feature_data=None</em>, <em>expression_feature_rename_col=None</em>, <em>expression_feature_ignore_subset_cols=None</em>, <em>expression_log_base=None</em>, <em>expression_thresh=-inf</em>, <em>expression_plus_one=False</em>, <em>splicing_data=None</em>, <em>splicing_feature_data=None</em>, <em>splicing_feature_rename_col=None</em>, <em>splicing_feature_ignore_subset_cols=None</em>, <em>splicing_feature_expression_id_col=None</em>, <em>mapping_stats_data=None</em>, <em>mapping_stats_number_mapped_col=None</em>, <em>mapping_stats_min_reads=500000.0</em>, <em>spikein_data=None</em>, <em>spikein_feature_data=None</em>, <em>drop_outliers=True</em>, <em>species=None</em>, <em>gene_ontology_data=None</em>, <em>predictor_config_manager=None</em>, <em>metadata_pooled_col='pooled'</em>, <em>metadata_minimum_samples=0</em>, <em>metadata_phenotype_col='phenotype'</em>, <em>metadata_phenotype_order=None</em>, <em>metadata_phenotype_to_color=None</em>, <em>metadata_phenotype_to_marker=None</em>, <em>metadata_outlier_col='outlier'</em>, <em>license=None</em>, <em>title=None</em>, <em>sources=None</em>, <em>default_sample_subset='all_samples'</em>, <em>default_feature_subset='variant'</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
 <p>A biological study, with associated metadata, expression, and splicing
 data.</p>
@@ -288,7 +293,7 @@ whether or not this sample was pooled.</p>
 </table>
 <dl class="method">
 <dt id="flotilla.data_model.study.Study.big_nmf_space_transitions">
-<tt class="descname">big_nmf_space_transitions</tt><big>(</big><em>phenotype_transitions='all'</em>, <em>data_type='splicing'</em>, <em>n=5</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.big_nmf_space_transitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.big_nmf_space_transitions" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">big_nmf_space_transitions</tt><big>(</big><em>phenotype_transitions='all'</em>, <em>data_type='splicing'</em>, <em>n=0.5</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.big_nmf_space_transitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.big_nmf_space_transitions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Splicing events whose change in NMF space is large</p>
 <p>By large, we mean that difference is 2 standard deviations away from
 the mean</p>
@@ -325,7 +330,7 @@ splicing events</p>
 <dl class="attribute">
 <dt id="flotilla.data_model.study.Study.celltype_event_counts">
 <tt class="descname">celltype_event_counts</tt><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.celltype_event_counts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.celltype_event_counts" title="Permalink to this definition">¶</a></dt>
-<dd><p>Number of cells that detected this event in that celltype</p>
+<dd><p>Number of cells that detected each event, per celltype</p>
 </dd></dl>
 
 <dl class="method">
@@ -340,7 +345,7 @@ splicing events</p>
 
 <dl class="attribute">
 <dt id="flotilla.data_model.study.Study.default_feature_set_ids">
-<tt class="descname">default_feature_set_ids</tt><em class="property"> = ['not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)']</em><a class="headerlink" href="#flotilla.data_model.study.Study.default_feature_set_ids" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">default_feature_set_ids</tt><em class="property"> = ['not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'variant', 'all features']</em><a class="headerlink" href="#flotilla.data_model.study.Study.default_feature_set_ids" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -362,6 +367,31 @@ splicing events</p>
 <dt id="flotilla.data_model.study.Study.drop_outliers">
 <tt class="descname">drop_outliers</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.drop_outliers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.drop_outliers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Assign samples marked as &#8220;outlier&#8221; in metadata, to other datas</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.study.Study.expression_vs_inconsistent_splicing">
+<tt class="descname">expression_vs_inconsistent_splicing</tt><big>(</big><em>bins=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.expression_vs_inconsistent_splicing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.expression_vs_inconsistent_splicing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Percentage of events inconsistent with pooled at expression threshs</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>bins</strong> : list-like</p>
+<blockquote>
+<div><p>List of expression cutoffs</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>expression_vs_inconsistent</strong> : pd.DataFrame</p>
+<blockquote class="last">
+<div><p>A (len(bins), n_phenotypes) dataframe of the percentage of events
+in single cells that are inconsistent with pooled</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -421,7 +451,7 @@ on the log values.</p>
 
 <dl class="classmethod">
 <dt id="flotilla.data_model.study.Study.from_datapackage">
-<em class="property">classmethod </em><tt class="descname">from_datapackage</tt><big>(</big><em>datapackage</em>, <em>datapackage_dir='./'</em>, <em>load_species_data=True</em>, <em>species_datapackage_base_url='http://sauron.ucsd.edu/flotilla_projects'</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.from_datapackage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.from_datapackage" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><tt class="descname">from_datapackage</tt><big>(</big><em>datapackage</em>, <em>datapackage_dir='./'</em>, <em>load_species_data=True</em>, <em>species_datapackage_base_url='https://s3-us-west-2.amazonaws.com/flotilla-projects'</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.from_datapackage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.from_datapackage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a study object from a datapackage dictionary</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -442,12 +472,12 @@ on the log values.</p>
 
 <dl class="classmethod">
 <dt id="flotilla.data_model.study.Study.from_datapackage_file">
-<em class="property">classmethod </em><tt class="descname">from_datapackage_file</tt><big>(</big><em>datapackage_filename</em>, <em>load_species_data=True</em>, <em>species_datapackage_base_url='http://sauron.ucsd.edu/flotilla_projects'</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.from_datapackage_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.from_datapackage_file" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><tt class="descname">from_datapackage_file</tt><big>(</big><em>datapackage_filename</em>, <em>load_species_data=True</em>, <em>species_datapackage_base_url='https://s3-us-west-2.amazonaws.com/flotilla-projects'</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.from_datapackage_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.from_datapackage_file" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="classmethod">
 <dt id="flotilla.data_model.study.Study.from_datapackage_url">
-<em class="property">classmethod </em><tt class="descname">from_datapackage_url</tt><big>(</big><em>datapackage_url</em>, <em>load_species_data=True</em>, <em>species_datapackage_base_url='http://sauron.ucsd.edu/flotilla_projects'</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.from_datapackage_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.from_datapackage_url" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><tt class="descname">from_datapackage_url</tt><big>(</big><em>datapackage_url</em>, <em>load_species_data=True</em>, <em>species_datapackage_base_url='https://s3-us-west-2.amazonaws.com/flotilla-projects'</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.from_datapackage_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.from_datapackage_url" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a study from a url of a datapackage.json file</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -463,7 +493,8 @@ expression, splicing</p>
 <p><strong>species_data_pacakge_base_url</strong> : str</p>
 <blockquote>
 <div><p>Base URL to fetch species-specific gene and splicing event
-metadata from. Default &#8216;<a class="reference external" href="http://sauron.ucsd.edu/flotilla_projects">http://sauron.ucsd.edu/flotilla_projects</a>&#8216;</p>
+metadata from.
+Default &#8216;<a class="reference external" href="https://s3-us-west-2.amazonaws.com/flotilla-projects/">https://s3-us-west-2.amazonaws.com/flotilla-projects/</a>&#8216;</p>
 </div></blockquote>
 </td>
 </tr>
@@ -522,13 +553,13 @@ resources of metadata, expression, and splicing.</p>
 
 <dl class="method">
 <dt id="flotilla.data_model.study.Study.interactive_pca">
-<tt class="descname">interactive_pca</tt><big>(</big><em>data_types=('expression'</em>, <em>'splicing')</em>, <em>sample_subsets=None</em>, <em>feature_subsets=None</em>, <em>color_samples_by=None</em>, <em>featurewise=False</em>, <em>x_pc=(1</em>, <em>10)</em>, <em>y_pc=(1</em>, <em>10)</em>, <em>show_point_labels=False</em>, <em>list_link=''</em>, <em>plot_violins=False</em>, <em>savefile='figures/last.pca.pdf'</em><big>)</big><a class="headerlink" href="#flotilla.data_model.study.Study.interactive_pca" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">interactive_pca</tt><big>(</big><em>data_types=('expression'</em>, <em>'splicing')</em>, <em>sample_subsets=None</em>, <em>feature_subsets=None</em>, <em>color_samples_by=None</em>, <em>featurewise=False</em>, <em>x_pc=(1</em>, <em>10)</em>, <em>y_pc=(1</em>, <em>10)</em>, <em>show_point_labels=False</em>, <em>list_link=''</em>, <em>plot_violins=False</em>, <em>scale_by_variance=True</em>, <em>savefile='figures/last.pca.pdf'</em><big>)</big><a class="headerlink" href="#flotilla.data_model.study.Study.interactive_pca" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="flotilla.data_model.study.Study.interactive_reset_outliers">
 <tt class="descname">interactive_reset_outliers</tt><big>(</big><big>)</big><a class="headerlink" href="#flotilla.data_model.study.Study.interactive_reset_outliers" title="Permalink to this definition">¶</a></dt>
-<dd><p>User selects from columns that start with &#8216;<a href="#id1"><span class="problematic" id="id2">outlier_</span></a>&#8216; to merge
+<dd><p>User selects from columns that start with &#8216;<a href="#id3"><span class="problematic" id="id4">outlier_</span></a>&#8216; to merge
 multiple outlier classifications</p>
 </dd></dl>
 
@@ -544,7 +575,7 @@ gene expression) from one celltype to another.</p>
 
 <dl class="staticmethod">
 <dt id="flotilla.data_model.study.Study.load_species_data">
-<em class="property">static </em><tt class="descname">load_species_data</tt><big>(</big><em>species</em>, <em>readers</em>, <em>species_datapackage_base_url='http://sauron.ucsd.edu/flotilla_projects'</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.load_species_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.load_species_data" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><tt class="descname">load_species_data</tt><big>(</big><em>species</em>, <em>readers</em>, <em>species_datapackage_base_url='https://s3-us-west-2.amazonaws.com/flotilla-projects'</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.load_species_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.load_species_data" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="staticmethod">
@@ -553,9 +584,9 @@ gene expression) from one celltype to another.</p>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="flotilla.data_model.study.Study.modalities">
-<tt class="descname">modalities</tt><big>(</big><em>sample_subset=None</em>, <em>feature_subset=None</em>, <em>expression_thresh=-inf</em>, <em>bootstrapped=False</em>, <em>bootstrapped_kws=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.modalities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.modalities" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get splicing modality assignments of data</p>
+<dt id="flotilla.data_model.study.Study.modality_assignments">
+<tt class="descname">modality_assignments</tt><big>(</big><em>sample_subset=None</em>, <em>feature_subset=None</em>, <em>expression_thresh=-inf</em>, <em>min_samples=0.5</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.modality_assignments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.modality_assignments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get modality assignments of splicing data</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -578,23 +609,12 @@ are used.</p>
 original input is already log-transformed, then this threshold is
 on the log values.</p>
 </div></blockquote>
-<p><strong>bootstrapped</strong> : bool, optional</p>
-<blockquote>
-<div><p>Whether or not to use bootstrap resampling of each splicing event
-to robustly estimate its modality</p>
-</div></blockquote>
-<p><strong>bootstrapped_kws</strong> : dict, optional</p>
-<blockquote>
-<div><p>Valid arguments to _bootstrapped_fit_transform. If None, default is
-dict(n_iter=100, thresh=0.6, minimum_samples=10)</p>
-</div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>modalities</strong> : pandas.Series</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>modalities</strong> : pandas.DataFrame</p>
 <blockquote class="last">
-<div><p>A (n_events,) shaped series of the assigned modality (in the case
-of bootstrapped=False), or modality most commonly assigned, in the
-case of bootstrapped=True</p>
+<div><p>A (n_phenotypes, n_events) shaped DataFrame of the assigned
+modality</p>
 </div></blockquote>
 </td>
 </tr>
@@ -603,9 +623,9 @@ case of bootstrapped=True</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="flotilla.data_model.study.Study.modalities_counts">
-<tt class="descname">modalities_counts</tt><big>(</big><em>sample_subset=None</em>, <em>feature_subset=None</em>, <em>expression_thresh=-inf</em>, <em>bootstrapped=True</em>, <em>bootstrapped_kws=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.modalities_counts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.modalities_counts" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get counts of each resampled splicing event assigned to a modality</p>
+<dt id="flotilla.data_model.study.Study.modality_counts">
+<tt class="descname">modality_counts</tt><big>(</big><em>sample_subset=None</em>, <em>feature_subset=None</em>, <em>expression_thresh=-inf</em>, <em>min_samples=0.5</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.modality_counts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.modality_counts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get number of splicing events in modality categories</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -628,23 +648,12 @@ are used.</p>
 original input is already log-transformed, then this threshold is
 on the log values.</p>
 </div></blockquote>
-<p><strong>bootstrapped</strong> : bool, optional</p>
-<blockquote>
-<div><p>Whether or not to use bootstrap resampling of each splicing event
-to robustly estimate its modality</p>
-</div></blockquote>
-<p><strong>bootstrapped_kws</strong> : dict, optional</p>
-<blockquote>
-<div><p>Valid arguments to _bootstrapped_fit_transform. If None, default is
-dict(n_iter=100, thresh=0.6, minimum_samples=10)</p>
-</div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>modalities</strong> : pandas.Series</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>modalities</strong> : pandas.DataFrame</p>
 <blockquote class="last">
-<div><p>A (n_events,) shaped series of the assigned modality (in the case
-of bootstrapped=False), or modality most commonly assigned, in the
-case of bootstrapped=True</p>
+<div><p>A (n_phenotypes, n_modalities) shaped DataFrame of the number of
+events assigned to each modality</p>
 </div></blockquote>
 </td>
 </tr>
@@ -659,7 +668,7 @@ case of bootstrapped=True</p>
 
 <dl class="method">
 <dt id="flotilla.data_model.study.Study.nmf_space_transitions">
-<tt class="descname">nmf_space_transitions</tt><big>(</big><em>phenotype_transitions='all'</em>, <em>data_type='splicing'</em>, <em>n=5</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.nmf_space_transitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.nmf_space_transitions" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">nmf_space_transitions</tt><big>(</big><em>phenotype_transitions='all'</em>, <em>data_type='splicing'</em>, <em>n=0.5</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.nmf_space_transitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.nmf_space_transitions" title="Permalink to this definition">¶</a></dt>
 <dd><p>The change in NMF space of splicing events across phenotypes</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -704,6 +713,36 @@ splicing events</p>
 <dl class="method">
 <dt id="flotilla.data_model.study.Study.percent_unique_celltype_events">
 <tt class="descname">percent_unique_celltype_events</tt><big>(</big><em>n=1</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.percent_unique_celltype_events"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.percent_unique_celltype_events" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.data_model.study.Study.phenotype_col">
+<tt class="descname">phenotype_col</tt><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.phenotype_col"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.phenotype_col" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.data_model.study.Study.phenotype_color_ordered">
+<tt class="descname">phenotype_color_ordered</tt><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.phenotype_color_ordered"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.phenotype_color_ordered" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.data_model.study.Study.phenotype_order">
+<tt class="descname">phenotype_order</tt><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.phenotype_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.phenotype_order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.data_model.study.Study.phenotype_to_color">
+<tt class="descname">phenotype_to_color</tt><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.phenotype_to_color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.phenotype_to_color" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.data_model.study.Study.phenotype_to_marker">
+<tt class="descname">phenotype_to_marker</tt><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.phenotype_to_marker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.phenotype_to_marker" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.data_model.study.Study.phenotype_transitions">
+<tt class="descname">phenotype_transitions</tt><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.phenotype_transitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.phenotype_transitions" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -753,6 +792,16 @@ to classify on</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="flotilla.data_model.study.Study.plot_event_modality_estimation">
+<tt class="descname">plot_event_modality_estimation</tt><big>(</big><em>event_id</em>, <em>sample_subset=None</em>, <em>expression_thresh=-inf</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.plot_event_modality_estimation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.plot_event_modality_estimation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.study.Study.plot_expression_vs_inconsistent_splicing">
+<tt class="descname">plot_expression_vs_inconsistent_splicing</tt><big>(</big><em>bins=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.plot_expression_vs_inconsistent_splicing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.plot_expression_vs_inconsistent_splicing" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="flotilla.data_model.study.Study.plot_gene">
 <tt class="descname">plot_gene</tt><big>(</big><em>feature_id</em>, <em>sample_subset=None</em>, <em>nmf_space=False</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.plot_gene"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.plot_gene" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -798,37 +847,14 @@ are used.</p>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="flotilla.data_model.study.Study.plot_modalities">
-<tt class="descname">plot_modalities</tt><big>(</big><em>sample_subset=None</em>, <em>feature_subset=None</em>, <em>normed=True</em>, <em>bootstrapped=False</em>, <em>bootstrapped_kws=None</em>, <em>expression_thresh=-inf</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.plot_modalities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.plot_modalities" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="flotilla.data_model.study.Study.plot_modalities_lavalamps">
-<tt class="descname">plot_modalities_lavalamps</tt><big>(</big><em>sample_subset=None</em>, <em>bootstrapped=False</em>, <em>bootstrapped_kws=None</em>, <em>expression_thresh=-inf</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.plot_modalities_lavalamps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.plot_modalities_lavalamps" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="flotilla.data_model.study.Study.plot_pca">
-<tt class="descname">plot_pca</tt><big>(</big><em>data_type='expression'</em>, <em>x_pc=1</em>, <em>y_pc=2</em>, <em>sample_subset=None</em>, <em>feature_subset=None</em>, <em>title=''</em>, <em>featurewise=False</em>, <em>plot_violins=False</em>, <em>show_point_labels=False</em>, <em>reduce_kwargs=None</em>, <em>color_samples_by=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.plot_pca"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.plot_pca" title="Permalink to this definition">¶</a></dt>
-<dd><p>Performs DataFramePCA on both expression and splicing study_data</p>
+<dt id="flotilla.data_model.study.Study.plot_modalities_bars">
+<tt class="descname">plot_modalities_bars</tt><big>(</big><em>sample_subset=None</em>, <em>feature_subset=None</em>, <em>expression_thresh=-inf</em>, <em>percentages=True</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.plot_modalities_bars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.plot_modalities_bars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make grouped barplots of the number of modalities per phenotype</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data_type</strong> : str</p>
-<blockquote>
-<div><p>One of the names of the data types, e.g. &#8220;expression&#8221; or
-&#8220;splicing&#8221;</p>
-</div></blockquote>
-<p><strong>x_pc</strong> : int</p>
-<blockquote>
-<div><p>Which principal component to plot on the x-axis</p>
-</div></blockquote>
-<p><strong>y_pc</strong> : int</p>
-<blockquote>
-<div><p>Which principal component to plot on the y-axis</p>
-</div></blockquote>
-<p><strong>sample_subset</strong> : str or None</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>sample_subset</strong> : str or None</p>
 <blockquote>
 <div><p>Which subset of the samples to use, based on some phenotype
 column in the experiment design data. If None, all samples are
@@ -840,21 +866,175 @@ used.</p>
 in the expression data (e.g. &#8220;variant&#8221;). If None, all features
 are used.</p>
 </div></blockquote>
-<p><strong>title</strong> : str</p>
+<p><strong>expression_thresh</strong> : float</p>
 <blockquote>
-<div><p>The title of the plot</p>
+<div><p>If greater than -inf, then filter on splicing events in genes
+with expression at least this value</p>
+</div></blockquote>
+<p><strong>percentages</strong> : bool</p>
+<blockquote class="last">
+<div><p>If True, plot percentages instead of counts</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.study.Study.plot_modalities_lavalamps">
+<tt class="descname">plot_modalities_lavalamps</tt><big>(</big><em>sample_subset=None</em>, <em>feature_subset=None</em>, <em>expression_thresh=-inf</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.plot_modalities_lavalamps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.plot_modalities_lavalamps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot each modality in each celltype on a separate axes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>sample_subset</strong> : str or None</p>
+<blockquote>
+<div><p>Which subset of the samples to use, based on some phenotype
+column in the experiment design data. If None, all samples are
+used.</p>
+</div></blockquote>
+<p><strong>feature_subset</strong> : str or None</p>
+<blockquote>
+<div><p>Which subset of the features to used, based on some feature type
+in the expression data (e.g. &#8220;variant&#8221;). If None, all features
+are used.</p>
+</div></blockquote>
+<p><strong>expression_thresh</strong> : float</p>
+<blockquote class="last">
+<div><p>If greater than -inf, then filter on splicing events in genes
+with expression at least this value</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.study.Study.plot_modalities_reduced">
+<tt class="descname">plot_modalities_reduced</tt><big>(</big><em>sample_subset=None</em>, <em>feature_subset=None</em>, <em>expression_thresh=-inf</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.plot_modalities_reduced"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.plot_modalities_reduced" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot splicing events with modality assignments in NMF space</p>
+<p>This will plot a separate NMF space for each celltype in the data, as
+well as one for all samples.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>sample_subset</strong> : str or None</p>
+<blockquote>
+<div><p>Which subset of the samples to use, based on some phenotype
+column in the experiment design data. If None, all samples are
+used.</p>
+</div></blockquote>
+<p><strong>feature_subset</strong> : str or None</p>
+<blockquote>
+<div><p>Which subset of the features to used, based on some feature type
+in the expression data (e.g. &#8220;variant&#8221;). If None, all features
+are used.</p>
+</div></blockquote>
+<p><strong>expression_thresh</strong> : float</p>
+<blockquote class="last">
+<div><p>If greater than -inf, then filter on splicing events in genes
+with expression at least this value</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.study.Study.plot_pca">
+<tt class="descname">plot_pca</tt><big>(</big><em>data_type='expression'</em>, <em>x_pc=1</em>, <em>y_pc=2</em>, <em>sample_subset=None</em>, <em>feature_subset=None</em>, <em>title=''</em>, <em>featurewise=False</em>, <em>plot_violins=False</em>, <em>show_point_labels=False</em>, <em>reduce_kwargs=None</em>, <em>color_samples_by=None</em>, <em>bokeh=False</em>, <em>most_variant_features=False</em>, <em>std_multiplier=2</em>, <em>scale_by_variance=True</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.plot_pca"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.plot_pca" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs DataFramePCA on both expression and splicing study_data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data_type</strong> : str</p>
+<blockquote>
+<div><p>One of the names of the data types, e.g. &#8220;expression&#8221; or
+&#8220;splicing&#8221; (default &#8220;expression&#8221;)</p>
+</div></blockquote>
+<p><strong>x_pc</strong> : int, optional</p>
+<blockquote>
+<div><p>Which principal component to plot on the x-axis (default 1)</p>
+</div></blockquote>
+<p><strong>y_pc</strong> : int, optional</p>
+<blockquote>
+<div><p>Which principal component to plot on the y-axis (default 2)</p>
+</div></blockquote>
+<p><strong>sample_subset</strong> : str or None</p>
+<blockquote>
+<div><p>Which subset of the samples to use, based on some phenotype
+column in the experiment design data. If None, all samples are
+used. (default None)</p>
+</div></blockquote>
+<p><strong>feature_subset</strong> : str or None</p>
+<blockquote>
+<div><p>Which subset of the features to used, based on some feature type
+in the expression data (e.g. &#8220;variant&#8221;). If None, all features
+are used. (default None)</p>
+</div></blockquote>
+<p><strong>title</strong> : str, optional</p>
+<blockquote>
+<div><p>Title of the reduced space plot (default &#8216;&#8217;)</p>
+</div></blockquote>
+<p><strong>featurewise</strong> : bool, optional</p>
+<blockquote>
+<div><p>If True, the features are reduced on the samples, and the plotted
+points are features, not samples. (default False)</p>
 </div></blockquote>
 <p><strong>plot_violins</strong> : bool</p>
 <blockquote>
 <div><p>Whether or not to make the violinplots of the top features. This
 can take a long time, so to save time you can turn it off if you
-just want a quick look at the PCA.</p>
+just want a quick look at the PCA. (default False)</p>
 </div></blockquote>
-<p><strong>show_point_labels</strong> : bool</p>
-<blockquote class="last">
+<p><strong>show_point_labels</strong> : bool, optional</p>
+<blockquote>
 <div><p>Whether or not to show the labels of the points. If this is
 samplewise (default), then this labels the samples. If this is
-featurewise, then this labels the features.</p>
+featurewise, then this labels the features. (default False)</p>
+</div></blockquote>
+<p><strong>reduce_kwargs</strong> : dict, optional</p>
+<blockquote>
+<div><p>Keyword arguments to the reducer (default None)</p>
+</div></blockquote>
+<p><strong>color_samples_by</strong> : str, optional</p>
+<blockquote>
+<div><p>Instead of coloring the samples by their phenotype, color them by
+this column in the metadata. (default None)</p>
+</div></blockquote>
+<p><strong>bokeh</strong> : bool, optional</p>
+<blockquote>
+<div><p>If True, plot a javascripty/interactive bokeh plot instead of a
+static printable figure (default False)</p>
+</div></blockquote>
+<p><strong>most_variant_features</strong> : bool, optional</p>
+<blockquote>
+<div><p>If True, then only take the most variant of the provided features.
+The most variant are determined by taking the features whose
+variance is <a href="#id1"><span class="problematic" id="id2">``</span></a>std_multiplier``standard deviations away from the
+mean feature variance (default False)</p>
+</div></blockquote>
+<p><strong>std_multiplier</strong> : float, optional</p>
+<blockquote>
+<div><p>If <tt class="docutils literal"><span class="pre">most_variant_features</span></tt> is True, then use this as a cutoff
+for the minimum variance of a feature to be included (default 2)</p>
+</div></blockquote>
+<p><strong>scale_by_variance</strong> : bool, optional</p>
+<blockquote>
+<div><p>If True, then scale the x- and y-axes by the explained variance
+ratio of the principal component dimensions. Only valid for PCA
+and its variations, not for NMF or tSNE. (default True)</p>
+</div></blockquote>
+<p><strong>kwargs</strong> : other keyword arguments</p>
+<blockquote class="last">
+<div><p>All other keyword arguments are passed to
+<tt class="xref py py-meth docutils literal"><span class="pre">DecomopsitionViz.plot()</span></tt></p>
 </div></blockquote>
 </td>
 </tr>
@@ -937,7 +1117,17 @@ e.g. &#8220;ENSG00000100320&#8221;</p>
 
 <dl class="attribute">
 <dt id="flotilla.data_model.study.Study.readers">
-<tt class="descname">readers</tt><em class="property"> = {'tsv': &lt;function load_tsv at 0x2aff44ddcc80&gt;, 'json': &lt;function load_json at 0x2aff44ddccf8&gt;, 'csv': &lt;function load_csv at 0x2aff44ddcde8&gt;, 'gzip_pickle_df': &lt;function load_gzip_pickle_df at 0x2aff44ddcb90&gt;, 'pickle_df': &lt;function load_pickle_df at 0x2aff44ddcaa0&gt;}</em><a class="headerlink" href="#flotilla.data_model.study.Study.readers" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">readers</tt><em class="property"> = {'tsv': &lt;function load_tsv at 0x2b5fa581cb18&gt;, 'json': &lt;function load_json at 0x2b5fa581cb90&gt;, 'csv': &lt;function load_csv at 0x2b5fa581cc80&gt;, 'gzip_pickle_df': &lt;function load_gzip_pickle_df at 0x2b5fa581ca28&gt;, 'pickle_df': &lt;function load_pickle_df at 0x2b5fa581c938&gt;}</em><a class="headerlink" href="#flotilla.data_model.study.Study.readers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.data_model.study.Study.sample_id_to_color">
+<tt class="descname">sample_id_to_color</tt><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.sample_id_to_color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.sample_id_to_color" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.data_model.study.Study.sample_id_to_phenotype">
+<tt class="descname">sample_id_to_phenotype</tt><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.sample_id_to_phenotype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.study.Study.sample_id_to_phenotype" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">

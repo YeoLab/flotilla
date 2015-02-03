@@ -1,0 +1,19 @@
+
+.. _plot_modalities_bars:
+
+
+Plot bar graphs of percentage of splicing events in each modality
+=================================================================
+
+See also
+--------
+:py:func:`Study.plot_modalities_bars`
+
+
+
+.. image:: _images/plot_modalities_bars.png
+
+**Python source code:** :download:`[download source: plot_modalities_bars.py]<plot_modalities_bars.py>`
+
+.. literalinclude:: plot_modalities_bars.py
+    :lines: 10-

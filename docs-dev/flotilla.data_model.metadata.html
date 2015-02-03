@@ -84,7 +84,12 @@
 <li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">OS X Installation instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#create-a-flotilla-sandbox">Create a flotilla sandbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#install-and-update-all-packages-in-your-environment">Install and update all packages in your environment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#old-osx-installation-instructions">Old OSX Installation instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html#docker-instructions">Docker Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api.html#general-use-plots">General use plots</a></li>
@@ -154,7 +159,7 @@
 <span id="flotilla-data-model-metadata-module"></span><h1>flotilla.data_model.metadata module<a class="headerlink" href="#module-flotilla.data_model.metadata" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="flotilla.data_model.metadata.MetaData">
-<em class="property">class </em><tt class="descclassname">flotilla.data_model.metadata.</tt><tt class="descname">MetaData</tt><big>(</big><em>data</em>, <em>phenotype_order=None</em>, <em>phenotype_to_color=None</em>, <em>phenotype_to_marker=None</em>, <em>phenotype_col='phenotype'</em>, <em>pooled_col='pooled'</em>, <em>predictor_config_manager=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/metadata.html#MetaData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.metadata.MetaData" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">flotilla.data_model.metadata.</tt><tt class="descname">MetaData</tt><big>(</big><em>data</em>, <em>phenotype_order=None</em>, <em>phenotype_to_color=None</em>, <em>phenotype_to_marker=None</em>, <em>phenotype_col='phenotype'</em>, <em>pooled_col='pooled'</em>, <em>outlier_col='outlier'</em>, <em>predictor_config_manager=None</em>, <em>minimum_sample_subset=10</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/metadata.html#MetaData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.metadata.MetaData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData" title="flotilla.data_model.base.BaseData"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.data_model.base.BaseData</span></tt></a></p>
 <dl class="attribute">
 <dt id="flotilla.data_model.metadata.MetaData.n_phenotypes">
@@ -174,6 +179,16 @@
 <dl class="attribute">
 <dt id="flotilla.data_model.metadata.MetaData.phenotype_series">
 <tt class="descname">phenotype_series</tt><a class="reference internal" href="_modules/flotilla/data_model/metadata.html#MetaData.phenotype_series"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.metadata.MetaData.phenotype_series" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.data_model.metadata.MetaData.phenotype_to_color">
+<tt class="descname">phenotype_to_color</tt><a class="reference internal" href="_modules/flotilla/data_model/metadata.html#MetaData.phenotype_to_color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.metadata.MetaData.phenotype_to_color" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.data_model.metadata.MetaData.phenotype_to_marker">
+<tt class="descname">phenotype_to_marker</tt><a class="reference internal" href="_modules/flotilla/data_model/metadata.html#MetaData.phenotype_to_marker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.metadata.MetaData.phenotype_to_marker" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">

@@ -83,7 +83,12 @@
 <li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">OS X Installation instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#create-a-flotilla-sandbox">Create a flotilla sandbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#install-and-update-all-packages-in-your-environment">Install and update all packages in your environment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#old-osx-installation-instructions">Old OSX Installation instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html#docker-instructions">Docker Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api.html#general-use-plots">General use plots</a></li>
@@ -152,94 +157,58 @@
   <div class="section" id="module-flotilla.compute.splicing">
 <span id="flotilla-compute-splicing-module"></span><h1>flotilla.compute.splicing module<a class="headerlink" href="#module-flotilla.compute.splicing" title="Permalink to this headline">¶</a></h1>
 <p>Calculate modalities of splicing events.</p>
-<p>This code is crazy, sometimes using classes and sometimes just objects because
-for parallelization, you can&#8217;t pickle anything that has state, like an
-instancemethod</p>
 <dl class="class">
-<dt id="flotilla.compute.splicing.Modalities">
-<em class="property">class </em><tt class="descclassname">flotilla.compute.splicing.</tt><tt class="descname">Modalities</tt><big>(</big><em>excluded_max=0.2</em>, <em>included_min=0.8</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/splicing.html#Modalities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.Modalities" title="Permalink to this definition">¶</a></dt>
+<dt id="flotilla.compute.splicing.ModalityEstimator">
+<em class="property">class </em><tt class="descclassname">flotilla.compute.splicing.</tt><tt class="descname">ModalityEstimator</tt><big>(</big><em>step</em>, <em>vmax</em>, <em>logbf_thresh=3</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/splicing.html#ModalityEstimator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.ModalityEstimator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
-<p>This is based off of the &#8220;percent spliced-in&#8221; (PSI) score of a splicing
-event, for example in a cassette exon event, how many transcripts use the
-cassette exon gives the &#8220;PSI&#8221; (<span class="math">\(\Psi\)</span>) score of that splicing event</p>
-<p>Possible modalities include:
-- Excluded (most cells have excluded the exon)
-- Middle (most cells have both the included and excluded isoforms)
-- Included (most cells have included the exon)
-- Bimodal (approximately a 50:50 distribution of inclusion:exclusion)
-- Uniform (uniform distribution of exon usage)</p>
-<p>The way that these modalities are calculated is by binning each splicing
-event across all cells from (0, excluded_max, included_min, 1), and finding
-the Jensen-Shannon Divergence that event, and each of the five modalities</p>
+<p>Use Bayesian methods to estimate modalities of splicing events</p>
+<p>Initialize an object with models to estimate splicing modality</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>excluded_max</strong> : float, optional (default=0.2)</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>step</strong> : float</p>
 <blockquote>
-<div><p>Maximum value of excluded bin</p>
+<div><p>Distance between parameter values</p>
 </div></blockquote>
-<p><strong>included_min</strong> : float, optional (default=0.8)</p>
+<p><strong>vmax</strong> : float</p>
+<blockquote>
+<div><p>Maximum parameter value</p>
+</div></blockquote>
+<p><strong>logbf_thresh</strong> : float</p>
 <blockquote class="last">
-<div><p>Minimum value of included bin</p>
+<div><p>Minimum threshold at which the bayes factor difference is defined
+to be significant</p>
 </div></blockquote>
 </td>
 </tr>
 </tbody>
 </table>
 <dl class="method">
-<dt id="flotilla.compute.splicing.Modalities.counts">
-<tt class="descname">counts</tt><big>(</big><em>psi</em>, <em>bootstrapped=False</em>, <em>bootstrapped_kws=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/splicing.html#Modalities.counts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.Modalities.counts" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the number of events in each modality category</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>psi</strong> : pandas.DataFrame</p>
-<blockquote>
-<div><p>A samples x features dataframe of psi scores of a splicing event</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>counts</strong> : pandas.Series</p>
-<blockquote class="last">
-<div><p>Counts of each modality</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="flotilla.compute.splicing.Modalities.fit_transform">
-<tt class="descname">fit_transform</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/splicing.html#Modalities.fit_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.Modalities.fit_transform" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given psi scores, estimate the modality of each</p>
+<dt id="flotilla.compute.splicing.ModalityEstimator.fit_transform">
+<tt class="descname">fit_transform</tt><big>(</big><em>data</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/splicing.html#ModalityEstimator.fit_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.ModalityEstimator.fit_transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the modality assignments of each splicing event in the data</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> : pandas.DataFrame</p>
 <blockquote>
-<div><p>A samples x features dataframe, where you want to find the
-splicing modality of each column (feature)</p>
-</div></blockquote>
-<p><strong>bootstrapped</strong> : bool</p>
-<blockquote>
-<div><p>Whether or not to use bootstrapping, i.e. resample each splicing
-event several times to get a better estimate of its true modality.
-Default False.</p>
-</div></blockquote>
-<p><strong>bootstrappped_kws</strong> : dict</p>
-<blockquote>
-<div><p>Valid arguments to _bootstrapped_fit_transform. If None, default is
-dict(n_iter=100, thresh=0.6, minimum_samples=10)</p>
+<div><p>A (n_samples, n_events) dataframe of splicing events&#8217; PSI scores.
+Must be psi scores which range from 0 to 1</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>assignments</strong> : pandas.Series</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>modality_assignments</strong> : pandas.Series</p>
+<blockquote>
+<div><p>A (n_events,) series of the estimated modality for each splicing
+event</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><strong>AssertionError</strong></p>
 <blockquote class="last">
-<div><p>Modality assignments of each column (feature)</p>
+<div><p>If <tt class="docutils literal"><span class="pre">data</span></tt> does not fall only between 0 and 1.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -247,46 +216,23 @@ dict(n_iter=100, thresh=0.6, minimum_samples=10)</p>
 </table>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="flotilla.compute.splicing.Modalities.modalities_bins">
-<tt class="descname">modalities_bins</tt><em class="property"> = array([[1, 0, 0],        [0, 1, 0],        [0, 0, 1],        [1, 0, 1],        [1, 1, 1]])</em><a class="headerlink" href="#flotilla.compute.splicing.Modalities.modalities_bins" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="flotilla.compute.splicing.Modalities.modalities_names">
-<tt class="descname">modalities_names</tt><em class="property"> = ['excluded', 'middle', 'included', 'bimodal', 'uniform']</em><a class="headerlink" href="#flotilla.compute.splicing.Modalities.modalities_names" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="flotilla.compute.splicing.Modalities.true_modalities">
-<tt class="descname">true_modalities</tt><em class="property"> =          excluded  middle  included  bimodal  uniform 0-0.2           1       0         0        1        1 0.2-0.8         0       1         0        0        1 0.8-1           0       0         1        1        1</em><a class="headerlink" href="#flotilla.compute.splicing.Modalities.true_modalities" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
-<dl class="function">
-<dt id="flotilla.compute.splicing.assignments">
-<tt class="descclassname">flotilla.compute.splicing.</tt><tt class="descname">assignments</tt><big>(</big><em>sqrt_jsd_modalities</em>, <em>true_modalities</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/splicing.html#assignments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.assignments" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the modality with the smallest square root JSD to each event</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>sqrt_jsd_modalities</strong> : pandas.DataFrame</p>
-<blockquote>
-<div><p>A modalities x features dataframe of the square root
-Jensen-Shannon divergence between this event and each modality</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>assignments</strong> : pandas.Series</p>
-<blockquote class="last">
-<div><p>The closest modality to each splicing event</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
+<dl class="class">
+<dt id="flotilla.compute.splicing.ModalityModel">
+<em class="property">class </em><tt class="descclassname">flotilla.compute.splicing.</tt><tt class="descname">ModalityModel</tt><big>(</big><em>alphas</em>, <em>betas</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/splicing.html#ModalityModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.ModalityModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<p>Object to model modalities from beta distributions</p>
+<dl class="method">
+<dt id="flotilla.compute.splicing.ModalityModel.logliks">
+<tt class="descname">logliks</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/splicing.html#ModalityModel.logliks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.ModalityModel.logliks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flotilla.compute.splicing.ModalityModel.logsumexp_logliks">
+<tt class="descname">logsumexp_logliks</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/splicing.html#ModalityModel.logsumexp_logliks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.ModalityModel.logsumexp_logliks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="function">
@@ -303,35 +249,9 @@ Jensen-Shannon divergence between this event and each modality</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">numpy.array</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>score_order</strong> : numpy.array</p>
 <blockquote class="last">
 <div><p>A 1-D array of the ordered indices, in switchy score order</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="flotilla.compute.splicing.sqrt_jsd_modalities">
-<tt class="descclassname">flotilla.compute.splicing.</tt><tt class="descname">sqrt_jsd_modalities</tt><big>(</big><em>binned</em>, <em>true_modalities</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/splicing.html#sqrt_jsd_modalities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.sqrt_jsd_modalities" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate JSD between all binned splicing events and true modalities</p>
-<p>Use square root of JSD because it&#8217;s a metric.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>binned</strong> : pandas.DataFrame</p>
-<blockquote>
-<div><p>A (n_bins, n_events) sized DataFrame of binned splicing events</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>sqrt_jsd</strong> : pandas.DataFrame</p>
-<blockquote class="last">
-<div><p>A (n_modalities, n_events) sized DataFrame of the square root JSD
-between splicing events and all modalities</p>
 </div></blockquote>
 </td>
 </tr>
@@ -356,7 +276,7 @@ push the really lowly variant events to the ends.</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">float</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>switchy_score</strong> : float</p>
 <blockquote class="last">
 <div><p>The &#8220;switchy score&#8221; of the study_data which can then be compared to
 other splicing event study_data</p>

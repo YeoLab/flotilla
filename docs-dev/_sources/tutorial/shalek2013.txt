@@ -4015,12 +4015,12 @@ Without ``flotilla``, ``plot_pca`` is quite a bit of code:
             gs_y = 12
     
             if ax is None:
-                self.reduced_fig, ax = plt.subplots(1, 1, figsize=(20, 10))
+                self.fig_reduced, ax = plt.subplots(1, 1, figsize=(20, 10))
                 gs = GridSpec(gs_x, gs_y)
     
             else:
                 gs = GridSpecFromSubplotSpec(gs_x, gs_y, ax.get_subplotspec())
-                self.reduced_fig = plt.gcf()
+                self.fig_reduced = plt.gcf()
     
             ax_components = plt.subplot(gs[:, :5])
             ax_loading1 = plt.subplot(gs[:, 6:8])
@@ -4034,7 +4034,7 @@ Without ``flotilla``, ``plot_pca`` is quite a bit of code:
             self.plot_loadings(pc=self.x_pc, ax=ax_loading1)
             self.plot_loadings(pc=self.y_pc, ax=ax_loading2)
             sns.despine()
-            self.reduced_fig.tight_layout()
+            self.fig_reduced.tight_layout()
     
             if plot_violins and not self.featurewise and self.singles is not None:
                 self.plot_violins()
@@ -4214,7 +4214,7 @@ Without ``flotilla``, ``plot_pca`` is quite a bit of code:
                 pd.Index(self.top_features))))
             while ncols * nrows < len(vector_labels):
                 nrows += 1
-            self.violins_fig, axes = plt.subplots(nrows=nrows, ncols=ncols,
+            self.fig_violins, axes = plt.subplots(nrows=nrows, ncols=ncols,
                                                   figsize=(4 * ncols, 4 * nrows))
     
             if self.feature_renamer is not None:
@@ -4243,7 +4243,7 @@ Without ``flotilla``, ``plot_pca`` is quite a bit of code:
                 # Check if the plotting space is empty
                 if len(ax.collections) == 0 or len(ax.lines) == 0:
                     ax.axis('off')
-            self.violins_fig.tight_layout()
+            self.fig_violins.tight_layout()
     
     # Notice we're using the original data, nothing from "study"
     lps_response_genes = expression_feature_data.index[expression_feature_data.gene_category == 'LPS Response']

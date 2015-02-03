@@ -82,7 +82,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../installation.html">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">OS X Installation instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#create-a-flotilla-sandbox">Create a flotilla sandbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#install-and-update-all-packages-in-your-environment">Install and update all packages in your environment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html#old-osx-installation-instructions">Old OSX Installation instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html#docker-instructions">Docker Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../api.html#general-use-plots">General use plots</a></li>
@@ -147,6 +152,7 @@
 
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
 <span class="kn">import</span> <span class="nn">gzip</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
@@ -156,8 +162,6 @@
 
 
 <div class="viewcode-block" id="generateOntology"><a class="viewcode-back" href="../../flotilla.go.html#flotilla.go.generateOntology">[docs]</a><span class="k">def</span> <span class="nf">generateOntology</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
-    <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
-    <span class="kn">import</span> <span class="nn">itertools</span>
 
     <span class="n">ontology</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span>
         <span class="k">lambda</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;genes&#39;</span><span class="p">:</span> <span class="nb">set</span><span class="p">(),</span> <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="nb">set</span><span class="p">(),</span> <span class="s">&#39;domain&#39;</span><span class="p">:</span> <span class="nb">set</span><span class="p">()})</span>

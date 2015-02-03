@@ -83,7 +83,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../installation.html">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">OS X Installation instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#create-a-flotilla-sandbox">Create a flotilla sandbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#install-and-update-all-packages-in-your-environment">Install and update all packages in your environment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html#old-osx-installation-instructions">Old OSX Installation instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html#docker-instructions">Docker Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#general-use-plots">General use plots</a></li>
@@ -3892,12 +3897,12 @@ instead of using <tt class="docutils literal"><span class="pre">study.interactiv
         <span class="n">gs_y</span> <span class="o">=</span> <span class="mi">12</span>
 
         <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">reduced_fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fig_reduced</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
             <span class="n">gs</span> <span class="o">=</span> <span class="n">GridSpec</span><span class="p">(</span><span class="n">gs_x</span><span class="p">,</span> <span class="n">gs_y</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="n">gs</span> <span class="o">=</span> <span class="n">GridSpecFromSubplotSpec</span><span class="p">(</span><span class="n">gs_x</span><span class="p">,</span> <span class="n">gs_y</span><span class="p">,</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_subplotspec</span><span class="p">())</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">reduced_fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fig_reduced</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
 
         <span class="n">ax_components</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">5</span><span class="p">])</span>
         <span class="n">ax_loading1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[:,</span> <span class="mi">6</span><span class="p">:</span><span class="mi">8</span><span class="p">])</span>
@@ -3911,7 +3916,7 @@ instead of using <tt class="docutils literal"><span class="pre">study.interactiv
         <span class="bp">self</span><span class="o">.</span><span class="n">plot_loadings</span><span class="p">(</span><span class="n">pc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">x_pc</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax_loading1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plot_loadings</span><span class="p">(</span><span class="n">pc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y_pc</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax_loading2</span><span class="p">)</span>
         <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">reduced_fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig_reduced</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">plot_violins</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">featurewise</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">singles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">plot_violins</span><span class="p">()</span>
@@ -4091,7 +4096,7 @@ instead of using <tt class="docutils literal"><span class="pre">study.interactiv
             <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_features</span><span class="p">))))</span>
         <span class="k">while</span> <span class="n">ncols</span> <span class="o">*</span> <span class="n">nrows</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">vector_labels</span><span class="p">):</span>
             <span class="n">nrows</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">violins_fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="n">nrows</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="n">ncols</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig_violins</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="n">nrows</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="n">ncols</span><span class="p">,</span>
                                               <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">ncols</span><span class="p">,</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">nrows</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_renamer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
@@ -4120,7 +4125,7 @@ instead of using <tt class="docutils literal"><span class="pre">study.interactiv
             <span class="c"># Check if the plotting space is empty</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">collections</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">lines</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s">&#39;off&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">violins_fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig_violins</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 
 <span class="c"># Notice we&#39;re using the original data, nothing from &quot;study&quot;</span>
 <span class="n">lps_response_genes</span> <span class="o">=</span> <span class="n">expression_feature_data</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">expression_feature_data</span><span class="o">.</span><span class="n">gene_category</span> <span class="o">==</span> <span class="s">&#39;LPS Response&#39;</span><span class="p">]</span>

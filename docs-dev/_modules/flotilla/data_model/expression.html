@@ -30,7 +30,7 @@
     <script type="text/javascript" src="../../../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
     <link rel="top" title="flotilla 0.2.5dev documentation" href="../../../index.html" />
-    <link rel="up" title="flotilla" href="../../flotilla.html" />
+    <link rel="up" title="flotilla.data_model" href="../data_model.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -82,7 +82,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">OS X Installation instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#create-a-flotilla-sandbox">Create a flotilla sandbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#install-and-update-all-packages-in-your-environment">Install and update all packages in your environment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html#old-osx-installation-instructions">Old OSX Installation instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html#docker-instructions">Docker Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../api.html#general-use-plots">General use plots</a></li>
@@ -177,19 +182,19 @@
             <span class="n">outliers</span><span class="o">=</span><span class="n">outliers</span><span class="p">,</span> <span class="n">pooled</span><span class="o">=</span><span class="n">pooled</span><span class="p">,</span> <span class="n">minimum_samples</span><span class="o">=</span><span class="n">minimum_samples</span><span class="p">,</span>
             <span class="n">predictor_config_manager</span><span class="o">=</span><span class="n">predictor_config_manager</span><span class="p">,</span>
             <span class="n">technical_outliers</span><span class="o">=</span><span class="n">technical_outliers</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s">&#39;expression&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">thresh</span> <span class="o">=</span> <span class="n">thresh</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thresh_original</span> <span class="o">=</span> <span class="n">thresh</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plus_one</span> <span class="o">=</span> <span class="n">plus_one</span>
 
         <span class="k">if</span> <span class="n">plus_one</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">thresh</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">thresh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">thresh_original</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="c"># self.original_data = self.data</span>
         <span class="c"># import pdb; pdb.set_trace()</span>
         <span class="c"># self.data = self._threshold(data, thresh)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log_base</span> <span class="o">=</span> <span class="n">log_base</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_base</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_base</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_base</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">feature_data</span> <span class="o">=</span> <span class="n">feature_data</span>
 
@@ -213,12 +218,6 @@
         <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">)</span>
         <span class="c"># print &#39;bins:&#39;, bins</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">ExpressionData</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">binify</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">bins</span><span class="p">)</span>
-
-        <span class="c"># def plot_two_samples(self, sample1, sample2, **kwargs):</span>
-        <span class="c"># thresholded = kwargs.pop(&#39;thresholded&#39;, True)</span>
-        <span class="c"># super(ExpressionData, self).plot_two_samples(sample1, sample2,</span>
-        <span class="c">#                                                  thresholded=thresholded,</span>
-        <span class="c">#                                                  **kwargs)</span>
 
 </div></div>
 <div class="viewcode-block" id="SpikeInData"><a class="viewcode-back" href="../../../flotilla.data_model.expression.html#flotilla.data_model.expression.SpikeInData">[docs]</a><span class="k">class</span> <span class="nc">SpikeInData</span><span class="p">(</span><span class="n">ExpressionData</span><span class="p">):</span>
@@ -249,81 +248,82 @@
 <span class="sd">        ------</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">SpikeInData</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">feature_data</span><span class="p">,</span>
-                                          <span class="n">technical_outliers</span><span class="o">=</span><span class="n">technical_outliers</span><span class="p">,</span>
-                                          <span class="n">predictor_config_manager</span><span class="o">=</span><span class="n">predictor_config_manager</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SpikeInData</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span>
+            <span class="n">data</span><span class="p">,</span> <span class="n">feature_data</span><span class="p">,</span>
+            <span class="n">technical_outliers</span><span class="o">=</span><span class="n">technical_outliers</span><span class="p">,</span>
+            <span class="n">predictor_config_manager</span><span class="o">=</span><span class="n">predictor_config_manager</span><span class="p">)</span>
 
-        <span class="c"># def spikeins_violinplot(self):</span>
-        <span class="c"># import matplotlib.pyplot as plt</span>
-        <span class="c">#     import seaborn as sns</span>
-        <span class="c">#     import numpy as np</span>
-        <span class="c">#</span>
-        <span class="c">#     fig, axes = plt.subplots(nrows=5, figsize=(16, 20), sharex=True,</span>
-        <span class="c">#                              sharey=True)</span>
-        <span class="c">#     ercc_concentrations = \</span>
-        <span class="c">#         ercc_controls_analysis.mix1_molecules_per_ul.copy()</span>
-        <span class="c">#     ercc_concentrations.sort()</span>
-        <span class="c">#</span>
-        <span class="c">#     for ax, (celltype, celltype_df) in \</span>
-        <span class="c">#             zip(axes.flat, tpm.ix[spikeins].groupby(</span>
-        <span class="c">#                     sample_id_to_celltype_, axis=1)):</span>
-        <span class="c">#         print celltype</span>
-        <span class="c">#         #     fig, ax = plt.subplots(figsize=(16, 4))</span>
-        <span class="c">#         x_so_far = 0</span>
-        <span class="c">#         #     ax.set_yscale(&#39;log&#39;)</span>
-        <span class="c">#         xticklabels = []</span>
-        <span class="c">#         for spikein_type, spikein_df in celltype_df.groupby(</span>
-        <span class="c">#                 spikein_to_type):</span>
-        <span class="c">#             #         print spikein_df.shape</span>
-        <span class="c">#             df = spikein_df.T + np.random.uniform(0, 0.01,</span>
-        <span class="c">#                                                   size=spikein_df.T.shape)</span>
-        <span class="c">#             df = np.log2(df)</span>
-        <span class="c">#             if spikein_type == &#39;ERCC&#39;:</span>
-        <span class="c">#                 df = df[ercc_concentrations.index]</span>
-        <span class="c">#             xticklabels.extend(df.columns.tolist())</span>
-        <span class="c">#             color = &#39;husl&#39; if spikein_type == &#39;ERCC&#39; else &#39;Greys_d&#39;</span>
-        <span class="c">#             sns.violinplot(df, ax=ax,</span>
-        <span class="c">#                            positions=np.arange(df.shape[1])+x_so_far,</span>
-        <span class="c">#                            linewidth=0, inner=&#39;none&#39;, color=color)</span>
-        <span class="c">#</span>
-        <span class="c">#             x_so_far += df.shape[1]</span>
-        <span class="c">#</span>
-        <span class="c">#         ax.set_title(celltype)</span>
-        <span class="c">#         ax.set_xticks(np.arange(x_so_far))</span>
-        <span class="c">#         ax.set_xticklabels(xticklabels, rotation=90, fontsize=8)</span>
-        <span class="c">#         ax.set_ylabel(&#39;$\\log_2$ TPM&#39;)</span>
-        <span class="c">#</span>
-        <span class="c">#         xmin, xmax = -0.5, x_so_far - 0.5</span>
-        <span class="c">#</span>
-        <span class="c">#         ax.hlines(0, xmin, xmax)</span>
-        <span class="c">#         ax.set_xlim(xmin, xmax)</span>
-        <span class="c">#         sns.despine()</span>
-        <span class="c">#</span>
-        <span class="c">#     def samples_violinplot():</span>
-        <span class="c">#         fig, axes = plt.subplots(nrows=3, figsize=(16, 6))</span>
-        <span class="c">#</span>
-        <span class="c">#         for ax, (spikein_type, df) in zip(axes,</span>
-        <span class="c">#                                           tpm.groupby(spikein_to_type,</span>
-        <span class="c">#                                                       axis=0)):</span>
-        <span class="c">#             print spikein_type, df.shape</span>
-        <span class="c">#             if df.shape[0] &gt; 1:</span>
-        <span class="c">#                 sns.violinplot(np.log2(df + 1), ax=ax, linewidth=0.1)</span>
-        <span class="c">#                 ax.set_xticks([])</span>
-        <span class="c">#                 ax.set_xlabel(&#39;&#39;)</span>
-        <span class="c">#</span>
-        <span class="c">#             else:</span>
-        <span class="c">#                 x = np.arange(df.shape[1])</span>
-        <span class="c">#                 ax.bar(np.arange(df.shape[1]),</span>
-        <span class="c">#                        np.log2(df.ix[spikein_type]),</span>
-        <span class="c">#                        color=green)</span>
-        <span class="c">#                 ax.set_xticks(x + 0.4)</span>
-        <span class="c">#                 ax.set_xticklabels(df.columns, rotation=60)</span>
-        <span class="c">#                 sns.despine()</span>
-        <span class="c">#</span>
-        <span class="c">#             ax.set_title(spikein_type)</span>
-        <span class="c">#             ax.set_xlim(0, tpm.shape[1])</span>
-        <span class="c">#             ax.set_ylabel(&#39;$\\log_2$ TPM&#39;)</span>
-        <span class="c">#         sns.despine()</span></div>
+<span class="c"># def spikeins_violinplot(self):</span>
+<span class="c"># import matplotlib.pyplot as plt</span>
+<span class="c">#     import seaborn as sns</span>
+<span class="c">#     import numpy as np</span>
+<span class="c">#</span>
+<span class="c">#     fig, axes = plt.subplots(nrows=5, figsize=(16, 20), sharex=True,</span>
+<span class="c">#                              sharey=True)</span>
+<span class="c">#     ercc_concentrations = \</span>
+<span class="c">#         ercc_controls_analysis.mix1_molecules_per_ul.copy()</span>
+<span class="c">#     ercc_concentrations.sort()</span>
+<span class="c">#</span>
+<span class="c">#     for ax, (celltype, celltype_df) in \</span>
+<span class="c">#             zip(axes.flat, tpm.ix[spikeins].groupby(</span>
+<span class="c">#                     sample_id_to_celltype_, axis=1)):</span>
+<span class="c">#         print celltype</span>
+<span class="c">#         #     fig, ax = plt.subplots(figsize=(16, 4))</span>
+<span class="c">#         x_so_far = 0</span>
+<span class="c">#         #     ax.set_yscale(&#39;log&#39;)</span>
+<span class="c">#         xticklabels = []</span>
+<span class="c">#         for spikein_type, spikein_df in celltype_df.groupby(</span>
+<span class="c">#                 spikein_to_type):</span>
+<span class="c">#             #         print spikein_df.shape</span>
+<span class="c">#             df = spikein_df.T + np.random.uniform(0, 0.01,</span>
+<span class="c">#                                                   size=spikein_df.T.shape)</span>
+<span class="c">#             df = np.log2(df)</span>
+<span class="c">#             if spikein_type == &#39;ERCC&#39;:</span>
+<span class="c">#                 df = df[ercc_concentrations.index]</span>
+<span class="c">#             xticklabels.extend(df.columns.tolist())</span>
+<span class="c">#             color = &#39;husl&#39; if spikein_type == &#39;ERCC&#39; else &#39;Greys_d&#39;</span>
+<span class="c">#             sns.violinplot(df, ax=ax,</span>
+<span class="c">#                            positions=np.arange(df.shape[1])+x_so_far,</span>
+<span class="c">#                            linewidth=0, inner=&#39;none&#39;, color=color)</span>
+<span class="c">#</span>
+<span class="c">#             x_so_far += df.shape[1]</span>
+<span class="c">#</span>
+<span class="c">#         ax.set_title(celltype)</span>
+<span class="c">#         ax.set_xticks(np.arange(x_so_far))</span>
+<span class="c">#         ax.set_xticklabels(xticklabels, rotation=90, fontsize=8)</span>
+<span class="c">#         ax.set_ylabel(&#39;$\\log_2$ TPM&#39;)</span>
+<span class="c">#</span>
+<span class="c">#         xmin, xmax = -0.5, x_so_far - 0.5</span>
+<span class="c">#</span>
+<span class="c">#         ax.hlines(0, xmin, xmax)</span>
+<span class="c">#         ax.set_xlim(xmin, xmax)</span>
+<span class="c">#         sns.despine()</span>
+<span class="c">#</span>
+<span class="c">#     def samples_violinplot():</span>
+<span class="c">#         fig, axes = plt.subplots(nrows=3, figsize=(16, 6))</span>
+<span class="c">#</span>
+<span class="c">#         for ax, (spikein_type, df) in zip(axes,</span>
+<span class="c">#                                           tpm.groupby(spikein_to_type,</span>
+<span class="c">#                                                       axis=0)):</span>
+<span class="c">#             print spikein_type, df.shape</span>
+<span class="c">#             if df.shape[0] &gt; 1:</span>
+<span class="c">#                 sns.violinplot(np.log2(df + 1), ax=ax, linewidth=0.1)</span>
+<span class="c">#                 ax.set_xticks([])</span>
+<span class="c">#                 ax.set_xlabel(&#39;&#39;)</span>
+<span class="c">#</span>
+<span class="c">#             else:</span>
+<span class="c">#                 x = np.arange(df.shape[1])</span>
+<span class="c">#                 ax.bar(np.arange(df.shape[1]),</span>
+<span class="c">#                        np.log2(df.ix[spikein_type]),</span>
+<span class="c">#                        color=green)</span>
+<span class="c">#                 ax.set_xticks(x + 0.4)</span>
+<span class="c">#                 ax.set_xticklabels(df.columns, rotation=60)</span>
+<span class="c">#                 sns.despine()</span>
+<span class="c">#</span>
+<span class="c">#             ax.set_title(spikein_type)</span>
+<span class="c">#             ax.set_xlim(0, tpm.shape[1])</span>
+<span class="c">#             ax.set_ylabel(&#39;$\\log_2$ TPM&#39;)</span>
+<span class="c">#         sns.despine()</span></div>
 </pre></div>
 
     </div>

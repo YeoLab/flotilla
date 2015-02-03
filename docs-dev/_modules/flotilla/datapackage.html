@@ -82,7 +82,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../installation.html">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">OS X Installation instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#create-a-flotilla-sandbox">Create a flotilla sandbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#install-and-update-all-packages-in-your-environment">Install and update all packages in your environment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html#old-osx-installation-instructions">Old OSX Installation instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html#docker-instructions">Docker Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../api.html#general-use-plots">General use plots</a></li>
@@ -154,6 +159,7 @@
 <span class="kn">import</span> <span class="nn">urllib2</span>
 
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="kn">as</span> <span class="nn">mpl</span>
 
 
 <span class="n">FLOTILLA_DOWNLOAD_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s">&#39;~/flotilla_projects&#39;</span><span class="p">)</span>
@@ -236,10 +242,9 @@
                            <span class="n">expression_feature_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                            <span class="n">splicing_feature_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                            <span class="n">splicing_feature_kws</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                           <span class="n">host</span><span class="o">=</span><span class="s">&quot;sauron.ucsd.edu&quot;</span><span class="p">,</span>
-                           <span class="n">host_destination</span><span class="o">=</span><span class="s">&#39;/zfs/www/flotilla_packages/&#39;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Example code for making a datapackage for a Study</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+                           <span class="n">host</span><span class="o">=</span><span class="s">&quot;https://s3-us-west-2.amazonaws.com/&quot;</span><span class="p">,</span>
+                           <span class="n">host_destination</span><span class="o">=</span><span class="s">&#39;flotilla-projects/&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Example code for making a datapackage for a Study&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="s">&#39; &#39;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Datapackage name cannot have any spaces&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">uppercase</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
@@ -297,40 +302,17 @@
         <span class="n">resource</span><span class="p">[</span><span class="s">&#39;format&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;csv&#39;</span>
         <span class="k">if</span> <span class="n">kws</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kws</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s">&#39;phenotype_to_color&#39;</span><span class="p">:</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">rgb2hex</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+                                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="k">else</span>
+                                 <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+                                 <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">iteritems</span><span class="p">())</span>
                 <span class="n">resource</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="n">filename</span> <span class="o">=</span> <span class="s">&#39;{}/datapackage.json&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datapackage_dir</span><span class="p">)</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">datapackage</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;Wrote datapackage to {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
-
-</div>
-<div class="viewcode-block" id="make_feature_datapackage"><a class="viewcode-back" href="../../flotilla.datapackage.html#flotilla.datapackage.make_feature_datapackage">[docs]</a><span class="k">def</span> <span class="nf">make_feature_datapackage</span><span class="p">():</span>
-    <span class="n">hg19</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;hg19&#39;</span><span class="p">,</span>
-            <span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="s">&#39;Metadata about genes and splicing events&#39;</span><span class="p">,</span>
-            <span class="s">&#39;licences&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
-            <span class="s">&#39;sources&#39;</span><span class="p">:</span> <span class="s">&#39;Gencode and ENSEMBL genes&#39;</span><span class="p">,</span>
-            <span class="s">&#39;datapackage_version&#39;</span><span class="p">:</span> <span class="s">&#39;0.1.0&#39;</span><span class="p">,</span>
-            <span class="s">&#39;resources&#39;</span><span class="p">:</span> <span class="p">[</span>
-                <span class="p">{</span>
-                    <span class="s">&#39;format&#39;</span><span class="p">:</span> <span class="s">&#39;json&#39;</span><span class="p">,</span>
-                    <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;expression_feature_data&#39;</span><span class="p">,</span>
-                    <span class="s">&#39;url&#39;</span><span class="p">:</span> <span class="s">&#39;http://sauron.ucsd.edu/flotilla_projects/hg19/&#39;</span>
-                           <span class="s">&#39;gencode.v19.annotation.gene.attributes.plus.json&#39;</span>
-                <span class="p">},</span>
-                <span class="p">{</span>
-                    <span class="s">&#39;format&#39;</span><span class="p">:</span> <span class="s">&#39;csv&#39;</span><span class="p">,</span>
-                    <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;splicing_feature_data&#39;</span><span class="p">,</span>
-                    <span class="s">&#39;url&#39;</span><span class="p">:</span> <span class="s">&#39;http://sauron.ucsd.edu/flotilla_projects/hg19/&#39;</span>
-                           <span class="s">&#39;miso_to_ids.csv&#39;</span>
-                <span class="p">},</span>
-                <span class="p">{</span>
-                    <span class="s">&#39;format&#39;</span><span class="p">:</span> <span class="s">&#39;json&#39;</span><span class="p">,</span>
-                    <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;gene_ontology_data&#39;</span><span class="p">,</span>
-                    <span class="s">&#39;url&#39;</span><span class="p">:</span> <span class="s">&#39;http://sauron.ucsd.edu/flotilla_projects/hg19/&#39;</span>
-                           <span class="s">&#39;ens_to_go.json&#39;</span>
-                <span class="p">}</span>
-            <span class="p">]}</span>
 
 </div>
 <div class="viewcode-block" id="name_to_resource"><a class="viewcode-back" href="../../flotilla.datapackage.html#flotilla.datapackage.name_to_resource">[docs]</a><span class="k">def</span> <span class="nf">name_to_resource</span><span class="p">(</span><span class="n">datapackage</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>

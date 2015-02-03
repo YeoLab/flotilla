@@ -82,7 +82,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">OS X Installation instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#create-a-flotilla-sandbox">Create a flotilla sandbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#install-and-update-all-packages-in-your-environment">Install and update all packages in your environment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html#old-osx-installation-instructions">Old OSX Installation instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html#docker-instructions">Docker Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../api.html#general-use-plots">General use plots</a></li>
@@ -190,8 +195,6 @@
 <span class="sd">            If `fun_name` is not one of the ones indicated above</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_noweight</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
-        <span class="n">_sq</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span>
-        <span class="n">_arctan</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="n">_arctan_sq</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
         <span class="k">if</span> <span class="n">fun_name</span> <span class="o">==</span> <span class="s">&#39;no_weight&#39;</span><span class="p">:</span>
             <span class="n">wt</span> <span class="o">=</span> <span class="n">_noweight</span>
@@ -200,9 +203,6 @@
         <span class="k">elif</span> <span class="n">fun_name</span> <span class="o">==</span> <span class="s">&#39;arctan&#39;</span><span class="p">:</span>
             <span class="n">wt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan</span>
         <span class="k">elif</span> <span class="n">fun_name</span> <span class="o">==</span> <span class="s">&#39;arctan_sq&#39;</span><span class="p">:</span>
-            <span class="c"># This should be np.square(np.arctan()) or something? numpy&#39;s &quot;ufuncs&quot;</span>
-            <span class="c"># aka &quot;universal functions&quot; like square and arctan are more</span>
-            <span class="c"># optimized than python lambdas</span>
             <span class="n">wt</span> <span class="o">=</span> <span class="n">_arctan_sq</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span>
