@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/yeolab/flotilla.png?label=ready&title=Ready)](https://waffle.io/yeolab/flotilla)
 [![Build Status](https://travis-ci.org/YeoLab/flotilla.svg?branch=master)](https://travis-ci.org/YeoLab/flotilla)[![Coverage Status](https://img.shields.io/coveralls/YeoLab/flotilla.svg?style=flat)](https://coveralls.io/r/YeoLab/flotilla?branch=master)[![License](https://img.shields.io/pypi/l/flotilla.svg?style=flat)](https://pypi.python.org/pypi/flotilla/)[![Downloads](https://img.shields.io/pypi/dm/flotilla.svg?style=flat)](https://pypi.python.org/pypi/flotilla/)[![Latest Version](https://img.shields.io/pypi/v/flotilla.svg?style=flat)](https://pypi.python.org/pypi/flotilla/)[![DOI](https://img.shields.io/badge/DOI-10.5281%20%2F%20zenodo.12230-blue.svg)](http://dx.doi.org/10.5281/zenodo.12230)
 
 flotilla
