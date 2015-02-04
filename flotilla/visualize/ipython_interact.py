@@ -673,7 +673,7 @@ class Interactive(object):
                 raise ValueError("use a custom list name please")
 
             if feature_subset == 'custom':
-                feature_subset = list_link
+                feature_subset = link_to_list(list_link)
             elif feature_subset not in self.default_feature_subsets[data_type]:
                 warnings.warn("This feature_subset ('{}') is not available in "
                               "this data type ('{}'). Falling back on all "
@@ -733,7 +733,7 @@ class Interactive(object):
                 raise ValueError("use a custom list name please")
 
             if feature_subset == 'custom':
-                feature_subset = list_link
+                feature_subset = link_to_list(list_link)
             elif feature_subset not in self.default_feature_subsets[data_type]:
                 warnings.warn("This feature_subset ('{}') is not available in "
                               "this data type ('{}'). Falling back on all "
