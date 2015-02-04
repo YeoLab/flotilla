@@ -38,10 +38,9 @@ before_script:
 
 # command to run tests
 script:
-  - echo "script!"
-#  - make coverage
-#  - make lint
-#  - make pep8
+  - make coverage
+  - make lint
+  - make pep8
 
 after_script:
   - coveralls
