@@ -22,6 +22,8 @@ _shalek2013 = 'https://raw.githubusercontent.com/YeoLab/shalek2013/master/' \
 # 250 cells, ensembl and miso ids on index, need renaming, lots of celltypes
 _test_data = 'https://raw.githubusercontent.com/YeoLab/flotilla_test_data/' \
              'master/datapackage.json'
+_brainspan = 'https://s3-us-west-2.amazonaws.com/flotilla/' \
+             'brainspan_batch_corrected_for_amazon_s3/datapackage.json'
 
 
 def embark(study_name, load_species_data=True):

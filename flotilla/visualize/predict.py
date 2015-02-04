@@ -53,9 +53,7 @@ class PredictorBaseViz(PredictorBase):
         assert self.has_been_fit
         assert self.has_been_scored
 
-        ax = plt.gca() if 'ax' not in plotting_kwargs \
-            else plotting_kwargs['ax']
-        # del plotting_kwargs['ax']
+        ax = plotting_kwargs.pop('ax', plt.gca())
         local_plotting_kwargs = self._reducer_plotting_args
         local_plotting_kwargs.update(plotting_kwargs)
         pca = self.pca()
