@@ -2,7 +2,6 @@
 This tests whether the Study object was created correctly. No
 computation or visualization tests yet.
 """
-import matplotlib.pyplot as plt
 import numpy.testing as npt
 import pandas as pd
 import pandas.util.testing as pdt
@@ -28,49 +27,52 @@ class TestStudy(object):
     def n_groups(self):
         return 3
 
-    @pytest.fixture
-    def study(self, metadata_data_groups_fixed, metadata_kws_fixed,
-              mapping_stats_data, mapping_stats_kws,
-              expression_data_no_na, expression_kws,
-              splicing_data_fixed, splicing_kws):
-        from flotilla.data_model import Study
+    # @pytest.fixture
+    # def study(self, metadata_data_groups_fixed, metadata_kws_fixed,
+    #           mapping_stats_data, mapping_stats_kws,
+    #           expression_data_no_na, expression_kws,
+    #           splicing_data_fixed, splicing_kws):
+    #     from flotilla.data_model import Study
+    #
+    #     kwargs = {}
+    #     kw_pairs = (('metadata', metadata_kws_fixed),
+    #                 ('mapping_stats', mapping_stats_kws),
+    #                 ('expression', expression_kws),
+    #                 ('splicing', splicing_kws))
+    #     for data_type, kws in kw_pairs:
+    #         for kw_name, kw_value in kws.iteritems():
+    #             kwargs['{}_{}'.format(data_type, kw_name)] = kw_value
+    #
+    #     return Study(metadata_data_groups_fixed,
+    #                  mapping_stats_data=mapping_stats_data,
+    #                  expression_data=expression_data_no_na,
+    #                  splicing_data=splicing_data_fixed, **kwargs)
+    #
+    # @pytest.fixture
+    # def study_no_mapping_stats(self, metadata_data_groups_fixed,
+    #                            metadata_kws_fixed,
+    #                            expression_data_no_na, expression_kws,
+    #                            splicing_data_fixed, splicing_kws):
+    #     from flotilla.data_model import Study
+    #
+    #     kwargs = {}
+    #     kw_pairs = (('metadata', metadata_kws_fixed),
+    #                 ('expression', expression_kws),
+    #                 ('splicing', splicing_kws))
+    #     for data_type, kws in kw_pairs:
+    #         for kw_name, kw_value in kws.iteritems():
+    #             kwargs['{}_{}'.format(data_type, kw_name)] = kw_value
+    #
+    #     return Study(metadata_data_groups_fixed,
+    #                  expression_data=expression_data_no_na,
+    #                  splicing_data=splicing_data_fixed, **kwargs)
 
-        kwargs = {}
-        kw_pairs = (('metadata', metadata_kws_fixed),
-                    ('mapping_stats', mapping_stats_kws),
-                    ('expression', expression_kws),
-                    ('splicing', splicing_kws))
-        for data_type, kws in kw_pairs:
-            for kw_name, kw_value in kws.iteritems():
-                kwargs['{}_{}'.format(data_type, kw_name)] = kw_value
-
-        return Study(metadata_data_groups_fixed,
-                     mapping_stats_data=mapping_stats_data,
-                     expression_data=expression_data_no_na,
-                     splicing_data=splicing_data_fixed, **kwargs)
-
-    @pytest.fixture
-    def study_no_mapping_stats(self, metadata_data_groups_fixed,
-                               metadata_kws_fixed,
-                               expression_data_no_na, expression_kws,
-                               splicing_data_fixed, splicing_kws):
-        from flotilla.data_model import Study
-
-        kwargs = {}
-        kw_pairs = (('metadata', metadata_kws_fixed),
-                    ('expression', expression_kws),
-                    ('splicing', splicing_kws))
-        for data_type, kws in kw_pairs:
-            for kw_name, kw_value in kws.iteritems():
-                kwargs['{}_{}'.format(data_type, kw_name)] = kw_value
-
-        return Study(metadata_data_groups_fixed,
-                     expression_data=expression_data_no_na,
-                     splicing_data=splicing_data_fixed, **kwargs)
-
-    # @pytest.mark.parameterize('n_groups', '3_groups')
-    def test__init(self, study, pooled, technical_outliers):
+    def test_init_metadata(self, metadata_data_groups_fixed,
+                           metadata_kws_fixed,
+                           pooled, technical_outliers):
         # Also need to check for when these are NAs
+        from flotilla import Study
+        study = Study(metadata_data_groups_fixed, **metadata_kws_fixed)
 
         if pooled is None:
             npt.assert_equal(study.pooled, None)
@@ -81,17 +83,17 @@ class TestStudy(object):
         else:
             pdt.assert_array_equal(sorted(study.technical_outliers),
                                    sorted(technical_outliers))
-
-    def test_plot_pca(self, study_no_mapping_stats, color_samples_by):
-        study_no_mapping_stats.plot_pca(color_samples_by=color_samples_by,
-                                        feature_subset='all')
-        plt.close('all')
-
-    def test_plot_pca_splicing(self, study_no_mapping_stats, color_samples_by):
-        study_no_mapping_stats.plot_pca(color_samples_by=color_samples_by,
-                                        data_type='splicing',
-                                        feature_subset='all')
-        plt.close('all')
+    #
+    # def test_plot_pca(self, study_no_mapping_stats, color_samples_by):
+    #     study_no_mapping_stats.plot_pca(color_samples_by=color_samples_by,
+    #                                     feature_subset='all')
+    #     plt.close('all')
+    #
+    # def test_plot_pca_splicing(self, study_no_mapping_stats, color_samples_by):
+    #     study_no_mapping_stats.plot_pca(color_samples_by=color_samples_by,
+    #                                     data_type='splicing',
+    #                                     feature_subset='all')
+    #     plt.close('all')
 
     @pytest.fixture(params=[None, 'gene'])
     def gene_of_interest(self, request, genes):
