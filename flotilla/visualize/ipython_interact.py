@@ -166,6 +166,8 @@ class Interactive(object):
             filename, extension = os.path.splitext(savefile.value)
             self.maybe_make_directory(savefile.value)
 
+            extension = extension.lstrip('.')
+
             gui.widget.result.fig_reduced.savefig(savefile.value,
                                                   format=extension)
 
@@ -175,7 +177,7 @@ class Interactive(object):
                                           extension)
             try:
                 gui.widget.result.fig_violins.savefig(
-                    violins_file, format=extension.lstrip('.'))
+                    violins_file, format=extension)
             except AttributeError:
                 pass
 
@@ -228,7 +230,7 @@ class Interactive(object):
                 assert (feature_subset in
                         self.splicing.feature_subsets.keys())
 
-            self.plot_graph(data_type=data_type,
+            return self.plot_graph(data_type=data_type,
                             sample_subset=sample_subset,
                             feature_subset=feature_subset,
                             featurewise=featurewise, draw_labels=draw_labels,
@@ -284,12 +286,14 @@ class Interactive(object):
                                predictor_types=None,
                                score_coefficient=(0.1, 20),
                                draw_labels=False):
+        # Get the second one, because the first one is always "all_samples"
+        categorical_variable = self.default_sample_subsets[1]
 
         def do_interact(data_type,
                         sample_subset,
                         feature_subset,
                         predictor_type=default_classifier,
-                        categorical_variable='outlier',
+                        categorical_variable=categorical_variable,
                         score_coefficient=2,
                         plot_violins=False,
                         show_point_labels=False):
@@ -299,7 +303,7 @@ class Interactive(object):
                     continue
                 sys.stdout.write('{} : {}\n'.format(k, v))
 
-            self.plot_classifier(trait=categorical_variable,
+            return self.plot_classifier(trait=categorical_variable,
                                  feature_subset=feature_subset,
                                  sample_subset=sample_subset,
                                  predictor_name=predictor_type,
@@ -337,9 +341,10 @@ class Interactive(object):
         def save(w):
             # Make the directory if it's not already there
             filename, extension = os.path.splitext(savefile.value)
+            extension = extension.lstrip('.')
             self.maybe_make_directory(savefile.value)
 
-            gui.widget.result.fig_reduced.savefig(savefile.value,
+            gui.widget.result.pcaviz.fig_reduced.savefig(savefile.value,
                                                   format=extension)
 
             # add "violins" after the provided filename, but before the
@@ -347,8 +352,8 @@ class Interactive(object):
             violins_file = '{}.{}'.format("_".join([filename, 'violins']),
                                           extension)
             try:
-                gui.widget.result.fig_violins.savefig(
-                    violins_file, format=extension.lstrip('.'))
+                gui.widget.result.pcaviz.fig_violins.savefig(
+                    violins_file, format=extension)
             except AttributeError:
                 pass
 
@@ -480,7 +485,7 @@ class Interactive(object):
                                       format=extension.lstrip('.'))
 
         savefile = TextWidget(description='savefile',
-                              value='figures/clustermap.pdf')
+                              value='figures/modalities_lavalamps.pdf')
         save_widget = ButtonWidget(description='save')
         gui.widget.children = list(gui.widget.children) + [savefile,
                                                            save_widget]
