@@ -89,7 +89,7 @@ class NetworkerViz(Networker):
                                   ['use_pc_1', 'use_pc_2', 'use_pc_3',
                                    'use_pc_4', 'n_pcs', ])
 
-        f = plt.figure(figsize=(10, 10))
+        plt.figure(figsize=(10, 10))
 
         plt.axis((-0.2, 1.2, -0.2, 1.2))
         main_ax = plt.gca()
@@ -105,8 +105,8 @@ class NetworkerViz(Networker):
 
         try:
             feature_id = self.DataModel.maybe_renamed_to_feature_id(
-                    feature_of_interest)[0]
-        except (ValueError, KeyError):
+                feature_of_interest)[0]
+        except (ValueError, KeyError, IndexError):
             feature_id = ''
 
         if featurewise:
@@ -159,8 +159,6 @@ class NetworkerViz(Networker):
             ax=main_ax, alpha=0.5)
 
         try:
-
-
             node_color = map(lambda x: pca.X[feature_id].ix[x], graph.nodes())
 
             nx.draw_networkx_nodes(graph, pos, node_color=node_color,
@@ -258,7 +256,7 @@ class NetworkerViz(Networker):
 
         adjacency_settings = dict(('non_reduced', True))
 
-        f = plt.figure(figsize=(10, 10))
+        plt.figure(figsize=(10, 10))
         plt.axis((-0.2, 1.2, -0.2, 1.2))
         main_ax = plt.gca()
         ax_cov = plt.axes([0.1, 0.1, .2, .15])
@@ -268,7 +266,7 @@ class NetworkerViz(Networker):
 
         try:
             feature_id = self.DataModel.maybe_renamed_to_feature_id(
-                    feature_of_interest)[0]
+                feature_of_interest)[0]
         except (ValueError, KeyError):
             feature_id = ''
 

@@ -68,11 +68,11 @@ class DecompositionViz(object):
             instead of the gene ids. Essentially, the transpose of the
             original matrix. If True, then violins aren't plotted. (default
             False)
-        order : list-like
+        order : list-like, optional
             The order of the labels for the violinplots, e.g. if the data is
             from a differentiation timecourse, then this would be the labels
             of the phenotypes, in the differentiation order.
-        violinplot_kws : dict
+        violinplot_kws : dict, optional
             Any additional parameters to violinplot
         data_type : 'expression' | 'splicing', optional
             For violinplots only. The kind of data that was originally used
@@ -134,6 +134,7 @@ class DecompositionViz(object):
         if self.label_to_color is None:
             colors = iter(sns.color_palette('husl',
                                             n_colors=len(self.grouped)))
+
             def color_factory():
                 return colors.next()
 
@@ -156,8 +157,8 @@ class DecompositionViz(object):
         self.loadings = self.components_.ix[[self.x_pc, self.y_pc]]
 
         # Get the explained variance
-        if explained_variance_ratio_ is not None:
-            self.vars = explained_variance_ratio_[[self.x_pc, self.y_pc]]
+        if self.explained_variance_ratio_ is not None:
+            self.vars = self.explained_variance_ratio_[[self.x_pc, self.y_pc]]
         else:
             self.vars = pd.Series([1., 1.], index=[self.x_pc, self.y_pc])
 
@@ -195,10 +196,10 @@ class DecompositionViz(object):
             self.top_features.update(labels)
 
     def plot(self, ax=None, title='', plot_violins=False,
-                 show_point_labels=False,
-                 show_vectors=True,
-                 show_vector_labels=True,
-                 markersize=10, legend=True, bokeh=False, metadata=None):
+             show_point_labels=False,
+             show_vectors=True,
+             show_vector_labels=True,
+             markersize=10, legend=True, bokeh=False, metadata=None):
 
         if bokeh:
             self._plot_bokeh(metadata, title)
@@ -207,28 +208,30 @@ class DecompositionViz(object):
             gs_y = 12
 
             if ax is None:
-                self.reduced_fig, ax = plt.subplots(1, 1, figsize=(20, 10))
-                gs = GridSpec(gs_x, gs_y)
+                self.fig_reduced, ax = plt.subplots(1, 1, figsize=(20, 10))
+                self.gs = GridSpec(gs_x, gs_y)
 
             else:
-                gs = GridSpecFromSubplotSpec(gs_x, gs_y, ax.get_subplotspec())
-                self.reduced_fig = plt.gcf()
+                self.gs = GridSpecFromSubplotSpec(gs_x, gs_y,
+                                                  ax.get_subplotspec())
+                self.fig_reduced = plt.gcf()
 
-            ax_components = plt.subplot(gs[:, :5])
-            ax_loading1 = plt.subplot(gs[:, 6:8])
-            ax_loading2 = plt.subplot(gs[:, 10:14])
+            self.ax_components = plt.subplot(self.gs[:, :5])
+            self.ax_loading1 = plt.subplot(self.gs[:, 6:8])
+            self.ax_loading2 = plt.subplot(self.gs[:, 10:14])
 
             self.plot_samples(show_point_labels=show_point_labels,
                               title=title, show_vectors=show_vectors,
                               show_vector_labels=show_vector_labels,
                               markersize=markersize, legend=legend,
-                              ax=ax_components)
-            self.plot_loadings(pc=self.x_pc, ax=ax_loading1)
-            self.plot_loadings(pc=self.y_pc, ax=ax_loading2)
+                              ax=self.ax_components)
+            self.plot_loadings(pc=self.x_pc, ax=self.ax_loading1)
+            self.plot_loadings(pc=self.y_pc, ax=self.ax_loading2)
             sns.despine()
-            self.reduced_fig.tight_layout()
+            self.fig_reduced.tight_layout()
 
-            if plot_violins and not self.featurewise and self.singles is not None:
+            singles_none = self.singles is None
+            if plot_violins and not self.featurewise and not singles_none:
                 self.plot_violins()
             return self
 
@@ -242,7 +245,6 @@ class DecompositionViz(object):
 
         # Plots can be displayed inline in an IPython Notebook
         bk.output_notebook(force=True)
-
 
         # Create a set of tools to use
         TOOLS = "pan,wheel_zoom,box_zoom,reset,hover"
@@ -282,7 +284,6 @@ class DecompositionViz(object):
 
         show(p)
 
-
     def shorten(self, x):
         if len(x) > self.max_char_width:
             return '{}...'.format(x[:self.max_char_width])
@@ -290,13 +291,10 @@ class DecompositionViz(object):
             return x
 
     def plot_samples(self, show_point_labels=True,
-                     title='DataFramePCA', show_vectors=True,
+                     title='PCA', show_vectors=True,
                      show_vector_labels=True, markersize=10,
                      three_d=False, legend=True, ax=None):
-
-        """
-        Given a pandas dataframe, performs DataFramePCA and plots the results in a
-        convenient single function.
+        """Plot PCA scatterplot
 
         Parameters
         ----------
@@ -345,7 +343,8 @@ class DecompositionViz(object):
                 if not self.pooled.empty:
                     pooled_ids = x.index.intersection(self.pooled.index)
                     pooled_x, pooled_y = x[pooled_ids], y[pooled_ids]
-                    ax.plot(pooled_x, pooled_y, 'o', color=color, marker=marker,
+                    ax.plot(pooled_x, pooled_y, 'o', color=color,
+                            marker=marker,
                             markeredgecolor='k', markeredgewidth=2,
                             label='{} pooled'.format(name),
                             markersize=markersize, alpha=0.75)
@@ -409,7 +408,7 @@ class DecompositionViz(object):
         y = np.arange(loadings.shape[0])
 
         ax.scatter(x, y, color=deep[0])
-        ax.set_ylim(-.5, y.max()+.5)
+        ax.set_ylim(-.5, y.max() + .5)
 
         ax.set_yticks(np.arange(max(loadings.shape[0], n_features)))
         ax.set_title("Component " + pc)
@@ -462,7 +461,7 @@ class DecompositionViz(object):
             pd.Index(self.top_features))))
         while ncols * nrows < len(vector_labels):
             nrows += 1
-        self.violins_fig, axes = plt.subplots(nrows=nrows, ncols=ncols,
+        self.fig_violins, axes = plt.subplots(nrows=nrows, ncols=ncols,
                                               figsize=(4 * ncols, 4 * nrows))
 
         if self.feature_renamer is not None:
@@ -489,8 +488,14 @@ class DecompositionViz(object):
             else:
                 title = feature_id
             singles.name = renamed
-            pooled.name = renamed
-            outliers.name = renamed
+            try:
+                pooled.name = renamed
+            except AttributeError:
+                pass
+            try:
+                outliers.name = renamed
+            except AttributeError:
+                pass
             # import pdb; pdb.set_trace()
             violinplot(singles, pooled_data=pooled, outliers=outliers,
                        groupby=self.groupby, color_ordered=self.color_ordered,
@@ -511,4 +516,4 @@ class DecompositionViz(object):
             # Check if the plotting space is empty
             if len(ax.collections) == 0 or len(ax.lines) == 0:
                 ax.axis('off')
-        self.violins_fig.tight_layout()
+        self.fig_violins.tight_layout()

@@ -1,262 +1,148 @@
 """
 Calculate modalities of splicing events.
-
-This code is crazy, sometimes using classes and sometimes just objects because
-for parallelization, you can't pickle anything that has state, like an
-instancemethod
 """
 
-import collections
+from collections import Iterable
 
 import numpy as np
 import pandas as pd
-from sklearn import cross_validation
-from joblib import Parallel, delayed
+from scipy import stats
+from scipy.misc import logsumexp
 
-from .infotheory import jsd, binify, bin_range_strings
-
-MODALITIES_BINS = np.array([[1, 0, 0],  # excluded
-                            [0, 1, 0],  # middle
-                            [0, 0, 1],  # included
-                            [1, 0, 1],  # bimodal
-                            [1, 1, 1]])  # uniform
 
 MODALITIES_NAMES = ['excluded', 'middle', 'included', 'bimodal',
                     'uniform']
 
-TRUE_MODALITIES = pd.DataFrame(MODALITIES_BINS.T, columns=MODALITIES_NAMES)
-TRUE_MODALITIES = TRUE_MODALITIES/TRUE_MODALITIES.sum()
+
+class ModalityModel(object):
+    """Object to model modalities from beta distributions"""
+
+    def __init__(self, alphas, betas):
+        if not isinstance(alphas, Iterable) and not isinstance(betas,
+                                                               Iterable):
+            alphas = [alphas]
+            betas = [betas]
+
+        self.alphas = alphas if isinstance(alphas, Iterable) else np.ones(
+            len(betas)) * alphas
+        self.betas = betas if isinstance(betas, Iterable) else np.ones(
+            len(alphas)) * betas
+
+        self.rvs = [stats.beta(a, b) for a, b in
+                    zip(self.alphas, self.betas)]
+        self.scores = np.arange(len(self.rvs)).astype(float) + .1
+        self.scores = self.scores / self.scores.max()
+        self.prob_parameters = self.scores / self.scores.sum()
+
+    def __eq__(self, other):
+        return np.all(self.alphas == other.alphas) \
+            and np.all(self.betas == other.betas) \
+            and np.all(self.prob_parameters == other.prob_parameters)
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def logliks(self, x):
+        x = x.copy()
+        x[x == 0] = 0.001
+        x[x == 1] = 0.999
+
+        return np.array([np.log(prob) + rv.logpdf(x[np.isfinite(x)]).sum()
+                         for prob, rv in
+                         zip(self.prob_parameters, self.rvs)])
+
+    def logsumexp_logliks(self, x):
+        return logsumexp(self.logliks(x))
 
 
-def _col_jsd_modalities(col, true_modalities):
-    """Calculate JSD between a single binned event and true modalities
+class ModalityEstimator(object):
+    """Use Bayesian methods to estimate modalities of splicing events"""
 
-    Given a column of a binned splicing event, calculate its Jensen-Shannon
-    divergence to the true modalities
+    # colors = dict(
+    # zip(['excluded', 'middle', 'included', 'bimodal', 'uniform'],
+    #         sns.color_palette('deep', n_colors=5)))
 
-    Parameters
-    ----------
-    col : pandas.Series
-        A (n_bins,) sized series of a splicing event
+    def __init__(self, step, vmax, logbf_thresh=3):
+        """Initialize an object with models to estimate splicing modality
 
-    Returns
-    -------
-    jsd : pandas.Series
-        A (n_modalities,) sized series of JSD between this event and the
-        true modalities
-    """
-    if np.all(np.isfinite(col)):
-        return true_modalities.apply(jsd, axis=0, q=col)
-    else:
-        return pd.Series(np.nan, index=true_modalities.columns)
+        Parameters
+        ----------
+        step : float
+            Distance between parameter values
+        vmax : float
+            Maximum parameter value
+        logbf_thresh : float
+            Minimum threshold at which the bayes factor difference is defined
+            to be significant
+        """
+        self.step = step
+        self.vmax = vmax
+        self.logbf_thresh = logbf_thresh
 
-def assignments(sqrt_jsds):
-    """Return the modality with the smallest square root JSD to each event
+        self.parameters = np.arange(2, self.vmax + self.step,
+                                    self.step).astype(float)
+        self.exclusion_model = ModalityModel(1, self.parameters)
+        self.inclusion_model = ModalityModel(self.parameters, 1)
+        self.middle_model = ModalityModel(self.parameters, self.parameters)
+        self.bimodal_model = ModalityModel(1 / self.parameters,
+                                           1 / self.parameters)
 
-    Parameters
-    ----------
-    sqrt_jsd_modalities : pandas.DataFrame
-        A modalities x features dataframe of the square root
-        Jensen-Shannon divergence between this event and each modality
+        self.models = {'included': self.inclusion_model,
+                       'excluded': self.exclusion_model,
+                       'bimodal': self.bimodal_model,
+                       'middle': self.middle_model}
 
-    Returns
-    -------
-    assignments : pandas.Series
-        The closest modality to each splicing event
-    """
-    return sqrt_jsds.idxmin(axis=0)
+    def _loglik(self, event):
+        """Calculate log-likelihoods of an event, given the modality models"""
+        return dict((name, m.logliks(event))
+                    for name, m in self.models.iteritems())
 
+    def _logsumexp(self, logliks):
+        """Calculate logsumexps of each modality's loglikelihood"""
+        logsumexps = pd.Series(dict((name, logsumexp(loglik))
+                                    for name, loglik in logliks.iteritems()))
+        logsumexps['uniform'] = self.logbf_thresh
+        return logsumexps
 
-def sqrt_jsd_modalities(binned, true_modalities):
-    """Calculate JSD between all binned splicing events and true modalities
+    def _guess_modality(self, logsumexps):
+        """Guess the most likely modality.
 
-    Use square root of JSD because it's a metric.
+        If no modalilites have logsumexp'd logliks greater than the log Bayes
+        factor threshold, then they are assigned the 'uniform' modality,
+        which is the null hypothesis
+        """
+        return logsumexps.idxmax()
 
-    Parameters
-    ----------
-    binned : pandas.DataFrame
-        A (n_bins, n_events) sized DataFrame of binned splicing events
-
-    Returns
-    -------
-    sqrt_jsd : pandas.DataFrame
-        A (n_modalities, n_events) sized DataFrame of the square root JSD
-        between splicing events and all modalities
-
-    """
-    return np.sqrt(binned.apply(_col_jsd_modalities, axis=0,
-                                true_modalities=true_modalities))
-
-def _binned_to_assignments(binned, true_modalities):
-    sqrt_jsds = sqrt_jsd_modalities(binned, true_modalities)
-    return assignments(sqrt_jsds)
-
-def _single_fit_transform(data, bins, true_modalities,
-                          do_not_memoize=False):
-    """Given psi scores, estimate the modality of each
-
-    Parameters
-    ----------
-    data : pandas.DataFrame
-        A samples x features dataframe, where you want to find the
-        splicing modality of each column (feature)
-    do_not_memoize : bool
-        Whether or not to memoize the results of the _single_fit_transform
-        on this data (used by @memoize decorator)
-
-    Returns
-    -------
-    assignments : pandas.Series
-        Modality assignments of each column (feature)
-    """
-    binned = binify(data, bins)
-    return _binned_to_assignments(binned, true_modalities)
-
-def _cat_indices_and_fit_transform(indices, data, bins, true_modalities,
-                                   min_samples=10):
-    i = np.concatenate(indices)
-    # index = data.index[i]
-    psi = data.copy().iloc[i, :].dropna(axis=1, thresh=min_samples)
-    # psi = psi.ix[:, psi.count() >= min_samples]
-    return _single_fit_transform(psi, bins, true_modalities,
-                                 do_not_memoize=True)
-
-class Modalities(object):
-    """
-
-    This is based off of the "percent spliced-in" (PSI) score of a splicing
-    event, for example in a cassette exon event, how many transcripts use the
-    cassette exon gives the "PSI" (:math:`\Psi`) score of that splicing event
-
-    Possible modalities include:
-    - Excluded (most cells have excluded the exon)
-    - Middle (most cells have both the included and excluded isoforms)
-    - Included (most cells have included the exon)
-    - Bimodal (approximately a 50:50 distribution of inclusion:exclusion)
-    - Uniform (uniform distribution of exon usage)
-
-    The way that these modalities are calculated is by binning each splicing
-    event across all cells from (0, excluded_max, included_min, 1), and finding
-    the Jensen-Shannon Divergence that event, and each of the five modalities
-
-    Parameters
-    ----------
-    excluded_max : float, optional (default=0.2)
-        Maximum value of excluded bin
-    included_min : float, optional (default=0.8)
-        Minimum value of included bin
-
-    Attributes
-    ----------
-
-
-    Methods
-    -------
-
-    """
-    true_modalities = TRUE_MODALITIES
-    modalities_names = MODALITIES_NAMES
-    modalities_bins = MODALITIES_BINS
-
-    def __init__(self, excluded_max=0.2, included_min=0.8):
-        self.bins = (0, excluded_max, included_min, 1)
-        self.true_modalities.index = bin_range_strings(self.bins)
-
-    # @memoize
-    def fit_transform(self, data, bootstrapped=False, bootstrapped_kws=None):
-        """Given psi scores, estimate the modality of each
+    def fit_transform(self, data):
+        """Get the modality assignments of each splicing event in the data
 
         Parameters
         ----------
         data : pandas.DataFrame
-            A samples x features dataframe, where you want to find the
-            splicing modality of each column (feature)
-        bootstrapped : bool
-            Whether or not to use bootstrapping, i.e. resample each splicing
-            event several times to get a better estimate of its true modality.
-            Default False.
-        bootstrappped_kws : dict
-            Valid arguments to _bootstrapped_fit_transform. If None, default is
-            dict(n_iter=100, thresh=0.6, minimum_samples=10)
+            A (n_samples, n_events) dataframe of splicing events' PSI scores.
+            Must be psi scores which range from 0 to 1
 
         Returns
         -------
+        modality_assignments : pandas.Series
+            A (n_events,) series of the estimated modality for each splicing
+            event
 
-        assignments : pandas.Series
-            Modality assignments of each column (feature)
+        Raises
+        ------
+        AssertionError
+            If ``data`` does not fall only between 0 and 1.
         """
+        assert np.all(data.values.flat[np.isfinite(data.values.flat)] <= 1)
+        assert np.all(data.values.flat[np.isfinite(data.values.flat)] >= 0)
 
-        # import pdb; pdb.set_trace()
-        if bootstrapped:
-            bootstrapped_kws = {} if bootstrapped_kws \
-                                     is None else bootstrapped_kws
-            return self._bootstrapped_fit_transform(data, **bootstrapped_kws)
-        else:
-            return _single_fit_transform(data, bins=self.bins,
-                                         true_modalities=self.true_modalities)
-
-    def _bootstrapped_fit_transform(self, data, n_iter=100, thresh=0.6,
-                                    min_samples=10):
-        """Resample each splicing event to robustly estimate modalities.
-
-        Parameters
-        ----------
-        data : pandas.DataFrame
-            A (n_samples, n_features) dataframe of the splicing data
-        n_iter : int, optional (default=100)
-            Number of iterations (sampling with replacement)
-        thresh : float, optional (default=0.6)
-            Fraction of times that an event must be classified with a modality
-            for it to be considered robustly assigned
-        min_samples : int, optional (default=10)
-            Minimum number of samples for each resampled splicing event
-
-        Returns
-        -------
-        assignments : pandas.Series
-            Modality assignments of each column (feature)
-        """
-        bs = cross_validation.ShuffleSplit(data.shape[0], n_iter=n_iter)
-
-        results = Parallel(n_jobs=-1, max_nbytes=1e4)(
-            delayed(_cat_indices_and_fit_transform)(
-                x, data, self.bins, self.true_modalities, min_samples)
-            for x in bs)
-
-        assignments = pd.concat(results, axis=1).T
-        counts = assignments.apply(lambda x: pd.Series(
-            collections.Counter(x.dropna())))
-        fractions = counts / counts.sum().astype(float)
-        thresh_assignments = fractions[fractions >= thresh].apply(
-            self._max_assignment, axis=0)
-        thresh_assignments = thresh_assignments.fillna('ambiguous')
-        return thresh_assignments
-
-    @staticmethod
-    def _max_assignment(x):
-        """Given a pandas.Series of modalities counts, return the maximum
-        value. Necessary because just np.argmax will use np.nan as the max :(
-        """
-        if np.isfinite(x).sum() == 0:
-            return np.nan
-        else:
-            return np.argmax(x)
-
-    def counts(self, psi, bootstrapped=False, bootstrapped_kws=None):
-        """Return the number of events in each modality category
-
-        Parameters
-        ----------
-        psi : pandas.DataFrame
-            A samples x features dataframe of psi scores of a splicing event
-
-        Returns
-        -------
-        counts : pandas.Series
-            Counts of each modality
-        """
-        assignments = self.fit_transform(psi, bootstrapped, bootstrapped_kws)
-        return assignments.groupby(assignments).size()
+        logsumexp_logliks = data.apply(lambda x:
+                                       pd.Series({k: v.logsumexp_logliks(x)
+                                                  for k, v in
+                                                  self.models.iteritems()}),
+                                       axis=0)
+        logsumexp_logliks.ix['uniform'] = self.logbf_thresh
+        return logsumexp_logliks.idxmax()
 
 
 def switchy_score(array):
@@ -273,7 +159,7 @@ def switchy_score(array):
 
     Returns
     -------
-    float
+    switchy_score : float
         The "switchy score" of the study_data which can then be compared to
         other splicing event study_data
 
@@ -294,7 +180,7 @@ def get_switchy_score_order(x):
 
     Returns
     -------
-    numpy.array
+    score_order : numpy.array
         A 1-D array of the ordered indices, in switchy score order
     """
     switchy_scores = np.apply_along_axis(switchy_score, axis=0, arr=x)

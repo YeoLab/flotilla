@@ -40,5 +40,5 @@ VOLUME /root/ipython
 #user should use -v option to mount ~/flotilla_projects here
 VOLUME /root/flotilla_projects
 
-EXPOSE 8888
+EXPOSE 80
 ENTRYPOINT run_notebook.sh

@@ -17,8 +17,8 @@ class TestComputeNetwork:
         assert networker._default_node_color_mapper('x') == dark2[0]
         assert networker._default_node_size_mapper('x') == 300
 
-    def test_adjacency(self, expression, networker):
-        reduced = expression.reduce()
+    def test_adjacency(self, base_data, networker):
+        reduced = base_data.reduce()
         reduced.adjacency = networker.adjacency(reduced.reduced_space)
 
         # TODO: parameterize this
@@ -40,9 +40,4 @@ class TestComputeNetwork:
         pdt.assert_frame_equal(reduced.adjacency, adjacency)
 
     def test_graph(self):
-        pass
-
-
-class TestVisualizeNetwork:
-    def test_init(self):
         pass

@@ -8,5 +8,5 @@ See also
 
 """
 import flotilla
-study = flotilla.embark(flotilla._shalek2013)
-study.plot_classifier('phenotype: Immature BDMC')
+study = flotilla.embark(flotilla._brainspan)
+study.plot_classifier('structure_name: cerebellar cortex')

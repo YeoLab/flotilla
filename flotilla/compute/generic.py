@@ -224,7 +224,6 @@ def get_dcor(x, y):
         sys.stderr.write("Please install dcor_cpy.")
         raise e
 
-
     dc, dr, dvx, dvy = dcor.dcov_all(x, y)
     return dc, dr, dvx, dvy
 
@@ -468,7 +467,8 @@ def spearmanr_dataframe(A, B, axis=0):
     Returns
     -------
     correlations : pandas.DataFrame
-        A n_features2 x n_features1 DataFrame of (spearman_r, spearman_p) tuples
+        A n_features2 x n_features1 DataFrame of (spearman_r, spearman_p)
+        tuples
 
     Notes
     -----

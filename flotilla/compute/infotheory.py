@@ -27,6 +27,7 @@ def bin_range_strings(bins):
     """
     return ['{}-{}'.format(i, j) for i, j in zip(bins, bins[1:])]
 
+
 def _check_prob_dist(x):
     if np.any(x < 0):
         raise ValueError('Each column of the input dataframes must be '
@@ -130,7 +131,7 @@ def jsd(p, q):
     jsd : pandas.Series
         Jensen-Shannon divergence of each column with the same names between
         p and q
-    
+
     Raises
     ------
     ValueError
@@ -239,6 +240,7 @@ def cross_phenotype_jsd(data, groupby, bins, n_iter=100):
                 series = binify_and_jsd(df1, df2, pair, bins)
                 jsds.append(series)
     return pd.concat(jsds, axis=1)
+
 
 def jsd_df_to_2d(jsd_df):
     """Transform a tall JSD dataframe to a square matrix of mean JSDs
