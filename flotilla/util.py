@@ -207,7 +207,7 @@ def validate_params(self):
     """make sure that all necessary attributes are present"""
     for param in self.minimal_study_parameters:
         try:
-            x = getattr(self, param)
+            getattr(self, param)
         except KeyError:
             raise AssertionError("Missing minimal parameter %s" % param)
 

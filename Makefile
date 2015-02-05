@@ -7,9 +7,11 @@ test:
 
 coverage:
 	cp testing/matplotlibrc .
-	py.test --cov flotilla --cov-report term-missing flotilla/test/
+	py.test --durations=20 --cov flotilla --cov-report term-missing flotilla/test/
 	rm matplotlibrc
 
 lint:
-	pyflakes -x W flotilla flotilla/test
-	pep8 flotilla flotilla/test
+	pyflakes flotilla
+
+pep8:
+	pep8 flotilla

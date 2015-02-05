@@ -93,10 +93,9 @@ def make_study_datapackage(name, metadata,
                            expression_feature_data=None,
                            splicing_feature_data=None,
                            splicing_feature_kws=None,
-                           host="sauron.ucsd.edu",
-                           host_destination='/zfs/www/flotilla_packages/'):
-    """Example code for making a datapackage for a Study
-    """
+                           host="https://s3-us-west-2.amazonaws.com/",
+                           host_destination='flotilla-projects/'):
+    """Example code for making a datapackage for a Study"""
     if ' ' in name:
         raise ValueError("Datapackage name cannot have any spaces")
     if set(string.uppercase) & set(name):
@@ -158,41 +157,13 @@ def make_study_datapackage(name, metadata,
                     value = dict((k, mpl.colors.rgb2hex(v))
                                  if isinstance(v, tuple) else
                                  (k, v)
-                                 for k,v in value.iteritems())
+                                 for k, v in value.iteritems())
                 resource[key] = value
 
     filename = '{}/datapackage.json'.format(datapackage_dir)
     with open(filename, 'w') as f:
         json.dump(datapackage, f, indent=2)
     sys.stdout.write('Wrote datapackage to {}'.format(filename))
-
-
-def make_feature_datapackage():
-    hg19 = {'name': 'hg19',
-            'title': 'Metadata about genes and splicing events',
-            'licences': None,
-            'sources': 'Gencode and ENSEMBL genes',
-            'datapackage_version': '0.1.0',
-            'resources': [
-                {
-                    'format': 'json',
-                    'name': 'expression_feature_data',
-                    'url': 'http://sauron.ucsd.edu/flotilla_projects/hg19/'
-                           'gencode.v19.annotation.gene.attributes.plus.json'
-                },
-                {
-                    'format': 'csv',
-                    'name': 'splicing_feature_data',
-                    'url': 'http://sauron.ucsd.edu/flotilla_projects/hg19/'
-                           'miso_to_ids.csv'
-                },
-                {
-                    'format': 'json',
-                    'name': 'gene_ontology_data',
-                    'url': 'http://sauron.ucsd.edu/flotilla_projects/hg19/'
-                           'ens_to_go.json'
-                }
-            ]}
 
 
 def name_to_resource(datapackage, name):

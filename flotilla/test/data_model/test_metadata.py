@@ -5,8 +5,6 @@ import numpy as np
 import pandas as pd
 import pytest
 import seaborn as sns
-
-import numpy.testing as npt
 import pandas.util.testing as pdt
 
 
@@ -24,7 +22,6 @@ class TestMetaData(object):
     @pytest.fixture(params=[None, list('CAB')])
     def phenotype_order(self, request):
         return request.param
-
 
     @pytest.fixture(params=[None, {'A': 'blue', 'B': 'red', 'C': 'green'},
                             {'A': '#f66ab5', 'B': '#f77189', 'C': '#6cad31'}])
@@ -92,10 +89,8 @@ class TestMetaData(object):
             dict((i, true_phenotype_to_color[true_sample_id_to_phenotype[i]])
                  for i in self.metadata.index)
 
-        true_sample_subsets = subsets_from_metadata(self.metadata,
-                                                    self.kws[
-                                                        'minimum_sample_subset'],
-                                                    'samples')
+        true_sample_subsets = subsets_from_metadata(
+            self.metadata, self.kws['minimum_sample_subset'], 'samples')
 
         pdt.assert_frame_equal(test_metadata.data, self.metadata)
         pdt.assert_series_equal(test_metadata.sample_id_to_phenotype,

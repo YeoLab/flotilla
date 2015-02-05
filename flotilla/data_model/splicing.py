@@ -1,4 +1,4 @@
-import collections
+from collections import Iterable
 import sys
 
 import pandas as pd
@@ -7,9 +7,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 from .base import BaseData
-from ..compute.splicing import Modalities
-from ..compute.decomposition import DataFramePCA
-from ..visualize.color import purples
+from ..compute.splicing import ModalityEstimator
 from ..visualize.splicing import ModalitiesViz
 from ..util import memoize, timestamp
 from ..visualize.splicing import lavalamp, hist_single_vs_pooled_diff, \
@@ -67,7 +65,8 @@ class SplicingData(BaseData):
             technical_outliers=technical_outliers,
             predictor_config_manager=predictor_config_manager,
             minimum_samples=minimum_samples, data_type='splicing')
-        sys.stdout.write("{}\tDone initializing splicing\n".format(timestamp()))
+        sys.stdout.write(
+            "{}\tDone initializing splicing\n".format(timestamp()))
 
         self.feature_expression_id_col = feature_expression_id_col \
             if feature_expression_id_col is not None \
@@ -76,17 +75,17 @@ class SplicingData(BaseData):
         self.binsize = binsize
         self.excluded_max = excluded_max
         self.included_min = included_min
-                
+
         self.bins = np.arange(0, 1 + self.binsize, self.binsize)
 
-        self.modalities_calculator = Modalities(excluded_max=excluded_max,
-                                                included_min=included_min)
-        self.modalities_visualizer = ModalitiesViz()
+        self.modality_estimator = ModalityEstimator(step=2., vmax=20.)
+        # self.modalities_calculator = Modalities(excluded_max=excluded_max,
+        # included_min=included_min)
+        self.modality_visualizer = ModalitiesViz()
 
-    # @memoize
-    def modalities(self, sample_ids=None, feature_ids=None, data=None,
-                   groupby=None, min_samples=0.5,
-                   bootstrapped=False, bootstrapped_kws=None):
+    @memoize
+    def modality_assignments(self, sample_ids=None, feature_ids=None,
+                             data=None, groupby=None, min_samples=0.5):
         """Assigned modalities for these samples and features.
 
         Parameters
@@ -98,18 +97,6 @@ class SplicingData(BaseData):
         data : pandas.DataFrame, optional
             If provided, use this dataframe instead of the sample_ids and
             feature_ids provided
-        bootstrapped : bool, optional (default=False)
-            Whether or not to use bootstrapping, i.e. resample each splicing
-            event several times to get a better estimate of its true modality.
-        min_samples : int or float
-            If int, then this is the absolute number of cells that are minimum
-            required to calculate modalities. If a float, then require this
-            fraction of samples to calculate modalities, e.g. if 0.6, then at
-            least 60% of samples must have an event detected for modality
-            detection
-        bootstrapped_kws : dict, optional
-            Valid arguments to _bootstrapped_fit_transform. If None, default is
-            dict(n_iter=100, thresh=0.6, minimum_samples=10)
 
         Returns
         -------
@@ -123,64 +110,8 @@ class SplicingData(BaseData):
             if feature_ids is not None and sample_ids is not None:
                 raise ValueError('Can only specify `sample_ids` and '
                                  '`feature_ids` or `data`, but not both.')
-
-        grouped = data.groupby(groupby)
-        if isinstance(min_samples, int):
-            thresh = lambda x: min_samples
-        elif isinstance(min_samples, float):
-            thresh = lambda x: min_samples * x.shape[0]
-        else:
-            raise TypeError('Threshold for minimum samples for modality '
-                            'detection can only be int or float, '
-                            'not {}'.format(type(min_samples)))
-        data = pd.concat([df.dropna(thresh=thresh(df), axis=1)
-                         for name, df in grouped])
-        assignments = data.groupby(groupby).apply(
-            self.modalities_calculator.fit_transform,
-            bootstrapped=bootstrapped, bootstrapped_kws=bootstrapped_kws)
-        return assignments
-
-    # @memoize
-    def modalities_counts(self, sample_ids=None, feature_ids=None, data=None,
-                          groupby=None, min_samples=0.5,
-                          bootstrapped=False, bootstrapped_kws=False):
-        """Count the number of each modalities of these samples and features
-
-        Parameters
-        ----------
-        sample_ids : list of str
-            Which samples to use. If None, use all. Default None.
-        feature_ids : list of str
-            Which features to use. If None, use all. Default None.
-        data : pandas.DataFrame, optional
-            If provided, use this dataframe instead of the sample_ids and
-            feature_ids provided
-        bootstrapped : bool
-            Whether or not to use bootstrapping, i.e. resample each splicing
-            event several times to get a better estimate of its true modality.
-            Default False.
-        min_samples : int or float
-            If int, then this is the absolute number of cells that are minimum
-            required to calculate modalities. If a float, then require this
-            fraction of samples to calculate modalities, e.g. if 0.6, then at
-            least 60% of samples must have an event detected for modality
-            detection
-        bootstrapped_kws : dict
-            Valid arguments to _bootstrapped_fit_transform. If None, default is
-            dict(n_iter=100, thresh=0.6, minimum_samples=10)
-
-        Returns
-        -------
-        modalities_counts : pandas.Series
-            The number of events detected in each modality
-        """
-        if data is None:
-            data = self._subset(self.singles, sample_ids, feature_ids,
-                                require_min_samples=False)
-        else:
-            if feature_ids is not None and sample_ids is not None:
-                raise ValueError('Can only specify `sample_ids` and '
-                                 '`feature_ids` or `data`, but not both.')
+        if groupby is None:
+            groupby = pd.Series('all', index=data.index)
 
         grouped = data.groupby(groupby)
         if isinstance(min_samples, int):
@@ -193,85 +124,77 @@ class SplicingData(BaseData):
                             'not {}'.format(type(min_samples)))
         data = pd.concat([df.dropna(thresh=thresh(df), axis=1)
                           for name, df in grouped])
-        counts = data.groupby(groupby).apply(
-            self.modalities_calculator.counts, bootstrapped=bootstrapped,
-            bootstrapped_kws=bootstrapped_kws)
-        return counts
+        assignments = data.groupby(groupby).apply(
+            self.modality_estimator.fit_transform)
+        return assignments
 
+    @memoize
+    def modality_counts(self, sample_ids=None, feature_ids=None, data=None,
+                        groupby=None, min_samples=0.5):
+        """Count the number of each modalities of these samples and features
+
+        Parameters
+        ----------
+        sample_ids : list of str
+            Which samples to use. If None, use all. Default None.
+        feature_ids : list of str
+            Which features to use. If None, use all. Default None.
+        data : pandas.DataFrame, optional
+            If provided, use this dataframe instead of the sample_ids and
+            feature_ids provided
+
+        Returns
+        -------
+        modalities_counts : pandas.Series
+            The number of events detected in each modality
+        """
+        assignments = self.modality_assignments(sample_ids, feature_ids, data,
+                                                groupby, min_samples)
+        counts = assignments.apply(lambda x: x.groupby(x).size(), axis=1)
+        return counts
 
     def binify(self, data):
         return super(SplicingData, self).binify(data, self.bins)
 
-
     def plot_modalities_reduced(self, sample_ids=None, feature_ids=None,
-                                ax=None, title=None,
-                                bootstrapped=False, bootstrapped_kws=None):
-        """Plot modality assignments in DataFrameNMF space (option for lavalamp?)
+                                data=None, ax=None, title=None):
+        """Plot events modality assignments in NMF space
+
+        This will calculate modalities on all samples provided, without
+        grouping them by celltype. This is because each NMF axis can only show
+        one set of sample ids' modalties.
 
         Parameters
         ----------
-        bootstrapped : bool
-            Whether or not to use bootstrapping, i.e. resample each splicing
-            event several times to get a better estimate of its true modality.
-            Default False.
-        bootstrappped_kws : dict
-            Valid arguments to _bootstrapped_fit_transform. If None, default is
-            dict(n_iter=100, thresh=0.6, minimum_samples=10)
-
-
-        Returns
-        -------
-
-
-        Raises
-        ------
+        sample_ids : list of str
+            Which samples to use. If None, use all. Default None.
+        feature_ids : list of str
+            Which features to use. If None, use all. Default None.
+        data : pandas.DataFrame, optional
+            If provided, use this dataframe instead of the sample_ids and
+            feature_ids provided
+        ax : matplotlib.axes.Axes object
+            Axes to plot on. If none, gets current axes
+        title : str
+            Title of the reduced space plot
         """
-        modalities_assignments = self.modalities(
-            sample_ids, feature_ids, bootstrapped=bootstrapped,
-            bootstrapped_kws=bootstrapped_kws)
-        self.modalities_visualizer.plot_reduced_space(
+        groupby = pd.Series('all', self.data.index)
+        modality_assignments = self.modality_assignments(sample_ids,
+                                                         feature_ids,
+                                                         data, groupby)
+        modality_assignments = pd.Series(modality_assignments.values[0],
+                                         index=modality_assignments.columns)
+
+        self.modality_visualizer.plot_reduced_space(
             self.binned_nmf_reduced(sample_ids, feature_ids),
-            modalities_assignments, ax=ax, title=title,
-            xlabel=self._nmf_space_xlabel(phenotype_groupby=None),
-            ylabel=self._nmf_space_ylabel(phenotype_groupby=None))
-
-    def plot_modalities_stacked_bar(self, sample_ids=None, feature_ids=None, ax=None,
-                            i=0, normed=True, legend=True,
-                            bootstrapped=False, bootstrapped_kws=None):
-        """Plot stacked bar graph of each modality
-
-        Parameters
-        ----------
-        bootstrapped : bool
-            Whether or not to use bootstrapping, i.e. resample each splicing
-            event several times to get a better estimate of its true modality.
-            Default False.
-        bootstrappped_kws : dict
-            Valid arguments to _bootstrapped_fit_transform. If None, default is
-            dict(n_iter=100, thresh=0.6, minimum_samples=10)
-
-
-        Returns
-        -------
-
-
-        Raises
-        ------
-        """
-        modalities_counts = self.modalities_counts(
-            sample_ids, feature_ids, bootstrapped=bootstrapped,
-            bootstrapped_kws=bootstrapped_kws)
-        self.modalities_visualizer.bar(modalities_counts, ax, i, normed,
-                                       legend)
-        modalities_fractions = \
-            modalities_counts / modalities_counts.sum().astype(float)
-        sys.stdout.write(str(modalities_fractions) + '\n')
+            modality_assignments, ax=ax, title=title,
+            xlabel=self._nmf_space_xlabel(groupby),
+            ylabel=self._nmf_space_ylabel(groupby))
 
     def plot_modalities_bars(self, sample_ids=None, feature_ids=None,
-                             data=None, groupby=None,
-                             phenotype_to_color=None,
-                             bootstrapped=False, bootstrapped_kws=None):
-        """Plot bar
+                             data=None, groupby=None, phenotype_to_color=None,
+                             percentages=False, ax=None):
+        """Make grouped barplots of the number of modalities per group
 
         Parameters
         ----------
@@ -286,44 +209,22 @@ class SplicingData(BaseData):
             How much to offset the x-axis of each event. Useful if you want
             to plot the same event, but in several iterations with different
             celltypes or colors
-        use_these_modalities : bool
-            If True, then use these sample ids to calculate modalities.
-            Otherwise, use the modalities assigned using ALL samples and
-            features
-        bootstrapped : bool
-            Whether or not to use bootstrapping, i.e. resample each splicing
-            event several times to get a better estimate of its true modality.
-            Default False.
-        bootstrappped_kws : dict
-            Valid arguments to _bootstrapped_fit_transform. If None, default is
-            dict(n_iter=100, thresh=0.6, minimum_samples=10)
         """
-        if data is not None:
-            assignments = self.modalities(data=data, groupby=groupby,
-                                          bootstrapped=bootstrapped,
-                                          bootstrapped_kws=bootstrapped_kws)
-        else:
-            assignments = self.modalities(
-                sample_ids, feature_ids, groupby=groupby,
-                bootstrapped=bootstrapped, bootstrapped_kws=bootstrapped_kws)
+
+        counts = self.modality_counts(
+            sample_ids, feature_ids, data=data, groupby=groupby)
 
         # make sure this is always a dataframe
-        if isinstance(assignments, pd.Series):
-            assignments = pd.DataFrame([assignments.values],
-                                       index=assignments.name,
-                                       columns=assignments.index)
-        x_order = self.modalities_visualizer.modalities_order
-        id_vars = list(self.data.columns.names)
-        df = pd.melt(assignments.T.reset_index(),
-                     value_vars=assignments.index.tolist(),
-                     id_vars=id_vars)
-        sns.factorplot('value', hue=assignments.index.name, data=df,
-                       x_order=x_order)
+        if isinstance(counts, pd.Series):
+            counts = pd.DataFrame([counts.values],
+                                  index=counts.name,
+                                  columns=counts.index)
+        return self.modality_visualizer.bar(counts, phenotype_to_color,
+                                            percentages=percentages, ax=ax)
 
     def plot_modalities_lavalamps(self, sample_ids=None, feature_ids=None,
                                   data=None, groupby=None,
-                                  phenotype_to_color=None,
-                                  bootstrapped=False, bootstrapped_kws=None):
+                                  phenotype_to_color=None):
         """Plot "lavalamp" scatterplot of each event
 
         Parameters
@@ -339,27 +240,12 @@ class SplicingData(BaseData):
             How much to offset the x-axis of each event. Useful if you want
             to plot the same event, but in several iterations with different
             celltypes or colors
-        use_these_modalities : bool
-            If True, then use these sample ids to calculate modalities.
-            Otherwise, use the modalities assigned using ALL samples and
-            features
-        bootstrapped : bool
-            Whether or not to use bootstrapping, i.e. resample each splicing
-            event several times to get a better estimate of its true modality.
-            Default False.
-        bootstrappped_kws : dict
-            Valid arguments to _bootstrapped_fit_transform. If None, default is
-            dict(n_iter=100, thresh=0.6, minimum_samples=10)
         """
-        if data is not None:
-            assignments = self.modalities(data=data, groupby=groupby,
-                bootstrapped=bootstrapped, bootstrapped_kws=bootstrapped_kws)
-        else:
-            data = self._subset(self.singles, sample_ids, feature_ids,
-                                require_min_samples=False)
-            assignments = self.modalities(
-                sample_ids, feature_ids, groupby=groupby,
-                bootstrapped=bootstrapped, bootstrapped_kws=bootstrapped_kws)
+        if groupby is None:
+            groupby = pd.Series('all', index=self.data.index)
+
+        assignments = self.modality_assignments(
+            sample_ids, feature_ids, data=data, groupby=groupby)
 
         # make sure this is always a dataframe
         if isinstance(assignments, pd.Series):
@@ -367,11 +253,11 @@ class SplicingData(BaseData):
                                        index=assignments.name,
                                        columns=assignments.index)
 
-        grouped = data.groupby(groupby)
+        grouped = self.singles.groupby(groupby)
         nrows = assignments.groupby(
             level=0, axis=0).apply(
             lambda x: np.unique(x.values)).apply(lambda x: len(x)).sum()
-        figsize = 10, nrows*4
+        figsize = 10, nrows * 4
         fig, axes = plt.subplots(nrows=nrows, figsize=figsize)
         axes_iter = axes.flat
 
@@ -388,6 +274,37 @@ class SplicingData(BaseData):
         sns.despine()
         fig.tight_layout()
 
+    def plot_event_modality_estimation(self, event_id, sample_ids=None,
+                                       data=None,
+                                       groupby=None, min_samples=0.5):
+        if data is None:
+            data = self._subset(self.singles, sample_ids,
+                                require_min_samples=False)
+        else:
+            if sample_ids is not None:
+                raise ValueError(
+                    'Can only specify `sample_ids` or `data`, but not both.')
+        if groupby is None:
+            groupby = pd.Series('all', index=data.index)
+
+        grouped = data.groupby(groupby)
+        if isinstance(min_samples, int):
+            thresh = lambda x: min_samples
+        elif isinstance(min_samples, float):
+            thresh = lambda x: min_samples * x.shape[0]
+        else:
+            raise TypeError('Threshold for minimum samples for modality '
+                            'detection can only be int or float, '
+                            'not {}'.format(type(min_samples)))
+        data = pd.concat([df.dropna(thresh=thresh(df), axis=1)
+                          for name, df in grouped])
+        event = data[event_id]
+        renamed = self.feature_renamer(event_id)
+        logliks = self.modality_estimator._loglik(event)
+        logsumexps = self.modality_estimator._logsumexp(logliks)
+        self.modality_visualizer.event_estimation(event, logliks, logsumexps,
+                                                  renamed=renamed)
+
     @memoize
     def _is_nmf_space_x_axis_excluded(self, phenotype_groupby):
         nmf_space_positions = self.nmf_space_positions(phenotype_groupby)
@@ -400,7 +317,7 @@ class SplicingData(BaseData):
         data = self._subset(self.data, sample_ids=top_pc1_samples)
         binned = self.binify(data)
         return bool(binned[event][0])
-    
+
     def _nmf_space_xlabel(self, phenotype_groupby):
         if self._is_nmf_space_x_axis_excluded(phenotype_groupby):
             return self.excluded_label
@@ -417,7 +334,8 @@ class SplicingData(BaseData):
                      phenotype_groupby=None,
                      phenotype_order=None, color=None,
                      phenotype_to_color=None,
-                     phenotype_to_marker=None, nmf_xlabel=None, nmf_ylabel=None,
+                     phenotype_to_marker=None, nmf_xlabel=None,
+                     nmf_ylabel=None,
                      nmf_space=False, fig=None, axesgrid=None):
         if nmf_space:
             nmf_xlabel = self._nmf_space_xlabel(phenotype_groupby)
@@ -425,7 +343,7 @@ class SplicingData(BaseData):
         else:
             nmf_ylabel = None
             nmf_xlabel = None
-        
+
         super(SplicingData, self).plot_feature(feature_id, sample_ids,
                                                phenotype_groupby,
                                                phenotype_order, color,
@@ -527,9 +445,9 @@ class SplicingData(BaseData):
             diff_from_singles = diff_from_singles.dropna(axis=1, how='all')
         return singles, pooled, not_measured_in_pooled, diff_from_singles
 
-    def plot_lavalamp(self, sample_ids=None, feature_ids=None,
-                      data=None, groupby=None,
-                      phenotype_to_color=None, order=None):
+    def plot_lavalamp(self, phenotype_to_color, sample_ids=None,
+                      feature_ids=None,
+                      data=None, groupby=None, order=None):
         if data is None:
             data = self._subset(self.data, sample_ids, feature_ids,
                                 require_min_samples=False)
@@ -537,12 +455,17 @@ class SplicingData(BaseData):
             if feature_ids is not None and sample_ids is not None:
                 raise ValueError('Can only specify `sample_ids` and '
                                  '`feature_ids` or `data`, but not both.')
+
+        if groupby is None:
+            groupby = pd.Series('all', index=self.singles.index)
         grouped = data.groupby(groupby)
 
         nrows = len(grouped.groups)
         figsize = 12, nrows * 4
         fig, axes = plt.subplots(nrows=len(grouped.groups), figsize=figsize,
                                  sharex=False)
+        if not isinstance(axes, Iterable):
+            axes = [axes]
 
         if order is None:
             order = grouped.groups.keys()
@@ -580,7 +503,7 @@ class SplicingData(BaseData):
             self.pooled_inconsistent(data, feature_ids,
                                      fraction_diff_thresh)
         percent = self._divide_inconsistent_and_pooled(pooled,
-                                                    pooled_inconsistent)
+                                                       pooled_inconsistent)
         lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
                                      color=color, percent=percent)
 
@@ -620,28 +543,68 @@ class SplicingData(BaseData):
             standardize=standardize, metric=metric,
             linkage_method=linkage_method)
 
-    def reduce(self, sample_ids=None, feature_ids=None,
-               featurewise=False,
-               reducer=DataFramePCA,
-               standardize=True,
-               reducer_kwargs=None, bins=None):
-        """
-        :param sample_ids: list of sample ids
-        :param feature_ids: list of features
-        :param featurewise: reduce transpose (feature X sample) instead of sample X feature
-        :param reducer: DataFrameReducer object, defaults to DataFramePCA
-        :param standardize: standardize columns before reduction
-        :param reducer_kwargs: kwargs for reducer
-        :param bins: bins to use for binify
-        :return: reducer object
+    def _subset_and_standardize(self, data, sample_ids=None,
+                                feature_ids=None,
+                                standardize=True, return_means=False,
+                                rename=False):
+        """Grab a subset of the provided data and standardize/remove NAs
+
+        Take only the sample ids and feature ids from this data, require
+        at least some minimum samples. Standardization is performed by
+        replacing ``NA``s with the value 0.5. Then, all values for
+        that event are transformed with :math:`\arccos`/:math:`\cos^{-1}`/arc
+        cosine so that all values range from :math:`-\pi` to :math:`+\pi` and
+        are centered around :math:`0`. As much of single-cell alternative
+        splicing data is near-0 or near-1, this spreads out the values near 0
+        and 1, and squishes the values near 0.5.
+
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            Dataframe to subset
+        sample_ids : list-like, optional (default=None)
+            If None, all sample ids will be used, else only the sample ids
+            specified
+        feature_ids : list-like, optional (default=None)
+            If None, all features will be used, else only the features
+            specified
+        standardize : bool, optional (default=True)
+            If True, replaced NAs with 0.5 and perform an arccosine transform
+            to 0-center the splicing data.
+        return_means : bool, optional (default=False)
+            If True, return a tuple of (subset, means), otherwise just return
+            the subset
+        rename : bool, optional (default=False)
+            Whether or not to rename the feature ids using ``feature_renamer``
+
+        Returns
+        -------
+        subset : pandas.DataFrame
+            Subset of the dataframe with the requested samples and features,
+            and standardized as described
+        means : pandas.DataFrame
+            (Only if return_means=True) Mean values of the features (columns).
 
         """
+        subset = self._subset(self.data, sample_ids, feature_ids)
+        subset = subset.dropna(how='all', axis=1).dropna(how='all', axis=0)
 
-        return super(SplicingData, self).reduce(sample_ids, feature_ids,
-                                                featurewise, reducer,
-                                                standardize=False,
-                                                reducer_kwargs=reducer_kwargs,
-                                                bins=bins)
+        # This is splicing data ranging from 0 to 1, so fill na with 0.5
+        # and perform an arc-cosine transform to make the data range from
+        # -pi to pi
+        if standardize:
+            subset = subset.fillna(0.5)
+            subset = -2 * np.arccos(subset * 2 - 1) + np.pi
+        means = subset.mean()
+
+        if rename:
+            means = means.rename_axis(self.feature_renamer)
+            subset = subset.rename_axis(self.feature_renamer, 1)
+
+        if return_means:
+            return subset, means
+        else:
+            return subset
 
     def plot_two_features(self, feature1, feature2, groupby=None,
                           label_to_color=None, fillna=None, **kwargs):
@@ -658,184 +621,184 @@ class SplicingData(BaseData):
             sample1, sample2, xlim=xlim, ylim=ylim, **kwargs)
 
 
-class SpliceJunctionData(SplicingData):
-    """Class for splice junction information from SJ.out.tab files from STAR
-
-    Attributes
-    ----------
-
-
-    Methods
-    -------
-
-    """
-
-    def __init__(self, df, phenotype_data):
-        """Constructor for SpliceJunctionData
-
-        Parameters
-        ----------
-        data, experiment_design_data
-
-        Returns
-        -------
-
-
-        Raises
-        ------
-
-        """
-        super(SpliceJunctionData).__init__()
-        pass
-
-
-class DownsampledSplicingData(BaseData):
-    binned_reducer = None
-    raw_reducer = None
-
-    n_components = 2
-    _binsize = 0.1
-    _var_cut = 0.2
-
-    def __init__(self, df, sample_descriptors):
-        """Instantiate an object of downsampled splicing data
-
-        Parameters
-        ----------
-        df : pandas.DataFrame
-            A "tall" dataframe of all miso summary events, with the usual
-            MISO summary columns, and these are required: 'splice_type',
-            'probability', 'iteration.' Where "probability" indicates the
-            randomly sampling probability from the bam file used to generate
-            these reads, and "iteration" indicates the integer iteration
-            performed, e.g. if multiple resamplings were performed.
-        experiment_design_data: pandas.DataFrame
-
-        Notes
-        -----
-        Warning: this data is usually HUGE (we're taking like 10GB raw .tsv
-        files) so make sure you have the available memory for dealing with
-        these.
-
-        """
-        super(DownsampledSplicingData, self).__init__(sample_descriptors)
-
-        self.sample_descriptors, splicing = \
-            self.sample_descriptors.align(df, join='inner', axis=0)
-
-        self.df = df
-
-    @property
-    def shared_events(self):
-        """
-        Parameters
-        ----------
-
-        Returns
-        -------
-        event_count_df : pandas.DataFrame
-            Splicing events on the rows, splice types and probability as
-            column MultiIndex. Values are the number of iterations which
-            share this splicing event at that probability and splice type.
-        """
-
-        if not hasattr(self, '_shared_events'):
-            shared_events = {}
-
-            for (splice_type, probability), df in self.df.groupby(
-                    ['splice_type', 'probability']):
-                event_count = collections.Counter(df.event_name)
-                shared_events[(splice_type, probability)] = pd.Series(
-                    event_count)
-
-            self._shared_events = pd.DataFrame(shared_events)
-            self._shared_events.columns = pd.MultiIndex.from_tuples(
-                self._shared_events_df.columns.tolist())
-        else:
-            return self._shared_events
-
-    def shared_events_barplot(self, figure_dir='./'):
-        """PLot a "histogram" via colored bars of the number of events shared
-        by different iterations at a particular sampling probability
-
-        Parameters
-        ----------
-        figure_dir : str
-            Where to save the pdf figures created
-        """
-        figure_dir = figure_dir.rstrip('/')
-        colors = purples + ['#262626']
-
-        for splice_type, df in self.shared_events.groupby(level=0, axis=1):
-            print splice_type, df.dropna(how='all').shape
-
-            fig, ax = plt.subplots(figsize=(16, 4))
-
-            count_values = np.unique(df.values)
-            count_values = count_values[np.isfinite(count_values)]
-
-            height_so_far = np.zeros(df.shape[1])
-            left = np.arange(df.shape[1])
-
-            for count, color in zip(count_values, colors):
-                height = df[df == count].count()
-                ax.bar(left, height, bottom=height_so_far, color=color,
-                       label=str(int(count)))
-                height_so_far += height
-            ymax = max(height_so_far)
-            ax.set_ylim(0, ymax)
-
-            legend = ax.legend(loc='center left', bbox_to_anchor=(1, 0.5),
-                               title='Iterations sharing event')
-            ax.set_title(splice_type)
-            ax.set_xlabel('Percent downsampled')
-            ax.set_ylabel('number of events')
-            sns.despine()
-            fig.tight_layout()
-            filename = '{}/downsampled_shared_events_{}.pdf'.format(
-                figure_dir, splice_type)
-            fig.savefig(filename, bbox_extra_artists=(legend,),
-                        bbox_inches='tight', format="pdf")
-
-    def shared_events_percentage(self, min_iter_shared=5, figure_dir='./'):
-        """Plot the percentage of all events detected at that iteration,
-        shared by at least 'min_iter_shared'
-
-        Parameters
-        ----------
-        min_iter_shared : int
-            Minimum number of iterations sharing an event
-        figure_dir : str
-            Where to save the pdf figures created
-        """
-        figure_dir = figure_dir.rstrip('/')
-        sns.set(style='whitegrid', context='talk')
-
-        for splice_type, df in self.shared_events.groupby(level=0, axis=1):
-            df = df.dropna()
-
-            fig, ax = plt.subplots(figsize=(16, 4))
-
-            left = np.arange(df.shape[1])
-            num_greater_than = df[df >= min_iter_shared].count()
-            percent_greater_than = num_greater_than / df.shape[0]
-
-            ax.plot(left, percent_greater_than,
-                    label='Shared with at least {} iter'.format(
-                        min_iter_shared))
-
-            ax.set_xticks(np.arange(0, 101, 10))
-
-            legend = ax.legend(loc='center left', bbox_to_anchor=(1, 0.5),
-                               title='Iterations sharing event')
-
-            ax.set_title(splice_type)
-            ax.set_xlabel('Percent downsampled')
-            ax.set_ylabel('Percent of events')
-            sns.despine()
-            fig.tight_layout()
-            fig.savefig(
-                '{}/downsampled_shared_events_{}_min_iter_shared{}.pdf'
-                .format(figure_dir, splice_type, min_iter_shared),
-                bbox_extra_artists=(legend,), bbox_inches='tight',
-                format="pdf")
+# class SpliceJunctionData(SplicingData):
+# """Class for splice junction information from SJ.out.tab files from STAR
+#
+#     Attributes
+#     ----------
+#
+#
+#     Methods
+#     -------
+#
+#     """
+#
+#     def __init__(self, df, phenotype_data):
+#         """Constructor for SpliceJunctionData
+#
+#         Parameters
+#         ----------
+#         data, experiment_design_data
+#
+#         Returns
+#         -------
+#
+#
+#         Raises
+#         ------
+#
+#         """
+#         super(SpliceJunctionData).__init__()
+#         pass
+#
+#
+# class DownsampledSplicingData(BaseData):
+#     binned_reducer = None
+#     raw_reducer = None
+#
+#     n_components = 2
+#     _binsize = 0.1
+#     _var_cut = 0.2
+#
+#     def __init__(self, df, sample_descriptors):
+#         """Instantiate an object of downsampled splicing data
+#
+#         Parameters
+#         ----------
+#         df : pandas.DataFrame
+#             A "tall" dataframe of all miso summary events, with the usual
+#             MISO summary columns, and these are required: 'splice_type',
+#             'probability', 'iteration.' Where "probability" indicates the
+#             randomly sampling probability from the bam file used to generate
+#             these reads, and "iteration" indicates the integer iteration
+#             performed, e.g. if multiple resamplings were performed.
+#         experiment_design_data: pandas.DataFrame
+#
+#         Notes
+#         -----
+#         Warning: this data is usually HUGE (we're taking like 10GB raw .tsv
+#         files) so make sure you have the available memory for dealing with
+#         these.
+#
+#         """
+#         super(DownsampledSplicingData, self).__init__(sample_descriptors)
+#
+#         self.sample_descriptors, splicing = \
+#             self.sample_descriptors.align(df, join='inner', axis=0)
+#
+#         self.df = df
+#
+#     @property
+#     def shared_events(self):
+#         """
+#         Parameters
+#         ----------
+#
+#         Returns
+#         -------
+#         event_count_df : pandas.DataFrame
+#             Splicing events on the rows, splice types and probability as
+#             column MultiIndex. Values are the number of iterations which
+#             share this splicing event at that probability and splice type.
+#         """
+#
+#         if not hasattr(self, '_shared_events'):
+#             shared_events = {}
+#
+#             for (splice_type, probability), df in self.df.groupby(
+#                     ['splice_type', 'probability']):
+#                 event_count = collections.Counter(df.event_name)
+#                 shared_events[(splice_type, probability)] = pd.Series(
+#                     event_count)
+#
+#             self._shared_events = pd.DataFrame(shared_events)
+#             self._shared_events.columns = pd.MultiIndex.from_tuples(
+#                 self._shared_events_df.columns.tolist())
+#         else:
+#             return self._shared_events
+#
+#     def shared_events_barplot(self, figure_dir='./'):
+#         """PLot a "histogram" via colored bars of the number of events shared
+#         by different iterations at a particular sampling probability
+#
+#         Parameters
+#         ----------
+#         figure_dir : str
+#             Where to save the pdf figures created
+#         """
+#         figure_dir = figure_dir.rstrip('/')
+#         colors = purples + ['#262626']
+#
+#         for splice_type, df in self.shared_events.groupby(level=0, axis=1):
+#             print splice_type, df.dropna(how='all').shape
+#
+#             fig, ax = plt.subplots(figsize=(16, 4))
+#
+#             count_values = np.unique(df.values)
+#             count_values = count_values[np.isfinite(count_values)]
+#
+#             height_so_far = np.zeros(df.shape[1])
+#             left = np.arange(df.shape[1])
+#
+#             for count, color in zip(count_values, colors):
+#                 height = df[df == count].count()
+#                 ax.bar(left, height, bottom=height_so_far, color=color,
+#                        label=str(int(count)))
+#                 height_so_far += height
+#             ymax = max(height_so_far)
+#             ax.set_ylim(0, ymax)
+#
+#             legend = ax.legend(loc='center left', bbox_to_anchor=(1, 0.5),
+#                                title='Iterations sharing event')
+#             ax.set_title(splice_type)
+#             ax.set_xlabel('Percent downsampled')
+#             ax.set_ylabel('number of events')
+#             sns.despine()
+#             fig.tight_layout()
+#             filename = '{}/downsampled_shared_events_{}.pdf'.format(
+#                 figure_dir, splice_type)
+#             fig.savefig(filename, bbox_extra_artists=(legend,),
+#                         bbox_inches='tight', format="pdf")
+#
+#     def shared_events_percentage(self, min_iter_shared=5, figure_dir='./'):
+#         """Plot the percentage of all events detected at that iteration,
+#         shared by at least 'min_iter_shared'
+#
+#         Parameters
+#         ----------
+#         min_iter_shared : int
+#             Minimum number of iterations sharing an event
+#         figure_dir : str
+#             Where to save the pdf figures created
+#         """
+#         figure_dir = figure_dir.rstrip('/')
+#         sns.set(style='whitegrid', context='talk')
+#
+#         for splice_type, df in self.shared_events.groupby(level=0, axis=1):
+#             df = df.dropna()
+#
+#             fig, ax = plt.subplots(figsize=(16, 4))
+#
+#             left = np.arange(df.shape[1])
+#             num_greater_than = df[df >= min_iter_shared].count()
+#             percent_greater_than = num_greater_than / df.shape[0]
+#
+#             ax.plot(left, percent_greater_than,
+#                     label='Shared with at least {} iter'.format(
+#                         min_iter_shared))
+#
+#             ax.set_xticks(np.arange(0, 101, 10))
+#
+#             legend = ax.legend(loc='center left', bbox_to_anchor=(1, 0.5),
+#                                title='Iterations sharing event')
+#
+#             ax.set_title(splice_type)
+#             ax.set_xlabel('Percent downsampled')
+#             ax.set_ylabel('Percent of events')
+#             sns.despine()
+#             fig.tight_layout()
+#             fig.savefig(
+#                 '{}/downsampled_shared_events_{}_min_iter_shared{}.pdf'
+#                 .format(figure_dir, splice_type, min_iter_shared),
+#                 bbox_extra_artists=(legend,), bbox_inches='tight',
+#                 format="pdf")
