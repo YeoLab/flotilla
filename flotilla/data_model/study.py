@@ -2,6 +2,7 @@
 Data models for "studies" studies include attributes about the data and are
 heavier in terms of data load
 """
+import itertools
 import json
 import os
 import sys
@@ -250,6 +251,7 @@ class Study(object):
                     ':\n\t{}\n'.format(mapping_stats_min_reads, outliers_ids))
         else:
             self.technical_outliers = None
+            self.mapping_stats = None
         feature_data_none = expression_feature_data is None or \
             splicing_feature_data is None
 
@@ -302,6 +304,8 @@ class Study(object):
                 feature_ignore_subset_cols=feature_ignore_subset_cols)
             self.default_feature_set_ids.extend(self.expression.feature_subsets
                                                 .keys())
+        else:
+            self.expression = None
         if splicing_data is not None:
             sys.stdout.write("{}\tLoading splicing data\n".format(
                 timestamp()))
@@ -314,12 +318,31 @@ class Study(object):
                 minimum_samples=metadata_minimum_samples,
                 feature_ignore_subset_cols=splicing_feature_ignore_subset_cols,
                 feature_expression_id_col=splicing_feature_expression_id_col)
+        else:
+            self.splicing = None
 
         if spikein_data is not None:
             self.spikein = SpikeInData(
                 spikein_data, feature_data=spikein_feature_data,
                 technical_outliers=self.technical_outliers,
                 predictor_config_manager=self.predictor_config_manager)
+        else:
+            self.spikein = None
+
+        datas = (self.metadata, self.expression, self.mapping_stats,
+                 self.spikein, self.splicing)
+        for data1, data2 in itertools.permutations(datas, 2):
+            try:
+                in1_not2 = data1.data.index.difference(data2.index)
+                if len(in1_not2) > 0:
+                    warnings.warn(
+                        'Sample ids in {}, but not found in {}'
+                        ' data: {}'.format(data1, data2, ' '.join(in1_not2)))
+
+            except AttributeError:
+                continue
+
+
         sys.stdout.write("{}\tSuccessfully initialized a Study "
                          "object!\n".format(timestamp()))
 
