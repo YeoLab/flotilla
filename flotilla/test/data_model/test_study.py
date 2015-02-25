@@ -2,10 +2,13 @@
 This tests whether the Study object was created correctly. No
 computation or visualization tests yet.
 """
+import warnings
+
 import numpy.testing as npt
-import pandas as pd
 import pandas.util.testing as pdt
 import pytest
+
+warnings.simplefilter("error")
 
 
 @pytest.fixture(params=['expression', 'splicing'])
@@ -23,9 +26,9 @@ def color_samples_by(request, metadata_phenotype_col):
 
 
 class TestStudy(object):
-    @pytest.fixture
-    def n_groups(self):
-        return 3
+    # @pytest.fixture
+    # def n_groups(self):
+    #     return 3
 
     # @pytest.fixture
     # def study(self, metadata_data_groups_fixed, metadata_kws_fixed,
@@ -67,22 +70,80 @@ class TestStudy(object):
     #                  expression_data=expression_data_no_na,
     #                  splicing_data=splicing_data_fixed, **kwargs)
 
-    def test_init_metadata(self, metadata_data_groups_fixed,
-                           metadata_kws_fixed,
-                           pooled, technical_outliers):
+    def test_init(self, metadata_data,
+                           metadata_kws):
         # Also need to check for when these are NAs
         from flotilla import Study
-        study = Study(metadata_data_groups_fixed, **metadata_kws_fixed)
 
-        if pooled is None:
-            npt.assert_equal(study.pooled, None)
-        else:
-            npt.assert_array_equal(sorted(study.pooled), sorted(pooled))
-        if technical_outliers is None:
-            pdt.assert_array_equal(study.technical_outliers, pd.Index([]))
-        else:
-            pdt.assert_array_equal(sorted(study.technical_outliers),
-                                   sorted(technical_outliers))
+        kws = dict(('metadata_'+k, v) for k, v in metadata_kws.items())
+        study = Study(metadata_data, **kws)
+
+        pdt.assert_frame_equal(study.metadata.data,
+                               metadata_data)
+        pdt.assert_equal(study.version, '0.1.0')
+        npt.assert_equal(study.pooled, None)
+        # npt.assert_equal(study.outliers, None)
+
+    def test_init_pooled(self, metadata_data,
+                         metadata_kws,
+                         pooled):
+        from flotilla import Study
+        metadata = metadata_data.copy()
+
+        kws = dict(('metadata_'+k, v) for k, v in metadata_kws.items())
+        metadata['pooled'] = metadata.index.isin(pooled)
+
+        study = Study(metadata, **kws)
+
+        npt.assert_array_equal(sorted(study.pooled), sorted(pooled))
+
+    def test_init_outlier(self, metadata_data, metadata_kws, outliers):
+        from flotilla import Study
+
+        metadata = metadata_data.copy()
+
+        kws = dict(('metadata_' + k, v) for k, v in metadata_kws.items())
+        metadata['outlier'] = metadata.index.isin(outliers)
+
+        study = Study(metadata, **kws)
+
+        npt.assert_array_equal(study.metadata.data, metadata)
+
+    def test_init_technical_outlier(self, metadata_data, metadata_kws,
+                                    technical_outliers, mapping_stats_data,
+                                    mapping_stats_kws):
+        from flotilla import Study
+
+        metadata = metadata_data.copy()
+
+        kw_pairs = (('metadata', metadata_kws),
+                    ('mapping_stats', mapping_stats_kws))
+        kwargs = {}
+        for name, kws in kw_pairs:
+            for k, v in kws.items():
+                kwargs['{}_{}'.format(name, k)] = v
+        study = Study(metadata, mapping_stats_data=mapping_stats_data,
+                      **kwargs)
+        pdt.assert_array_equal(sorted(study.technical_outliers),
+                               sorted(technical_outliers))
+
+    def test_init_expression(self, metadata_data, metadata_kws,
+                             expression_data, expression_kws):
+        from flotilla import Study
+
+        metadata = metadata_data.copy()
+
+        kw_pairs = (('metadata', metadata_kws),
+                    ('expression', expression_kws))
+        kwargs = {}
+        for name, kws in kw_pairs:
+            for k, v in kws.items():
+                kwargs['{}_{}'.format(name, k)] = v
+        study = Study(metadata, expression_data=expression_data,
+                      **kwargs)
+        pdt.assert_array_equal(study.expression.data_original,
+                               expression_data)
+
     #
     # def test_plot_pca(self, study_no_mapping_stats, color_samples_by):
     #     study_no_mapping_stats.plot_pca(color_samples_by=color_samples_by,

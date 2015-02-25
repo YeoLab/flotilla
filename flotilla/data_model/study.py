@@ -2,7 +2,6 @@
 Data models for "studies" studies include attributes about the data and are
 heavier in terms of data load
 """
-import itertools
 import json
 import os
 import sys
@@ -328,20 +327,6 @@ class Study(object):
                 predictor_config_manager=self.predictor_config_manager)
         else:
             self.spikein = None
-
-        datas = (self.metadata, self.expression, self.mapping_stats,
-                 self.spikein, self.splicing)
-        for data1, data2 in itertools.permutations(datas, 2):
-            try:
-                in1_not2 = data1.data.index.difference(data2.index)
-                if len(in1_not2) > 0:
-                    warnings.warn(
-                        'Sample ids in {}, but not found in {}'
-                        ' data: {}'.format(data1, data2, ' '.join(in1_not2)))
-
-            except AttributeError:
-                continue
-
 
         sys.stdout.write("{}\tSuccessfully initialized a Study "
                          "object!\n".format(timestamp()))
