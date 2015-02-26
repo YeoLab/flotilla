@@ -149,7 +149,7 @@ class GeneOntologyData(object):
         enrichment_df = pd.DataFrame(enrichment)
 
         if enrichment_df.empty:
-            warnings.warn('No GO categories enriched')
+            warnings.warn('No GO categories enriched in provided features')
             return
 
         # Bonferonni correction
