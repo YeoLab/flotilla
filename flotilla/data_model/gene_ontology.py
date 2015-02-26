@@ -160,54 +160,9 @@ class GeneOntologyData(object):
             enrichment_df.p_value * enrichment_df.shape[0]
         ind = enrichment_df['bonferonni_corrected_p_value'] < p_value_cutoff
         enrichment_df = enrichment_df.ix[ind]
+        enrichment_df = enrichment_df.sort(columns=['p_value'])
 
-        # metadata = self.data.ix[:, ['GO domain', 'GO Term Name',
-        #                             'GO Term Accession']]
-        # metadata = metadata.set_index('GO Term Accession')
-        # enrichment_df = enrichment_df.join(metadata)
         return enrichment_df
-        # for k, v in pValues.items():
-        #     try:
-        #         # Bonferroni correction
-        #         pValues[k][0] = v * float(n_comparisons)
-        #     except TypeError:
-        #         pass
-        #
-        # y = []
-        #
-        # sorted_x = sorted(pValues.iteritems(),
-        #                   key=operator.itemgetter(1))
-        #
-        # for k, v in sorted_x:
-        #     if v == "notest":
-        #         continue
-        #     if not type(k) == str:
-        #         continue
-        #     try:
-        #         if v[0] > p_value_cutoff:
-        #             continue
-        #         y.append(
-        #             [k, "|".join(self.ontology[k]['name']), v[0], v[1],
-        #              v[2], v[3], ",".join(v[4]), ",".join(v[5])])
-        #
-        #     except:
-        #         pass
-        # columns = ['GO Term ID', 'GO Term Description',
-        #            'Bonferroni-corrected Hypergeometric '
-        #            'p-Value',
-        #            'N Genes in List and GO Category',
-        #            'N Expressed Genes in GO Category',
-        #            'N Genes in GO category',
-        #            'Ensembl Gene IDs in List',
-        #            'Gene symbols in List']
-        #
-        # try:
-        #     df = pd.DataFrame(y, columns=columns)
-        #     df.set_index('Go Term ID', inplace=True)
-        # except:
-        #     df = pd.DataFrame(None, columns=columns)
-
-        # return df
 
     def plot_enrichment(self, feature_ids, background, ):
         pass
