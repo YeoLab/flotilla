@@ -148,7 +148,7 @@ class GeneOntologyData(object):
             enrichment['go_name'][go_term] = go_genes['name']
         enrichment_df = pd.DataFrame(enrichment)
 
-        if enrichment_df.empty():
+        if enrichment_df.empty:
             warnings.warn('No GO categories enriched')
             return
 
