@@ -98,18 +98,18 @@ class GeneOntologyData(object):
 
             except:
                 pass
-        columns = ['go_term_id', 'go_term_description',
-                   'bonferroni_corrected_hypergeometric_'
-                   'p_value',
-                   'n_genes_in_list_and_go_category',
-                   'n_expressed_genes_in_go_category',
-                   'n_genes in_go_category',
-                   'ensembl_gene_ids_in_list',
-                   'gene_symbols_in_ist']
+        columns = ['GO Term ID', 'GO Term Description',
+                   'Bonferroni-corrected Hypergeometric '
+                   'p-Value',
+                   'N Genes in List and GO Category',
+                   'N Expressed Genes in GO Category',
+                   'N Genes in GO category',
+                   'Ensembl Gene IDs in List',
+                   'Gene symbols in List']
 
         try:
             df = pd.DataFrame(y, columns=columns)
-            df.set_index('go_term_id', inplace=True)
+            df.set_index('Go Term ID', inplace=True)
         except:
             df = pd.DataFrame(None, columns=columns)
 
