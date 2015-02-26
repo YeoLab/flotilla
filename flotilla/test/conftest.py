@@ -3,6 +3,7 @@ This file will be auto-imported for every testing session, so you can use
 these objects and functions across test files.
 """
 from collections import defaultdict
+import os
 
 import matplotlib as mpl
 import numpy as np
@@ -11,6 +12,11 @@ import pandas as pd
 from scipy import stats
 import seaborn as sns
 
+
+@pytest.fixture(scope='module')
+def data_dir():
+    return os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                        'example_data')
 
 @pytest.fixture(scope='module')
 def RANDOM_STATE():
@@ -578,7 +584,6 @@ def study(request, shalek2013, scrambled_study):
 def genelist_path(data_dir):
     return '{}/example_gene_list.txt'.format(data_dir)
 
-
 @pytest.fixture(scope='module')
 def genelist_dropbox_link():
     return 'https://www.dropbox.com/s/652y6hb8zonxe4c/example_gene_list.txt' \
@@ -715,3 +720,11 @@ def splicing_fixed(splicing_data_fixed):
     from flotilla.data_model.splicing import SplicingData
 
     return SplicingData(splicing_data_fixed)
+
+@pytest.fixture(scope='module')
+def gene_ontology_data_path(data_dir):
+    return '{}/human_grch38_chr22_gene_ontology.txt'.format(data_dir)
+
+@pytest.fixture(scope='module')
+def gene_ontology_data(gene_ontology_data_path):
+    return pd.read_table(gene_ontology_data_path)
