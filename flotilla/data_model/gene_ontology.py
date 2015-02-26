@@ -38,8 +38,8 @@ class GeneOntologyData(object):
         self.ontology = defaultdict(dict)
         for go, df in data.groupby('GO Term Accession'):
             self.ontology[go]['genes'] = set(df['Ensembl Gene ID'])
-            self.ontology[go]['name'] = df['GO Term Name'][0]
-            self.ontology[go]['domain'] = df['GO domain'][0]
+            self.ontology[go]['name'] = df['GO Term Name'].values[0]
+            self.ontology[go]['domain'] = df['GO domain'].values[0]
             self.ontology[go]['n_genes'] = len(self.ontology[go]['genes'])
         sys.stdout.write('{}\t\tDone.'.format(timestamp()))
 
