@@ -1855,7 +1855,9 @@ class Study(object):
         else:
             return self.splicing.data
 
-    def go_enrichment(self, feature_ids, background=None):
+    def go_enrichment(self, feature_ids, background=None, domain=None,
+                      p_value_cutoff=1000000, min_feature_size=3,
+                      min_background_size=5):
         """Calculate gene ontology enrichment of provided features
 
         Parameters
@@ -1864,7 +1866,17 @@ class Study(object):
             Features to calculate gene ontology enrichment on
         background : list-like, optional
             Features to use as the background
-
+        domain : str or list, optional
+            Only calculate GO enrichment for a particular GO category or
+            subset of categories. Valid domains:
+            'biological_process', 'molecular_function', 'cellular_component'
+        p_value_cutoff : float, optional
+            Maximum accepted Bonferroni-corrected p-value
+        min_feature_size : int, optional
+            Minimum number of features of interest overlapping in a GO Term,
+            to calculate enrichment
+        min_background_size : int, optional
+            Minimum number of features in the background overlapping a GO Term
         Returns
         -------
         enrichment : pandas.DataFrame
@@ -1872,11 +1884,15 @@ class Study(object):
             enrichment categories that were enriched in the features
         """
         if background is None:
-            sys.stderr.write('No background provided, defaulting to all '
+            sys.stdout.write('No background provided, defaulting to all '
                              'expressed genes')
             background = self.expression.data.columns
-        return self.gene_ontology.enrichment(feature_ids,
-                                             background=background)
+        return self.gene_ontology.enrichment(
+            feature_ids, background=background,
+            cross_reference=self.expression.feature_renamer_series,
+            domain=domain, p_value_cutoff=p_value_cutoff,
+            min_feature_size=min_feature_size,
+            min_background_size=min_background_size)
 
 # Add interactive visualizations
 Study.interactive_classifier = Interactive.interactive_classifier
