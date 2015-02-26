@@ -103,7 +103,7 @@ class GeneOntologyData(object):
                    'n_genes in_go_category',
                    'ensembl_gene_ids_in_list',
                    'gene_symbols_in_ist']
-
+        import pdb; pdb.set_trace()
         try:
             df = pd.DataFrame(y, columns=columns)
             df.set_index('go_term_id', inplace=True)
