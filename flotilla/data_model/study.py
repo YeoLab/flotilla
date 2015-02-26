@@ -398,8 +398,8 @@ class Study(object):
             requiring the following data resources: metadata,
             expression, splicing
         species_data_pacakge_base_url : str
-            Base URL to fetch species-specific gene and splicing event
-            metadata from.
+            Base URL to fetch species-specific _ and splicing event
+            metadata frnm.
             Default 'https://s3-us-west-2.amazonaws.com/flotilla-projects/'
 
         Returns
@@ -1855,13 +1855,25 @@ class Study(object):
             return self.splicing.data
 
     def go_enrichment(self, feature_ids, background=None):
-        """Calculate gene ontology enrichment of these
+        """Calculate gene ontology enrichment of provided features
 
-        :param feature_ids:
-        :type feature_ids:
-        :return:
-        :rtype:
+        Parameters
+        ----------
+        feature_ids : list-like
+            Features to calculate gene ontology enrichment on
+        background : list-like, optional
+            Features to use as the background
+
+        Returns
+        -------
+        enrichment : pandas.DataFrame
+            A (go_categories, columns) dataframe showing the GO
+            enrichment categories that were enriched in the features
         """
+        if background is None:
+            sys.stderr.write('No background provided, defaulting to all '
+                             'expressed genes')
+            background = self.expression.data.columns
         return self.gene_ontology.enrichment(feature_ids,
                                              background=background)
 
