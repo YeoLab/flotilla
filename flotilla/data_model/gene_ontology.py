@@ -144,8 +144,8 @@ class GeneOntologyData(object):
                 go_term] = ','.join(features_in_go)
             enrichment['features_of_interest_in_go_term_gene_symbols'][
                 go_term] = ','.join(symbols)
-            enrichment['go_domain'] = go_genes['domain']
-            enrichment['go_name'] = go_genes['name']
+            enrichment['go_domain'][go_term] = go_genes['domain']
+            enrichment['go_name'][go_term] = go_genes['name']
         enrichment_df = pd.DataFrame(enrichment)
 
         if enrichment_df.empty():
