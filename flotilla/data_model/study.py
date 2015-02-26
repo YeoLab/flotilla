@@ -199,7 +199,8 @@ class Study(object):
         # self.predictor_config_manager = None
 
         self.species = species
-        self.gene_ontology = GeneOntologyData(gene_ontology_data)
+        if gene_ontology_data is not None:
+            self.gene_ontology = GeneOntologyData(gene_ontology_data)
 
         self.license = license
         self.title = title
