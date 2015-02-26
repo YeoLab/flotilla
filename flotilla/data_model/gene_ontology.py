@@ -106,7 +106,7 @@ class GeneOntologyData(object):
 
         try:
             df = pd.DataFrame(y, columns=columns)
-            df.set_index('GO Term ID', inplace=True)
+            df.set_index('go_term_id', inplace=True)
         except:
             df = pd.DataFrame(None, columns=columns)
 
