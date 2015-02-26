@@ -101,21 +101,21 @@ class GeneOntologyData(object):
                 raise ValueError("'{}' is not a valid GO domain. Only {} are "
                                  "acceptable".format(
                     domain, ",".join("'{}'".format(x) for x in self.domains)))
-            domains = (domain)
+            domains = frozenset([domain])
         elif isinstance(domain, Iterable):
             if len(set(domain) & self.domains) == 0:
                 raise ValueError("'{}' are not a valid GO domains. Only "
                                  "{} are acceptable".format(
                     ",".join("'{}'".format(x) for x in domain),
                     ",".join("'{}'".format(x) for x in self.domains)))
-            domains = domain
+            domains = frozenset(domain)
 
         n_all_genes = len(background)
         n_features_of_interest = len(features_of_interest)
         enrichment = defaultdict(dict)
 
         for go_term, go_genes in self.ontology.items():
-            if len(go_genes['domain'] & domains) == 0:
+            if go_genes['domain'] not in domains:
                 continue
 
             features_in_go = go_genes['genes'].intersection(
