@@ -1,5 +1,6 @@
 from collections import defaultdict
 from itertools import izip
+import operator
 import sys
 
 import pandas as pd
@@ -40,13 +41,14 @@ class GeneOntologyData(object):
     def enrichment(self, features_of_interest, background=None,
                    p_value_cutoff=1000000, xRef={}):
         background = self.all_genes if background is None else background
-        n_all_genes = len(background),
+        n_all_genes = len(background)
         n_features_of_interest = len(features_of_interest)
         pValues = defaultdict()
         n_comparisons = 0
 
         for go_term, go_genes in self.ontology.items():
-            feature_ids_go = go_genes['genes'].intersection(features_of_interest)
+            feature_ids_go = go_genes['genes'].intersection(
+                features_of_interest)
             background_go = go_genes['genes'].intersection(background)
             if len(feature_ids_go) <= 3 or len(background_go) < 5:
                 pValues[go_term] = 'notest'
@@ -72,14 +74,15 @@ class GeneOntologyData(object):
 
         for k, v in pValues.items():
             try:
-                pValues[k][0] = v * float(n_comparisons)  # bonferroni correction
-            except:
+                # Bonferroni correction
+                pValues[k][0] = v * float(n_comparisons)
+            except TypeError:
                 pass
-        import operator
 
         y = []
 
-        sorted_x = sorted(pValues.iteritems(), key=operator.itemgetter(1))
+        sorted_x = sorted(pValues.iteritems(),
+                          key=operator.itemgetter(1))
 
         for k, v in sorted_x:
             if v == "notest":
@@ -90,8 +93,8 @@ class GeneOntologyData(object):
                 if v[0] > p_value_cutoff:
                     continue
                 y.append(
-                    [k, "|".join(self.ontology[k]['name']), v[0], v[1], v[2], v[3],
-                     ",".join(v[4]), ",".join(v[5])])
+                    [k, "|".join(self.ontology[k]['name']), v[0], v[1],
+                     v[2], v[3], ",".join(v[4]), ",".join(v[5])])
 
             except:
                 pass
@@ -103,7 +106,7 @@ class GeneOntologyData(object):
                    'n_genes in_go_category',
                    'ensembl_gene_ids_in_list',
                    'gene_symbols_in_ist']
-        import pdb; pdb.set_trace()
+
         try:
             df = pd.DataFrame(y, columns=columns)
             df.set_index('go_term_id', inplace=True)
