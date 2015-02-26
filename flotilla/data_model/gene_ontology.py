@@ -94,6 +94,9 @@ class GeneOntologyData(object):
         if len(set(background) & set(features_of_interest)) == 0:
             raise ValueError('Features of interest and background do not '
                              'overlap! Not calculating GO enrichment')
+        if len(set(features_of_interest) & set(self.all_genes)) == 0:
+            raise ValueError('Features of interest do not overlap with GO term'
+                             'gene ids. Not calculating GO enrichment.')
         domains = self.domains
 
         if isinstance(domain, str):
