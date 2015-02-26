@@ -1,8 +1,11 @@
 from collections import defaultdict
 from itertools import izip
+import sys
 
 import pandas as pd
 from scipy.stats import hypergeom
+
+from ..util import timestamp
 
 
 class GeneOntologyData(object):
@@ -10,8 +13,10 @@ class GeneOntologyData(object):
     def __init__(self, data):
 
         self.data = data
-
+        sys.stdout.write('{}\tBuilding Gene Ontology '
+                         'database...\n'.format(timestamp()))
         ontology, all_genes = self._generate_ontology(self.data)
+        sys.stdout.write('{}\t\tDone.'.format(timestamp()))
         self.ontology = ontology
         self.all_genes = all_genes
 
