@@ -1884,7 +1884,7 @@ class Study(object):
             enrichment categories that were enriched in the features
         """
         if background is None:
-            sys.stdout.write('No background provided, defaulting to all '
+            warnings.warn('No background provided, defaulting to all '
                              'expressed genes')
             background = self.expression.data.columns
         return self.gene_ontology.enrichment(
