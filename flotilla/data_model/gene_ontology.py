@@ -1,5 +1,6 @@
 from collections import defaultdict, Iterable
 import sys
+import warnings
 
 import pandas as pd
 from scipy.stats import hypergeom
@@ -37,8 +38,8 @@ class GeneOntologyData(object):
         self.ontology = defaultdict(dict)
         for go, df in data.groupby('GO Term Accession'):
             self.ontology[go]['genes'] = set(df['Ensembl Gene ID'])
-            self.ontology[go]['name'] = set(df['GO Term Name'])
-            self.ontology[go]['domain'] = set(df['GO domain'])
+            self.ontology[go]['name'] = df['GO Term Name'][0]
+            self.ontology[go]['domain'] = df['GO domain'][0]
             self.ontology[go]['n_genes'] = len(self.ontology[go]['genes'])
         sys.stdout.write('{}\t\tDone.'.format(timestamp()))
 
@@ -103,8 +104,8 @@ class GeneOntologyData(object):
             domains = (domain)
         elif isinstance(domain, Iterable):
             if len(set(domain) & self.domains) == 0:
-                raise ValueError("'{}' are not a valid GO domains. Only {} are "
-                                 "acceptable".format(
+                raise ValueError("'{}' are not a valid GO domains. Only "
+                                 "{} are acceptable".format(
                     ",".join("'{}'".format(x) for x in domain),
                     ",".join("'{}'".format(x) for x in self.domains)))
             domains = domain
@@ -114,7 +115,7 @@ class GeneOntologyData(object):
         enrichment = defaultdict(dict)
 
         for go_term, go_genes in self.ontology.items():
-            if go_genes['domain'] not in domains:
+            if len(go_genes['domain'] & domains) == 0:
                 continue
 
             features_in_go = go_genes['genes'].intersection(
@@ -143,7 +144,13 @@ class GeneOntologyData(object):
                 go_term] = ','.join(features_in_go)
             enrichment['features_of_interest_in_go_term_gene_symbols'][
                 go_term] = ','.join(symbols)
+            enrichment['go_domain'] = go_genes['domain']
+            enrichment['go_name'] = go_genes['name']
         enrichment_df = pd.DataFrame(enrichment)
+
+        if enrichment_df.empty():
+            warnings.warn('No GO categories enriched')
+            return
 
         # Bonferonni correction
         enrichment_df['bonferonni_corrected_p_value'] = \
@@ -151,10 +158,10 @@ class GeneOntologyData(object):
         ind = enrichment_df['bonferonni_corrected_p_value'] < p_value_cutoff
         enrichment_df = enrichment_df.ix[ind]
 
-        metadata = self.data.ix[:, ['GO domain', 'GO Term Name',
-                                    'GO Term Accession']]
-        metadata = metadata.set_index('GO Term Accession')
-        enrichment_df = enrichment_df.join(metadata)
+        # metadata = self.data.ix[:, ['GO domain', 'GO Term Name',
+        #                             'GO Term Accession']]
+        # metadata = metadata.set_index('GO Term Accession')
+        # enrichment_df = enrichment_df.join(metadata)
         return enrichment_df
         # for k, v in pValues.items():
         #     try:
