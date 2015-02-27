@@ -185,10 +185,10 @@ class TestModalityEstimator(object):
 
         pdt.assert_equal(test_guess_modality, true_guess_modality)
 
-    def test_fit_transform_with_na(self, estimator, splicing_data_fixed):
-        test_fit_transform = estimator.fit_transform(splicing_data_fixed)
+    def test_fit_transform_with_na(self, estimator, splicing_data):
+        test_fit_transform = estimator.fit_transform(splicing_data)
 
-        logsumexp_logliks = splicing_data_fixed.apply(
+        logsumexp_logliks = splicing_data.apply(
             lambda x: pd.Series({k: v.logsumexp_logliks(x)
                                  for k, v in estimator.models.iteritems()}),
             axis=0)
@@ -235,14 +235,14 @@ def test_switchy_score(array):
     npt.assert_array_equal(test_switchy_score, true_switchy_score)
 
 
-def test_get_switchy_score_order(splicing_data_fixed):
+def test_get_switchy_score_order(splicing_data):
     from flotilla.compute.splicing import get_switchy_score_order, \
         switchy_score
 
-    test_score_order = get_switchy_score_order(splicing_data_fixed)
+    test_score_order = get_switchy_score_order(splicing_data)
 
     switchy_scores = np.apply_along_axis(switchy_score, axis=0,
-                                         arr=splicing_data_fixed)
+                                         arr=splicing_data)
     true_score_order = np.argsort(switchy_scores)
 
     npt.assert_array_equal(test_score_order, true_score_order)
