@@ -152,111 +152,13 @@
 
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
 <span class="kn">import</span> <span class="nn">gzip</span>
-<span class="kn">import</span> <span class="nn">itertools</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">hypergeom</span>
 
 <span class="kn">from</span> <span class="nn">flotilla.util</span> <span class="kn">import</span> <span class="n">link_to_list</span>
 
 
-<div class="viewcode-block" id="generateOntology"><a class="viewcode-back" href="../../flotilla.go.html#flotilla.go.generateOntology">[docs]</a><span class="k">def</span> <span class="nf">generateOntology</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
-
-    <span class="n">ontology</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span>
-        <span class="k">lambda</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;genes&#39;</span><span class="p">:</span> <span class="nb">set</span><span class="p">(),</span> <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="nb">set</span><span class="p">(),</span> <span class="s">&#39;domain&#39;</span><span class="p">:</span> <span class="nb">set</span><span class="p">()})</span>
-    <span class="n">allGenesInOntologies</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;Ensembl Gene ID&#39;</span><span class="p">))</span>
-    <span class="k">for</span> <span class="n">GO</span><span class="p">,</span> <span class="n">gene</span><span class="p">,</span> <span class="n">domain</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">izip</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;GO Term Accession&#39;</span><span class="p">),</span>
-                                                 <span class="n">df</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;Ensembl Gene ID&#39;</span><span class="p">),</span>
-                                                 <span class="n">df</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;GO domain&#39;</span><span class="p">),</span>
-                                                 <span class="n">df</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;GO Term Name&#39;</span><span class="p">)):</span>
-        <span class="n">ontology</span><span class="p">[</span><span class="n">GO</span><span class="p">][</span><span class="s">&#39;genes&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">gene</span><span class="p">)</span>
-        <span class="n">ontology</span><span class="p">[</span><span class="n">GO</span><span class="p">][</span><span class="s">&#39;name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-        <span class="n">ontology</span><span class="p">[</span><span class="n">GO</span><span class="p">][</span><span class="s">&#39;domain&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">domain</span><span class="p">)</span>
-        <span class="n">ontology</span><span class="p">[</span><span class="n">GO</span><span class="p">][</span><span class="s">&#39;n_genes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ontology</span><span class="p">[</span><span class="n">GO</span><span class="p">][</span><span class="s">&#39;genes&#39;</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">ontology</span><span class="p">,</span> <span class="n">allGenesInOntologies</span>
-
-</div>
-<div class="viewcode-block" id="GO_enrichment"><a class="viewcode-back" href="../../flotilla.go.html#flotilla.go.GO_enrichment">[docs]</a><span class="k">def</span> <span class="nf">GO_enrichment</span><span class="p">(</span><span class="n">geneList</span><span class="p">,</span> <span class="n">ontology</span><span class="p">,</span> <span class="n">expressedGenes</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">printIt</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                  <span class="n">pCut</span><span class="o">=</span><span class="mi">1000000</span><span class="p">,</span> <span class="n">xRef</span><span class="o">=</span><span class="p">{}):</span>
-    <span class="n">lenAllGenes</span><span class="p">,</span> <span class="n">lenTheseGenes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">expressedGenes</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">geneList</span><span class="p">)</span>
-    <span class="n">pValues</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">()</span>
-    <span class="n">nCmps</span> <span class="o">=</span> <span class="mi">0</span>
-
-    <span class="k">for</span> <span class="n">GOTerm</span><span class="p">,</span> <span class="n">GOGenes</span> <span class="ow">in</span> <span class="n">ontology</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">inBoth</span> <span class="o">=</span> <span class="n">GOGenes</span><span class="p">[</span><span class="s">&#39;genes&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">geneList</span><span class="p">)</span>
-        <span class="n">expressedGOGenes</span> <span class="o">=</span> <span class="n">GOGenes</span><span class="p">[</span><span class="s">&#39;genes&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">expressedGenes</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">inBoth</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">3</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">expressedGOGenes</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>
-            <span class="n">pValues</span><span class="p">[</span><span class="n">GOTerm</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;notest&#39;</span>
-            <span class="k">continue</span>
-        <span class="c"># survival function is more accurate on small p-values...</span>
-        <span class="n">pVal</span> <span class="o">=</span> <span class="n">hypergeom</span><span class="o">.</span><span class="n">sf</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">inBoth</span><span class="p">),</span> <span class="n">lenAllGenes</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">expressedGOGenes</span><span class="p">),</span>
-                            <span class="n">lenTheseGenes</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">pVal</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">pVal</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">symbols</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">ensg</span> <span class="ow">in</span> <span class="n">inBoth</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">ensg</span> <span class="ow">in</span> <span class="n">xRef</span><span class="p">:</span>
-                <span class="n">symbols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xRef</span><span class="p">[</span><span class="n">ensg</span><span class="p">])</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">symbols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ensg</span><span class="p">)</span>
-        <span class="n">pValues</span><span class="p">[</span><span class="n">GOTerm</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">pVal</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">inBoth</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">expressedGOGenes</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">GOGenes</span><span class="p">[</span><span class="s">&#39;genes&#39;</span><span class="p">]),</span>
-            <span class="n">inBoth</span><span class="p">,</span>
-            <span class="n">symbols</span><span class="p">)</span>
-
-    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pValues</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">pValues</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">nCmps</span><span class="p">)</span>  <span class="c"># bonferroni correction</span>
-        <span class="k">except</span><span class="p">:</span>
-            <span class="k">pass</span>
-    <span class="kn">import</span> <span class="nn">operator</span>
-
-    <span class="n">y</span> <span class="o">=</span> <span class="p">[]</span>
-
-    <span class="n">sorted_x</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">pValues</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
-
-    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">sorted_x</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="s">&quot;notest&quot;</span><span class="p">:</span>
-            <span class="k">continue</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
-            <span class="k">continue</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">pCut</span><span class="p">:</span>
-                <span class="k">continue</span>
-            <span class="k">if</span> <span class="n">printIt</span><span class="p">:</span>
-                <span class="k">print</span> <span class="n">k</span><span class="p">,</span> <span class="s">&quot;|&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ontology</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s">&#39;name&#39;</span><span class="p">]),</span> <span class="s">&quot;</span><span class="si">%.3e</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> \
-                    <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="s">&quot;|&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
-                <span class="k">pass</span>
-            <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">k</span><span class="p">,</span> <span class="s">&quot;|&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ontology</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s">&#39;name&#39;</span><span class="p">]),</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
-                      <span class="s">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">4</span><span class="p">]),</span> <span class="s">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">5</span><span class="p">])])</span>
-
-        <span class="k">except</span><span class="p">:</span>
-            <span class="k">pass</span>
-
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;GO Term ID&#39;</span><span class="p">,</span> <span class="s">&#39;GO Term Description&#39;</span><span class="p">,</span>
-                                      <span class="s">&#39;Bonferroni-corrected Hypergeometric &#39;</span>
-                                      <span class="s">&#39;p-Value&#39;</span><span class="p">,</span>
-                                      <span class="s">&#39;N Genes in List and GO Category&#39;</span><span class="p">,</span>
-                                      <span class="s">&#39;N Expressed Genes in GO Category&#39;</span><span class="p">,</span>
-                                      <span class="s">&#39;N Genes in GO category&#39;</span><span class="p">,</span>
-                                      <span class="s">&#39;Ensembl Gene IDs in List&#39;</span><span class="p">,</span>
-                                      <span class="s">&#39;Gene symbols in List&#39;</span><span class="p">])</span>
-        <span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s">&#39;GO Term ID&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-    <span class="k">except</span><span class="p">:</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;GO Term ID&#39;</span><span class="p">,</span> <span class="s">&#39;GO Term Description&#39;</span><span class="p">,</span>
-                                         <span class="s">&#39;Bonferroni-corrected Hypergeometric &#39;</span>
-                                         <span class="s">&#39;p-Value&#39;</span><span class="p">,</span>
-                                         <span class="s">&#39;N Genes in List and GO Category&#39;</span><span class="p">,</span>
-                                         <span class="s">&#39;N Expressed Genes in GO Category&#39;</span><span class="p">,</span>
-                                         <span class="s">&#39;N Genes in GO category&#39;</span><span class="p">,</span>
-                                         <span class="s">&#39;Ensembl Gene IDs in List&#39;</span><span class="p">,</span>
-                                         <span class="s">&#39;Gene symbols in List&#39;</span><span class="p">])</span>
-
-    <span class="k">return</span> <span class="n">df</span>
-
-</div>
 <div class="viewcode-block" id="GO"><a class="viewcode-back" href="../../flotilla.go.html#flotilla.go.GO">[docs]</a><span class="k">class</span> <span class="nc">GO</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    gene ontology tool</span>

@@ -1,0 +1,7 @@
+flotilla.data_model.gene_ontology module
+========================================
+
+.. automodule:: flotilla.data_model.gene_ontology
+    :members:
+    :undoc-members:
+    :show-inheritance:

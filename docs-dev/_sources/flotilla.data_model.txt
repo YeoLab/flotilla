@@ -8,6 +8,7 @@ Submodules
 
    flotilla.data_model.base
    flotilla.data_model.expression
+   flotilla.data_model.gene_ontology
    flotilla.data_model.metadata
    flotilla.data_model.quality_control
    flotilla.data_model.splicing

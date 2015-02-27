@@ -169,6 +169,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="flotilla.data_model.expression.html">flotilla.data_model.expression module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flotilla.data_model.gene_ontology.html">flotilla.data_model.gene_ontology module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="flotilla.data_model.metadata.html">flotilla.data_model.metadata module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="flotilla.data_model.quality_control.html">flotilla.data_model.quality_control module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="flotilla.data_model.splicing.html">flotilla.data_model.splicing module</a></li>
@@ -364,7 +365,7 @@ splicing events</p>
 
 <dl class="attribute">
 <dt id="flotilla.data_model.Study.default_feature_set_ids">
-<tt class="descname">default_feature_set_ids</tt><em class="property"> = ['not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'variant', 'all features', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)']</em><a class="headerlink" href="#flotilla.data_model.Study.default_feature_set_ids" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">default_feature_set_ids</tt><em class="property"> = ['not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'variant', 'all features']</em><a class="headerlink" href="#flotilla.data_model.Study.default_feature_set_ids" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -511,8 +512,8 @@ expression, splicing</p>
 </div></blockquote>
 <p><strong>species_data_pacakge_base_url</strong> : str</p>
 <blockquote>
-<div><p>Base URL to fetch species-specific gene and splicing event
-metadata from.
+<div><p>Base URL to fetch species-specific _ and splicing event
+metadata frnm.
 Default &#8216;<a class="reference external" href="https://s3-us-west-2.amazonaws.com/flotilla-projects/">https://s3-us-west-2.amazonaws.com/flotilla-projects/</a>&#8216;</p>
 </div></blockquote>
 </td>
@@ -528,6 +529,54 @@ datapackage_url file</p>
 <blockquote class="last">
 <div><p>If the datapackage.json file does not contain the required
 resources of metadata, expression, and splicing.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.Study.go_enrichment">
+<tt class="descname">go_enrichment</tt><big>(</big><em>feature_ids</em>, <em>background=None</em>, <em>domain=None</em>, <em>p_value_cutoff=1000000</em>, <em>min_feature_size=3</em>, <em>min_background_size=5</em><big>)</big><a class="headerlink" href="#flotilla.data_model.Study.go_enrichment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate gene ontology enrichment of provided features</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>feature_ids</strong> : list-like</p>
+<blockquote>
+<div><p>Features to calculate gene ontology enrichment on</p>
+</div></blockquote>
+<p><strong>background</strong> : list-like, optional</p>
+<blockquote>
+<div><p>Features to use as the background</p>
+</div></blockquote>
+<p><strong>domain</strong> : str or list, optional</p>
+<blockquote>
+<div><p>Only calculate GO enrichment for a particular GO category or
+subset of categories. Valid domains:
+&#8216;biological_process&#8217;, &#8216;molecular_function&#8217;, &#8216;cellular_component&#8217;</p>
+</div></blockquote>
+<p><strong>p_value_cutoff</strong> : float, optional</p>
+<blockquote>
+<div><p>Maximum accepted Bonferroni-corrected p-value</p>
+</div></blockquote>
+<p><strong>min_feature_size</strong> : int, optional</p>
+<blockquote>
+<div><p>Minimum number of features of interest overlapping in a GO Term,
+to calculate enrichment</p>
+</div></blockquote>
+<p><strong>min_background_size</strong> : int, optional</p>
+<blockquote>
+<div><p>Minimum number of features in the background overlapping a GO Term</p>
+</div></blockquote>
+<p><strong>Returns</strong></p>
+<p><strong>&#8212;&#8212;-</strong></p>
+<p><strong>enrichment</strong> : pandas.DataFrame</p>
+<blockquote class="last">
+<div><p>A (go_categories, columns) dataframe showing the GO
+enrichment categories that were enriched in the features</p>
 </div></blockquote>
 </td>
 </tr>
@@ -1136,7 +1185,7 @@ e.g. &#8220;ENSG00000100320&#8221;</p>
 
 <dl class="attribute">
 <dt id="flotilla.data_model.Study.readers">
-<tt class="descname">readers</tt><em class="property"> = {'tsv': &lt;function load_tsv at 0x2b0148a32b18&gt;, 'json': &lt;function load_json at 0x2b0148a32b90&gt;, 'csv': &lt;function load_csv at 0x2b0148a32c80&gt;, 'gzip_pickle_df': &lt;function load_gzip_pickle_df at 0x2b0148a32a28&gt;, 'pickle_df': &lt;function load_pickle_df at 0x2b0148a32938&gt;}</em><a class="headerlink" href="#flotilla.data_model.Study.readers" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">readers</tt><em class="property"> = {'tsv': &lt;function load_tsv at 0x2ac9c28be578&gt;, 'json': &lt;function load_json at 0x2ac9c28be5f0&gt;, 'csv': &lt;function load_csv at 0x2ac9c28be6e0&gt;, 'gzip_pickle_df': &lt;function load_gzip_pickle_df at 0x2ac9c28be488&gt;, 'pickle_df': &lt;function load_pickle_df at 0x2ac9c28be398&gt;}</em><a class="headerlink" href="#flotilla.data_model.Study.readers" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1215,6 +1264,109 @@ Attributes
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="class">
+<dt id="flotilla.data_model.GeneOntologyData">
+<em class="property">class </em><tt class="descclassname">flotilla.data_model.</tt><tt class="descname">GeneOntologyData</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#flotilla.data_model.GeneOntologyData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<p>Object to calculate enrichment of Gene Ontology terms</p>
+<p>Acceptable Gene Ontology tables can be downloaded from ENSEMBL&#8217;s
+BioMart tool: <a class="reference external" href="http://www.ensembl.org/biomart">http://www.ensembl.org/biomart</a></p>
+<ol class="arabic simple">
+<li>Choose &#8220;Ensembl Genes ##&#8221; (## = version number, for me it&#8217;s 78)</li>
+<li>Click &#8220;Attributes&#8221;</li>
+<li>Expand &#8220;EXTERNAL&#8221;</li>
+<li>Check the boxes for &#8216;GO Term Accession&#8217;, &#8216;Ensembl Gene ID&#8217;,
+&#8216;GO Term Name&#8217;, and &#8216;GO domain&#8217;</li>
+</ol>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> : pandas.DataFrame</p>
+<blockquote class="last">
+<div><p>A dataframe with at least the following columns:
+&#8216;GO Term Accession&#8217;, &#8216;Ensembl Gene ID&#8217;, &#8216;GO Term Name&#8217;, &#8216;GO domain&#8217;</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="flotilla.data_model.GeneOntologyData.domains">
+<tt class="descname">domains</tt><em class="property"> = frozenset(['molecular_function', 'cellular_component', 'biological_process'])</em><a class="headerlink" href="#flotilla.data_model.GeneOntologyData.domains" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.GeneOntologyData.enrichment">
+<tt class="descname">enrichment</tt><big>(</big><em>features_of_interest</em>, <em>background=None</em>, <em>p_value_cutoff=1000000</em>, <em>cross_reference=None</em>, <em>min_feature_size=3</em>, <em>min_background_size=5</em>, <em>domain=None</em><big>)</big><a class="headerlink" href="#flotilla.data_model.GeneOntologyData.enrichment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bonferroni-corrected hypergeometric p-values of GO enrichment</p>
+<p>Calculates hypergeometric enrichment of the features of interest, in
+each GO category.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>features_of_interest</strong> : list-like</p>
+<blockquote>
+<div><p>List of features. Must match the identifiers in the ontology
+database exactly, i.e. if your ontology database is ENSEMBL ids,
+then you can only provide those and not common names like &#8220;RBFOX2&#8221;</p>
+</div></blockquote>
+<p><strong>background</strong> : list-like, optional</p>
+<blockquote>
+<div><p>Background genes to use. It is best to use a relevant background
+such as all expressed genes. If None, defaults to all genes.</p>
+</div></blockquote>
+<p><strong>p_value_cutoff</strong> : float, optional</p>
+<blockquote>
+<div><p>Maximum accepted Bonferroni-corrected p-value</p>
+</div></blockquote>
+<p><strong>cross_reference</strong> : dict-like, optional</p>
+<blockquote>
+<div><p>A mapping of gene ids to gene symbols, e.g. a pandas Series of
+ENSEMBL genes e.g. ENSG00000139675 to gene symbols e.g HNRNPA1L2</p>
+</div></blockquote>
+<p><strong>min_feature_size</strong> : int, optional</p>
+<blockquote>
+<div><p>Minimum number of features of interest overlapping in a GO Term,
+to calculate enrichment</p>
+</div></blockquote>
+<p><strong>min_background_size</strong> : int, optional</p>
+<blockquote>
+<div><p>Minimum number of features in the background overlapping a GO Term</p>
+</div></blockquote>
+<p><strong>domain</strong> : str or list, optional</p>
+<blockquote>
+<div><p>Only calculate GO enrichment for a particular GO category or
+subset of categories. Valid domains:
+&#8216;biological_process&#8217;, &#8216;molecular_function&#8217;, &#8216;cellular_component&#8217;</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>enrichment_df</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A (n_go_categories, columns) DataFrame of the enrichment scores</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><strong>ValueError</strong></p>
+<blockquote class="last">
+<div><p>If features of interest and background do not overlap, or invalid
+GO domains are given</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.GeneOntologyData.plot_enrichment">
+<tt class="descname">plot_enrichment</tt><big>(</big><em>feature_ids</em>, <em>background</em><big>)</big><a class="headerlink" href="#flotilla.data_model.GeneOntologyData.plot_enrichment" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="class">
