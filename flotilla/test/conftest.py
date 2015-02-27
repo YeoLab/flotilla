@@ -21,7 +21,7 @@ def RANDOM_STATE():
 @pytest.fixture(scope='module')
 def n_samples():
     """Number of samples to create example data from"""
-    return 50
+    return 30
 
 
 @pytest.fixture(scope='module')
@@ -154,11 +154,11 @@ def group_transitions(group_order):
     """List of pairwise transitions between phenotypes, for NMF"""
     return zip(group_order[:-1], group_order[1:])
 
-
-@pytest.fixture(scope='module')
-def group_transitions_fixed(group_order_fixed):
-    """List of pairwise transitions between phenotypes, for NMF"""
-    return zip(group_order_fixed[:-1], group_order_fixed[1:])
+#
+# @pytest.fixture(scope='module')
+# def group_transitions_fixed(group_order_fixed):
+#     """List of pairwise transitions between phenotypes, for NMF"""
+#     return zip(group_order_fixed[:-1], group_order_fixed[1:])
 
 
 # @pytest.fixture(scope='module', params=['phenotype', 'group'])
@@ -258,7 +258,7 @@ def mapping_stats_data(samples, technical_outliers,
 
 @pytest.fixture(scope='module')
 def n_genes():
-    return 100
+    return 50
 
 
 @pytest.fixture(scope='module')
@@ -268,7 +268,7 @@ def genes(n_genes):
 
 @pytest.fixture(scope='module')
 def n_events():
-    return 200
+    return 100
 
 
 @pytest.fixture(scope='module')
@@ -355,7 +355,7 @@ def expression_data(samples, genes, groupby, na_thresh):
 
 
 @pytest.fixture(scope='module')
-def expression_data_no_na(samples, genes, groupby_fixed):
+def expression_data_no_na(samples, genes, groupby):
     df = pd.DataFrame(index=samples, columns=genes)
 
     def dataframe_maker(df):
@@ -366,7 +366,7 @@ def expression_data_no_na(samples, genes, groupby_fixed):
         return pd.DataFrame(data, index=df.index, columns=df.columns)
 
     df = pd.concat([dataframe_maker(df) for name, df in
-                    df.groupby(groupby_fixed)], axis=0).sort_index()
+                    df.groupby(groupby)], axis=0).sort_index()
     return df
 
 
@@ -430,11 +430,11 @@ def true_modalities(events, modality_models, groups):
     return pd.DataFrame(data)
 
 
-@pytest.fixture(scope='module')
-def true_modalities_fixed(events, modality_models, groups_fixed):
-    data = dict((e, dict((g, (np.random.choice(modality_models.keys())))
-                         for g in groups_fixed)) for e in events)
-    return pd.DataFrame(data)
+# @pytest.fixture(scope='module')
+# def true_modalities_fixed(events, modality_models, groups_fixed):
+#     data = dict((e, dict((g, (np.random.choice(modality_models.keys())))
+#                          for g in groups_fixed)) for e in events)
+#     return pd.DataFrame(data)
 
 
 @pytest.fixture(scope='module')
@@ -469,39 +469,39 @@ def splicing_data(samples, events, true_modalities, modality_models,
     return df.sort_index()
 
 
-@pytest.fixture(scope='module')
-def splicing_data_fixed(samples, events, true_modalities_fixed,
-                        modality_models,
-                        groupby_fixed):
-    df = pd.DataFrame(index=samples, columns=events)
-
-    def dataframe_maker(group, true_modalities, modality_models, df):
-        data = np.vstack([modality_models[modality].rvs(df.shape[0])
-                          for modality in true_modalities.ix[group]]).T
-        return pd.DataFrame(data, index=df.index, columns=df.columns)
-
-    df = pd.concat([dataframe_maker(group, true_modalities_fixed,
-                                    modality_models, df)
-                    for group, df in df.groupby(groupby_fixed)], axis=0)
-    df = df.apply(lambda x: x.map(
-        lambda i: i if np.random.uniform() > np.random.uniform()
-        else np.nan), axis=1)
-
-    def randomly_add_na(x):
-        if np.random.uniform() > np.random.uniform(0, .1):
-            return x
-        else:
-            return pd.Series(np.nan, index=x.index)
-
-    df = pd.concat([d.apply(randomly_add_na, axis=1)
-                    for group, d in
-                    df.groupby(groupby_fixed)], axis=0)
-    return df.sort_index()
+# @pytest.fixture(scope='module')
+# def splicing_data_fixed(samples, events, true_modalities_fixed,
+#                         modality_models,
+#                         groupby_fixed):
+#     df = pd.DataFrame(index=samples, columns=events)
+#
+#     def dataframe_maker(group, true_modalities, modality_models, df):
+#         data = np.vstack([modality_models[modality].rvs(df.shape[0])
+#                           for modality in true_modalities.ix[group]]).T
+#         return pd.DataFrame(data, index=df.index, columns=df.columns)
+#
+#     df = pd.concat([dataframe_maker(group, true_modalities_fixed,
+#                                     modality_models, df)
+#                     for group, df in df.groupby(groupby_fixed)], axis=0)
+#     df = df.apply(lambda x: x.map(
+#         lambda i: i if np.random.uniform() > np.random.uniform()
+#         else np.nan), axis=1)
+#
+#     def randomly_add_na(x):
+#         if np.random.uniform() > np.random.uniform(0, .1):
+#             return x
+#         else:
+#             return pd.Series(np.nan, index=x.index)
+#
+#     df = pd.concat([d.apply(randomly_add_na, axis=1)
+#                     for group, d in
+#                     df.groupby(groupby_fixed)], axis=0)
+#     return df.sort_index()
 
 
 @pytest.fixture(scope='module')
 def splicing_data_no_na(samples, events,
-                        true_modalities_fixed, modality_models, groupby_fixed):
+                        true_modalities, modality_models, groupby):
     df = pd.DataFrame(index=samples, columns=events)
 
     def dataframe_maker(group, true_modalities, modality_models, df):
@@ -509,9 +509,9 @@ def splicing_data_no_na(samples, events,
                           for modality in true_modalities.ix[group]]).T
         return pd.DataFrame(data, index=df.index, columns=df.columns)
 
-    df = pd.concat([dataframe_maker(group, true_modalities_fixed,
+    df = pd.concat([dataframe_maker(group, true_modalities,
                                     modality_models, df)
-                    for group, df in df.groupby(groupby_fixed)], axis=0)
+                    for group, df in df.groupby(groupby)], axis=0)
     return df.sort_index()
 
 
@@ -681,8 +681,8 @@ def splicing(splicing_data):
     return SplicingData(splicing_data)
 
 
-@pytest.fixture(scope='module')
-def splicing_fixed(splicing_data_fixed):
-    from flotilla.data_model.splicing import SplicingData
-
-    return SplicingData(splicing_data_fixed)
+# @pytest.fixture(scope='module')
+# def splicing_fixed(splicing_data_fixed):
+#     from flotilla.data_model.splicing import SplicingData
+#
+#     return SplicingData(splicing_data_fixed)
