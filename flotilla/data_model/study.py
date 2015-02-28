@@ -1868,7 +1868,7 @@ class Study(object):
         """
         if background is None:
             warnings.warn('No background provided, defaulting to all '
-                             'expressed genes')
+                          'expressed genes')
             background = self.expression.data.columns
         return self.gene_ontology.enrichment(
             feature_ids, background=background,

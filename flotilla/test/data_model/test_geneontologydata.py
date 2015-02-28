@@ -5,6 +5,7 @@ import pandas.util.testing as pdt
 import pytest
 from scipy.stats import hypergeom
 
+
 class TestGeneOntologyData(object):
 
     @pytest.fixture
@@ -104,7 +105,7 @@ class TestGeneOntologyData(object):
         features_of_interest = gene_ontology.all_genes[:10]
         background = [f + '_asdf' for f in features_of_interest]
         gene_ontology.enrichment(features_of_interest,
-                                                      background=background)
+                                 background=background)
 
     @pytest.mark.xfail
     def test_invalid_features(self, gene_ontology):
@@ -112,20 +113,19 @@ class TestGeneOntologyData(object):
         features_of_interest = [f + '_asdf' for f in features_of_interest]
         background = [f + '_asdf' for f in gene_ontology.all_genes[:20]]
         gene_ontology.enrichment(features_of_interest,
-                                                      background=background)
+                                 background=background)
 
     @pytest.mark.xfail
     def test_invalid_domain_str(self, gene_ontology):
         features_of_interest = gene_ontology.all_genes[:10]
         gene_ontology.enrichment(features_of_interest,
-                                                      domain='fake_domain')
+                                 domain='fake_domain')
 
     @pytest.mark.xfail
     def test_invalid_domain_iterable(self, gene_ontology):
         features_of_interest = gene_ontology.all_genes[:10]
         gene_ontology.enrichment(features_of_interest,
-                                                      domain=['fake_domain1',
-                                                              'fake_domain2'])
+                                 domain=['fake_domain1', 'fake_domain2'])
 
     def test_custom_domain_str(self, gene_ontology):
         features_of_interest = gene_ontology.all_genes[:10]

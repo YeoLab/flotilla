@@ -286,8 +286,8 @@ class ConfigOptimizer(object):
         -------
         ???
         """
-        return ((n_features / max_feature_scaler(n_features, coef))
-                * n_estimators_scaler(n_features, coef)) / float(n_features)
+        return ((n_features / max_feature_scaler(n_features, coef)) *
+                n_estimators_scaler(n_features, coef)) / float(n_features)
 
 
 class PredictorConfigManager(object):

@@ -11,7 +11,7 @@ from ..util import timestamp
 class GeneOntologyData(object):
 
     domains = frozenset(['biological_process', 'molecular_function',
-               'cellular_component'])
+                         'cellular_component'])
 
     def __init__(self, data):
         """Object to calculate enrichment of Gene Ontology terms
@@ -98,19 +98,21 @@ class GeneOntologyData(object):
             raise ValueError('Features of interest do not overlap with GO term'
                              'gene ids. Not calculating GO enrichment.')
         domains = self.domains
+        valid_domains = ",".join("'{}'".format(x) for x in self.domains)
 
         if isinstance(domain, str):
             if domain not in self.domains:
-                raise ValueError("'{}' is not a valid GO domain. Only {} are "
-                                 "acceptable".format(
-                    domain, ",".join("'{}'".format(x) for x in self.domains)))
+                raise ValueError(
+                    "'{}' is not a valid GO domain. "
+                    "Only {} are acceptable".format(domain, valid_domains))
             domains = frozenset([domain])
         elif isinstance(domain, Iterable):
             if len(set(domain) & self.domains) == 0:
-                raise ValueError("'{}' are not a valid GO domains. Only "
-                                 "{} are acceptable".format(
-                    ",".join("'{}'".format(x) for x in domain),
-                    ",".join("'{}'".format(x) for x in self.domains)))
+                raise ValueError(
+                    "'{}' are not a valid GO domains. "
+                    "Only {} are acceptable".format(
+                        ",".join("'{}'".format(x) for x in domain),
+                        valid_domains))
             domains = frozenset(domain)
 
         n_all_genes = len(background)
@@ -131,8 +133,8 @@ class GeneOntologyData(object):
 
             # Survival function is more accurate on small p-values
             p_value = hypergeom.sf(len(features_in_go), n_all_genes,
-                                len(background_in_go),
-                                n_features_of_interest)
+                                   len(background_in_go),
+                                   n_features_of_interest)
             p_value = 0 if p_value < 0 else p_value
             symbols = [cross_reference[f] if f in cross_reference else f for f
                        in features_in_go]

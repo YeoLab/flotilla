@@ -18,6 +18,7 @@ def data_dir():
     return os.path.join(os.path.abspath(os.path.dirname(__file__)),
                         'example_data')
 
+
 @pytest.fixture(scope='module')
 def RANDOM_STATE():
     """Consistent random state"""
@@ -584,6 +585,7 @@ def study(request, shalek2013, scrambled_study):
 def genelist_path(data_dir):
     return '{}/example_gene_list.txt'.format(data_dir)
 
+
 @pytest.fixture(scope='module')
 def genelist_dropbox_link():
     return 'https://www.dropbox.com/s/652y6hb8zonxe4c/example_gene_list.txt' \
@@ -721,9 +723,11 @@ def splicing_fixed(splicing_data_fixed):
 
     return SplicingData(splicing_data_fixed)
 
+
 @pytest.fixture(scope='module')
 def gene_ontology_data_path(data_dir):
     return '{}/human_grch38_chr22_gene_ontology.txt'.format(data_dir)
+
 
 @pytest.fixture(scope='module')
 def gene_ontology_data(gene_ontology_data_path):
