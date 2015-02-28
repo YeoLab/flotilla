@@ -160,7 +160,7 @@
 <div class="viewcode-block" id="GeneOntologyData"><a class="viewcode-back" href="../../../flotilla.data_model.gene_ontology.html#flotilla.data_model.gene_ontology.GeneOntologyData">[docs]</a><span class="k">class</span> <span class="nc">GeneOntologyData</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
     <span class="n">domains</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">([</span><span class="s">&#39;biological_process&#39;</span><span class="p">,</span> <span class="s">&#39;molecular_function&#39;</span><span class="p">,</span>
-               <span class="s">&#39;cellular_component&#39;</span><span class="p">])</span>
+                         <span class="s">&#39;cellular_component&#39;</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Object to calculate enrichment of Gene Ontology terms</span>
@@ -247,19 +247,21 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Features of interest do not overlap with GO term&#39;</span>
                              <span class="s">&#39;gene ids. Not calculating GO enrichment.&#39;</span><span class="p">)</span>
         <span class="n">domains</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">domains</span>
+        <span class="n">valid_domains</span> <span class="o">=</span> <span class="s">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">domains</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">domain</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">domain</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">domains</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39; is not a valid GO domain. Only {} are &quot;</span>
-                                 <span class="s">&quot;acceptable&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">domain</span><span class="p">,</span> <span class="s">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">domains</span><span class="p">)))</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s">&quot;&#39;{}&#39; is not a valid GO domain. &quot;</span>
+                    <span class="s">&quot;Only {} are acceptable&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">domain</span><span class="p">,</span> <span class="n">valid_domains</span><span class="p">))</span>
             <span class="n">domains</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">([</span><span class="n">domain</span><span class="p">])</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">domain</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">domain</span><span class="p">)</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="o">.</span><span class="n">domains</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39; are not a valid GO domains. Only &quot;</span>
-                                 <span class="s">&quot;{} are acceptable&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="s">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">domain</span><span class="p">),</span>
-                    <span class="s">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">domains</span><span class="p">)))</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s">&quot;&#39;{}&#39; are not a valid GO domains. &quot;</span>
+                    <span class="s">&quot;Only {} are acceptable&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="s">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">domain</span><span class="p">),</span>
+                        <span class="n">valid_domains</span><span class="p">))</span>
             <span class="n">domains</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">domain</span><span class="p">)</span>
 
         <span class="n">n_all_genes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">background</span><span class="p">)</span>
@@ -280,8 +282,8 @@
 
             <span class="c"># Survival function is more accurate on small p-values</span>
             <span class="n">p_value</span> <span class="o">=</span> <span class="n">hypergeom</span><span class="o">.</span><span class="n">sf</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">features_in_go</span><span class="p">),</span> <span class="n">n_all_genes</span><span class="p">,</span>
-                                <span class="nb">len</span><span class="p">(</span><span class="n">background_in_go</span><span class="p">),</span>
-                                <span class="n">n_features_of_interest</span><span class="p">)</span>
+                                   <span class="nb">len</span><span class="p">(</span><span class="n">background_in_go</span><span class="p">),</span>
+                                   <span class="n">n_features_of_interest</span><span class="p">)</span>
             <span class="n">p_value</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">p_value</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">p_value</span>
             <span class="n">symbols</span> <span class="o">=</span> <span class="p">[</span><span class="n">cross_reference</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="k">if</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">cross_reference</span> <span class="k">else</span> <span class="n">f</span> <span class="k">for</span> <span class="n">f</span>
                        <span class="ow">in</span> <span class="n">features_in_go</span><span class="p">]</span>

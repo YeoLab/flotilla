@@ -194,8 +194,12 @@
 <span class="sd">        ValueError</span>
 <span class="sd">            If `fun_name` is not one of the ones indicated above</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">_noweight</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
-        <span class="n">_arctan_sq</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="k">def</span> <span class="nf">_noweight</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">x</span>
+
+        <span class="k">def</span> <span class="nf">_arctan_sq</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+
         <span class="k">if</span> <span class="n">fun_name</span> <span class="o">==</span> <span class="s">&#39;no_weight&#39;</span><span class="p">:</span>
             <span class="n">wt</span> <span class="o">=</span> <span class="n">_noweight</span>
         <span class="k">elif</span> <span class="n">fun_name</span> <span class="o">==</span> <span class="s">&#39;sq&#39;</span><span class="p">:</span>

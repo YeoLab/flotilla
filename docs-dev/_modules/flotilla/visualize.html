@@ -151,6 +151,9 @@
 
 <span class="kn">import</span> <span class="nn">seaborn</span>
 
+<span class="kn">from</span> <span class="nn">.ipython_interact</span> <span class="kn">import</span> <span class="n">Interactive</span>
+<span class="kn">from</span> <span class="nn">.predict</span> <span class="kn">import</span> <span class="n">PredictorBaseViz</span>
+
 <span class="n">seaborn</span><span class="o">.</span><span class="n">set_style</span><span class="p">({</span><span class="s">&#39;axes.axisbelow&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
                    <span class="s">&#39;axes.edgecolor&#39;</span><span class="p">:</span> <span class="s">&#39;.15&#39;</span><span class="p">,</span>
                    <span class="s">&#39;axes.facecolor&#39;</span><span class="p">:</span> <span class="s">&#39;white&#39;</span><span class="p">,</span>
@@ -176,9 +179,6 @@
                    <span class="s">&#39;ytick.minor.size&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
 
 <span class="n">seaborn</span><span class="o">.</span><span class="n">set_context</span><span class="p">(</span><span class="s">&#39;talk&#39;</span><span class="p">)</span>
-
-<span class="kn">from</span> <span class="nn">.ipython_interact</span> <span class="kn">import</span> <span class="n">Interactive</span>
-<span class="kn">from</span> <span class="nn">.predict</span> <span class="kn">import</span> <span class="n">PredictorBaseViz</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Interactive&#39;</span><span class="p">,</span> <span class="s">&#39;PredictorBaseViz&#39;</span><span class="p">]</span>
 </pre></div>

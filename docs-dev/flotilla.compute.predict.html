@@ -163,6 +163,61 @@
 <dt id="flotilla.compute.predict.Classifier">
 <em class="property">class </em><tt class="descclassname">flotilla.compute.predict.</tt><tt class="descname">Classifier</tt><big>(</big><em>data_name</em>, <em>trait_name</em>, <em>predictor_name=None</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/predict.html#Classifier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.Classifier" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#flotilla.compute.predict.PredictorBase" title="flotilla.compute.predict.PredictorBase"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.predict.PredictorBase</span></tt></a></p>
+<p>Classifier for categorical response variables.
+A dataset-predictor pair from PredictorDatasetManager</p>
+<blockquote>
+<div>One datset, one predictor, from dataset manager.</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>predictor_name</strong> : str</p>
+<blockquote class="last">
+<div><blockquote>
+<div><p>Name for predictor</p>
+</div></blockquote>
+<dl class="docutils">
+<dt>data_name <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name for this (subset of the) data</p>
+</dd>
+<dt>trait_name <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name for this trait</p>
+</dd>
+<dt>X_data <span class="classifier-delimiter">:</span> <span class="classifier">pandas.DataFrame, optional</span></dt>
+<dd><p class="first last">Samples-by-features (row x col) dataset to train the predictor on</p>
+</dd>
+<dt>trait <span class="classifier-delimiter">:</span> <span class="classifier">pandas.Series, optional</span></dt>
+<dd><p class="first last">A variable you want to predict using X_data. Indexed like X_data.</p>
+</dd>
+<dt>predictor_obj <span class="classifier-delimiter">:</span> <span class="classifier">sklearn predictor, optional</span></dt>
+<dd><p class="first last">A scikit-learn predictor that implements fit and score on
+(X_data,trait) Default ExtraTreesClassifier</p>
+</dd>
+<dt>predictor_scoring_fun <span class="classifier-delimiter">:</span> <span class="classifier">function, optional</span></dt>
+<dd><p class="first last">Function to get the feature scores for a scikit-learn classifier.
+This can be different for different classifiers, e.g. for a
+classifier named &#8220;x&#8221; it could be <a href="#id1"><span class="problematic" id="id2">x.scores_</span></a>, for other it&#8217;s
+<a href="#id3"><span class="problematic" id="id4">x.feature_importances_</span></a>. Default: lambda x: <a href="#id5"><span class="problematic" id="id6">x.feature_importances_</span></a></p>
+</dd>
+<dt>score_cutoff_fun <span class="classifier-delimiter">:</span> <span class="classifier">function, optional</span></dt>
+<dd><p class="first last">Function to cut off insignificant scores
+Default: lambda scores: np.mean(x) + 2 * np.std(x)</p>
+</dd>
+<dt>n_features_dependent_kwargs <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional</span></dt>
+<dd><p class="first last">kwargs to the predictor that depend on n_features
+Default: {}</p>
+</dd>
+<dt>constant_kwargs <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional</span></dt>
+<dd><p class="first last">kwargs to the predictor that are constant, i.e.:
+{&#8216;n_estimators&#8217;: 100, &#8216;bootstrap&#8217;: True, &#8216;max_features&#8217;: &#8216;auto&#8217;,
+&#8216;random_state&#8217;: 0, &#8216;oob_score&#8217;: True, &#8216;n_jobs&#8217;: 2, &#8216;verbose&#8217;: True}</p>
+</dd>
+</dl>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="flotilla.compute.predict.Classifier.categorical">
 <tt class="descname">categorical</tt><em class="property"> = True</em><a class="headerlink" href="#flotilla.compute.predict.Classifier.categorical" title="Permalink to this definition">¶</a></dt>
@@ -178,7 +233,7 @@
 (or some other function of the dataset)</p>
 <dl class="staticmethod">
 <dt id="flotilla.compute.predict.ConfigOptimizer.objective_average_times_seen">
-<em class="property">static </em><tt class="descname">objective_average_times_seen</tt><big>(</big><em>n_features</em>, <em>coef=2.5</em>, <em>max_feature_scaler=&lt;function max_feature_scaler at 0x2b00ba94ecf8&gt;</em>, <em>n_estimators_scaler=&lt;function n_estimators_scaler at 0x2b00ba94ed70&gt;</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/predict.html#ConfigOptimizer.objective_average_times_seen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.ConfigOptimizer.objective_average_times_seen" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><tt class="descname">objective_average_times_seen</tt><big>(</big><em>n_features</em>, <em>coef=2.5</em>, <em>max_feature_scaler=&lt;function max_feature_scaler at 0x2b9955906c80&gt;</em>, <em>n_estimators_scaler=&lt;function n_estimators_scaler at 0x2b9955906cf8&gt;</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/predict.html#ConfigOptimizer.objective_average_times_seen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.ConfigOptimizer.objective_average_times_seen" title="Permalink to this definition">¶</a></dt>
 <dd><p>I have no idea what this does. &#64;mlovci</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -250,8 +305,8 @@
 <blockquote>
 <div><p>Function to get the feature scores for a scikit-learn classifier.
 This can be different for different classifiers, e.g. for a
-classifier named &#8220;x&#8221; it could be <a href="#id1"><span class="problematic" id="id2">x.scores_</span></a>, for other it&#8217;s
-<a href="#id3"><span class="problematic" id="id4">x.feature_importances_</span></a>. Default: lambda x: <a href="#id5"><span class="problematic" id="id6">x.feature_importances_</span></a></p>
+classifier named &#8220;x&#8221; it could be <a href="#id7"><span class="problematic" id="id8">x.scores_</span></a>, for other it&#8217;s
+<a href="#id9"><span class="problematic" id="id10">x.feature_importances_</span></a>. Default: lambda x: <a href="#id11"><span class="problematic" id="id12">x.feature_importances_</span></a></p>
 </div></blockquote>
 <p><strong>score_cutoff_fun</strong> : function, optional</p>
 <blockquote>
@@ -405,7 +460,7 @@ Default: {}</p>
 
 <dl class="class">
 <dt id="flotilla.compute.predict.PredictorConfig">
-<em class="property">class </em><tt class="descclassname">flotilla.compute.predict.</tt><tt class="descname">PredictorConfig</tt><big>(</big><em>predictor_name</em>, <em>obj</em>, <em>predictor_scoring_fun=&lt;function default_predictor_scoring_fun at 0x2b00ba944c80&gt;</em>, <em>score_cutoff_fun=&lt;function default_score_cutoff_fun at 0x2b00ba94ea28&gt;</em>, <em>n_features_dependent_kwargs=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/predict.html#PredictorConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.PredictorConfig" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">flotilla.compute.predict.</tt><tt class="descname">PredictorConfig</tt><big>(</big><em>predictor_name</em>, <em>obj</em>, <em>predictor_scoring_fun=&lt;function default_predictor_scoring_fun at 0x2b99558fbc08&gt;</em>, <em>score_cutoff_fun=&lt;function default_score_cutoff_fun at 0x2b99559069b0&gt;</em>, <em>n_features_dependent_kwargs=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/predict.html#PredictorConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.PredictorConfig" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
 <p>A configuration for a predictor, names and tracks/sets parameters</p>
 <p>Dynamically configures some args for predictor based on n_features
@@ -582,7 +637,7 @@ not really allowed?</p>
 </div></blockquote>
 <p><strong>predictor_scoring_fun</strong> : function, optional (default=None)</p>
 <blockquote>
-<div><p>If None, get feature scores from <a href="#id7"><span class="problematic" id="id8">obj.feature_importances_</span></a></p>
+<div><p>If None, get feature scores from <a href="#id13"><span class="problematic" id="id14">obj.feature_importances_</span></a></p>
 </div></blockquote>
 <p><strong>score_cutoff_fun</strong> : function, optional (default=None)</p>
 <blockquote>
@@ -1005,6 +1060,61 @@ sequential trait</p>
 <dt id="flotilla.compute.predict.Regressor">
 <em class="property">class </em><tt class="descclassname">flotilla.compute.predict.</tt><tt class="descname">Regressor</tt><big>(</big><em>data_name</em>, <em>trait_name</em>, <em>predictor_name=None</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/predict.html#Regressor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.Regressor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#flotilla.compute.predict.PredictorBase" title="flotilla.compute.predict.PredictorBase"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.predict.PredictorBase</span></tt></a></p>
+<p>Regressor for continuous response variables.
+A dataset-predictor pair from PredictorDatasetManager</p>
+<blockquote>
+<div>One datset, one predictor, from dataset manager.</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>predictor_name</strong> : str</p>
+<blockquote class="last">
+<div><blockquote>
+<div><p>Name for predictor</p>
+</div></blockquote>
+<dl class="docutils">
+<dt>data_name <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name for this (subset of the) data</p>
+</dd>
+<dt>trait_name <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name for this trait</p>
+</dd>
+<dt>X_data <span class="classifier-delimiter">:</span> <span class="classifier">pandas.DataFrame, optional</span></dt>
+<dd><p class="first last">Samples-by-features (row x col) dataset to train the predictor on</p>
+</dd>
+<dt>trait <span class="classifier-delimiter">:</span> <span class="classifier">pandas.Series, optional</span></dt>
+<dd><p class="first last">A variable you want to predict using X_data. Indexed like X_data.</p>
+</dd>
+<dt>predictor_obj <span class="classifier-delimiter">:</span> <span class="classifier">sklearn predictor, optional</span></dt>
+<dd><p class="first last">A scikit-learn predictor that implements fit and score on
+(X_data,trait) Default ExtraTreesClassifier</p>
+</dd>
+<dt>predictor_scoring_fun <span class="classifier-delimiter">:</span> <span class="classifier">function, optional</span></dt>
+<dd><p class="first last">Function to get the feature scores for a scikit-learn classifier.
+This can be different for different classifiers, e.g. for a
+classifier named &#8220;x&#8221; it could be <a href="#id15"><span class="problematic" id="id16">x.scores_</span></a>, for other it&#8217;s
+<a href="#id17"><span class="problematic" id="id18">x.feature_importances_</span></a>. Default: lambda x: <a href="#id19"><span class="problematic" id="id20">x.feature_importances_</span></a></p>
+</dd>
+<dt>score_cutoff_fun <span class="classifier-delimiter">:</span> <span class="classifier">function, optional</span></dt>
+<dd><p class="first last">Function to cut off insignificant scores
+Default: lambda scores: np.mean(x) + 2 * np.std(x)</p>
+</dd>
+<dt>n_features_dependent_kwargs <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional</span></dt>
+<dd><p class="first last">kwargs to the predictor that depend on n_features
+Default: {}</p>
+</dd>
+<dt>constant_kwargs <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional</span></dt>
+<dd><p class="first last">kwargs to the predictor that are constant, i.e.:
+{&#8216;n_estimators&#8217;: 100, &#8216;bootstrap&#8217;: True, &#8216;max_features&#8217;: &#8216;auto&#8217;,
+&#8216;random_state&#8217;: 0, &#8216;oob_score&#8217;: True, &#8216;n_jobs&#8217;: 2, &#8216;verbose&#8217;: True}</p>
+</dd>
+</dl>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="flotilla.compute.predict.Regressor.categorical">
 <tt class="descname">categorical</tt><em class="property"> = False</em><a class="headerlink" href="#flotilla.compute.predict.Regressor.categorical" title="Permalink to this definition">¶</a></dt>
@@ -1017,7 +1127,7 @@ sequential trait</p>
 <tt class="descclassname">flotilla.compute.predict.</tt><tt class="descname">default_predictor_scoring_fun</tt><big>(</big><em>cls</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/predict.html#default_predictor_scoring_fun"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.predict.default_predictor_scoring_fun" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return scores of how important a feature is to the prediction</p>
 <p>Most predictors score output coefficients in the variable
-<a href="#id9"><span class="problematic" id="id10">cls.feature_importances_</span></a> and others may use another name for scores, so
+<a href="#id21"><span class="problematic" id="id22">cls.feature_importances_</span></a> and others may use another name for scores, so
 this function bridges the gap</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />

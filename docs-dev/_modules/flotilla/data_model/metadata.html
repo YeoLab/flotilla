@@ -271,7 +271,10 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_default_phenotype_to_color</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">colors</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_colors</span><span class="p">)</span>
-        <span class="n">color_factory</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">colors</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">color_factory</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">colors</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+
         <span class="k">return</span> <span class="n">defaultdict</span><span class="p">(</span><span class="n">color_factory</span><span class="p">)</span>
 
     <span class="nd">@property</span>
