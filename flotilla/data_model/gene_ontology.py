@@ -163,6 +163,3 @@ class GeneOntologyData(object):
         enrichment_df = enrichment_df.sort(columns=['p_value'])
 
         return enrichment_df
-
-    def plot_enrichment(self, feature_ids, background, ):
-        pass
