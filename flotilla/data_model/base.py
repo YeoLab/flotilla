@@ -13,8 +13,8 @@ from scipy.cluster.vq import whiten
 
 from ..compute.decomposition import DataFramePCA, DataFrameNMF
 from ..compute.infotheory import binify, cross_phenotype_jsd, jsd_df_to_2d
-from ..compute.predict import PredictorConfigManager, PredictorDataSetManager, \
-    CLASSIFIER
+from ..compute.predict import PredictorConfigManager, \
+    PredictorDataSetManager, CLASSIFIER
 from ..visualize.decomposition import DecompositionViz
 from ..visualize.generic import violinplot, nmf_space_transitions, \
     simple_twoway_scatter
@@ -1023,6 +1023,14 @@ class BaseData(object):
                    title=title, data_type=self.data_type, ax=ax,
                    label_pooled=label_pooled, outliers=outliers)
 
+    @staticmethod
+    def _thresh_int(df, n):
+        return n
+
+    @staticmethod
+    def _thresh_float(df, f):
+        return f * df.shape[0]
+
     @cached_property()
     def nmf(self):
         data = self._subset(self.data)
@@ -1110,12 +1118,12 @@ class BaseData(object):
         """
         grouped = self.singles.groupby(groupby)
         if isinstance(n, int):
-            thresh = lambda x: n
+            thresh = self._thresh_int
         elif isinstance(n, float):
-            thresh = lambda x: n * x.shape[0]
+            thresh = self._thresh_float
 
         at_least_n_per_group_per_event = pd.concat(
-            [df.dropna(thresh=thresh(df), axis=1) for name, df in grouped])
+            [df.dropna(thresh=thresh(df, n), axis=1) for name, df in grouped])
         # at_least_n_per_group_per_event = grouped.transform(
         #     lambda x: x if x.count() >= n else pd.Series(np.nan,
         #                                                  index=x.index))
