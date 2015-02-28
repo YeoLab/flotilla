@@ -70,6 +70,16 @@ class TestStudy(object):
     #                  expression_data=expression_data_no_na,
     #                  splicing_data=splicing_data_fixed, **kwargs)
 
+    def test_init(self, metadata_data):
+        from flotilla import Study
+
+        study = Study(metadata_data)
+
+        pdt.assert_frame_equal(study.metadata.data,
+                               metadata_data)
+        pdt.assert_equal(study.version, '0.1.0')
+        npt.assert_equal(study.pooled, None)
+
     def test_init(self, metadata_data,
                            metadata_kws):
         # Also need to check for when these are NAs
@@ -96,6 +106,18 @@ class TestStudy(object):
         study = Study(metadata, **kws)
 
         npt.assert_array_equal(sorted(study.pooled), sorted(pooled))
+
+    def test_init_bad_pooled(self, metadata_data, metadata_kws, pooled):
+        from flotilla import Study
+
+        metadata = metadata_data.copy()
+
+        kws = dict(('metadata_' + k, v) for k, v in metadata_kws.items())
+        metadata['pooled_asdf'] = metadata.index.isin(pooled)
+
+        study = Study(metadata, **kws)
+
+        npt.assert_equal(study.pooled, None)
 
     def test_init_outlier(self, metadata_data, metadata_kws, outliers):
         from flotilla import Study
@@ -132,6 +154,7 @@ class TestStudy(object):
         from flotilla import Study
 
         metadata = metadata_data.copy()
+        expression = expression_data.copy()
 
         kw_pairs = (('metadata', metadata_kws),
                     ('expression', expression_kws))
@@ -139,12 +162,48 @@ class TestStudy(object):
         for name, kws in kw_pairs:
             for k, v in kws.items():
                 kwargs['{}_{}'.format(name, k)] = v
-        study = Study(metadata, expression_data=expression_data,
+        study = Study(metadata, expression_data=expression,
                       **kwargs)
         pdt.assert_array_equal(study.expression.data_original,
                                expression_data)
 
-    #
+    def test_init_splicing(self, metadata_data, metadata_kws,
+                           splicing_data, splicing_kws):
+        from flotilla import Study
+
+        metadata = metadata_data.copy()
+        splicing = splicing_data.copy()
+
+        kw_pairs = (('metadata', metadata_kws),
+                    ('splicing', splicing_kws))
+        kwargs = {}
+        for name, kws in kw_pairs:
+            for k, v in kws.items():
+                kwargs['{}_{}'.format(name, k)] = v
+        study = Study(metadata, splicing_data=splicing,
+                      **kwargs)
+        pdt.assert_array_equal(study.splicing.data_original,
+                               splicing_data)
+
+    def test_filter_splicing_on_expression(self, metadata_data, metadata_kws,
+                                           expression_data, expression_kws,
+                                           splicing_data, splicing_kws):
+        from flotilla import Study
+
+        metadata = metadata_data.copy()
+        splicing = splicing_data.copy()
+        expression = expression_data.copy()
+
+        kw_pairs = (('metadata', metadata_kws),
+                    ('splicing', splicing_kws),
+                    ('expression', expression_kws))
+        kwargs = {}
+        for name, kws in kw_pairs:
+            for k, v in kws.items():
+                kwargs['{}_{}'.format(name, k)] = v
+        study = Study(metadata, splicing_data=splicing,
+                      expression_data=expression, **kwargs)
+
     # def test_plot_pca(self, study_no_mapping_stats, color_samples_by):
     #     study_no_mapping_stats.plot_pca(color_samples_by=color_samples_by,
     #                                     feature_subset='all')

@@ -144,7 +144,7 @@ class BaseData(object):
                              'multi-indexed dataframes')
 
         self.data = data
-        self.data_original = self.data.copy()
+        self.data_original = data.copy()
         self.thresh = thresh if thresh is not None else -np.inf
         self.minimum_samples = minimum_samples \
             if minimum_samples is not None else 0
