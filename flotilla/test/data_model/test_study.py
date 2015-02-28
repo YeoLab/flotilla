@@ -70,6 +70,28 @@ class TestStudy(object):
     #                  expression_data=expression_data_no_na,
     #                  splicing_data=splicing_data_fixed, **kwargs)
 
+    def study(self, metadata_data, metadata_kws,
+              expression_data, expression_kws,
+              splicing_data, splicing_kws,
+              mapping_stats_data, mapping_stats_kws):
+        from flotilla import Study
+
+        metadata = metadata_data.copy()
+        splicing = splicing_data.copy()
+        expression = expression_data.copy()
+
+        kw_pairs = (('metadata', metadata_kws),
+                    ('splicing', splicing_kws),
+                    ('expression', expression_kws),
+                    ('mapping_stats', mapping_stats_kws))
+        kwargs = {}
+        for name, kws in kw_pairs:
+            for k, v in kws.items():
+                kwargs['{}_{}'.format(name, k)] = v
+        return Study(metadata, splicing_data=splicing,
+                     expression_data=expression,
+                     mapping_stats_data=mapping_stats_data, **kwargs)
+
     def test_init(self, metadata_data):
         from flotilla import Study
 
@@ -185,24 +207,35 @@ class TestStudy(object):
         pdt.assert_array_equal(study.splicing.data_original,
                                splicing_data)
 
-    def test_filter_splicing_on_expression(self, metadata_data, metadata_kws,
-                                           expression_data, expression_kws,
-                                           splicing_data, splicing_kws):
-        from flotilla import Study
+    def test_filter_splicing_on_expression(self, study):
+        expression_thresh = 5
+        sample_subset = None
+        test_filtered_splicing = study.filter_splicing_on_expression(
+            expression_thresh)
+        columns = study._maybe_get_axis_name(study.splicing.data, axis=1,
+                                            alt_name=study._event_name)
 
-        metadata = metadata_data.copy()
-        splicing = splicing_data.copy()
-        expression = expression_data.copy()
-
-        kw_pairs = (('metadata', metadata_kws),
-                    ('splicing', splicing_kws),
-                    ('expression', expression_kws))
-        kwargs = {}
-        for name, kws in kw_pairs:
-            for k, v in kws.items():
-                kwargs['{}_{}'.format(name, k)] = v
-        study = Study(metadata, splicing_data=splicing,
-                      expression_data=expression, **kwargs)
+        index = study._maybe_get_axis_name(study.splicing.data, axis=0,
+                                          alt_name=study._sample_id)
+    
+        sample_ids = study.sample_subset_to_sample_ids(sample_subset)
+        splicing_with_expression = \
+            study.tidy_splicing_with_expression.ix[
+                study.tidy_splicing_with_expression.sample_id.isin(
+                    sample_ids)]
+        ind = splicing_with_expression.expression >= expression_thresh
+        splicing_high_expression = splicing_with_expression.ix[ind]
+        splicing_high_expression = \
+            splicing_high_expression.reset_index().dropna()
+    
+        if isinstance(columns, list) or isinstance(index, list):
+            true_filtered_splicing = splicing_high_expression.pivot_table(
+                columns=columns, index=index, values='psi')
+        else:
+            true_filtered_splicing = splicing_high_expression.pivot(
+                columns=columns, index=index, values='psi')
+        pdt.assert_frame_equal(true_filtered_splicing, test_filtered_splicing)
+        
 
     # def test_plot_pca(self, study_no_mapping_stats, color_samples_by):
     #     study_no_mapping_stats.plot_pca(color_samples_by=color_samples_by,
