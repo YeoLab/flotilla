@@ -401,7 +401,7 @@ def expression_data_no_na(samples, genes, groupby_fixed):
                                 df.shape[0]) for _ in df.columns]).T
         return pd.DataFrame(data, index=df.index, columns=df.columns)
 
-    df = pd.concat([dataframe_maker(df) for name, d in
+    df = pd.concat([dataframe_maker(d) for name, d in
                     df.groupby(groupby_fixed)], axis=0).sort_index()
     return df
 
