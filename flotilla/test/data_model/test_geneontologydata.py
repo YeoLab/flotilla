@@ -103,7 +103,7 @@ class TestGeneOntologyData(object):
     def test_invalid_background(self, gene_ontology):
         features_of_interest = gene_ontology.all_genes[:10]
         background = [f + '_asdf' for f in features_of_interest]
-        test_enrichment_df = gene_ontology.enrichment(features_of_interest,
+        gene_ontology.enrichment(features_of_interest,
                                                       background=background)
 
     @pytest.mark.xfail
@@ -111,19 +111,19 @@ class TestGeneOntologyData(object):
         features_of_interest = gene_ontology.all_genes[:10]
         features_of_interest = [f + '_asdf' for f in features_of_interest]
         background = [f + '_asdf' for f in gene_ontology.all_genes[:20]]
-        test_enrichment_df = gene_ontology.enrichment(features_of_interest,
+        gene_ontology.enrichment(features_of_interest,
                                                       background=background)
 
     @pytest.mark.xfail
     def test_invalid_domain_str(self, gene_ontology):
         features_of_interest = gene_ontology.all_genes[:10]
-        test_enrichment_df = gene_ontology.enrichment(features_of_interest,
+        gene_ontology.enrichment(features_of_interest,
                                                       domain='fake_domain')
 
     @pytest.mark.xfail
     def test_invalid_domain_iterable(self, gene_ontology):
         features_of_interest = gene_ontology.all_genes[:10]
-        test_enrichment_df = gene_ontology.enrichment(features_of_interest,
+        gene_ontology.enrichment(features_of_interest,
                                                       domain=['fake_domain1',
                                                               'fake_domain2'])
 
@@ -310,7 +310,6 @@ class TestGeneOntologyData(object):
         test_enrichment_df = gene_ontology.enrichment(features_of_interest)
 
         domains = gene_ontology.domains
-        p_value_cutoff = 1000000
         min_feature_size = 3
         min_background_size = 5
         cross_reference = {}
