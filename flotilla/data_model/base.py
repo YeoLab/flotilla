@@ -1365,7 +1365,7 @@ class BaseData(object):
 
         data = data.fillna(data.mean())
         if sample_id_to_color is not None:
-            sample_colors = [sample_id_to_color[x] for x in data.index]
+            sample_colors = [sample_id_to_color[i] for i in data.index]
 
         col_colors = feature_colors
         row_colors = sample_colors
