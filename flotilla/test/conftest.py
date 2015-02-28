@@ -438,8 +438,7 @@ def true_modalities(events, modality_models, groups):
 
 
 @pytest.fixture(scope='module')
-def splicing_data(samples, events, true_modalities, modality_models,
-                  na_thresh, groupby):
+def splicing_data(samples, events, true_modalities, modality_models, groupby):
     df = pd.DataFrame(index=samples, columns=events)
 
     def dataframe_maker(group, true_modalities, modality_models, df):
@@ -450,22 +449,22 @@ def splicing_data(samples, events, true_modalities, modality_models,
     df = pd.concat([dataframe_maker(group, true_modalities, modality_models,
                                     df)
                     for group, df in df.groupby(groupby)], axis=0)
-    if na_thresh > 0:
-        df = df.apply(lambda x: x.map(
-            lambda i: i if np.random.uniform() > np.random.uniform(0,
-                                                                   na_thresh)
-            else np.nan), axis=1)
+    # randomly add NA since all splicing data has NAs
+    na_thresh = 0.2
+    df = df.apply(lambda x: x.map(
+        lambda i: i if np.random.uniform() > np.random.uniform(0, na_thresh)
+        else np.nan), axis=1)
 
-        def randomly_add_na(x, na_thresh):
-            if np.random.uniform() > np.random.uniform(0, na_thresh / 10):
-                return x
-            else:
-                return pd.Series(np.nan, index=x.index)
+    def randomly_add_na(x, na_thresh):
+        if np.random.uniform() > np.random.uniform(0, na_thresh / 10):
+            return x
+        else:
+            return pd.Series(np.nan, index=x.index)
 
-        df = pd.concat([d.apply(randomly_add_na, na_thresh=na_thresh,
-                                axis=1)
-                        for group, d in
-                        df.groupby(groupby)], axis=0)
+    df = pd.concat([d.apply(randomly_add_na, na_thresh=na_thresh,
+                            axis=1)
+                    for group, d in
+                    df.groupby(groupby)], axis=0)
     return df.sort_index()
 
 
@@ -498,21 +497,21 @@ def splicing_data(samples, events, true_modalities, modality_models,
 #                     df.groupby(groupby_fixed)], axis=0)
 #     return df.sort_index()
 
-
-@pytest.fixture(scope='module')
-def splicing_data_no_na(samples, events,
-                        true_modalities, modality_models, groupby):
-    df = pd.DataFrame(index=samples, columns=events)
-
-    def dataframe_maker(group, true_modalities, modality_models, df):
-        data = np.vstack([modality_models[modality].rvs(df.shape[0])
-                          for modality in true_modalities.ix[group]]).T
-        return pd.DataFrame(data, index=df.index, columns=df.columns)
-
-    df = pd.concat([dataframe_maker(group, true_modalities,
-                                    modality_models, df)
-                    for group, df in df.groupby(groupby)], axis=0)
-    return df.sort_index()
+#
+# @pytest.fixture(scope='module')
+# def splicing_data_no_na(samples, events,
+#                         true_modalities, modality_models, groupby):
+#     df = pd.DataFrame(index=samples, columns=events)
+#
+#     def dataframe_maker(group, true_modalities, modality_models, df):
+#         data = np.vstack([modality_models[modality].rvs(df.shape[0])
+#                           for modality in true_modalities.ix[group]]).T
+#         return pd.DataFrame(data, index=df.index, columns=df.columns)
+#
+#     df = pd.concat([dataframe_maker(group, true_modalities,
+#                                     modality_models, df)
+#                     for group, df in df.groupby(groupby)], axis=0)
+#     return df.sort_index()
 
 
 @pytest.fixture(scope='module')
@@ -535,14 +534,6 @@ def splicing_kws(splicing_feature_data, splicing_feature_common_id,
     return {'feature_data': splicing_feature_data,
             'feature_rename_col': gene_name,
             'feature_expression_id_col': splicing_feature_common_id}
-
-
-@pytest.fixture(scope='module')
-def study(request, shalek2013, scrambled_study):
-    if request.param == 'shalek2013':
-        return shalek2013
-    if request.param == 'scrambled_study':
-        return scrambled_study
 
 
 @pytest.fixture(scope='module')

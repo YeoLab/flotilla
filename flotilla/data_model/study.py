@@ -232,7 +232,7 @@ class Study(object):
                     pooled = self.metadata.data.index[
                         self.metadata.data[
                             self.metadata.pooled_col].astype(bool)]
-                except:
+                except KeyError:
                     pooled = None
         self.pooled = pooled
 

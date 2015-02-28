@@ -197,10 +197,10 @@ class TestModalityEstimator(object):
 
         pdt.assert_series_equal(test_fit_transform, true_fit_transform)
 
-    def test_fit_transform_no_na(self, estimator, splicing_data_no_na):
-        test_fit_transform = estimator.fit_transform(splicing_data_no_na)
+    def test_fit_transform_no_na(self, estimator, splicing_data):
+        test_fit_transform = estimator.fit_transform(splicing_data)
 
-        logsumexp_logliks = splicing_data_no_na.apply(
+        logsumexp_logliks = splicing_data.apply(
             lambda x: pd.Series({k: v.logsumexp_logliks(x)
                                  for k, v in estimator.models.iteritems()}),
             axis=0)
