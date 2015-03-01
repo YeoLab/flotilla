@@ -435,8 +435,8 @@
 <span class="sd">        -------</span>
 <span class="sd">        ???</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">((</span><span class="n">n_features</span> <span class="o">/</span> <span class="n">max_feature_scaler</span><span class="p">(</span><span class="n">n_features</span><span class="p">,</span> <span class="n">coef</span><span class="p">))</span> <span class="o">*</span>
-                <span class="n">n_estimators_scaler</span><span class="p">(</span><span class="n">n_features</span><span class="p">,</span> <span class="n">coef</span><span class="p">))</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">n_features</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">((</span><span class="n">n_features</span> <span class="o">/</span> <span class="n">max_feature_scaler</span><span class="p">(</span><span class="n">n_features</span><span class="p">,</span> <span class="n">coef</span><span class="p">))</span>
+                <span class="o">*</span> <span class="n">n_estimators_scaler</span><span class="p">(</span><span class="n">n_features</span><span class="p">,</span> <span class="n">coef</span><span class="p">))</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">n_features</span><span class="p">)</span>
 
 </div></div>
 <div class="viewcode-block" id="PredictorConfigManager"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorConfigManager">[docs]</a><span class="k">class</span> <span class="nc">PredictorConfigManager</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -1176,12 +1176,11 @@
 
     <span class="n">categorical</span> <span class="o">=</span> <span class="bp">False</span>
 
-    <span class="n">__doc__</span> <span class="o">=</span> <span class="s">&quot;Regressor for continuous response variables.</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span> \
-              <span class="n">PredictorBase</span><span class="o">.</span><span class="n">__init__</span><span class="o">.</span><span class="n">__doc__</span>
-
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_name</span><span class="p">,</span> <span class="n">trait_name</span><span class="p">,</span>
                  <span class="n">predictor_name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">__doc__</span> <span class="o">=</span> <span class="s">&quot;Regressor for continuous response variables.</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span> \
+                  <span class="n">PredictorBase</span><span class="o">.</span><span class="n">__init__</span><span class="o">.</span><span class="n">__doc__</span>
         <span class="k">if</span> <span class="n">predictor_name</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">predictor_name</span> <span class="o">=</span> <span class="n">REGRESSOR</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;is_categorical_trait&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
@@ -1193,12 +1192,11 @@
 
     <span class="n">categorical</span> <span class="o">=</span> <span class="bp">True</span>
 
-    <span class="n">__doc__</span> <span class="o">=</span> <span class="s">&quot;Classifier for categorical response variables.</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span> \
-              <span class="n">PredictorBase</span><span class="o">.</span><span class="n">__init__</span><span class="o">.</span><span class="n">__doc__</span>
-
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_name</span><span class="p">,</span> <span class="n">trait_name</span><span class="p">,</span>
                  <span class="n">predictor_name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">__doc__</span> <span class="o">=</span> <span class="s">&quot;Classifier for categorical response variables.</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span> \
+                  <span class="n">PredictorBase</span><span class="o">.</span><span class="n">__init__</span><span class="o">.</span><span class="n">__doc__</span>
         <span class="k">if</span> <span class="n">predictor_name</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">predictor_name</span> <span class="o">=</span> <span class="n">CLASSIFIER</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;is_categorical_trait&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>

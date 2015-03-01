@@ -17,6 +17,7 @@ Submodules
 .. toctree::
 
    flotilla.datapackage
+   flotilla.go
    flotilla.setup
    flotilla.util
 
