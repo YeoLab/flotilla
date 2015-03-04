@@ -2,12 +2,14 @@
 This tests whether the Study object was created correctly. No
 computation or visualization tests yet.
 """
+import json
+
 import matplotlib.pyplot as plt
 import numpy.testing as npt
 import pandas as pd
 import pandas.util.testing as pdt
 import pytest
-
+import semantic_version
 
 @pytest.fixture(params=['expression', 'splicing'])
 def data_type(request):
@@ -266,93 +268,85 @@ class TestStudy(object):
     #     #     assert study.splicing.feature_rename_col \
     #     #            == splicing_feature_rename_col
     #
-    #     def test_save(self, shalek2013_datapackage_path,
-    #     #             shalek2013_datapackage,
-    #                   tmpdir, monkeypatch):
-    #         import flotilla
-    #         from flotilla.datapackage import name_to_resource
-    #
-    #         study = flotilla.embark(shalek2013_datapackage_path,
-    #                                 load_species_data=False)
-    #         study_name = 'test_save'
-    #         study.save(study_name, flotilla_dir=tmpdir)
-    #
-    #         assert len(tmpdir.listdir()) == 1
-    #         save_dir = tmpdir.listdir()[0]
-    #
-    #         with open('{}/datapackage.json'.format(save_dir)) as f:
-    #             test_datapackage = json.load(f)
-    #         true_datapackage = copy.deepcopy(shalek2013_datapackage)
-    #
-    #         assert study_name == save_dir.purebasename
-    #
-    #         resource_keys_to_ignore = ('compression', 'format', 'path',
-    #                                    'url')
-    #         keys_from_study = {'splicing': [],
-    #                            'expression': ['thresh',
-    #                                           'log_base',
-    #                                           'plus_one'],
-    #                            'metadata': ['phenotype_order',
-    #                                         'phenotype_to_color',
-    #                                         'phenotype_col',
-    #                                         'phenotype_to_marker',
-    #                                         'pooled_col',
-    #                                         'minimum_samples'],
-    #                            'mapping_stats': ['number_mapped_col'],
-    #                            'expression_feature': ['rename_col',
-    #                                                   'ignore_subset_cols'],
-    #                            'splicing_feature': ['rename_col',
-    #                                                 'ignore_subset_cols',
-    #                                                 'expression_id_col']}
-    #         resource_names = keys_from_study.keys()
-    #
-    #         # Add auto-generated attributes into the true datapackage
-    #         for name, keys in keys_from_study.iteritems():
-    #             resource = name_to_resource(true_datapackage, name)
-    #             for key in keys:
-    #                 if 'feature' in name:
-    #                     command = 'study.{}.feature_{}'.format(name.rstrip(
-    #                         '_feature'), key)
-    #                 else:
-    #                     command = 'study.{}.{}'.format(name, key)
-    #                 monkeypatch.setitem(resource, key, eval(command))
-    #
-    #         for name in resource_names:
-    #             resource = name_to_resource(test_datapackage, name)
-    #             assert resource['path'] == '{}.csv.gz'.format(name)
-    #
-    #         version = semantic_version.Version(study.version)
-    #         version.patch += 1
-    #         assert str(version) == test_datapackage['datapackage_version']
-    #         assert study_name == test_datapackage['name']
-    #
-    #         datapackage_keys_to_ignore = ['name', 'datapackage_version',
-    #                                       'resources']
-    #         datapackages = (true_datapackage, test_datapackage)
-    #
-    #         for name in resource_names:
-    #             for datapackage in datapackages:
-    #                 resource = name_to_resource(datapackage, name)
-    #                 for key in resource_keys_to_ignore:
-    #                     monkeypatch.delitem(resource, key, raising=False)
-    #
-    #         # Have to check for resources separately because they could be
-    #         # in any
-    #         # order, it just matters that the contents are equal
-    #         sorted_true = sorted(true_datapackage['resources'],
-    #                              key=lambda x: x['name'])
-    #         sorted_test = sorted(test_datapackage['resources'],
-    #                              key=lambda x: x['name'])
-    #         for i in range(len(sorted_true)):
-    #             pdt.assert_equal(sorted(sorted_true[i].items()),
-    #                              sorted(sorted_test[i].items()))
-    #
-    #         for key in datapackage_keys_to_ignore:
-    #             for datapackage in datapackages:
-    #                 monkeypatch.delitem(datapackage, key)
-    #
-    #         pdt.assert_dict_equal(test_datapackage,
-    #                               true_datapackage)
+    def test_save(self, study, tmpdir, monkeypatch):
+        from flotilla.datapackage import name_to_resource
+
+        study_name = 'test_save'
+        study.save(study_name, flotilla_dir=tmpdir)
+
+        assert len(tmpdir.listdir()) == 1
+        save_dir = tmpdir.listdir()[0]
+
+        with open('{}/datapackage.json'.format(save_dir)) as f:
+            test_datapackage = json.load(f)
+
+        assert study_name == save_dir.purebasename
+
+        resource_keys_to_ignore = ('compression', 'format', 'path',
+                                   'url')
+        keys_from_study = {'splicing': [],
+                           'expression': ['thresh',
+                                          'log_base',
+                                          'plus_one'],
+                           'metadata': ['phenotype_order',
+                                        'phenotype_to_color',
+                                        'phenotype_col',
+                                        'phenotype_to_marker',
+                                        'pooled_col',
+                                        'minimum_samples'],
+                           'mapping_stats': ['number_mapped_col'],
+                           'expression_feature': ['rename_col',
+                                                  'ignore_subset_cols'],
+                           'splicing_feature': ['rename_col',
+                                                'ignore_subset_cols',
+                                                'expression_id_col']}
+        resource_names = keys_from_study.keys()
+
+        # Add auto-generated attributes into the true datapackage
+        for name, keys in keys_from_study.iteritems():
+            resource = name_to_resource(true_datapackage, name)
+            for key in keys:
+                if 'feature' in name:
+                    command = 'study.{}.feature_{}'.format(name.rstrip(
+                        '_feature'), key)
+                else:
+                    command = 'study.{}.{}'.format(name, key)
+                monkeypatch.setitem(resource, key, eval(command))
+
+        for name in resource_names:
+            resource = name_to_resource(test_datapackage, name)
+            assert resource['path'] == '{}.csv.gz'.format(name)
+
+        version = semantic_version.Version(study.version)
+        version.patch += 1
+        assert str(version) == test_datapackage['datapackage_version']
+        assert study_name == test_datapackage['name']
+
+        datapackage_keys_to_ignore = ['name', 'datapackage_version',
+                                      'resources']
+        # datapackages = (true_datapackage, test_datapackage)
+
+        for name in resource_names:
+            for datapackage in datapackages:
+                resource = name_to_resource(datapackage, name)
+                for key in resource_keys_to_ignore:
+                    monkeypatch.delitem(resource, key, raising=False)
+
+        # Have to check for resources separately because they could be
+        # in any order, it just matters that the contents are equal
+        # sorted_true = sorted(true_datapackage['resources'],
+        #                      key=lambda x: x['name'])
+        sorted_test = sorted(test_datapackage['resources'],
+                             key=lambda x: x['name'])
+        for i in range(len(sorted_true)):
+            pdt.assert_equal(sorted(sorted_true[i].items()),
+                             sorted(sorted_test[i].items()))
+
+        for key in datapackage_keys_to_ignore:
+            for datapackage in datapackages:
+                monkeypatch.delitem(datapackage, key)
+
+        # pdt.assert_dict_equal(test_datapackage)
 
     # Temporary commenting out while chr22 dataset is down
     # def test_nmf_space_positions(self, chr22):
