@@ -12,7 +12,7 @@ __all__ = ['Study', 'PredictorConfigManager', 'PredictorDataSetManager',
            'SplicingData', 'MetaData', 'SpikeInData', 'MappingStatsData',
            'datapackage', 'GeneOntologyData', 'go', 'util']
 
-__version__ = '0.2.5dev'
+__version__ = '0.2.5'
 
 # 18 cells, multiindex on the splicing data features, features already renamed
 # in the matrices
