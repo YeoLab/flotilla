@@ -1,5 +1,5 @@
-v0.2.5 (......)
----------------------------
+v0.2.5 (March 3rd, 2015)
+------------------------
 
 This is a patch release, with non-breaking changes from v0.2.4. This includes
 many changes and bugfixes. Upgrading to this version is highly recommended.
