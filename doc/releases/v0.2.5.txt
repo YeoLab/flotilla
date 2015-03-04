@@ -4,6 +4,13 @@ v0.2.5 (March 3rd, 2015)
 This is a patch release, with non-breaking changes from v0.2.4. This includes
 many changes and bugfixes. Upgrading to this version is highly recommended.
 
+New features
+~~~~~~~~~~~~
+
+- Added data structure and functions for calculating gene ontology enrichment
+  in `.data_model.Study.go_enrichment`, using the data structure
+  `.gene_ontology.GeneOntologyData`
+
 Plotting functions
 ~~~~~~~~~~~~~~~~~~
 

@@ -45,8 +45,12 @@ class Networker(object):
         ValueError
             If `fun_name` is not one of the ones indicated above
         """
-        _noweight = lambda x: x
-        _arctan_sq = lambda x: np.arctan(x) ** 2
+        def _noweight(x):
+            return x
+
+        def _arctan_sq(x):
+            return np.arctan(x) ** 2
+
         if fun_name == 'no_weight':
             wt = _noweight
         elif fun_name == 'sq':

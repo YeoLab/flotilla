@@ -289,7 +289,8 @@ class TestBaseData:
                     feature_ids = feature_subset
                     n_custom = expression.feature_data.columns.map(
                         lambda x: x.startswith('custom')).sum()
-                    expression.feature_data['custom_{}'.format(n_custom + 1)] = \
+                    ind = 'custom_{}'.format(n_custom + 1)
+                    expression.feature_data[ind] = \
                         expression.feature_data.index.isin(feature_ids)
                 else:
                     raise ValueError(
