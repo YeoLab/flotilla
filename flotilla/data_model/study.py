@@ -1635,7 +1635,7 @@ class Study(object):
             return self.splicing.big_nmf_space_transitions(
                 self.sample_id_to_phenotype, phenotype_transitions, n=n)
 
-    def save(self, name, flotilla_dir=FLOTILLA_DOWNLOAD_DIR):
+    def save(self, name, flotilla_dir=FLOTILLA_DOWNLOAD_DIR, scrambled=False):
 
         metadata = self.metadata.data
 
@@ -1693,6 +1693,11 @@ class Study(object):
             spikein = None
 
         try:
+            gene_ontology = self.gene_ontology.data
+        except AttributeError:
+            gene_ontology = None
+
+        try:
             mapping_stats = self.mapping_stats.data_original
             mapping_stats_kws = {
                 'number_mapped_col': self.mapping_stats.number_mapped_col}
@@ -1715,7 +1720,8 @@ class Study(object):
             splicing_feature_data=splicing_feature_data,
             splicing_feature_kws=splicing_feature_kws, species=self.species,
             license=self.license, title=self.title, sources=self.sources,
-            version=version, flotilla_dir=flotilla_dir)
+            version=version, flotilla_dir=flotilla_dir,
+            gene_ontology=gene_ontology)
 
     @staticmethod
     def _maybe_get_axis_name(df, axis=0, alt_name=None):
