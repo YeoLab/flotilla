@@ -1,7 +1,7 @@
 from setuptools import setup
 from setuptools import find_packages
 
-version = "0.2.5dev"
+version = "0.2.5"
 
 setup(
     name='flotilla',
