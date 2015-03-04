@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>flotilla.test.conftest module &mdash; flotilla 0.2.5dev documentation</title>
+    <title>flotilla.test.conftest module &mdash; flotilla 0.2.5 documentation</title>
     
     <link rel="stylesheet" href="_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.5dev',
+        VERSION:     '0.2.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -29,7 +29,7 @@
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
-    <link rel="top" title="flotilla 0.2.5dev documentation" href="index.html" />
+    <link rel="top" title="flotilla 0.2.5 documentation" href="index.html" />
     <link rel="up" title="flotilla.test package" href="flotilla.test.html" />
     <link rel="next" title="flotilla.test.test_embark module" href="flotilla.test.test_embark.html" />
     <link rel="prev" title="flotilla.test package" href="flotilla.test.html" />
@@ -52,7 +52,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           Flotilla</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2.5dev</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -182,10 +182,27 @@ these objects and functions across test files.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="flotilla.test.conftest.color_ordered_fixed">
+<tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">color_ordered_fixed</tt><big>(</big><em>group_order_fixed</em>, <em>group_to_color_fixed</em><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#color_ordered_fixed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.color_ordered_fixed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Colors in the order created by the groups</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="flotilla.test.conftest.colors">
 <tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">colors</tt><big>(</big><em>n_groups</em><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#colors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.colors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Colors to use for the samples</p>
 </dd></dl>
+
+<dl class="function">
+<dt id="flotilla.test.conftest.colors_fixed">
+<tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">colors_fixed</tt><big>(</big><em>n_groups_fixed</em><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#colors_fixed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.colors_fixed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Colors to use for the samples</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.test.conftest.data_dir">
+<tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">data_dir</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#data_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.data_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="function">
 <dt id="flotilla.test.conftest.df_nonneg">
@@ -216,7 +233,7 @@ these objects and functions across test files.</p>
 
 <dl class="function">
 <dt id="flotilla.test.conftest.expression_data_no_na">
-<tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">expression_data_no_na</tt><big>(</big><em>samples</em>, <em>genes</em>, <em>groupby</em><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#expression_data_no_na"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.expression_data_no_na" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">expression_data_no_na</tt><big>(</big><em>samples</em>, <em>genes</em>, <em>groupby_fixed</em><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#expression_data_no_na"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.expression_data_no_na" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
@@ -275,6 +292,16 @@ these objects and functions across test files.</p>
 <dd></dd></dl>
 
 <dl class="function">
+<dt id="flotilla.test.conftest.gene_ontology_data">
+<tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">gene_ontology_data</tt><big>(</big><em>gene_ontology_data_path</em><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#gene_ontology_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.gene_ontology_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="flotilla.test.conftest.gene_ontology_data_path">
+<tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">gene_ontology_data_path</tt><big>(</big><em>data_dir</em><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#gene_ontology_data_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.gene_ontology_data_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="flotilla.test.conftest.genelist_dropbox_link">
 <tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">genelist_dropbox_link</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#genelist_dropbox_link"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.genelist_dropbox_link" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -296,7 +323,15 @@ these objects and functions across test files.</p>
 
 <dl class="function">
 <dt id="flotilla.test.conftest.group_order">
-<tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">group_order</tt><big>(</big><em>groups</em><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#group_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.group_order" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">group_order</tt><big>(</big><em>request</em>, <em>groups</em><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#group_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.group_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>so-called &#8216;logical&#8217; order of groups for plotting.</p>
+<p>To test if the user gave a specific order of the phenotypes, e.g.
+by differentiation time</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.test.conftest.group_order_fixed">
+<tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">group_order_fixed</tt><big>(</big><em>groups_fixed</em><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#group_order_fixed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.group_order_fixed" title="Permalink to this definition">¶</a></dt>
 <dd><p>so-called &#8216;logical&#8217; order of groups for plotting.</p>
 <p>To test if the user gave a specific order of the phenotypes, e.g.
 by differentiation time</p>
@@ -305,6 +340,12 @@ by differentiation time</p>
 <dl class="function">
 <dt id="flotilla.test.conftest.group_to_color">
 <tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">group_to_color</tt><big>(</big><em>group_order</em>, <em>colors</em><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#group_to_color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.group_to_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mapping of groups to colors</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.test.conftest.group_to_color_fixed">
+<tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">group_to_color_fixed</tt><big>(</big><em>group_order_fixed</em>, <em>colors_fixed</em><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#group_to_color_fixed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.group_to_color_fixed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mapping of groups to colors</p>
 </dd></dl>
 
@@ -321,13 +362,30 @@ by differentiation time</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="flotilla.test.conftest.group_transitions_fixed">
+<tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">group_transitions_fixed</tt><big>(</big><em>group_order_fixed</em><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#group_transitions_fixed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.group_transitions_fixed" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of pairwise transitions between phenotypes, for NMF</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="flotilla.test.conftest.groupby">
 <tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">groupby</tt><big>(</big><em>groups</em>, <em>samples</em><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#groupby"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.groupby" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
+<dt id="flotilla.test.conftest.groupby_fixed">
+<tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">groupby_fixed</tt><big>(</big><em>groups_fixed</em>, <em>samples</em><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#groupby_fixed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.groupby_fixed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="flotilla.test.conftest.groups">
 <tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">groups</tt><big>(</big><em>n_groups</em><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Phenotype group names</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.test.conftest.groups_fixed">
+<tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">groups_fixed</tt><big>(</big><em>n_groups_fixed</em><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#groups_fixed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.groups_fixed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Phenotype group names</p>
 </dd></dl>
 
@@ -353,18 +411,34 @@ by differentiation time</p>
 
 <dl class="function">
 <dt id="flotilla.test.conftest.metadata_data">
-<tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">metadata_data</tt><big>(</big><em>groupby</em>, <em>samples</em>, <em>n_samples</em><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#metadata_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.metadata_data" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">metadata_data</tt><big>(</big><em>groupby</em>, <em>outliers</em>, <em>pooled</em>, <em>samples</em>, <em>n_samples</em>, <em>metadata_phenotype_col</em><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#metadata_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.metadata_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="flotilla.test.conftest.metadata_data_groups_fixed">
+<tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">metadata_data_groups_fixed</tt><big>(</big><em>groupby_fixed</em>, <em>outliers</em>, <em>pooled</em>, <em>samples</em>, <em>n_samples</em>, <em>metadata_phenotype_col</em><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#metadata_data_groups_fixed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.metadata_data_groups_fixed" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="flotilla.test.conftest.metadata_kws">
-<tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">metadata_kws</tt><big>(</big><em>group_order</em>, <em>group_to_color</em>, <em>group_to_marker</em><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#metadata_kws"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.metadata_kws" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">metadata_kws</tt><big>(</big><em>metadata_phenotype_col</em>, <em>group_order</em>, <em>group_to_color</em>, <em>group_to_marker</em><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#metadata_kws"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.metadata_kws" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="flotilla.test.conftest.metadata_kws_fixed">
+<tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">metadata_kws_fixed</tt><big>(</big><em>metadata_phenotype_col</em>, <em>group_order_fixed</em>, <em>group_to_color_fixed</em><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#metadata_kws_fixed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.metadata_kws_fixed" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="flotilla.test.conftest.metadata_minimum_samples">
 <tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">metadata_minimum_samples</tt><big>(</big><em>request</em><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#metadata_minimum_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.metadata_minimum_samples" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="function">
+<dt id="flotilla.test.conftest.metadata_phenotype_col">
+<tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">metadata_phenotype_col</tt><big>(</big><em>request</em><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#metadata_phenotype_col"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.metadata_phenotype_col" title="Permalink to this definition">¶</a></dt>
+<dd><p>Which column in the metadata specifies the phenotype</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="flotilla.test.conftest.modality_models">
@@ -385,6 +459,12 @@ by differentiation time</p>
 <dt id="flotilla.test.conftest.n_groups">
 <tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">n_groups</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#n_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.n_groups" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of phenotype groups.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.test.conftest.n_groups_fixed">
+<tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">n_groups_fixed</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#n_groups_fixed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.n_groups_fixed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fixed number of phenotype groups (3)</p>
 </dd></dl>
 
 <dl class="function">
@@ -440,7 +520,17 @@ otherwise None</p>
 
 <dl class="function">
 <dt id="flotilla.test.conftest.splicing_data">
-<tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">splicing_data</tt><big>(</big><em>samples</em>, <em>events</em>, <em>true_modalities</em>, <em>modality_models</em>, <em>groupby</em><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#splicing_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.splicing_data" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">splicing_data</tt><big>(</big><em>samples</em>, <em>events</em>, <em>true_modalities</em>, <em>modality_models</em>, <em>na_thresh</em>, <em>groupby</em><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#splicing_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.splicing_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="flotilla.test.conftest.splicing_data_fixed">
+<tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">splicing_data_fixed</tt><big>(</big><em>samples</em>, <em>events</em>, <em>true_modalities_fixed</em>, <em>modality_models</em>, <em>groupby_fixed</em><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#splicing_data_fixed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.splicing_data_fixed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="flotilla.test.conftest.splicing_data_no_na">
+<tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">splicing_data_no_na</tt><big>(</big><em>samples</em>, <em>events</em>, <em>true_modalities_fixed</em>, <em>modality_models</em>, <em>groupby_fixed</em><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#splicing_data_no_na"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.splicing_data_no_na" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
@@ -454,6 +544,11 @@ otherwise None</p>
 <dd></dd></dl>
 
 <dl class="function">
+<dt id="flotilla.test.conftest.splicing_fixed">
+<tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">splicing_fixed</tt><big>(</big><em>splicing_data_fixed</em><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#splicing_fixed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.splicing_fixed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="flotilla.test.conftest.splicing_kws">
 <tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">splicing_kws</tt><big>(</big><em>splicing_feature_data</em>, <em>splicing_feature_common_id</em>, <em>gene_name</em><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#splicing_kws"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.splicing_kws" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -461,6 +556,11 @@ otherwise None</p>
 <dl class="function">
 <dt id="flotilla.test.conftest.standardize">
 <tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">standardize</tt><big>(</big><em>request</em><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#standardize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.standardize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="flotilla.test.conftest.study">
+<tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">study</tt><big>(</big><em>request</em>, <em>shalek2013</em>, <em>scrambled_study</em><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#study"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.study" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
@@ -473,6 +573,11 @@ outliers, otherwise None</p>
 <dl class="function">
 <dt id="flotilla.test.conftest.true_modalities">
 <tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">true_modalities</tt><big>(</big><em>events</em>, <em>modality_models</em>, <em>groups</em><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#true_modalities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.true_modalities" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="flotilla.test.conftest.true_modalities_fixed">
+<tt class="descclassname">flotilla.test.conftest.</tt><tt class="descname">true_modalities_fixed</tt><big>(</big><em>events</em>, <em>modality_models</em>, <em>groups_fixed</em><big>)</big><a class="reference internal" href="_modules/flotilla/test/conftest.html#true_modalities_fixed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.test.conftest.true_modalities_fixed" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
