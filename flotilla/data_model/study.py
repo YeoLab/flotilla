@@ -1635,8 +1635,35 @@ class Study(object):
             return self.splicing.big_nmf_space_transitions(
                 self.sample_id_to_phenotype, phenotype_transitions, n=n)
 
-    def save(self, name, flotilla_dir=FLOTILLA_DOWNLOAD_DIR, scrambled=False):
+    @staticmethod
+    def randomly_shuffle_df(df):
+        """Randomly shuffle columns and rows of a dataframe"""
+        df2 = df.copy()
+        features = df2.columns.values.copy()
+        np.random.shuffle(features)
+        samples = df2.index.values.copy()
+        df2.columns = features
+        df2.index = samples
+        return df2
 
+    def save(self, name, flotilla_dir=FLOTILLA_DOWNLOAD_DIR, scrambled=False):
+        """Save the current study to a "datapackage" for future loading
+
+        This allows you to "embark" on this project in the future, without
+        having to load everything yourself, but flotilla will do the heavy
+        lifting for you.
+
+        Parameters
+        ----------
+        name : str
+            Name of the package
+        flotilla_dir : str, optional
+            Where to save flotilla projects
+        scrambled : bool
+            If True, shuffle the sample and feature IDs so that sensitive
+            unpublished information isn't shared. Useful for sharing studies
+            for debugging purposes.
+        """
         metadata = self.metadata.data
 
         metadata_kws = {'pooled_col': self.metadata.pooled_col,
@@ -1651,6 +1678,9 @@ class Study(object):
 
         try:
             expression = self.expression.data_original
+            if scrambled:
+                expression = self.randomly_shuffle_df(expression)
+
             expression_kws = {
                 'log_base': self.expression.log_base,
                 'thresh': self.expression.thresh_original,
@@ -1671,6 +1701,9 @@ class Study(object):
 
         try:
             splicing = self.splicing.data_original
+            if scrambled:
+                splicing = self.randomly_shuffle_df(splicing)
+
             splicing_kws = {}
         except AttributeError:
             splicing = None
@@ -1689,6 +1722,9 @@ class Study(object):
 
         try:
             spikein = self.spikein.data_original
+            if scrambled:
+                spikein = self.randomly_shuffle_df(spikein)
+
         except AttributeError:
             spikein = None
 
