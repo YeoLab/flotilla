@@ -122,7 +122,10 @@ class MetaData(BaseData):
     @property
     def _default_phenotype_to_color(self):
         colors = iter(self._colors)
-        color_factory = lambda: colors.next()
+
+        def color_factory():
+            return colors.next()
+
         return defaultdict(color_factory)
 
     @property
