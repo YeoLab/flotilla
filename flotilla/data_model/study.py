@@ -385,9 +385,9 @@ class Study(object):
         for name in self._subsetable_data_types:
             try:
                 data_type = getattr(self, name)
+                feature_subsets[name] = data_type.feature_subsets
             except AttributeError:
                 continue
-            feature_subsets[name] = data_type.feature_subsets
         return feature_subsets
 
     @classmethod
@@ -638,25 +638,6 @@ class Study(object):
         self.expression.outlier_samples = outliers
         self.splicing.outlier_samples = outliers
 
-    def jsd(self):
-        """Performs Jensen-Shannon Divergence on both splicing and expression
-        study_data
-
-        Jensen-Shannon divergence is a method of quantifying the amount of
-        change in distribution of one measurement (e.g. a splicing event or a
-        gene expression) from one celltype to another.
-        """
-        raise NotImplementedError
-        # TODO: Check if JSD has not already been calculated (memoize)
-        self.expression.jsd()
-        self.splicing.jsd()
-
-    def normalize_to_spikein(self):
-        raise NotImplementedError
-
-    def compute_expression_splicing_covariance(self):
-        raise NotImplementedError
-
     @staticmethod
     def maybe_make_directory(filename):
         # Make the directory if it's not already there
@@ -711,14 +692,14 @@ class Study(object):
 
         try:
             return self.metadata.sample_subsets[phenotype_subset]
-        except KeyError:
+        except (KeyError, TypeError) as e:
             pass
 
-        ind = self.metadata.phenotype_series == phenotype_subset
-        if ind.sum() > 0:
-            return self.metadata.phenotype_series.index[ind]
-
         try:
+            ind = self.metadata.sample_id_to_phenotype == phenotype_subset
+            if ind.sum() > 0:
+                return self.metadata.sample_id_to_phenotype.index[ind]
+
             if phenotype_subset is None or 'all_samples'.startswith(
                     phenotype_subset):
                 sample_ind = np.ones(self.metadata.data.shape[0],
@@ -733,7 +714,7 @@ class Study(object):
                     self.metadata.data[phenotype_subset], dtype='bool')
             sample_ids = self.metadata.data.index[sample_ind]
             return sample_ids
-        except AttributeError:
+        except (AttributeError, ValueError):
             return phenotype_subset
 
     def plot_pca(self, data_type='expression', x_pc=1, y_pc=2,
@@ -951,9 +932,14 @@ class Study(object):
             trait_ids = self.sample_subset_to_sample_ids(trait)
             trait_data = self.metadata.data.index.isin(trait_ids)
 
-        all_true = np.all(trait_data)
-        all_false = np.all(~trait_data)
-        too_few_categories = len(set(trait_data)) <= 1
+        if isinstance(trait_data.dtype, bool):
+            all_true = np.all(trait_data)
+            all_false = np.all(~trait_data)
+            too_few_categories = False
+        else:
+            all_false = False
+            all_true = False
+            too_few_categories = len(set(trait_data)) <= 1
         nothing_to_classify = all_true or all_false or too_few_categories
 
         if nothing_to_classify:
@@ -996,15 +982,6 @@ class Study(object):
                 show_point_labels=show_point_labels, title=title,
                 order=order, color=color,
                 **kwargs)
-
-    def plot_regressor(self, data_type='expression', **kwargs):
-        """
-        """
-        raise NotImplementedError
-        if data_type == "expression":
-            self.expression.plot_regressor(**kwargs)
-        elif data_type == "splicing":
-            self.splicing.plot_regressor(**kwargs)
 
     def modality_assignments(self, sample_subset=None, feature_subset=None,
                              expression_thresh=-np.inf, min_samples=0.5):
@@ -1519,9 +1496,10 @@ class Study(object):
                 'splicing', feature_subset, rename=False)
             data = None
 
-        self.splicing.plot_lavalamp(sample_ids, feature_ids, data,
-                                    self.sample_id_to_phenotype,
-                                    self.phenotype_to_color,
+        self.splicing.plot_lavalamp(sample_ids=sample_ids,
+                                    feature_ids=feature_ids, data=data,
+                                    groupby=self.sample_id_to_phenotype,
+                                    phenotype_to_color=self.phenotype_to_color,
                                     order=self.phenotype_order)
 
     def plot_big_nmf_space_transitions(self, data_type='expression', n=5):

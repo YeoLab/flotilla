@@ -2,13 +2,14 @@
 This tests whether the Study object was created correctly. No
 computation or visualization tests yet.
 """
-import warnings
 
+import matplotlib.pyplot as plt
+import numpy as np
 import numpy.testing as npt
+import pandas as pd
 import pandas.util.testing as pdt
 import pytest
 
-warnings.simplefilter("error")
 
 
 @pytest.fixture(params=['expression', 'splicing'])
@@ -24,6 +25,23 @@ def color_samples_by(request, metadata_phenotype_col):
     else:
         return request.param
 
+# @pytest.fixture(params=[None, 'gene_category', 'boolean_gene_category'])
+# def feature_subset(request, gene_categories, boolean_gene_categories):
+#     if request.param is None:
+#         return None
+#     elif request.param == 'gene_category':
+#         return gene_categories[0]
+#     elif request.param == 'boolean_gene_category':
+#         return boolean_gene_categories[0]
+#
+# @pytest.fixture(params=[None, 'phenotype', 'subset'])
+# def sample_subset(request):
+#     if request.param is None:
+#         return None
+#     elif request.param == 'phenotype':
+#         return 'phenotype'
+#     elif request.param == 'subset':
+#         return 'subset1'
 
 class TestStudy(object):
     # @pytest.fixture
@@ -70,6 +88,7 @@ class TestStudy(object):
     #                  expression_data=expression_data_no_na,
     #                  splicing_data=splicing_data_fixed, **kwargs)
 
+    @pytest.fixture
     def study(self, metadata_data, metadata_kws,
               expression_data, expression_kws,
               splicing_data, splicing_kws,
@@ -95,15 +114,52 @@ class TestStudy(object):
     def test_init(self, metadata_data):
         from flotilla import Study
 
-        study = Study(metadata_data)
+        metadata = metadata_data.copy()
+        study = Study(metadata)
 
-        pdt.assert_frame_equal(study.metadata.data,
-                               metadata_data)
+        metadata['outlier'] = False
+
+        true_default_sample_subsets = list(sorted(list(set(
+            study.metadata.sample_subsets.keys()).difference(
+            set(study.default_sample_subset)))))
+        true_default_sample_subsets.insert(0, study.default_sample_subset)
+
+        pdt.assert_frame_equal(study.metadata.data, metadata)
         pdt.assert_equal(study.version, '0.1.0')
-        npt.assert_equal(study.pooled, None)
+        pdt.assert_equal(study.pooled, None)
+        pdt.assert_equal(study.technical_outliers, None)
+        pdt.assert_equal(study.phenotype_col, study.metadata.phenotype_col)
+        pdt.assert_equal(study.phenotype_order, study.metadata.phenotype_order)
+        pdt.assert_equal(study.phenotype_to_color,
+                         study.metadata.phenotype_to_color)
+        pdt.assert_equal(study.phenotype_to_marker,
+                         study.metadata.phenotype_to_marker)
+        pdt.assert_series_equal(study.sample_id_to_phenotype,
+                                study.metadata.sample_id_to_phenotype)
+        pdt.assert_series_equal(study.sample_id_to_color,
+                                study.metadata.sample_id_to_color)
+        pdt.assert_array_equal(study.phenotype_transitions,
+                               study.metadata.phenotype_transitions)
+        pdt.assert_array_equal(study.phenotype_color_ordered,
+                               study.metadata.phenotype_color_order)
+        pdt.assert_equal(study.default_sample_subset, 'all_samples')
+        pdt.assert_equal(study.default_feature_subset, 'variant')
+        pdt.assert_array_equal(study.default_sample_subsets,
+                               true_default_sample_subsets)
+        pdt.assert_dict_equal(study.default_feature_subsets, {})
 
-    def test_init(self, metadata_data,
-                           metadata_kws):
+    @pytest.mark.xfail
+    def test_setattr(self, metadata_data):
+        # warnings.simplefilter("error")
+
+        from flotilla import Study
+
+        study = Study(metadata_data.copy())
+
+        study.pooled = 'asdf'
+        # warnings.simplefilter('default')
+
+    def test_init_metdadata_kws(self, metadata_data, metadata_kws):
         # Also need to check for when these are NAs
         from flotilla import Study
 
@@ -139,7 +195,17 @@ class TestStudy(object):
 
         study = Study(metadata, **kws)
 
-        npt.assert_equal(study.pooled, None)
+        true_pooled = None
+        if study.metadata.pooled_col is not None:
+            if study.metadata.pooled_col in study.metadata.data:
+                try:
+                    true_pooled = study.metadata.data.index[
+                        study.metadata.data[
+                            study.metadata.pooled_col].astype(bool)]
+                except KeyError:
+                    true_pooled = None
+
+        npt.assert_equal(study.pooled, true_pooled)
 
     def test_init_outlier(self, metadata_data, metadata_kws, outliers):
         from flotilla import Study
@@ -207,6 +273,49 @@ class TestStudy(object):
         pdt.assert_array_equal(study.splicing.data_original,
                                splicing_data)
 
+    def test_feature_subset_to_feature_ids(self, study, data_type,
+                                           feature_subset):
+        test_feature_subset = study.feature_subset_to_feature_ids(
+            data_type, feature_subset)
+        if 'expression'.startswith(data_type):
+            true_feature_subset = \
+                study.expression.feature_subset_to_feature_ids(feature_subset,
+                                                               rename=False)
+        elif 'splicing'.startswith(data_type):
+            true_feature_subset = study.splicing.feature_subset_to_feature_ids(
+                feature_subset, rename=False)
+        pdt.assert_array_equal(test_feature_subset, true_feature_subset)
+
+    def test_sample_subset_to_sample_ids(self, study, sample_subset):
+        test_sample_subset = study.sample_subset_to_sample_ids(sample_subset)
+
+        try:
+            true_sample_subset = study.metadata.sample_subsets[sample_subset]
+        except (KeyError, TypeError):
+            try:
+                ind = study.metadata.sample_id_to_phenotype == sample_subset
+                if ind.sum() > 0:
+                    true_sample_subset = \
+                        study.metadata.sample_id_to_phenotype.index[ind]
+                else:
+                    if sample_subset is None or 'all_samples'.startswith(
+                            sample_subset):
+                        sample_ind = np.ones(study.metadata.data.shape[0],
+                                             dtype=bool)
+                    elif sample_subset.startswith("~"):
+                        sample_ind = ~pd.Series(
+                            study.metadata.data[sample_subset.lstrip("~")],
+                            dtype='bool')
+
+                    else:
+                        sample_ind = pd.Series(
+                            study.metadata.data[sample_subset], dtype='bool')
+                    true_sample_subset = study.metadata.data.index[sample_ind]
+            except (AttributeError, ValueError):
+                true_sample_subset = sample_subset
+
+        pdt.assert_array_equal(true_sample_subset, test_sample_subset)
+
     def test_filter_splicing_on_expression(self, study):
         expression_thresh = 5
         sample_subset = None
@@ -237,16 +346,50 @@ class TestStudy(object):
         pdt.assert_frame_equal(true_filtered_splicing, test_filtered_splicing)
         
 
-    # def test_plot_pca(self, study_no_mapping_stats, color_samples_by):
-    #     study_no_mapping_stats.plot_pca(color_samples_by=color_samples_by,
-    #                                     feature_subset='all')
+    def test_plot_pca(self, study, data_type):
+        study.plot_pca(feature_subset='all', data_type=data_type)
+        plt.close('all')
+
+    # Too few features to test graph or classifier
+    # def test_plot_graph(self, study, data_type):
+    #     study.plot_graph(feature_subset='all', data_type=data_type)
     #     plt.close('all')
-    #
-    # def test_plot_pca_splicing(self, study_no_mapping_stats, color_samples_by):
-    #     study_no_mapping_stats.plot_pca(color_samples_by=color_samples_by,
-    #                                     data_type='splicing',
-    #                                     feature_subset='all')
+
+    # def test_plot_classifier(self, study, data_type):
+    #     trait = study.metadata.phenotype_col
+    #     study.plot_classifier(trait, feature_subset='all', data_type=data_type)
     #     plt.close('all')
+
+    def test_plot_clustermap(self, study, data_type):
+        study.plot_clustermap(feature_subset='all', data_type=data_type)
+        plt.close('all')
+
+    def test_plot_correlations(self, study, featurewise, data_type):
+        study.plot_correlations(feature_subset='all', featurewise=featurewise,
+                                data_type=data_type)
+        plt.close('all')
+
+    def test_plot_lavalamps(self, study):
+        study.plot_lavalamps()
+        plt.close('all')
+
+    def test_plot_big_nmf_space_transitions(self, study):
+        study.plot_big_nmf_space_transitions('splicing')
+        plt.close('all')
+
+    def test_plot_two_samples(self, study, data_type):
+        sample1 = study.expression.data.index[0]
+        sample2 = study.expression.data.index[-1]
+        study.plot_two_samples(sample1, sample2, data_type=data_type)
+
+    def test_plot_two_features(self, study, data_type):
+        if data_type == 'expression':
+            feature1 = study.expression.data.columns[0]
+            feature2 = study.expression.data.columns[-1]
+        elif data_type == 'splicing':
+            feature1 = study.splicing.data.columns[0]
+            feature2 = study.splicing.data.columns[-1]
+        study.plot_two_features(feature1, feature2, data_type=data_type)
 
     @pytest.fixture(params=[None, 'gene'])
     def gene_of_interest(self, request, genes):
@@ -254,6 +397,9 @@ class TestStudy(object):
             return genes[0]
         else:
             return request.param
+
+
+
 
     # def test_plot_graph(self, study, gene_of_interest, featurewise):
     #     study.plot_graph(feature_of_interest=gene_of_interest,
@@ -421,93 +567,87 @@ class TestStudy(object):
     #     #     assert study.splicing.feature_rename_col \
     #     #            == splicing_feature_rename_col
     #
-    #     def test_save(self, shalek2013_datapackage_path,
-    #     #             shalek2013_datapackage,
-    #                   tmpdir, monkeypatch):
-    #         import flotilla
-    #         from flotilla.datapackage import name_to_resource
-    #
-    #         study = flotilla.embark(shalek2013_datapackage_path,
-    #                                 load_species_data=False)
-    #         study_name = 'test_save'
-    #         study.save(study_name, flotilla_dir=tmpdir)
-    #
-    #         assert len(tmpdir.listdir()) == 1
-    #         save_dir = tmpdir.listdir()[0]
-    #
-    #         with open('{}/datapackage.json'.format(save_dir)) as f:
-    #             test_datapackage = json.load(f)
-    #         true_datapackage = copy.deepcopy(shalek2013_datapackage)
-    #
-    #         assert study_name == save_dir.purebasename
-    #
-    #         resource_keys_to_ignore = ('compression', 'format', 'path',
-    #                                    'url')
-    #         keys_from_study = {'splicing': [],
-    #                            'expression': ['thresh',
-    #                                           'log_base',
-    #                                           'plus_one'],
-    #                            'metadata': ['phenotype_order',
-    #                                         'phenotype_to_color',
-    #                                         'phenotype_col',
-    #                                         'phenotype_to_marker',
-    #                                         'pooled_col',
-    #                                         'minimum_samples'],
-    #                            'mapping_stats': ['number_mapped_col'],
-    #                            'expression_feature': ['rename_col',
-    #                                                   'ignore_subset_cols'],
-    #                            'splicing_feature': ['rename_col',
-    #                                                 'ignore_subset_cols',
-    #                                                 'expression_id_col']}
-    #         resource_names = keys_from_study.keys()
-    #
-    #         # Add auto-generated attributes into the true datapackage
-    #         for name, keys in keys_from_study.iteritems():
-    #             resource = name_to_resource(true_datapackage, name)
-    #             for key in keys:
-    #                 if 'feature' in name:
-    #                     command = 'study.{}.feature_{}'.format(name.rstrip(
-    #                         '_feature'), key)
-    #                 else:
-    #                     command = 'study.{}.{}'.format(name, key)
-    #                 monkeypatch.setitem(resource, key, eval(command))
-    #
-    #         for name in resource_names:
-    #             resource = name_to_resource(test_datapackage, name)
-    #             assert resource['path'] == '{}.csv.gz'.format(name)
-    #
-    #         version = semantic_version.Version(study.version)
-    #         version.patch += 1
-    #         assert str(version) == test_datapackage['datapackage_version']
-    #         assert study_name == test_datapackage['name']
-    #
-    #         datapackage_keys_to_ignore = ['name', 'datapackage_version',
-    #                                       'resources']
-    #         datapackages = (true_datapackage, test_datapackage)
-    #
-    #         for name in resource_names:
-    #             for datapackage in datapackages:
-    #                 resource = name_to_resource(datapackage, name)
-    #                 for key in resource_keys_to_ignore:
-    #                     monkeypatch.delitem(resource, key, raising=False)
-    #
-    #         # Have to check for resources separately because they could be
-    #         # in any
-    #         # order, it just matters that the contents are equal
-    #         sorted_true = sorted(true_datapackage['resources'],
-    #                              key=lambda x: x['name'])
-    #         sorted_test = sorted(test_datapackage['resources'],
-    #                              key=lambda x: x['name'])
-    #         for i in range(len(sorted_true)):
-    #             pdt.assert_equal(sorted(sorted_true[i].items()),
-    #                              sorted(sorted_test[i].items()))
-    #
-    #         for key in datapackage_keys_to_ignore:
-    #             for datapackage in datapackages:
-    #                 monkeypatch.delitem(datapackage, key)
-    #
-    #         pdt.assert_dict_equal(test_datapackage,
-    #                               true_datapackage)
+    def test_save(self, study, tmpdir):
+
+        study_name = 'test_save'
+        study.save(study_name, flotilla_dir=tmpdir)
+
+        assert len(tmpdir.listdir()) == 1
+        save_dir = tmpdir.listdir()[0]
+
+        # with open('{}/datapackage.json'.format(save_dir)) as f:
+        #     test_datapackage = json.load(f)
+        # true_datapackage = copy.deepcopy(shalek2013_datapackage)
+
+        assert study_name == save_dir.purebasename
+
+        # resource_keys_to_ignore = ('compression', 'format', 'path',
+        #                            'url')
+        # keys_from_study = {'splicing': [],
+        #                    'expression': ['thresh',
+        #                                   'log_base',
+        #                                   'plus_one'],
+        #                    'metadata': ['phenotype_order',
+        #                                 'phenotype_to_color',
+        #                                 'phenotype_col',
+        #                                 'phenotype_to_marker',
+        #                                 'pooled_col',
+        #                                 'minimum_samples'],
+        #                    'mapping_stats': ['number_mapped_col'],
+        #                    'expression_feature': ['rename_col',
+        #                                           'ignore_subset_cols'],
+        #                    'splicing_feature': ['rename_col',
+        #                                         'ignore_subset_cols',
+        #                                         'expression_id_col']}
+        # resource_names = keys_from_study.keys()
+        #
+        # # Add auto-generated attributes into the true datapackage
+        # for name, keys in keys_from_study.iteritems():
+        #     resource = name_to_resource(true_datapackage, name)
+        #     for key in keys:
+        #         if 'feature' in name:
+        #             command = 'study.{}.feature_{}'.format(name.rstrip(
+        #                 '_feature'), key)
+        #         else:
+        #             command = 'study.{}.{}'.format(name, key)
+        #         monkeypatch.setitem(resource, key, eval(command))
+        #
+        # for name in resource_names:
+        #     resource = name_to_resource(test_datapackage, name)
+        #     assert resource['path'] == '{}.csv.gz'.format(name)
+        #
+        # version = semantic_version.Version(study.version)
+        # version.patch += 1
+        # assert str(version) == test_datapackage['datapackage_version']
+        # assert study_name == test_datapackage['name']
+        #
+        # datapackage_keys_to_ignore = ['name', 'datapackage_version',
+        #                               'resources']
+        # datapackages = (true_datapackage, test_datapackage)
+        #
+        # for name in resource_names:
+        #     for datapackage in datapackages:
+        #         resource = name_to_resource(datapackage, name)
+        #         for key in resource_keys_to_ignore:
+        #             monkeypatch.delitem(resource, key, raising=False)
+        #
+        # # Have to check for resources separately because they could be
+        # # in any
+        # # order, it just matters that the contents are equal
+        # sorted_true = sorted(true_datapackage['resources'],
+        #                      key=lambda x: x['name'])
+        # sorted_test = sorted(test_datapackage['resources'],
+        #                      key=lambda x: x['name'])
+        # for i in range(len(sorted_true)):
+        #     pdt.assert_equal(sorted(sorted_true[i].items()),
+        #                      sorted(sorted_test[i].items()))
+        #
+        # for key in datapackage_keys_to_ignore:
+        #     for datapackage in datapackages:
+        #         monkeypatch.delitem(datapackage, key)
+        #
+        # pdt.assert_dict_equal(test_datapackage,
+        #                       true_datapackage)
 
     # Temporary commenting out while chr22 dataset is down
     # def test_nmf_space_positions(self, chr22):

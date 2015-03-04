@@ -1316,6 +1316,11 @@ class BaseData(object):
         """
         feature1s = self.maybe_renamed_to_feature_id(feature1)
         feature2s = self.maybe_renamed_to_feature_id(feature2)
+        if isinstance(feature1s, str):
+            feature1s = [feature1s]
+        if isinstance(feature2s, str):
+            feature2s = [feature2s]
+
         for f1 in feature1s:
             for f2 in feature2s:
                 x = self.data.ix[:, f1].copy()
