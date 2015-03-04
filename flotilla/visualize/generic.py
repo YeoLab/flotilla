@@ -197,8 +197,8 @@ def nmf_space_transitions(nmf_space_positions, feature_id,
     ax.set_xlim(0, nmf_space_positions.ix[:, 0].max() * 1.05)
     ax.set_ylim(0, nmf_space_positions.ix[:, 1].max() * 1.05)
 
-    x = [df.ix[phenotype, 0] for phenotype in order if phenotype in df.index]
-    y = [df.ix[phenotype, 1] for phenotype in order if phenotype in df.index]
+    x = [df.ix[pheno, 0] for pheno in order if pheno in df.index]
+    y = [df.ix[pheno, 1] for pheno in order if pheno in df.index]
 
     ax.plot(x, y, zorder=-1, color='#262626', alpha=0.5, linewidth=1)
     ax.legend()
