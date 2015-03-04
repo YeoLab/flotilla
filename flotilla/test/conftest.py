@@ -31,12 +31,11 @@ def samples(n_samples):
 
 
 @pytest.fixture(scope='module')
-def technical_outliers(request, n_samples, samples):
+def technical_outliers(n_samples, samples):
     """If request.param is True, return randomly chosen samples as technical
     outliers, otherwise None"""
     return np.random.choice(samples,
-                            size=np.random.randint(1,
-                                                   int(n_samples / 10.)),
+                            size=np.random.randint(1, int(n_samples / 10.)),
                             replace=False)
 
 
@@ -232,27 +231,23 @@ def mapping_stats_min_reads_default():
     return 5e5
 
 
-@pytest.fixture(scope='module', params=[None, 1e6],
-                ids=['min_reads_none', 'min_reads_1e6'])
-def mapping_stats_kws(request, mapping_stats_number_mapped_col):
+@pytest.fixture(scope='module')
+def mapping_stats_kws(mapping_stats_number_mapped_col):
     kws = {'number_mapped_col': mapping_stats_number_mapped_col}
-    if request.param is not None:
-        kws['min_reads'] = request.param
+    # if request.param is not None:
+    # kws['min_reads'] = 1e6
     return kws
 
 
 @pytest.fixture(scope='module')
 def mapping_stats_data(samples, technical_outliers,
                        mapping_stats_min_reads_default,
-                       mapping_stats_kws,
                        mapping_stats_number_mapped_col):
-    min_reads = mapping_stats_kws.get('min_reads',
-                                      mapping_stats_min_reads_default)
     df = pd.DataFrame(index=samples)
-    df[mapping_stats_number_mapped_col] = 2 * min_reads
+    df[mapping_stats_number_mapped_col] = 2 * mapping_stats_min_reads_default
     if technical_outliers is not None:
         df.ix[technical_outliers, mapping_stats_number_mapped_col] = \
-            .5 * min_reads
+            .5 * mapping_stats_min_reads_default
     return df
 
 
@@ -393,21 +388,19 @@ def expression_feature_rename_col(renamed):
         return None
 
 
-@pytest.fixture(scope='module', params=[None, 2],
-                ids=['log_base_None', 'log_base2'])
-def expression_log_base(request):
-    return request.param
+@pytest.fixture(scope='module')
+def expression_log_base():
+    return 2
 
 
-@pytest.fixture(scope='module', params=[True, False],
-                ids=['plus_one_true', 'plus_one_false'])
-def expression_plus_one(request):
-    return request.param
+@pytest.fixture(scope='module')
+def expression_plus_one():
+    return True
 
 
-@pytest.fixture(scope='module', params=[-np.inf, 2])
+@pytest.fixture(scope='module')
 def expression_thresh(request):
-    return request.param
+    return 2
 
 
 @pytest.fixture(scope='module')
@@ -649,11 +642,15 @@ def standardize(request):
     return request.param
 
 
-@pytest.fixture(params=['subset1',
-                        'phenotype: group1'],
+@pytest.fixture(params=['subset1', None,
+                        'phenotype: group1',
+                        '~subset1', 'ids'],
                 scope='module')
-def sample_subset(request):
-    return request.param
+def sample_subset(request, samples):
+    if request.param == 'ids':
+        return samples[:10]
+    else:
+        return request.param
 
 
 @pytest.fixture(
