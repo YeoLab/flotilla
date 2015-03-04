@@ -2,6 +2,9 @@
 
 import seaborn
 
+from .ipython_interact import Interactive
+from .predict import PredictorBaseViz
+
 seaborn.set_style({'axes.axisbelow': True,
                    'axes.edgecolor': '.15',
                    'axes.facecolor': 'white',
@@ -27,8 +30,5 @@ seaborn.set_style({'axes.axisbelow': True,
                    'ytick.minor.size': 0})
 
 seaborn.set_context('talk')
-
-from .ipython_interact import Interactive
-from .predict import PredictorBaseViz
 
 __all__ = ['Interactive', 'PredictorBaseViz']
