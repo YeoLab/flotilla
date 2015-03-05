@@ -17,7 +17,7 @@ MODALITIES_NAMES = ['excluded', 'middle', 'included', 'bimodal',
 class ModalityModel(object):
     """Object to model modalities from beta distributions"""
 
-    def __init__(self, alphas, betas):
+    def __init__(self, alphas, betas, prior='uniform'):
         if not isinstance(alphas, Iterable) and not isinstance(betas,
                                                                Iterable):
             alphas = [alphas]
@@ -30,9 +30,11 @@ class ModalityModel(object):
 
         self.rvs = [stats.beta(a, b) for a, b in
                     zip(self.alphas, self.betas)]
-        self.scores = np.arange(len(self.rvs)).astype(float) + .1
-        self.scores = self.scores / self.scores.max()
-        self.prob_parameters = self.scores / self.scores.sum()
+        if prior == 'uniform':
+            self.scores = np.ones(self.alphas.shape).astype(float)
+        elif prior == 'exponential':
+            self.scores = np.exp(np.arange(self.alphas.shape[0]))
+        self.prob_parameters = self.scores/self.scores.sum()
 
     def __eq__(self, other):
         return np.all(self.alphas == other.alphas) \
@@ -83,9 +85,10 @@ class ModalityEstimator(object):
                                     self.step).astype(float)
         self.exclusion_model = ModalityModel(1, self.parameters)
         self.inclusion_model = ModalityModel(self.parameters, 1)
-        self.middle_model = ModalityModel(self.parameters, self.parameters)
-        self.bimodal_model = ModalityModel(1 / self.parameters,
-                                           1 / self.parameters)
+        self.middle_model = ModalityModel(self.parameters+3, self.parameters+3)
+        self.bimodal_model = ModalityModel(1 / self.parameters+3,
+                                           1 / self.parameters+3,
+                                           prior='exponential')
 
         self.models = {'included': self.inclusion_model,
                        'excluded': self.exclusion_model,
