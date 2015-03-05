@@ -86,8 +86,8 @@ class ModalityEstimator(object):
         self.exclusion_model = ModalityModel(1, self.parameters)
         self.inclusion_model = ModalityModel(self.parameters, 1)
         self.middle_model = ModalityModel(self.parameters+3, self.parameters+3)
-        self.bimodal_model = ModalityModel(1 / self.parameters+3,
-                                           1 / self.parameters+3,
+        self.bimodal_model = ModalityModel(1 / (self.parameters+3),
+                                           1 / (self.parameters+3),
                                            prior='exponential')
 
         self.models = {'included': self.inclusion_model,
