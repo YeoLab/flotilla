@@ -1,0 +1,19 @@
+
+.. _plot_modalities_reduced:
+
+
+Plot splicing events on NMF space, colored by their modality in each celltype
+=============================================================================
+
+See also
+--------
+:py:func:`Study.plot_modalities_reduced`
+
+
+
+.. image:: _images/plot_modalities_reduced.png
+
+**Python source code:** :download:`[download source: plot_modalities_reduced.py]<plot_modalities_reduced.py>`
+
+.. literalinclude:: plot_modalities_reduced.py
+    :lines: 10-

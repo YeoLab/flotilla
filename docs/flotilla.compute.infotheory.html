@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>flotilla.compute.infotheory module &mdash; flotilla 0.2.2 documentation</title>
+    <title>flotilla.compute.infotheory module &mdash; flotilla 0.2.5 documentation</title>
     
     <link rel="stylesheet" href="_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.2',
+        VERSION:     '0.2.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -29,7 +29,7 @@
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
-    <link rel="top" title="flotilla 0.2.2 documentation" href="index.html" />
+    <link rel="top" title="flotilla 0.2.5 documentation" href="index.html" />
     <link rel="up" title="flotilla.compute package" href="flotilla.compute.html" />
     <link rel="next" title="flotilla.compute.network module" href="flotilla.compute.network.html" />
     <link rel="prev" title="flotilla.compute.generic module" href="flotilla.compute.generic.html" />
@@ -52,12 +52,11 @@
         </button>
         <a class="navbar-brand" href="index.html">
           Flotilla</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
           <ul class="nav navbar-nav">
-            <li class="divider-vertical"></li>
             
                 <li><a href="tutorial.html">Tutorial</a></li>
                 <li><a href="gallery/index.html">Gallery</a></li>
@@ -78,11 +77,19 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What&#8217;s new in the package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-4-november-23rd-2014">v0.2.4 (November 23rd, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-3-november-17th-2014">v0.2.3 (November 17th, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-2-november-7th-2014">v0.2.2 (November 7th, 2014)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-1-november-6th-2014">v0.2.1 (November 6th, 2014)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">OS X Installation instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#create-a-flotilla-sandbox">Create a flotilla sandbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#install-and-update-all-packages-in-your-environment">Install and update all packages in your environment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#old-osx-installation-instructions">Old OSX Installation instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html#docker-instructions">Docker Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api.html#general-use-plots">General use plots</a></li>
@@ -211,6 +218,49 @@ nbins = len(bins) - 1</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="flotilla.compute.infotheory.binify_and_jsd">
+<tt class="descclassname">flotilla.compute.infotheory.</tt><tt class="descname">binify_and_jsd</tt><big>(</big><em>df1</em>, <em>df2</em>, <em>pair</em>, <em>bins</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/infotheory.html#binify_and_jsd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.infotheory.binify_and_jsd" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="flotilla.compute.infotheory.cross_phenotype_jsd">
+<tt class="descclassname">flotilla.compute.infotheory.</tt><tt class="descname">cross_phenotype_jsd</tt><big>(</big><em>data</em>, <em>groupby</em>, <em>bins</em>, <em>n_iter=100</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/infotheory.html#cross_phenotype_jsd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.infotheory.cross_phenotype_jsd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Jensen-Shannon divergence of features across phenotypes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A (n_samples, n_features) Dataframe</p>
+</div></blockquote>
+<p><strong>groupby</strong> : mappable</p>
+<blockquote>
+<div><p>A samples to phenotypes mapping</p>
+</div></blockquote>
+<p><strong>n_iter</strong> : int</p>
+<blockquote>
+<div><p>Number of bootstrap resampling iterations to perform for the
+within-group comparisons</p>
+</div></blockquote>
+<p><strong>n_bins</strong> : int</p>
+<blockquote>
+<div><p>Number of bins to binify the singles data on</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>jsd_df</strong> : pandas.DataFrame</p>
+<blockquote class="last">
+<div><p>A (n_features, n_phenotypes^2) dataframe of the JSD between each
+feature between and within phenotypes</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="flotilla.compute.infotheory.entropy">
 <tt class="descclassname">flotilla.compute.infotheory.</tt><tt class="descname">entropy</tt><big>(</big><em>binned</em>, <em>base=2</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/infotheory.html#entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.infotheory.entropy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find the entropy of each column of a dataframe</p>
@@ -231,8 +281,15 @@ is in bits.</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>entropy</strong> : pandas.Seires</p>
-<blockquote class="last">
+<blockquote>
 <div><p>Entropy values for each column of the dataframe.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><strong>ValueError</strong></p>
+<blockquote class="last">
+<div><p>If the data provided is not a probability distribution, i.e. it has
+negative values or its columns do not sum to 1, raise ValueError</p>
 </div></blockquote>
 </td>
 </tr>
@@ -262,9 +319,42 @@ binify() on the dataframe.</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>jsd</strong> : pandas.Series</p>
-<blockquote class="last">
+<blockquote>
 <div><p>Jensen-Shannon divergence of each column with the same names between
 p and q</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><strong>ValueError</strong></p>
+<blockquote class="last">
+<div><p>If the data provided is not a probability distribution, i.e. it has
+negative values or its columns do not sum to 1, raise ValueError</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="flotilla.compute.infotheory.jsd_df_to_2d">
+<tt class="descclassname">flotilla.compute.infotheory.</tt><tt class="descname">jsd_df_to_2d</tt><big>(</big><em>jsd_df</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/infotheory.html#jsd_df_to_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.infotheory.jsd_df_to_2d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform a tall JSD dataframe to a square matrix of mean JSDs</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>jsd_df</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A (n_features, n_phenotypes^2) dataframe of the JSD between each
+feature between and within phenotypes</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>jsd_2d</strong> : pandas.DataFrame</p>
+<blockquote class="last">
+<div><p>A (n_phenotypes, n_phenotypes) symmetric dataframe of the mean JSD
+between and within phenotypes</p>
 </div></blockquote>
 </td>
 </tr>
@@ -283,19 +373,26 @@ dataframes, p and q</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>p</strong> : pandas.DataFrame</p>
 <blockquote>
-<div><p>An nbins x features DataFrame</p>
+<div><p>An nbins x features DataFrame, or (nbins,) Series</p>
 </div></blockquote>
 <p><strong>q</strong> : pandas.DataFrame</p>
 <blockquote>
-<div><p>An nbins x features DataFrame</p>
+<div><p>An nbins x features DataFrame, or (nbins,) Series</p>
 </div></blockquote>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>kld</strong> : pandas.Series</p>
-<blockquote class="last">
+<blockquote>
 <div><p>Kullback-Lieber divergence of the common columns between the
 dataframe. E.g. between 1st column in p and 1st column in q, and 2nd
 column in p and 2nd column in q.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><strong>ValueError</strong></p>
+<blockquote class="last">
+<div><p>If the data provided is not a probability distribution, i.e. it has
+negative values or its columns do not sum to 1, raise ValueError</p>
 </div></blockquote>
 </td>
 </tr>

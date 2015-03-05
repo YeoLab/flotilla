@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>flotilla.data_model.splicing module &mdash; flotilla 0.2.2 documentation</title>
+    <title>flotilla.data_model.splicing module &mdash; flotilla 0.2.5 documentation</title>
     
     <link rel="stylesheet" href="_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.2',
+        VERSION:     '0.2.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -29,7 +29,7 @@
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
-    <link rel="top" title="flotilla 0.2.2 documentation" href="index.html" />
+    <link rel="top" title="flotilla 0.2.5 documentation" href="index.html" />
     <link rel="up" title="flotilla.data_model package" href="flotilla.data_model.html" />
     <link rel="next" title="flotilla.data_model.study module" href="flotilla.data_model.study.html" />
     <link rel="prev" title="flotilla.data_model.quality_control module" href="flotilla.data_model.quality_control.html" />
@@ -52,12 +52,11 @@
         </button>
         <a class="navbar-brand" href="index.html">
           Flotilla</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
           <ul class="nav navbar-nav">
-            <li class="divider-vertical"></li>
             
                 <li><a href="tutorial.html">Tutorial</a></li>
                 <li><a href="gallery/index.html">Gallery</a></li>
@@ -78,11 +77,19 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What&#8217;s new in the package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-4-november-23rd-2014">v0.2.4 (November 23rd, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-3-november-17th-2014">v0.2.3 (November 17th, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-2-november-7th-2014">v0.2.2 (November 7th, 2014)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-1-november-6th-2014">v0.2.1 (November 6th, 2014)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">OS X Installation instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#create-a-flotilla-sandbox">Create a flotilla sandbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#install-and-update-all-packages-in-your-environment">Install and update all packages in your environment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#old-osx-installation-instructions">Old OSX Installation instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html#docker-instructions">Docker Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api.html#general-use-plots">General use plots</a></li>
@@ -151,130 +158,8 @@
   <div class="section" id="module-flotilla.data_model.splicing">
 <span id="flotilla-data-model-splicing-module"></span><h1>flotilla.data_model.splicing module<a class="headerlink" href="#module-flotilla.data_model.splicing" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
-<dt id="flotilla.data_model.splicing.DownsampledSplicingData">
-<em class="property">class </em><tt class="descclassname">flotilla.data_model.splicing.</tt><tt class="descname">DownsampledSplicingData</tt><big>(</big><em>df</em>, <em>sample_descriptors</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#DownsampledSplicingData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.DownsampledSplicingData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData" title="flotilla.data_model.base.BaseData"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.data_model.base.BaseData</span></tt></a></p>
-<p>Instantiate an object of downsampled splicing data</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>df</strong> : pandas.DataFrame</p>
-<blockquote>
-<div><p>A &#8220;tall&#8221; dataframe of all miso summary events, with the usual
-MISO summary columns, and these are required: &#8216;splice_type&#8217;,
-&#8216;probability&#8217;, &#8216;iteration.&#8217; Where &#8220;probability&#8221; indicates the
-randomly sampling probability from the bam file used to generate
-these reads, and &#8220;iteration&#8221; indicates the integer iteration
-performed, e.g. if multiple resamplings were performed.</p>
-</div></blockquote>
-<p class="last"><strong>experiment_design_data: pandas.DataFrame</strong></p>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Notes</p>
-<p>Warning: this data is usually HUGE (we&#8217;re taking like 10GB raw .tsv
-files) so make sure you have the available memory for dealing with
-these.</p>
-<dl class="attribute">
-<dt id="flotilla.data_model.splicing.DownsampledSplicingData.binned_reducer">
-<tt class="descname">binned_reducer</tt><em class="property"> = None</em><a class="headerlink" href="#flotilla.data_model.splicing.DownsampledSplicingData.binned_reducer" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="flotilla.data_model.splicing.DownsampledSplicingData.n_components">
-<tt class="descname">n_components</tt><em class="property"> = 2</em><a class="headerlink" href="#flotilla.data_model.splicing.DownsampledSplicingData.n_components" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="flotilla.data_model.splicing.DownsampledSplicingData.raw_reducer">
-<tt class="descname">raw_reducer</tt><em class="property"> = None</em><a class="headerlink" href="#flotilla.data_model.splicing.DownsampledSplicingData.raw_reducer" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="flotilla.data_model.splicing.DownsampledSplicingData.shared_events">
-<tt class="descname">shared_events</tt><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#DownsampledSplicingData.shared_events"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.DownsampledSplicingData.shared_events" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>event_count_df</strong> : pandas.DataFrame</p>
-<blockquote class="last">
-<div><p>Splicing events on the rows, splice types and probability as
-column MultiIndex. Values are the number of iterations which
-share this splicing event at that probability and splice type.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="flotilla.data_model.splicing.DownsampledSplicingData.shared_events_barplot">
-<tt class="descname">shared_events_barplot</tt><big>(</big><em>figure_dir='./'</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#DownsampledSplicingData.shared_events_barplot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.DownsampledSplicingData.shared_events_barplot" title="Permalink to this definition">¶</a></dt>
-<dd><p>PLot a &#8220;histogram&#8221; via colored bars of the number of events shared
-by different iterations at a particular sampling probability</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>figure_dir</strong> : str</p>
-<blockquote class="last">
-<div><p>Where to save the pdf figures created</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="flotilla.data_model.splicing.DownsampledSplicingData.shared_events_percentage">
-<tt class="descname">shared_events_percentage</tt><big>(</big><em>min_iter_shared=5</em>, <em>figure_dir='./'</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#DownsampledSplicingData.shared_events_percentage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.DownsampledSplicingData.shared_events_percentage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot the percentage of all events detected at that iteration,
-shared by at least &#8216;min_iter_shared&#8217;</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>min_iter_shared</strong> : int</p>
-<blockquote>
-<div><p>Minimum number of iterations sharing an event</p>
-</div></blockquote>
-<p><strong>figure_dir</strong> : str</p>
-<blockquote class="last">
-<div><p>Where to save the pdf figures created</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="flotilla.data_model.splicing.SpliceJunctionData">
-<em class="property">class </em><tt class="descclassname">flotilla.data_model.splicing.</tt><tt class="descname">SpliceJunctionData</tt><big>(</big><em>df</em>, <em>phenotype_data</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SpliceJunctionData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SpliceJunctionData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#flotilla.data_model.splicing.SplicingData" title="flotilla.data_model.splicing.SplicingData"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.data_model.splicing.SplicingData</span></tt></a></p>
-<p>Class to hold splice junction information from SJ.out.tab files from
-STAR</p>
-<p>Constructor for SpliceJunctionData</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data, experiment_design_data</strong></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="class">
 <dt id="flotilla.data_model.splicing.SplicingData">
-<em class="property">class </em><tt class="descclassname">flotilla.data_model.splicing.</tt><tt class="descname">SplicingData</tt><big>(</big><em>data</em>, <em>feature_data=None</em>, <em>binsize=0.1</em>, <em>outliers=None</em>, <em>feature_rename_col=None</em>, <em>feature_ignore_subset_cols=None</em>, <em>excluded_max=0.2</em>, <em>included_min=0.8</em>, <em>pooled=None</em>, <em>predictor_config_manager=None</em>, <em>technical_outliers=None</em>, <em>minimum_samples=0</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">flotilla.data_model.splicing.</tt><tt class="descname">SplicingData</tt><big>(</big><em>data</em>, <em>feature_data=None</em>, <em>binsize=0.1</em>, <em>outliers=None</em>, <em>feature_rename_col=None</em>, <em>feature_ignore_subset_cols=None</em>, <em>excluded_max=0.2</em>, <em>included_min=0.8</em>, <em>pooled=None</em>, <em>predictor_config_manager=None</em>, <em>technical_outliers=None</em>, <em>minimum_samples=0</em>, <em>feature_expression_id_col=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData" title="flotilla.data_model.base.BaseData"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.data_model.base.BaseData</span></tt></a></p>
 <p>Instantiate a object for percent spliced in (PSI) scores</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -318,31 +203,36 @@ scores</p>
 <tt class="descname">binned_reducer</tt><em class="property"> = None</em><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.binned_reducer" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="attribute">
+<dt id="flotilla.data_model.splicing.SplicingData.excluded_label">
+<tt class="descname">excluded_label</tt><em class="property"> = 'excluded &gt;&gt;'</em><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.excluded_label" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.data_model.splicing.SplicingData.included_label">
+<tt class="descname">included_label</tt><em class="property"> = 'included &gt;&gt;'</em><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.included_label" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="method">
-<dt id="flotilla.data_model.splicing.SplicingData.modalities">
-<tt class="descname">modalities</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData.modalities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.modalities" title="Permalink to this definition">¶</a></dt>
+<dt id="flotilla.data_model.splicing.SplicingData.modality_assignments">
+<tt class="descname">modality_assignments</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData.modality_assignments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.modality_assignments" title="Permalink to this definition">¶</a></dt>
 <dd><p>Assigned modalities for these samples and features.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>sample_ids</strong> : list of str</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>sample_ids</strong> : list of str, optional</p>
 <blockquote>
 <div><p>Which samples to use. If None, use all. Default None.</p>
 </div></blockquote>
-<p><strong>feature_ids</strong> : list of str</p>
+<p><strong>feature_ids</strong> : list of str, optional</p>
 <blockquote>
 <div><p>Which features to use. If None, use all. Default None.</p>
 </div></blockquote>
-<p><strong>bootstrapped</strong> : bool</p>
+<p><strong>data</strong> : pandas.DataFrame, optional</p>
 <blockquote>
-<div><p>Whether or not to use bootstrapping, i.e. resample each splicing
-event several times to get a better estimate of its true modality.</p>
-</div></blockquote>
-<p><strong>bootstrappped_kws</strong> : dict</p>
-<blockquote>
-<div><p>Valid arguments to _bootstrapped_fit_transform. If None, default is
-dict(n_iter=100, thresh=0.6, minimum_samples=10)</p>
+<div><p>If provided, use this dataframe instead of the sample_ids and
+feature_ids provided</p>
 </div></blockquote>
 </td>
 </tr>
@@ -357,8 +247,8 @@ dict(n_iter=100, thresh=0.6, minimum_samples=10)</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="flotilla.data_model.splicing.SplicingData.modalities_counts">
-<tt class="descname">modalities_counts</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData.modalities_counts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.modalities_counts" title="Permalink to this definition">¶</a></dt>
+<dt id="flotilla.data_model.splicing.SplicingData.modality_counts">
+<tt class="descname">modality_counts</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData.modality_counts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.modality_counts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Count the number of each modalities of these samples and features</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -372,16 +262,10 @@ dict(n_iter=100, thresh=0.6, minimum_samples=10)</p>
 <blockquote>
 <div><p>Which features to use. If None, use all. Default None.</p>
 </div></blockquote>
-<p><strong>bootstrapped</strong> : bool</p>
+<p><strong>data</strong> : pandas.DataFrame, optional</p>
 <blockquote>
-<div><p>Whether or not to use bootstrapping, i.e. resample each splicing
-event several times to get a better estimate of its true modality.
-Default False.</p>
-</div></blockquote>
-<p><strong>bootstrappped_kws</strong> : dict</p>
-<blockquote>
-<div><p>Valid arguments to _bootstrapped_fit_transform. If None, default is
-dict(n_iter=100, thresh=0.6, minimum_samples=10)</p>
+<div><p>If provided, use this dataframe instead of the sample_ids and
+feature_ids provided</p>
 </div></blockquote>
 </td>
 </tr>
@@ -401,44 +285,57 @@ dict(n_iter=100, thresh=0.6, minimum_samples=10)</p>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="flotilla.data_model.splicing.SplicingData.percent_pooled_inconsistent">
-<tt class="descname">percent_pooled_inconsistent</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData.percent_pooled_inconsistent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.percent_pooled_inconsistent" title="Permalink to this definition">¶</a></dt>
-<dd><p>The percent of splicing events which are</p>
-</dd></dl>
+<dt id="flotilla.data_model.splicing.SplicingData.plot_event_modality_estimation">
+<tt class="descname">plot_event_modality_estimation</tt><big>(</big><em>event_id</em>, <em>sample_ids=None</em>, <em>data=None</em>, <em>groupby=None</em>, <em>min_samples=0.5</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData.plot_event_modality_estimation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.plot_event_modality_estimation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="flotilla.data_model.splicing.SplicingData.plot_feature">
-<tt class="descname">plot_feature</tt><big>(</big><em>feature_id</em>, <em>sample_ids=None</em>, <em>phenotype_groupby=None</em>, <em>phenotype_order=None</em>, <em>color=None</em>, <em>phenotype_to_color=None</em>, <em>phenotype_to_marker=None</em>, <em>xlabel=None</em>, <em>ylabel=None</em>, <em>nmf_space=False</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData.plot_feature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.plot_feature" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">plot_feature</tt><big>(</big><em>feature_id</em>, <em>sample_ids=None</em>, <em>phenotype_groupby=None</em>, <em>phenotype_order=None</em>, <em>color=None</em>, <em>phenotype_to_color=None</em>, <em>phenotype_to_marker=None</em>, <em>nmf_xlabel=None</em>, <em>nmf_ylabel=None</em>, <em>nmf_space=False</em>, <em>fig=None</em>, <em>axesgrid=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData.plot_feature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.plot_feature" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="flotilla.data_model.splicing.SplicingData.plot_hist_single_vs_pooled_diff">
-<tt class="descname">plot_hist_single_vs_pooled_diff</tt><big>(</big><em>sample_ids</em>, <em>feature_ids=None</em>, <em>color=None</em>, <em>title=''</em>, <em>hist_kws=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData.plot_hist_single_vs_pooled_diff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.plot_hist_single_vs_pooled_diff" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">plot_hist_single_vs_pooled_diff</tt><big>(</big><em>data</em>, <em>feature_ids=None</em>, <em>color=None</em>, <em>title=''</em>, <em>hist_kws=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData.plot_hist_single_vs_pooled_diff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.plot_hist_single_vs_pooled_diff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot histogram of distances between singles and pooled</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.splicing.SplicingData.plot_lavalamp">
+<tt class="descname">plot_lavalamp</tt><big>(</big><em>phenotype_to_color</em>, <em>sample_ids=None</em>, <em>feature_ids=None</em>, <em>data=None</em>, <em>groupby=None</em>, <em>order=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData.plot_lavalamp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.plot_lavalamp" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="flotilla.data_model.splicing.SplicingData.plot_lavalamp_pooled_inconsistent">
-<tt class="descname">plot_lavalamp_pooled_inconsistent</tt><big>(</big><em>sample_ids</em>, <em>feature_ids=None</em>, <em>fraction_diff_thresh=0.1</em>, <em>color=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData.plot_lavalamp_pooled_inconsistent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.plot_lavalamp_pooled_inconsistent" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">plot_lavalamp_pooled_inconsistent</tt><big>(</big><em>data</em>, <em>feature_ids=None</em>, <em>fraction_diff_thresh=0.1</em>, <em>color=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData.plot_lavalamp_pooled_inconsistent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.plot_lavalamp_pooled_inconsistent" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="flotilla.data_model.splicing.SplicingData.plot_modalities_bar">
-<tt class="descname">plot_modalities_bar</tt><big>(</big><em>sample_ids=None</em>, <em>feature_ids=None</em>, <em>ax=None</em>, <em>i=0</em>, <em>normed=True</em>, <em>legend=True</em>, <em>bootstrapped=False</em>, <em>bootstrapped_kws=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData.plot_modalities_bar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.plot_modalities_bar" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot stacked bar graph of each modality</p>
+<dt id="flotilla.data_model.splicing.SplicingData.plot_modalities_bars">
+<tt class="descname">plot_modalities_bars</tt><big>(</big><em>sample_ids=None</em>, <em>feature_ids=None</em>, <em>data=None</em>, <em>groupby=None</em>, <em>phenotype_to_color=None</em>, <em>percentages=False</em>, <em>ax=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData.plot_modalities_bars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.plot_modalities_bars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make grouped barplots of the number of modalities per group</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>bootstrapped</strong> : bool</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>sample_ids</strong> : None or list of str</p>
 <blockquote>
-<div><p>Whether or not to use bootstrapping, i.e. resample each splicing
-event several times to get a better estimate of its true modality.
-Default False.</p>
+<div><p>Which samples to use. If None, use all</p>
 </div></blockquote>
-<p><strong>bootstrappped_kws</strong> : dict</p>
+<p><strong>feature_ids</strong> : None or list of str</p>
+<blockquote>
+<div><p>Which features to use. If None, use all</p>
+</div></blockquote>
+<p><strong>color</strong> : None or matplotlib color</p>
+<blockquote>
+<div><p>Which color to use for plotting the lavalamps of these features
+and samples</p>
+</div></blockquote>
+<p><strong>x_offset</strong> : numeric</p>
 <blockquote class="last">
-<div><p>Valid arguments to _bootstrapped_fit_transform. If None, default is
-dict(n_iter=100, thresh=0.6, minimum_samples=10)</p>
+<div><p>How much to offset the x-axis of each event. Useful if you want
+to plot the same event, but in several iterations with different
+celltypes or colors</p>
 </div></blockquote>
 </td>
 </tr>
@@ -448,7 +345,7 @@ dict(n_iter=100, thresh=0.6, minimum_samples=10)</p>
 
 <dl class="method">
 <dt id="flotilla.data_model.splicing.SplicingData.plot_modalities_lavalamps">
-<tt class="descname">plot_modalities_lavalamps</tt><big>(</big><em>sample_ids=None</em>, <em>feature_ids=None</em>, <em>color=None</em>, <em>x_offset=0</em>, <em>use_these_modalities=True</em>, <em>bootstrapped=False</em>, <em>bootstrapped_kws=None</em>, <em>ax=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData.plot_modalities_lavalamps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.plot_modalities_lavalamps" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">plot_modalities_lavalamps</tt><big>(</big><em>sample_ids=None</em>, <em>feature_ids=None</em>, <em>data=None</em>, <em>groupby=None</em>, <em>phenotype_to_color=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData.plot_modalities_lavalamps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.plot_modalities_lavalamps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot &#8220;lavalamp&#8221; scatterplot of each event</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -468,31 +365,10 @@ dict(n_iter=100, thresh=0.6, minimum_samples=10)</p>
 and samples</p>
 </div></blockquote>
 <p><strong>x_offset</strong> : numeric</p>
-<blockquote>
+<blockquote class="last">
 <div><p>How much to offset the x-axis of each event. Useful if you want
 to plot the same event, but in several iterations with different
 celltypes or colors</p>
-</div></blockquote>
-<p><strong>axes</strong> : None or list of matplotlib.axes.Axes objects</p>
-<blockquote>
-<div><p>Which axes to plot these on</p>
-</div></blockquote>
-<p><strong>use_these_modalities</strong> : bool</p>
-<blockquote>
-<div><p>If True, then use these sample ids to calculate modalities.
-Otherwise, use the modalities assigned using ALL samples and
-features</p>
-</div></blockquote>
-<p><strong>bootstrapped</strong> : bool</p>
-<blockquote>
-<div><p>Whether or not to use bootstrapping, i.e. resample each splicing
-event several times to get a better estimate of its true modality.
-Default False.</p>
-</div></blockquote>
-<p><strong>bootstrappped_kws</strong> : dict</p>
-<blockquote class="last">
-<div><p>Valid arguments to _bootstrapped_fit_transform. If None, default is
-dict(n_iter=100, thresh=0.6, minimum_samples=10)</p>
 </div></blockquote>
 </td>
 </tr>
@@ -502,28 +378,51 @@ dict(n_iter=100, thresh=0.6, minimum_samples=10)</p>
 
 <dl class="method">
 <dt id="flotilla.data_model.splicing.SplicingData.plot_modalities_reduced">
-<tt class="descname">plot_modalities_reduced</tt><big>(</big><em>sample_ids=None</em>, <em>feature_ids=None</em>, <em>ax=None</em>, <em>title=None</em>, <em>bootstrapped=False</em>, <em>bootstrapped_kws=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData.plot_modalities_reduced"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.plot_modalities_reduced" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot modality assignments in DataFrameNMF space (option for lavalamp?)</p>
+<tt class="descname">plot_modalities_reduced</tt><big>(</big><em>sample_ids=None</em>, <em>feature_ids=None</em>, <em>data=None</em>, <em>ax=None</em>, <em>title=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData.plot_modalities_reduced"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.plot_modalities_reduced" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot events modality assignments in NMF space</p>
+<p>This will calculate modalities on all samples provided, without
+grouping them by celltype. This is because each NMF axis can only show
+one set of sample ids&#8217; modalties.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>bootstrapped</strong> : bool</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>sample_ids</strong> : list of str</p>
 <blockquote>
-<div><p>Whether or not to use bootstrapping, i.e. resample each splicing
-event several times to get a better estimate of its true modality.
-Default False.</p>
+<div><p>Which samples to use. If None, use all. Default None.</p>
 </div></blockquote>
-<p><strong>bootstrappped_kws</strong> : dict</p>
+<p><strong>feature_ids</strong> : list of str</p>
+<blockquote>
+<div><p>Which features to use. If None, use all. Default None.</p>
+</div></blockquote>
+<p><strong>data</strong> : pandas.DataFrame, optional</p>
+<blockquote>
+<div><p>If provided, use this dataframe instead of the sample_ids and
+feature_ids provided</p>
+</div></blockquote>
+<p><strong>ax</strong> : matplotlib.axes.Axes object</p>
+<blockquote>
+<div><p>Axes to plot on. If none, gets current axes</p>
+</div></blockquote>
+<p><strong>title</strong> : str</p>
 <blockquote class="last">
-<div><p>Valid arguments to _bootstrapped_fit_transform. If None, default is
-dict(n_iter=100, thresh=0.6, minimum_samples=10)</p>
+<div><p>Title of the reduced space plot</p>
 </div></blockquote>
 </td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.splicing.SplicingData.plot_two_features">
+<tt class="descname">plot_two_features</tt><big>(</big><em>feature1</em>, <em>feature2</em>, <em>groupby=None</em>, <em>label_to_color=None</em>, <em>fillna=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData.plot_two_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.plot_two_features" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flotilla.data_model.splicing.SplicingData.plot_two_samples">
+<tt class="descname">plot_two_samples</tt><big>(</big><em>sample1</em>, <em>sample2</em>, <em>fillna=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData.plot_two_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.plot_two_samples" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="flotilla.data_model.splicing.SplicingData.pooled_inconsistent">
@@ -564,11 +463,6 @@ the fraction diff thresh</p>
 <dl class="attribute">
 <dt id="flotilla.data_model.splicing.SplicingData.raw_reducer">
 <tt class="descname">raw_reducer</tt><em class="property"> = None</em><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.raw_reducer" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="flotilla.data_model.splicing.SplicingData.reduce">
-<tt class="descname">reduce</tt><big>(</big><em>sample_ids=None</em>, <em>feature_ids=None</em>, <em>featurewise=False</em>, <em>reducer=&lt;class 'flotilla.compute.decomposition.DataFramePCA'&gt;</em>, <em>standardize=True</em>, <em>reducer_kwargs=None</em>, <em>bins=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/splicing.html#SplicingData.reduce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.splicing.SplicingData.reduce" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

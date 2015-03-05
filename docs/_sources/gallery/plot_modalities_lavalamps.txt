@@ -1,0 +1,19 @@
+
+.. _plot_modalities_lavalamps:
+
+
+Plot bar graphs of percentage of splicing events in each modality
+=================================================================
+
+See also
+--------
+:py:func:`Study.plot_modalities_bars`
+
+
+
+.. image:: _images/plot_modalities_lavalamps.png
+
+**Python source code:** :download:`[download source: plot_modalities_lavalamps.py]<plot_modalities_lavalamps.py>`
+
+.. literalinclude:: plot_modalities_lavalamps.py
+    :lines: 10-

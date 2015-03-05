@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>flotilla.visualize.splicing module &mdash; flotilla 0.2.2 documentation</title>
+    <title>flotilla.visualize.splicing module &mdash; flotilla 0.2.5 documentation</title>
     
     <link rel="stylesheet" href="_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.2',
+        VERSION:     '0.2.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -29,7 +29,7 @@
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
-    <link rel="top" title="flotilla 0.2.2 documentation" href="index.html" />
+    <link rel="top" title="flotilla 0.2.5 documentation" href="index.html" />
     <link rel="up" title="flotilla.visualize package" href="flotilla.visualize.html" />
     <link rel="next" title="flotilla.datapackage module" href="flotilla.datapackage.html" />
     <link rel="prev" title="flotilla.visualize.predict module" href="flotilla.visualize.predict.html" />
@@ -52,12 +52,11 @@
         </button>
         <a class="navbar-brand" href="index.html">
           Flotilla</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
           <ul class="nav navbar-nav">
-            <li class="divider-vertical"></li>
             
                 <li><a href="tutorial.html">Tutorial</a></li>
                 <li><a href="gallery/index.html">Gallery</a></li>
@@ -78,11 +77,19 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What&#8217;s new in the package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-4-november-23rd-2014">v0.2.4 (November 23rd, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-3-november-17th-2014">v0.2.3 (November 17th, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-2-november-7th-2014">v0.2.2 (November 7th, 2014)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-1-november-6th-2014">v0.2.1 (November 6th, 2014)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">OS X Installation instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#create-a-flotilla-sandbox">Create a flotilla sandbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#install-and-update-all-packages-in-your-environment">Install and update all packages in your environment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#old-osx-installation-instructions">Old OSX Installation instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html#docker-instructions">Docker Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api.html#general-use-plots">General use plots</a></li>
@@ -150,6 +157,7 @@
       
   <div class="section" id="module-flotilla.visualize.splicing">
 <span id="flotilla-visualize-splicing-module"></span><h1>flotilla.visualize.splicing module<a class="headerlink" href="#module-flotilla.visualize.splicing" title="Permalink to this headline">¶</a></h1>
+<p>Splicing-specific visualization classes and methods</p>
 <dl class="class">
 <dt id="flotilla.visualize.splicing.ModalitiesViz">
 <em class="property">class </em><tt class="descclassname">flotilla.visualize.splicing.</tt><tt class="descname">ModalitiesViz</tt><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#ModalitiesViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz" title="Permalink to this definition">¶</a></dt>
@@ -157,40 +165,39 @@
 <p>Visualize results of modality assignments</p>
 <dl class="method">
 <dt id="flotilla.visualize.splicing.ModalitiesViz.bar">
-<tt class="descname">bar</tt><big>(</big><em>modalities_counts</em>, <em>ax=None</em>, <em>i=0</em>, <em>normed=True</em>, <em>legend=True</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#ModalitiesViz.bar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.bar" title="Permalink to this definition">¶</a></dt>
-<dd><p>Draw the barplot of a single modalities_count</p>
+<tt class="descname">bar</tt><big>(</big><em>counts</em>, <em>phenotype_to_color=None</em>, <em>ax=None</em>, <em>percentages=True</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#ModalitiesViz.bar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.bar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw barplots grouped by modality of modality percentage per group</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="flotilla.visualize.splicing.ModalitiesViz.colors">
-<tt class="descname">colors</tt><em class="property"> = [u'#377eb8', u'#999999', u'#984ea3', u'#4daf4a', u'#e41a1c', 'k']</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.colors" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">colors</tt><em class="property"> = [u'#4c72b0', u'#ccb974', u'#8172b2', u'#55a868', u'#c44e52']</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.colors" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="flotilla.visualize.splicing.ModalitiesViz.event">
-<tt class="descname">event</tt><big>(</big><em>feature_id</em>, <em>sample_groupby</em>, <em>group_colors</em>, <em>group_order</em>, <em>ax=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#ModalitiesViz.event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.event" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot a single splicing event&#8217;s changes in DataFrameNMF space, and its
-violin plots</p>
+<dt id="flotilla.visualize.splicing.ModalitiesViz.event_estimation">
+<tt class="descname">event_estimation</tt><big>(</big><em>event</em>, <em>logliks</em>, <em>logsumexps</em>, <em>renamed=''</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#ModalitiesViz.event_estimation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.event_estimation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show the values underlying bayesian modality estimations of an event</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="flotilla.visualize.splicing.ModalitiesViz.modalities_colors">
-<tt class="descname">modalities_colors</tt><em class="property"> = {'bimodal': u'#984ea3', 'uniform': u'#999999', 'middle': u'#4daf4a', 'unassigned': 'k', 'excluded': u'#377eb8', 'included': u'#e41a1c'}</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.modalities_colors" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="flotilla.visualize.splicing.ModalitiesViz.modalities_order">
-<tt class="descname">modalities_order</tt><em class="property"> = ['excluded', 'uniform', 'bimodal', 'middle', 'included', 'unassigned']</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.modalities_order" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
 <dt id="flotilla.visualize.splicing.ModalitiesViz.modality">
-<tt class="descname">modality</tt><em class="property"> = 'unassigned'</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.modality" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">modality</tt><em class="property"> = 'included'</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.modality" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.visualize.splicing.ModalitiesViz.modality_colors">
+<tt class="descname">modality_colors</tt><em class="property"> = {'included': u'#c44e52', 'middle': u'#55a868', 'bimodal': u'#8172b2', 'excluded': u'#4c72b0', 'uniform': u'#ccb974'}</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.modality_colors" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flotilla.visualize.splicing.ModalitiesViz.modality_order">
+<tt class="descname">modality_order</tt><em class="property"> = ['excluded', 'uniform', 'bimodal', 'middle', 'included']</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.modality_order" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="flotilla.visualize.splicing.ModalitiesViz.plot_reduced_space">
-<tt class="descname">plot_reduced_space</tt><big>(</big><em>binned_reduced</em>, <em>modalities_assignments</em>, <em>ax=None</em>, <em>title=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#ModalitiesViz.plot_reduced_space"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.plot_reduced_space" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">plot_reduced_space</tt><big>(</big><em>binned_reduced</em>, <em>modality_assignments</em>, <em>ax=None</em>, <em>title=None</em>, <em>xlabel=''</em>, <em>ylabel=''</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#ModalitiesViz.plot_reduced_space"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.plot_reduced_space" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -204,15 +211,14 @@ scores from the pooled to the singles, and the scaled difference</p>
 
 <dl class="function">
 <dt id="flotilla.visualize.splicing.lavalamp">
-<tt class="descclassname">flotilla.visualize.splicing.</tt><tt class="descname">lavalamp</tt><big>(</big><em>psi</em>, <em>color=None</em>, <em>x_offset=0</em>, <em>title=''</em>, <em>ax=None</em>, <em>switchy_score_psi=None</em>, <em>marker='d'</em>, <em>plot_kws=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#lavalamp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.lavalamp" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">flotilla.visualize.splicing.</tt><tt class="descname">lavalamp</tt><big>(</big><em>psi</em>, <em>color=None</em>, <em>x_offset=0</em>, <em>title=''</em>, <em>ax=None</em>, <em>switchy_score_psi=None</em>, <em>marker='o'</em>, <em>plot_kws=None</em>, <em>yticks=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#lavalamp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.lavalamp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make a &#8216;lavalamp&#8217; scatter plot of many splicing events</p>
 <p>Useful for visualizing many splicing events at once.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>TODO.md: (n_events, n_samples).transpose()</strong></p>
-<p><strong>psi</strong> : array</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>psi</strong> : array</p>
 <blockquote>
 <div><p>A (n_events, n_samples) matrix either as a numpy array or as a pandas
 DataFrame</p>

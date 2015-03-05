@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>OS X Installation instructions &mdash; flotilla 0.2.2 documentation</title>
+    <title>OS X Installation instructions &mdash; flotilla 0.2.5 documentation</title>
     
     <link rel="stylesheet" href="_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.2',
+        VERSION:     '0.2.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -29,9 +29,8 @@
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
-    <link rel="top" title="flotilla 0.2.2 documentation" href="index.html" />
+    <link rel="top" title="flotilla 0.2.5 documentation" href="index.html" />
     <link rel="up" title="Flotilla tutorial" href="tutorial.html" />
-    <link rel="next" title="Create a barebones datapackage" href="tutorial/barebones_study_making.html" />
     <link rel="prev" title="Flotilla tutorial" href="tutorial.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -52,12 +51,11 @@
         </button>
         <a class="navbar-brand" href="index.html">
           Flotilla</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
           <ul class="nav navbar-nav">
-            <li class="divider-vertical"></li>
             
                 <li><a href="tutorial.html">Tutorial</a></li>
                 <li><a href="gallery/index.html">Gallery</a></li>
@@ -78,11 +76,19 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What&#8217;s new in the package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-4-november-23rd-2014">v0.2.4 (November 23rd, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-3-november-17th-2014">v0.2.3 (November 17th, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-2-november-7th-2014">v0.2.2 (November 7th, 2014)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-1-november-6th-2014">v0.2.1 (November 6th, 2014)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">OS X Installation instructions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">OS X Installation instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#create-a-flotilla-sandbox">Create a flotilla sandbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install-and-update-all-packages-in-your-environment">Install and update all packages in your environment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#old-osx-installation-instructions">Old OSX Installation instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#docker-instructions">Docker Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api.html#general-use-plots">General use plots</a></li>
@@ -112,7 +118,12 @@
   <ul class="dropdown-menu localtoc"
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">OS X Installation instructions</a></li>
+<li><a class="reference internal" href="#">OS X Installation instructions</a><ul>
+<li><a class="reference internal" href="#create-a-flotilla-sandbox">Create a flotilla sandbox</a></li>
+<li><a class="reference internal" href="#install-and-update-all-packages-in-your-environment">Install and update all packages in your environment</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#old-osx-installation-instructions">Old OSX Installation instructions</a></li>
 <li><a class="reference internal" href="#docker-instructions">Docker Instructions</a></li>
 </ul>
 </ul>
@@ -153,60 +164,133 @@
 <h1>OS X Installation instructions<a class="headerlink" href="#os-x-installation-instructions" title="Permalink to this headline">¶</a></h1>
 <p>The following steps have been tested on a clean install of Mavericks
 10.9.4.</p>
-<p>All others must fend for themselves to install matplotlib, scipy and
+<p>All others must fend for themselves to install <tt class="docutils literal"><span class="pre">matplotlib</span></tt>, <tt class="docutils literal"><span class="pre">scipy</span></tt> and
 their third-party dependencies.</p>
-<p><em>This part only needs to be done once</em></p>
-<ul>
-<li><p class="first"><a class="reference external" href="https://store.continuum.io/cshop/anaconda/">Install anaconda</a></p>
-</li>
-<li><p class="first"><a class="reference external" href="https://itunes.apple.com/us/app/xcode/id497799835?mt=12">Install Xcode (this can take an
-hour)</a></p>
-</li>
-<li><p class="first">Open Xcode and agree to terms and services (it is very important to
-read them thoroughly)</p>
-</li>
-<li><p class="first">Install <a class="reference external" href="http://brew.sh/">homebrew</a></p>
-<p><tt class="docutils literal"><span class="pre">ruby</span> <span class="pre">-e</span> <span class="pre">&quot;$(curl</span> <span class="pre">-fsSL</span> <span class="pre">https://raw.github.com/Homebrew/homebrew/go/install)&quot;</span></tt></p>
-</li>
-<li><p class="first">Install freetype:</p>
-<p><tt class="docutils literal"><span class="pre">brew</span> <span class="pre">install</span> <span class="pre">freetype</span></tt></p>
-</li>
-<li><p class="first">Install heavy packages (this can take an hour or more)</p>
-</li>
-</ul>
-<div class="highlight-python"><div class="highlight"><pre>conda install pip numpy scipy cython matplotlib nose six scikit-learn ipython networkx pandas tornado statsmodels setuptools pytest pyzmq jinja2 pyyaml`
+<p>To install, first install the <a class="reference external" href="http://continuum.io/downloads">Anaconda</a> Python Distribution, which comes
+pre-packaged with a bunch of the scientific packages we use all the time,
+pre-installed.</p>
+<div class="section" id="create-a-flotilla-sandbox">
+<h2>Create a flotilla sandbox<a class="headerlink" href="#create-a-flotilla-sandbox" title="Permalink to this headline">¶</a></h2>
+<p>We recommend creating a &#8220;sandbox&#8221; where you can install any and all packages
+without disturbing the rest of the Python distribution. This way, your
+flotilla environment is completely insulated from everything else, just in
+case something goes wrong with You can do this with</p>
+<div class="code highlight-python"><div class="highlight"><pre>conda create --yes flotilla_env pip numpy scipy cython matplotlib nose six scikit-learn ipython networkx pandas tornado statsmodels setuptools pytest pyzmq jinja2 pyyaml
 </pre></div>
 </div>
-<ul>
-<li><p class="first">Create a virtual environment
-<tt class="docutils literal"><span class="pre">conda</span> <span class="pre">create</span> <span class="pre">-n</span> <span class="pre">flotilla_env</span> <span class="pre">pip</span> <span class="pre">numpy</span> <span class="pre">scipy</span> <span class="pre">cython</span> <span class="pre">matplotlib</span> <span class="pre">nose</span> <span class="pre">six</span> <span class="pre">scikit-learn</span> <span class="pre">ipython</span> <span class="pre">networkx</span> <span class="pre">pandas</span> <span class="pre">tornado</span> <span class="pre">statsmodels</span> <span class="pre">setuptools</span> <span class="pre">pytest</span> <span class="pre">pyzmq</span> <span class="pre">jinja2</span> <span class="pre">pyyaml`</span></tt></p>
-</li>
-<li><p class="first">Switch to virtual environment</p>
-<p><tt class="docutils literal"><span class="pre">source</span> <span class="pre">activate</span> <span class="pre">flotilla_env</span></tt></p>
-</li>
-<li><p class="first">Install flotilla and its dependencies (this can take a few minutes):</p>
-<p><tt class="docutils literal"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">git+https://github.com/YeoLab/flotilla.git</span></tt></p>
-</li>
-<li><p class="first">Create a scratch space for your work</p>
-<p><tt class="docutils literal"><span class="pre">mkdir</span> <span class="pre">~/flotilla_scratch</span></tt></p>
-</li>
-<li><p class="first">Make a place to store flotilla projects</p>
-<p><tt class="docutils literal"><span class="pre">mkdir</span> <span class="pre">~/flotilla_projects</span></tt></p>
-</li>
-<li><p class="first">Go back to the real world</p>
-<p><tt class="docutils literal"><span class="pre">source</span> <span class="pre">deactivate</span></tt></p>
-</li>
-<li><p class="first">switch to virtual environment</p>
-<p><tt class="docutils literal"><span class="pre">source</span> <span class="pre">activate</span> <span class="pre">flotilla_env</span></tt></p>
-</li>
-<li><p class="first">start an ipython notebook:</p>
-<p><tt class="docutils literal"><span class="pre">ipython</span> <span class="pre">notebook</span> <span class="pre">--notebook-dir=~/flotilla_scratch</span></tt></p>
-</li>
-<li><p class="first">create a new notebook by clicking <tt class="docutils literal"><span class="pre">New</span> <span class="pre">Notebook</span></tt></p>
-</li>
-<li><p class="first">rename your notebook from &#8220;Untitled&#8221; to something more informative by
-clicking the title panel.</p>
-</li>
+<p>You&#8217;ve now just created a &#8220;virtual environment&#8221; called <tt class="docutils literal"><span class="pre">flotilla_env</span></tt> (the first
+argument). Now activate that environment with,</p>
+<div class="code highlight-python"><div class="highlight"><pre>source activate flotilla_env
+</pre></div>
+</div>
+<p>Now at the beginning of your terminal prompt, you should see:</p>
+<div class="code highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="n">flotilla_env</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Which indicates that you are now in the <tt class="docutils literal"><span class="pre">flotilla_env</span></tt> virtual environment. Now
+that you&#8217;re in the environment, follow along with the non-sandbox
+installation instructions.</p>
+</div>
+<div class="section" id="install-and-update-all-packages-in-your-environment">
+<h2>Install and update all packages in your environment<a class="headerlink" href="#install-and-update-all-packages-in-your-environment" title="Permalink to this headline">¶</a></h2>
+<p>To make sure you have the latest packages, on the command line in your
+terminal, enter this command:</p>
+<div class="code highlight-python"><div class="highlight"><pre>conda update --yes pip numpy scipy cython matplotlib nose six scikit-learn ipython networkx pandas tornado statsmodels setuptools pytest pyzmq jinja2 pyyaml
+</pre></div>
+</div>
+<p>Not all packages are available using <tt class="docutils literal"><span class="pre">conda</span></tt>, so we&#8217;ll install the rest using
+<tt class="docutils literal"><span class="pre">pip</span></tt>, which is a Python package installer and installs from <a class="reference external" href="https://pypi.python.org/">PyPI</a>, the
+Python Package Index.</p>
+<div class="code highlight-python"><div class="highlight"><pre>pip install seaborn fastcluster brewer2mpl pymongo gspread husl semantic_version joblib
+</pre></div>
+</div>
+<p>Next, to install the latest release of <tt class="docutils literal"><span class="pre">flotilla</span></tt>, do</p>
+<div class="code highlight-python"><div class="highlight"><pre>pip install flotilla
+</pre></div>
+</div>
+<p>If you want the bleeding-edge master version because you&#8217;re a developer or a
+super-user, (we work really hard to make sure it&#8217;s always working but could be
+buggy!), then install the <tt class="docutils literal"><span class="pre">git</span></tt> master with,</p>
+<div class="code highlight-python"><div class="highlight"><pre>pip install git+git://github.com/yeolab/flotilla.git
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="old-osx-installation-instructions">
+<h1>Old OSX Installation instructions<a class="headerlink" href="#old-osx-installation-instructions" title="Permalink to this headline">¶</a></h1>
+<p><em>This part only needs to be done once</em></p>
+<ul class="simple">
+<li>Install <a class="reference external" href="http://continuum.io/downloads">Anaconda</a></li>
+<li>Install <a class="reference external" href="https://itunes.apple.com/us/app/xcode/id497799835?mt=12">XCode</a> (This can take an hour)</li>
+<li>Install <a class="reference external" href="http://brew.sh/">homebrew</a>, via</li>
+</ul>
+<div class="code highlight-python"><div class="highlight"><pre>ruby -e &quot;$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)&quot;
+</pre></div>
+</div>
+<ul class="simple">
+<li>Install freetype:</li>
+</ul>
+<div class="code highlight-python"><div class="highlight"><pre>brew install freetype
+</pre></div>
+</div>
+<ul class="simple">
+<li>Install heavy packages (this can take an hour or more)</li>
+</ul>
+<div class="code highlight-python"><div class="highlight"><pre>conda install --yes pip numpy scipy cython matplotlib nose six scikit-learn ipython networkx pandas tornado statsmodels setuptools pytest pyzmq jinja2 pyyaml`
+</pre></div>
+</div>
+<ul class="simple">
+<li>Create a virtual environment</li>
+</ul>
+<div class="code highlight-python"><div class="highlight"><pre>conda create --yes -n flotilla_env pip numpy scipy cython matplotlib nose six scikit-learn ipython networkx pandas tornado statsmodels setuptools pytest pyzmq jinja2 pyyaml
+</pre></div>
+</div>
+<ul class="simple">
+<li>Switch to virtual environment</li>
+</ul>
+<div class="code highlight-python"><div class="highlight"><pre>source activate flotilla_env
+</pre></div>
+</div>
+<ul class="simple">
+<li>Install flotilla and its dependencies (this can take a few minutes):</li>
+</ul>
+<div class="code highlight-python"><div class="highlight"><pre>pip install git+https://github.com/YeoLab/flotilla.git
+</pre></div>
+</div>
+<ul class="simple">
+<li>Create a scratch space for your work</li>
+</ul>
+<div class="code highlight-python"><div class="highlight"><pre>mkdir ~/flotilla_scratch
+</pre></div>
+</div>
+<ul class="simple">
+<li>Make a place to store flotilla projects</li>
+</ul>
+<div class="code highlight-python"><div class="highlight"><pre>mkdir ~/flotilla_projects
+</pre></div>
+</div>
+<ul class="simple">
+<li>Go back to the real world</li>
+</ul>
+<div class="code highlight-python"><div class="highlight"><pre>source deactivate
+</pre></div>
+</div>
+<ul class="simple">
+<li>switch to virtual environment</li>
+</ul>
+<div class="code highlight-python"><div class="highlight"><pre>source activate flotilla_env
+</pre></div>
+</div>
+<ul class="simple">
+<li>start an ipython notebook:</li>
+</ul>
+<div class="code highlight-python"><div class="highlight"><pre>ipython notebook --notebook-dir=~/flotilla_scratch
+</pre></div>
+</div>
+<ul class="simple">
+<li>create a new notebook by clicking <tt class="docutils literal"><span class="pre">New</span> <span class="pre">Notebook</span></tt></li>
+<li>rename your notebook from &#8220;Untitled&#8221; to something more informative by
+clicking the title panel.</li>
 </ul>
 </div>
 <div class="section" id="docker-instructions">
@@ -235,7 +319,6 @@ our test dataset by running the following commands in a new notebook:</p>
 <div>import flotilla
 study = flotilla.embark(&#8220;<a class="reference external" href="http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22/datapackage.json">http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22/datapackage.json</a>&#8221;)
 study.interactive_pca()</div></blockquote>
-<p>Thanks for using flotilla!</p>
 </div>
 
 

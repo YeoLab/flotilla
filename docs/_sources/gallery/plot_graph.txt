@@ -1,0 +1,18 @@
+
+.. _plot_graph:
+
+
+Visualize hierarchical relationships between samples and features
+
+See also
+--------
+:py:func:`Study.interactive_graph`
+
+
+
+.. image:: _images/plot_graph.png
+
+**Python source code:** :download:`[download source: plot_graph.py]<plot_graph.py>`
+
+.. literalinclude:: plot_graph.py
+    :lines: 9-

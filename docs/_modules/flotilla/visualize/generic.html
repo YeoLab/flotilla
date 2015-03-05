@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>flotilla.visualize.generic &mdash; flotilla 0.2.2 documentation</title>
+    <title>flotilla.visualize.generic &mdash; flotilla 0.2.5 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.2.2',
+        VERSION:     '0.2.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -29,8 +29,8 @@
     <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../../../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
-    <link rel="top" title="flotilla 0.2.2 documentation" href="../../../index.html" />
-    <link rel="up" title="flotilla" href="../../flotilla.html" />
+    <link rel="top" title="flotilla 0.2.5 documentation" href="../../../index.html" />
+    <link rel="up" title="flotilla.visualize" href="../visualize.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -50,12 +50,11 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           Flotilla</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
           <ul class="nav navbar-nav">
-            <li class="divider-vertical"></li>
             
                 <li><a href="../../../tutorial.html">Tutorial</a></li>
                 <li><a href="../../../gallery/index.html">Gallery</a></li>
@@ -76,11 +75,19 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../whatsnew.html">What&#8217;s new in the package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-4-november-23rd-2014">v0.2.4 (November 23rd, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-3-november-17th-2014">v0.2.3 (November 17th, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-2-november-7th-2014">v0.2.2 (November 7th, 2014)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-1-november-6th-2014">v0.2.1 (November 6th, 2014)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">OS X Installation instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#create-a-flotilla-sandbox">Create a flotilla sandbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#install-and-update-all-packages-in-your-environment">Install and update all packages in your environment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html#old-osx-installation-instructions">Old OSX Installation instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html#docker-instructions">Docker Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../api.html#general-use-plots">General use plots</a></li>
@@ -166,9 +173,8 @@
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c"># import pdb; pdb.set_trace()</span>
     <span class="n">data_type</span> <span class="o">=</span> <span class="s">&#39;none&#39;</span> <span class="k">if</span> <span class="n">data_type</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">data_type</span>
-    <span class="n">splicing</span> <span class="o">=</span> <span class="s">&#39;splicing&#39;</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">data_type</span><span class="p">)</span>
+    <span class="n">splicing</span> <span class="o">=</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s">&#39;splicing&#39;</span>
 
     <span class="n">violinplot_kws</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">violinplot_kws</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">violinplot_kws</span>
     <span class="n">violinplot_kws</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s">&#39;alpha&#39;</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">)</span>
@@ -178,7 +184,8 @@
 
     <span class="n">_violinplot_single_dataset</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">groupby</span><span class="o">=</span><span class="n">groupby</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color_ordered</span><span class="p">,</span>
                                <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span>
-                               <span class="n">violinplot_kws</span><span class="o">=</span><span class="n">violinplot_kws</span><span class="p">,</span> <span class="n">splicing</span><span class="o">=</span><span class="n">splicing</span><span class="p">)</span>
+                               <span class="n">violinplot_kws</span><span class="o">=</span><span class="n">violinplot_kws</span><span class="p">,</span>
+                               <span class="n">splicing</span><span class="o">=</span><span class="n">splicing</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">pooled_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">groupby</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">grouped</span> <span class="o">=</span> <span class="n">pooled_data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">groupby</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">order</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
@@ -196,9 +203,8 @@
 
         <span class="c"># make sure this is behind the non outlier data</span>
         <span class="n">outlier_violinplot_kws</span><span class="p">[</span><span class="s">&#39;zorder&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-        <span class="n">_violinplot_single_dataset</span><span class="p">(</span><span class="n">outliers</span><span class="p">,</span> <span class="n">groupby</span><span class="o">=</span><span class="n">groupby</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;lightgrey&#39;</span><span class="p">,</span>
-                                   <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
-                                   <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span>
+        <span class="n">_violinplot_single_dataset</span><span class="p">(</span><span class="n">outliers</span><span class="p">,</span> <span class="n">groupby</span><span class="o">=</span><span class="n">groupby</span><span class="p">,</span>
+                                   <span class="n">color</span><span class="o">=</span><span class="s">&#39;lightgrey&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span>
                                    <span class="n">violinplot_kws</span><span class="o">=</span><span class="n">outlier_violinplot_kws</span><span class="p">,</span>
                                    <span class="n">splicing</span><span class="o">=</span><span class="n">splicing</span><span class="p">)</span>
 
@@ -266,12 +272,6 @@
 
         <span class="n">single_positions</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="n">single_color</span> <span class="o">=</span> <span class="bp">None</span>
-
-    <span class="k">print</span> <span class="n">data</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span>
-    <span class="k">print</span> <span class="s">&#39;verified_color&#39;</span><span class="p">,</span> <span class="n">verified_color</span>
-    <span class="k">print</span> <span class="s">&#39;verified_order&#39;</span><span class="p">,</span> <span class="n">verified_order</span>
-    <span class="k">print</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">groupby</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-    <span class="k">print</span>
 
     <span class="n">violinplot_kws</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">violinplot_kws</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">violinplot_kws</span>
 
@@ -346,8 +346,8 @@
     <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">nmf_space_positions</span><span class="o">.</span><span class="n">ix</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">*</span> <span class="mf">1.05</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">nmf_space_positions</span><span class="o">.</span><span class="n">ix</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">*</span> <span class="mf">1.05</span><span class="p">)</span>
 
-    <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">phenotype</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">phenotype</span> <span class="ow">in</span> <span class="n">order</span> <span class="k">if</span> <span class="n">phenotype</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">phenotype</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">phenotype</span> <span class="ow">in</span> <span class="n">order</span> <span class="k">if</span> <span class="n">phenotype</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">pheno</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">pheno</span> <span class="ow">in</span> <span class="n">order</span> <span class="k">if</span> <span class="n">pheno</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">pheno</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">pheno</span> <span class="ow">in</span> <span class="n">order</span> <span class="k">if</span> <span class="n">pheno</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
 
     <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;#262626&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
@@ -400,7 +400,46 @@
     <span class="n">xmin</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">sample1</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">-</span> <span class="o">.</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">ymin</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="n">sample2</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">-</span> <span class="o">.</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">jointgrid</span><span class="o">.</span><span class="n">ax_joint</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">)</span>
-    <span class="n">jointgrid</span><span class="o">.</span><span class="n">ax_joint</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">)</span></div>
+    <span class="n">jointgrid</span><span class="o">.</span><span class="n">ax_joint</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="barplot"><a class="viewcode-back" href="../../../flotilla.visualize.generic.html#flotilla.visualize.generic.barplot">[docs]</a><span class="k">def</span> <span class="nf">barplot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">x_order</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">x_order</span><span class="o">=</span><span class="n">x_order</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">grouped</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">sizes</span> <span class="o">=</span> <span class="n">grouped</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
+    <span class="n">percents</span> <span class="o">=</span> <span class="n">sizes</span> <span class="o">/</span> <span class="n">sizes</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span>
+    <span class="n">xs</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_xticks</span><span class="p">()</span>
+
+    <span class="n">annotate_yrange_factor</span> <span class="o">=</span> <span class="mf">0.025</span>
+    <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_ylim</span><span class="p">()</span>
+    <span class="n">yrange</span> <span class="o">=</span> <span class="n">ymax</span> <span class="o">-</span> <span class="n">ymin</span>
+
+    <span class="c"># Reset ymax and ymin so there&#39;s enough room to see the annotation of</span>
+    <span class="c"># the top-most</span>
+    <span class="k">if</span> <span class="n">ymax</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">ymax</span> <span class="o">+=</span> <span class="n">yrange</span> <span class="o">*</span> <span class="mf">0.1</span>
+    <span class="k">if</span> <span class="n">ymin</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">ymin</span> <span class="o">-=</span> <span class="n">yrange</span> <span class="o">*</span> <span class="mf">0.1</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">)</span>
+    <span class="n">yrange</span> <span class="o">=</span> <span class="n">ymax</span> <span class="o">-</span> <span class="n">ymin</span>
+
+    <span class="n">offset_</span> <span class="o">=</span> <span class="n">yrange</span> <span class="o">*</span> <span class="n">annotate_yrange_factor</span>
+    <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">modality</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">x_order</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">sizes</span><span class="p">[</span><span class="n">modality</span><span class="p">]</span>
+            <span class="n">offset</span> <span class="o">=</span> <span class="n">offset_</span> <span class="k">if</span> <span class="n">y</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">offset_</span>
+            <span class="n">verticalalignment</span> <span class="o">=</span> <span class="s">&#39;bottom&#39;</span> <span class="k">if</span> <span class="n">y</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">else</span> <span class="s">&#39;top&#39;</span>
+            <span class="n">percent</span> <span class="o">=</span> <span class="n">percents</span><span class="p">[</span><span class="n">modality</span><span class="p">]</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="s">&#39;{} ({:.1f}%)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">percent</span><span class="p">),</span>
+                        <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">offset</span><span class="p">),</span>
+                        <span class="n">verticalalignment</span><span class="o">=</span><span class="n">verticalalignment</span><span class="p">,</span>
+                        <span class="n">horizontalalignment</span><span class="o">=</span><span class="s">&#39;center&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="s">&#39;0 (0%)&#39;</span><span class="p">,</span>
+                        <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">offset_</span><span class="p">),</span>
+                        <span class="n">verticalalignment</span><span class="o">=</span><span class="s">&#39;bottom&#39;</span><span class="p">,</span>
+                        <span class="n">horizontalalignment</span><span class="o">=</span><span class="s">&#39;center&#39;</span><span class="p">)</span></div>
 </pre></div>
 
     </div>

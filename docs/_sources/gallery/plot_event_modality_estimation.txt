@@ -1,0 +1,19 @@
+
+.. _plot_event_modality_estimation:
+
+
+Plot the modality log-likelihoods and barplots during estimation
+================================================================
+
+See also
+--------
+:py:func:`Study.plot_event_modality_estimation`
+
+
+
+.. image:: _images/plot_event_modality_estimation.png
+
+**Python source code:** :download:`[download source: plot_event_modality_estimation.py]<plot_event_modality_estimation.py>`
+
+.. literalinclude:: plot_event_modality_estimation.py
+    :lines: 10-

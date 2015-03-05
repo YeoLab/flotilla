@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>flotilla.test.conftest &mdash; flotilla 0.2.2 documentation</title>
+    <title>flotilla.test.conftest &mdash; flotilla 0.2.5 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.2.2',
+        VERSION:     '0.2.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -29,7 +29,7 @@
     <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../../../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
-    <link rel="top" title="flotilla 0.2.2 documentation" href="../../../index.html" />
+    <link rel="top" title="flotilla 0.2.5 documentation" href="../../../index.html" />
     <link rel="up" title="flotilla" href="../../flotilla.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -50,12 +50,11 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           Flotilla</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
           <ul class="nav navbar-nav">
-            <li class="divider-vertical"></li>
             
                 <li><a href="../../../tutorial.html">Tutorial</a></li>
                 <li><a href="../../../gallery/index.html">Gallery</a></li>
@@ -76,11 +75,19 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../whatsnew.html">What&#8217;s new in the package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-4-november-23rd-2014">v0.2.4 (November 23rd, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-3-november-17th-2014">v0.2.3 (November 17th, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-2-november-7th-2014">v0.2.2 (November 7th, 2014)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-1-november-6th-2014">v0.2.1 (November 6th, 2014)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">OS X Installation instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#create-a-flotilla-sandbox">Create a flotilla sandbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#install-and-update-all-packages-in-your-environment">Install and update all packages in your environment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html#old-osx-installation-instructions">Old OSX Installation instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html#docker-instructions">Docker Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../api.html#general-use-plots">General use plots</a></li>
@@ -144,79 +151,583 @@
 <span class="sd">This file will be auto-imported for every testing session, so you can use</span>
 <span class="sd">these objects and functions across test files.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">subprocess</span>
 
 <span class="kn">import</span> <span class="nn">matplotlib</span> <span class="kn">as</span> <span class="nn">mpl</span>
-
-<span class="c"># Tell matplotlib to not make any window popups</span>
-<span class="n">mpl</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s">&#39;Agg&#39;</span><span class="p">)</span>
-
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pytest</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">stats</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="kn">as</span> <span class="nn">sns</span>
 
-<span class="kn">from</span> <span class="nn">flotilla.util</span> <span class="kn">import</span> <span class="n">link_to_list</span>
-<span class="kn">from</span> <span class="nn">flotilla.datapackage</span> <span class="kn">import</span> <span class="n">data_package_url_to_dict</span>
 
-<span class="n">CURRENT_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span>
-<span class="n">DATA_BASE_URL</span> <span class="o">=</span> <span class="s">&#39;https://raw.githubusercontent.com/YeoLab/shalek2013/master&#39;</span>
-
-<div class="viewcode-block" id="ExampleData"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.ExampleData">[docs]</a><span class="k">class</span> <span class="nc">ExampleData</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="n">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;metadata&#39;</span><span class="p">,</span> <span class="s">&#39;expression&#39;</span><span class="p">,</span> <span class="s">&#39;splicing&#39;</span><span class="p">,</span> <span class="s">&#39;data&#39;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span> <span class="n">expression</span><span class="p">,</span> <span class="n">splicing</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="n">metadata</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">expression</span> <span class="o">=</span> <span class="n">expression</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">splicing</span> <span class="o">=</span> <span class="n">splicing</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">expression</span><span class="p">,</span> <span class="n">splicing</span><span class="p">)</span>
-
-</div>
 <span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
 <div class="viewcode-block" id="data_dir"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.data_dir">[docs]</a><span class="k">def</span> <span class="nf">data_dir</span><span class="p">():</span>
-    <span class="k">return</span> <span class="s">&#39;{}/example_data&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">CURRENT_DIR</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">))</span>
-</div>
-<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
-<div class="viewcode-block" id="example_data"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.example_data">[docs]</a><span class="k">def</span> <span class="nf">example_data</span><span class="p">():</span>
-    <span class="n">expression</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;{}/expression.csv&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">DATA_BASE_URL</span><span class="p">),</span>
-                             <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">splicing</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;{}/splicing.csv&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">DATA_BASE_URL</span><span class="p">),</span>
-                           <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-    <span class="n">metadata</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;{}/metadata.csv&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">DATA_BASE_URL</span><span class="p">),</span>
-                           <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">ExampleData</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">expression</span><span class="p">,</span> <span class="n">splicing</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">)),</span>
+                        <span class="s">&#39;example_data&#39;</span><span class="p">)</span>
 
 </div>
 <span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
-<div class="viewcode-block" id="example_study"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.example_study">[docs]</a><span class="k">def</span> <span class="nf">example_study</span><span class="p">(</span><span class="n">example_data</span><span class="p">):</span>
-    <span class="kn">from</span> <span class="nn">flotilla.data_model</span> <span class="kn">import</span> <span class="n">Study</span>
-
-    <span class="k">return</span> <span class="n">Study</span><span class="p">(</span><span class="n">sample_metadata</span><span class="o">=</span><span class="n">example_data</span><span class="o">.</span><span class="n">metadata</span><span class="p">,</span>
-                 <span class="n">expression_data</span><span class="o">=</span><span class="n">example_data</span><span class="o">.</span><span class="n">expression</span><span class="p">,</span>
-                 <span class="n">splicing_data</span><span class="o">=</span><span class="n">example_data</span><span class="o">.</span><span class="n">splicing</span><span class="p">)</span>
+<div class="viewcode-block" id="RANDOM_STATE"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.RANDOM_STATE">[docs]</a><span class="k">def</span> <span class="nf">RANDOM_STATE</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Consistent random state&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="mi">0</span>
 
 </div>
 <span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
-<div class="viewcode-block" id="example_datapackage_path"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.example_datapackage_path">[docs]</a><span class="k">def</span> <span class="nf">example_datapackage_path</span><span class="p">():</span>
-    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DATA_BASE_URL</span><span class="p">,</span> <span class="s">&#39;datapackage.json&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="n_samples"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.n_samples">[docs]</a><span class="k">def</span> <span class="nf">n_samples</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Number of samples to create example data from&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="mi">50</span>
 
 </div>
 <span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
-<div class="viewcode-block" id="example_datapackage"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.example_datapackage">[docs]</a><span class="k">def</span> <span class="nf">example_datapackage</span><span class="p">(</span><span class="n">example_datapackage_path</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">data_package_url_to_dict</span><span class="p">(</span><span class="n">example_datapackage_path</span><span class="p">)</span>
+<div class="viewcode-block" id="samples"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.samples">[docs]</a><span class="k">def</span> <span class="nf">samples</span><span class="p">(</span><span class="n">n_samples</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Sample ids&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="s">&#39;sample_{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)]</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">],</span>
+                <span class="n">ids</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;with_technical_outliers&#39;</span><span class="p">,</span>
+                     <span class="s">&#39;without_technical_outliers&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="technical_outliers"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.technical_outliers">[docs]</a><span class="k">def</span> <span class="nf">technical_outliers</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">,</span> <span class="n">samples</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;If request.param is True, return randomly chosen samples as technical</span>
+<span class="sd">    outliers, otherwise None&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span>
+                                <span class="n">size</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span>
+                                                       <span class="nb">int</span><span class="p">(</span><span class="n">n_samples</span> <span class="o">/</span> <span class="mf">10.</span><span class="p">)),</span>
+                                <span class="n">replace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">],</span>
+                <span class="n">ids</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;with_pooled&#39;</span><span class="p">,</span>
+                     <span class="s">&#39;without_pooled&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="pooled"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.pooled">[docs]</a><span class="k">def</span> <span class="nf">pooled</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">,</span> <span class="n">samples</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;If request.param is True, return randomly chosen samples as pooled,</span>
+<span class="sd">    otherwise None&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span>
+                                <span class="n">size</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span>
+                                                       <span class="nb">int</span><span class="p">(</span><span class="n">n_samples</span> <span class="o">/</span> <span class="mf">10.</span><span class="p">)),</span>
+                                <span class="n">replace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">],</span>
+                <span class="n">ids</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;with_outliers&#39;</span><span class="p">,</span>
+                     <span class="s">&#39;without_outliers&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="outliers"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.outliers">[docs]</a><span class="k">def</span> <span class="nf">outliers</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">,</span> <span class="n">samples</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;If request.param is True, return randomly chosen samples as outliers,</span>
+<span class="sd">    otherwise None&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span>
+                                <span class="n">size</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span>
+                                                       <span class="nb">int</span><span class="p">(</span><span class="n">n_samples</span> <span class="o">/</span> <span class="mf">10.</span><span class="p">)),</span>
+                                <span class="n">replace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span>
 
 </div>
 <span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
-<div class="viewcode-block" id="expression"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.expression">[docs]</a><span class="k">def</span> <span class="nf">expression</span><span class="p">(</span><span class="n">example_data</span><span class="p">):</span>
-    <span class="kn">from</span> <span class="nn">flotilla.data_model</span> <span class="kn">import</span> <span class="n">ExpressionData</span>
-
-    <span class="k">return</span> <span class="n">ExpressionData</span><span class="p">(</span><span class="n">example_data</span><span class="o">.</span><span class="n">expression</span><span class="p">)</span>
+<div class="viewcode-block" id="n_groups"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.n_groups">[docs]</a><span class="k">def</span> <span class="nf">n_groups</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Number of phenotype groups.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="mi">2</span>
 
 </div>
 <span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
-<div class="viewcode-block" id="study"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.study">[docs]</a><span class="k">def</span> <span class="nf">study</span><span class="p">(</span><span class="n">example_datapackage_path</span><span class="p">):</span>
-    <span class="kn">import</span> <span class="nn">flotilla</span>
+<div class="viewcode-block" id="n_groups_fixed"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.n_groups_fixed">[docs]</a><span class="k">def</span> <span class="nf">n_groups_fixed</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Fixed number of phenotype groups (3)&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="mi">3</span>
 
-    <span class="k">return</span> <span class="n">flotilla</span><span class="o">.</span><span class="n">embark</span><span class="p">(</span><span class="n">example_datapackage_path</span><span class="p">)</span>
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="groups"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.groups">[docs]</a><span class="k">def</span> <span class="nf">groups</span><span class="p">(</span><span class="n">n_groups</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Phenotype group names&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="s">&#39;group{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_groups</span><span class="p">)]</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="groups_fixed"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.groups_fixed">[docs]</a><span class="k">def</span> <span class="nf">groups_fixed</span><span class="p">(</span><span class="n">n_groups_fixed</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Phenotype group names&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="s">&#39;group{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_groups_fixed</span><span class="p">)]</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;sorted&#39;</span><span class="p">,</span> <span class="s">&#39;random&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="group_order"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.group_order">[docs]</a><span class="k">def</span> <span class="nf">group_order</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">groups</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;so-called &#39;logical&#39; order of groups for plotting.</span>
+
+<span class="sd">    To test if the user gave a specific order of the phenotypes, e.g.</span>
+<span class="sd">    by differentiation time</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span> <span class="o">==</span> <span class="s">&#39;sorted&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">groups</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="group_order_fixed"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.group_order_fixed">[docs]</a><span class="k">def</span> <span class="nf">group_order_fixed</span><span class="p">(</span><span class="n">groups_fixed</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;so-called &#39;logical&#39; order of groups for plotting.</span>
+
+<span class="sd">    To test if the user gave a specific order of the phenotypes, e.g.</span>
+<span class="sd">    by differentiation time</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="n">groups_fixed</span><span class="p">)</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="colors"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.colors">[docs]</a><span class="k">def</span> <span class="nf">colors</span><span class="p">(</span><span class="n">n_groups</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Colors to use for the samples&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">rgb2hex</span><span class="p">,</span>
+               <span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s">&#39;husl&#39;</span><span class="p">,</span> <span class="n">n_colors</span><span class="o">=</span><span class="n">n_groups</span><span class="p">))</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="colors_fixed"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.colors_fixed">[docs]</a><span class="k">def</span> <span class="nf">colors_fixed</span><span class="p">(</span><span class="n">n_groups_fixed</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Colors to use for the samples&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">rgb2hex</span><span class="p">,</span>
+               <span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s">&#39;husl&#39;</span><span class="p">,</span> <span class="n">n_colors</span><span class="o">=</span><span class="n">n_groups_fixed</span><span class="p">))</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="group_to_color"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.group_to_color">[docs]</a><span class="k">def</span> <span class="nf">group_to_color</span><span class="p">(</span><span class="n">group_order</span><span class="p">,</span> <span class="n">colors</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Mapping of groups to colors&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">group_order</span><span class="p">,</span> <span class="n">colors</span><span class="p">))</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="group_to_color_fixed"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.group_to_color_fixed">[docs]</a><span class="k">def</span> <span class="nf">group_to_color_fixed</span><span class="p">(</span><span class="n">group_order_fixed</span><span class="p">,</span> <span class="n">colors_fixed</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Mapping of groups to colors&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">group_order_fixed</span><span class="p">,</span> <span class="n">colors_fixed</span><span class="p">))</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="color_ordered"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.color_ordered">[docs]</a><span class="k">def</span> <span class="nf">color_ordered</span><span class="p">(</span><span class="n">group_order</span><span class="p">,</span> <span class="n">group_to_color</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Colors in the order created by the groups&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">group_to_color</span><span class="p">[</span><span class="n">g</span><span class="p">]</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">group_order</span><span class="p">]</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="color_ordered_fixed"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.color_ordered_fixed">[docs]</a><span class="k">def</span> <span class="nf">color_ordered_fixed</span><span class="p">(</span><span class="n">group_order_fixed</span><span class="p">,</span> <span class="n">group_to_color_fixed</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Colors in the order created by the groups&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">group_to_color_fixed</span><span class="p">[</span><span class="n">g</span><span class="p">]</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">group_order_fixed</span><span class="p">]</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;simple&#39;</span><span class="p">,</span> <span class="s">&#39;different&#39;</span><span class="p">],</span>
+                <span class="n">ids</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;simple_markers&#39;</span><span class="p">,</span> <span class="s">&#39;different_markers&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="group_to_marker"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.group_to_marker">[docs]</a><span class="k">def</span> <span class="nf">group_to_marker</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Mapping of groups to plotting markers&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span> <span class="o">==</span> <span class="s">&#39;simple&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="s">&#39;o&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">marker_iter</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="s">&#39;ov^&lt;&gt;8sp*hHDd&#39;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">marker_iter</span><span class="o">.</span><span class="n">next</span><span class="p">())</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="group_transitions"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.group_transitions">[docs]</a><span class="k">def</span> <span class="nf">group_transitions</span><span class="p">(</span><span class="n">group_order</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;List of pairwise transitions between phenotypes, for NMF&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">zip</span><span class="p">(</span><span class="n">group_order</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">group_order</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="group_transitions_fixed"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.group_transitions_fixed">[docs]</a><span class="k">def</span> <span class="nf">group_transitions_fixed</span><span class="p">(</span><span class="n">group_order_fixed</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;List of pairwise transitions between phenotypes, for NMF&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">zip</span><span class="p">(</span><span class="n">group_order_fixed</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">group_order_fixed</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;phenotype&#39;</span><span class="p">,</span> <span class="s">&#39;group&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="metadata_phenotype_col"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.metadata_phenotype_col">[docs]</a><span class="k">def</span> <span class="nf">metadata_phenotype_col</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Which column in the metadata specifies the phenotype&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="groupby"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.groupby">[docs]</a><span class="k">def</span> <span class="nf">groupby</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span> <span class="n">samples</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">((</span><span class="n">sample</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">groups</span><span class="p">))</span> <span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">samples</span><span class="p">)</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="groupby_fixed"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.groupby_fixed">[docs]</a><span class="k">def</span> <span class="nf">groupby_fixed</span><span class="p">(</span><span class="n">groups_fixed</span><span class="p">,</span> <span class="n">samples</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">((</span><span class="n">sample</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">groups_fixed</span><span class="p">))</span> <span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">samples</span><span class="p">)</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="metadata_data"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.metadata_data">[docs]</a><span class="k">def</span> <span class="nf">metadata_data</span><span class="p">(</span><span class="n">groupby</span><span class="p">,</span> <span class="n">outliers</span><span class="p">,</span> <span class="n">pooled</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span>
+                  <span class="n">n_samples</span><span class="p">,</span>
+                  <span class="n">metadata_phenotype_col</span><span class="p">):</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">samples</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">outliers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">df</span><span class="p">[</span><span class="s">&#39;outlier&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">outliers</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">pooled</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">df</span><span class="p">[</span><span class="s">&#39;pooled&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">pooled</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="n">metadata_phenotype_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">groupby</span><span class="p">[</span><span class="n">x</span><span class="p">])</span>
+    <span class="n">df</span><span class="p">[</span><span class="s">&#39;subset1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="n">n_samples</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="metadata_data_groups_fixed"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.metadata_data_groups_fixed">[docs]</a><span class="k">def</span> <span class="nf">metadata_data_groups_fixed</span><span class="p">(</span><span class="n">groupby_fixed</span><span class="p">,</span> <span class="n">outliers</span><span class="p">,</span> <span class="n">pooled</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span>
+                               <span class="n">n_samples</span><span class="p">,</span>
+                               <span class="n">metadata_phenotype_col</span><span class="p">):</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">samples</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">outliers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">df</span><span class="p">[</span><span class="s">&#39;outlier&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">outliers</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">pooled</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">df</span><span class="p">[</span><span class="s">&#39;pooled&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">pooled</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="n">metadata_phenotype_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">groupby_fixed</span><span class="p">[</span><span class="n">x</span><span class="p">])</span>
+    <span class="n">df</span><span class="p">[</span><span class="s">&#39;subset1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="n">n_samples</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="metadata_kws"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.metadata_kws">[docs]</a><span class="k">def</span> <span class="nf">metadata_kws</span><span class="p">(</span><span class="n">metadata_phenotype_col</span><span class="p">,</span> <span class="n">group_order</span><span class="p">,</span> <span class="n">group_to_color</span><span class="p">,</span>
+                 <span class="n">group_to_marker</span><span class="p">):</span>
+    <span class="n">kws</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="n">metadata_phenotype_col</span> <span class="o">!=</span> <span class="s">&#39;phenotype&#39;</span><span class="p">:</span>
+        <span class="n">kws</span><span class="p">[</span><span class="s">&#39;phenotype_col&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">metadata_phenotype_col</span>
+    <span class="n">kws</span><span class="p">[</span><span class="s">&#39;phenotype_order&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">group_order</span>
+    <span class="n">kws</span><span class="p">[</span><span class="s">&#39;phenotype_to_color&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">group_to_color</span>
+    <span class="n">kws</span><span class="p">[</span><span class="s">&#39;phenotype_to_marker&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">group_to_marker</span>
+    <span class="k">return</span> <span class="n">kws</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="metadata_kws_fixed"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.metadata_kws_fixed">[docs]</a><span class="k">def</span> <span class="nf">metadata_kws_fixed</span><span class="p">(</span><span class="n">metadata_phenotype_col</span><span class="p">,</span> <span class="n">group_order_fixed</span><span class="p">,</span>
+                       <span class="n">group_to_color_fixed</span><span class="p">):</span>
+    <span class="n">kws</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="n">metadata_phenotype_col</span> <span class="o">!=</span> <span class="s">&#39;phenotype&#39;</span><span class="p">:</span>
+        <span class="n">kws</span><span class="p">[</span><span class="s">&#39;phenotype_col&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">metadata_phenotype_col</span>
+    <span class="n">kws</span><span class="p">[</span><span class="s">&#39;phenotype_order&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">group_order_fixed</span>
+    <span class="n">kws</span><span class="p">[</span><span class="s">&#39;phenotype_to_color&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">group_to_color_fixed</span>
+    <span class="n">kws</span><span class="p">[</span><span class="s">&#39;phenotype_to_marker&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="s">&#39;o&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">kws</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="mapping_stats_number_mapped_col"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.mapping_stats_number_mapped_col">[docs]</a><span class="k">def</span> <span class="nf">mapping_stats_number_mapped_col</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s">&#39;mapped_reads&#39;</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="mapping_stats_min_reads_default"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.mapping_stats_min_reads_default">[docs]</a><span class="k">def</span> <span class="nf">mapping_stats_min_reads_default</span><span class="p">():</span>
+    <span class="k">return</span> <span class="mf">5e5</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="mf">1e6</span><span class="p">],</span>
+                <span class="n">ids</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;min_reads_none&#39;</span><span class="p">,</span> <span class="s">&#39;min_reads_1e6&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="mapping_stats_kws"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.mapping_stats_kws">[docs]</a><span class="k">def</span> <span class="nf">mapping_stats_kws</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">mapping_stats_number_mapped_col</span><span class="p">):</span>
+    <span class="n">kws</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;number_mapped_col&#39;</span><span class="p">:</span> <span class="n">mapping_stats_number_mapped_col</span><span class="p">}</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">kws</span><span class="p">[</span><span class="s">&#39;min_reads&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span>
+    <span class="k">return</span> <span class="n">kws</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="mapping_stats_data"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.mapping_stats_data">[docs]</a><span class="k">def</span> <span class="nf">mapping_stats_data</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">technical_outliers</span><span class="p">,</span>
+                       <span class="n">mapping_stats_min_reads_default</span><span class="p">,</span>
+                       <span class="n">mapping_stats_kws</span><span class="p">,</span>
+                       <span class="n">mapping_stats_number_mapped_col</span><span class="p">):</span>
+    <span class="n">min_reads</span> <span class="o">=</span> <span class="n">mapping_stats_kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;min_reads&#39;</span><span class="p">,</span>
+                                      <span class="n">mapping_stats_min_reads_default</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">samples</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="n">mapping_stats_number_mapped_col</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">min_reads</span>
+    <span class="k">if</span> <span class="n">technical_outliers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">technical_outliers</span><span class="p">,</span> <span class="n">mapping_stats_number_mapped_col</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="o">.</span><span class="mi">5</span> <span class="o">*</span> <span class="n">min_reads</span>
+    <span class="k">return</span> <span class="n">df</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="n_genes"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.n_genes">[docs]</a><span class="k">def</span> <span class="nf">n_genes</span><span class="p">():</span>
+    <span class="k">return</span> <span class="mi">100</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="genes"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.genes">[docs]</a><span class="k">def</span> <span class="nf">genes</span><span class="p">(</span><span class="n">n_genes</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="s">&#39;gene_{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_genes</span><span class="p">)]</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="n_events"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.n_events">[docs]</a><span class="k">def</span> <span class="nf">n_events</span><span class="p">():</span>
+    <span class="k">return</span> <span class="mi">200</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="events"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.events">[docs]</a><span class="k">def</span> <span class="nf">events</span><span class="p">(</span><span class="n">n_events</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="s">&#39;event_{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_events</span><span class="p">)]</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="modality_models"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.modality_models">[docs]</a><span class="k">def</span> <span class="nf">modality_models</span><span class="p">():</span>
+    <span class="n">parameter</span> <span class="o">=</span> <span class="mf">20.</span>
+    <span class="n">rv_included</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">beta</span><span class="p">(</span><span class="n">parameter</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">rv_excluded</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">beta</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">parameter</span><span class="p">)</span>
+    <span class="n">rv_middle</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">beta</span><span class="p">(</span><span class="n">parameter</span><span class="p">,</span> <span class="n">parameter</span><span class="p">)</span>
+    <span class="n">rv_uniform</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">rv_bimodal</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">beta</span><span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="n">parameter</span><span class="p">,</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">parameter</span><span class="p">)</span>
+
+    <span class="n">models</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;included&#39;</span><span class="p">:</span> <span class="n">rv_included</span><span class="p">,</span>
+              <span class="s">&#39;excluded&#39;</span><span class="p">:</span> <span class="n">rv_excluded</span><span class="p">,</span>
+              <span class="s">&#39;middle&#39;</span><span class="p">:</span> <span class="n">rv_middle</span><span class="p">,</span>
+              <span class="s">&#39;uniform&#39;</span><span class="p">:</span> <span class="n">rv_uniform</span><span class="p">,</span>
+              <span class="s">&#39;bimodal&#39;</span><span class="p">:</span> <span class="n">rv_bimodal</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">models</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span> <span class="n">ids</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;na_thresh0&#39;</span><span class="p">,</span>
+                                                      <span class="s">&#39;na_thresh1&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="na_thresh"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.na_thresh">[docs]</a><span class="k">def</span> <span class="nf">na_thresh</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="gene_name"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.gene_name">[docs]</a><span class="k">def</span> <span class="nf">gene_name</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s">&#39;gene_name&#39;</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="event_name"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.event_name">[docs]</a><span class="k">def</span> <span class="nf">event_name</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s">&#39;event_name&#39;</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="gene_categories"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.gene_categories">[docs]</a><span class="k">def</span> <span class="nf">gene_categories</span><span class="p">():</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="s">&#39;ABCDE&#39;</span><span class="p">)</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="boolean_gene_categories"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.boolean_gene_categories">[docs]</a><span class="k">def</span> <span class="nf">boolean_gene_categories</span><span class="p">():</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="s">&#39;WXYZ&#39;</span><span class="p">)</span>
+
+
+<span class="c"># @pytest.fixture(scope=&#39;module&#39;, params=[False, True])</span>
+<span class="c"># def pooled(request):</span>
+<span class="c"># return request.param</span>
+<span class="c">#</span>
+<span class="c"># @pytest.fixture(scope=&#39;module&#39;, params=[False, True])</span>
+<span class="c"># def outlier(request):</span>
+<span class="c"># return request.param</span>
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="bp">False</span><span class="p">,</span> <span class="bp">True</span><span class="p">],</span>
+                <span class="n">ids</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;renamed&#39;</span><span class="p">,</span> <span class="s">&#39;not_renamed&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="renamed"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.renamed">[docs]</a><span class="k">def</span> <span class="nf">renamed</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="expression_data"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.expression_data">[docs]</a><span class="k">def</span> <span class="nf">expression_data</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">genes</span><span class="p">,</span> <span class="n">groupby</span><span class="p">,</span> <span class="n">na_thresh</span><span class="p">):</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">samples</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">genes</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">dataframe_maker</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">lognormal</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+                                <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+                                <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">dataframe_maker</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span>
+                    <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">groupby</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">na_thresh</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">i</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span>
+                                                                   <span class="n">na_thresh</span><span class="p">)</span>
+            <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="expression_data_no_na"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.expression_data_no_na">[docs]</a><span class="k">def</span> <span class="nf">expression_data_no_na</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">genes</span><span class="p">,</span> <span class="n">groupby_fixed</span><span class="p">):</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">samples</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">genes</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">dataframe_maker</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">lognormal</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+                                <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+                                <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">dataframe_maker</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span>
+                    <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">groupby_fixed</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">df</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="expression_feature_data"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.expression_feature_data">[docs]</a><span class="k">def</span> <span class="nf">expression_feature_data</span><span class="p">(</span><span class="n">genes</span><span class="p">,</span> <span class="n">gene_categories</span><span class="p">,</span>
+                            <span class="n">boolean_gene_categories</span><span class="p">,</span> <span class="n">renamed</span><span class="p">):</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">genes</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">renamed</span><span class="p">:</span>
+        <span class="n">df</span><span class="p">[</span><span class="s">&#39;renamed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;gene&#39;</span><span class="p">,</span> <span class="s">&#39;renamed&#39;</span><span class="p">))</span>
+    <span class="n">df</span><span class="p">[</span><span class="s">&#39;gene_category&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span>
+                                       <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">gene_categories</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">category</span> <span class="ow">in</span> <span class="n">boolean_gene_categories</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">()</span>
+        <span class="n">df</span><span class="p">[</span><span class="n">category</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                        <span class="n">p</span><span class="o">=</span><span class="p">[</span><span class="n">p</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">p</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">df</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="expression_feature_rename_col"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.expression_feature_rename_col">[docs]</a><span class="k">def</span> <span class="nf">expression_feature_rename_col</span><span class="p">(</span><span class="n">renamed</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">renamed</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s">&#39;renamed&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+                <span class="n">ids</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;log_base_None&#39;</span><span class="p">,</span> <span class="s">&#39;log_base2&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="expression_log_base"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.expression_log_base">[docs]</a><span class="k">def</span> <span class="nf">expression_log_base</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">],</span>
+                <span class="n">ids</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;plus_one_true&#39;</span><span class="p">,</span> <span class="s">&#39;plus_one_false&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="expression_plus_one"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.expression_plus_one">[docs]</a><span class="k">def</span> <span class="nf">expression_plus_one</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<div class="viewcode-block" id="expression_thresh"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.expression_thresh">[docs]</a><span class="k">def</span> <span class="nf">expression_thresh</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="expression_kws"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.expression_kws">[docs]</a><span class="k">def</span> <span class="nf">expression_kws</span><span class="p">(</span><span class="n">expression_feature_data</span><span class="p">,</span> <span class="n">expression_feature_rename_col</span><span class="p">,</span>
+                   <span class="n">expression_log_base</span><span class="p">,</span> <span class="n">expression_plus_one</span><span class="p">,</span>
+                   <span class="n">expression_thresh</span><span class="p">):</span>
+    <span class="n">kws</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">kws</span><span class="p">[</span><span class="s">&#39;feature_data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">expression_feature_data</span>
+    <span class="n">kws</span><span class="p">[</span><span class="s">&#39;feature_rename_col&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">expression_feature_rename_col</span>
+    <span class="n">kws</span><span class="p">[</span><span class="s">&#39;log_base&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">expression_log_base</span>
+    <span class="n">kws</span><span class="p">[</span><span class="s">&#39;plus_one&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">expression_plus_one</span>
+    <span class="n">kws</span><span class="p">[</span><span class="s">&#39;thresh&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">expression_thresh</span>
+    <span class="k">return</span> <span class="n">kws</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="true_modalities"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.true_modalities">[docs]</a><span class="k">def</span> <span class="nf">true_modalities</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">modality_models</span><span class="p">,</span> <span class="n">groups</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">e</span><span class="p">,</span> <span class="nb">dict</span><span class="p">((</span><span class="n">g</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">modality_models</span><span class="o">.</span><span class="n">keys</span><span class="p">())))</span>
+                         <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">))</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">events</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="true_modalities_fixed"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.true_modalities_fixed">[docs]</a><span class="k">def</span> <span class="nf">true_modalities_fixed</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">modality_models</span><span class="p">,</span> <span class="n">groups_fixed</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">e</span><span class="p">,</span> <span class="nb">dict</span><span class="p">((</span><span class="n">g</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">modality_models</span><span class="o">.</span><span class="n">keys</span><span class="p">())))</span>
+                         <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">groups_fixed</span><span class="p">))</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">events</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="splicing_data"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.splicing_data">[docs]</a><span class="k">def</span> <span class="nf">splicing_data</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">events</span><span class="p">,</span> <span class="n">true_modalities</span><span class="p">,</span> <span class="n">modality_models</span><span class="p">,</span>
+                  <span class="n">na_thresh</span><span class="p">,</span> <span class="n">groupby</span><span class="p">):</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">samples</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">events</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">dataframe_maker</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">true_modalities</span><span class="p">,</span> <span class="n">modality_models</span><span class="p">,</span> <span class="n">df</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">modality_models</span><span class="p">[</span><span class="n">modality</span><span class="p">]</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                          <span class="k">for</span> <span class="n">modality</span> <span class="ow">in</span> <span class="n">true_modalities</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">group</span><span class="p">]])</span><span class="o">.</span><span class="n">T</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">dataframe_maker</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">true_modalities</span><span class="p">,</span> <span class="n">modality_models</span><span class="p">,</span>
+                                    <span class="n">d</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">groupby</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">na_thresh</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">i</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span>
+                                                                   <span class="n">na_thresh</span><span class="p">)</span>
+            <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">randomly_add_na</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">na_thresh</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">na_thresh</span> <span class="o">/</span> <span class="mi">10</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">x</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">d</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">randomly_add_na</span><span class="p">,</span> <span class="n">na_thresh</span><span class="o">=</span><span class="n">na_thresh</span><span class="p">,</span>
+                                <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span>
+                        <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">groupby</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="splicing_data_fixed"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.splicing_data_fixed">[docs]</a><span class="k">def</span> <span class="nf">splicing_data_fixed</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">events</span><span class="p">,</span> <span class="n">true_modalities_fixed</span><span class="p">,</span>
+                        <span class="n">modality_models</span><span class="p">,</span>
+                        <span class="n">groupby_fixed</span><span class="p">):</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">samples</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">events</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">dataframe_maker</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">true_modalities</span><span class="p">,</span> <span class="n">modality_models</span><span class="p">,</span> <span class="n">df</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">modality_models</span><span class="p">[</span><span class="n">modality</span><span class="p">]</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                          <span class="k">for</span> <span class="n">modality</span> <span class="ow">in</span> <span class="n">true_modalities</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">group</span><span class="p">]])</span><span class="o">.</span><span class="n">T</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">dataframe_maker</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">true_modalities_fixed</span><span class="p">,</span>
+                                    <span class="n">modality_models</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">groupby_fixed</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">i</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">()</span>
+        <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">randomly_add_na</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">x</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">d</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">randomly_add_na</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span>
+                    <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">groupby_fixed</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="splicing_data_no_na"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.splicing_data_no_na">[docs]</a><span class="k">def</span> <span class="nf">splicing_data_no_na</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">events</span><span class="p">,</span>
+                        <span class="n">true_modalities_fixed</span><span class="p">,</span> <span class="n">modality_models</span><span class="p">,</span> <span class="n">groupby_fixed</span><span class="p">):</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">samples</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">events</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">dataframe_maker</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">true_modalities</span><span class="p">,</span> <span class="n">modality_models</span><span class="p">,</span> <span class="n">df</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">modality_models</span><span class="p">[</span><span class="n">modality</span><span class="p">]</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                          <span class="k">for</span> <span class="n">modality</span> <span class="ow">in</span> <span class="n">true_modalities</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">group</span><span class="p">]])</span><span class="o">.</span><span class="n">T</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">dataframe_maker</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">true_modalities_fixed</span><span class="p">,</span>
+                                    <span class="n">modality_models</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">groupby_fixed</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="splicing_feature_data"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.splicing_feature_data">[docs]</a><span class="k">def</span> <span class="nf">splicing_feature_data</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">genes</span><span class="p">,</span> <span class="n">gene_name</span><span class="p">,</span> <span class="n">expression_feature_data</span><span class="p">,</span>
+                          <span class="n">splicing_feature_common_id</span><span class="p">):</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">events</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="n">gene_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">genes</span><span class="p">))</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">expression_feature_data</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="n">splicing_feature_common_id</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="splicing_feature_common_id"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.splicing_feature_common_id">[docs]</a><span class="k">def</span> <span class="nf">splicing_feature_common_id</span><span class="p">(</span><span class="n">gene_name</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">gene_name</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="splicing_kws"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.splicing_kws">[docs]</a><span class="k">def</span> <span class="nf">splicing_kws</span><span class="p">(</span><span class="n">splicing_feature_data</span><span class="p">,</span> <span class="n">splicing_feature_common_id</span><span class="p">,</span>
+                 <span class="n">gene_name</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s">&#39;feature_data&#39;</span><span class="p">:</span> <span class="n">splicing_feature_data</span><span class="p">,</span>
+            <span class="s">&#39;feature_rename_col&#39;</span><span class="p">:</span> <span class="n">gene_name</span><span class="p">,</span>
+            <span class="s">&#39;feature_expression_id_col&#39;</span><span class="p">:</span> <span class="n">splicing_feature_common_id</span><span class="p">}</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="study"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.study">[docs]</a><span class="k">def</span> <span class="nf">study</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">shalek2013</span><span class="p">,</span> <span class="n">scrambled_study</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span> <span class="o">==</span> <span class="s">&#39;shalek2013&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">shalek2013</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span> <span class="o">==</span> <span class="s">&#39;scrambled_study&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">scrambled_study</span>
 
 </div>
 <span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
@@ -237,27 +748,139 @@
     <span class="k">elif</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span> <span class="o">==</span> <span class="s">&#39;dropbox&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">genelist_dropbox_link</span>
 
-</div>
-<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;gene_category: LPS Response&#39;</span><span class="p">,</span>
-                        <span class="s">&#39;link&#39;</span><span class="p">,</span>
-                        <span class="s">&#39;path&#39;</span><span class="p">],</span> <span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
-<div class="viewcode-block" id="feature_subset"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.feature_subset">[docs]</a><span class="k">def</span> <span class="nf">feature_subset</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">genelist_dropbox_link</span><span class="p">,</span> <span class="n">genelist_path</span><span class="p">):</span>
-    <span class="n">name_to_location</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;link&#39;</span><span class="p">:</span> <span class="n">genelist_dropbox_link</span><span class="p">,</span>
-                        <span class="s">&#39;path&#39;</span><span class="p">:</span> <span class="n">genelist_path</span><span class="p">}</span>
 
+<span class="c"># @pytest.fixture(params=[None, &#39;gene_category: A&#39;,</span>
+<span class="c"># &#39;link&#39;,</span>
+<span class="c"># &#39;path&#39;], scope=&#39;module&#39;)</span>
+<span class="c"># def feature_subset(request, genelist_dropbox_link, genelist_path):</span>
+<span class="c"># from flotilla.util import link_to_list</span>
+<span class="c">#</span>
+<span class="c"># name_to_location = {&#39;link&#39;: genelist_dropbox_link,</span>
+<span class="c"># &#39;path&#39;: genelist_path}</span>
+<span class="c">#</span>
+<span class="c"># if request.param is None:</span>
+<span class="c">#         return request.param</span>
+<span class="c">#     elif request.param in (&#39;link&#39;, &#39;path&#39;):</span>
+<span class="c">#</span>
+<span class="c">#         try:</span>
+<span class="c">#             return link_to_list(name_to_location[request.param])</span>
+<span class="c">#         except subprocess.CalledProcessError:</span>
+<span class="c">#             # Downloading the dropbox link failed, aka not connected to the</span>
+<span class="c">#             # internet, so just test &quot;None&quot; again</span>
+<span class="c">#             return None</span>
+<span class="c">#     else:</span>
+<span class="c">#         # Otherwise, this is a name of a subset</span>
+<span class="c">#         return request.param</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="x_norm"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.x_norm">[docs]</a><span class="k">def</span> <span class="nf">x_norm</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Normally distributed numpy array&quot;&quot;&quot;</span>
+    <span class="n">n_samples</span> <span class="o">=</span> <span class="mi">20</span>
+    <span class="n">n_features</span> <span class="o">=</span> <span class="mi">50</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n_samples</span> <span class="o">*</span> <span class="n">n_features</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="df_norm"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.df_norm">[docs]</a><span class="k">def</span> <span class="nf">df_norm</span><span class="p">(</span><span class="n">x_norm</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Normally distributed pandas dataframe&quot;&quot;&quot;</span>
+    <span class="n">nrow</span><span class="p">,</span> <span class="n">ncol</span> <span class="o">=</span> <span class="n">x_norm</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;sample_{0:02d}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nrow</span><span class="p">)]</span>
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;feature_{0:04d}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ncol</span><span class="p">)]</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">x_norm</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="df_nonneg"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.df_nonneg">[docs]</a><span class="k">def</span> <span class="nf">df_nonneg</span><span class="p">(</span><span class="n">df_norm</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Non-negative data for testing NMF&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">df_norm</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<div class="viewcode-block" id="metadata_minimum_samples"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.metadata_minimum_samples">[docs]</a><span class="k">def</span> <span class="nf">metadata_minimum_samples</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">])</span>
+<div class="viewcode-block" id="featurewise"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.featurewise">[docs]</a><span class="k">def</span> <span class="nf">featurewise</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="base_data"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.base_data">[docs]</a><span class="k">def</span> <span class="nf">base_data</span><span class="p">(</span><span class="n">expression_data</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">flotilla.data_model.base</span> <span class="kn">import</span> <span class="n">BaseData</span>
+
+    <span class="k">return</span> <span class="n">BaseData</span><span class="p">(</span><span class="n">expression_data</span><span class="p">)</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;half&#39;</span><span class="p">,</span> <span class="s">&#39;all&#39;</span><span class="p">],</span> <span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="sample_ids"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.sample_ids">[docs]</a><span class="k">def</span> <span class="nf">sample_ids</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">base_data</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span>
-    <span class="k">elif</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;link&#39;</span><span class="p">,</span> <span class="s">&#39;path&#39;</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span> <span class="o">==</span> <span class="s">&#39;some&#39;</span><span class="p">:</span>
+        <span class="n">half</span> <span class="o">=</span> <span class="n">base_data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">base_data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">[:</span><span class="n">half</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span> <span class="o">==</span> <span class="s">&#39;all&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">base_data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">index</span>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">link_to_list</span><span class="p">(</span><span class="n">name_to_location</span><span class="p">[</span><span class="n">request</span><span class="o">.</span><span class="n">param</span><span class="p">])</span>
-        <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span><span class="p">:</span>
-            <span class="c"># Downloading the dropbox link failed, aka not connected to the</span>
-            <span class="c"># internet, so just test &quot;None&quot; again</span>
-            <span class="k">return</span> <span class="bp">None</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="c"># Otherwise, this is a name of a subset</span>
-        <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span></div>
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;half&#39;</span><span class="p">,</span> <span class="s">&#39;all&#39;</span><span class="p">],</span> <span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="feature_ids"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.feature_ids">[docs]</a><span class="k">def</span> <span class="nf">feature_ids</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">base_data</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span>
+    <span class="k">elif</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span> <span class="o">==</span> <span class="s">&#39;some&#39;</span><span class="p">:</span>
+        <span class="n">half</span> <span class="o">=</span> <span class="n">base_data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">base_data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">[:</span><span class="n">half</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span> <span class="o">==</span> <span class="s">&#39;all&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">base_data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">],</span> <span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="standardize"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.standardize">[docs]</a><span class="k">def</span> <span class="nf">standardize</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;subset1&#39;</span><span class="p">,</span>
+                        <span class="s">&#39;phenotype: group1&#39;</span><span class="p">],</span>
+                <span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="sample_subset"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.sample_subset">[docs]</a><span class="k">def</span> <span class="nf">sample_subset</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span>
+    <span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;all&#39;</span><span class="p">,</span> <span class="s">&#39;gene_category: A&#39;</span><span class="p">,</span> <span class="s">&#39;W&#39;</span><span class="p">,</span> <span class="n">pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">xfail</span><span class="p">(</span><span class="s">&#39;asdf&#39;</span><span class="p">)],</span>
+    <span class="n">ids</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;none&#39;</span><span class="p">,</span> <span class="s">&#39;all_features&#39;</span><span class="p">,</span> <span class="s">&#39;categorical_gene_category&#39;</span><span class="p">,</span>
+         <span class="s">&#39;boolean_gene_category&#39;</span><span class="p">,</span> <span class="s">&#39;nonexistent_gene_category&#39;</span><span class="p">],</span>
+    <span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="feature_subset"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.feature_subset">[docs]</a><span class="k">def</span> <span class="nf">feature_subset</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="splicing"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.splicing">[docs]</a><span class="k">def</span> <span class="nf">splicing</span><span class="p">(</span><span class="n">splicing_data</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">flotilla.data_model.splicing</span> <span class="kn">import</span> <span class="n">SplicingData</span>
+
+    <span class="k">return</span> <span class="n">SplicingData</span><span class="p">(</span><span class="n">splicing_data</span><span class="p">)</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="splicing_fixed"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.splicing_fixed">[docs]</a><span class="k">def</span> <span class="nf">splicing_fixed</span><span class="p">(</span><span class="n">splicing_data_fixed</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">flotilla.data_model.splicing</span> <span class="kn">import</span> <span class="n">SplicingData</span>
+
+    <span class="k">return</span> <span class="n">SplicingData</span><span class="p">(</span><span class="n">splicing_data_fixed</span><span class="p">)</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="gene_ontology_data_path"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.gene_ontology_data_path">[docs]</a><span class="k">def</span> <span class="nf">gene_ontology_data_path</span><span class="p">(</span><span class="n">data_dir</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s">&#39;{}/human_grch38_chr22_gene_ontology.txt&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data_dir</span><span class="p">)</span>
+
+</div>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="gene_ontology_data"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.gene_ontology_data">[docs]</a><span class="k">def</span> <span class="nf">gene_ontology_data</span><span class="p">(</span><span class="n">gene_ontology_data_path</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="n">gene_ontology_data_path</span><span class="p">)</span></div>
 </pre></div>
 
     </div>

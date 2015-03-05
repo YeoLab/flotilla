@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>flotilla.compute.decomposition module &mdash; flotilla 0.2.2 documentation</title>
+    <title>flotilla.compute.decomposition module &mdash; flotilla 0.2.5 documentation</title>
     
     <link rel="stylesheet" href="_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.2',
+        VERSION:     '0.2.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -29,7 +29,7 @@
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
-    <link rel="top" title="flotilla 0.2.2 documentation" href="index.html" />
+    <link rel="top" title="flotilla 0.2.5 documentation" href="index.html" />
     <link rel="up" title="flotilla.compute package" href="flotilla.compute.html" />
     <link rel="next" title="flotilla.compute.expression module" href="flotilla.compute.expression.html" />
     <link rel="prev" title="flotilla.compute package" href="flotilla.compute.html" />
@@ -52,12 +52,11 @@
         </button>
         <a class="navbar-brand" href="index.html">
           Flotilla</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
           <ul class="nav navbar-nav">
-            <li class="divider-vertical"></li>
             
                 <li><a href="tutorial.html">Tutorial</a></li>
                 <li><a href="gallery/index.html">Gallery</a></li>
@@ -78,11 +77,19 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What&#8217;s new in the package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-4-november-23rd-2014">v0.2.4 (November 23rd, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-3-november-17th-2014">v0.2.3 (November 17th, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-2-november-7th-2014">v0.2.2 (November 7th, 2014)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-1-november-6th-2014">v0.2.1 (November 6th, 2014)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">OS X Installation instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#create-a-flotilla-sandbox">Create a flotilla sandbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#install-and-update-all-packages-in-your-environment">Install and update all packages in your environment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#old-osx-installation-instructions">Old OSX Installation instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html#docker-instructions">Docker Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api.html#general-use-plots">General use plots</a></li>
@@ -150,27 +157,54 @@
       
   <div class="section" id="module-flotilla.compute.decomposition">
 <span id="flotilla-compute-decomposition-module"></span><h1>flotilla.compute.decomposition module<a class="headerlink" href="#module-flotilla.compute.decomposition" title="Permalink to this headline">¶</a></h1>
+<p>Perform various dimensionality reduction algorithms on data</p>
 <dl class="class">
 <dt id="flotilla.compute.decomposition.DataFrameICA">
-<em class="property">class </em><tt class="descclassname">flotilla.compute.decomposition.</tt><tt class="descname">DataFrameICA</tt><big>(</big><em>df</em>, <em>n_components=None</em>, <em>**decomposer_kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/decomposition.html#DataFrameICA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFrameICA" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">flotilla.compute.decomposition.</tt><tt class="descname">DataFrameICA</tt><big>(</big><em>df</em>, <em>n_components=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/decomposition.html#DataFrameICA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFrameICA" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#flotilla.compute.decomposition.DataFrameReducerBase" title="flotilla.compute.decomposition.DataFrameReducerBase"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.decomposition.DataFrameReducerBase</span></tt></a>, <tt class="xref py py-class docutils literal"><span class="pre">sklearn.decomposition.fastica_.FastICA</span></tt></p>
+<p>Perform Independent Comopnent Analysis on a DataFrame</p>
+<p>Initialize and fit a dataframe to a decomposition algorithm</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>df</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A (samples, features) dataframe of data to fit to the reduction
+algorithm</p>
+</div></blockquote>
+<p><strong>n_components</strong> : int</p>
+<blockquote>
+<div><p>Number of components to calculate. If None, use as many
+components as there are samples</p>
+</div></blockquote>
+<p><strong>kwargs</strong> : keyword arguments</p>
+<blockquote class="last">
+<div><p>Any other arguments to the reduction algorithm</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="class">
 <dt id="flotilla.compute.decomposition.DataFrameNMF">
-<em class="property">class </em><tt class="descclassname">flotilla.compute.decomposition.</tt><tt class="descname">DataFrameNMF</tt><big>(</big><em>df</em>, <em>n_components=None</em>, <em>**decomposer_kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/decomposition.html#DataFrameNMF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFrameNMF" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">flotilla.compute.decomposition.</tt><tt class="descname">DataFrameNMF</tt><big>(</big><em>df</em>, <em>n_components=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/decomposition.html#DataFrameNMF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFrameNMF" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#flotilla.compute.decomposition.DataFrameReducerBase" title="flotilla.compute.decomposition.DataFrameReducerBase"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.decomposition.DataFrameReducerBase</span></tt></a>, <tt class="xref py py-class docutils literal"><span class="pre">sklearn.decomposition.nmf.NMF</span></tt></p>
+<p>Perform Non-Negative Matrix Factorization on a DataFrame</p>
 <dl class="method">
 <dt id="flotilla.compute.decomposition.DataFrameNMF.fit">
 <tt class="descname">fit</tt><big>(</big><em>X</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/decomposition.html#DataFrameNMF.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFrameNMF.fit" title="Permalink to this definition">¶</a></dt>
-<dd><p>duplicated fit code for DataFrameNMF because sklearn&#8217;s NMF cheats for
-efficiency and calls fit_transform. MRO resolves the closest
-(in this package)
-_single_fit_transform first and so there&#8217;s a recursion error:</p>
+<dd><p>Override scikit-learn&#8217;s fit() for our purposes</p>
+<p>Duplicated fit code for DataFrameNMF because sklearn&#8217;s NMF cheats for
+efficiency and calls fit_transform. Method resolution order (&#8220;MRO&#8221;)
+resolves the closest (in this package)
+_fit_transform first and so there&#8217;s a recursion error:</p>
 <blockquote>
 <div><dl class="docutils">
-<dt>def fit(self, X, y=None, <a href="#id1"><span class="problematic" id="id2">**</span></a>params):</dt>
-<dd>self._single_fit_transform(X, <a href="#id3"><span class="problematic" id="id4">**</span></a>params)
+<dt>def fit(self, X, y=None, <a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs):</dt>
+<dd>self._fit_transform(X, <a href="#id3"><span class="problematic" id="id4">**</span></a>kwargs)
 return self</dd>
 </dl>
 </div></blockquote>
@@ -180,34 +214,217 @@ return self</dd>
 
 <dl class="class">
 <dt id="flotilla.compute.decomposition.DataFramePCA">
-<em class="property">class </em><tt class="descclassname">flotilla.compute.decomposition.</tt><tt class="descname">DataFramePCA</tt><big>(</big><em>df</em>, <em>n_components=None</em>, <em>**decomposer_kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/decomposition.html#DataFramePCA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFramePCA" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">flotilla.compute.decomposition.</tt><tt class="descname">DataFramePCA</tt><big>(</big><em>df</em>, <em>n_components=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/decomposition.html#DataFramePCA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFramePCA" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#flotilla.compute.decomposition.DataFrameReducerBase" title="flotilla.compute.decomposition.DataFrameReducerBase"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.decomposition.DataFrameReducerBase</span></tt></a>, <tt class="xref py py-class docutils literal"><span class="pre">sklearn.decomposition.pca.PCA</span></tt></p>
+<p>Perform Principal Components Analaysis on a DataFrame</p>
+<p>Initialize and fit a dataframe to a decomposition algorithm</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>df</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A (samples, features) dataframe of data to fit to the reduction
+algorithm</p>
+</div></blockquote>
+<p><strong>n_components</strong> : int</p>
+<blockquote>
+<div><p>Number of components to calculate. If None, use as many
+components as there are samples</p>
+</div></blockquote>
+<p><strong>kwargs</strong> : keyword arguments</p>
+<blockquote class="last">
+<div><p>Any other arguments to the reduction algorithm</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="class">
 <dt id="flotilla.compute.decomposition.DataFrameReducerBase">
-<em class="property">class </em><tt class="descclassname">flotilla.compute.decomposition.</tt><tt class="descname">DataFrameReducerBase</tt><big>(</big><em>df</em>, <em>n_components=None</em>, <em>**decomposer_kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/decomposition.html#DataFrameReducerBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFrameReducerBase" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">flotilla.compute.decomposition.</tt><tt class="descname">DataFrameReducerBase</tt><big>(</big><em>df</em>, <em>n_components=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/decomposition.html#DataFrameReducerBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFrameReducerBase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
 <p>Just like scikit-learn&#8217;s reducers, but with prettied up DataFrames.</p>
+<p>Initialize and fit a dataframe to a decomposition algorithm</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>df</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A (samples, features) dataframe of data to fit to the reduction
+algorithm</p>
+</div></blockquote>
+<p><strong>n_components</strong> : int</p>
+<blockquote>
+<div><p>Number of components to calculate. If None, use as many
+components as there are samples</p>
+</div></blockquote>
+<p><strong>kwargs</strong> : keyword arguments</p>
+<blockquote class="last">
+<div><p>Any other arguments to the reduction algorithm</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="flotilla.compute.decomposition.DataFrameReducerBase.fit">
 <tt class="descname">fit</tt><big>(</big><em>X</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/decomposition.html#DataFrameReducerBase.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFrameReducerBase.fit" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Perform a scikit-learn fit and relabel dimensions to be
+informative names</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A (n_samples, n_features) Dataframe of data to reduce</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>self</strong> : DataFrameReducerBase</p>
+<blockquote class="last">
+<div><p>A instance of the data, now with <a href="#id5"><span class="problematic" id="id6">components_</span></a>,
+<a href="#id7"><span class="problematic" id="id8">explained_variance_</span></a>, and <a href="#id9"><span class="problematic" id="id10">explained_variance_ratio_</span></a> attributes</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="flotilla.compute.decomposition.DataFrameReducerBase.fit_transform">
 <tt class="descname">fit_transform</tt><big>(</big><em>X</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/decomposition.html#DataFrameReducerBase.fit_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFrameReducerBase.fit_transform" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Perform both a fit and a transform on the input data</p>
+<p>Fit the data to the reduction algorithm, and transform the data to
+the reduced space.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A (n_samples, n_features) dataframe to both fit and transform</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>self</strong> : DataFrameReducerBase</p>
+<blockquote>
+<div><p>A fit and transformed instance of the object</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><strong>ValueError</strong></p>
+<blockquote class="last">
+<div><p>If the input is not a pandas DataFrame, will not perform the fit
+and transform</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
-<dl class="method">
+<dl class="staticmethod">
 <dt id="flotilla.compute.decomposition.DataFrameReducerBase.relabel_pcs">
-<tt class="descname">relabel_pcs</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/decomposition.html#DataFrameReducerBase.relabel_pcs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFrameReducerBase.relabel_pcs" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property">static </em><tt class="descname">relabel_pcs</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/decomposition.html#DataFrameReducerBase.relabel_pcs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFrameReducerBase.relabel_pcs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a list of integers, change the name to be a 1-based
+principal component representation</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="flotilla.compute.decomposition.DataFrameReducerBase.transform">
 <tt class="descname">transform</tt><big>(</big><em>X</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/decomposition.html#DataFrameReducerBase.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFrameReducerBase.transform" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Transform a matrix into the compoment space</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A (n_samples, n_features) sized DataFrame to transform into the
+current compoment space</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>component_space</strong> : pandas.DataFrame</p>
+<blockquote class="last">
+<div><p>A (n_samples, self.n_components) sized DataFrame transformed into
+component space</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="flotilla.compute.decomposition.DataFrameTSNE">
+<em class="property">class </em><tt class="descclassname">flotilla.compute.decomposition.</tt><tt class="descname">DataFrameTSNE</tt><big>(</big><em>df</em>, <em>n_components=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/decomposition.html#DataFrameTSNE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFrameTSNE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#flotilla.compute.decomposition.DataFrameReducerBase" title="flotilla.compute.decomposition.DataFrameReducerBase"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.decomposition.DataFrameReducerBase</span></tt></a></p>
+<p>Perform t-Distributed Stochastic Neighbor Embedding on a DataFrame</p>
+<p>Read more: <a class="reference external" href="http://homepage.tudelft.nl/19j49/t-SNE.html">http://homepage.tudelft.nl/19j49/t-SNE.html</a></p>
+<p>Initialize and fit a dataframe to a decomposition algorithm</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>df</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A (samples, features) dataframe of data to fit to the reduction
+algorithm</p>
+</div></blockquote>
+<p><strong>n_components</strong> : int</p>
+<blockquote>
+<div><p>Number of components to calculate. If None, use as many
+components as there are samples</p>
+</div></blockquote>
+<p><strong>kwargs</strong> : keyword arguments</p>
+<blockquote class="last">
+<div><p>Any other arguments to the reduction algorithm</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="flotilla.compute.decomposition.DataFrameTSNE.fit_transform">
+<tt class="descname">fit_transform</tt><big>(</big><em>X</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/decomposition.html#DataFrameTSNE.fit_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.decomposition.DataFrameTSNE.fit_transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform both a fit and a transform on the input data</p>
+<p>Fit the data to the reduction algorithm, and transform the data to
+the reduced space.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A (n_samples, n_features) dataframe to both fit and transform</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>self</strong> : DataFrameReducerBase</p>
+<blockquote>
+<div><p>A fit and transformed instance of the object</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><strong>ValueError</strong></p>
+<blockquote class="last">
+<div><p>If the input is not a pandas DataFrame, will not perform the fit
+and transform</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 

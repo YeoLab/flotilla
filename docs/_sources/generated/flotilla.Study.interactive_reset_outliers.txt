@@ -1,0 +1,6 @@
+flotilla.Study.interactive_reset_outliers
+=========================================
+
+.. currentmodule:: flotilla
+
+.. automethod:: Study.interactive_reset_outliers

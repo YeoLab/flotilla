@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>flotilla.data_model.gene_ontology &mdash; flotilla 0.2.5 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootswatch-3.2.0/paper/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.2.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="flotilla 0.2.5 documentation" href="../../../index.html" />
+    <link rel="up" title="flotilla.data_model" href="../data_model.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html">
+          Flotilla</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.5</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../../tutorial.html">Tutorial</a></li>
+                <li><a href="../../../gallery/index.html">Gallery</a></li>
+                <li><a href="http://yeolab.ucsd.edu">YeoLab@UCSD</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">flotilla</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../flotilla.html">flotilla package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../whatsnew.html">What&#8217;s new in the package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-4-november-23rd-2014">v0.2.4 (November 23rd, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-3-november-17th-2014">v0.2.3 (November 17th, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-2-november-7th-2014">v0.2.2 (November 7th, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-1-november-6th-2014">v0.2.1 (November 6th, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">OS X Installation instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#create-a-flotilla-sandbox">Create a flotilla sandbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#install-and-update-all-packages-in-your-environment">Install and update all packages in your environment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html#old-osx-installation-instructions">Old OSX Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html#docker-instructions">Docker Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#general-use-plots">General use plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#interactive-plots">Interactive plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#machine-learning-plots">Machine learning plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#splicing-specific-plots">Splicing-specific plots</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../create_datapackage.html">Create your very own datapackage!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Flotilla tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#install-flotilla">Install flotilla</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#create-a-datapackage">Create a datapackage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#plotting-functions">Plotting functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#recreated-papers">Recreated papers</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <h1>Source code for flotilla.data_model.gene_ontology</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span><span class="p">,</span> <span class="n">Iterable</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">hypergeom</span>
+
+<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">timestamp</span>
+
+
+<div class="viewcode-block" id="GeneOntologyData"><a class="viewcode-back" href="../../../flotilla.data_model.gene_ontology.html#flotilla.data_model.gene_ontology.GeneOntologyData">[docs]</a><span class="k">class</span> <span class="nc">GeneOntologyData</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="n">domains</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">([</span><span class="s">&#39;biological_process&#39;</span><span class="p">,</span> <span class="s">&#39;molecular_function&#39;</span><span class="p">,</span>
+                         <span class="s">&#39;cellular_component&#39;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Object to calculate enrichment of Gene Ontology terms</span>
+
+<span class="sd">        Acceptable Gene Ontology tables can be downloaded from ENSEMBL&#39;s</span>
+<span class="sd">        BioMart tool: http://www.ensembl.org/biomart</span>
+
+<span class="sd">        1. Choose &quot;Ensembl Genes ##&quot; (## = version number, for me it&#39;s 78)</span>
+<span class="sd">        2. Click &quot;Attributes&quot;</span>
+<span class="sd">        3. Expand &quot;EXTERNAL&quot;</span>
+<span class="sd">        4. Check the boxes for &#39;GO Term Accession&#39;, &#39;Ensembl Gene ID&#39;,</span>
+<span class="sd">           &#39;GO Term Name&#39;, and &#39;GO domain&#39;</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : pandas.DataFrame</span>
+<span class="sd">            A dataframe with at least the following columns:</span>
+<span class="sd">            &#39;GO Term Accession&#39;, &#39;Ensembl Gene ID&#39;, &#39;GO Term Name&#39;, &#39;GO domain&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;{}</span><span class="se">\t</span><span class="s">Building Gene Ontology &#39;</span>
+                         <span class="s">&#39;database...</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">timestamp</span><span class="p">()))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ontology</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">go</span><span class="p">,</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">&#39;GO Term Accession&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ontology</span><span class="p">[</span><span class="n">go</span><span class="p">][</span><span class="s">&#39;genes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">&#39;Ensembl Gene ID&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ontology</span><span class="p">[</span><span class="n">go</span><span class="p">][</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;GO Term Name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ontology</span><span class="p">[</span><span class="n">go</span><span class="p">][</span><span class="s">&#39;domain&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;GO domain&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ontology</span><span class="p">[</span><span class="n">go</span><span class="p">][</span><span class="s">&#39;n_genes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ontology</span><span class="p">[</span><span class="n">go</span><span class="p">][</span><span class="s">&#39;genes&#39;</span><span class="p">])</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;{}</span><span class="se">\t\t</span><span class="s">Done.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">timestamp</span><span class="p">()))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">all_genes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;Ensembl Gene ID&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+
+<div class="viewcode-block" id="GeneOntologyData.enrichment"><a class="viewcode-back" href="../../../flotilla.data_model.gene_ontology.html#flotilla.data_model.gene_ontology.GeneOntologyData.enrichment">[docs]</a>    <span class="k">def</span> <span class="nf">enrichment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features_of_interest</span><span class="p">,</span> <span class="n">background</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                   <span class="n">p_value_cutoff</span><span class="o">=</span><span class="mi">1000000</span><span class="p">,</span> <span class="n">cross_reference</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                   <span class="n">min_feature_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">min_background_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                   <span class="n">domain</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Bonferroni-corrected hypergeometric p-values of GO enrichment</span>
+
+<span class="sd">        Calculates hypergeometric enrichment of the features of interest, in</span>
+<span class="sd">        each GO category.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        features_of_interest : list-like</span>
+<span class="sd">            List of features. Must match the identifiers in the ontology</span>
+<span class="sd">            database exactly, i.e. if your ontology database is ENSEMBL ids,</span>
+<span class="sd">            then you can only provide those and not common names like &quot;RBFOX2&quot;</span>
+<span class="sd">        background : list-like, optional</span>
+<span class="sd">            Background genes to use. It is best to use a relevant background</span>
+<span class="sd">            such as all expressed genes. If None, defaults to all genes.</span>
+<span class="sd">        p_value_cutoff : float, optional</span>
+<span class="sd">            Maximum accepted Bonferroni-corrected p-value</span>
+<span class="sd">        cross_reference : dict-like, optional</span>
+<span class="sd">            A mapping of gene ids to gene symbols, e.g. a pandas Series of</span>
+<span class="sd">            ENSEMBL genes e.g. ENSG00000139675 to gene symbols e.g HNRNPA1L2</span>
+<span class="sd">        min_feature_size : int, optional</span>
+<span class="sd">            Minimum number of features of interest overlapping in a GO Term,</span>
+<span class="sd">            to calculate enrichment</span>
+<span class="sd">        min_background_size : int, optional</span>
+<span class="sd">            Minimum number of features in the background overlapping a GO Term</span>
+<span class="sd">        domain : str or list, optional</span>
+<span class="sd">            Only calculate GO enrichment for a particular GO category or</span>
+<span class="sd">            subset of categories. Valid domains:</span>
+<span class="sd">            &#39;biological_process&#39;, &#39;molecular_function&#39;, &#39;cellular_component&#39;</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        enrichment_df : pandas.DataFrame</span>
+<span class="sd">            A (n_go_categories, columns) DataFrame of the enrichment scores</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If features of interest and background do not overlap, or invalid</span>
+<span class="sd">            GO domains are given</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cross_reference</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">cross_reference</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">cross_reference</span>
+        <span class="n">background</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_genes</span> <span class="k">if</span> <span class="n">background</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">background</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">background</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">features_of_interest</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Features of interest and background do not &#39;</span>
+                             <span class="s">&#39;overlap! Not calculating GO enrichment&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">features_of_interest</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">all_genes</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Features of interest do not overlap with GO term&#39;</span>
+                             <span class="s">&#39;gene ids. Not calculating GO enrichment.&#39;</span><span class="p">)</span>
+        <span class="n">domains</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">domains</span>
+        <span class="n">valid_domains</span> <span class="o">=</span> <span class="s">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">domains</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">domain</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">domain</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">domains</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s">&quot;&#39;{}&#39; is not a valid GO domain. &quot;</span>
+                    <span class="s">&quot;Only {} are acceptable&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">domain</span><span class="p">,</span> <span class="n">valid_domains</span><span class="p">))</span>
+            <span class="n">domains</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">([</span><span class="n">domain</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">domain</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">domain</span><span class="p">)</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="o">.</span><span class="n">domains</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s">&quot;&#39;{}&#39; are not a valid GO domains. &quot;</span>
+                    <span class="s">&quot;Only {} are acceptable&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="s">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">domain</span><span class="p">),</span>
+                        <span class="n">valid_domains</span><span class="p">))</span>
+            <span class="n">domains</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">domain</span><span class="p">)</span>
+
+        <span class="n">n_all_genes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">background</span><span class="p">)</span>
+        <span class="n">n_features_of_interest</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">features_of_interest</span><span class="p">)</span>
+        <span class="n">enrichment</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">go_term</span><span class="p">,</span> <span class="n">go_genes</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ontology</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">go_genes</span><span class="p">[</span><span class="s">&#39;domain&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">domains</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">features_in_go</span> <span class="o">=</span> <span class="n">go_genes</span><span class="p">[</span><span class="s">&#39;genes&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span>
+                <span class="n">features_of_interest</span><span class="p">)</span>
+            <span class="n">background_in_go</span> <span class="o">=</span> <span class="n">go_genes</span><span class="p">[</span><span class="s">&#39;genes&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">background</span><span class="p">)</span>
+            <span class="n">too_few_features</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">features_in_go</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">min_feature_size</span>
+            <span class="n">too_few_background</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">background_in_go</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">min_background_size</span>
+            <span class="k">if</span> <span class="n">too_few_features</span> <span class="ow">or</span> <span class="n">too_few_background</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="c"># Survival function is more accurate on small p-values</span>
+            <span class="n">p_value</span> <span class="o">=</span> <span class="n">hypergeom</span><span class="o">.</span><span class="n">sf</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">features_in_go</span><span class="p">),</span> <span class="n">n_all_genes</span><span class="p">,</span>
+                                   <span class="nb">len</span><span class="p">(</span><span class="n">background_in_go</span><span class="p">),</span>
+                                   <span class="n">n_features_of_interest</span><span class="p">)</span>
+            <span class="n">p_value</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">p_value</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">p_value</span>
+            <span class="n">symbols</span> <span class="o">=</span> <span class="p">[</span><span class="n">cross_reference</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="k">if</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">cross_reference</span> <span class="k">else</span> <span class="n">f</span> <span class="k">for</span> <span class="n">f</span>
+                       <span class="ow">in</span> <span class="n">features_in_go</span><span class="p">]</span>
+            <span class="n">enrichment</span><span class="p">[</span><span class="s">&#39;p_value&#39;</span><span class="p">][</span><span class="n">go_term</span><span class="p">]</span> <span class="o">=</span> <span class="n">p_value</span>
+            <span class="n">enrichment</span><span class="p">[</span><span class="s">&#39;n_features_of_interest_in_go_term&#39;</span><span class="p">][</span><span class="n">go_term</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span>
+                <span class="n">features_in_go</span><span class="p">)</span>
+            <span class="n">enrichment</span><span class="p">[</span><span class="s">&#39;n_background_in_go_term&#39;</span><span class="p">][</span><span class="n">go_term</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span>
+                <span class="n">background_in_go</span><span class="p">)</span>
+            <span class="n">enrichment</span><span class="p">[</span><span class="s">&#39;n_features_total_in_go_term&#39;</span><span class="p">][</span><span class="n">go_term</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span>
+                <span class="n">go_genes</span><span class="p">[</span><span class="s">&#39;genes&#39;</span><span class="p">])</span>
+            <span class="n">enrichment</span><span class="p">[</span><span class="s">&#39;features_of_interest_in_go_term&#39;</span><span class="p">][</span>
+                <span class="n">go_term</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">features_in_go</span><span class="p">)</span>
+            <span class="n">enrichment</span><span class="p">[</span><span class="s">&#39;features_of_interest_in_go_term_gene_symbols&#39;</span><span class="p">][</span>
+                <span class="n">go_term</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">symbols</span><span class="p">)</span>
+            <span class="n">enrichment</span><span class="p">[</span><span class="s">&#39;go_domain&#39;</span><span class="p">][</span><span class="n">go_term</span><span class="p">]</span> <span class="o">=</span> <span class="n">go_genes</span><span class="p">[</span><span class="s">&#39;domain&#39;</span><span class="p">]</span>
+            <span class="n">enrichment</span><span class="p">[</span><span class="s">&#39;go_name&#39;</span><span class="p">][</span><span class="n">go_term</span><span class="p">]</span> <span class="o">=</span> <span class="n">go_genes</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
+        <span class="n">enrichment_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">enrichment</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">enrichment_df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;No GO categories enriched in provided features&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c"># Bonferonni correction</span>
+        <span class="n">enrichment_df</span><span class="p">[</span><span class="s">&#39;bonferonni_corrected_p_value&#39;</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="n">enrichment_df</span><span class="o">.</span><span class="n">p_value</span> <span class="o">*</span> <span class="n">enrichment_df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ind</span> <span class="o">=</span> <span class="n">enrichment_df</span><span class="p">[</span><span class="s">&#39;bonferonni_corrected_p_value&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">p_value_cutoff</span>
+        <span class="n">enrichment_df</span> <span class="o">=</span> <span class="n">enrichment_df</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
+        <span class="n">enrichment_df</span> <span class="o">=</span> <span class="n">enrichment_df</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;p_value&#39;</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">enrichment_df</span></div></div>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<div class="container">
+    
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
+    </p>
+  </div>
+</footer>
+    <a href="http://olgabotvinnik.com/">Olga B. Botvinnik</a> is funded by the
+    <a href="https://ndseg.asee.org/">NDSEG</a> fellowship and is a
+    <a href="http://numfocus.org/">NumFOCUS</a>
+    <a href="http://numfocus.org/pages/john_hunter_fellowship_2014.html">John
+    Hunter Technology Fellow</a>.<br/>
+    Michael T. Lovci was partially funded by a fellowship from
+    <a href="http://www.gene.com/">Genentech</a>.</br>
+    Partially funded by <a href="http://www.nih.gov/">NIH</a> grants NS075449
+    and HG004659 and <a href="http://www.cirm.ca.gov/">CIRM</a> grants RB4-06045
+    and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene
+    Yeo</a>. <br/>
+
+    
+  </body>
+</html>

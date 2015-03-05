@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>API Reference &mdash; flotilla 0.2.2 documentation</title>
+    <title>API Reference &mdash; flotilla 0.2.5 documentation</title>
     
     <link rel="stylesheet" href="_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.2',
+        VERSION:     '0.2.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -29,7 +29,7 @@
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
-    <link rel="top" title="flotilla 0.2.2 documentation" href="index.html" />
+    <link rel="top" title="flotilla 0.2.5 documentation" href="index.html" />
     <link rel="next" title="flotilla.Study.plot_gene" href="generated/flotilla.Study.plot_gene.html" />
     <link rel="prev" title="OS X Installation instructions" href="installation.html" />
 <meta charset='utf-8'>
@@ -51,12 +51,11 @@
         </button>
         <a class="navbar-brand" href="index.html">
           Flotilla</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
           <ul class="nav navbar-nav">
-            <li class="divider-vertical"></li>
             
                 <li><a href="tutorial.html">Tutorial</a></li>
                 <li><a href="gallery/index.html">Gallery</a></li>
@@ -77,11 +76,19 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What&#8217;s new in the package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-4-november-23rd-2014">v0.2.4 (November 23rd, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-3-november-17th-2014">v0.2.3 (November 17th, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-2-november-7th-2014">v0.2.2 (November 7th, 2014)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-1-november-6th-2014">v0.2.1 (November 6th, 2014)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">OS X Installation instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#create-a-flotilla-sandbox">Create a flotilla sandbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#install-and-update-all-packages-in-your-environment">Install and update all packages in your environment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#old-osx-installation-instructions">Old OSX Installation instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html#docker-instructions">Docker Instructions</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#general-use-plots">General use plots</a></li>
@@ -167,7 +174,7 @@
 <td></td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/flotilla.Study.plot_event.html#flotilla.Study.plot_event" title="flotilla.Study.plot_event"><tt class="xref py py-obj docutils literal"><span class="pre">Study.plot_event</span></tt></a>(feature_id[,&nbsp;...])</td>
-<td>Plot the violinplot and DataFrameNMF transitions of a splicing event</td>
+<td>Plot the violinplot and NMF transitions of a splicing event</td>
 </tr>
 </tbody>
 </table>
@@ -192,11 +199,11 @@
 <tr class="row-even"><td><a class="reference internal" href="generated/flotilla.Study.interactive_lavalamp_pooled_inconsistent.html#flotilla.Study.interactive_lavalamp_pooled_inconsistent" title="flotilla.Study.interactive_lavalamp_pooled_inconsistent"><tt class="xref py py-obj docutils literal"><span class="pre">Study.interactive_lavalamp_pooled_inconsistent</span></tt></a>([...])</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">Study.interactive_choose_outliers</span></tt></td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/flotilla.Study.interactive_choose_outliers.html#flotilla.Study.interactive_choose_outliers" title="flotilla.Study.interactive_choose_outliers"><tt class="xref py py-obj docutils literal"><span class="pre">Study.interactive_choose_outliers</span></tt></a>([...])</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">Study.interactive_reset_outliers</span></tt></td>
-<td></td>
+<tr class="row-even"><td><a class="reference internal" href="generated/flotilla.Study.interactive_reset_outliers.html#flotilla.Study.interactive_reset_outliers" title="flotilla.Study.interactive_reset_outliers"><tt class="xref py py-obj docutils literal"><span class="pre">Study.interactive_reset_outliers</span></tt></a>()</td>
+<td>User selects from columns that start with &#8216;<a href="#id1"><span class="problematic" id="id2">outlier_</span></a>&#8216; to merge</td>
 </tr>
 </tbody>
 </table>

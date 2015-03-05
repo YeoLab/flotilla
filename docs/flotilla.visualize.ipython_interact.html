@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>flotilla.visualize.ipython_interact module &mdash; flotilla 0.2.2 documentation</title>
+    <title>flotilla.visualize.ipython_interact module &mdash; flotilla 0.2.5 documentation</title>
     
     <link rel="stylesheet" href="_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.2',
+        VERSION:     '0.2.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -29,7 +29,7 @@
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
-    <link rel="top" title="flotilla 0.2.2 documentation" href="index.html" />
+    <link rel="top" title="flotilla 0.2.5 documentation" href="index.html" />
     <link rel="up" title="flotilla.visualize package" href="flotilla.visualize.html" />
     <link rel="next" title="flotilla.visualize.network module" href="flotilla.visualize.network.html" />
     <link rel="prev" title="flotilla.visualize.generic module" href="flotilla.visualize.generic.html" />
@@ -52,12 +52,11 @@
         </button>
         <a class="navbar-brand" href="index.html">
           Flotilla</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
           <ul class="nav navbar-nav">
-            <li class="divider-vertical"></li>
             
                 <li><a href="tutorial.html">Tutorial</a></li>
                 <li><a href="gallery/index.html">Gallery</a></li>
@@ -78,11 +77,19 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What&#8217;s new in the package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-4-november-23rd-2014">v0.2.4 (November 23rd, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-3-november-17th-2014">v0.2.3 (November 17th, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-2-november-7th-2014">v0.2.2 (November 7th, 2014)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-1-november-6th-2014">v0.2.1 (November 6th, 2014)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">OS X Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">OS X Installation instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#create-a-flotilla-sandbox">Create a flotilla sandbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#install-and-update-all-packages-in-your-environment">Install and update all packages in your environment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#old-osx-installation-instructions">Old OSX Installation instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html#docker-instructions">Docker Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api.html#general-use-plots">General use plots</a></li>
@@ -176,13 +183,28 @@ subsets</p>
 </dd></dl>
 
 <dl class="staticmethod">
+<dt id="flotilla.visualize.ipython_interact.Interactive.interactive_choose_outliers">
+<em class="property">static </em><tt class="descname">interactive_choose_outliers</tt><big>(</big><em>data_types=('expression'</em>, <em>'splicing')</em>, <em>sample_subsets=None</em>, <em>feature_subsets=None</em>, <em>featurewise=False</em>, <em>x_pc=(1</em>, <em>3)</em>, <em>y_pc=(1</em>, <em>3)</em>, <em>show_point_labels=False</em>, <em>kernel=('rbf'</em>, <em>'linear'</em>, <em>'poly'</em>, <em>'sigmoid')</em>, <em>gamma=(0</em>, <em>25)</em>, <em>nu=(0.1</em>, <em>9.9)</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_choose_outliers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.ipython_interact.Interactive.interactive_choose_outliers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
 <dt id="flotilla.visualize.ipython_interact.Interactive.interactive_classifier">
-<em class="property">static </em><tt class="descname">interactive_classifier</tt><big>(</big><em>data_types=('expression'</em>, <em>'splicing')</em>, <em>sample_subsets=None</em>, <em>feature_subsets=None</em>, <em>categorical_variables=None</em>, <em>predictor_types=None</em>, <em>score_coefficient=(0.1</em>, <em>20)</em>, <em>draw_labels=False</em>, <em>savefile='data/last.clf.pdf'</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_classifier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.ipython_interact.Interactive.interactive_classifier" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><tt class="descname">interactive_classifier</tt><big>(</big><em>data_types=('expression'</em>, <em>'splicing')</em>, <em>sample_subsets=None</em>, <em>feature_subsets=None</em>, <em>categorical_variables=None</em>, <em>predictor_types=None</em>, <em>score_coefficient=(0.1</em>, <em>20)</em>, <em>draw_labels=False</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_classifier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.ipython_interact.Interactive.interactive_classifier" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="flotilla.visualize.ipython_interact.Interactive.interactive_clustermap">
+<em class="property">static </em><tt class="descname">interactive_clustermap</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_clustermap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.ipython_interact.Interactive.interactive_clustermap" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="flotilla.visualize.ipython_interact.Interactive.interactive_correlations">
+<em class="property">static </em><tt class="descname">interactive_correlations</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_correlations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.ipython_interact.Interactive.interactive_correlations" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="staticmethod">
 <dt id="flotilla.visualize.ipython_interact.Interactive.interactive_graph">
-<em class="property">static </em><tt class="descname">interactive_graph</tt><big>(</big><em>data_types=('expression'</em>, <em>'splicing')</em>, <em>sample_subsets=None</em>, <em>feature_subsets=None</em>, <em>featurewise=False</em>, <em>cov_std_cut=(0.1</em>, <em>3)</em>, <em>degree_cut=(0</em>, <em>10)</em>, <em>n_pcs=(2</em>, <em>100)</em>, <em>draw_labels=False</em>, <em>feature_of_interest='RBFOX2'</em>, <em>weight_fun=None</em>, <em>use_pc_1=True</em>, <em>use_pc_2=True</em>, <em>use_pc_3=True</em>, <em>use_pc_4=True</em>, <em>savefile='data/last.graph.pdf'</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.ipython_interact.Interactive.interactive_graph" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><tt class="descname">interactive_graph</tt><big>(</big><em>data_types=('expression'</em>, <em>'splicing')</em>, <em>sample_subsets=None</em>, <em>feature_subsets=None</em>, <em>featurewise=False</em>, <em>cov_std_cut=(0.1</em>, <em>3)</em>, <em>degree_cut=(0</em>, <em>10)</em>, <em>n_pcs=(2</em>, <em>100)</em>, <em>draw_labels=False</em>, <em>feature_of_interest='RBFOX2'</em>, <em>weight_fun=None</em>, <em>use_pc_1=True</em>, <em>use_pc_2=True</em>, <em>use_pc_3=True</em>, <em>use_pc_4=True</em>, <em>savefile='figures/last.graph.pdf'</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.ipython_interact.Interactive.interactive_graph" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="staticmethod">
@@ -197,13 +219,20 @@ subsets</p>
 
 <dl class="staticmethod">
 <dt id="flotilla.visualize.ipython_interact.Interactive.interactive_pca">
-<em class="property">static </em><tt class="descname">interactive_pca</tt><big>(</big><em>data_types=('expression'</em>, <em>'splicing')</em>, <em>sample_subsets=None</em>, <em>feature_subsets=None</em>, <em>featurewise=False</em>, <em>x_pc=(1</em>, <em>10)</em>, <em>y_pc=(1</em>, <em>10)</em>, <em>show_point_labels=False</em>, <em>list_link=''</em>, <em>plot_violins=True</em>, <em>savefile='data/last.pca.pdf'</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_pca"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.ipython_interact.Interactive.interactive_pca" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><tt class="descname">interactive_pca</tt><big>(</big><em>data_types=('expression'</em>, <em>'splicing')</em>, <em>sample_subsets=None</em>, <em>feature_subsets=None</em>, <em>color_samples_by=None</em>, <em>featurewise=False</em>, <em>x_pc=(1</em>, <em>10)</em>, <em>y_pc=(1</em>, <em>10)</em>, <em>show_point_labels=False</em>, <em>list_link=''</em>, <em>plot_violins=False</em>, <em>scale_by_variance=True</em>, <em>savefile='figures/last.pca.pdf'</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_pca"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.ipython_interact.Interactive.interactive_pca" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="staticmethod">
 <dt id="flotilla.visualize.ipython_interact.Interactive.interactive_plot_modalities_lavalamps">
 <em class="property">static </em><tt class="descname">interactive_plot_modalities_lavalamps</tt><big>(</big><em>sample_subsets=None</em>, <em>feature_subsets=None</em>, <em>color=u'#e41a1c'</em>, <em>x_offset=0</em>, <em>use_these_modalities=True</em>, <em>bootstrapped=False</em>, <em>bootstrapped_kws=None</em>, <em>savefile=''</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_plot_modalities_lavalamps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.ipython_interact.Interactive.interactive_plot_modalities_lavalamps" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="flotilla.visualize.ipython_interact.Interactive.interactive_reset_outliers">
+<em class="property">static </em><tt class="descname">interactive_reset_outliers</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_reset_outliers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.ipython_interact.Interactive.interactive_reset_outliers" title="Permalink to this definition">¶</a></dt>
+<dd><p>User selects from columns that start with &#8216;<a href="#id1"><span class="problematic" id="id2">outlier_</span></a>&#8216; to merge
+multiple outlier classifications</p>
+</dd></dl>
 
 </dd></dl>
 

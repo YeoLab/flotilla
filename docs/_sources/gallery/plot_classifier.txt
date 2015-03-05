@@ -1,0 +1,19 @@
+
+.. _plot_classifier:
+
+
+Perform classification on categorical traits
+============================================
+
+See also
+--------
+:py:func:`Study.interactive_classifier`
+
+
+
+.. image:: _images/plot_classifier.png
+
+**Python source code:** :download:`[download source: plot_classifier.py]<plot_classifier.py>`
+
+.. literalinclude:: plot_classifier.py
+    :lines: 10-
