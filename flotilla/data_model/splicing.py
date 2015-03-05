@@ -85,7 +85,7 @@ class SplicingData(BaseData):
 
     @memoize
     def modality_assignments(self, sample_ids=None, feature_ids=None,
-                             data=None, groupby=None, min_samples=0.5):
+                             data=None, groupby=None, min_samples=10):
         """Assigned modalities for these samples and features.
 
         Parameters
@@ -114,15 +114,15 @@ class SplicingData(BaseData):
             groupby = pd.Series('all', index=data.index)
 
         grouped = data.groupby(groupby)
-        if isinstance(min_samples, int):
-            thresh = self._thresh_int
-        elif isinstance(min_samples, float):
-            thresh = self._thresh_float
-        else:
-            raise TypeError('Threshold for minimum samples for modality '
-                            'detection can only be int or float, '
-                            'not {}'.format(type(min_samples)))
-        data = pd.concat([df.dropna(thresh=thresh(df, min_samples), axis=1)
+        # if isinstance(min_samples, int) or min_samples > 1:
+        #     thresh = self._thresh_int
+        # elif isinstance(min_samples, float) or min_samples <= 1:
+        #     thresh = self._thresh_float
+        # else:
+        #     raise TypeError('Threshold for minimum samples for modality '
+        #                     'detection can only be int or float, '
+        #                     'not {}'.format(type(min_samples)))
+        data = pd.concat([df.dropna(thresh=min_samples, axis=1)
                           for name, df in grouped])
         assignments = data.groupby(groupby).apply(
             self.modality_estimator.fit_transform)
