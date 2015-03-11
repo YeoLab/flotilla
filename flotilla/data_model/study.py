@@ -984,7 +984,7 @@ class Study(object):
             self.splicing.plot_regressor(**kwargs)
 
     def modality_assignments(self, sample_subset=None, feature_subset=None,
-                             expression_thresh=-np.inf, min_samples=0.5):
+                             expression_thresh=-np.inf, min_samples=10):
         """Get modality assignments of splicing data
 
         Parameters
@@ -1026,7 +1026,7 @@ class Study(object):
             groupby=self.sample_id_to_phenotype, min_samples=min_samples)
 
     def modality_counts(self, sample_subset=None, feature_subset=None,
-                        expression_thresh=-np.inf, min_samples=0.5):
+                        expression_thresh=-np.inf, min_samples=10):
         """Get number of splicing events in modality categories
 
         Parameters
