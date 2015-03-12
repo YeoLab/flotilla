@@ -15,6 +15,7 @@ import seaborn as sns
 
 from .metadata import MetaData, PHENOTYPE_COL, POOLED_COL, OUTLIER_COL
 from .expression import ExpressionData, SpikeInData
+from .gene_ontology import GeneOntologyData
 from .quality_control import MappingStatsData, MIN_READS
 from .splicing import SplicingData, FRACTION_DIFF_THRESH
 from ..compute.predict import PredictorConfigManager
@@ -198,7 +199,8 @@ class Study(object):
         # self.predictor_config_manager = None
 
         self.species = species
-        self.gene_ontology_data = gene_ontology_data
+        if gene_ontology_data is not None:
+            self.gene_ontology = GeneOntologyData(gene_ontology_data)
 
         self.license = license
         self.title = title
@@ -405,8 +407,8 @@ class Study(object):
             requiring the following data resources: metadata,
             expression, splicing
         species_data_pacakge_base_url : str
-            Base URL to fetch species-specific gene and splicing event
-            metadata from.
+            Base URL to fetch species-specific _ and splicing event
+            metadata frnm.
             Default 'https://s3-us-west-2.amazonaws.com/flotilla-projects/'
 
         Returns
@@ -580,8 +582,9 @@ class Study(object):
                 for key in other_keys:
                     new_key = '{}_{}'.format(name_no_data, key)
                     dfs[new_key] = resource[key]
-        except (IOError, ValueError):
-            sys.stderr.write('Error loading species {} data '.format(species))
+        except (IOError, ValueError) as e:
+            sys.stderr.write('Error loading species {} data:'
+                             ' {}'.format(species, e))
         return dfs
 
     def detect_outliers(self, data_type='expression',
@@ -887,24 +890,6 @@ class Study(object):
                 label_to_marker=label_to_marker, groupby=groupby,
                 featurewise=featurewise,
                 **kwargs)
-
-    def plot_study_sample_legend(self):
-        markers = self.metadata.data.color.groupby(
-            self.metadata.data.marker
-            + "." + self.metadata.data.celltype).last()
-
-        f, ax = plt.subplots(1, 1, figsize=(3, len(markers)))
-
-        for i, point_type in enumerate(markers.iteritems(), ):
-            mrk, celltype = point_type[0].split('.')
-            ax.scatter(0, 0, marker=mrk, c=point_type[1],
-                       edgecolor='none', label=celltype,
-                       s=160)
-        ax.set_xlim(1, 2)
-        ax.set_ylim(1, 2)
-        ax.axis('off')
-        legend = ax.legend(title='cell type', fontsize=20, )
-        return legend
 
     def plot_classifier(self, trait, sample_subset=None,
                         feature_subset='all_genes',
@@ -1636,9 +1621,9 @@ class Study(object):
             return self.splicing.big_nmf_space_transitions(
                 self.sample_id_to_phenotype, phenotype_transitions, n=n)
 
-    def save(self, name, flotilla_dir=FLOTILLA_DOWNLOAD_DIR):
+    def save(self, name, flotilla_dir=FLOTILLA_DOWNLOAD_DIR, scrambled=False):
 
-        metadata = self.metadata.data
+        metadata = self.metadata.data_original
 
         metadata_kws = {'pooled_col': self.metadata.pooled_col,
                         'phenotype_col': self.metadata.phenotype_col,
@@ -1694,9 +1679,15 @@ class Study(object):
             spikein = None
 
         try:
+            gene_ontology = self.gene_ontology.data
+        except AttributeError:
+            gene_ontology = None
+
+        try:
             mapping_stats = self.mapping_stats.data_original
             mapping_stats_kws = {
-                'number_mapped_col': self.mapping_stats.number_mapped_col}
+                'number_mapped_col': self.mapping_stats.number_mapped_col,
+                'min_reads': self.mapping_stats.min_reads}
         except AttributeError:
             mapping_stats = None
             mapping_stats_kws = None
@@ -1716,7 +1707,8 @@ class Study(object):
             splicing_feature_data=splicing_feature_data,
             splicing_feature_kws=splicing_feature_kws, species=self.species,
             license=self.license, title=self.title, sources=self.sources,
-            version=version, flotilla_dir=flotilla_dir)
+            version=version, flotilla_dir=flotilla_dir,
+            gene_ontology=gene_ontology)
 
     @staticmethod
     def _maybe_get_axis_name(df, axis=0, alt_name=None):
@@ -1839,6 +1831,44 @@ class Study(object):
         else:
             return self.splicing.data
 
+    def go_enrichment(self, feature_ids, background=None, domain=None,
+                      p_value_cutoff=1000000, min_feature_size=3,
+                      min_background_size=5):
+        """Calculate gene ontology enrichment of provided features
+
+        Parameters
+        ----------
+        feature_ids : list-like
+            Features to calculate gene ontology enrichment on
+        background : list-like, optional
+            Features to use as the background
+        domain : str or list, optional
+            Only calculate GO enrichment for a particular GO category or
+            subset of categories. Valid domains:
+            'biological_process', 'molecular_function', 'cellular_component'
+        p_value_cutoff : float, optional
+            Maximum accepted Bonferroni-corrected p-value
+        min_feature_size : int, optional
+            Minimum number of features of interest overlapping in a GO Term,
+            to calculate enrichment
+        min_background_size : int, optional
+            Minimum number of features in the background overlapping a GO Term
+        Returns
+        -------
+        enrichment : pandas.DataFrame
+            A (go_categories, columns) dataframe showing the GO
+            enrichment categories that were enriched in the features
+        """
+        if background is None:
+            warnings.warn('No background provided, defaulting to all '
+                          'expressed genes')
+            background = self.expression.data.columns
+        return self.gene_ontology.enrichment(
+            feature_ids, background=background,
+            cross_reference=self.expression.feature_renamer_series,
+            domain=domain, p_value_cutoff=p_value_cutoff,
+            min_feature_size=min_feature_size,
+            min_background_size=min_background_size)
 
 # Add interactive visualizations
 Study.interactive_classifier = Interactive.interactive_classifier

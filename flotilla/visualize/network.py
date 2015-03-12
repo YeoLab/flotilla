@@ -110,15 +110,26 @@ class NetworkerViz(Networker):
             feature_id = ''
 
         if featurewise:
-            node_color_mapper = lambda x: green \
-                if (x == feature_id) else almost_black
-            node_size_mapper = lambda x: (pca.means.ix[x] ** 2) + 10
+            def node_color_mapper(x):
+                if (x == feature_id):
+                    return green
+                else:
+                    return almost_black
+
+            def node_size_mapper(x):
+                return (pca.means.ix[x] ** 2) + 10
+
         else:
             if sample_id_to_color is not None:
-                node_color_mapper = lambda x: sample_id_to_color[x]
+                def node_color_mapper(x):
+                    return sample_id_to_color[x]
+
             else:
-                node_color_mapper = lambda x: dark2[0]
-            node_size_mapper = lambda x: 95
+                def node_color_mapper(x):
+                    return dark2[0]
+
+            def node_size_mapper(x):
+                return 95
 
         ax_pev.plot(pca.explained_variance_ratio_ * 100.)
         ax_pev.axvline(n_pcs, label='cutoff', color=green)
@@ -172,7 +183,9 @@ class NetworkerViz(Networker):
         if featurewise:
             namer = self.DataModel.feature_renamer
         else:
-            namer = lambda x: x
+            def namer(x):
+                return x
+
         labels = dict([(name, namer(name)) for name in graph.nodes()])
         if draw_labels:
             nx.draw_networkx_labels(graph, pos, labels=labels, ax=main_ax)
@@ -185,7 +198,6 @@ class NetworkerViz(Networker):
         ax_degree.set_xlabel("degree")
         ax_degree.set_ylabel("density")
         try:
-
             ax_degree.axvline(x=degree[feature_id],
                               label=feature_of_interest,
                               color=green)
@@ -271,13 +283,21 @@ class NetworkerViz(Networker):
             feature_id = ''
 
         if featurewise:
-            node_color_mapper = lambda x: red \
-                if x == feature_id else 'k'
-            node_size_mapper = lambda x: (data.mean().ix[x] ** 2) + 10
+            def node_color_mapper(x):
+                if x == feature_id:
+                    return red
+                else:
+                    return 'k'
+
+            def node_size_mapper(x):
+                return (data.mean().ix[x] ** 2) + 10
+
         else:
-            node_color_mapper = lambda x: \
-                self.DataModel.sample_metadata.color[x]
-            node_size_mapper = lambda x: 75
+            def node_color_mapper(x):
+                return self.DataModel.sample_metadata.color[x]
+
+            def node_size_mapper(x):
+                return 75
 
         adjacency_name = "_".join([dict_to_str(adjacency_settings)])
         adjacency = self.adjacency(data, name=adjacency_name,
@@ -317,7 +337,9 @@ class NetworkerViz(Networker):
         except (KeyError, ValueError):
             pass
 
-        renamer = lambda x: x
+        def renamer(x):
+            return x
+
         labels = dict([(name, renamer(name)) for name in graph.nodes()])
         if draw_labels:
             nx.draw_networkx_labels(graph, positions, labels=labels,

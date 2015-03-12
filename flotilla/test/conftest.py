@@ -3,6 +3,7 @@ This file will be auto-imported for every testing session, so you can use
 these objects and functions across test files.
 """
 from collections import defaultdict
+import os
 
 import matplotlib as mpl
 import numpy as np
@@ -10,6 +11,12 @@ import pytest
 import pandas as pd
 from scipy import stats
 import seaborn as sns
+
+
+@pytest.fixture(scope='module')
+def data_dir():
+    return os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                        'example_data')
 
 
 @pytest.fixture(scope='module')
@@ -339,7 +346,7 @@ def expression_data(samples, genes, groupby, na_thresh):
                                 df.shape[0]) for _ in df.columns]).T
         return pd.DataFrame(data, index=df.index, columns=df.columns)
 
-    df = pd.concat([dataframe_maker(df) for name, df in
+    df = pd.concat([dataframe_maker(d) for name, d in
                     df.groupby(groupby)], axis=0).sort_index()
     if na_thresh > 0:
         df = df.apply(lambda x: x.map(
@@ -360,7 +367,7 @@ def expression_data_no_na(samples, genes, groupby):
                                 df.shape[0]) for _ in df.columns]).T
         return pd.DataFrame(data, index=df.index, columns=df.columns)
 
-    df = pd.concat([dataframe_maker(df) for name, df in
+    df = pd.concat([dataframe_maker(d) for name, d in
                     df.groupby(groupby)], axis=0).sort_index()
     return df
 
@@ -505,6 +512,7 @@ def splicing_data(samples, events, true_modalities, modality_models, groupby):
 #                                     modality_models, df)
 #                     for group, df in df.groupby(groupby)], axis=0)
 #     return df.sort_index()
+
 
 
 @pytest.fixture(scope='module')
@@ -672,5 +680,15 @@ def splicing(splicing_data):
 # @pytest.fixture(scope='module')
 # def splicing_fixed(splicing_data_fixed):
 #     from flotilla.data_model.splicing import SplicingData
-#
+# 
 #     return SplicingData(splicing_data_fixed)
+
+
+@pytest.fixture(scope='module')
+def gene_ontology_data_path(data_dir):
+    return '{}/human_grch38_chr22_gene_ontology.txt'.format(data_dir)
+
+
+@pytest.fixture(scope='module')
+def gene_ontology_data(gene_ontology_data_path):
+    return pd.read_table(gene_ontology_data_path)

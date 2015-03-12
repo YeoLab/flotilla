@@ -93,6 +93,7 @@ def make_study_datapackage(name, metadata,
                            expression_feature_data=None,
                            splicing_feature_data=None,
                            splicing_feature_kws=None,
+                           gene_ontology=None,
                            host="https://s3-us-west-2.amazonaws.com/",
                            host_destination='flotilla-projects/'):
     """Example code for making a datapackage for a Study"""
@@ -121,7 +122,8 @@ def make_study_datapackage(name, metadata,
                  'expression_feature': (expression_feature_data,
                                         expression_feature_kws),
                  'splicing_feature': (splicing_feature_data,
-                                      splicing_feature_kws)}
+                                      splicing_feature_kws),
+                 'gene_ontology': (gene_ontology, {})}
 
     datapackage['resources'] = []
     for resource_name, (data, kws) in resources.items():

@@ -2,6 +2,8 @@
 This tests whether the Study object was created correctly. No
 computation or visualization tests yet.
 """
+from collections import Iterable
+import json
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -9,7 +11,7 @@ import numpy.testing as npt
 import pandas as pd
 import pandas.util.testing as pdt
 import pytest
-
+import semantic_version
 
 
 @pytest.fixture(params=['expression', 'splicing'])
@@ -25,92 +27,39 @@ def color_samples_by(request, metadata_phenotype_col):
     else:
         return request.param
 
-# @pytest.fixture(params=[None, 'gene_category', 'boolean_gene_category'])
-# def feature_subset(request, gene_categories, boolean_gene_categories):
-#     if request.param is None:
-#         return None
-#     elif request.param == 'gene_category':
-#         return gene_categories[0]
-#     elif request.param == 'boolean_gene_category':
-#         return boolean_gene_categories[0]
-#
-# @pytest.fixture(params=[None, 'phenotype', 'subset'])
-# def sample_subset(request):
-#     if request.param is None:
-#         return None
-#     elif request.param == 'phenotype':
-#         return 'phenotype'
-#     elif request.param == 'subset':
-#         return 'subset1'
 
 class TestStudy(object):
     # @pytest.fixture
     # def n_groups(self):
     #     return 3
 
-    # @pytest.fixture
-    # def study(self, metadata_data_groups_fixed, metadata_kws_fixed,
-    #           mapping_stats_data, mapping_stats_kws,
-    #           expression_data_no_na, expression_kws,
-    #           splicing_data_fixed, splicing_kws):
-    #     from flotilla.data_model import Study
-    #
-    #     kwargs = {}
-    #     kw_pairs = (('metadata', metadata_kws_fixed),
-    #                 ('mapping_stats', mapping_stats_kws),
-    #                 ('expression', expression_kws),
-    #                 ('splicing', splicing_kws))
-    #     for data_type, kws in kw_pairs:
-    #         for kw_name, kw_value in kws.iteritems():
-    #             kwargs['{}_{}'.format(data_type, kw_name)] = kw_value
-    #
-    #     return Study(metadata_data_groups_fixed,
-    #                  mapping_stats_data=mapping_stats_data,
-    #                  expression_data=expression_data_no_na,
-    #                  splicing_data=splicing_data_fixed, **kwargs)
-    #
-    # @pytest.fixture
-    # def study_no_mapping_stats(self, metadata_data_groups_fixed,
-    #                            metadata_kws_fixed,
-    #                            expression_data_no_na, expression_kws,
-    #                            splicing_data_fixed, splicing_kws):
-    #     from flotilla.data_model import Study
-    #
-    #     kwargs = {}
-    #     kw_pairs = (('metadata', metadata_kws_fixed),
-    #                 ('expression', expression_kws),
-    #                 ('splicing', splicing_kws))
-    #     for data_type, kws in kw_pairs:
-    #         for kw_name, kw_value in kws.iteritems():
-    #             kwargs['{}_{}'.format(data_type, kw_name)] = kw_value
-    #
-    #     return Study(metadata_data_groups_fixed,
-    #                  expression_data=expression_data_no_na,
-    #                  splicing_data=splicing_data_fixed, **kwargs)
-
     @pytest.fixture
-    def study(self, metadata_data, metadata_kws,
+    def study(self, metadata_data, metadata_kws_fixed,
+              mapping_stats_data, mapping_stats_kws,
               expression_data, expression_kws,
               splicing_data, splicing_kws,
-              mapping_stats_data, mapping_stats_kws):
-        from flotilla import Study
+              gene_ontology_data):
+        from flotilla.data_model import Study
 
+        kwargs = {}
         metadata = metadata_data.copy()
         splicing = splicing_data.copy()
         expression = expression_data.copy()
-
-        kw_pairs = (('metadata', metadata_kws),
-                    ('splicing', splicing_kws),
+        mapping_stats = mapping_stats_data.copy() 
+        
+        kw_pairs = (('metadata', metadata_kws_fixed),
+                    ('mapping_stats', mapping_stats_kws),
                     ('expression', expression_kws),
-                    ('mapping_stats', mapping_stats_kws))
-        kwargs = {}
-        for name, kws in kw_pairs:
-            for k, v in kws.items():
-                kwargs['{}_{}'.format(name, k)] = v
-        return Study(metadata, splicing_data=splicing,
-                     expression_data=expression,
-                     mapping_stats_data=mapping_stats_data, **kwargs)
+                    ('splicing', splicing_kws))
+        for data_type, kws in kw_pairs:
+            for kw_name, kw_value in kws.iteritems():
+                kwargs['{}_{}'.format(data_type, kw_name)] = kw_value
 
+        return Study(metadata_data,
+                     mapping_stats_data=mapping_stats_data,
+                     expression_data=expression_data,
+                     splicing_data=splicing_data,
+                     gene_ontology_data=gene_ontology_data, **kwargs)
     def test_init(self, metadata_data):
         from flotilla import Study
 
@@ -566,76 +515,97 @@ class TestStudy(object):
     #     #            == expression_feature_rename_col
     #     #     assert study.splicing.feature_rename_col \
     #     #            == splicing_feature_rename_col
-    #
+
+    @staticmethod
+    def get_data_eval_command(data_type, attribute):
+        if 'feature' in data_type:
+            # Feature data doesn't have "data_original", only "data"
+            if attribute == 'data_original':
+                attribute = 'data'
+            command = 'study.{}.feature_{}'.format(
+                data_type.split('_feature')[0], attribute)
+        else:
+            command = 'study.{}.{}'.format(data_type, attribute)
+        return command
+
     def test_save(self, study, tmpdir):
+        from flotilla.datapackage import name_to_resource
 
         study_name = 'test_save'
+
         study.save(study_name, flotilla_dir=tmpdir)
 
         assert len(tmpdir.listdir()) == 1
         save_dir = tmpdir.listdir()[0]
 
-        # with open('{}/datapackage.json'.format(save_dir)) as f:
-        #     test_datapackage = json.load(f)
-        # true_datapackage = copy.deepcopy(shalek2013_datapackage)
+        with open('{}/datapackage.json'.format(save_dir)) as f:
+            test_datapackage = json.load(f)
 
         assert study_name == save_dir.purebasename
 
         # resource_keys_to_ignore = ('compression', 'format', 'path',
         #                            'url')
-        # keys_from_study = {'splicing': [],
-        #                    'expression': ['thresh',
-        #                                   'log_base',
-        #                                   'plus_one'],
-        #                    'metadata': ['phenotype_order',
-        #                                 'phenotype_to_color',
-        #                                 'phenotype_col',
-        #                                 'phenotype_to_marker',
-        #                                 'pooled_col',
-        #                                 'minimum_samples'],
-        #                    'mapping_stats': ['number_mapped_col'],
-        #                    'expression_feature': ['rename_col',
-        #                                           'ignore_subset_cols'],
-        #                    'splicing_feature': ['rename_col',
-        #                                         'ignore_subset_cols',
-        #                                         'expression_id_col']}
-        # resource_names = keys_from_study.keys()
-        #
-        # # Add auto-generated attributes into the true datapackage
-        # for name, keys in keys_from_study.iteritems():
-        #     resource = name_to_resource(true_datapackage, name)
-        #     for key in keys:
-        #         if 'feature' in name:
-        #             command = 'study.{}.feature_{}'.format(name.rstrip(
-        #                 '_feature'), key)
-        #         else:
-        #             command = 'study.{}.{}'.format(name, key)
-        #         monkeypatch.setitem(resource, key, eval(command))
-        #
-        # for name in resource_names:
-        #     resource = name_to_resource(test_datapackage, name)
-        #     assert resource['path'] == '{}.csv.gz'.format(name)
-        #
-        # version = semantic_version.Version(study.version)
-        # version.patch += 1
-        # assert str(version) == test_datapackage['datapackage_version']
-        # assert study_name == test_datapackage['name']
-        #
+        keys_from_study = {'splicing': [],
+                           'expression': ['thresh',
+                                          'log_base',
+                                          'plus_one'],
+                           'metadata': ['phenotype_order',
+                                        'phenotype_to_color',
+                                        'phenotype_col',
+                                        'phenotype_to_marker',
+                                        'pooled_col',
+                                        'minimum_samples'],
+                           'mapping_stats': ['number_mapped_col',
+                                             'min_reads'],
+                           'expression_feature': ['rename_col',
+                                                  'ignore_subset_cols'],
+                           'splicing_feature': ['rename_col',
+                                                'ignore_subset_cols',
+                                                'expression_id_col'],
+                           'gene_ontology': []}
+        resource_names = keys_from_study.keys()
+
+        # Add auto-generated attributes into the true datapackage
+        for name, keys in keys_from_study.iteritems():
+            resource = name_to_resource(test_datapackage, name)
+            for key in keys:
+                command = self.get_data_eval_command(name, key)
+                test_value = resource[key]
+                true_value = eval(command)
+                if isinstance(test_value, dict):
+                    pdt.assert_dict_equal(test_value, true_value)
+                elif isinstance(test_value, Iterable):
+                    pdt.assert_array_equal(test_value, true_value)
+
+        for name in resource_names:
+            resource = name_to_resource(test_datapackage, name)
+            path = '{}.csv.gz'.format(name)
+            assert resource['path'] == path
+            test_df = pd.read_csv('{}/{}/{}'.format(tmpdir, study_name, path),
+                                  index_col=0, compression='gzip')
+            command = self.get_data_eval_command(name, 'data_original')
+            true_df = eval(command)
+            pdt.assert_frame_equal(test_df, true_df)
+
+        version = semantic_version.Version(study.version)
+        version.patch += 1
+        assert str(version) == test_datapackage['datapackage_version']
+        assert study_name == test_datapackage['name']
+
         # datapackage_keys_to_ignore = ['name', 'datapackage_version',
         #                               'resources']
         # datapackages = (true_datapackage, test_datapackage)
-        #
+
         # for name in resource_names:
         #     for datapackage in datapackages:
         #         resource = name_to_resource(datapackage, name)
         #         for key in resource_keys_to_ignore:
         #             monkeypatch.delitem(resource, key, raising=False)
-        #
+
         # # Have to check for resources separately because they could be
-        # # in any
-        # # order, it just matters that the contents are equal
-        # sorted_true = sorted(true_datapackage['resources'],
-        #                      key=lambda x: x['name'])
+        # # in any order, it just matters that the contents are equal
+        # # sorted_true = sorted(true_datapackage['resources'],
+        # #                      key=lambda x: x['name'])
         # sorted_test = sorted(test_datapackage['resources'],
         #                      key=lambda x: x['name'])
         # for i in range(len(sorted_true)):
@@ -645,9 +615,8 @@ class TestStudy(object):
         # for key in datapackage_keys_to_ignore:
         #     for datapackage in datapackages:
         #         monkeypatch.delitem(datapackage, key)
-        #
-        # pdt.assert_dict_equal(test_datapackage,
-        #                       true_datapackage)
+
+        # pdt.assert_dict_equal(test_datapackage)
 
     # Temporary commenting out while chr22 dataset is down
     # def test_nmf_space_positions(self, chr22):
