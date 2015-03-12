@@ -26,6 +26,7 @@ class MetaData(BaseData):
         super(MetaData, self).__init__(
             data, outliers=None,
             predictor_config_manager=predictor_config_manager)
+        self.data_original = self.data
 
         self.phenotype_col = phenotype_col if phenotype_col is not None else \
             self._default_phenotype_col
