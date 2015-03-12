@@ -299,8 +299,8 @@ class TestStudy(object):
 
         assert study_name == save_dir.purebasename
 
-        resource_keys_to_ignore = ('compression', 'format', 'path',
-                                   'url')
+        # resource_keys_to_ignore = ('compression', 'format', 'path',
+        #                            'url')
         keys_from_study = {'splicing': [],
                            'expression': ['thresh',
                                           'log_base',
@@ -348,8 +348,8 @@ class TestStudy(object):
         assert str(version) == test_datapackage['datapackage_version']
         assert study_name == test_datapackage['name']
 
-        datapackage_keys_to_ignore = ['name', 'datapackage_version',
-                                      'resources']
+        # datapackage_keys_to_ignore = ['name', 'datapackage_version',
+        #                               'resources']
         # datapackages = (true_datapackage, test_datapackage)
 
         # for name in resource_names:

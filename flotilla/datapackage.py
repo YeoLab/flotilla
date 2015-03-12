@@ -174,4 +174,3 @@ def name_to_resource(datapackage, name):
         if resource['name'] == name:
             return resource
     raise ValueError('No resource named {} in this datapackage'.format(name))
-2
