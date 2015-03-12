@@ -33,6 +33,9 @@ class GeneOntologyData(object):
         """
 
         self.data = data.dropna()
+
+        # Need "data_original" to be consistent with other datatypes
+        self.data_original = self.data
         sys.stdout.write('{}\tBuilding Gene Ontology '
                          'database...\n'.format(timestamp()))
         self.ontology = defaultdict(dict)
