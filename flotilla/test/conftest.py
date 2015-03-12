@@ -178,10 +178,6 @@ def groupby(groups, samples):
     return dict((sample, np.random.choice(groups)) for sample in samples)
 
 
-# @pytest.fixture(scope='module')
-# def groupby_fixed(groups_fixed, samples):
-#     return dict((sample, np.random.choice(groups_fixed)) for sample in samples)
-
 @pytest.fixture(scope='module')
 def metadata_data(groupby, samples, n_samples):
     df = pd.DataFrame(index=samples)
@@ -514,7 +510,6 @@ def splicing_data(samples, events, true_modalities, modality_models, groupby):
 #     return df.sort_index()
 
 
-
 @pytest.fixture(scope='module')
 def splicing_feature_data(events, genes, gene_name, expression_feature_data,
                           splicing_feature_common_id):
@@ -675,13 +670,6 @@ def splicing(splicing_data):
     from flotilla.data_model.splicing import SplicingData
 
     return SplicingData(splicing_data)
-
-
-# @pytest.fixture(scope='module')
-# def splicing_fixed(splicing_data_fixed):
-#     from flotilla.data_model.splicing import SplicingData
-# 
-#     return SplicingData(splicing_data_fixed)
 
 
 @pytest.fixture(scope='module')
