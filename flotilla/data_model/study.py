@@ -2,6 +2,7 @@
 Data models for "studies" studies include attributes about the data and are
 heavier in terms of data load
 """
+import inspect
 import json
 import os
 import sys
@@ -18,6 +19,7 @@ from .expression import ExpressionData, SpikeInData
 from .gene_ontology import GeneOntologyData
 from .quality_control import MappingStatsData, MIN_READS
 from .splicing import SplicingData, FRACTION_DIFF_THRESH
+from .supplemental import SupplementalData
 from ..compute.predict import PredictorConfigManager
 from ..datapackage import datapackage_url_to_dict, \
     check_if_already_downloaded, make_study_datapackage
@@ -96,7 +98,8 @@ class Study(object):
                  metadata_outlier_col=OUTLIER_COL,
                  license=None, title=None, sources=None,
                  default_sample_subset="all_samples",
-                 default_feature_subset="variant"):
+                 default_feature_subset="variant",
+                 supplemental_data=None):
         """Construct a biological study
 
         This class only accepts data, no filenames. All data must already
@@ -179,6 +182,9 @@ class Study(object):
         metadata_pooled_col : str
             Column in metadata_data which specifies as a boolean
             whether or not this sample was pooled.
+        supplemental_data : dict
+            str: dataframe mapping of the attribute name, and the pandas
+            dataframe
 
         Note
         ----
@@ -322,6 +328,8 @@ class Study(object):
                 spikein_data, feature_data=spikein_feature_data,
                 technical_outliers=self.technical_outliers,
                 predictor_config_manager=self.predictor_config_manager)
+
+        self.supplemental = SupplementalData(supplemental_data)
         sys.stdout.write("{}\tSuccessfully initialized a Study "
                          "object!\n".format(timestamp()))
 
@@ -1706,6 +1714,16 @@ class Study(object):
             mapping_stats = None
             mapping_stats_kws = None
 
+        supplemental_attributes = inspect.getmembers(self.supplemental,
+                                        lambda a: not (inspect.isroutine(a)))
+        supplemental_attributes = [a for a in supplemental_attributes
+                                   if not(a[0].startswith('__')
+                                          and a[0].endswith('__'))]
+        supplemental_kws = {}
+        for attribute in supplemental_attributes:
+            supplemental_kws[attribute] = self.supplemental.__getattr__(
+                attribute)
+
         # Increase the version number
         version = semantic_version.Version(self.version)
         version.patch = version.patch + 1
@@ -1722,7 +1740,7 @@ class Study(object):
             splicing_feature_kws=splicing_feature_kws, species=self.species,
             license=self.license, title=self.title, sources=self.sources,
             version=version, flotilla_dir=flotilla_dir,
-            gene_ontology=gene_ontology)
+            gene_ontology=gene_ontology, supplemental_kws=supplemental_kws)
 
     @staticmethod
     def _maybe_get_axis_name(df, axis=0, alt_name=None):

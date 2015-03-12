@@ -9,7 +9,6 @@ import string
 import sys
 import urllib2
 
-import pandas as pd
 import matplotlib as mpl
 
 
@@ -94,6 +93,7 @@ def make_study_datapackage(name, metadata,
                            splicing_feature_data=None,
                            splicing_feature_kws=None,
                            gene_ontology=None,
+                           supplemental_kws=None,
                            host="https://s3-us-west-2.amazonaws.com/",
                            host_destination='flotilla-projects/'):
     """Example code for making a datapackage for a Study"""
@@ -107,6 +107,8 @@ def make_study_datapackage(name, metadata,
         os.makedirs(datapackage_dir)
     except OSError:
         pass
+
+    supplemental_kws = {} if supplemental_kws is None else supplemental_kws
 
     datapackage = {'name': name, 'title': title, 'sources': sources,
                    'licenses': license, 'datapackage_version': version}
@@ -138,10 +140,10 @@ def make_study_datapackage(name, metadata,
         with gzip.open(data_filename, 'wb') as f:
             data.to_csv(f)
 
-        if isinstance(data.columns, pd.MultiIndex):
-            resource['header'] = range(len(data.columns.levels))
-        if isinstance(data.index, pd.MultiIndex):
-            resource['index_col'] = range(len(data.index.levels))
+        # if isinstance(data.columns, pd.MultiIndex):
+        #     resource['header'] = range(len(data.columns.levels))
+        # if isinstance(data.index, pd.MultiIndex):
+        #     resource['index_col'] = range(len(data.index.levels))
         # try:
         # # TODO: only transmit data if it has been updated
         # subprocess.call(
@@ -161,6 +163,23 @@ def make_study_datapackage(name, metadata,
                                  (k, v)
                                  for k, v in value.iteritems())
                 resource[key] = value
+
+    datapackage['resources'].append({'name': 'supplemental'})
+    supplemental = datapackage['resources'][-1]
+    supplemental['resources'] = []
+    for name, df in supplemental_kws.items():
+        resource = {}
+
+        basename = '{}.csv.gz'.format(name)
+        data_filename = '{}/{}'.format(datapackage_dir, basename)
+        with gzip.open(data_filename, 'wb') as f:
+            data.to_csv(f)
+
+        resource['name'] = name
+        resource['path'] = basename
+        resource['compression'] = 'gzip'
+        resource['format'] = 'csv'
+        supplemental['resources'].append(resource)
 
     filename = '{}/datapackage.json'.format(datapackage_dir)
     with open(filename, 'w') as f:
