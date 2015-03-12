@@ -45,8 +45,9 @@ class TestStudy(object):
         metadata = metadata_data.copy()
         splicing = splicing_data.copy()
         expression = expression_data.copy()
-        mapping_stats = mapping_stats_data.copy() 
-        
+        mapping_stats = mapping_stats_data.copy()
+        gene_ontology = gene_ontology_data.copy()
+
         kw_pairs = (('metadata', metadata_kws_fixed),
                     ('mapping_stats', mapping_stats_kws),
                     ('expression', expression_kws),
@@ -55,11 +56,12 @@ class TestStudy(object):
             for kw_name, kw_value in kws.iteritems():
                 kwargs['{}_{}'.format(data_type, kw_name)] = kw_value
 
-        return Study(metadata_data,
-                     mapping_stats_data=mapping_stats_data,
-                     expression_data=expression_data,
-                     splicing_data=splicing_data,
-                     gene_ontology_data=gene_ontology_data, **kwargs)
+        return Study(metadata,
+                     mapping_stats_data=mapping_stats,
+                     expression_data=expression,
+                     splicing_data=splicing,
+                     gene_ontology_data=gene_ontology, **kwargs)
+
     def test_init(self, metadata_data):
         from flotilla import Study
 
