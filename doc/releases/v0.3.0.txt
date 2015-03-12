@@ -1,0 +1,28 @@
+v0.3.0 (...)
+------------------------
+
+This is a minor release, with non-breaking changes from 0.2.5.
+
+New features
+~~~~~~~~~~~~
+
+
+Plotting functions
+~~~~~~~~~~~~~~~~~~
+
+
+API changes
+~~~~~~~~~~~
+
+
+Bug fixes
+~~~~~~~~~
+
+- Fixed :py:func:`.data_model.Study.save()` to actually save:
+    - Gene Ontology Data
+    - Minimum number of mapped reads per sample
+
+
+Miscellaneous
+~~~~~~~~~~~~~
+
