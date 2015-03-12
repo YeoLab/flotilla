@@ -1,7 +1,7 @@
-v0.3.0 (...)
+v0.2.6 (...)
 ------------------------
 
-This is a minor release, with non-breaking changes from 0.2.5.
+This is a patch release, with non-breaking changes from 0.2.5.
 
 New features
 ~~~~~~~~~~~~
