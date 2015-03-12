@@ -265,9 +265,9 @@ class TestSplicingData:
 
         grouped = data.groupby(groupby_copy)
         if isinstance(min_samples, int):
-            thresh = splicing_fixed._thresh_int
+            thresh = splicing._thresh_int
         elif isinstance(min_samples, float):
-            thresh = splicing_fixed._thresh_float
+            thresh = splicing._thresh_float
         else:
             raise TypeError('Threshold for minimum samples for modality '
                             'detection can only be int or float, '

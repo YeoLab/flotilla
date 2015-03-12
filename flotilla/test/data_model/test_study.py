@@ -34,7 +34,7 @@ class TestStudy(object):
     #     return 3
 
     @pytest.fixture
-    def study(self, metadata_data, metadata_kws_fixed,
+    def study(self, metadata_data, metadata_kws,
               mapping_stats_data, mapping_stats_kws,
               expression_data, expression_kws,
               splicing_data, splicing_kws,
@@ -48,7 +48,7 @@ class TestStudy(object):
         mapping_stats = mapping_stats_data.copy()
         gene_ontology = gene_ontology_data.copy()
 
-        kw_pairs = (('metadata', metadata_kws_fixed),
+        kw_pairs = (('metadata', metadata_kws),
                     ('mapping_stats', mapping_stats_kws),
                     ('expression', expression_kws),
                     ('splicing', splicing_kws))
