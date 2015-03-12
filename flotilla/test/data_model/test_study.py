@@ -2,6 +2,7 @@
 This tests whether the Study object was created correctly. No
 computation or visualization tests yet.
 """
+from collections import Iterable
 import json
 
 import matplotlib.pyplot as plt
@@ -10,6 +11,7 @@ import pandas as pd
 import pandas.util.testing as pdt
 import pytest
 import semantic_version
+
 
 @pytest.fixture(params=['expression', 'splicing'])
 def data_type(request):
@@ -34,7 +36,8 @@ class TestStudy(object):
     def study(self, metadata_data_groups_fixed, metadata_kws_fixed,
               mapping_stats_data, mapping_stats_kws,
               expression_data_no_na, expression_kws,
-              splicing_data_fixed, splicing_kws):
+              splicing_data_fixed, splicing_kws,
+              gene_ontology_data):
         from flotilla.data_model import Study
 
         kwargs = {}
@@ -49,7 +52,8 @@ class TestStudy(object):
         return Study(metadata_data_groups_fixed,
                      mapping_stats_data=mapping_stats_data,
                      expression_data=expression_data_no_na,
-                     splicing_data=splicing_data_fixed, **kwargs)
+                     splicing_data=splicing_data_fixed,
+                     gene_ontology_data=gene_ontology_data, **kwargs)
 
     @pytest.fixture
     def study_no_mapping_stats(self, metadata_data_groups_fixed,
@@ -267,11 +271,24 @@ class TestStudy(object):
     #     #            == expression_feature_rename_col
     #     #     assert study.splicing.feature_rename_col \
     #     #            == splicing_feature_rename_col
-    #
-    def test_save(self, study, tmpdir, monkeypatch):
+
+    @staticmethod
+    def get_data_eval_command(data_type, attribute):
+        if 'feature' in data_type:
+            # Feature data doesn't have "data_original", only "data"
+            if attribute == 'data_original':
+                attribute = 'data'
+            command = 'study.{}.feature_{}'.format(
+                data_type.split('_feature')[0], attribute)
+        else:
+            command = 'study.{}.{}'.format(data_type, attribute)
+        return command
+
+    def test_save(self, study, tmpdir):
         from flotilla.datapackage import name_to_resource
 
         study_name = 'test_save'
+
         study.save(study_name, flotilla_dir=tmpdir)
 
         assert len(tmpdir.listdir()) == 1
@@ -294,28 +311,37 @@ class TestStudy(object):
                                         'phenotype_to_marker',
                                         'pooled_col',
                                         'minimum_samples'],
-                           'mapping_stats': ['number_mapped_col'],
+                           'mapping_stats': ['number_mapped_col',
+                                             'min_reads'],
                            'expression_feature': ['rename_col',
                                                   'ignore_subset_cols'],
                            'splicing_feature': ['rename_col',
                                                 'ignore_subset_cols',
-                                                'expression_id_col']}
+                                                'expression_id_col'],
+                           'gene_ontology': []}
         resource_names = keys_from_study.keys()
 
         # Add auto-generated attributes into the true datapackage
         for name, keys in keys_from_study.iteritems():
-            resource = name_to_resource(true_datapackage, name)
+            resource = name_to_resource(test_datapackage, name)
             for key in keys:
-                if 'feature' in name:
-                    command = 'study.{}.feature_{}'.format(name.rstrip(
-                        '_feature'), key)
-                else:
-                    command = 'study.{}.{}'.format(name, key)
-                monkeypatch.setitem(resource, key, eval(command))
+                command = self.get_data_eval_command(name, key)
+                test_value = resource[key]
+                true_value = eval(command)
+                if isinstance(test_value, dict):
+                    pdt.assert_dict_equal(test_value, true_value)
+                elif isinstance(test_value, Iterable):
+                    pdt.assert_array_equal(test_value, true_value)
 
         for name in resource_names:
             resource = name_to_resource(test_datapackage, name)
-            assert resource['path'] == '{}.csv.gz'.format(name)
+            path = '{}.csv.gz'.format(name)
+            assert resource['path'] == path
+            test_df = pd.read_csv('{}/{}/{}'.format(tmpdir, study_name, path),
+                                  index_col=0, compression='gzip')
+            command = self.get_data_eval_command(name, 'data_original')
+            true_df = eval(command)
+            pdt.assert_frame_equal(test_df, true_df)
 
         version = semantic_version.Version(study.version)
         version.patch += 1
@@ -326,25 +352,25 @@ class TestStudy(object):
                                       'resources']
         # datapackages = (true_datapackage, test_datapackage)
 
-        for name in resource_names:
-            for datapackage in datapackages:
-                resource = name_to_resource(datapackage, name)
-                for key in resource_keys_to_ignore:
-                    monkeypatch.delitem(resource, key, raising=False)
+        # for name in resource_names:
+        #     for datapackage in datapackages:
+        #         resource = name_to_resource(datapackage, name)
+        #         for key in resource_keys_to_ignore:
+        #             monkeypatch.delitem(resource, key, raising=False)
 
-        # Have to check for resources separately because they could be
-        # in any order, it just matters that the contents are equal
-        # sorted_true = sorted(true_datapackage['resources'],
+        # # Have to check for resources separately because they could be
+        # # in any order, it just matters that the contents are equal
+        # # sorted_true = sorted(true_datapackage['resources'],
+        # #                      key=lambda x: x['name'])
+        # sorted_test = sorted(test_datapackage['resources'],
         #                      key=lambda x: x['name'])
-        sorted_test = sorted(test_datapackage['resources'],
-                             key=lambda x: x['name'])
-        for i in range(len(sorted_true)):
-            pdt.assert_equal(sorted(sorted_true[i].items()),
-                             sorted(sorted_test[i].items()))
-
-        for key in datapackage_keys_to_ignore:
-            for datapackage in datapackages:
-                monkeypatch.delitem(datapackage, key)
+        # for i in range(len(sorted_true)):
+        #     pdt.assert_equal(sorted(sorted_true[i].items()),
+        #                      sorted(sorted_test[i].items()))
+        #
+        # for key in datapackage_keys_to_ignore:
+        #     for datapackage in datapackages:
+        #         monkeypatch.delitem(datapackage, key)
 
         # pdt.assert_dict_equal(test_datapackage)
 
