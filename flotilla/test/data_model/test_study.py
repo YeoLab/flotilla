@@ -288,7 +288,7 @@ class TestStudy(object):
         from flotilla.datapackage import name_to_resource
 
         study_name = 'test_save'
-
+        study.supplemental.expression_corr = study.expression.data.corr()
         study.save(study_name, flotilla_dir=tmpdir)
 
         assert len(tmpdir.listdir()) == 1
@@ -340,6 +340,35 @@ class TestStudy(object):
             test_df = pd.read_csv('{}/{}/{}'.format(tmpdir, study_name, path),
                                   index_col=0, compression='gzip')
             command = self.get_data_eval_command(name, 'data_original')
+            true_df = eval(command)
+            pdt.assert_frame_equal(test_df, true_df)
+
+        version = semantic_version.Version(study.version)
+        version.patch += 1
+        assert str(version) == test_datapackage['datapackage_version']
+        assert study_name == test_datapackage['name']
+
+    def test_save_supplemental(self, study, tmpdir):
+        from flotilla.datapackage import name_to_resource
+
+        study_name = 'test_save_supplemental'
+        study.supplemental.expression_corr = study.expression.data.corr()
+        study.save(study_name, flotilla_dir=tmpdir)
+
+        assert len(tmpdir.listdir()) == 1
+        save_dir = tmpdir.listdir()[0]
+
+        with open('{}/datapackage.json'.format(save_dir)) as f:
+            test_datapackage = json.load(f)
+
+        supplemental = name_to_resource(test_datapackage, 'supplemental')
+        for resource in supplemental['resources']:
+            name = resource['name']
+            path = '{}.csv.gz'.format(name)
+            assert resource['path'] == path
+            full_path = '{}/{}/{}'.format(tmpdir, study_name, path)
+            test_df = pd.read_csv(full_path, index_col=0, compression='gzip')
+            command = self.get_data_eval_command('supplemental', name)
             true_df = eval(command)
             pdt.assert_frame_equal(test_df, true_df)
 
