@@ -226,7 +226,7 @@ class DecompositionViz(object):
                               markersize=markersize, legend=legend,
                               ax=self.ax_components)
             if plot_loadings == 'heatmap':
-                self.ax_loadings = self.gs[:, 6:14]
+                self.ax_loadings = plt.subplot(self.gs[:, 6:14])
                 self.plot_loadings_heatmap(n_components=n_components,
                                            ax=self.ax_loadings)
             else:
