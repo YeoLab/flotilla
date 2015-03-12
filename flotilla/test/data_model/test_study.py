@@ -273,11 +273,11 @@ class TestStudy(object):
         test_filtered_splicing = study.filter_splicing_on_expression(
             expression_thresh)
         columns = study._maybe_get_axis_name(study.splicing.data, axis=1,
-                                            alt_name=study._event_name)
+                                             alt_name=study._event_name)
 
         index = study._maybe_get_axis_name(study.splicing.data, axis=0,
-                                          alt_name=study._sample_id)
-    
+                                           alt_name=study._sample_id)
+
         sample_ids = study.sample_subset_to_sample_ids(sample_subset)
         splicing_with_expression = \
             study.tidy_splicing_with_expression.ix[
@@ -287,7 +287,7 @@ class TestStudy(object):
         splicing_high_expression = splicing_with_expression.ix[ind]
         splicing_high_expression = \
             splicing_high_expression.reset_index().dropna()
-    
+
         if isinstance(columns, list) or isinstance(index, list):
             true_filtered_splicing = splicing_high_expression.pivot_table(
                 columns=columns, index=index, values='psi')
@@ -295,7 +295,6 @@ class TestStudy(object):
             true_filtered_splicing = splicing_high_expression.pivot(
                 columns=columns, index=index, values='psi')
         pdt.assert_frame_equal(true_filtered_splicing, test_filtered_splicing)
-        
 
     def test_plot_pca(self, study, data_type):
         study.plot_pca(feature_subset='all', data_type=data_type)
@@ -308,7 +307,8 @@ class TestStudy(object):
 
     # def test_plot_classifier(self, study, data_type):
     #     trait = study.metadata.phenotype_col
-    #     study.plot_classifier(trait, feature_subset='all', data_type=data_type)
+    #     study.plot_classifier(trait, feature_subset='all',
+    #                           data_type=data_type)
     #     plt.close('all')
 
     def test_plot_clustermap(self, study, data_type):
@@ -348,9 +348,6 @@ class TestStudy(object):
             return genes[0]
         else:
             return request.param
-
-
-
 
     # def test_plot_graph(self, study, gene_of_interest, featurewise):
     #     study.plot_graph(feature_of_interest=gene_of_interest,
