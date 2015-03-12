@@ -114,11 +114,16 @@ class TestSplicingData:
     def test_nmf_space_positions(self, splicing, groupby, n):
         if n is None:
             n = 0.5
-            thresh = lambda x: n * x.shape[0]
+
+            def thresh(x):
+                return n * x.shape[0]
+
             test_positions = splicing.nmf_space_positions(groupby)
         else:
             test_positions = splicing.nmf_space_positions(groupby, n=n)
-            thresh = lambda x: n
+
+            def thresh(x):
+                return n
 
         grouped = splicing.singles.groupby(groupby)
         at_least_n_per_group_per_event = pd.concat(
@@ -260,14 +265,14 @@ class TestSplicingData:
 
         grouped = data.groupby(groupby_copy)
         if isinstance(min_samples, int):
-            thresh = lambda x: min_samples
+            thresh = splicing_fixed._thresh_int
         elif isinstance(min_samples, float):
-            thresh = lambda x: min_samples * x.shape[0]
+            thresh = splicing_fixed._thresh_float
         else:
             raise TypeError('Threshold for minimum samples for modality '
                             'detection can only be int or float, '
                             'not {}'.format(type(min_samples)))
-        data = pd.concat([df.dropna(thresh=thresh(df), axis=1)
+        data = pd.concat([df.dropna(thresh=thresh(df, min_samples), axis=1)
                          for name, df in grouped])
         true_assignments = data.groupby(groupby_copy).apply(
             splicing.modality_estimator.fit_transform)

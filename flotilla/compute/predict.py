@@ -286,8 +286,8 @@ class ConfigOptimizer(object):
         -------
         ???
         """
-        return ((n_features / max_feature_scaler(n_features, coef))
-                * n_estimators_scaler(n_features, coef)) / float(n_features)
+        return ((n_features / max_feature_scaler(n_features, coef)) *
+                n_estimators_scaler(n_features, coef)) / float(n_features)
 
 
 class PredictorConfigManager(object):
@@ -1027,11 +1027,12 @@ class Regressor(PredictorBase):
 
     categorical = False
 
+    __doc__ = "Regressor for continuous response variables.\n" + \
+              PredictorBase.__init__.__doc__
+
     def __init__(self, data_name, trait_name,
                  predictor_name=None,
                  *args, **kwargs):
-        __doc__ = "Regressor for continuous response variables.\n" + \
-                  PredictorBase.__init__.__doc__
         if predictor_name is None:
             predictor_name = REGRESSOR
         kwargs['is_categorical_trait'] = False
@@ -1043,11 +1044,12 @@ class Classifier(PredictorBase):
 
     categorical = True
 
+    __doc__ = "Classifier for categorical response variables.\n" + \
+              PredictorBase.__init__.__doc__
+
     def __init__(self, data_name, trait_name,
                  predictor_name=None,
                  *args, **kwargs):
-        __doc__ = "Classifier for categorical response variables.\n" + \
-                  PredictorBase.__init__.__doc__
         if predictor_name is None:
             predictor_name = CLASSIFIER
         kwargs['is_categorical_trait'] = True
