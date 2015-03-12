@@ -74,7 +74,7 @@ def check_if_already_downloaded(url,
     return filename
 
 
-def make_study_datapackage(name, metadata,
+def make_study_datapackage(study_name, metadata,
                            expression_data=None,
                            splicing_data=None,
                            spikein_data=None,
@@ -97,12 +97,12 @@ def make_study_datapackage(name, metadata,
                            host="https://s3-us-west-2.amazonaws.com/",
                            host_destination='flotilla-projects/'):
     """Example code for making a datapackage for a Study"""
-    if ' ' in name:
+    if ' ' in study_name:
         raise ValueError("Datapackage name cannot have any spaces")
-    if set(string.uppercase) & set(name):
+    if set(string.uppercase) & set(study_name):
         raise ValueError("Datapackage can only contain lowercase letters")
 
-    datapackage_dir = '{}/{}'.format(flotilla_dir, name)
+    datapackage_dir = '{}/{}'.format(flotilla_dir, study_name)
     try:
         os.makedirs(datapackage_dir)
     except OSError:
@@ -110,7 +110,7 @@ def make_study_datapackage(name, metadata,
 
     supplemental_kws = {} if supplemental_kws is None else supplemental_kws
 
-    datapackage = {'name': name, 'title': title, 'sources': sources,
+    datapackage = {'name': study_name, 'title': title, 'sources': sources,
                    'licenses': license, 'datapackage_version': version}
 
     if species is not None:
@@ -167,15 +167,15 @@ def make_study_datapackage(name, metadata,
     datapackage['resources'].append({'name': 'supplemental'})
     supplemental = datapackage['resources'][-1]
     supplemental['resources'] = []
-    for name, df in supplemental_kws.items():
+    for supplemental_name, data in supplemental_kws.items():
         resource = {}
 
-        basename = '{}.csv.gz'.format(name)
+        basename = '{}.csv.gz'.format(supplemental_name)
         data_filename = '{}/{}'.format(datapackage_dir, basename)
         with gzip.open(data_filename, 'wb') as f:
             data.to_csv(f)
 
-        resource['name'] = name
+        resource['name'] = supplemental_name
         resource['path'] = basename
         resource['compression'] = 'gzip'
         resource['format'] = 'csv'

@@ -1643,7 +1643,7 @@ class Study(object):
             return self.splicing.big_nmf_space_transitions(
                 self.sample_id_to_phenotype, phenotype_transitions, n=n)
 
-    def save(self, name, flotilla_dir=FLOTILLA_DOWNLOAD_DIR, scrambled=False):
+    def save(self, study_name, flotilla_dir=FLOTILLA_DOWNLOAD_DIR, scrambled=False):
 
         metadata = self.metadata.data_original
 
@@ -1720,9 +1720,8 @@ class Study(object):
                                    if not(a[0].startswith('__')
                                           and a[0].endswith('__'))]
         supplemental_kws = {}
-        for attribute in supplemental_attributes:
-            supplemental_kws[attribute] = self.supplemental.__getattr__(
-                attribute)
+        for supplemental_name, df in supplemental_attributes:
+            supplemental_kws[supplemental_name] = df
 
         # Increase the version number
         version = semantic_version.Version(self.version)
@@ -1730,7 +1729,7 @@ class Study(object):
         version = str(version)
 
         return make_study_datapackage(
-            name, metadata, expression, splicing,
+            study_name, metadata, expression, splicing,
             spikein, mapping_stats, metadata_kws=metadata_kws,
             expression_kws=expression_kws, splicing_kws=splicing_kws,
             mapping_stats_kws=mapping_stats_kws,
