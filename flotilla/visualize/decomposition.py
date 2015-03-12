@@ -448,16 +448,16 @@ class DecompositionViz(object):
         gs_x = 11
         gs_y = 6
 
-        if ax is None:
-            self.fig_reduced, ax = plt.subplots(1, 1, figsize=(20, 10))
-            self.gs = GridSpec(gs_x, gs_y)
+        # if ax is None:
+        #     self.fig_reduced, ax = plt.subplots(1, 1, figsize=(20, 10))
+        #     self.gs = GridSpec(gs_x, gs_y)
+        #
+        # else:
+        #     self.gs = GridSpecFromSubplotSpec(gs_x, gs_y,
+        #                                       ax.get_subplotspec())
+        #     self.fig_reduced = plt.gcf()
 
-        else:
-            self.gs = GridSpecFromSubplotSpec(gs_x, gs_y,
-                                              ax.get_subplotspec())
-            self.fig_reduced = plt.gcf()
-
-        self.gs_loadings = GridSpecFromSubplotSpec(gs_x, gs_y,
+        self.gs_loadings = GridSpecFromSubplotSpec(gs_y, gs_x,
                                                    ax.get_subplotspec())
         self.ax_explained_variance = plt.subplot(self.gs_loadings[0, :10])
         self.ax_empty = plt.subplot(self.gs_loadings[0, 10])
