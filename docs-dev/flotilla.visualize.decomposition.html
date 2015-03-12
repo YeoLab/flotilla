@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
@@ -39,7 +39,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body>
+  <body role="document">
 
   <div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -159,8 +159,8 @@
 <span id="flotilla-visualize-decomposition-module"></span><h1>flotilla.visualize.decomposition module<a class="headerlink" href="#module-flotilla.visualize.decomposition" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="flotilla.visualize.decomposition.DecompositionViz">
-<em class="property">class </em><tt class="descclassname">flotilla.visualize.decomposition.</tt><tt class="descname">DecompositionViz</tt><big>(</big><em>reduced_space</em>, <em>components_</em>, <em>explained_variance_ratio_</em>, <em>feature_renamer=None</em>, <em>groupby=None</em>, <em>singles=None</em>, <em>pooled=None</em>, <em>outliers=None</em>, <em>featurewise=False</em>, <em>order=None</em>, <em>violinplot_kws=None</em>, <em>data_type='expression'</em>, <em>label_to_color=None</em>, <em>label_to_marker=None</em>, <em>scale_by_variance=True</em>, <em>x_pc='pc_1'</em>, <em>y_pc='pc_2'</em>, <em>n_vectors=20</em>, <em>distance='L1'</em>, <em>n_top_pc_features=50</em>, <em>max_char_width=30</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/decomposition.html#DecompositionViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.decomposition.DecompositionViz" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">flotilla.visualize.decomposition.</code><code class="descname">DecompositionViz</code><span class="sig-paren">(</span><em>reduced_space</em>, <em>components_</em>, <em>explained_variance_ratio_</em>, <em>feature_renamer=None</em>, <em>groupby=None</em>, <em>singles=None</em>, <em>pooled=None</em>, <em>outliers=None</em>, <em>featurewise=False</em>, <em>order=None</em>, <em>violinplot_kws=None</em>, <em>data_type='expression'</em>, <em>label_to_color=None</em>, <em>label_to_marker=None</em>, <em>scale_by_variance=True</em>, <em>x_pc='pc_1'</em>, <em>y_pc='pc_2'</em>, <em>n_vectors=20</em>, <em>distance='L1'</em>, <em>n_top_pc_features=50</em>, <em>max_char_width=30</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/decomposition.html#DecompositionViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.decomposition.DecompositionViz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>Plots the reduced space from a decomposed dataset. Does not perform any
 reductions of its own</p>
 <p>Plot the results of a decomposition visualization</p>
@@ -280,24 +280,24 @@ feature IDs like MISO IDs</p>
 </table>
 <dl class="method">
 <dt id="flotilla.visualize.decomposition.DecompositionViz.plot">
-<tt class="descname">plot</tt><big>(</big><em>ax=None</em>, <em>title=''</em>, <em>plot_violins=False</em>, <em>show_point_labels=False</em>, <em>show_vectors=True</em>, <em>show_vector_labels=True</em>, <em>markersize=10</em>, <em>legend=True</em>, <em>bokeh=False</em>, <em>metadata=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/decomposition.html#DecompositionViz.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.decomposition.DecompositionViz.plot" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>title=''</em>, <em>plot_violins=False</em>, <em>show_point_labels=False</em>, <em>show_vectors=True</em>, <em>show_vector_labels=True</em>, <em>markersize=10</em>, <em>legend=True</em>, <em>bokeh=False</em>, <em>metadata=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/decomposition.html#DecompositionViz.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.decomposition.DecompositionViz.plot" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="flotilla.visualize.decomposition.DecompositionViz.plot_explained_variance">
-<tt class="descname">plot_explained_variance</tt><big>(</big><em>title='PCA explained variance'</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/decomposition.html#DecompositionViz.plot_explained_variance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.decomposition.DecompositionViz.plot_explained_variance" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_explained_variance</code><span class="sig-paren">(</span><em>title='PCA explained variance'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/decomposition.html#DecompositionViz.plot_explained_variance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.decomposition.DecompositionViz.plot_explained_variance" title="Permalink to this definition">¶</a></dt>
 <dd><p>If the reducer is a form of PCA, then plot the explained variance
 ratio by the components.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="flotilla.visualize.decomposition.DecompositionViz.plot_loadings">
-<tt class="descname">plot_loadings</tt><big>(</big><em>pc='pc_1'</em>, <em>n_features=50</em>, <em>ax=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/decomposition.html#DecompositionViz.plot_loadings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.decomposition.DecompositionViz.plot_loadings" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_loadings</code><span class="sig-paren">(</span><em>pc='pc_1'</em>, <em>n_features=50</em>, <em>ax=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/decomposition.html#DecompositionViz.plot_loadings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.decomposition.DecompositionViz.plot_loadings" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="flotilla.visualize.decomposition.DecompositionViz.plot_samples">
-<tt class="descname">plot_samples</tt><big>(</big><em>show_point_labels=True</em>, <em>title='PCA'</em>, <em>show_vectors=True</em>, <em>show_vector_labels=True</em>, <em>markersize=10</em>, <em>three_d=False</em>, <em>legend=True</em>, <em>ax=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/decomposition.html#DecompositionViz.plot_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.decomposition.DecompositionViz.plot_samples" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_samples</code><span class="sig-paren">(</span><em>show_point_labels=True</em>, <em>title='PCA'</em>, <em>show_vectors=True</em>, <em>show_vector_labels=True</em>, <em>markersize=10</em>, <em>three_d=False</em>, <em>legend=True</em>, <em>ax=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/decomposition.html#DecompositionViz.plot_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.decomposition.DecompositionViz.plot_samples" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot PCA scatterplot</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -358,7 +358,7 @@ principal components</p>
 
 <dl class="method">
 <dt id="flotilla.visualize.decomposition.DecompositionViz.plot_violins">
-<tt class="descname">plot_violins</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/decomposition.html#DecompositionViz.plot_violins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.decomposition.DecompositionViz.plot_violins" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_violins</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/decomposition.html#DecompositionViz.plot_violins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.decomposition.DecompositionViz.plot_violins" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make violinplots of each feature</p>
 <p>Must be called after plot_samples because it depends on the existence
 of the &#8220;self.magnitudes&#8221; attribute.</p>
@@ -366,7 +366,7 @@ of the &#8220;self.magnitudes&#8221; attribute.</p>
 
 <dl class="method">
 <dt id="flotilla.visualize.decomposition.DecompositionViz.shorten">
-<tt class="descname">shorten</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/decomposition.html#DecompositionViz.shorten"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.decomposition.DecompositionViz.shorten" title="Permalink to this definition">¶</a></dt>
+<code class="descname">shorten</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/decomposition.html#DecompositionViz.shorten"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.decomposition.DecompositionViz.shorten" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -388,7 +388,7 @@ of the &#8220;self.magnitudes&#8221; attribute.</p>
     </p>
     <p>
         &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.<br/>
     </p>
   </div>
 </footer>

@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
@@ -39,7 +39,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body>
+  <body role="document">
 
   <div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -181,11 +181,11 @@
 <p>plotting tools</p>
 <dl class="class">
 <dt id="flotilla.visualize.Interactive">
-<em class="property">class </em><tt class="descclassname">flotilla.visualize.</tt><tt class="descname">Interactive</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#flotilla.visualize.Interactive" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">flotilla.visualize.</code><code class="descname">Interactive</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/ipython_interact.html#Interactive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.Interactive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <dl class="staticmethod">
 <dt id="flotilla.visualize.Interactive.get_feature_subsets">
-<em class="property">static </em><tt class="descname">get_feature_subsets</tt><big>(</big><em>study</em>, <em>data_types</em><big>)</big><a class="headerlink" href="#flotilla.visualize.Interactive.get_feature_subsets" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">get_feature_subsets</code><span class="sig-paren">(</span><em>study</em>, <em>data_types</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/ipython_interact.html#Interactive.get_feature_subsets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.Interactive.get_feature_subsets" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given a study and list of data types, get the relevant feature
 subsets</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -204,52 +204,52 @@ subsets</p>
 
 <dl class="staticmethod">
 <dt id="flotilla.visualize.Interactive.interactive_choose_outliers">
-<em class="property">static </em><tt class="descname">interactive_choose_outliers</tt><big>(</big><em>data_types=('expression'</em>, <em>'splicing')</em>, <em>sample_subsets=None</em>, <em>feature_subsets=None</em>, <em>featurewise=False</em>, <em>x_pc=(1</em>, <em>3)</em>, <em>y_pc=(1</em>, <em>3)</em>, <em>show_point_labels=False</em>, <em>kernel=('rbf'</em>, <em>'linear'</em>, <em>'poly'</em>, <em>'sigmoid')</em>, <em>gamma=(0</em>, <em>25)</em>, <em>nu=(0.1</em>, <em>9.9)</em><big>)</big><a class="headerlink" href="#flotilla.visualize.Interactive.interactive_choose_outliers" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">interactive_choose_outliers</code><span class="sig-paren">(</span><em>data_types=('expression'</em>, <em>'splicing')</em>, <em>sample_subsets=None</em>, <em>feature_subsets=None</em>, <em>featurewise=False</em>, <em>x_pc=(1</em>, <em>3)</em>, <em>y_pc=(1</em>, <em>3)</em>, <em>show_point_labels=False</em>, <em>kernel=('rbf'</em>, <em>'linear'</em>, <em>'poly'</em>, <em>'sigmoid')</em>, <em>gamma=(0</em>, <em>25)</em>, <em>nu=(0.1</em>, <em>9.9)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_choose_outliers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.Interactive.interactive_choose_outliers" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="staticmethod">
 <dt id="flotilla.visualize.Interactive.interactive_classifier">
-<em class="property">static </em><tt class="descname">interactive_classifier</tt><big>(</big><em>data_types=('expression'</em>, <em>'splicing')</em>, <em>sample_subsets=None</em>, <em>feature_subsets=None</em>, <em>categorical_variables=None</em>, <em>predictor_types=None</em>, <em>score_coefficient=(0.1</em>, <em>20)</em>, <em>draw_labels=False</em><big>)</big><a class="headerlink" href="#flotilla.visualize.Interactive.interactive_classifier" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">interactive_classifier</code><span class="sig-paren">(</span><em>data_types=('expression'</em>, <em>'splicing')</em>, <em>sample_subsets=None</em>, <em>feature_subsets=None</em>, <em>categorical_variables=None</em>, <em>predictor_types=None</em>, <em>score_coefficient=(0.1</em>, <em>20)</em>, <em>draw_labels=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_classifier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.Interactive.interactive_classifier" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="staticmethod">
 <dt id="flotilla.visualize.Interactive.interactive_clustermap">
-<em class="property">static </em><tt class="descname">interactive_clustermap</tt><big>(</big><big>)</big><a class="headerlink" href="#flotilla.visualize.Interactive.interactive_clustermap" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">interactive_clustermap</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_clustermap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.Interactive.interactive_clustermap" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="staticmethod">
 <dt id="flotilla.visualize.Interactive.interactive_correlations">
-<em class="property">static </em><tt class="descname">interactive_correlations</tt><big>(</big><big>)</big><a class="headerlink" href="#flotilla.visualize.Interactive.interactive_correlations" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">interactive_correlations</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_correlations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.Interactive.interactive_correlations" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="staticmethod">
 <dt id="flotilla.visualize.Interactive.interactive_graph">
-<em class="property">static </em><tt class="descname">interactive_graph</tt><big>(</big><em>data_types=('expression'</em>, <em>'splicing')</em>, <em>sample_subsets=None</em>, <em>feature_subsets=None</em>, <em>featurewise=False</em>, <em>cov_std_cut=(0.1</em>, <em>3)</em>, <em>degree_cut=(0</em>, <em>10)</em>, <em>n_pcs=(2</em>, <em>100)</em>, <em>draw_labels=False</em>, <em>feature_of_interest='RBFOX2'</em>, <em>weight_fun=None</em>, <em>use_pc_1=True</em>, <em>use_pc_2=True</em>, <em>use_pc_3=True</em>, <em>use_pc_4=True</em>, <em>savefile='figures/last.graph.pdf'</em><big>)</big><a class="headerlink" href="#flotilla.visualize.Interactive.interactive_graph" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">interactive_graph</code><span class="sig-paren">(</span><em>data_types=('expression'</em>, <em>'splicing')</em>, <em>sample_subsets=None</em>, <em>feature_subsets=None</em>, <em>featurewise=False</em>, <em>cov_std_cut=(0.1</em>, <em>3)</em>, <em>degree_cut=(0</em>, <em>10)</em>, <em>n_pcs=(2</em>, <em>100)</em>, <em>draw_labels=False</em>, <em>feature_of_interest='RBFOX2'</em>, <em>weight_fun=None</em>, <em>use_pc_1=True</em>, <em>use_pc_2=True</em>, <em>use_pc_3=True</em>, <em>use_pc_4=True</em>, <em>savefile='figures/last.graph.pdf'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.Interactive.interactive_graph" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="staticmethod">
 <dt id="flotilla.visualize.Interactive.interactive_lavalamp_pooled_inconsistent">
-<em class="property">static </em><tt class="descname">interactive_lavalamp_pooled_inconsistent</tt><big>(</big><em>sample_subsets=None, feature_subsets=None, difference_threshold=(0.001, 1.0), colors=['red', 'green', 'blue', 'purple', 'yellow'], savefile=''</em><big>)</big><a class="headerlink" href="#flotilla.visualize.Interactive.interactive_lavalamp_pooled_inconsistent" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">interactive_lavalamp_pooled_inconsistent</code><span class="sig-paren">(</span><em>sample_subsets=None, feature_subsets=None, difference_threshold=(0.001, 1.0), colors=['red', 'green', 'blue', 'purple', 'yellow'], savefile=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_lavalamp_pooled_inconsistent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.Interactive.interactive_lavalamp_pooled_inconsistent" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="staticmethod">
 <dt id="flotilla.visualize.Interactive.interactive_localZ">
-<em class="property">static </em><tt class="descname">interactive_localZ</tt><big>(</big><big>)</big><a class="headerlink" href="#flotilla.visualize.Interactive.interactive_localZ" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">interactive_localZ</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_localZ"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.Interactive.interactive_localZ" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="staticmethod">
 <dt id="flotilla.visualize.Interactive.interactive_pca">
-<em class="property">static </em><tt class="descname">interactive_pca</tt><big>(</big><em>data_types=('expression'</em>, <em>'splicing')</em>, <em>sample_subsets=None</em>, <em>feature_subsets=None</em>, <em>color_samples_by=None</em>, <em>featurewise=False</em>, <em>x_pc=(1</em>, <em>10)</em>, <em>y_pc=(1</em>, <em>10)</em>, <em>show_point_labels=False</em>, <em>list_link=''</em>, <em>plot_violins=False</em>, <em>scale_by_variance=True</em>, <em>savefile='figures/last.pca.pdf'</em><big>)</big><a class="headerlink" href="#flotilla.visualize.Interactive.interactive_pca" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">interactive_pca</code><span class="sig-paren">(</span><em>data_types=('expression'</em>, <em>'splicing')</em>, <em>sample_subsets=None</em>, <em>feature_subsets=None</em>, <em>color_samples_by=None</em>, <em>featurewise=False</em>, <em>x_pc=(1</em>, <em>10)</em>, <em>y_pc=(1</em>, <em>10)</em>, <em>show_point_labels=False</em>, <em>list_link=''</em>, <em>plot_violins=False</em>, <em>scale_by_variance=True</em>, <em>savefile='figures/last.pca.pdf'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_pca"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.Interactive.interactive_pca" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="staticmethod">
 <dt id="flotilla.visualize.Interactive.interactive_plot_modalities_lavalamps">
-<em class="property">static </em><tt class="descname">interactive_plot_modalities_lavalamps</tt><big>(</big><em>sample_subsets=None</em>, <em>feature_subsets=None</em>, <em>color=u'#e41a1c'</em>, <em>x_offset=0</em>, <em>use_these_modalities=True</em>, <em>bootstrapped=False</em>, <em>bootstrapped_kws=None</em>, <em>savefile=''</em><big>)</big><a class="headerlink" href="#flotilla.visualize.Interactive.interactive_plot_modalities_lavalamps" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">interactive_plot_modalities_lavalamps</code><span class="sig-paren">(</span><em>sample_subsets=None</em>, <em>feature_subsets=None</em>, <em>color=u'#e41a1c'</em>, <em>x_offset=0</em>, <em>use_these_modalities=True</em>, <em>bootstrapped=False</em>, <em>bootstrapped_kws=None</em>, <em>savefile=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_plot_modalities_lavalamps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.Interactive.interactive_plot_modalities_lavalamps" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="staticmethod">
 <dt id="flotilla.visualize.Interactive.interactive_reset_outliers">
-<em class="property">static </em><tt class="descname">interactive_reset_outliers</tt><big>(</big><big>)</big><a class="headerlink" href="#flotilla.visualize.Interactive.interactive_reset_outliers" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">interactive_reset_outliers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/ipython_interact.html#Interactive.interactive_reset_outliers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.Interactive.interactive_reset_outliers" title="Permalink to this definition">¶</a></dt>
 <dd><p>User selects from columns that start with &#8216;<a href="#id1"><span class="problematic" id="id2">outlier_</span></a>&#8216; to merge
 multiple outlier classifications</p>
 </dd></dl>
@@ -258,8 +258,8 @@ multiple outlier classifications</p>
 
 <dl class="class">
 <dt id="flotilla.visualize.PredictorBaseViz">
-<em class="property">class </em><tt class="descclassname">flotilla.visualize.</tt><tt class="descname">PredictorBaseViz</tt><big>(</big><em>predictor_name</em>, <em>data_name</em>, <em>trait_name</em>, <em>X_data=None</em>, <em>trait=None</em>, <em>predictor_obj=None</em>, <em>predictor_scoring_fun=None</em>, <em>score_cutoff_fun=None</em>, <em>n_features_dependent_kwargs=None</em>, <em>constant_kwargs=None</em>, <em>is_categorical_trait=None</em>, <em>predictor_dataset_manager=None</em>, <em>predictor_config_manager=None</em>, <em>feature_renamer=None</em>, <em>groupby=None</em>, <em>color=None</em>, <em>pooled=None</em>, <em>order=None</em>, <em>violinplot_kws=None</em>, <em>data_type=None</em>, <em>label_to_color=None</em>, <em>label_to_marker=None</em>, <em>singles=None</em>, <em>outliers=None</em><big>)</big><a class="headerlink" href="#flotilla.visualize.PredictorBaseViz" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="flotilla.compute.predict.html#flotilla.compute.predict.PredictorBase" title="flotilla.compute.predict.PredictorBase"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.predict.PredictorBase</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">flotilla.visualize.</code><code class="descname">PredictorBaseViz</code><span class="sig-paren">(</span><em>predictor_name</em>, <em>data_name</em>, <em>trait_name</em>, <em>X_data=None</em>, <em>trait=None</em>, <em>predictor_obj=None</em>, <em>predictor_scoring_fun=None</em>, <em>score_cutoff_fun=None</em>, <em>n_features_dependent_kwargs=None</em>, <em>constant_kwargs=None</em>, <em>is_categorical_trait=None</em>, <em>predictor_dataset_manager=None</em>, <em>predictor_config_manager=None</em>, <em>feature_renamer=None</em>, <em>groupby=None</em>, <em>color=None</em>, <em>pooled=None</em>, <em>order=None</em>, <em>violinplot_kws=None</em>, <em>data_type=None</em>, <em>label_to_color=None</em>, <em>label_to_marker=None</em>, <em>singles=None</em>, <em>outliers=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/predict.html#PredictorBaseViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.PredictorBaseViz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="flotilla.compute.predict.html#flotilla.compute.predict.PredictorBase" title="flotilla.compute.predict.PredictorBase"><code class="xref py py-class docutils literal"><span class="pre">flotilla.compute.predict.PredictorBase</span></code></a></p>
 <p>A dataset-predictor pair from PredictorDatasetManager</p>
 <p>One datset, one predictor, from dataset manager.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -320,17 +320,17 @@ Default: {}</p>
 </table>
 <dl class="method">
 <dt id="flotilla.visualize.PredictorBaseViz.do_pca">
-<tt class="descname">do_pca</tt><big>(</big><em>**plotting_kwargs</em><big>)</big><a class="headerlink" href="#flotilla.visualize.PredictorBaseViz.do_pca" title="Permalink to this definition">¶</a></dt>
+<code class="descname">do_pca</code><span class="sig-paren">(</span><em>**plotting_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/predict.html#PredictorBaseViz.do_pca"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.PredictorBaseViz.do_pca" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="flotilla.visualize.PredictorBaseViz.plot">
-<tt class="descname">plot</tt><big>(</big><em>**pca_plotting_kwargs</em><big>)</big><a class="headerlink" href="#flotilla.visualize.PredictorBaseViz.plot" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot</code><span class="sig-paren">(</span><em>**pca_plotting_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/predict.html#PredictorBaseViz.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.PredictorBaseViz.plot" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="flotilla.visualize.PredictorBaseViz.plot_scores">
-<tt class="descname">plot_scores</tt><big>(</big><em>ax=None</em><big>)</big><a class="headerlink" href="#flotilla.visualize.PredictorBaseViz.plot_scores" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_scores</code><span class="sig-paren">(</span><em>ax=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/predict.html#PredictorBaseViz.plot_scores"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.PredictorBaseViz.plot_scores" title="Permalink to this definition">¶</a></dt>
 <dd><p>plot kernel density of predictor scores and draw a vertical line where
 the cutoff was selected
 ax - ax to plot on. if None: plt.gca()</p>
@@ -338,7 +338,7 @@ ax - ax to plot on. if None: plt.gca()</p>
 
 <dl class="method">
 <dt id="flotilla.visualize.PredictorBaseViz.set_reducer_plotting_args">
-<tt class="descname">set_reducer_plotting_args</tt><big>(</big><em>rpa</em><big>)</big><a class="headerlink" href="#flotilla.visualize.PredictorBaseViz.set_reducer_plotting_args" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_reducer_plotting_args</code><span class="sig-paren">(</span><em>rpa</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/predict.html#PredictorBaseViz.set_reducer_plotting_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.PredictorBaseViz.set_reducer_plotting_args" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -361,7 +361,7 @@ ax - ax to plot on. if None: plt.gca()</p>
     </p>
     <p>
         &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.<br/>
     </p>
   </div>
 </footer>

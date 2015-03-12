@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
@@ -39,7 +39,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body>
+  <body role="document">
 
   <div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -160,11 +160,11 @@
 <p>Visualize results from :py:mod:flotilla.compute.network</p>
 <dl class="class">
 <dt id="flotilla.visualize.network.NetworkerViz">
-<em class="property">class </em><tt class="descclassname">flotilla.visualize.network.</tt><tt class="descname">NetworkerViz</tt><big>(</big><em>DataModel</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/network.html#NetworkerViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.network.NetworkerViz" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="flotilla.compute.network.html#flotilla.compute.network.Networker" title="flotilla.compute.network.Networker"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.network.Networker</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">flotilla.visualize.network.</code><code class="descname">NetworkerViz</code><span class="sig-paren">(</span><em>DataModel</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/network.html#NetworkerViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.network.NetworkerViz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="flotilla.compute.network.html#flotilla.compute.network.Networker" title="flotilla.compute.network.Networker"><code class="xref py py-class docutils literal"><span class="pre">flotilla.compute.network.Networker</span></code></a></p>
 <dl class="method">
 <dt id="flotilla.visualize.network.NetworkerViz.draw_graph">
-<tt class="descname">draw_graph</tt><big>(</big><em>n_pcs=5</em>, <em>use_pc_1=True</em>, <em>use_pc_2=True</em>, <em>use_pc_3=True</em>, <em>use_pc_4=True</em>, <em>degree_cut=2</em>, <em>cov_std_cut=1.8</em>, <em>weight_function='no_weight'</em>, <em>featurewise=False</em>, <em>rpkms_not_events=False</em>, <em>feature_of_interest='RBFOX2'</em>, <em>draw_labels=True</em>, <em>reduction_name=None</em>, <em>feature_ids=None</em>, <em>sample_ids=None</em>, <em>graph_file=''</em>, <em>compare=''</em>, <em>sample_id_to_color=None</em>, <em>label_to_color=None</em>, <em>label_to_marker=None</em>, <em>groupby=None</em>, <em>data_type=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/network.html#NetworkerViz.draw_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.network.NetworkerViz.draw_graph" title="Permalink to this definition">¶</a></dt>
+<code class="descname">draw_graph</code><span class="sig-paren">(</span><em>n_pcs=5</em>, <em>use_pc_1=True</em>, <em>use_pc_2=True</em>, <em>use_pc_3=True</em>, <em>use_pc_4=True</em>, <em>degree_cut=2</em>, <em>cov_std_cut=1.8</em>, <em>weight_function='no_weight'</em>, <em>featurewise=False</em>, <em>rpkms_not_events=False</em>, <em>feature_of_interest='RBFOX2'</em>, <em>draw_labels=True</em>, <em>reduction_name=None</em>, <em>feature_ids=None</em>, <em>sample_ids=None</em>, <em>graph_file=''</em>, <em>compare=''</em>, <em>sample_id_to_color=None</em>, <em>label_to_color=None</em>, <em>label_to_marker=None</em>, <em>groupby=None</em>, <em>data_type=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/network.html#NetworkerViz.draw_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.network.NetworkerViz.draw_graph" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draw the graph of similarities between samples or features</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -224,7 +224,7 @@ id or gene symbol)</p>
 
 <dl class="method">
 <dt id="flotilla.visualize.network.NetworkerViz.draw_nonreduced_graph">
-<tt class="descname">draw_nonreduced_graph</tt><big>(</big><em>degree_cut=2</em>, <em>cov_std_cut=1.8</em>, <em>wt_fun='abs'</em>, <em>featurewise=False</em>, <em>rpkms_not_events=False</em>, <em>feature_of_interest='RBFOX2'</em>, <em>draw_labels=True</em>, <em>feature_ids=None</em>, <em>group_id=None</em>, <em>graph_file=''</em>, <em>compare=''</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/network.html#NetworkerViz.draw_nonreduced_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.network.NetworkerViz.draw_nonreduced_graph" title="Permalink to this definition">¶</a></dt>
+<code class="descname">draw_nonreduced_graph</code><span class="sig-paren">(</span><em>degree_cut=2</em>, <em>cov_std_cut=1.8</em>, <em>wt_fun='abs'</em>, <em>featurewise=False</em>, <em>rpkms_not_events=False</em>, <em>feature_of_interest='RBFOX2'</em>, <em>draw_labels=True</em>, <em>feature_ids=None</em>, <em>group_id=None</em>, <em>graph_file=''</em>, <em>compare=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/network.html#NetworkerViz.draw_nonreduced_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.network.NetworkerViz.draw_nonreduced_graph" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -304,7 +304,7 @@ id or gene name???)</p>
     </p>
     <p>
         &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.<br/>
     </p>
   </div>
 </footer>

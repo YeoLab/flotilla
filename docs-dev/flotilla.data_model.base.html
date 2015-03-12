@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
@@ -38,7 +38,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body>
+  <body role="document">
 
   <div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -162,8 +162,8 @@
 this, or a child object (like ExpressionData).</p>
 <dl class="class">
 <dt id="flotilla.data_model.base.BaseData">
-<em class="property">class </em><tt class="descclassname">flotilla.data_model.base.</tt><tt class="descname">BaseData</tt><big>(</big><em>data</em>, <em>thresh=-inf</em>, <em>minimum_samples=0</em>, <em>feature_data=None</em>, <em>feature_rename_col=None</em>, <em>feature_ignore_subset_cols=None</em>, <em>technical_outliers=None</em>, <em>outliers=None</em>, <em>pooled=None</em>, <em>predictor_config_manager=None</em>, <em>data_type=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">flotilla.data_model.base.</code><code class="descname">BaseData</code><span class="sig-paren">(</span><em>data</em>, <em>thresh=-inf</em>, <em>minimum_samples=0</em>, <em>feature_data=None</em>, <em>feature_rename_col=None</em>, <em>feature_ignore_subset_cols=None</em>, <em>technical_outliers=None</em>, <em>outliers=None</em>, <em>pooled=None</em>, <em>predictor_config_manager=None</em>, <em>data_type=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>Base class for biological data measurements.</p>
 <p>All data types in flotilla inherit from this, and have all functionality
 described here</p>
@@ -174,10 +174,10 @@ described here</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#flotilla.data_model.base.BaseData.feature_subsets" title="flotilla.data_model.base.BaseData.feature_subsets"><tt class="xref py py-obj docutils literal"><span class="pre">feature_subsets</span></tt></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="#flotilla.data_model.base.BaseData.feature_subsets" title="flotilla.data_model.base.BaseData.feature_subsets"><code class="xref py py-obj docutils literal"><span class="pre">feature_subsets</span></code></a></td>
 <td>Dict of feature subset names to their list of feature ids</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#flotilla.data_model.base.BaseData.variant" title="flotilla.data_model.base.BaseData.variant"><tt class="xref py py-obj docutils literal"><span class="pre">variant</span></tt></a></td>
+<tr class="row-even"><td><a class="reference internal" href="#flotilla.data_model.base.BaseData.variant" title="flotilla.data_model.base.BaseData.variant"><code class="xref py py-obj docutils literal"><span class="pre">variant</span></code></a></td>
 <td>Features whose variance is 2 std devs away from mean variance</td>
 </tr>
 </tbody>
@@ -189,7 +189,7 @@ described here</p>
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td>data</td>
-<td>(pandas.DataFrame) A (n_samples, m_features) sized DataFrame of filtered input data, with features with too few samples (<tt class="docutils literal"><span class="pre">minimum_samples</span></tt>) detected at <tt class="docutils literal"><span class="pre">thresh</span></tt> removed. Compared to <tt class="xref py py-attr docutils literal"><span class="pre">data_original</span></tt>, <a href="#id1"><span class="problematic" id="id2">``</span></a>m_features &lt;= n_features`</td>
+<td>(pandas.DataFrame) A (n_samples, m_features) sized DataFrame of filtered input data, with features with too few samples (<code class="docutils literal"><span class="pre">minimum_samples</span></code>) detected at <code class="docutils literal"><span class="pre">thresh</span></code> removed. Compared to <code class="xref py py-attr docutils literal"><span class="pre">data_original</span></code>, <a href="#id1"><span class="problematic" id="id2">``</span></a>m_features &lt;= n_features`</td>
 </tr>
 <tr class="row-even"><td>data_type</td>
 <td>(str) String indicating what kind of data this is, e.g. &#8220;splicing&#8221; or &#8220;expression&#8221;</td>
@@ -198,7 +198,7 @@ described here</p>
 <td>(pandas.DataFrame) A (n_samples, n_features) sized DataFrame of all input data, before removing features for having too few samples</td>
 </tr>
 <tr class="row-even"><td>feature_data</td>
-<td>(pandas.DataFrame) A (k_features, n_features_about_features) sized DataFrame of features about the feature data. Notice that this DataFrame does not need to be the same size as the data, but must at least include all the features from <tt class="xref py py-attr docutils literal"><span class="pre">data</span></tt>. Compared to <tt class="xref py py-attr docutils literal"><span class="pre">data</span></tt>, <tt class="docutils literal"><span class="pre">k_features</span> <span class="pre">&gt;=</span> <span class="pre">m_features</span></tt></td>
+<td>(pandas.DataFrame) A (k_features, n_features_about_features) sized DataFrame of features about the feature data. Notice that this DataFrame does not need to be the same size as the data, but must at least include all the features from <code class="xref py py-attr docutils literal"><span class="pre">data</span></code>. Compared to <code class="xref py py-attr docutils literal"><span class="pre">data</span></code>, <code class="docutils literal"><span class="pre">k_features</span> <span class="pre">&gt;=</span> <span class="pre">m_features</span></code></td>
 </tr>
 <tr class="row-odd"><td>predictor_config_manager</td>
 <td>(PredictorConfigManager) Manage different combinations of predictor on different data subtypes</td>
@@ -212,7 +212,7 @@ described here</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#flotilla.data_model.base.BaseData.maybe_renamed_to_feature_id" title="flotilla.data_model.base.BaseData.maybe_renamed_to_feature_id"><tt class="xref py py-obj docutils literal"><span class="pre">maybe_renamed_to_feature_id</span></tt></a>(feature_id)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#flotilla.data_model.base.BaseData.maybe_renamed_to_feature_id" title="flotilla.data_model.base.BaseData.maybe_renamed_to_feature_id"><code class="xref py py-obj docutils literal"><span class="pre">maybe_renamed_to_feature_id</span></code></a>(feature_id)</td>
 <td>To be able to give a simple gene name, e.g.</td>
 </tr>
 </tbody>
@@ -224,7 +224,7 @@ described here</p>
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td>feature_renamer</td>
-<td>If <tt class="docutils literal"><span class="pre">feature_rename_col</span></tt> is specified in <tt class="xref py py-meth docutils literal"><span class="pre">BaseData.__init__()</span></tt>, this will rename the feature ID to a new name. If <tt class="docutils literal"><span class="pre">feature_rename_col</span></tt> is not specified, then this will return the original id</td>
+<td>If <code class="docutils literal"><span class="pre">feature_rename_col</span></code> is specified in <code class="xref py py-meth docutils literal"><span class="pre">BaseData.__init__()</span></code>, this will rename the feature ID to a new name. If <code class="docutils literal"><span class="pre">feature_rename_col</span></code> is not specified, then this will return the original id</td>
 </tr>
 </tbody>
 </table>
@@ -249,7 +249,7 @@ assumed to be the convenient gene name like &#8220;RBFOX2&#8221;</p>
 </div></blockquote>
 <p><strong>minimum_samples</strong> : int, optional (default=0)</p>
 <blockquote>
-<div><p>Minimum number of samples with values greater than <tt class="docutils literal"><span class="pre">thresh</span></tt>.
+<div><p>Minimum number of samples with values greater than <code class="docutils literal"><span class="pre">thresh</span></code>.
 E.g., for use with &#8220;at least 3 single cells expressing the gene at
 greater than 1 TPM.&#8221;</p>
 </div></blockquote>
@@ -289,8 +289,8 @@ and interpretation purposes.</p>
 <blockquote>
 <div><p>(default=None)
 Object used to organize inputs to
-<tt class="xref py py-class docutils literal"><span class="pre">compute.predict.Regressor</span></tt> and
-<tt class="xref py py-class docutils literal"><span class="pre">compute.predict.Classifier</span></tt>. If None, one is initialized
+<code class="xref py py-class docutils literal"><span class="pre">compute.predict.Regressor</span></code> and
+<code class="xref py py-class docutils literal"><span class="pre">compute.predict.Classifier</span></code>. If None, one is initialized
 for this instance.</p>
 </div></blockquote>
 <p><strong>data_type</strong> : str, optional (default=None)</p>
@@ -307,7 +307,7 @@ for this instance.</p>
 are considered as single-cell samples.</p>
 <dl class="method">
 <dt id="flotilla.data_model.base.BaseData.big_nmf_space_transitions">
-<tt class="descname">big_nmf_space_transitions</tt><big>(</big><em>groupby</em>, <em>phenotype_transitions</em>, <em>n=0.5</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.big_nmf_space_transitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.big_nmf_space_transitions" title="Permalink to this definition">¶</a></dt>
+<code class="descname">big_nmf_space_transitions</code><span class="sig-paren">(</span><em>groupby</em>, <em>phenotype_transitions</em>, <em>n=0.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.big_nmf_space_transitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.big_nmf_space_transitions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get features whose change in NMF space between phenotypes is large</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -341,17 +341,17 @@ splicing events</p>
 
 <dl class="method">
 <dt id="flotilla.data_model.base.BaseData.binify">
-<tt class="descname">binify</tt><big>(</big><em>data</em>, <em>bins=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.binify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.binify" title="Permalink to this definition">¶</a></dt>
+<code class="descname">binify</code><span class="sig-paren">(</span><em>data</em>, <em>bins=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.binify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.binify" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="flotilla.data_model.base.BaseData.binned_nmf_reduced">
-<tt class="descname">binned_nmf_reduced</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.binned_nmf_reduced"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.binned_nmf_reduced" title="Permalink to this definition">¶</a></dt>
+<code class="descname">binned_nmf_reduced</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.binned_nmf_reduced"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.binned_nmf_reduced" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="flotilla.data_model.base.BaseData.classify">
-<tt class="descname">classify</tt><big>(</big><em>trait</em>, <em>sample_ids</em>, <em>feature_ids</em>, <em>standardize=True</em>, <em>data_name='expression'</em>, <em>predictor_name='ExtraTreesClassifier'</em>, <em>predictor_obj=None</em>, <em>predictor_scoring_fun=None</em>, <em>score_cutoff_fun=None</em>, <em>n_features_dependent_kwargs=None</em>, <em>constant_kwargs=None</em>, <em>plotting_kwargs=None</em>, <em>color=None</em>, <em>groupby=None</em>, <em>label_to_color=None</em>, <em>label_to_marker=None</em>, <em>order=None</em>, <em>bins=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.classify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.classify" title="Permalink to this definition">¶</a></dt>
+<code class="descname">classify</code><span class="sig-paren">(</span><em>trait</em>, <em>sample_ids</em>, <em>feature_ids</em>, <em>standardize=True</em>, <em>data_name='expression'</em>, <em>predictor_name='ExtraTreesClassifier'</em>, <em>predictor_obj=None</em>, <em>predictor_scoring_fun=None</em>, <em>score_cutoff_fun=None</em>, <em>n_features_dependent_kwargs=None</em>, <em>constant_kwargs=None</em>, <em>plotting_kwargs=None</em>, <em>color=None</em>, <em>groupby=None</em>, <em>label_to_color=None</em>, <em>label_to_marker=None</em>, <em>order=None</em>, <em>bins=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.classify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.classify" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make and memoize a predictor on a categorical trait (associated
 with samples) subset of genes</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -413,30 +413,30 @@ Default: lambda scores: np.mean(x) + 2 * np.std(x)</p>
 
 <dl class="method">
 <dt id="flotilla.data_model.base.BaseData.detect_outliers">
-<tt class="descname">detect_outliers</tt><big>(</big><em>sample_ids=None</em>, <em>feature_ids=None</em>, <em>featurewise=False</em>, <em>reducer=None</em>, <em>standardize=True</em>, <em>reducer_kwargs=None</em>, <em>bins=None</em>, <em>outlier_detection_method=None</em>, <em>outlier_detection_method_kwargs=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.detect_outliers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.detect_outliers" title="Permalink to this definition">¶</a></dt>
+<code class="descname">detect_outliers</code><span class="sig-paren">(</span><em>sample_ids=None</em>, <em>feature_ids=None</em>, <em>featurewise=False</em>, <em>reducer=None</em>, <em>standardize=True</em>, <em>reducer_kwargs=None</em>, <em>bins=None</em>, <em>outlier_detection_method=None</em>, <em>outlier_detection_method_kwargs=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.detect_outliers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.detect_outliers" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="flotilla.data_model.base.BaseData.feature_renamer_series">
-<tt class="descname">feature_renamer_series</tt><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.feature_renamer_series"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.feature_renamer_series" title="Permalink to this definition">¶</a></dt>
+<code class="descname">feature_renamer_series</code><a class="headerlink" href="#flotilla.data_model.base.BaseData.feature_renamer_series" title="Permalink to this definition">¶</a></dt>
 <dd><p>A pandas Series of the original feature ids to the renamed ids</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="flotilla.data_model.base.BaseData.feature_subset_to_feature_ids">
-<tt class="descname">feature_subset_to_feature_ids</tt><big>(</big><em>feature_subset</em>, <em>rename=True</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.feature_subset_to_feature_ids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.feature_subset_to_feature_ids" title="Permalink to this definition">¶</a></dt>
+<code class="descname">feature_subset_to_feature_ids</code><span class="sig-paren">(</span><em>feature_subset</em>, <em>rename=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.feature_subset_to_feature_ids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.feature_subset_to_feature_ids" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a feature subset name to a list of feature ids</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="flotilla.data_model.base.BaseData.feature_subsets">
-<tt class="descname">feature_subsets</tt><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.feature_subsets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.feature_subsets" title="Permalink to this definition">¶</a></dt>
+<code class="descname">feature_subsets</code><a class="headerlink" href="#flotilla.data_model.base.BaseData.feature_subsets" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dict of feature subset names to their list of feature ids</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="flotilla.data_model.base.BaseData.jsd_2d">
-<tt class="descname">jsd_2d</tt><big>(</big><em>groupby=None</em>, <em>n_iter=100</em>, <em>n_bins=10</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.jsd_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.jsd_2d" title="Permalink to this definition">¶</a></dt>
+<code class="descname">jsd_2d</code><span class="sig-paren">(</span><em>groupby=None</em>, <em>n_iter=100</em>, <em>n_bins=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.jsd_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.jsd_2d" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mean Jensen-Shannon divergence of features across phenotypes</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -470,7 +470,7 @@ between and within phenotypes</p>
 
 <dl class="method">
 <dt id="flotilla.data_model.base.BaseData.jsd_df">
-<tt class="descname">jsd_df</tt><big>(</big><em>groupby=None</em>, <em>n_iter=100</em>, <em>n_bins=10</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.jsd_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.jsd_df" title="Permalink to this definition">¶</a></dt>
+<code class="descname">jsd_df</code><span class="sig-paren">(</span><em>groupby=None</em>, <em>n_iter=100</em>, <em>n_bins=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.jsd_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.jsd_df" title="Permalink to this definition">¶</a></dt>
 <dd><p>Jensen-Shannon divergence of features across phenotypes</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -504,7 +504,7 @@ feature between and within phenotypes</p>
 
 <dl class="method">
 <dt id="flotilla.data_model.base.BaseData.maybe_renamed_to_feature_id">
-<tt class="descname">maybe_renamed_to_feature_id</tt><big>(</big><em>feature_id</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.maybe_renamed_to_feature_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.maybe_renamed_to_feature_id" title="Permalink to this definition">¶</a></dt>
+<code class="descname">maybe_renamed_to_feature_id</code><span class="sig-paren">(</span><em>feature_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.maybe_renamed_to_feature_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.maybe_renamed_to_feature_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>To be able to give a simple gene name, e.g. &#8220;RBFOX2&#8221; and get the
 official ENSG ids or MISO ids</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -514,7 +514,7 @@ official ENSG ids or MISO ids</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>feature_id</strong> : str</p>
 <blockquote>
 <div><p>The name of a feature ID. Could be either a common gene name, as in
-what the crazy IDs are <tt class="xref py py-meth docutils literal"><span class="pre">feature_renamer()</span></tt> to, or</p>
+what the crazy IDs are <code class="xref py py-meth docutils literal"><span class="pre">feature_renamer()</span></code> to, or</p>
 </div></blockquote>
 </td>
 </tr>
@@ -530,7 +530,7 @@ what the crazy IDs are <tt class="xref py py-meth docutils literal"><span class=
 
 <dl class="method">
 <dt id="flotilla.data_model.base.BaseData.nmf_space_positions">
-<tt class="descname">nmf_space_positions</tt><big>(</big><em>groupby</em>, <em>n=0.5</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.nmf_space_positions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.nmf_space_positions" title="Permalink to this definition">¶</a></dt>
+<code class="descname">nmf_space_positions</code><span class="sig-paren">(</span><em>groupby</em>, <em>n=0.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.nmf_space_positions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.nmf_space_positions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate NMF-space position of splicing events in phenotype groups</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -562,7 +562,7 @@ detection</p>
 
 <dl class="method">
 <dt id="flotilla.data_model.base.BaseData.nmf_space_transitions">
-<tt class="descname">nmf_space_transitions</tt><big>(</big><em>groupby</em>, <em>phenotype_transitions</em>, <em>n=0.5</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.nmf_space_transitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.nmf_space_transitions" title="Permalink to this definition">¶</a></dt>
+<code class="descname">nmf_space_transitions</code><span class="sig-paren">(</span><em>groupby</em>, <em>phenotype_transitions</em>, <em>n=0.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.nmf_space_transitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.nmf_space_transitions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get distance in NMF space of different splicing events</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -600,13 +600,13 @@ distances of these events in NMF space</p>
 
 <dl class="attribute">
 <dt id="flotilla.data_model.base.BaseData.outliers">
-<tt class="descname">outliers</tt><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.outliers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.outliers" title="Permalink to this definition">¶</a></dt>
+<code class="descname">outliers</code><a class="headerlink" href="#flotilla.data_model.base.BaseData.outliers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Data from only the outlier samples</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="flotilla.data_model.base.BaseData.plot_big_nmf_space_transitions">
-<tt class="descname">plot_big_nmf_space_transitions</tt><big>(</big><em>phenotype_groupby</em>, <em>phenotype_transitions</em>, <em>phenotype_order</em>, <em>color</em>, <em>phenotype_to_color</em>, <em>phenotype_to_marker</em>, <em>n=0.5</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.plot_big_nmf_space_transitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.plot_big_nmf_space_transitions" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_big_nmf_space_transitions</code><span class="sig-paren">(</span><em>phenotype_groupby</em>, <em>phenotype_transitions</em>, <em>phenotype_order</em>, <em>color</em>, <em>phenotype_to_color</em>, <em>phenotype_to_marker</em>, <em>n=0.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.plot_big_nmf_space_transitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.plot_big_nmf_space_transitions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Violinplots and NMF transitions of features different in phenotypes</p>
 <p>Plot violinplots and NMF-space transitions of features that have large
 NMF-space transitions between different phenotypes</p>
@@ -626,7 +626,7 @@ NMF-space transitions between different phenotypes</p>
 
 <dl class="method">
 <dt id="flotilla.data_model.base.BaseData.plot_classifier">
-<tt class="descname">plot_classifier</tt><big>(</big><em>trait</em>, <em>sample_ids=None</em>, <em>feature_ids=None</em>, <em>predictor_name=None</em>, <em>standardize=True</em>, <em>score_coefficient=None</em>, <em>data_name=None</em>, <em>groupby=None</em>, <em>label_to_color=None</em>, <em>label_to_marker=None</em>, <em>order=None</em>, <em>color=None</em>, <em>**plotting_kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.plot_classifier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.plot_classifier" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_classifier</code><span class="sig-paren">(</span><em>trait</em>, <em>sample_ids=None</em>, <em>feature_ids=None</em>, <em>predictor_name=None</em>, <em>standardize=True</em>, <em>score_coefficient=None</em>, <em>data_name=None</em>, <em>groupby=None</em>, <em>label_to_color=None</em>, <em>label_to_marker=None</em>, <em>order=None</em>, <em>color=None</em>, <em>**plotting_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.plot_classifier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.plot_classifier" title="Permalink to this definition">¶</a></dt>
 <dd><p>Classify samples on boolean or categorical traits</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -635,7 +635,7 @@ NMF-space transitions between different phenotypes</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>trait</strong> : pandas.Series</p>
 <blockquote>
 <div><p>A (n_samples,) series of categorical features. Must have the same
-index as <tt class="xref py py-attr docutils literal"><span class="pre">data</span></tt></p>
+index as <code class="xref py py-attr docutils literal"><span class="pre">data</span></code></p>
 </div></blockquote>
 <p><strong>sample_ids</strong> : list-like, optional (default=None)</p>
 <blockquote>
@@ -648,7 +648,7 @@ index as <tt class="xref py py-attr docutils literal"><span class="pre">data</sp
 <p><strong>predictor_name</strong> : str</p>
 <blockquote>
 <div><p>Name of the predictor to use, in
-<tt class="xref py py-attr docutils literal"><span class="pre">predictor_config_manager</span></tt></p>
+<code class="xref py py-attr docutils literal"><span class="pre">predictor_config_manager</span></code></p>
 </div></blockquote>
 <p><strong>standardize</strong> : bool, optional (default=True)</p>
 <blockquote>
@@ -684,8 +684,8 @@ features and highly expressed features on the same playing field</p>
 <p><strong>plotting_kwargs</strong> : other keyword arguments</p>
 <blockquote>
 <div><p>All other keyword arguments are passed to
-<tt class="xref py py-meth docutils literal"><span class="pre">Classifier.__call__()</span></tt>, which passes them to
-<tt class="xref py py-meth docutils literal"><span class="pre">DecomopsitionViz.__call__()</span></tt></p>
+<code class="xref py py-meth docutils literal"><span class="pre">Classifier.__call__()</span></code>, which passes them to
+<code class="xref py py-meth docutils literal"><span class="pre">DecomopsitionViz.__call__()</span></code></p>
 </div></blockquote>
 </td>
 </tr>
@@ -701,17 +701,17 @@ features and highly expressed features on the same playing field</p>
 
 <dl class="method">
 <dt id="flotilla.data_model.base.BaseData.plot_clustermap">
-<tt class="descname">plot_clustermap</tt><big>(</big><em>sample_ids=None</em>, <em>feature_ids=None</em>, <em>data=None</em>, <em>feature_colors=None</em>, <em>sample_id_to_color=None</em>, <em>metric='euclidean'</em>, <em>method='average'</em>, <em>norm_features=True</em>, <em>scale_fig_by_data=True</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.plot_clustermap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.plot_clustermap" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_clustermap</code><span class="sig-paren">(</span><em>sample_ids=None</em>, <em>feature_ids=None</em>, <em>data=None</em>, <em>feature_colors=None</em>, <em>sample_id_to_color=None</em>, <em>metric='euclidean'</em>, <em>method='average'</em>, <em>norm_features=True</em>, <em>scale_fig_by_data=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.plot_clustermap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.plot_clustermap" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="flotilla.data_model.base.BaseData.plot_correlations">
-<tt class="descname">plot_correlations</tt><big>(</big><em>sample_ids=None</em>, <em>feature_ids=None</em>, <em>data=None</em>, <em>featurewise=False</em>, <em>sample_id_to_color=None</em>, <em>metric='euclidean'</em>, <em>method='average'</em>, <em>scale_fig_by_data=True</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.plot_correlations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.plot_correlations" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_correlations</code><span class="sig-paren">(</span><em>sample_ids=None</em>, <em>feature_ids=None</em>, <em>data=None</em>, <em>featurewise=False</em>, <em>sample_id_to_color=None</em>, <em>metric='euclidean'</em>, <em>method='average'</em>, <em>scale_fig_by_data=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.plot_correlations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.plot_correlations" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="flotilla.data_model.base.BaseData.plot_dimensionality_reduction">
-<tt class="descname">plot_dimensionality_reduction</tt><big>(</big><em>x_pc=1</em>, <em>y_pc=2</em>, <em>sample_ids=None</em>, <em>feature_ids=None</em>, <em>featurewise=False</em>, <em>reducer=None</em>, <em>plot_violins=False</em>, <em>groupby=None</em>, <em>label_to_color=None</em>, <em>label_to_marker=None</em>, <em>order=None</em>, <em>reduce_kwargs=None</em>, <em>title=''</em>, <em>most_variant_features=False</em>, <em>std_multiplier=2</em>, <em>scale_by_variance=True</em>, <em>**plotting_kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.plot_dimensionality_reduction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.plot_dimensionality_reduction" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_dimensionality_reduction</code><span class="sig-paren">(</span><em>x_pc=1</em>, <em>y_pc=2</em>, <em>sample_ids=None</em>, <em>feature_ids=None</em>, <em>featurewise=False</em>, <em>reducer=None</em>, <em>plot_violins=False</em>, <em>groupby=None</em>, <em>label_to_color=None</em>, <em>label_to_marker=None</em>, <em>order=None</em>, <em>reduce_kwargs=None</em>, <em>title=''</em>, <em>most_variant_features=False</em>, <em>std_multiplier=2</em>, <em>scale_by_variance=True</em>, <em>**plotting_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.plot_dimensionality_reduction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.plot_dimensionality_reduction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Principal component-like analysis of measurements</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -740,10 +740,10 @@ plot dimensionality reduction on only these feature ids</p>
 <div><p>If True, the features are reduced on the samples, and the plotted
 points are features, not samples. (default False)</p>
 </div></blockquote>
-<p><strong>reducer</strong> : <a class="reference internal" href="flotilla.compute.decomposition.html#flotilla.compute.decomposition.DataFrameReducerBase" title="flotilla.compute.decomposition.DataFrameReducerBase"><tt class="xref py py-class docutils literal"><span class="pre">DataFrameReducerBase</span></tt></a>, optional</p>
+<p><strong>reducer</strong> : <a class="reference internal" href="flotilla.compute.decomposition.html#flotilla.compute.decomposition.DataFrameReducerBase" title="flotilla.compute.decomposition.DataFrameReducerBase"><code class="xref py py-class docutils literal"><span class="pre">DataFrameReducerBase</span></code></a>, optional</p>
 <blockquote>
 <div><p>Which decomposition object to use. Must be a child of
-<a class="reference internal" href="flotilla.compute.decomposition.html#flotilla.compute.decomposition.DataFrameReducerBase" title="flotilla.compute.decomposition.DataFrameReducerBase"><tt class="xref py py-class docutils literal"><span class="pre">DataFrameReducerBase</span></tt></a> as this has built-in
+<a class="reference internal" href="flotilla.compute.decomposition.html#flotilla.compute.decomposition.DataFrameReducerBase" title="flotilla.compute.decomposition.DataFrameReducerBase"><code class="xref py py-class docutils literal"><span class="pre">DataFrameReducerBase</span></code></a> as this has built-in
 compatibility with pandas.DataFrames.
 (default=:py:class:<cite>.DataFramePCA</cite>)</p>
 </div></blockquote>
@@ -790,7 +790,7 @@ mean feature variance (default False)</p>
 </div></blockquote>
 <p><strong>std_multiplier</strong> : float, optional</p>
 <blockquote>
-<div><p>If <tt class="docutils literal"><span class="pre">most_variant_features</span></tt> is True, then use this as a cutoff
+<div><p>If <code class="docutils literal"><span class="pre">most_variant_features</span></code> is True, then use this as a cutoff
 for the minimum variance of a feature to be included (default 2)</p>
 </div></blockquote>
 <p><strong>scale_by_variance</strong> : bool, optional</p>
@@ -802,11 +802,11 @@ and its variations, not for NMF or tSNE. (default True)</p>
 <p><strong>plotting_kwargs</strong> : other keyword arguments</p>
 <blockquote>
 <div><p>All other keyword arguments are passed to
-<tt class="xref py py-meth docutils literal"><span class="pre">DecomopsitionViz.plot()</span></tt></p>
+<code class="xref py py-meth docutils literal"><span class="pre">DecomopsitionViz.plot()</span></code></p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>viz</strong> : <a class="reference internal" href="flotilla.visualize.decomposition.html#flotilla.visualize.decomposition.DecompositionViz" title="flotilla.visualize.decomposition.DecompositionViz"><tt class="xref py py-class docutils literal"><span class="pre">DecompositionViz</span></tt></a></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>viz</strong> : <a class="reference internal" href="flotilla.visualize.decomposition.html#flotilla.visualize.decomposition.DecompositionViz" title="flotilla.visualize.decomposition.DecompositionViz"><code class="xref py py-class docutils literal"><span class="pre">DecompositionViz</span></code></a></p>
 <blockquote class="last">
 <div><p>Object with plotted dimensionality reduction</p>
 </div></blockquote>
@@ -818,35 +818,35 @@ and its variations, not for NMF or tSNE. (default True)</p>
 
 <dl class="method">
 <dt id="flotilla.data_model.base.BaseData.plot_feature">
-<tt class="descname">plot_feature</tt><big>(</big><em>feature_id</em>, <em>sample_ids=None</em>, <em>phenotype_groupby=None</em>, <em>phenotype_order=None</em>, <em>color=None</em>, <em>phenotype_to_color=None</em>, <em>phenotype_to_marker=None</em>, <em>nmf_xlabel=None</em>, <em>nmf_ylabel=None</em>, <em>nmf_space=False</em>, <em>fig=None</em>, <em>axesgrid=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.plot_feature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.plot_feature" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_feature</code><span class="sig-paren">(</span><em>feature_id</em>, <em>sample_ids=None</em>, <em>phenotype_groupby=None</em>, <em>phenotype_order=None</em>, <em>color=None</em>, <em>phenotype_to_color=None</em>, <em>phenotype_to_marker=None</em>, <em>nmf_xlabel=None</em>, <em>nmf_ylabel=None</em>, <em>nmf_space=False</em>, <em>fig=None</em>, <em>axesgrid=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.plot_feature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.plot_feature" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the violinplot of a feature. Have the option to show NMF movement</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="flotilla.data_model.base.BaseData.plot_nmf_space_transitions">
-<tt class="descname">plot_nmf_space_transitions</tt><big>(</big><em>feature_id</em>, <em>groupby</em>, <em>phenotype_to_color</em>, <em>phenotype_to_marker</em>, <em>order</em>, <em>ax=None</em>, <em>xlabel=None</em>, <em>ylabel=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.plot_nmf_space_transitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.plot_nmf_space_transitions" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_nmf_space_transitions</code><span class="sig-paren">(</span><em>feature_id</em>, <em>groupby</em>, <em>phenotype_to_color</em>, <em>phenotype_to_marker</em>, <em>order</em>, <em>ax=None</em>, <em>xlabel=None</em>, <em>ylabel=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.plot_nmf_space_transitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.plot_nmf_space_transitions" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="flotilla.data_model.base.BaseData.plot_outliers">
-<tt class="descname">plot_outliers</tt><big>(</big><em>reducer</em>, <em>outlier_detector</em>, <em>**pca_args</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.plot_outliers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.plot_outliers" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_outliers</code><span class="sig-paren">(</span><em>reducer</em>, <em>outlier_detector</em>, <em>**pca_args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.plot_outliers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.plot_outliers" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="flotilla.data_model.base.BaseData.plot_pca">
-<tt class="descname">plot_pca</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.plot_pca"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.plot_pca" title="Permalink to this definition">¶</a></dt>
-<dd><p>Call <tt class="docutils literal"><span class="pre">plot_dimensionality_reduction</span></tt> with PCA specifically</p>
+<code class="descname">plot_pca</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.plot_pca"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.plot_pca" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call <code class="docutils literal"><span class="pre">plot_dimensionality_reduction</span></code> with PCA specifically</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="flotilla.data_model.base.BaseData.plot_two_features">
-<tt class="descname">plot_two_features</tt><big>(</big><em>feature1</em>, <em>feature2</em>, <em>groupby=None</em>, <em>label_to_color=None</em>, <em>fillna=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.plot_two_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.plot_two_features" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_two_features</code><span class="sig-paren">(</span><em>feature1</em>, <em>feature2</em>, <em>groupby=None</em>, <em>label_to_color=None</em>, <em>fillna=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.plot_two_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.plot_two_features" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the values of two features</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="flotilla.data_model.base.BaseData.plot_two_samples">
-<tt class="descname">plot_two_samples</tt><big>(</big><em>sample1</em>, <em>sample2</em>, <em>fillna=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.plot_two_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.plot_two_samples" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_two_samples</code><span class="sig-paren">(</span><em>sample1</em>, <em>sample2</em>, <em>fillna=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.plot_two_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.plot_two_samples" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -880,13 +880,13 @@ and its variations, not for NMF or tSNE. (default True)</p>
 
 <dl class="attribute">
 <dt id="flotilla.data_model.base.BaseData.pooled">
-<tt class="descname">pooled</tt><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.pooled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.pooled" title="Permalink to this definition">¶</a></dt>
+<code class="descname">pooled</code><a class="headerlink" href="#flotilla.data_model.base.BaseData.pooled" title="Permalink to this definition">¶</a></dt>
 <dd><p>Data from only the pooled samples</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="flotilla.data_model.base.BaseData.reduce">
-<tt class="descname">reduce</tt><big>(</big><em>sample_ids=None</em>, <em>feature_ids=None</em>, <em>featurewise=False</em>, <em>reducer=&lt;class 'flotilla.compute.decomposition.DataFramePCA'&gt;</em>, <em>standardize=True</em>, <em>reducer_kwargs=None</em>, <em>bins=None</em>, <em>most_variant_features=False</em>, <em>std_multiplier=2</em>, <em>cosine_transform=False</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.reduce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.reduce" title="Permalink to this definition">¶</a></dt>
+<code class="descname">reduce</code><span class="sig-paren">(</span><em>sample_ids=None</em>, <em>feature_ids=None</em>, <em>featurewise=False</em>, <em>reducer=&lt;class 'flotilla.compute.decomposition.DataFramePCA'&gt;</em>, <em>standardize=True</em>, <em>reducer_kwargs=None</em>, <em>bins=None</em>, <em>most_variant_features=False</em>, <em>std_multiplier=2</em>, <em>cosine_transform=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.reduce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.reduce" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make and memoize a reduced dimensionality representation of data</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -939,13 +939,13 @@ mean-center via sklearn.preprocessing.StandardScaler</p>
 
 <dl class="attribute">
 <dt id="flotilla.data_model.base.BaseData.singles">
-<tt class="descname">singles</tt><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.singles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.singles" title="Permalink to this definition">¶</a></dt>
+<code class="descname">singles</code><a class="headerlink" href="#flotilla.data_model.base.BaseData.singles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Data from only the single cells</p>
 </dd></dl>
 
 <dl class="staticmethod">
 <dt id="flotilla.data_model.base.BaseData.transition_distances">
-<em class="property">static </em><tt class="descname">transition_distances</tt><big>(</big><em>positions</em>, <em>transitions</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.transition_distances"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.transition_distances" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">transition_distances</code><span class="sig-paren">(</span><em>positions</em>, <em>transitions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.transition_distances"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.transition_distances" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get NMF distance of features between phenotype transitions</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -975,7 +975,7 @@ of features between different phenotypes</p>
 
 <dl class="attribute">
 <dt id="flotilla.data_model.base.BaseData.variant">
-<tt class="descname">variant</tt><a class="reference internal" href="_modules/flotilla/data_model/base.html#BaseData.variant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.BaseData.variant" title="Permalink to this definition">¶</a></dt>
+<code class="descname">variant</code><a class="headerlink" href="#flotilla.data_model.base.BaseData.variant" title="Permalink to this definition">¶</a></dt>
 <dd><p>Features whose variance is 2 std devs away from mean variance</p>
 </dd></dl>
 
@@ -983,7 +983,7 @@ of features between different phenotypes</p>
 
 <dl class="function">
 <dt id="flotilla.data_model.base.subsets_from_metadata">
-<tt class="descclassname">flotilla.data_model.base.</tt><tt class="descname">subsets_from_metadata</tt><big>(</big><em>metadata</em>, <em>minimum</em>, <em>subset_type</em>, <em>ignore=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/base.html#subsets_from_metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.subsets_from_metadata" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">flotilla.data_model.base.</code><code class="descname">subsets_from_metadata</code><span class="sig-paren">(</span><em>metadata</em>, <em>minimum</em>, <em>subset_type</em>, <em>ignore=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/data_model/base.html#subsets_from_metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.base.subsets_from_metadata" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get subsets from metadata, including boolean and categorical columns</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1035,7 +1035,7 @@ to be included</p>
     </p>
     <p>
         &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.<br/>
     </p>
   </div>
 </footer>
