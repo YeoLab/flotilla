@@ -199,7 +199,8 @@ class DecompositionViz(object):
              show_point_labels=False,
              show_vectors=True,
              show_vector_labels=True,
-             markersize=10, legend=True, bokeh=False, metadata=None):
+             markersize=10, legend=True, bokeh=False, metadata=None,
+             plot_loadings='heatmap', n_components=5):
 
         if bokeh:
             self._plot_bokeh(metadata, title)
@@ -217,16 +218,22 @@ class DecompositionViz(object):
                 self.fig_reduced = plt.gcf()
 
             self.ax_components = plt.subplot(self.gs[:, :5])
-            self.ax_loading1 = plt.subplot(self.gs[:, 6:8])
-            self.ax_loading2 = plt.subplot(self.gs[:, 10:14])
+
 
             self.plot_samples(show_point_labels=show_point_labels,
                               title=title, show_vectors=show_vectors,
                               show_vector_labels=show_vector_labels,
                               markersize=markersize, legend=legend,
                               ax=self.ax_components)
-            self.plot_loadings(pc=self.x_pc, ax=self.ax_loading1)
-            self.plot_loadings(pc=self.y_pc, ax=self.ax_loading2)
+            if plot_loadings == 'heatmap':
+                self.ax_loadings = self.gs[:, 6:14]
+                self.plot_loadings_heatmap(n_components=n_components,
+                                           ax=self.ax_loadings)
+            else:
+                self.ax_loading1 = plt.subplot(self.gs[:, 6:8])
+                self.ax_loading2 = plt.subplot(self.gs[:, 10:14])
+                self.plot_loadings(pc=self.x_pc, ax=self.ax_loading1)
+                self.plot_loadings(pc=self.y_pc, ax=self.ax_loading2)
             sns.despine()
             self.fig_reduced.tight_layout()
 
@@ -428,6 +435,73 @@ class DecompositionViz(object):
         for lab in ax.get_xticklabels():
             lab.set_rotation(90)
         sns.despine(ax=ax)
+
+    def plot_loadings_heatmap(self, n_features=50, ax=None, n_components=None):
+
+
+        # fig, axes = plt.subplots(nrows=2, ncols=2,
+        #                          gridspec_kw=dict(height_ratios=(0.2, 1),
+        #                                           width_ratios=(1, .1), ),
+        #                          figsize=(6, 10))
+
+        # Get all the sub-axes
+        gs_x = 11
+        gs_y = 6
+
+        if ax is None:
+            self.fig_reduced, ax = plt.subplots(1, 1, figsize=(20, 10))
+            self.gs = GridSpec(gs_x, gs_y)
+
+        else:
+            self.gs = GridSpecFromSubplotSpec(gs_x, gs_y,
+                                              ax.get_subplotspec())
+            self.fig_reduced = plt.gcf()
+
+        self.gs_loadings = GridSpecFromSubplotSpec(gs_x, gs_y,
+                                                   ax.get_subplotspec())
+        self.ax_explained_variance = plt.subplot(self.gs_loadings[0, :10])
+        self.ax_empty = plt.subplot(self.gs_loadings[0, 10])
+        self.ax_pcs = plt.subplot(self.gs_loadings[1:6, :10])
+        self.ax_pcs_colorbar = plt.subplot(self.gs_loadings[1:6, 10])
+        #
+        # ax_explained_variance = axes[0][0]
+        # ax_empty = axes[0][1]
+        # ax_pcs = axes[1][0]
+        # ax_pcs_colorbar = axes[1][1]
+
+        # Zero out the one axes in the upper right corner
+        self.ax_empty.axis('off')  # self.fig_reduced = plt.gcf()
+
+        self.ax_components = plt.subplot(self.gs[:, :5])
+        self.ax_loading1 = plt.subplot(self.gs[:, 6:8])
+        self.ax_loading2 = plt.subplot(self.gs[:, 10:14])
+
+        half = n_features/2
+        components = self.components_.T
+        components = components.sort(columns='pc_1', ascending=False)
+        components_subset = pd.concat(
+            [components.iloc[:half, :n_components],
+             components.iloc[-half:, :n_components]])
+        components_subset = components_subset.rename(self.feature_renamer)
+
+
+        # Plot explained variance
+        ymax = self.explained_variance_ratio_[:n_components]
+        ymin = np.zeros(ymax.shape)
+        x = np.arange(ymax.shape[0])
+        self.ax_explained_variance.plot(ymax, 'o-', color='#262626')
+        self.ax_explained_variance.fill_between(x, ymin, ymax,
+                                           color='lightgrey')
+        self.ax_explained_variance.set_ylabel('Explained\nvariance\nratio')
+        # ax_explained_variance.set_xlabel('Principal component')
+        self.ax_explained_variance.set_xticks(x)
+        self.ax_explained_variance.set_xlim(-0.5, x.max() + 0.5)
+        self.ax_explained_variance.set_xticklabels(components_subset.columns)
+        sns.despine(ax=self.ax_explained_variance)
+
+        sns.heatmap(components_subset, ax=self.ax_pcs,
+                    cbar_ax=self.ax_pcs_colorbar)
+        self.ax_pcs_colorbar.yaxis.set_ticks_position('right')
 
     def plot_explained_variance(self, title="PCA explained variance"):
         """If the reducer is a form of PCA, then plot the explained variance
