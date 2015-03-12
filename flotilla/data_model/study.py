@@ -695,7 +695,7 @@ class Study(object):
 
         try:
             return self.metadata.sample_subsets[phenotype_subset]
-        except (KeyError, TypeError) as e:
+        except (KeyError, TypeError):
             pass
 
         try:

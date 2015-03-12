@@ -443,8 +443,8 @@ def splicing_data(samples, events, true_modalities, modality_models, groupby):
         return pd.DataFrame(data, index=df.index, columns=df.columns)
 
     df = pd.concat([dataframe_maker(group, true_modalities, modality_models,
-                                    df)
-                    for group, df in df.groupby(groupby)], axis=0)
+                                    d)
+                    for group, d in df.groupby(groupby)], axis=0)
     # randomly add NA since all splicing data has NAs
     na_thresh = 0.2
     df = df.apply(lambda x: x.map(
