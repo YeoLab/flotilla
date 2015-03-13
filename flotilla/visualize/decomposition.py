@@ -210,7 +210,7 @@ class DecompositionViz(object):
 
             if ax is None:
                 self.fig_reduced, ax = plt.subplots(1, 1, figsize=(20, 10))
-                self.gs = GridSpec(nrows, ncols)
+                self.gs = GridSpec(nrows, ncols, wspace=0, hspace=0)
 
             else:
                 self.gs = GridSpecFromSubplotSpec(nrows, ncols,
@@ -498,6 +498,7 @@ class DecompositionViz(object):
 
         sns.heatmap(components_subset, ax=self.ax_pcs_heatmap,
                     cbar_ax=self.ax_pcs_colorbar)
+
         self.ax_pcs_colorbar.yaxis.set_ticks_position('right')
 
     def plot_explained_variance(self, title="PCA explained variance"):
