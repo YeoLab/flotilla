@@ -210,7 +210,7 @@ class DecompositionViz(object):
 
             if ax is None:
                 self.fig_reduced, ax = plt.subplots(1, 1, figsize=(20, 10))
-                self.gs = GridSpec(nrows, ncols, wspace=0, hspace=0)
+                self.gs = GridSpec(nrows, ncols, wspace=0.01)
 
             else:
                 self.gs = GridSpecFromSubplotSpec(nrows, ncols,
@@ -498,7 +498,7 @@ class DecompositionViz(object):
 
         sns.heatmap(components_subset, ax=self.ax_pcs_heatmap,
                     cbar_ax=self.ax_pcs_colorbar)
-        for ytl in self.ax_pcs_heatmap:
+        for ytl in self.ax_pcs_heatmap.get_yticklabels():
             ytl.set(size=11)
 
         self.ax_pcs_colorbar.yaxis.set_ticks_position('right')
