@@ -232,7 +232,7 @@ class DecompositionViz(object):
                 self.ax_explained_variance = plt.subplot(self.gs[0:3, 6:ncols-1])
                 self.ax_empty = plt.subplot(self.gs[0:3, ncols-1])
                 self.ax_pcs_heatmap = plt.subplot(self.gs[3:nrows, 6:ncols-1])
-                self.ax_pcs_colorbar = plt.subplot(self.gs[3:nrows, ncols-1:ncols])
+                self.ax_pcs_colorbar = plt.subplot(self.gs[3:nrows, ncols-1])
                 #
                 # ax_explained_variance = axes[0][0]
                 # ax_empty = axes[0][1]
