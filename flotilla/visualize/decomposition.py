@@ -205,15 +205,15 @@ class DecompositionViz(object):
         if bokeh:
             self._plot_bokeh(metadata, title)
         else:
-            gs_x = 14
-            gs_y = 12
+            nrows = 14
+            ncols = 12
 
             if ax is None:
                 self.fig_reduced, ax = plt.subplots(1, 1, figsize=(20, 10))
-                self.gs = GridSpec(gs_x, gs_y)
+                self.gs = GridSpec(nrows, ncols)
 
             else:
-                self.gs = GridSpecFromSubplotSpec(gs_x, gs_y,
+                self.gs = GridSpecFromSubplotSpec(nrows, ncols,
                                                   ax.get_subplotspec())
                 self.fig_reduced = plt.gcf()
 
@@ -226,9 +226,28 @@ class DecompositionViz(object):
                               markersize=markersize, legend=legend,
                               ax=self.ax_components)
             if plot_loadings == 'heatmap':
-                self.ax_loadings = plt.subplot(self.gs[:, 6:14])
+                # self.ax_loadings = plt.subplot(self.gs[:, 6:14])
                 self.plot_loadings_heatmap(n_components=n_components,
                                            ax=self.ax_loadings)
+                # self.gs_loadings = GridSpecFromSubplotSpec(gs_y, gs_x,
+                #                                            ax.get_subplotspec())
+                self.ax_explained_variance = plt.subplot(self.self.gs[0, 5:ncols])
+                self.ax_empty = plt.subplot(self.gs_loadings[0, ncols])
+                self.ax_pcs = plt.subplot(self.gs_loadings[1:nrows, 5:ncols])
+                self.ax_pcs_colorbar = plt.subplot(self.gs_loadings[1:nrows, ncols])
+                #
+                # ax_explained_variance = axes[0][0]
+                # ax_empty = axes[0][1]
+                # ax_pcs = axes[1][0]
+                # ax_pcs_colorbar = axes[1][1]
+
+                # Zero out the one axes in the upper right corner
+                self.ax_empty.axis('off')  # self.fig_reduced = plt.gcf()
+
+                self.ax_components = plt.subplot(self.gs[:, :5])
+                self.ax_loading1 = plt.subplot(self.gs[:, 6:8])
+                self.ax_loading2 = plt.subplot(self.gs[:, 10:14])
+
             else:
                 self.ax_loading1 = plt.subplot(self.gs[:, 6:8])
                 self.ax_loading2 = plt.subplot(self.gs[:, 10:14])
@@ -457,24 +476,6 @@ class DecompositionViz(object):
         #                                       ax.get_subplotspec())
         #     self.fig_reduced = plt.gcf()
 
-        self.gs_loadings = GridSpecFromSubplotSpec(gs_y, gs_x,
-                                                   ax.get_subplotspec())
-        self.ax_explained_variance = plt.subplot(self.gs_loadings[0, :10])
-        self.ax_empty = plt.subplot(self.gs_loadings[0, 10])
-        self.ax_pcs = plt.subplot(self.gs_loadings[1:6, :10])
-        self.ax_pcs_colorbar = plt.subplot(self.gs_loadings[1:6, 10])
-        #
-        # ax_explained_variance = axes[0][0]
-        # ax_empty = axes[0][1]
-        # ax_pcs = axes[1][0]
-        # ax_pcs_colorbar = axes[1][1]
-
-        # Zero out the one axes in the upper right corner
-        self.ax_empty.axis('off')  # self.fig_reduced = plt.gcf()
-
-        self.ax_components = plt.subplot(self.gs[:, :5])
-        self.ax_loading1 = plt.subplot(self.gs[:, 6:8])
-        self.ax_loading2 = plt.subplot(self.gs[:, 10:14])
 
         half = n_features/2
         components = self.components_.T
