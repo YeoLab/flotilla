@@ -227,7 +227,6 @@ class DecompositionViz(object):
                               ax=self.ax_components)
             if plot_loadings == 'heatmap':
                 # self.ax_loadings = plt.subplot(self.gs[:, 6:14])
-                self.plot_loadings_heatmap(n_components=n_components)
                 # self.gs_loadings = GridSpecFromSubplotSpec(gs_y, gs_x,
                 #                                            ax.get_subplotspec())
                 self.ax_explained_variance = plt.subplot(self.gs[0, 5:ncols])
@@ -243,9 +242,7 @@ class DecompositionViz(object):
                 # Zero out the one axes in the upper right corner
                 self.ax_empty.axis('off')  # self.fig_reduced = plt.gcf()
 
-                self.ax_components = plt.subplot(self.gs[:, :5])
-                self.ax_loading1 = plt.subplot(self.gs[:, 6:8])
-                self.ax_loading2 = plt.subplot(self.gs[:, 10:14])
+                self.plot_loadings_heatmap(n_components=n_components)
 
             else:
                 self.ax_loading1 = plt.subplot(self.gs[:, 6:8])
@@ -463,8 +460,8 @@ class DecompositionViz(object):
         #                          figsize=(6, 10))
 
         # Get all the sub-axes
-        gs_x = 11
-        gs_y = 6
+        # gs_x = 11
+        # gs_y = 6
 
         # if ax is None:
         #     self.fig_reduced, ax = plt.subplots(1, 1, figsize=(20, 10))
