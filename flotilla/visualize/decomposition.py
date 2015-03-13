@@ -229,10 +229,10 @@ class DecompositionViz(object):
                 # self.ax_loadings = plt.subplot(self.gs[:, 6:14])
                 # self.gs_loadings = GridSpecFromSubplotSpec(gs_y, gs_x,
                 #                                            ax.get_subplotspec())
-                self.ax_explained_variance = plt.subplot(self.gs[0:2, 6:ncols-1])
+                self.ax_explained_variance = plt.subplot(self.gs[0:4, 6:ncols-1])
                 self.ax_empty = plt.subplot(self.gs[0:2, ncols-1])
-                self.ax_pcs_heatmap = plt.subplot(self.gs[2:nrows, 6:ncols-1])
-                self.ax_pcs_colorbar = plt.subplot(self.gs[2:nrows, ncols-1])
+                self.ax_pcs_heatmap = plt.subplot(self.gs[4:nrows, 6:ncols-1])
+                self.ax_pcs_colorbar = plt.subplot(self.gs[4:nrows, ncols-1])
                 #
                 # ax_explained_variance = axes[0][0]
                 # ax_empty = axes[0][1]
@@ -246,7 +246,7 @@ class DecompositionViz(object):
 
             else:
                 self.ax_loading1 = plt.subplot(self.gs[:, 6:8])
-                self.ax_loading2 = plt.subplot(self.gs[:, 10:14])
+                self.ax_loading2 = plt.subplot(self.gs[:, 8:ncols])
                 self.plot_loadings(pc=self.x_pc, ax=self.ax_loading1)
                 self.plot_loadings(pc=self.y_pc, ax=self.ax_loading2)
             sns.despine()
