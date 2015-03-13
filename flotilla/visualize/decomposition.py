@@ -229,10 +229,10 @@ class DecompositionViz(object):
                 # self.ax_loadings = plt.subplot(self.gs[:, 6:14])
                 # self.gs_loadings = GridSpecFromSubplotSpec(gs_y, gs_x,
                 #                                            ax.get_subplotspec())
-                self.ax_explained_variance = plt.subplot(self.gs[0, 5:ncols])
-                self.ax_empty = plt.subplot(self.gs[0, ncols])
-                self.ax_pcs = plt.subplot(self.gs[1:nrows, 5:ncols])
-                self.ax_pcs_colorbar = plt.subplot(self.gs[1:nrows, ncols])
+                self.ax_explained_variance = plt.subplot(self.gs[0, 5:ncols-1])
+                self.ax_empty = plt.subplot(self.gs[0, ncols-1])
+                self.ax_pcs = plt.subplot(self.gs[1:nrows, 5:ncols-1])
+                self.ax_pcs_colorbar = plt.subplot(self.gs[1:nrows, ncols-1])
                 #
                 # ax_explained_variance = axes[0][0]
                 # ax_empty = axes[0][1]
