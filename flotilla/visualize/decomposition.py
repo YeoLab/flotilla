@@ -205,8 +205,8 @@ class DecompositionViz(object):
         if bokeh:
             self._plot_bokeh(metadata, title)
         else:
-            nrows = 14
-            ncols = 12
+            nrows = 10
+            ncols = 10
 
             if ax is None:
                 self.fig_reduced, ax = plt.subplots(1, 1, figsize=(20, 10))
@@ -229,14 +229,14 @@ class DecompositionViz(object):
                 # self.ax_loadings = plt.subplot(self.gs[:, 6:14])
                 # self.gs_loadings = GridSpecFromSubplotSpec(gs_y, gs_x,
                 #                                            ax.get_subplotspec())
-                self.ax_explained_variance = plt.subplot(self.gs[0, 5:ncols-1])
-                self.ax_empty = plt.subplot(self.gs[0, ncols-1])
-                self.ax_pcs = plt.subplot(self.gs[1:nrows, 5:ncols-1])
-                self.ax_pcs_colorbar = plt.subplot(self.gs[1:nrows, ncols-1])
+                self.ax_explained_variance = plt.subplot(self.gs[0:2, 6:ncols-1])
+                self.ax_empty = plt.subplot(self.gs[0:2, ncols-1])
+                self.ax_pcs_heatmap = plt.subplot(self.gs[2:nrows, 6:ncols-1])
+                self.ax_pcs_colorbar = plt.subplot(self.gs[2:nrows, ncols-1])
                 #
                 # ax_explained_variance = axes[0][0]
                 # ax_empty = axes[0][1]
-                # ax_pcs = axes[1][0]
+                # ax_pcs_heatmap = axes[1][0]
                 # ax_pcs_colorbar = axes[1][1]
 
                 # Zero out the one axes in the upper right corner
@@ -496,7 +496,7 @@ class DecompositionViz(object):
         self.ax_explained_variance.set_xticklabels(components_subset.columns)
         sns.despine(ax=self.ax_explained_variance)
 
-        sns.heatmap(components_subset, ax=self.ax_pcs,
+        sns.heatmap(components_subset, ax=self.ax_pcs_heatmap,
                     cbar_ax=self.ax_pcs_colorbar)
         self.ax_pcs_colorbar.yaxis.set_ticks_position('right')
 
