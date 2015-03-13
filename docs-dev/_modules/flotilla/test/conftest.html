@@ -326,10 +326,6 @@
 <div class="viewcode-block" id="groupby"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.groupby">[docs]</a><span class="k">def</span> <span class="nf">groupby</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span> <span class="n">samples</span><span class="p">):</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">((</span><span class="n">sample</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">groups</span><span class="p">))</span> <span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">samples</span><span class="p">)</span>
 
-
-<span class="c"># @pytest.fixture(scope=&#39;module&#39;)</span>
-<span class="c"># def groupby_fixed(groups_fixed, samples):</span>
-<span class="c">#     return dict((sample, np.random.choice(groups_fixed)) for sample in samples)</span>
 </div>
 <span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
 <div class="viewcode-block" id="metadata_data"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.metadata_data">[docs]</a><span class="k">def</span> <span class="nf">metadata_data</span><span class="p">(</span><span class="n">groupby</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">):</span>
@@ -596,8 +592,8 @@
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
 
     <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">dataframe_maker</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">true_modalities</span><span class="p">,</span> <span class="n">modality_models</span><span class="p">,</span>
-                                    <span class="n">df</span><span class="p">)</span>
-                    <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">groupby</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                                    <span class="n">d</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">groupby</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="c"># randomly add NA since all splicing data has NAs</span>
     <span class="n">na_thresh</span> <span class="o">=</span> <span class="mf">0.2</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
@@ -661,7 +657,6 @@
 <span class="c">#                                     modality_models, df)</span>
 <span class="c">#                     for group, df in df.groupby(groupby)], axis=0)</span>
 <span class="c">#     return df.sort_index()</span>
-
 
 </div>
 <span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
@@ -824,13 +819,6 @@
     <span class="kn">from</span> <span class="nn">flotilla.data_model.splicing</span> <span class="kn">import</span> <span class="n">SplicingData</span>
 
     <span class="k">return</span> <span class="n">SplicingData</span><span class="p">(</span><span class="n">splicing_data</span><span class="p">)</span>
-
-
-<span class="c"># @pytest.fixture(scope=&#39;module&#39;)</span>
-<span class="c"># def splicing_fixed(splicing_data_fixed):</span>
-<span class="c">#     from flotilla.data_model.splicing import SplicingData</span>
-<span class="c"># </span>
-<span class="c">#     return SplicingData(splicing_data_fixed)</span>
 
 </div>
 <span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
