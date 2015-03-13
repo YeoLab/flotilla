@@ -497,7 +497,8 @@ class DecompositionViz(object):
         sns.despine(ax=self.ax_explained_variance)
 
         sns.heatmap(components_subset, ax=self.ax_pcs_heatmap,
-                    cbar_ax=self.ax_pcs_colorbar)
+                    cbar_ax=self.ax_pcs_colorbar,
+                    cbar_kws=dict(label='Contribution to Principal Component'))
         for ytl in self.ax_pcs_heatmap.get_yticklabels():
             ytl.set(size=11)
         self.ax_pcs_colorbar.yaxis.set_ticks_position('right')
