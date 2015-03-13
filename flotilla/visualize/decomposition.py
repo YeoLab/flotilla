@@ -249,7 +249,9 @@ class DecompositionViz(object):
                 self.ax_loading2 = plt.subplot(self.gs[:, 8:ncols])
                 self.plot_loadings(pc=self.x_pc, ax=self.ax_loading1)
                 self.plot_loadings(pc=self.y_pc, ax=self.ax_loading2)
-            sns.despine()
+                sns.despine(ax=self.ax_loading1)
+                sns.despine(ax=self.ax_loading2)
+            sns.despine(ax=self.ax_components)
             self.fig_reduced.tight_layout()
 
             singles_none = self.singles is None
