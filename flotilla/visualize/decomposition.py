@@ -227,14 +227,13 @@ class DecompositionViz(object):
                               ax=self.ax_components)
             if plot_loadings == 'heatmap':
                 # self.ax_loadings = plt.subplot(self.gs[:, 6:14])
-                self.plot_loadings_heatmap(n_components=n_components,
-                                           ax=self.ax_loadings)
+                self.plot_loadings_heatmap(n_components=n_components)
                 # self.gs_loadings = GridSpecFromSubplotSpec(gs_y, gs_x,
                 #                                            ax.get_subplotspec())
-                self.ax_explained_variance = plt.subplot(self.self.gs[0, 5:ncols])
-                self.ax_empty = plt.subplot(self.gs_loadings[0, ncols])
-                self.ax_pcs = plt.subplot(self.gs_loadings[1:nrows, 5:ncols])
-                self.ax_pcs_colorbar = plt.subplot(self.gs_loadings[1:nrows, ncols])
+                self.ax_explained_variance = plt.subplot(self.gs[0, 5:ncols])
+                self.ax_empty = plt.subplot(self.gs[0, ncols])
+                self.ax_pcs = plt.subplot(self.gs[1:nrows, 5:ncols])
+                self.ax_pcs_colorbar = plt.subplot(self.gs[1:nrows, ncols])
                 #
                 # ax_explained_variance = axes[0][0]
                 # ax_empty = axes[0][1]
