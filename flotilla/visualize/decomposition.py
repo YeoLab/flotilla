@@ -498,6 +498,8 @@ class DecompositionViz(object):
 
         sns.heatmap(components_subset, ax=self.ax_pcs_heatmap,
                     cbar_ax=self.ax_pcs_colorbar)
+        for ytl in self.ax_pcs_heatmap:
+            ytl.set(size=11)
 
         self.ax_pcs_colorbar.yaxis.set_ticks_position('right')
 
