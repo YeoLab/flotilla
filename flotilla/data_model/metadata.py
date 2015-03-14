@@ -3,6 +3,7 @@ import sys
 import warnings
 
 import matplotlib as mpl
+import pandas as pd
 import seaborn as sns
 
 from .base import BaseData, subsets_from_metadata
@@ -175,9 +176,10 @@ class MetaData(BaseData):
 
     @property
     def sample_id_to_color(self):
-        return dict((sample_id, self.phenotype_to_color[p])
-                    for sample_id, p in
-                    self.sample_id_to_phenotype.iteritems())
+        return pd.Series(
+            dict((sample_id, self.phenotype_to_color[p])
+                 for sample_id, p in
+                 self.sample_id_to_phenotype.iteritems()))
 
     @property
     def sample_subsets(self):
