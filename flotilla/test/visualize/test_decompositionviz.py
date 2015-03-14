@@ -3,6 +3,7 @@ from itertools import cycle
 
 import matplotlib.pyplot as plt
 import numpy as np
+import numpy.testing as npt
 import pandas as pd
 import pandas.util.testing as pdt
 import pytest
@@ -125,9 +126,9 @@ def test_init(pca, kwargs):
     pdt.assert_dict_equal(dv.groupby, true_groupby)
     pdt.assert_series_equal(dv.vars, true_vars)
     pdt.assert_frame_equal(dv.loadings, true_loadings)
-    pdt.assert_array_equal(dv.color_ordered, true_color_ordered)
+    npt.assert_array_equal(dv.color_ordered, true_color_ordered)
     pdt.assert_series_equal(dv.magnitudes, true_magnitudes)
-    pdt.assert_array_equal(dv.top_features, true_top_features)
+    npt.assert_array_equal(dv.top_features, true_top_features)
     pdt.assert_dict_equal(dv.pc_loadings_labels, true_pc_loadings_labels)
     pdt.assert_dict_equal(dv.pc_loadings, true_pc_loadings)
 
