@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>flotilla.datapackage module &mdash; flotilla 0.2.6dev documentation</title>
+    <title>flotilla.data_model.supplemental module &mdash; flotilla 0.2.6dev documentation</title>
     
     <link rel="stylesheet" href="_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -30,9 +30,9 @@
     <script type="text/javascript" src="_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
     <link rel="top" title="flotilla 0.2.6dev documentation" href="index.html" />
-    <link rel="up" title="flotilla package" href="flotilla.html" />
-    <link rel="next" title="flotilla.setup module" href="flotilla.setup.html" />
-    <link rel="prev" title="flotilla.visualize.splicing module" href="flotilla.visualize.splicing.html" />
+    <link rel="up" title="flotilla.data_model package" href="flotilla.data_model.html" />
+    <link rel="next" title="flotilla.test package" href="flotilla.test.html" />
+    <link rel="prev" title="flotilla.data_model.study module" href="flotilla.data_model.study.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -119,7 +119,7 @@
   <ul class="dropdown-menu localtoc"
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">flotilla.datapackage module</a></li>
+<li><a class="reference internal" href="#">flotilla.data_model.supplemental module</a></li>
 </ul>
 </ul>
 </li>
@@ -131,7 +131,7 @@
             
               <li class="hidden-sm">
 <div id="sourcelink">
-  <a href="_sources/flotilla.datapackage.txt"
+  <a href="_sources/flotilla.data_model.supplemental.txt"
      rel="nofollow">Source</a>
 </div></li>
             
@@ -155,48 +155,27 @@
   <div class="row">
     <div class="col-md-12">
       
-  <div class="section" id="module-flotilla.datapackage">
-<span id="flotilla-datapackage-module"></span><h1>flotilla.datapackage module<a class="headerlink" href="#module-flotilla.datapackage" title="Permalink to this headline">¶</a></h1>
-<p>Functions to deal with creation and loading of datapackages</p>
-<dl class="function">
-<dt id="flotilla.datapackage.check_if_already_downloaded">
-<code class="descclassname">flotilla.datapackage.</code><code class="descname">check_if_already_downloaded</code><span class="sig-paren">(</span><em>url</em>, <em>datapackage_name=None</em>, <em>download_dir='/home/travis/flotilla_projects'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/datapackage.html#check_if_already_downloaded"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.datapackage.check_if_already_downloaded" title="Permalink to this definition">¶</a></dt>
-<dd><p>If a url filename has already been downloaded, don&#8217;t download it again.</p>
+  <div class="section" id="module-flotilla.data_model.supplemental">
+<span id="flotilla-data-model-supplemental-module"></span><h1>flotilla.data_model.supplemental module<a class="headerlink" href="#module-flotilla.data_model.supplemental" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="flotilla.data_model.supplemental.SupplementalData">
+<em class="property">class </em><code class="descclassname">flotilla.data_model.supplemental.</code><code class="descname">SupplementalData</code><span class="sig-paren">(</span><em>name_to_df=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/data_model/supplemental.html#SupplementalData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.supplemental.SupplementalData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Container for holding any arbitrary pandas dataframes</p>
+<p>All attributes of type pandas.DataFrame will be saved with the study.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>url</strong> : str</p>
-<blockquote>
-<div><p>HTTP url of a file you want to downlaod</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>name_to_df</strong> : dict</p>
 <blockquote class="last">
-<div><p>Location of the file on your system</p>
+<div><p>Mapping of a string of the name of the desired attribute, to the
+pandas dataframe</p>
 </div></blockquote>
 </td>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="function">
-<dt id="flotilla.datapackage.datapackage_url_to_dict">
-<code class="descclassname">flotilla.datapackage.</code><code class="descname">datapackage_url_to_dict</code><span class="sig-paren">(</span><em>datapackage_url</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/datapackage.html#datapackage_url_to_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.datapackage.datapackage_url_to_dict" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="flotilla.datapackage.make_study_datapackage">
-<code class="descclassname">flotilla.datapackage.</code><code class="descname">make_study_datapackage</code><span class="sig-paren">(</span><em>study_name</em>, <em>metadata</em>, <em>expression_data=None</em>, <em>splicing_data=None</em>, <em>spikein_data=None</em>, <em>mapping_stats_data=None</em>, <em>title=''</em>, <em>sources=''</em>, <em>license=None</em>, <em>species=None</em>, <em>flotilla_dir='/home/travis/flotilla_projects'</em>, <em>metadata_kws=None</em>, <em>expression_kws=None</em>, <em>splicing_kws=None</em>, <em>spikein_kws=None</em>, <em>mapping_stats_kws=None</em>, <em>version=None</em>, <em>expression_feature_kws=None</em>, <em>expression_feature_data=None</em>, <em>splicing_feature_data=None</em>, <em>splicing_feature_kws=None</em>, <em>gene_ontology=None</em>, <em>supplemental_kws=None</em>, <em>host='https://s3-us-west-2.amazonaws.com/'</em>, <em>host_destination='flotilla-projects/'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/datapackage.html#make_study_datapackage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.datapackage.make_study_datapackage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Example code for making a datapackage for a Study</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="flotilla.datapackage.name_to_resource">
-<code class="descclassname">flotilla.datapackage.</code><code class="descname">name_to_resource</code><span class="sig-paren">(</span><em>datapackage</em>, <em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/datapackage.html#name_to_resource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.datapackage.name_to_resource" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get resource with specified name in the datapackage</p>
 </dd></dl>
 
 </div>

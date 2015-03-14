@@ -1,0 +1,7 @@
+flotilla.data_model.supplemental module
+=======================================
+
+.. automodule:: flotilla.data_model.supplemental
+    :members:
+    :undoc-members:
+    :show-inheritance:
