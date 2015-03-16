@@ -48,11 +48,11 @@ class TestModalityModel(object):
             true_alphas = [alphas]
             true_betas = [betas]
 
-        true_alphas = np.array(true_alphas) if isinstance(true_alphas,
-                                                Iterable) else np.ones(
+        true_alphas = np.array(true_alphas) \
+            if isinstance(true_alphas, Iterable) else np.ones(
             len(true_betas)) * true_alphas
-        true_betas = np.array(true_betas) if isinstance(true_betas,
-                                              Iterable) else np.ones(
+        true_betas = np.array(true_betas) \
+            if isinstance(true_betas, Iterable) else np.ones(
             len(true_alphas)) * true_betas
 
         true_rvs = [stats.beta(a, b) for a, b in
