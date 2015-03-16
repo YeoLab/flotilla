@@ -456,6 +456,41 @@ class Study(object):
     def _is_absolute_path(location):
         return location.startswith('http') or location.startswith('/')
 
+    def _filename_from_path(self, resource, datapackage_dir):
+        if resource['path'].startswith('http'):
+            filename = check_if_already_downloaded(resource['path'],
+                                                   datapackage_name)
+        else:
+            filename = resource['path']
+            if not self._is_absolute_path(filename):
+                filename = '{}/{}'.format(datapackage_dir,
+                                          filename)
+
+            # Test if the file exists, if not, then add the datapackage
+            # file
+            if not os.path.exists(filename):
+                filename = os.path.join(datapackage_dir, filename)
+        return filename
+
+    def _filename_from_url(self, resource, datapackage_dir, datapackage_name):
+        resource_url = resource['url']
+        if not self._is_absolute_path(resource_url):
+            resource_url = '{}/{}'.format(datapackage_dir,
+                                          resource_url)
+        filename = check_if_already_downloaded(resource_url,
+                                               datapackage_name)
+        return filename
+
+    def _filename_from_resource(self, resource, datapackage_dir,
+                                datapackage_name):
+        if 'url' in resource:
+            return self._filename_from_url(resource, datapackage_dir,
+                                           datapackage_name)
+        elif 'path' in resource:
+            return self._filename_from_path(resource, datapackage_dir)
+        else:
+            return None
+
     @classmethod
     def from_datapackage(
             cls, datapackage, datapackage_dir='./',
@@ -477,45 +512,44 @@ class Study(object):
                          'object\n'.format(timestamp()))
         dfs = {}
         kwargs = {}
+        supplemental_data = {}
         datapackage_name = datapackage['name']
 
         for resource in datapackage['resources']:
-            if 'url' in resource:
-                resource_url = resource['url']
-                if not cls._is_absolute_path(resource_url):
-                    resource_url = '{}/{}'.format(datapackage_dir,
-                                                  resource_url)
-                filename = check_if_already_downloaded(resource_url,
-                                                       datapackage_name)
-            else:
-                if resource['path'].startswith('http'):
-                    filename = check_if_already_downloaded(resource['path'],
+            filename = cls._filename_from_resource(resource, datapackage_dir,
+                                                   datapackage_name)
+            if filename is None:
+                # This is supplemental data
+                for supplemental in resource[u'resources']:
+                    filename = cls._filename_from_resource(resource,
+                                                           datapackage_dir,
                                                            datapackage_name)
-                else:
-                    filename = resource['path']
-                    if not cls._is_absolute_path(filename):
-                        filename = '{}/{}'.format(datapackage_dir,
-                                                  filename)
+                    name = resource['name']
 
-                    # Test if the file exists, if not, then add the datapackage
-                    # file
-                    if not os.path.exists(filename):
-                        filename = os.path.join(datapackage_dir, filename)
+                    reader = cls.readers[resource['format']]
+                    compression = None if 'compression' not in resource else \
+                        resource['compression']
+                    header = resource.pop('header', 0)
+                    index_col = resource.pop('index_col', 0)
+                    df = reader(filename, compression=compression,
+                                header=header, index_col=index_col)
+                    supplemental_data[name] = df
+            else:
 
-            name = resource['name']
+                name = resource['name']
 
-            reader = cls.readers[resource['format']]
-            compression = None if 'compression' not in resource else \
-                resource['compression']
-            header = resource.pop('header', 0)
-            index_col = resource.pop('index_col', 0)
+                reader = cls.readers[resource['format']]
+                compression = None if 'compression' not in resource else \
+                    resource['compression']
+                header = resource.pop('header', 0)
+                index_col = resource.pop('index_col', 0)
 
-            dfs[name] = reader(filename, compression=compression,
-                               header=header, index_col=index_col)
+                dfs[name] = reader(filename, compression=compression,
+                                   header=header, index_col=index_col)
 
-            for key in set(resource.keys()).difference(
-                    DATAPACKAGE_RESOURCE_COMMON_KWS):
-                kwargs['{}_{}'.format(name, key)] = resource[key]
+                for key in set(resource.keys()).difference(
+                        DATAPACKAGE_RESOURCE_COMMON_KWS):
+                    kwargs['{}_{}'.format(name, key)] = resource[key]
 
         species_kws = {}
         species = None if 'species' not in datapackage else datapackage[
@@ -552,7 +586,8 @@ class Study(object):
                 'version string'.format(version))
         study = Study(sample_metadata=sample_metadata, species=species,
                       license=license, title=title, sources=sources,
-                      version=version, **kwargs)
+                      version=version, supplemental_data=supplemental_data,
+                      **kwargs)
         return study
 
     @staticmethod
