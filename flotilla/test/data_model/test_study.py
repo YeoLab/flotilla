@@ -627,7 +627,7 @@ class TestStudy(object):
         study.supplemental.expression_corr = study.expression.data.corr()
         study.save(study_name, flotilla_dir=tmpdir)
 
-        study2 = flotilla.embark(study_name)
+        study2 = flotilla.embark(study_name, flotilla_dir=tmpdir)
         pdt.assert_frame_equal(study2.supplemental.expression_corr,
                                study.supplemental.expression_corr)
 
