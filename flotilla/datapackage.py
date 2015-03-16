@@ -184,7 +184,7 @@ def make_study_datapackage(study_name, metadata,
     filename = '{}/datapackage.json'.format(datapackage_dir)
     with open(filename, 'w') as f:
         json.dump(datapackage, f, indent=2)
-    sys.stdout.write('Wrote datapackage to {}'.format(filename))
+    sys.stdout.write('Wrote datapackage to {}\n'.format(filename))
 
 
 def name_to_resource(datapackage, name):
