@@ -620,6 +620,17 @@ class TestStudy(object):
         assert str(version) == test_datapackage['datapackage_version']
         assert study_name == test_datapackage['name']
 
+    def test_embark_supplemental(self, study, tmpdir):
+        import flotilla
+
+        study_name = 'test_save_supplemental'
+        study.supplemental.expression_corr = study.expression.data.corr()
+        study.save(study_name, flotilla_dir=tmpdir)
+
+        study2 = flotilla.embark(study_name)
+        pdt.assert_frame_equal(study2.supplemental.expression_corr,
+                               study.supplemental.expression_corr)
+
         # datapackage_keys_to_ignore = ['name', 'datapackage_version',
         #                               'resources']
         # datapackages = (true_datapackage, test_datapackage)
