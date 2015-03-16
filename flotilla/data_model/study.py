@@ -1627,7 +1627,7 @@ class Study(object):
             return self.splicing.big_nmf_space_transitions(
                 self.sample_id_to_phenotype, phenotype_transitions, n=n)
 
-    def save(self, study_name, flotilla_dir=FLOTILLA_DOWNLOAD_DIR, scrambled=False):
+    def save(self, study_name, flotilla_dir=FLOTILLA_DOWNLOAD_DIR):
 
         metadata = self.metadata.data_original
 
@@ -1699,10 +1699,11 @@ class Study(object):
             mapping_stats_kws = None
 
         supplemental_attributes = inspect.getmembers(self.supplemental,
-                                        lambda a: not (inspect.isroutine(a)))
+                                                     lambda a: not
+                                                     (inspect.isroutine(a)))
         supplemental_attributes = [a for a in supplemental_attributes
-                                   if not(a[0].startswith('__')
-                                          and a[0].endswith('__'))]
+                                   if not(a[0].startswith('__') and
+                                          a[0].endswith('__'))]
         supplemental_kws = {}
         for supplemental_name, df in supplemental_attributes:
             supplemental_kws[supplemental_name] = df
