@@ -48,16 +48,16 @@ class TestModalityModel(object):
             true_alphas = [alphas]
             true_betas = [betas]
 
-        true_alphas = true_alphas if isinstance(true_alphas,
+        true_alphas = np.array(true_alphas) if isinstance(true_alphas,
                                                 Iterable) else np.ones(
             len(true_betas)) * true_alphas
-        true_betas = true_betas if isinstance(true_betas,
+        true_betas = np.array(true_betas) if isinstance(true_betas,
                                               Iterable) else np.ones(
             len(true_alphas)) * true_betas
 
         true_rvs = [stats.beta(a, b) for a, b in
                     zip(true_alphas, true_betas)]
-        true_scores = np.arange(len(true_rvs)).astype(float) + .1
+        true_scores = np.ones(true_alphas.shape).astype(float)
         true_scores = true_scores / true_scores.max()
         true_prob_parameters = true_scores / true_scores.sum()
 
@@ -141,8 +141,10 @@ class TestModalityEstimator(object):
         true_parameters = np.arange(2, vmax + step, step).astype(float)
         true_exclusion = ModalityModel(1, true_parameters)
         true_inclusion = ModalityModel(true_parameters, 1)
-        true_middle = ModalityModel(true_parameters, true_parameters)
-        true_bimodal = ModalityModel(1 / true_parameters, 1 / true_parameters)
+        true_middle = ModalityModel(true_parameters+3, true_parameters+3)
+        true_bimodal = ModalityModel(1 / (true_parameters+3),
+                                     1 / (true_parameters+3),
+                                     prior='exponential')
         true_models = {'included': true_inclusion,
                        'excluded': true_exclusion,
                        'bimodal': true_bimodal,

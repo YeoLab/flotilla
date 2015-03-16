@@ -23,10 +23,10 @@ class ModalityModel(object):
             alphas = [alphas]
             betas = [betas]
 
-        self.alphas = alphas if isinstance(alphas, Iterable) else np.ones(
-            len(betas)) * alphas
-        self.betas = betas if isinstance(betas, Iterable) else np.ones(
-            len(alphas)) * betas
+        self.alphas = np.array(alphas) if isinstance(alphas, Iterable) \
+            else np.ones(len(betas)) * alphas
+        self.betas = np.array(betas) if isinstance(betas, Iterable) \
+            else np.ones(len(alphas)) * betas
 
         self.rvs = [stats.beta(a, b) for a, b in
                     zip(self.alphas, self.betas)]
