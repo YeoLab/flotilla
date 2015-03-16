@@ -106,7 +106,10 @@ before the pull request is merged.
 - [ ] Do the new functions have descriptive 
   [numpydoc](https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt)
   style docstrings?
-- [ ] If it adds a new plot, is it documented in the gallery?
+- [ ] If it adds a new feature, is it documented as an IPython Notebook in 
+  `examples/`, and is that notebook added to `doc/tutorial.rst`?
+- [ ] If it adds a new plot, is it documented in the gallery, as a `.py` file 
+  in `examples/`?
 - [ ] Is it well formatted? Look at `make pep8` and `make lint` output
 - [ ] Is it documented in the doc/releases/?
 - [ ] Was a spellchecker run on the source code and documentation after
