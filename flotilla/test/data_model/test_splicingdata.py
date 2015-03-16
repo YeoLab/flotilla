@@ -41,9 +41,9 @@ class TestSplicingData:
         elif request.param == 'groupby_none':
             return None
 
-    @pytest.fixture(params=[0.2, 5])
-    def min_samples(self, request):
-        return request.param
+    # @pytest.fixture(params=[0.5, 12])
+    # def min_samples(self, request):
+    #     return request.param
 
     @pytest.fixture(params=[True, False])
     def percentages(self, request):
@@ -249,13 +249,12 @@ class TestSplicingData:
             color_ordered_fixed, group_to_color_fixed, group_to_marker)
         plt.close('all')
 
-    def test_modality_assignments(self, splicing_fixed, groupby_params,
-                                  min_samples):
+    def test_modality_assignments(self, splicing_fixed, groupby_params):
         sample_ids = None
         feature_ids = None
         test_modality_assignments = splicing_fixed.modality_assignments(
             sample_ids=sample_ids, feature_ids=feature_ids,
-            groupby=groupby_params, min_samples=min_samples)
+            groupby=groupby_params)
 
         data = splicing_fixed._subset(splicing_fixed.data, sample_ids,
                                       feature_ids, require_min_samples=False)
@@ -265,15 +264,7 @@ class TestSplicingData:
             groupby_copy = groupby_params
 
         grouped = data.groupby(groupby_copy)
-        if isinstance(min_samples, int):
-            thresh = splicing_fixed._thresh_int
-        elif isinstance(min_samples, float):
-            thresh = splicing_fixed._thresh_float
-        else:
-            raise TypeError('Threshold for minimum samples for modality '
-                            'detection can only be int or float, '
-                            'not {}'.format(type(min_samples)))
-        data = pd.concat([df.dropna(thresh=thresh(df, min_samples), axis=1)
+        data = pd.concat([df.dropna(thresh=10, axis=1)
                          for name, df in grouped])
         true_assignments = data.groupby(groupby_copy).apply(
             splicing_fixed.modality_estimator.fit_transform)
