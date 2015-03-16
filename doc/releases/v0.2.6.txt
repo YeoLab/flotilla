@@ -30,3 +30,5 @@ Miscellaneous
 
 - Streamlined test suite to test fewer things at a time, which shortened the
   test suite from ~20 minutes to ~3 minutes, about 85% time savings.
+- Added requirement for new non-plotting features to at least be documented as
+  IPython notebooks, so the knowledge is shared.
