@@ -97,6 +97,8 @@ class SplicingData(BaseData):
         data : pandas.DataFrame, optional
             If provided, use this dataframe instead of the sample_ids and
             feature_ids provided
+        min_samples : int, optional
+            Minimum number of samples to use per grouped celltype. Default 10
 
         Returns
         -------
@@ -130,7 +132,7 @@ class SplicingData(BaseData):
 
     @memoize
     def modality_counts(self, sample_ids=None, feature_ids=None, data=None,
-                        groupby=None, min_samples=0.5):
+                        groupby=None, min_samples=10):
         """Count the number of each modalities of these samples and features
 
         Parameters
@@ -142,6 +144,8 @@ class SplicingData(BaseData):
         data : pandas.DataFrame, optional
             If provided, use this dataframe instead of the sample_ids and
             feature_ids provided
+        min_samples : int, optional
+            Minimum number of samples to use per grouped celltype. Default 10
 
         Returns
         -------
@@ -157,7 +161,8 @@ class SplicingData(BaseData):
         return super(SplicingData, self).binify(data, self.bins)
 
     def plot_modalities_reduced(self, sample_ids=None, feature_ids=None,
-                                data=None, ax=None, title=None):
+                                data=None, ax=None, title=None,
+                                min_samples=10):
         """Plot events modality assignments in NMF space
 
         This will calculate modalities on all samples provided, without
@@ -173,6 +178,8 @@ class SplicingData(BaseData):
         data : pandas.DataFrame, optional
             If provided, use this dataframe instead of the sample_ids and
             feature_ids provided
+        min_samples : int, optional
+            Minimum number of samples to use per grouped celltype. Default 10
         ax : matplotlib.axes.Axes object
             Axes to plot on. If none, gets current axes
         title : str
@@ -181,7 +188,8 @@ class SplicingData(BaseData):
         groupby = pd.Series('all', self.data.index)
         modality_assignments = self.modality_assignments(sample_ids,
                                                          feature_ids,
-                                                         data, groupby)
+                                                         data, groupby,
+                                                         min_samples)
         modality_assignments = pd.Series(modality_assignments.values[0],
                                          index=modality_assignments.columns)
 
@@ -193,7 +201,7 @@ class SplicingData(BaseData):
 
     def plot_modalities_bars(self, sample_ids=None, feature_ids=None,
                              data=None, groupby=None, phenotype_to_color=None,
-                             percentages=False, ax=None):
+                             percentages=False, ax=None, min_samples=10):
         """Make grouped barplots of the number of modalities per group
 
         Parameters
@@ -205,14 +213,13 @@ class SplicingData(BaseData):
         color : None or matplotlib color
             Which color to use for plotting the lavalamps of these features
             and samples
-        x_offset : numeric
-            How much to offset the x-axis of each event. Useful if you want
-            to plot the same event, but in several iterations with different
-            celltypes or colors
+        min_samples : int, optional
+            Minimum number of samples to use per grouped celltype. Default 10
         """
 
         counts = self.modality_counts(
-            sample_ids, feature_ids, data=data, groupby=groupby)
+            sample_ids, feature_ids, data=data, groupby=groupby,
+            min_samples=min_samples)
 
         # make sure this is always a dataframe
         if isinstance(counts, pd.Series):
@@ -224,7 +231,7 @@ class SplicingData(BaseData):
 
     def plot_modalities_lavalamps(self, sample_ids=None, feature_ids=None,
                                   data=None, groupby=None,
-                                  phenotype_to_color=None):
+                                  phenotype_to_color=None, min_samples=10):
         """Plot "lavalamp" scatterplot of each event
 
         Parameters
@@ -240,12 +247,15 @@ class SplicingData(BaseData):
             How much to offset the x-axis of each event. Useful if you want
             to plot the same event, but in several iterations with different
             celltypes or colors
+        min_samples : int, optional
+            Minimum number of samples to use per grouped celltype. Default 10
         """
         if groupby is None:
             groupby = pd.Series('all', index=self.data.index)
 
         assignments = self.modality_assignments(
-            sample_ids, feature_ids, data=data, groupby=groupby)
+            sample_ids, feature_ids, data=data, groupby=groupby,
+            min_samples=min_samples)
 
         # make sure this is always a dataframe
         if isinstance(assignments, pd.Series):
@@ -276,7 +286,23 @@ class SplicingData(BaseData):
 
     def plot_event_modality_estimation(self, event_id, sample_ids=None,
                                        data=None,
-                                       groupby=None, min_samples=0.5):
+                                       groupby=None, min_samples=10):
+        """Plots the mathematical reasoning for an event's modality assignment
+
+        Parameters
+        ----------
+        event_id : str
+            Unique name of the splicing event
+        sample_ids : list of str, optional
+            Which sample ids to use
+        data : pandas.DataFrame
+            Which data to use, if e.g. you filtered splicing events on
+            expression data
+        groupby : mapping, optional
+            A sample id to celltype mapping
+        min_samples : int, optional
+            Minimum number of samples to use per grouped celltype. Default 10
+        """
         if data is None:
             data = self._subset(self.singles, sample_ids,
                                 require_min_samples=False)
