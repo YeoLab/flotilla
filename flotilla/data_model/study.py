@@ -35,8 +35,10 @@ SPECIES_DATA_PACKAGE_BASE_URL = 'https://s3-us-west-2.amazonaws.com/' \
 DATAPACKAGE_RESOURCE_COMMON_KWS = ('url', 'path', 'format', 'compression',
                                    'name')
 
+
 def _is_absolute_path(location):
     return location.startswith('http') or location.startswith('/')
+
 
 class Study(object):
     """A biological study, with associated metadata, expression, and splicing
@@ -454,15 +456,6 @@ class Study(object):
             load_species_data=load_species_data,
             species_datapackage_base_url=species_datapackage_base_url)
 
-
-    # def _filename_from_path(self, resource, datapackage_dir):
-    #
-    #     return filename
-    #
-    # def _filename_from_url(self, resource, datapackage_dir, datapackage_name):
-    #
-    #     return filename
-
     @staticmethod
     def _filename_from_resource(resource, datapackage_dir,
                                 datapackage_name):
@@ -528,7 +521,8 @@ class Study(object):
                     name = supplemental['name']
 
                     reader = cls.readers[supplemental['format']]
-                    compression = None if 'compression' not in supplemental else \
+                    compression = None if 'compression' not in \
+                                          supplemental else \
                         supplemental['compression']
                     header = supplemental.pop('header', 0)
                     index_col = supplemental.pop('index_col', 0)
