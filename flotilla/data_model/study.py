@@ -35,6 +35,8 @@ SPECIES_DATA_PACKAGE_BASE_URL = 'https://s3-us-west-2.amazonaws.com/' \
 DATAPACKAGE_RESOURCE_COMMON_KWS = ('url', 'path', 'format', 'compression',
                                    'name')
 
+def _is_absolute_path(location):
+    return location.startswith('http') or location.startswith('/')
 
 class Study(object):
     """A biological study, with associated metadata, expression, and splicing
@@ -452,42 +454,41 @@ class Study(object):
             load_species_data=load_species_data,
             species_datapackage_base_url=species_datapackage_base_url)
 
+
+    # def _filename_from_path(self, resource, datapackage_dir):
+    #
+    #     return filename
+    #
+    # def _filename_from_url(self, resource, datapackage_dir, datapackage_name):
+    #
+    #     return filename
+
     @staticmethod
-    def _is_absolute_path(location):
-        return location.startswith('http') or location.startswith('/')
-
-    def _filename_from_path(self, resource, datapackage_dir):
-        if resource['path'].startswith('http'):
-            filename = check_if_already_downloaded(resource['path'],
-                                                   datapackage_name)
-        else:
-            filename = resource['path']
-            if not self._is_absolute_path(filename):
-                filename = '{}/{}'.format(datapackage_dir,
-                                          filename)
-
-            # Test if the file exists, if not, then add the datapackage
-            # file
-            if not os.path.exists(filename):
-                filename = os.path.join(datapackage_dir, filename)
-        return filename
-
-    def _filename_from_url(self, resource, datapackage_dir, datapackage_name):
-        resource_url = resource['url']
-        if not self._is_absolute_path(resource_url):
-            resource_url = '{}/{}'.format(datapackage_dir,
-                                          resource_url)
-        filename = check_if_already_downloaded(resource_url,
-                                               datapackage_name)
-        return filename
-
-    def _filename_from_resource(self, resource, datapackage_dir,
+    def _filename_from_resource(resource, datapackage_dir,
                                 datapackage_name):
         if 'url' in resource:
-            return self._filename_from_url(resource, datapackage_dir,
-                                           datapackage_name)
+            resource_url = resource['url']
+            if not _is_absolute_path(resource_url):
+                resource_url = '{}/{}'.format(datapackage_dir,
+                                              resource_url)
+            filename = check_if_already_downloaded(resource_url,
+                                                   datapackage_name)
+            return filename
         elif 'path' in resource:
-            return self._filename_from_path(resource, datapackage_dir)
+            if resource['path'].startswith('http'):
+                filename = check_if_already_downloaded(resource['path'],
+                                                       datapackage_name)
+            else:
+                filename = resource['path']
+                if not _is_absolute_path(filename):
+                    filename = '{}/{}'.format(datapackage_dir,
+                                              filename)
+
+                # Test if the file exists, if not, then add the datapackage
+                # file
+                if not os.path.exists(filename):
+                    filename = os.path.join(datapackage_dir, filename)
+            return filename
         else:
             return None
 
