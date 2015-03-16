@@ -522,16 +522,16 @@ class Study(object):
             if filename is None:
                 # This is supplemental data
                 for supplemental in resource[u'resources']:
-                    filename = cls._filename_from_resource(resource,
+                    filename = cls._filename_from_resource(supplemental,
                                                            datapackage_dir,
                                                            datapackage_name)
                     name = resource['name']
 
-                    reader = cls.readers[resource['format']]
-                    compression = None if 'compression' not in resource else \
-                        resource['compression']
-                    header = resource.pop('header', 0)
-                    index_col = resource.pop('index_col', 0)
+                    reader = cls.readers[supplemental['format']]
+                    compression = None if 'compression' not in supplemental else \
+                        supplemental['compression']
+                    header = supplemental.pop('header', 0)
+                    index_col = supplemental.pop('index_col', 0)
                     df = reader(filename, compression=compression,
                                 header=header, index_col=index_col)
                     supplemental_data[name] = df
