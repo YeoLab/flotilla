@@ -525,7 +525,7 @@ class Study(object):
                     filename = cls._filename_from_resource(supplemental,
                                                            datapackage_dir,
                                                            datapackage_name)
-                    name = resource['name']
+                    name = supplemental['name']
 
                     reader = cls.readers[supplemental['format']]
                     compression = None if 'compression' not in supplemental else \
