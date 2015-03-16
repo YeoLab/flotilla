@@ -185,6 +185,10 @@
                                    <span class="s">&#39;name&#39;</span><span class="p">)</span>
 
 
+<span class="k">def</span> <span class="nf">_is_absolute_path</span><span class="p">(</span><span class="n">location</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">location</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;http&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">location</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">)</span>
+
+
 <div class="viewcode-block" id="Study"><a class="viewcode-back" href="../../../flotilla.data_model.study.html#flotilla.Study">[docs]</a><span class="k">class</span> <span class="nc">Study</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A biological study, with associated metadata, expression, and splicing</span>
 <span class="sd">    data.</span>
@@ -602,8 +606,33 @@
             <span class="n">species_datapackage_base_url</span><span class="o">=</span><span class="n">species_datapackage_base_url</span><span class="p">)</span>
 </div>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_is_absolute_path</span><span class="p">(</span><span class="n">location</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">location</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;http&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">location</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_filename_from_resource</span><span class="p">(</span><span class="n">resource</span><span class="p">,</span> <span class="n">datapackage_dir</span><span class="p">,</span>
+                                <span class="n">datapackage_name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s">&#39;url&#39;</span> <span class="ow">in</span> <span class="n">resource</span><span class="p">:</span>
+            <span class="n">resource_url</span> <span class="o">=</span> <span class="n">resource</span><span class="p">[</span><span class="s">&#39;url&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_absolute_path</span><span class="p">(</span><span class="n">resource_url</span><span class="p">):</span>
+                <span class="n">resource_url</span> <span class="o">=</span> <span class="s">&#39;{}/{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datapackage_dir</span><span class="p">,</span>
+                                              <span class="n">resource_url</span><span class="p">)</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">check_if_already_downloaded</span><span class="p">(</span><span class="n">resource_url</span><span class="p">,</span>
+                                                   <span class="n">datapackage_name</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">filename</span>
+        <span class="k">elif</span> <span class="s">&#39;path&#39;</span> <span class="ow">in</span> <span class="n">resource</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">resource</span><span class="p">[</span><span class="s">&#39;path&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;http&#39;</span><span class="p">):</span>
+                <span class="n">filename</span> <span class="o">=</span> <span class="n">check_if_already_downloaded</span><span class="p">(</span><span class="n">resource</span><span class="p">[</span><span class="s">&#39;path&#39;</span><span class="p">],</span>
+                                                       <span class="n">datapackage_name</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">filename</span> <span class="o">=</span> <span class="n">resource</span><span class="p">[</span><span class="s">&#39;path&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_absolute_path</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+                    <span class="n">filename</span> <span class="o">=</span> <span class="s">&#39;{}/{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datapackage_dir</span><span class="p">,</span>
+                                              <span class="n">filename</span><span class="p">)</span>
+
+                <span class="c"># Test if the file exists, if not, then add the datapackage</span>
+                <span class="c"># file</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+                    <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">datapackage_dir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">filename</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
 
     <span class="nd">@classmethod</span>
 <div class="viewcode-block" id="Study.from_datapackage"><a class="viewcode-back" href="../../../flotilla.data_model.study.html#flotilla.Study.from_datapackage">[docs]</a>    <span class="k">def</span> <span class="nf">from_datapackage</span><span class="p">(</span>
@@ -626,45 +655,45 @@
                          <span class="s">&#39;object</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">timestamp</span><span class="p">()))</span>
         <span class="n">dfs</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">supplemental_data</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">datapackage_name</span> <span class="o">=</span> <span class="n">datapackage</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
 
         <span class="k">for</span> <span class="n">resource</span> <span class="ow">in</span> <span class="n">datapackage</span><span class="p">[</span><span class="s">&#39;resources&#39;</span><span class="p">]:</span>
-            <span class="k">if</span> <span class="s">&#39;url&#39;</span> <span class="ow">in</span> <span class="n">resource</span><span class="p">:</span>
-                <span class="n">resource_url</span> <span class="o">=</span> <span class="n">resource</span><span class="p">[</span><span class="s">&#39;url&#39;</span><span class="p">]</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">cls</span><span class="o">.</span><span class="n">_is_absolute_path</span><span class="p">(</span><span class="n">resource_url</span><span class="p">):</span>
-                    <span class="n">resource_url</span> <span class="o">=</span> <span class="s">&#39;{}/{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datapackage_dir</span><span class="p">,</span>
-                                                  <span class="n">resource_url</span><span class="p">)</span>
-                <span class="n">filename</span> <span class="o">=</span> <span class="n">check_if_already_downloaded</span><span class="p">(</span><span class="n">resource_url</span><span class="p">,</span>
-                                                       <span class="n">datapackage_name</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">resource</span><span class="p">[</span><span class="s">&#39;path&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;http&#39;</span><span class="p">):</span>
-                    <span class="n">filename</span> <span class="o">=</span> <span class="n">check_if_already_downloaded</span><span class="p">(</span><span class="n">resource</span><span class="p">[</span><span class="s">&#39;path&#39;</span><span class="p">],</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">_filename_from_resource</span><span class="p">(</span><span class="n">resource</span><span class="p">,</span> <span class="n">datapackage_dir</span><span class="p">,</span>
+                                                   <span class="n">datapackage_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="c"># This is supplemental data</span>
+                <span class="k">for</span> <span class="n">supplemental</span> <span class="ow">in</span> <span class="n">resource</span><span class="p">[</span><span class="s">u&#39;resources&#39;</span><span class="p">]:</span>
+                    <span class="n">filename</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">_filename_from_resource</span><span class="p">(</span><span class="n">supplemental</span><span class="p">,</span>
+                                                           <span class="n">datapackage_dir</span><span class="p">,</span>
                                                            <span class="n">datapackage_name</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">filename</span> <span class="o">=</span> <span class="n">resource</span><span class="p">[</span><span class="s">&#39;path&#39;</span><span class="p">]</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">cls</span><span class="o">.</span><span class="n">_is_absolute_path</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-                        <span class="n">filename</span> <span class="o">=</span> <span class="s">&#39;{}/{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datapackage_dir</span><span class="p">,</span>
-                                                  <span class="n">filename</span><span class="p">)</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="n">supplemental</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
 
-                    <span class="c"># Test if the file exists, if not, then add the datapackage</span>
-                    <span class="c"># file</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-                        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">datapackage_dir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+                    <span class="n">reader</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">readers</span><span class="p">[</span><span class="n">supplemental</span><span class="p">[</span><span class="s">&#39;format&#39;</span><span class="p">]]</span>
+                    <span class="n">compression</span> <span class="o">=</span> <span class="bp">None</span> <span class="k">if</span> <span class="s">&#39;compression&#39;</span> <span class="ow">not</span> <span class="ow">in</span> \
+                                          <span class="n">supplemental</span> <span class="k">else</span> \
+                        <span class="n">supplemental</span><span class="p">[</span><span class="s">&#39;compression&#39;</span><span class="p">]</span>
+                    <span class="n">header</span> <span class="o">=</span> <span class="n">supplemental</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;header&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                    <span class="n">index_col</span> <span class="o">=</span> <span class="n">supplemental</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;index_col&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                    <span class="n">df</span> <span class="o">=</span> <span class="n">reader</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="n">compression</span><span class="p">,</span>
+                                <span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="n">index_col</span><span class="p">)</span>
+                    <span class="n">supplemental_data</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span>
+            <span class="k">else</span><span class="p">:</span>
 
-            <span class="n">name</span> <span class="o">=</span> <span class="n">resource</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">resource</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
 
-            <span class="n">reader</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">readers</span><span class="p">[</span><span class="n">resource</span><span class="p">[</span><span class="s">&#39;format&#39;</span><span class="p">]]</span>
-            <span class="n">compression</span> <span class="o">=</span> <span class="bp">None</span> <span class="k">if</span> <span class="s">&#39;compression&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">resource</span> <span class="k">else</span> \
-                <span class="n">resource</span><span class="p">[</span><span class="s">&#39;compression&#39;</span><span class="p">]</span>
-            <span class="n">header</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;header&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-            <span class="n">index_col</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;index_col&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="n">reader</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">readers</span><span class="p">[</span><span class="n">resource</span><span class="p">[</span><span class="s">&#39;format&#39;</span><span class="p">]]</span>
+                <span class="n">compression</span> <span class="o">=</span> <span class="bp">None</span> <span class="k">if</span> <span class="s">&#39;compression&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">resource</span> <span class="k">else</span> \
+                    <span class="n">resource</span><span class="p">[</span><span class="s">&#39;compression&#39;</span><span class="p">]</span>
+                <span class="n">header</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;header&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="n">index_col</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;index_col&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
-            <span class="n">dfs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">reader</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="n">compression</span><span class="p">,</span>
-                               <span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="n">index_col</span><span class="p">)</span>
+                <span class="n">dfs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">reader</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="n">compression</span><span class="p">,</span>
+                                   <span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="n">index_col</span><span class="p">)</span>
 
-            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span>
-                    <span class="n">DATAPACKAGE_RESOURCE_COMMON_KWS</span><span class="p">):</span>
-                <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;{}_{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">key</span><span class="p">)]</span> <span class="o">=</span> <span class="n">resource</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span>
+                        <span class="n">DATAPACKAGE_RESOURCE_COMMON_KWS</span><span class="p">):</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;{}_{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">key</span><span class="p">)]</span> <span class="o">=</span> <span class="n">resource</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 
         <span class="n">species_kws</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">species</span> <span class="o">=</span> <span class="bp">None</span> <span class="k">if</span> <span class="s">&#39;species&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">datapackage</span> <span class="k">else</span> <span class="n">datapackage</span><span class="p">[</span>
@@ -701,7 +730,8 @@
                 <span class="s">&#39;version string&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">version</span><span class="p">))</span>
         <span class="n">study</span> <span class="o">=</span> <span class="n">Study</span><span class="p">(</span><span class="n">sample_metadata</span><span class="o">=</span><span class="n">sample_metadata</span><span class="p">,</span> <span class="n">species</span><span class="o">=</span><span class="n">species</span><span class="p">,</span>
                       <span class="n">license</span><span class="o">=</span><span class="n">license</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">sources</span><span class="o">=</span><span class="n">sources</span><span class="p">,</span>
-                      <span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                      <span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="p">,</span> <span class="n">supplemental_data</span><span class="o">=</span><span class="n">supplemental_data</span><span class="p">,</span>
+                      <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">study</span>
 </div>
     <span class="nd">@staticmethod</span>
@@ -1776,7 +1806,7 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">splicing</span><span class="o">.</span><span class="n">big_nmf_space_transitions</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">sample_id_to_phenotype</span><span class="p">,</span> <span class="n">phenotype_transitions</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Study.save"><a class="viewcode-back" href="../../../flotilla.data_model.study.html#flotilla.Study.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">study_name</span><span class="p">,</span> <span class="n">flotilla_dir</span><span class="o">=</span><span class="n">FLOTILLA_DOWNLOAD_DIR</span><span class="p">,</span> <span class="n">scrambled</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Study.save"><a class="viewcode-back" href="../../../flotilla.data_model.study.html#flotilla.Study.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">study_name</span><span class="p">,</span> <span class="n">flotilla_dir</span><span class="o">=</span><span class="n">FLOTILLA_DOWNLOAD_DIR</span><span class="p">):</span>
 
         <span class="n">metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">data_original</span>
 
@@ -1848,10 +1878,11 @@
             <span class="n">mapping_stats_kws</span> <span class="o">=</span> <span class="bp">None</span>
 
         <span class="n">supplemental_attributes</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">supplemental</span><span class="p">,</span>
-                                        <span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="ow">not</span> <span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">isroutine</span><span class="p">(</span><span class="n">a</span><span class="p">)))</span>
+                                                     <span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="ow">not</span>
+                                                     <span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">isroutine</span><span class="p">(</span><span class="n">a</span><span class="p">)))</span>
         <span class="n">supplemental_attributes</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">supplemental_attributes</span>
-                                   <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;__&#39;</span><span class="p">)</span>
-                                          <span class="ow">and</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;__&#39;</span><span class="p">))]</span>
+                                   <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;__&#39;</span><span class="p">)</span> <span class="ow">and</span>
+                                          <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;__&#39;</span><span class="p">))]</span>
         <span class="n">supplemental_kws</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">supplemental_name</span><span class="p">,</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">supplemental_attributes</span><span class="p">:</span>
             <span class="n">supplemental_kws</span><span class="p">[</span><span class="n">supplemental_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span>
