@@ -1,0 +1,30 @@
+v0.2.6 (...)
+------------------------
+
+This is a patch release, with non-breaking changes from 0.2.5.
+
+New features
+~~~~~~~~~~~~
+
+
+Plotting functions
+~~~~~~~~~~~~~~~~~~
+
+
+API changes
+~~~~~~~~~~~
+
+
+Bug fixes
+~~~~~~~~~
+
+- Fixed :py:func:`.data_model.Study.save()` to actually save:
+    - Gene Ontology Data
+    - Minimum number of mapped reads per sample
+
+
+Miscellaneous
+~~~~~~~~~~~~~
+
+- Streamlined test suite to test fewer things at a time, which shortened the
+  test suite from ~20 minutes to ~3 minutes, about 85% time savings.
