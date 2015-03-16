@@ -14,5 +14,5 @@ class SupplementalData(object):
             pandas dataframe
         """
         if name_to_df is not None:
-            for name, df in name_to_df:
+            for name, df in name_to_df.items():
                 self.__setattr__(name, df)
