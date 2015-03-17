@@ -13,8 +13,8 @@ from scipy.cluster.vq import whiten
 
 from ..compute.decomposition import DataFramePCA, DataFrameNMF
 from ..compute.infotheory import binify, cross_phenotype_jsd, jsd_df_to_2d
-from ..compute.predict import PredictorConfigManager, PredictorDataSetManager, \
-    CLASSIFIER
+from ..compute.predict import PredictorConfigManager, \
+    PredictorDataSetManager, CLASSIFIER
 from ..visualize.decomposition import DecompositionViz
 from ..visualize.generic import violinplot, nmf_space_transitions, \
     simple_twoway_scatter
@@ -144,7 +144,7 @@ class BaseData(object):
                              'multi-indexed dataframes')
 
         self.data = data
-        self.data_original = self.data.copy()
+        self.data_original = data.copy()
         self.thresh = thresh if thresh is not None else -np.inf
         self.minimum_samples = minimum_samples \
             if minimum_samples is not None else 0
@@ -1023,6 +1023,14 @@ class BaseData(object):
                    title=title, data_type=self.data_type, ax=ax,
                    label_pooled=label_pooled, outliers=outliers)
 
+    @staticmethod
+    def _thresh_int(df, n):
+        return n
+
+    @staticmethod
+    def _thresh_float(df, f):
+        return f * df.shape[0]
+
     @cached_property()
     def nmf(self):
         data = self._subset(self.data)
@@ -1110,12 +1118,12 @@ class BaseData(object):
         """
         grouped = self.singles.groupby(groupby)
         if isinstance(n, int):
-            thresh = lambda x: n
+            thresh = self._thresh_int
         elif isinstance(n, float):
-            thresh = lambda x: n * x.shape[0]
+            thresh = self._thresh_float
 
         at_least_n_per_group_per_event = pd.concat(
-            [df.dropna(thresh=thresh(df), axis=1) for name, df in grouped])
+            [df.dropna(thresh=thresh(df, n), axis=1) for name, df in grouped])
         # at_least_n_per_group_per_event = grouped.transform(
         #     lambda x: x if x.count() >= n else pd.Series(np.nan,
         #                                                  index=x.index))
@@ -1316,6 +1324,11 @@ class BaseData(object):
         """
         feature1s = self.maybe_renamed_to_feature_id(feature1)
         feature2s = self.maybe_renamed_to_feature_id(feature2)
+        if isinstance(feature1s, str):
+            feature1s = [feature1s]
+        if isinstance(feature2s, str):
+            feature2s = [feature2s]
+
         for f1 in feature1s:
             for f2 in feature2s:
                 x = self.data.ix[:, f1].copy()
@@ -1365,7 +1378,7 @@ class BaseData(object):
 
         data = data.fillna(data.mean())
         if sample_id_to_color is not None:
-            sample_colors = [sample_id_to_color[x] for x in data.index]
+            sample_colors = [sample_id_to_color[i] for i in data.index]
 
         col_colors = feature_colors
         row_colors = sample_colors

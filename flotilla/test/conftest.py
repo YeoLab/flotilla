@@ -3,6 +3,7 @@ This file will be auto-imported for every testing session, so you can use
 these objects and functions across test files.
 """
 from collections import defaultdict
+import os
 
 import matplotlib as mpl
 import numpy as np
@@ -10,6 +11,12 @@ import pytest
 import pandas as pd
 from scipy import stats
 import seaborn as sns
+
+
+@pytest.fixture(scope='module')
+def data_dir():
+    return os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                        'example_data')
 
 
 @pytest.fixture(scope='module')
@@ -21,7 +28,7 @@ def RANDOM_STATE():
 @pytest.fixture(scope='module')
 def n_samples():
     """Number of samples to create example data from"""
-    return 50
+    return 30
 
 
 @pytest.fixture(scope='module')
@@ -30,49 +37,33 @@ def samples(n_samples):
     return ['sample_{}'.format(i + 1) for i in np.arange(n_samples)]
 
 
-@pytest.fixture(scope='module', params=[True, False],
-                ids=['with_technical_outliers',
-                     'without_technical_outliers'])
-def technical_outliers(request, n_samples, samples):
+@pytest.fixture(scope='module')
+def technical_outliers(n_samples, samples):
     """If request.param is True, return randomly chosen samples as technical
     outliers, otherwise None"""
-    if request.param:
-        return np.random.choice(samples,
-                                size=np.random.randint(1,
-                                                       int(n_samples / 10.)),
-                                replace=False)
-    else:
-        return None
+    return np.random.choice(samples,
+                            size=np.random.randint(1, int(n_samples / 10.)),
+                            replace=False)
 
 
-@pytest.fixture(scope='module', params=[True, False],
-                ids=['with_pooled',
-                     'without_pooled'])
+@pytest.fixture(scope='module')
 def pooled(request, n_samples, samples):
     """If request.param is True, return randomly chosen samples as pooled,
     otherwise None"""
-    if request.param:
-        return np.random.choice(samples,
-                                size=np.random.randint(1,
-                                                       int(n_samples / 10.)),
-                                replace=False)
-    else:
-        return None
+    return np.random.choice(samples,
+                            size=np.random.randint(1,
+                                                   int(n_samples / 10.)),
+                            replace=False)
 
 
-@pytest.fixture(scope='module', params=[True, False],
-                ids=['with_outliers',
-                     'without_outliers'])
+@pytest.fixture(scope='module')
 def outliers(request, n_samples, samples):
     """If request.param is True, return randomly chosen samples as outliers,
     otherwise None"""
-    if request.param:
-        return np.random.choice(samples,
-                                size=np.random.randint(1,
-                                                       int(n_samples / 10.)),
-                                replace=False)
-    else:
-        return None
+    return np.random.choice(samples,
+                            size=np.random.randint(1,
+                                                   int(n_samples / 10.)),
+                            replace=False)
 
 
 @pytest.fixture(scope='module')
@@ -81,10 +72,10 @@ def n_groups():
     return 2
 
 
-@pytest.fixture(scope='module')
-def n_groups_fixed():
-    """Fixed number of phenotype groups (3)"""
-    return 3
+# @pytest.fixture(scope='module')
+# def n_groups_fixed():
+#     """Fixed number of phenotype groups (3)"""
+#     return 3
 
 
 @pytest.fixture(scope='module')
@@ -93,33 +84,30 @@ def groups(n_groups):
     return ['group{}'.format(i + 1) for i in np.arange(n_groups)]
 
 
+# @pytest.fixture(scope='module')
+# def groups_fixed(n_groups_fixed):
+#     """Phenotype group names"""
+#     return ['group{}'.format(i + 1) for i in np.arange(n_groups_fixed)]
+
+
 @pytest.fixture(scope='module')
-def groups_fixed(n_groups_fixed):
-    """Phenotype group names"""
-    return ['group{}'.format(i + 1) for i in np.arange(n_groups_fixed)]
-
-
-@pytest.fixture(scope='module', params=['sorted', 'random'])
-def group_order(request, groups):
+def group_order(groups):
     """so-called 'logical' order of groups for plotting.
 
     To test if the user gave a specific order of the phenotypes, e.g.
     by differentiation time
     """
-    if request.param == 'sorted':
-        return list(sorted(groups))
-    else:
-        return np.random.permutation(groups)
+    return np.random.permutation(groups)
 
-
-@pytest.fixture(scope='module')
-def group_order_fixed(groups_fixed):
-    """so-called 'logical' order of groups for plotting.
-
-    To test if the user gave a specific order of the phenotypes, e.g.
-    by differentiation time
-    """
-    return np.random.permutation(groups_fixed)
+#
+# @pytest.fixture(scope='module')
+# def group_order_fixed(groups_fixed):
+#     """so-called 'logical' order of groups for plotting.
+#
+#     To test if the user gave a specific order of the phenotypes, e.g.
+#     by differentiation time
+#     """
+#     return np.random.permutation(groups_fixed)
 
 
 @pytest.fixture(scope='module')
@@ -129,11 +117,11 @@ def colors(n_groups):
                sns.color_palette('husl', n_colors=n_groups))
 
 
-@pytest.fixture(scope='module')
-def colors_fixed(n_groups_fixed):
-    """Colors to use for the samples"""
-    return map(mpl.colors.rgb2hex,
-               sns.color_palette('husl', n_colors=n_groups_fixed))
+# @pytest.fixture(scope='module')
+# def colors_fixed(n_groups_fixed):
+#     """Colors to use for the samples"""
+#     return map(mpl.colors.rgb2hex,
+#                sns.color_palette('husl', n_colors=n_groups_fixed))
 
 
 @pytest.fixture(scope='module')
@@ -142,10 +130,10 @@ def group_to_color(group_order, colors):
     return dict(zip(group_order, colors))
 
 
-@pytest.fixture(scope='module')
-def group_to_color_fixed(group_order_fixed, colors_fixed):
-    """Mapping of groups to colors"""
-    return dict(zip(group_order_fixed, colors_fixed))
+# @pytest.fixture(scope='module')
+# def group_to_color_fixed(group_order_fixed, colors_fixed):
+#     """Mapping of groups to colors"""
+#     return dict(zip(group_order_fixed, colors_fixed))
 
 
 @pytest.fixture(scope='module')
@@ -153,22 +141,18 @@ def color_ordered(group_order, group_to_color):
     """Colors in the order created by the groups"""
     return [group_to_color[g] for g in group_order]
 
+#
+# @pytest.fixture(scope='module')
+# def color_ordered_fixed(group_order_fixed, group_to_color_fixed):
+#     """Colors in the order created by the groups"""
+#     return [group_to_color_fixed[g] for g in group_order_fixed]
+
 
 @pytest.fixture(scope='module')
-def color_ordered_fixed(group_order_fixed, group_to_color_fixed):
-    """Colors in the order created by the groups"""
-    return [group_to_color_fixed[g] for g in group_order_fixed]
-
-
-@pytest.fixture(scope='module', params=['simple', 'different'],
-                ids=['simple_markers', 'different_markers'])
 def group_to_marker(request):
     """Mapping of groups to plotting markers"""
-    if request.param == 'simple':
-        return defaultdict(lambda: 'o')
-    else:
-        marker_iter = iter(list('ov^<>8sp*hHDd'))
-        return defaultdict(lambda: marker_iter.next())
+    marker_iter = iter(list('ov^<>8sp*hHDd'))
+    return defaultdict(lambda: marker_iter.next())
 
 
 @pytest.fixture(scope='module')
@@ -176,17 +160,17 @@ def group_transitions(group_order):
     """List of pairwise transitions between phenotypes, for NMF"""
     return zip(group_order[:-1], group_order[1:])
 
+#
+# @pytest.fixture(scope='module')
+# def group_transitions_fixed(group_order_fixed):
+#     """List of pairwise transitions between phenotypes, for NMF"""
+#     return zip(group_order_fixed[:-1], group_order_fixed[1:])
 
-@pytest.fixture(scope='module')
-def group_transitions_fixed(group_order_fixed):
-    """List of pairwise transitions between phenotypes, for NMF"""
-    return zip(group_order_fixed[:-1], group_order_fixed[1:])
 
-
-@pytest.fixture(scope='module', params=['phenotype', 'group'])
-def metadata_phenotype_col(request):
-    """Which column in the metadata specifies the phenotype"""
-    return request.param
+# @pytest.fixture(scope='module', params=['phenotype', 'group'])
+# def metadata_phenotype_col(request):
+#     """Which column in the metadata specifies the phenotype"""
+#     return request.param
 
 
 @pytest.fixture(scope='module')
@@ -195,60 +179,49 @@ def groupby(groups, samples):
 
 
 @pytest.fixture(scope='module')
-def groupby_fixed(groups_fixed, samples):
-    return dict((sample, np.random.choice(groups_fixed)) for sample in samples)
-
-
-@pytest.fixture(scope='module')
-def metadata_data(groupby, outliers, pooled, samples,
-                  n_samples,
-                  metadata_phenotype_col):
+def metadata_data(groupby, samples, n_samples):
     df = pd.DataFrame(index=samples)
-    if outliers is not None:
-        df['outlier'] = df.index.isin(outliers)
-    if pooled is not None:
-        df['pooled'] = df.index.isin(pooled)
-    df[metadata_phenotype_col] = df.index.map(lambda x: groupby[x])
+    df['phenotype'] = df.index.map(lambda x: groupby[x])
     df['subset1'] = np.random.choice([True, False], size=n_samples)
     return df
 
+#
+# @pytest.fixture(scope='module')
+# def metadata_data_groups_fixed(groupby_fixed, outliers, pooled, samples,
+#                                n_samples,
+#                                metadata_phenotype_col):
+#     df = pd.DataFrame(index=samples)
+#     if outliers is not None:
+#         df['outlier'] = df.index.isin(outliers)
+#     if pooled is not None:
+#         df['pooled'] = df.index.isin(pooled)
+#     df[metadata_phenotype_col] = df.index.map(lambda x: groupby_fixed[x])
+#     df['subset1'] = np.random.choice([True, False], size=n_samples)
+#     return df
+
 
 @pytest.fixture(scope='module')
-def metadata_data_groups_fixed(groupby_fixed, outliers, pooled, samples,
-                               n_samples,
-                               metadata_phenotype_col):
-    df = pd.DataFrame(index=samples)
-    if outliers is not None:
-        df['outlier'] = df.index.isin(outliers)
-    if pooled is not None:
-        df['pooled'] = df.index.isin(pooled)
-    df[metadata_phenotype_col] = df.index.map(lambda x: groupby_fixed[x])
-    df['subset1'] = np.random.choice([True, False], size=n_samples)
-    return df
-
-
-@pytest.fixture(scope='module')
-def metadata_kws(metadata_phenotype_col, group_order, group_to_color,
+def metadata_kws(group_order, group_to_color,
                  group_to_marker):
     kws = {}
-    if metadata_phenotype_col != 'phenotype':
-        kws['phenotype_col'] = metadata_phenotype_col
+    # if metadata_phenotype_col != 'phenotype':
+    #     kws['phenotype_col'] = metadata_phenotype_col
     kws['phenotype_order'] = group_order
     kws['phenotype_to_color'] = group_to_color
     kws['phenotype_to_marker'] = group_to_marker
     return kws
 
-
-@pytest.fixture(scope='module')
-def metadata_kws_fixed(metadata_phenotype_col, group_order_fixed,
-                       group_to_color_fixed):
-    kws = {}
-    if metadata_phenotype_col != 'phenotype':
-        kws['phenotype_col'] = metadata_phenotype_col
-    kws['phenotype_order'] = group_order_fixed
-    kws['phenotype_to_color'] = group_to_color_fixed
-    kws['phenotype_to_marker'] = defaultdict(lambda: 'o')
-    return kws
+#
+# @pytest.fixture(scope='module')
+# def metadata_kws_fixed(metadata_phenotype_col, group_order_fixed,
+#                        group_to_color_fixed):
+#     kws = {}
+#     if metadata_phenotype_col != 'phenotype':
+#         kws['phenotype_col'] = metadata_phenotype_col
+#     kws['phenotype_order'] = group_order_fixed
+#     kws['phenotype_to_color'] = group_to_color_fixed
+#     kws['phenotype_to_marker'] = defaultdict(lambda: 'o')
+#     return kws
 
 
 @pytest.fixture(scope='module')
@@ -261,33 +234,29 @@ def mapping_stats_min_reads_default():
     return 5e5
 
 
-@pytest.fixture(scope='module', params=[None, 1e6],
-                ids=['min_reads_none', 'min_reads_1e6'])
-def mapping_stats_kws(request, mapping_stats_number_mapped_col):
+@pytest.fixture(scope='module')
+def mapping_stats_kws(mapping_stats_number_mapped_col):
     kws = {'number_mapped_col': mapping_stats_number_mapped_col}
-    if request.param is not None:
-        kws['min_reads'] = request.param
+    # if request.param is not None:
+    # kws['min_reads'] = 1e6
     return kws
 
 
 @pytest.fixture(scope='module')
 def mapping_stats_data(samples, technical_outliers,
                        mapping_stats_min_reads_default,
-                       mapping_stats_kws,
                        mapping_stats_number_mapped_col):
-    min_reads = mapping_stats_kws.get('min_reads',
-                                      mapping_stats_min_reads_default)
     df = pd.DataFrame(index=samples)
-    df[mapping_stats_number_mapped_col] = 2 * min_reads
+    df[mapping_stats_number_mapped_col] = 2 * mapping_stats_min_reads_default
     if technical_outliers is not None:
         df.ix[technical_outliers, mapping_stats_number_mapped_col] = \
-            .5 * min_reads
+            .5 * mapping_stats_min_reads_default
     return df
 
 
 @pytest.fixture(scope='module')
 def n_genes():
-    return 100
+    return 50
 
 
 @pytest.fixture(scope='module')
@@ -297,7 +266,7 @@ def genes(n_genes):
 
 @pytest.fixture(scope='module')
 def n_events():
-    return 200
+    return 100
 
 
 @pytest.fixture(scope='module')
@@ -373,7 +342,7 @@ def expression_data(samples, genes, groupby, na_thresh):
                                 df.shape[0]) for _ in df.columns]).T
         return pd.DataFrame(data, index=df.index, columns=df.columns)
 
-    df = pd.concat([dataframe_maker(df) for name, df in
+    df = pd.concat([dataframe_maker(d) for name, d in
                     df.groupby(groupby)], axis=0).sort_index()
     if na_thresh > 0:
         df = df.apply(lambda x: x.map(
@@ -384,7 +353,7 @@ def expression_data(samples, genes, groupby, na_thresh):
 
 
 @pytest.fixture(scope='module')
-def expression_data_no_na(samples, genes, groupby_fixed):
+def expression_data_no_na(samples, genes, groupby):
     df = pd.DataFrame(index=samples, columns=genes)
 
     def dataframe_maker(df):
@@ -394,8 +363,8 @@ def expression_data_no_na(samples, genes, groupby_fixed):
                                 df.shape[0]) for _ in df.columns]).T
         return pd.DataFrame(data, index=df.index, columns=df.columns)
 
-    df = pd.concat([dataframe_maker(df) for name, df in
-                    df.groupby(groupby_fixed)], axis=0).sort_index()
+    df = pd.concat([dataframe_maker(d) for name, d in
+                    df.groupby(groupby)], axis=0).sort_index()
     return df
 
 
@@ -422,21 +391,19 @@ def expression_feature_rename_col(renamed):
         return None
 
 
-@pytest.fixture(scope='module', params=[None, 2],
-                ids=['log_base_None', 'log_base2'])
-def expression_log_base(request):
-    return request.param
+@pytest.fixture(scope='module')
+def expression_log_base():
+    return 2
 
 
-@pytest.fixture(scope='module', params=[True, False],
-                ids=['plus_one_true', 'plus_one_false'])
-def expression_plus_one(request):
-    return request.param
+@pytest.fixture(scope='module')
+def expression_plus_one():
+    return True
 
 
-@pytest.fixture(scope='module', params=[-np.inf, 2])
+@pytest.fixture(scope='module')
 def expression_thresh(request):
-    return request.param
+    return 2
 
 
 @pytest.fixture(scope='module')
@@ -459,16 +426,15 @@ def true_modalities(events, modality_models, groups):
     return pd.DataFrame(data)
 
 
-@pytest.fixture(scope='module')
-def true_modalities_fixed(events, modality_models, groups_fixed):
-    data = dict((e, dict((g, (np.random.choice(modality_models.keys())))
-                         for g in groups_fixed)) for e in events)
-    return pd.DataFrame(data)
+# @pytest.fixture(scope='module')
+# def true_modalities_fixed(events, modality_models, groups_fixed):
+#     data = dict((e, dict((g, (np.random.choice(modality_models.keys())))
+#                          for g in groups_fixed)) for e in events)
+#     return pd.DataFrame(data)
 
 
 @pytest.fixture(scope='module')
-def splicing_data(samples, events, true_modalities, modality_models,
-                  na_thresh, groupby):
+def splicing_data(samples, events, true_modalities, modality_models, groupby):
     df = pd.DataFrame(index=samples, columns=events)
 
     def dataframe_maker(group, true_modalities, modality_models, df):
@@ -477,71 +443,71 @@ def splicing_data(samples, events, true_modalities, modality_models,
         return pd.DataFrame(data, index=df.index, columns=df.columns)
 
     df = pd.concat([dataframe_maker(group, true_modalities, modality_models,
-                                    df)
-                    for group, df in df.groupby(groupby)], axis=0)
-    if na_thresh > 0:
-        df = df.apply(lambda x: x.map(
-            lambda i: i if np.random.uniform() > np.random.uniform(0,
-                                                                   na_thresh)
-            else np.nan), axis=1)
-
-        def randomly_add_na(x, na_thresh):
-            if np.random.uniform() > np.random.uniform(0, na_thresh / 10):
-                return x
-            else:
-                return pd.Series(np.nan, index=x.index)
-
-        df = pd.concat([d.apply(randomly_add_na, na_thresh=na_thresh,
-                                axis=1)
-                        for group, d in
-                        df.groupby(groupby)], axis=0)
-    return df.sort_index()
-
-
-@pytest.fixture(scope='module')
-def splicing_data_fixed(samples, events, true_modalities_fixed,
-                        modality_models,
-                        groupby_fixed):
-    df = pd.DataFrame(index=samples, columns=events)
-
-    def dataframe_maker(group, true_modalities, modality_models, df):
-        data = np.vstack([modality_models[modality].rvs(df.shape[0])
-                          for modality in true_modalities.ix[group]]).T
-        return pd.DataFrame(data, index=df.index, columns=df.columns)
-
-    df = pd.concat([dataframe_maker(group, true_modalities_fixed,
-                                    modality_models, df)
-                    for group, df in df.groupby(groupby_fixed)], axis=0)
+                                    d)
+                    for group, d in df.groupby(groupby)], axis=0)
+    # randomly add NA since all splicing data has NAs
+    na_thresh = 0.2
     df = df.apply(lambda x: x.map(
-        lambda i: i if np.random.uniform() > np.random.uniform()
+        lambda i: i if np.random.uniform() > np.random.uniform(0, na_thresh)
         else np.nan), axis=1)
 
-    def randomly_add_na(x):
-        if np.random.uniform() > np.random.uniform(0, .1):
+    def randomly_add_na(x, na_thresh):
+        if np.random.uniform() > np.random.uniform(0, na_thresh / 10):
             return x
         else:
             return pd.Series(np.nan, index=x.index)
 
-    df = pd.concat([d.apply(randomly_add_na, axis=1)
+    df = pd.concat([d.apply(randomly_add_na, na_thresh=na_thresh,
+                            axis=1)
                     for group, d in
-                    df.groupby(groupby_fixed)], axis=0)
+                    df.groupby(groupby)], axis=0)
     return df.sort_index()
 
 
-@pytest.fixture(scope='module')
-def splicing_data_no_na(samples, events,
-                        true_modalities_fixed, modality_models, groupby_fixed):
-    df = pd.DataFrame(index=samples, columns=events)
+# @pytest.fixture(scope='module')
+# def splicing_data_fixed(samples, events, true_modalities_fixed,
+#                         modality_models,
+#                         groupby_fixed):
+#     df = pd.DataFrame(index=samples, columns=events)
+#
+#     def dataframe_maker(group, true_modalities, modality_models, df):
+#         data = np.vstack([modality_models[modality].rvs(df.shape[0])
+#                           for modality in true_modalities.ix[group]]).T
+#         return pd.DataFrame(data, index=df.index, columns=df.columns)
+#
+#     df = pd.concat([dataframe_maker(group, true_modalities_fixed,
+#                                     modality_models, df)
+#                     for group, df in df.groupby(groupby_fixed)], axis=0)
+#     df = df.apply(lambda x: x.map(
+#         lambda i: i if np.random.uniform() > np.random.uniform()
+#         else np.nan), axis=1)
+#
+#     def randomly_add_na(x):
+#         if np.random.uniform() > np.random.uniform(0, .1):
+#             return x
+#         else:
+#             return pd.Series(np.nan, index=x.index)
+#
+#     df = pd.concat([d.apply(randomly_add_na, axis=1)
+#                     for group, d in
+#                     df.groupby(groupby_fixed)], axis=0)
+#     return df.sort_index()
 
-    def dataframe_maker(group, true_modalities, modality_models, df):
-        data = np.vstack([modality_models[modality].rvs(df.shape[0])
-                          for modality in true_modalities.ix[group]]).T
-        return pd.DataFrame(data, index=df.index, columns=df.columns)
-
-    df = pd.concat([dataframe_maker(group, true_modalities_fixed,
-                                    modality_models, df)
-                    for group, df in df.groupby(groupby_fixed)], axis=0)
-    return df.sort_index()
+#
+# @pytest.fixture(scope='module')
+# def splicing_data_no_na(samples, events,
+#                         true_modalities, modality_models, groupby):
+#     df = pd.DataFrame(index=samples, columns=events)
+#
+#     def dataframe_maker(group, true_modalities, modality_models, df):
+#         data = np.vstack([modality_models[modality].rvs(df.shape[0])
+#                           for modality in true_modalities.ix[group]]).T
+#         return pd.DataFrame(data, index=df.index, columns=df.columns)
+#
+#     df = pd.concat([dataframe_maker(group, true_modalities,
+#                                     modality_models, df)
+#                     for group, df in df.groupby(groupby)], axis=0)
+#     return df.sort_index()
 
 
 @pytest.fixture(scope='module')
@@ -564,14 +530,6 @@ def splicing_kws(splicing_feature_data, splicing_feature_common_id,
     return {'feature_data': splicing_feature_data,
             'feature_rename_col': gene_name,
             'feature_expression_id_col': splicing_feature_common_id}
-
-
-@pytest.fixture(scope='module')
-def study(request, shalek2013, scrambled_study):
-    if request.param == 'shalek2013':
-        return shalek2013
-    if request.param == 'scrambled_study':
-        return scrambled_study
 
 
 @pytest.fixture(scope='module')
@@ -687,11 +645,15 @@ def standardize(request):
     return request.param
 
 
-@pytest.fixture(params=['subset1',
-                        'phenotype: group1'],
+@pytest.fixture(params=['subset1', None,
+                        'phenotype: group1',
+                        '~subset1', 'ids'],
                 scope='module')
-def sample_subset(request):
-    return request.param
+def sample_subset(request, samples):
+    if request.param == 'ids':
+        return samples[:10]
+    else:
+        return request.param
 
 
 @pytest.fixture(
@@ -711,7 +673,10 @@ def splicing(splicing_data):
 
 
 @pytest.fixture(scope='module')
-def splicing_fixed(splicing_data_fixed):
-    from flotilla.data_model.splicing import SplicingData
+def gene_ontology_data_path(data_dir):
+    return '{}/human_grch38_chr22_gene_ontology.txt'.format(data_dir)
 
-    return SplicingData(splicing_data_fixed)
+
+@pytest.fixture(scope='module')
+def gene_ontology_data(gene_ontology_data_path):
+    return pd.read_table(gene_ontology_data_path)

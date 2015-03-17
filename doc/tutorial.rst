@@ -18,7 +18,16 @@ Create a datapackage
     :maxdepth: 2
 
     tutorial/barebones_study_making
-    tutorial/advanced_study_making
+
+
+Day to day helpful tips
+-----------------------
+
+.. toctree::
+    :maxdepth: 2
+
+    tutorial/supplementaldata
+
 
 Plotting functions
 ------------------

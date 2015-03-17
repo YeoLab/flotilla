@@ -115,14 +115,14 @@ class SplicingData(BaseData):
 
         grouped = data.groupby(groupby)
         if isinstance(min_samples, int):
-            thresh = lambda x: min_samples
+            thresh = self._thresh_int
         elif isinstance(min_samples, float):
-            thresh = lambda x: min_samples * x.shape[0]
+            thresh = self._thresh_float
         else:
             raise TypeError('Threshold for minimum samples for modality '
                             'detection can only be int or float, '
                             'not {}'.format(type(min_samples)))
-        data = pd.concat([df.dropna(thresh=thresh(df), axis=1)
+        data = pd.concat([df.dropna(thresh=thresh(df, min_samples), axis=1)
                           for name, df in grouped])
         assignments = data.groupby(groupby).apply(
             self.modality_estimator.fit_transform)
@@ -289,14 +289,14 @@ class SplicingData(BaseData):
 
         grouped = data.groupby(groupby)
         if isinstance(min_samples, int):
-            thresh = lambda x: min_samples
+            thresh = self._thresh_int
         elif isinstance(min_samples, float):
-            thresh = lambda x: min_samples * x.shape[0]
+            thresh = self._thresh_float
         else:
             raise TypeError('Threshold for minimum samples for modality '
                             'detection can only be int or float, '
                             'not {}'.format(type(min_samples)))
-        data = pd.concat([df.dropna(thresh=thresh(df), axis=1)
+        data = pd.concat([df.dropna(thresh=thresh(df, min_samples), axis=1)
                           for name, df in grouped])
         event = data[event_id]
         renamed = self.feature_renamer(event_id)
@@ -381,10 +381,8 @@ class SplicingData(BaseData):
             self._diff_from_singles(data, feature_ids, scaled=True)
 
         try:
-            large_diff = \
-                diff_from_singles[diff_from_singles.abs()
-                                  >= fraction_diff_thresh].dropna(axis=1,
-                                                                  how='all')
+            ind = diff_from_singles.abs() >= fraction_diff_thresh
+            large_diff = diff_from_singles[ind].dropna(axis=1, how='all')
         except AttributeError:
             large_diff = None
         return singles, pooled, not_measured_in_pooled, large_diff

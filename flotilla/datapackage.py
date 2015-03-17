@@ -9,7 +9,6 @@ import string
 import sys
 import urllib2
 
-import pandas as pd
 import matplotlib as mpl
 
 
@@ -75,7 +74,7 @@ def check_if_already_downloaded(url,
     return filename
 
 
-def make_study_datapackage(name, metadata,
+def make_study_datapackage(study_name, metadata,
                            expression_data=None,
                            splicing_data=None,
                            spikein_data=None,
@@ -93,21 +92,25 @@ def make_study_datapackage(name, metadata,
                            expression_feature_data=None,
                            splicing_feature_data=None,
                            splicing_feature_kws=None,
+                           gene_ontology=None,
+                           supplemental_kws=None,
                            host="https://s3-us-west-2.amazonaws.com/",
                            host_destination='flotilla-projects/'):
     """Example code for making a datapackage for a Study"""
-    if ' ' in name:
+    if ' ' in study_name:
         raise ValueError("Datapackage name cannot have any spaces")
-    if set(string.uppercase) & set(name):
+    if set(string.uppercase) & set(study_name):
         raise ValueError("Datapackage can only contain lowercase letters")
 
-    datapackage_dir = '{}/{}'.format(flotilla_dir, name)
+    datapackage_dir = '{}/{}'.format(flotilla_dir, study_name)
     try:
         os.makedirs(datapackage_dir)
     except OSError:
         pass
 
-    datapackage = {'name': name, 'title': title, 'sources': sources,
+    supplemental_kws = {} if supplemental_kws is None else supplemental_kws
+
+    datapackage = {'name': study_name, 'title': title, 'sources': sources,
                    'licenses': license, 'datapackage_version': version}
 
     if species is not None:
@@ -121,7 +124,8 @@ def make_study_datapackage(name, metadata,
                  'expression_feature': (expression_feature_data,
                                         expression_feature_kws),
                  'splicing_feature': (splicing_feature_data,
-                                      splicing_feature_kws)}
+                                      splicing_feature_kws),
+                 'gene_ontology': (gene_ontology, {})}
 
     datapackage['resources'] = []
     for resource_name, (data, kws) in resources.items():
@@ -136,10 +140,10 @@ def make_study_datapackage(name, metadata,
         with gzip.open(data_filename, 'wb') as f:
             data.to_csv(f)
 
-        if isinstance(data.columns, pd.MultiIndex):
-            resource['header'] = range(len(data.columns.levels))
-        if isinstance(data.index, pd.MultiIndex):
-            resource['index_col'] = range(len(data.index.levels))
+        # if isinstance(data.columns, pd.MultiIndex):
+        #     resource['header'] = range(len(data.columns.levels))
+        # if isinstance(data.index, pd.MultiIndex):
+        #     resource['index_col'] = range(len(data.index.levels))
         # try:
         # # TODO: only transmit data if it has been updated
         # subprocess.call(
@@ -160,10 +164,27 @@ def make_study_datapackage(name, metadata,
                                  for k, v in value.iteritems())
                 resource[key] = value
 
+    datapackage['resources'].append({'name': 'supplemental'})
+    supplemental = datapackage['resources'][-1]
+    supplemental['resources'] = []
+    for supplemental_name, data in supplemental_kws.items():
+        resource = {}
+
+        basename = '{}.csv.gz'.format(supplemental_name)
+        data_filename = '{}/{}'.format(datapackage_dir, basename)
+        with gzip.open(data_filename, 'wb') as f:
+            data.to_csv(f)
+
+        resource['name'] = supplemental_name
+        resource['path'] = basename
+        resource['compression'] = 'gzip'
+        resource['format'] = 'csv'
+        supplemental['resources'].append(resource)
+
     filename = '{}/datapackage.json'.format(datapackage_dir)
     with open(filename, 'w') as f:
         json.dump(datapackage, f, indent=2)
-    sys.stdout.write('Wrote datapackage to {}'.format(filename))
+    sys.stdout.write('Wrote datapackage to {}\n'.format(filename))
 
 
 def name_to_resource(datapackage, name):
