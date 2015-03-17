@@ -100,6 +100,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Flotilla tutorial</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#install-flotilla">Install flotilla</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#create-a-datapackage">Create a datapackage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#day-to-day-helpful-tips">Day to day helpful tips</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#plotting-functions">Plotting functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#recreated-papers">Recreated papers</a></li>
 </ul>
@@ -348,99 +349,35 @@
              <span class="n">show_point_labels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
              <span class="n">show_vectors</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
              <span class="n">show_vector_labels</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-             <span class="n">markersize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">bokeh</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-             <span class="n">plot_loadings</span><span class="o">=</span><span class="s">&#39;heatmap&#39;</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Plot reduced space</span>
-
-<span class="sd">        Figures can be saved with:</span>
-
-<span class="sd">        dv.plot()</span>
-<span class="sd">        dv.fig_reduced.savefig(&#39;decomposition.pdf&#39;)</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        ax : matplotlib.axes.Axes object, optional</span>
-<span class="sd">            An axes object to plot the reduced space and the components onto</span>
-<span class="sd">        title : str, optional</span>
-<span class="sd">            Title to add to the plot</span>
-<span class="sd">        plot_violins : bool, optional</span>
-<span class="sd">            If True, also make a matplotlib.figure.Figure object of the top</span>
-<span class="sd">            features</span>
-<span class="sd">        show_point_labels : bool, optional</span>
-<span class="sd">            If True, show the labels of the points plotted onto the canvas. If</span>
-<span class="sd">            this was not featurewise (default), then the points are the</span>
-<span class="sd">            samples. If this was featurewise, then the points are the features</span>
-<span class="sd">        show_vectors : bool, optional</span>
-<span class="sd">            If True, plot the vectors with the highest magnitude in PC1 and PC2</span>
-<span class="sd">            space</span>
-<span class="sd">        show_vector_labels : bool, optional</span>
-<span class="sd">            If True, label the vectors with their features (if not</span>
-<span class="sd">            featurewise), else their samples</span>
-<span class="sd">        markersize : int, optional</span>
-<span class="sd">            Size of the plotting marker of the samples on the plot</span>
-<span class="sd">        legend : bool, optional</span>
-<span class="sd">            If True, plot a legend showing which celltype corresponds to which</span>
-<span class="sd">            color</span>
-<span class="sd">        bokeh : bool, optional</span>
-<span class="sd">            If True, attempt to plot this using interactive BokehJS plots</span>
-<span class="sd">            which allow for hovering tooltips</span>
-<span class="sd">        metadata : pandas.DataFrame, optional</span>
-<span class="sd">            If provided, all columns of this metadata will be shown when</span>
-<span class="sd">            hovering over the samples in the bokeh version of the plot</span>
-<span class="sd">        plot_loadings : &#39;heatmap&#39; | &#39;scatter&#39;</span>
-<span class="sd">            Whether to plot the loadings of features as a heatmap or a</span>
-<span class="sd">            scatterplot</span>
-<span class="sd">        n_components : int, optional</span>
-<span class="sd">            Number of components to plot on the heatmap</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        self : DecompositionViz</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
+             <span class="n">markersize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">bokeh</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="n">bokeh</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_plot_bokeh</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">nrows</span> <span class="o">=</span> <span class="mi">10</span>
-            <span class="n">ncols</span> <span class="o">=</span> <span class="mi">10</span>
+            <span class="n">gs_x</span> <span class="o">=</span> <span class="mi">14</span>
+            <span class="n">gs_y</span> <span class="o">=</span> <span class="mi">12</span>
 
             <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">fig_reduced</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">gs</span> <span class="o">=</span> <span class="n">GridSpec</span><span class="p">(</span><span class="n">nrows</span><span class="p">,</span> <span class="n">ncols</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">gs</span> <span class="o">=</span> <span class="n">GridSpec</span><span class="p">(</span><span class="n">gs_x</span><span class="p">,</span> <span class="n">gs_y</span><span class="p">)</span>
 
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">gs</span> <span class="o">=</span> <span class="n">GridSpecFromSubplotSpec</span><span class="p">(</span><span class="n">nrows</span><span class="p">,</span> <span class="n">ncols</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">gs</span> <span class="o">=</span> <span class="n">GridSpecFromSubplotSpec</span><span class="p">(</span><span class="n">gs_x</span><span class="p">,</span> <span class="n">gs_y</span><span class="p">,</span>
                                                   <span class="n">ax</span><span class="o">.</span><span class="n">get_subplotspec</span><span class="p">())</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">fig_reduced</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">ax_components</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gs</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">5</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax_loading1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gs</span><span class="p">[:,</span> <span class="mi">6</span><span class="p">:</span><span class="mi">8</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax_loading2</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gs</span><span class="p">[:,</span> <span class="mi">10</span><span class="p">:</span><span class="mi">14</span><span class="p">])</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">plot_samples</span><span class="p">(</span><span class="n">show_point_labels</span><span class="o">=</span><span class="n">show_point_labels</span><span class="p">,</span>
                               <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">show_vectors</span><span class="o">=</span><span class="n">show_vectors</span><span class="p">,</span>
                               <span class="n">show_vector_labels</span><span class="o">=</span><span class="n">show_vector_labels</span><span class="p">,</span>
                               <span class="n">markersize</span><span class="o">=</span><span class="n">markersize</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="n">legend</span><span class="p">,</span>
                               <span class="n">ax</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ax_components</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">plot_loadings</span> <span class="o">==</span> <span class="s">&#39;heatmap&#39;</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ax_explained_variance</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">:</span><span class="n">ncols</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ax_empty</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="n">ncols</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ax_pcs_heatmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gs</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="n">nrows</span><span class="p">,</span> <span class="mi">6</span><span class="p">:</span><span class="n">ncols</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ax_pcs_colorbar</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gs</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="n">nrows</span><span class="p">,</span> <span class="n">ncols</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-
-                <span class="c"># Zero out the one axes in the upper right corner</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ax_empty</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s">&#39;off&#39;</span><span class="p">)</span>  <span class="c"># self.fig_reduced = plt.gcf()</span>
-
-                <span class="bp">self</span><span class="o">.</span><span class="n">plot_loadings_heatmap</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="n">n_components</span><span class="p">)</span>
-
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ax_loading1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gs</span><span class="p">[:,</span> <span class="mi">6</span><span class="p">:</span><span class="mi">8</span><span class="p">])</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ax_loading2</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gs</span><span class="p">[:,</span> <span class="mi">8</span><span class="p">:</span><span class="n">ncols</span><span class="p">])</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">plot_loadings</span><span class="p">(</span><span class="n">pc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">x_pc</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ax_loading1</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">plot_loadings</span><span class="p">(</span><span class="n">pc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y_pc</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ax_loading2</span><span class="p">)</span>
-                <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ax_loading1</span><span class="p">)</span>
-                <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ax_loading2</span><span class="p">)</span>
-            <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ax_components</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plot_loadings</span><span class="p">(</span><span class="n">pc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">x_pc</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ax_loading1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plot_loadings</span><span class="p">(</span><span class="n">pc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y_pc</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ax_loading2</span><span class="p">)</span>
+            <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fig_reduced</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 
             <span class="n">singles_none</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">singles</span> <span class="ow">is</span> <span class="bp">None</span>
@@ -641,50 +578,6 @@
         <span class="k">for</span> <span class="n">lab</span> <span class="ow">in</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_xticklabels</span><span class="p">():</span>
             <span class="n">lab</span><span class="o">.</span><span class="n">set_rotation</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
         <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
-</div>
-<div class="viewcode-block" id="DecompositionViz.plot_loadings_heatmap"><a class="viewcode-back" href="../../../flotilla.visualize.decomposition.html#flotilla.visualize.decomposition.DecompositionViz.plot_loadings_heatmap">[docs]</a>    <span class="k">def</span> <span class="nf">plot_loadings_heatmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_features</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Plot the loadings of each feature in the top principal components</span>
-
-<span class="sd">        Creates a heatmap of the top features contributing to the first few</span>
-<span class="sd">        principal components, sorted by the features&#39; contribution to PC1.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        n_features : int, optional</span>
-<span class="sd">            Total number of features to plot. Half of these will be the top</span>
-<span class="sd">            features contributing to the positive side of PC1, the other will</span>
-<span class="sd">            be the top features contributing to the negative side of PC2</span>
-<span class="sd">        n_components : int, optional</span>
-<span class="sd">            Number of components to plot</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">half</span> <span class="o">=</span> <span class="n">n_features</span><span class="o">/</span><span class="mi">2</span>
-        <span class="n">components</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">components_</span><span class="o">.</span><span class="n">T</span>
-        <span class="n">components</span> <span class="o">=</span> <span class="n">components</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s">&#39;pc_1&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-        <span class="n">components_subset</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">components</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="n">half</span><span class="p">,</span> <span class="p">:</span><span class="n">n_components</span><span class="p">],</span>
-             <span class="n">components</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="n">half</span><span class="p">:,</span> <span class="p">:</span><span class="n">n_components</span><span class="p">]])</span>
-        <span class="n">components_subset</span> <span class="o">=</span> <span class="n">components_subset</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_renamer</span><span class="p">)</span>
-
-        <span class="c"># Plot explained variance</span>
-        <span class="n">ymax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">explained_variance_ratio_</span><span class="p">[:</span><span class="n">n_components</span><span class="p">]</span>
-        <span class="n">ymin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">ymax</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">ymax</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ax_explained_variance</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ymax</span><span class="p">,</span> <span class="s">&#39;o-&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;#262626&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ax_explained_variance</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">,</span>
-                                                <span class="n">color</span><span class="o">=</span><span class="s">&#39;lightgrey&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ax_explained_variance</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&#39;Explained</span><span class="se">\n</span><span class="s">variance</span><span class="se">\n</span><span class="s">ratio&#39;</span><span class="p">)</span>
-        <span class="c"># ax_explained_variance.set_xlabel(&#39;Principal component&#39;)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ax_explained_variance</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ax_explained_variance</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ax_explained_variance</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">components_subset</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
-        <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ax_explained_variance</span><span class="p">)</span>
-
-        <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">components_subset</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ax_pcs_heatmap</span><span class="p">,</span>
-                    <span class="n">cbar_ax</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ax_pcs_colorbar</span><span class="p">,</span>
-                    <span class="n">cbar_kws</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s">&#39;Contribution to Principal Component&#39;</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">ytl</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax_pcs_heatmap</span><span class="o">.</span><span class="n">get_yticklabels</span><span class="p">():</span>
-            <span class="n">ytl</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ax_pcs_colorbar</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_ticks_position</span><span class="p">(</span><span class="s">&#39;right&#39;</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="DecompositionViz.plot_explained_variance"><a class="viewcode-back" href="../../../flotilla.visualize.decomposition.html#flotilla.visualize.decomposition.DecompositionViz.plot_explained_variance">[docs]</a>    <span class="k">def</span> <span class="nf">plot_explained_variance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&quot;PCA explained variance&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;If the reducer is a form of PCA, then plot the explained variance</span>

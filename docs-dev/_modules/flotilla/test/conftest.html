@@ -100,6 +100,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Flotilla tutorial</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#install-flotilla">Install flotilla</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#create-a-datapackage">Create a datapackage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#day-to-day-helpful-tips">Day to day helpful tips</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#plotting-functions">Plotting functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#recreated-papers">Recreated papers</a></li>
 </ul>
@@ -767,7 +768,7 @@
     <span class="k">return</span> <span class="n">BaseData</span><span class="p">(</span><span class="n">expression_data</span><span class="p">)</span>
 
 </div>
-<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;half&#39;</span><span class="p">,</span> <span class="s">&#39;all&#39;</span><span class="p">],</span> <span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;half&#39;</span><span class="p">],</span> <span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
 <div class="viewcode-block" id="sample_ids"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.sample_ids">[docs]</a><span class="k">def</span> <span class="nf">sample_ids</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">base_data</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span>
@@ -778,7 +779,7 @@
         <span class="k">return</span> <span class="n">base_data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">index</span>
 
 </div>
-<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;half&#39;</span><span class="p">,</span> <span class="s">&#39;all&#39;</span><span class="p">],</span> <span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;half&#39;</span><span class="p">,</span> <span class="s">&quot;all&quot;</span><span class="p">],</span> <span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">)</span>
 <div class="viewcode-block" id="feature_ids"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.feature_ids">[docs]</a><span class="k">def</span> <span class="nf">feature_ids</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">base_data</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span>

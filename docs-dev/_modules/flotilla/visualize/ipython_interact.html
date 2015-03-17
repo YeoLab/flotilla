@@ -100,6 +100,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Flotilla tutorial</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#install-flotilla">Install flotilla</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#create-a-datapackage">Create a datapackage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#day-to-day-helpful-tips">Day to day helpful tips</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#plotting-functions">Plotting functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#recreated-papers">Recreated papers</a></li>
 </ul>
@@ -315,6 +316,8 @@
             <span class="n">filename</span><span class="p">,</span> <span class="n">extension</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">savefile</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">maybe_make_directory</span><span class="p">(</span><span class="n">savefile</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 
+            <span class="n">extension</span> <span class="o">=</span> <span class="n">extension</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)</span>
+
             <span class="n">gui</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">fig_reduced</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">savefile</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
                                                   <span class="n">format</span><span class="o">=</span><span class="n">extension</span><span class="p">)</span>
 
@@ -324,7 +327,7 @@
                                           <span class="n">extension</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">gui</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">fig_violins</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span>
-                    <span class="n">violins_file</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="n">extension</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">))</span>
+                    <span class="n">violins_file</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="n">extension</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                 <span class="k">pass</span>
 
@@ -377,7 +380,7 @@
                 <span class="k">assert</span> <span class="p">(</span><span class="n">feature_subset</span> <span class="ow">in</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">splicing</span><span class="o">.</span><span class="n">feature_subsets</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">plot_graph</span><span class="p">(</span><span class="n">data_type</span><span class="o">=</span><span class="n">data_type</span><span class="p">,</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_graph</span><span class="p">(</span><span class="n">data_type</span><span class="o">=</span><span class="n">data_type</span><span class="p">,</span>
                             <span class="n">sample_subset</span><span class="o">=</span><span class="n">sample_subset</span><span class="p">,</span>
                             <span class="n">feature_subset</span><span class="o">=</span><span class="n">feature_subset</span><span class="p">,</span>
                             <span class="n">featurewise</span><span class="o">=</span><span class="n">featurewise</span><span class="p">,</span> <span class="n">draw_labels</span><span class="o">=</span><span class="n">draw_labels</span><span class="p">,</span>
@@ -433,12 +436,14 @@
                                <span class="n">predictor_types</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                                <span class="n">score_coefficient</span><span class="o">=</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>
                                <span class="n">draw_labels</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="c"># Get the second one, because the first one is always &quot;all_samples&quot;</span>
+        <span class="n">categorical_variable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_sample_subsets</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="k">def</span> <span class="nf">do_interact</span><span class="p">(</span><span class="n">data_type</span><span class="p">,</span>
                         <span class="n">sample_subset</span><span class="p">,</span>
                         <span class="n">feature_subset</span><span class="p">,</span>
                         <span class="n">predictor_type</span><span class="o">=</span><span class="n">default_classifier</span><span class="p">,</span>
-                        <span class="n">categorical_variable</span><span class="o">=</span><span class="s">&#39;outlier&#39;</span><span class="p">,</span>
+                        <span class="n">categorical_variable</span><span class="o">=</span><span class="n">categorical_variable</span><span class="p">,</span>
                         <span class="n">score_coefficient</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
                         <span class="n">plot_violins</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
                         <span class="n">show_point_labels</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
@@ -448,7 +453,7 @@
                     <span class="k">continue</span>
                 <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;{} : {}</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">plot_classifier</span><span class="p">(</span><span class="n">trait</span><span class="o">=</span><span class="n">categorical_variable</span><span class="p">,</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_classifier</span><span class="p">(</span><span class="n">trait</span><span class="o">=</span><span class="n">categorical_variable</span><span class="p">,</span>
                                  <span class="n">feature_subset</span><span class="o">=</span><span class="n">feature_subset</span><span class="p">,</span>
                                  <span class="n">sample_subset</span><span class="o">=</span><span class="n">sample_subset</span><span class="p">,</span>
                                  <span class="n">predictor_name</span><span class="o">=</span><span class="n">predictor_type</span><span class="p">,</span>
@@ -486,9 +491,10 @@
         <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="n">w</span><span class="p">):</span>
             <span class="c"># Make the directory if it&#39;s not already there</span>
             <span class="n">filename</span><span class="p">,</span> <span class="n">extension</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">savefile</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">extension</span> <span class="o">=</span> <span class="n">extension</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">maybe_make_directory</span><span class="p">(</span><span class="n">savefile</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 
-            <span class="n">gui</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">fig_reduced</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">savefile</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+            <span class="n">gui</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">pcaviz</span><span class="o">.</span><span class="n">fig_reduced</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">savefile</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
                                                   <span class="n">format</span><span class="o">=</span><span class="n">extension</span><span class="p">)</span>
 
             <span class="c"># add &quot;violins&quot; after the provided filename, but before the</span>
@@ -496,8 +502,8 @@
             <span class="n">violins_file</span> <span class="o">=</span> <span class="s">&#39;{}.{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;violins&#39;</span><span class="p">]),</span>
                                           <span class="n">extension</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">gui</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">fig_violins</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span>
-                    <span class="n">violins_file</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="n">extension</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">))</span>
+                <span class="n">gui</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">pcaviz</span><span class="o">.</span><span class="n">fig_violins</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span>
+                    <span class="n">violins_file</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="n">extension</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                 <span class="k">pass</span>
 
@@ -629,7 +635,7 @@
                                       <span class="n">format</span><span class="o">=</span><span class="n">extension</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">))</span>
 
         <span class="n">savefile</span> <span class="o">=</span> <span class="n">TextWidget</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s">&#39;savefile&#39;</span><span class="p">,</span>
-                              <span class="n">value</span><span class="o">=</span><span class="s">&#39;figures/clustermap.pdf&#39;</span><span class="p">)</span>
+                              <span class="n">value</span><span class="o">=</span><span class="s">&#39;figures/modalities_lavalamps.pdf&#39;</span><span class="p">)</span>
         <span class="n">save_widget</span> <span class="o">=</span> <span class="n">ButtonWidget</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s">&#39;save&#39;</span><span class="p">)</span>
         <span class="n">gui</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">gui</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">children</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="n">savefile</span><span class="p">,</span>
                                                            <span class="n">save_widget</span><span class="p">]</span>
@@ -818,7 +824,7 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;use a custom list name please&quot;</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">feature_subset</span> <span class="o">==</span> <span class="s">&#39;custom&#39;</span><span class="p">:</span>
-                <span class="n">feature_subset</span> <span class="o">=</span> <span class="n">list_link</span>
+                <span class="n">feature_subset</span> <span class="o">=</span> <span class="n">link_to_list</span><span class="p">(</span><span class="n">list_link</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">feature_subset</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_feature_subsets</span><span class="p">[</span><span class="n">data_type</span><span class="p">]:</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;This feature_subset (&#39;{}&#39;) is not available in &quot;</span>
                               <span class="s">&quot;this data type (&#39;{}&#39;). Falling back on all &quot;</span>
@@ -878,7 +884,7 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;use a custom list name please&quot;</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">feature_subset</span> <span class="o">==</span> <span class="s">&#39;custom&#39;</span><span class="p">:</span>
-                <span class="n">feature_subset</span> <span class="o">=</span> <span class="n">list_link</span>
+                <span class="n">feature_subset</span> <span class="o">=</span> <span class="n">link_to_list</span><span class="p">(</span><span class="n">list_link</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">feature_subset</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_feature_subsets</span><span class="p">[</span><span class="n">data_type</span><span class="p">]:</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;This feature_subset (&#39;{}&#39;) is not available in &quot;</span>
                               <span class="s">&quot;this data type (&#39;{}&#39;). Falling back on all &quot;</span>

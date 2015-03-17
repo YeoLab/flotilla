@@ -100,6 +100,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Flotilla tutorial</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#install-flotilla">Install flotilla</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#create-a-datapackage">Create a datapackage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#day-to-day-helpful-tips">Day to day helpful tips</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#plotting-functions">Plotting functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#recreated-papers">Recreated papers</a></li>
 </ul>
@@ -373,7 +374,8 @@
             <span class="n">metadata_phenotype_to_marker</span><span class="p">,</span> <span class="n">pooled_col</span><span class="o">=</span><span class="n">metadata_pooled_col</span><span class="p">,</span>
             <span class="n">outlier_col</span><span class="o">=</span><span class="n">metadata_outlier_col</span><span class="p">,</span>
             <span class="n">phenotype_col</span><span class="o">=</span><span class="n">metadata_phenotype_col</span><span class="p">,</span>
-            <span class="n">predictor_config_manager</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">predictor_config_manager</span><span class="p">)</span>
+            <span class="n">predictor_config_manager</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">predictor_config_manager</span><span class="p">,</span>
+            <span class="n">minimum_sample_subset</span><span class="o">=</span><span class="n">metadata_minimum_samples</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">default_feature_subset</span> <span class="o">=</span> <span class="n">default_feature_subset</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">default_sample_subset</span> <span class="o">=</span> <span class="n">default_sample_subset</span>
@@ -1113,9 +1115,10 @@
         <span class="n">nothing_to_classify</span> <span class="o">=</span> <span class="n">all_true</span> <span class="ow">or</span> <span class="n">all_false</span> <span class="ow">or</span> <span class="n">too_few_categories</span>
 
         <span class="k">if</span> <span class="n">nothing_to_classify</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;All samples are True (or all samples are &quot;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;With the trait &#39;{}&#39;, all samples are True &quot;</span>
+                             <span class="s">&quot;(or all samples are &quot;</span>
                              <span class="s">&quot;False) or all are the same, cannot classify&quot;</span>
-                             <span class="s">&quot;when all samples are the same&quot;</span><span class="p">)</span>
+                             <span class="s">&quot; when all samples are the same&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">trait</span><span class="p">))</span>
         <span class="n">trait_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">trait_data</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">trait</span><span class="p">,</span>
                                <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
 
@@ -1817,7 +1820,7 @@
                             <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">phenotype_to_color</span><span class="p">,</span>
                         <span class="s">&#39;phenotype_to_marker&#39;</span><span class="p">:</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">phenotype_to_marker</span><span class="p">,</span>
-                        <span class="s">&#39;minimum_samples&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">minimum_samples</span><span class="p">,</span>
+                        <span class="s">&#39;minimum_samples&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">minimum_sample_subset</span><span class="p">,</span>
                         <span class="s">&#39;outlier_col&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">outlier_col</span><span class="p">}</span>
 
         <span class="k">try</span><span class="p">:</span>

@@ -100,6 +100,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Flotilla tutorial</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#install-flotilla">Install flotilla</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#create-a-datapackage">Create a datapackage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#day-to-day-helpful-tips">Day to day helpful tips</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#plotting-functions">Plotting functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#recreated-papers">Recreated papers</a></li>
 </ul>
@@ -212,15 +213,14 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">groupby</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
 
-        <span class="n">pcaviz</span> <span class="o">=</span> <span class="n">DecompositionViz</span><span class="p">(</span><span class="n">pca</span><span class="o">.</span><span class="n">reduced_space</span><span class="p">,</span> <span class="n">pca</span><span class="o">.</span><span class="n">components_</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pcaviz</span> <span class="o">=</span> <span class="n">DecompositionViz</span><span class="p">(</span><span class="n">pca</span><span class="o">.</span><span class="n">reduced_space</span><span class="p">,</span> <span class="n">pca</span><span class="o">.</span><span class="n">components_</span><span class="p">,</span>
                                   <span class="n">pca</span><span class="o">.</span><span class="n">explained_variance_ratio_</span><span class="p">,</span>
                                   <span class="n">feature_renamer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_renamer</span><span class="p">,</span>
                                   <span class="n">groupby</span><span class="o">=</span><span class="n">groupby</span><span class="p">,</span>
                                   <span class="n">singles</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">singles</span><span class="p">,</span>
                                   <span class="n">pooled</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pooled</span><span class="p">,</span>
                                   <span class="n">outliers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">outliers</span><span class="p">)</span>
-        <span class="n">pcaviz</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="o">**</span><span class="n">local_plotting_kwargs</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">pcaviz</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pcaviz</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="o">**</span><span class="n">local_plotting_kwargs</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="PredictorBaseViz.plot_scores"><a class="viewcode-back" href="../../../flotilla.visualize.predict.html#flotilla.visualize.PredictorBaseViz.plot_scores">[docs]</a>    <span class="k">def</span> <span class="nf">plot_scores</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
 
