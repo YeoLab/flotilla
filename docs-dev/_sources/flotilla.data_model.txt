@@ -13,7 +13,6 @@ Submodules
    flotilla.data_model.quality_control
    flotilla.data_model.splicing
    flotilla.data_model.study
-   flotilla.data_model.supplemental
 
 Module contents
 ---------------
