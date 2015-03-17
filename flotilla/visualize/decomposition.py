@@ -219,25 +219,17 @@ class DecompositionViz(object):
 
             self.ax_components = plt.subplot(self.gs[:, :5])
 
-
             self.plot_samples(show_point_labels=show_point_labels,
                               title=title, show_vectors=show_vectors,
                               show_vector_labels=show_vector_labels,
                               markersize=markersize, legend=legend,
                               ax=self.ax_components)
             if plot_loadings == 'heatmap':
-                # self.ax_loadings = plt.subplot(self.gs[:, 6:14])
-                # self.gs_loadings = GridSpecFromSubplotSpec(gs_y, gs_x,
-                #                                            ax.get_subplotspec())
-                self.ax_explained_variance = plt.subplot(self.gs[0:2, 6:ncols-1])
+                self.ax_explained_variance = plt.subplot(
+                    self.gs[0:2, 6:ncols-1])
                 self.ax_empty = plt.subplot(self.gs[0:2, ncols-1])
                 self.ax_pcs_heatmap = plt.subplot(self.gs[2:nrows, 6:ncols-1])
                 self.ax_pcs_colorbar = plt.subplot(self.gs[2:nrows, ncols-1])
-                #
-                # ax_explained_variance = axes[0][0]
-                # ax_empty = axes[0][1]
-                # ax_pcs_heatmap = axes[1][0]
-                # ax_pcs_colorbar = axes[1][1]
 
                 # Zero out the one axes in the upper right corner
                 self.ax_empty.axis('off')  # self.fig_reduced = plt.gcf()
@@ -453,28 +445,21 @@ class DecompositionViz(object):
             lab.set_rotation(90)
         sns.despine(ax=ax)
 
-    def plot_loadings_heatmap(self, n_features=50, ax=None, n_components=None):
+    def plot_loadings_heatmap(self, n_features=50, n_components=5):
+        """Plot the loadings of each feature in the top principal components
 
+        Creates a heatmap of the top features contributing to the first few
+        principal components, sorted by the features' contribution to PC1.
 
-        # fig, axes = plt.subplots(nrows=2, ncols=2,
-        #                          gridspec_kw=dict(height_ratios=(0.2, 1),
-        #                                           width_ratios=(1, .1), ),
-        #                          figsize=(6, 10))
-
-        # Get all the sub-axes
-        # gs_x = 11
-        # gs_y = 6
-
-        # if ax is None:
-        #     self.fig_reduced, ax = plt.subplots(1, 1, figsize=(20, 10))
-        #     self.gs = GridSpec(gs_x, gs_y)
-        #
-        # else:
-        #     self.gs = GridSpecFromSubplotSpec(gs_x, gs_y,
-        #                                       ax.get_subplotspec())
-        #     self.fig_reduced = plt.gcf()
-
-
+        Parameters
+        ----------
+        n_features : int, optional
+            Total number of features to plot. Half of these will be the top
+            features contributing to the positive side of PC1, the other will
+            be the top features contributing to the negative side of PC2
+        n_components : int, optional
+            Number of components to plot
+        """
         half = n_features/2
         components = self.components_.T
         components = components.sort(columns='pc_1', ascending=False)
