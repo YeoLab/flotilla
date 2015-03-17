@@ -280,8 +280,80 @@ feature IDs like MISO IDs</p>
 </table>
 <dl class="method">
 <dt id="flotilla.visualize.decomposition.DecompositionViz.plot">
-<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>title=''</em>, <em>plot_violins=False</em>, <em>show_point_labels=False</em>, <em>show_vectors=True</em>, <em>show_vector_labels=True</em>, <em>markersize=10</em>, <em>legend=True</em>, <em>bokeh=False</em>, <em>metadata=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/decomposition.html#DecompositionViz.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.decomposition.DecompositionViz.plot" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>title=''</em>, <em>plot_violins=False</em>, <em>show_point_labels=False</em>, <em>show_vectors=True</em>, <em>show_vector_labels=True</em>, <em>markersize=10</em>, <em>legend=True</em>, <em>bokeh=False</em>, <em>metadata=None</em>, <em>plot_loadings='heatmap'</em>, <em>n_components=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/decomposition.html#DecompositionViz.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.decomposition.DecompositionViz.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot reduced space</p>
+<p>Figures can be saved with:</p>
+<p>dv.plot()
+dv.fig_reduced.savefig(&#8216;decomposition.pdf&#8217;)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ax</strong> : matplotlib.axes.Axes object, optional</p>
+<blockquote>
+<div><p>An axes object to plot the reduced space and the components onto</p>
+</div></blockquote>
+<p><strong>title</strong> : str, optional</p>
+<blockquote>
+<div><p>Title to add to the plot</p>
+</div></blockquote>
+<p><strong>plot_violins</strong> : bool, optional</p>
+<blockquote>
+<div><p>If True, also make a matplotlib.figure.Figure object of the top
+features</p>
+</div></blockquote>
+<p><strong>show_point_labels</strong> : bool, optional</p>
+<blockquote>
+<div><p>If True, show the labels of the points plotted onto the canvas. If
+this was not featurewise (default), then the points are the
+samples. If this was featurewise, then the points are the features</p>
+</div></blockquote>
+<p><strong>show_vectors</strong> : bool, optional</p>
+<blockquote>
+<div><p>If True, plot the vectors with the highest magnitude in PC1 and PC2
+space</p>
+</div></blockquote>
+<p><strong>show_vector_labels</strong> : bool, optional</p>
+<blockquote>
+<div><p>If True, label the vectors with their features (if not
+featurewise), else their samples</p>
+</div></blockquote>
+<p><strong>markersize</strong> : int, optional</p>
+<blockquote>
+<div><p>Size of the plotting marker of the samples on the plot</p>
+</div></blockquote>
+<p><strong>legend</strong> : bool, optional</p>
+<blockquote>
+<div><p>If True, plot a legend showing which celltype corresponds to which
+color</p>
+</div></blockquote>
+<p><strong>bokeh</strong> : bool, optional</p>
+<blockquote>
+<div><p>If True, attempt to plot this using interactive BokehJS plots
+which allow for hovering tooltips</p>
+</div></blockquote>
+<p><strong>metadata</strong> : pandas.DataFrame, optional</p>
+<blockquote>
+<div><p>If provided, all columns of this metadata will be shown when
+hovering over the samples in the bokeh version of the plot</p>
+</div></blockquote>
+<p><strong>plot_loadings</strong> : &#8216;heatmap&#8217; | &#8216;scatter&#8217;</p>
+<blockquote>
+<div><p>Whether to plot the loadings of features as a heatmap or a
+scatterplot</p>
+</div></blockquote>
+<p><strong>n_components</strong> : int, optional</p>
+<blockquote>
+<div><p>Number of components to plot on the heatmap</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>self</strong> : DecompositionViz</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="flotilla.visualize.decomposition.DecompositionViz.plot_explained_variance">
@@ -294,6 +366,32 @@ ratio by the components.</p>
 <dt id="flotilla.visualize.decomposition.DecompositionViz.plot_loadings">
 <code class="descname">plot_loadings</code><span class="sig-paren">(</span><em>pc='pc_1'</em>, <em>n_features=50</em>, <em>ax=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/decomposition.html#DecompositionViz.plot_loadings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.decomposition.DecompositionViz.plot_loadings" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="flotilla.visualize.decomposition.DecompositionViz.plot_loadings_heatmap">
+<code class="descname">plot_loadings_heatmap</code><span class="sig-paren">(</span><em>n_features=50</em>, <em>n_components=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/decomposition.html#DecompositionViz.plot_loadings_heatmap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.decomposition.DecompositionViz.plot_loadings_heatmap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the loadings of each feature in the top principal components</p>
+<p>Creates a heatmap of the top features contributing to the first few
+principal components, sorted by the features&#8217; contribution to PC1.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>n_features</strong> : int, optional</p>
+<blockquote>
+<div><p>Total number of features to plot. Half of these will be the top
+features contributing to the positive side of PC1, the other will
+be the top features contributing to the negative side of PC2</p>
+</div></blockquote>
+<p><strong>n_components</strong> : int, optional</p>
+<blockquote class="last">
+<div><p>Number of components to plot</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="flotilla.visualize.decomposition.DecompositionViz.plot_samples">
