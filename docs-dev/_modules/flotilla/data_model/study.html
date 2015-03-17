@@ -1115,10 +1115,9 @@
         <span class="n">nothing_to_classify</span> <span class="o">=</span> <span class="n">all_true</span> <span class="ow">or</span> <span class="n">all_false</span> <span class="ow">or</span> <span class="n">too_few_categories</span>
 
         <span class="k">if</span> <span class="n">nothing_to_classify</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;With the trait &#39;{}&#39;, all samples are True &quot;</span>
-                             <span class="s">&quot;(or all samples are &quot;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;All samples are True (or all samples are &quot;</span>
                              <span class="s">&quot;False) or all are the same, cannot classify&quot;</span>
-                             <span class="s">&quot; when all samples are the same&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">trait</span><span class="p">))</span>
+                             <span class="s">&quot;when all samples are the same&quot;</span><span class="p">)</span>
         <span class="n">trait_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">trait_data</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">trait</span><span class="p">,</span>
                                <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
 
