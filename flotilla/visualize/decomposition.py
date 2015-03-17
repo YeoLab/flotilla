@@ -516,14 +516,13 @@ class DecompositionViz(object):
              components.iloc[-half:, :n_components]])
         components_subset = components_subset.rename(self.feature_renamer)
 
-
         # Plot explained variance
         ymax = self.explained_variance_ratio_[:n_components]
         ymin = np.zeros(ymax.shape)
         x = np.arange(ymax.shape[0])
         self.ax_explained_variance.plot(ymax, 'o-', color='#262626')
         self.ax_explained_variance.fill_between(x, ymin, ymax,
-                                           color='lightgrey')
+                                                color='lightgrey')
         self.ax_explained_variance.set_ylabel('Explained\nvariance\nratio')
         # ax_explained_variance.set_xlabel('Principal component')
         self.ax_explained_variance.set_xticks(x)
