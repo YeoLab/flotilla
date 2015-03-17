@@ -102,6 +102,7 @@
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Flotilla tutorial</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tutorial.html#install-flotilla">Install flotilla</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorial.html#create-a-datapackage">Create a datapackage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#day-to-day-helpful-tips">Day to day helpful tips</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorial.html#plotting-functions">Plotting functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorial.html#recreated-papers">Recreated papers</a></li>
 </ul>
@@ -174,6 +175,7 @@
 <li class="toctree-l1"><a class="reference internal" href="flotilla.data_model.quality_control.html">flotilla.data_model.quality_control module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="flotilla.data_model.splicing.html">flotilla.data_model.splicing module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="flotilla.data_model.study.html">flotilla.data_model.study module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flotilla.data_model.supplemental.html">flotilla.data_model.supplemental module</a></li>
 </ul>
 </div>
 </div>
@@ -181,7 +183,7 @@
 <h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
 <span class="target" id="module-flotilla.data_model"></span><dl class="class">
 <dt id="flotilla.data_model.Study">
-<em class="property">class </em><code class="descclassname">flotilla.data_model.</code><code class="descname">Study</code><span class="sig-paren">(</span><em>sample_metadata</em>, <em>version='0.1.0'</em>, <em>expression_data=None</em>, <em>expression_feature_data=None</em>, <em>expression_feature_rename_col=None</em>, <em>expression_feature_ignore_subset_cols=None</em>, <em>expression_log_base=None</em>, <em>expression_thresh=-inf</em>, <em>expression_plus_one=False</em>, <em>splicing_data=None</em>, <em>splicing_feature_data=None</em>, <em>splicing_feature_rename_col=None</em>, <em>splicing_feature_ignore_subset_cols=None</em>, <em>splicing_feature_expression_id_col=None</em>, <em>mapping_stats_data=None</em>, <em>mapping_stats_number_mapped_col=None</em>, <em>mapping_stats_min_reads=500000.0</em>, <em>spikein_data=None</em>, <em>spikein_feature_data=None</em>, <em>drop_outliers=True</em>, <em>species=None</em>, <em>gene_ontology_data=None</em>, <em>predictor_config_manager=None</em>, <em>metadata_pooled_col='pooled'</em>, <em>metadata_minimum_samples=0</em>, <em>metadata_phenotype_col='phenotype'</em>, <em>metadata_phenotype_order=None</em>, <em>metadata_phenotype_to_color=None</em>, <em>metadata_phenotype_to_marker=None</em>, <em>metadata_outlier_col='outlier'</em>, <em>license=None</em>, <em>title=None</em>, <em>sources=None</em>, <em>default_sample_subset='all_samples'</em>, <em>default_feature_subset='variant'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.Study" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">flotilla.data_model.</code><code class="descname">Study</code><span class="sig-paren">(</span><em>sample_metadata</em>, <em>version='0.1.0'</em>, <em>expression_data=None</em>, <em>expression_feature_data=None</em>, <em>expression_feature_rename_col=None</em>, <em>expression_feature_ignore_subset_cols=None</em>, <em>expression_log_base=None</em>, <em>expression_thresh=-inf</em>, <em>expression_plus_one=False</em>, <em>splicing_data=None</em>, <em>splicing_feature_data=None</em>, <em>splicing_feature_rename_col=None</em>, <em>splicing_feature_ignore_subset_cols=None</em>, <em>splicing_feature_expression_id_col=None</em>, <em>mapping_stats_data=None</em>, <em>mapping_stats_number_mapped_col=None</em>, <em>mapping_stats_min_reads=500000.0</em>, <em>spikein_data=None</em>, <em>spikein_feature_data=None</em>, <em>drop_outliers=True</em>, <em>species=None</em>, <em>gene_ontology_data=None</em>, <em>predictor_config_manager=None</em>, <em>metadata_pooled_col='pooled'</em>, <em>metadata_minimum_samples=0</em>, <em>metadata_phenotype_col='phenotype'</em>, <em>metadata_phenotype_order=None</em>, <em>metadata_phenotype_to_color=None</em>, <em>metadata_phenotype_to_marker=None</em>, <em>metadata_outlier_col='outlier'</em>, <em>license=None</em>, <em>title=None</em>, <em>sources=None</em>, <em>default_sample_subset='all_samples'</em>, <em>default_feature_subset='variant'</em>, <em>supplemental_data=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.Study" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>A biological study, with associated metadata, expression, and splicing
 data.</p>
@@ -303,9 +305,14 @@ samples from expression_data for further analysis</p>
 <div><p>Gene ids x ontology categories dataframe used for GO analysis.</p>
 </div></blockquote>
 <p><strong>metadata_pooled_col</strong> : str</p>
-<blockquote class="last">
+<blockquote>
 <div><p>Column in metadata_data which specifies as a boolean
 whether or not this sample was pooled.</p>
+</div></blockquote>
+<p><strong>supplemental_data</strong> : dict</p>
+<blockquote class="last">
+<div><p>str: dataframe mapping of the attribute name, and the pandas
+dataframe</p>
 </div></blockquote>
 </td>
 </tr>
@@ -360,7 +367,7 @@ splicing events</p>
 
 <dl class="attribute">
 <dt id="flotilla.data_model.Study.default_feature_set_ids">
-<code class="descname">default_feature_set_ids</code><em class="property"> = ['not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'variant', 'all features']</em><a class="headerlink" href="#flotilla.data_model.Study.default_feature_set_ids" title="Permalink to this definition">¶</a></dt>
+<code class="descname">default_feature_set_ids</code><em class="property"> = ['not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'variant', 'all features', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)', 'not (gene_category: LPS Response)', 'gene_category: LPS Response', 'variant', 'all features', 'gene_category: Housekeeping', 'not (gene_category: Housekeeping)']</em><a class="headerlink" href="#flotilla.data_model.Study.default_feature_set_ids" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1155,7 +1162,7 @@ e.g. &#8220;ENSG00000100320&#8221;</p>
 
 <dl class="attribute">
 <dt id="flotilla.data_model.Study.readers">
-<code class="descname">readers</code><em class="property"> = {'tsv': &lt;function load_tsv at 0x2ab40ffc8140&gt;, 'json': &lt;function load_json at 0x2ab40ffc81b8&gt;, 'csv': &lt;function load_csv at 0x2ab40ffc82a8&gt;, 'gzip_pickle_df': &lt;function load_gzip_pickle_df at 0x2ab40ffc8050&gt;, 'pickle_df': &lt;function load_pickle_df at 0x2ab40ffc1ed8&gt;}</em><a class="headerlink" href="#flotilla.data_model.Study.readers" title="Permalink to this definition">¶</a></dt>
+<code class="descname">readers</code><em class="property"> = {'tsv': &lt;function load_tsv at 0x2b309b9f71b8&gt;, 'json': &lt;function load_json at 0x2b309b9f7230&gt;, 'csv': &lt;function load_csv at 0x2b309b9f7320&gt;, 'gzip_pickle_df': &lt;function load_gzip_pickle_df at 0x2b309b9f70c8&gt;, 'pickle_df': &lt;function load_pickle_df at 0x2b309b9f0f50&gt;}</em><a class="headerlink" href="#flotilla.data_model.Study.readers" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1196,7 +1203,7 @@ metadata data</p>
 
 <dl class="method">
 <dt id="flotilla.data_model.Study.save">
-<code class="descname">save</code><span class="sig-paren">(</span><em>name</em>, <em>flotilla_dir='/home/travis/flotilla_projects'</em>, <em>scrambled=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.Study.save" title="Permalink to this definition">¶</a></dt>
+<code class="descname">save</code><span class="sig-paren">(</span><em>study_name</em>, <em>flotilla_dir='/home/travis/flotilla_projects'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/data_model/study.html#Study.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.Study.save" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
