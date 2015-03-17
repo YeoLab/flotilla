@@ -224,7 +224,8 @@ class Study(object):
             metadata_phenotype_to_marker, pooled_col=metadata_pooled_col,
             outlier_col=metadata_outlier_col,
             phenotype_col=metadata_phenotype_col,
-            predictor_config_manager=self.predictor_config_manager)
+            predictor_config_manager=self.predictor_config_manager,
+            minimum_sample_subset=metadata_minimum_samples)
 
         self.default_feature_subset = default_feature_subset
         self.default_sample_subset = default_sample_subset
@@ -1668,7 +1669,7 @@ class Study(object):
                             self.metadata.phenotype_to_color,
                         'phenotype_to_marker':
                             self.metadata.phenotype_to_marker,
-                        'minimum_samples': self.metadata.minimum_samples,
+                        'minimum_samples': self.metadata.minimum_sample_subset,
                         'outlier_col': self.metadata.outlier_col}
 
         try:
