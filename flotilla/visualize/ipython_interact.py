@@ -578,7 +578,8 @@ class Interactive(object):
                 sys.stdout.write('{} : {}\n'.format(k, v))
 
             else:
-                renamer = lambda x: x
+                def renamer(x):
+                    return x
 
             if feature_subset not in self.default_feature_subsets[data_type]:
                 warnings.warn("This feature_subset ('{}') is not available in "

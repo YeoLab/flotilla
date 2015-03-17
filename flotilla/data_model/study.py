@@ -2,6 +2,7 @@
 Data models for "studies" studies include attributes about the data and are
 heavier in terms of data load
 """
+import inspect
 import json
 import os
 import sys
@@ -15,8 +16,10 @@ import seaborn as sns
 
 from .metadata import MetaData, PHENOTYPE_COL, POOLED_COL, OUTLIER_COL
 from .expression import ExpressionData, SpikeInData
+from .gene_ontology import GeneOntologyData
 from .quality_control import MappingStatsData, MIN_READS
 from .splicing import SplicingData, FRACTION_DIFF_THRESH
+from .supplemental import SupplementalData
 from ..compute.predict import PredictorConfigManager
 from ..datapackage import datapackage_url_to_dict, \
     check_if_already_downloaded, make_study_datapackage
@@ -31,6 +34,10 @@ SPECIES_DATA_PACKAGE_BASE_URL = 'https://s3-us-west-2.amazonaws.com/' \
                                 'flotilla-projects'
 DATAPACKAGE_RESOURCE_COMMON_KWS = ('url', 'path', 'format', 'compression',
                                    'name')
+
+
+def _is_absolute_path(location):
+    return location.startswith('http') or location.startswith('/')
 
 
 class Study(object):
@@ -95,7 +102,8 @@ class Study(object):
                  metadata_outlier_col=OUTLIER_COL,
                  license=None, title=None, sources=None,
                  default_sample_subset="all_samples",
-                 default_feature_subset="variant"):
+                 default_feature_subset="variant",
+                 supplemental_data=None):
         """Construct a biological study
 
         This class only accepts data, no filenames. All data must already
@@ -178,6 +186,9 @@ class Study(object):
         metadata_pooled_col : str
             Column in metadata_data which specifies as a boolean
             whether or not this sample was pooled.
+        supplemental_data : dict
+            str: dataframe mapping of the attribute name, and the pandas
+            dataframe
 
         Note
         ----
@@ -198,7 +209,8 @@ class Study(object):
         # self.predictor_config_manager = None
 
         self.species = species
-        self.gene_ontology_data = gene_ontology_data
+        if gene_ontology_data is not None:
+            self.gene_ontology = GeneOntologyData(gene_ontology_data)
 
         self.license = license
         self.title = title
@@ -232,7 +244,7 @@ class Study(object):
                     pooled = self.metadata.data.index[
                         self.metadata.data[
                             self.metadata.pooled_col].astype(bool)]
-                except:
+                except KeyError:
                     pooled = None
         self.pooled = pooled
 
@@ -250,6 +262,7 @@ class Study(object):
                     ':\n\t{}\n'.format(mapping_stats_min_reads, outliers_ids))
         else:
             self.technical_outliers = None
+            self.mapping_stats = None
         feature_data_none = expression_feature_data is None or \
             splicing_feature_data is None
 
@@ -302,6 +315,8 @@ class Study(object):
                 feature_ignore_subset_cols=feature_ignore_subset_cols)
             self.default_feature_set_ids.extend(self.expression.feature_subsets
                                                 .keys())
+        else:
+            self.expression = None
         if splicing_data is not None:
             sys.stdout.write("{}\tLoading splicing data\n".format(
                 timestamp()))
@@ -314,12 +329,17 @@ class Study(object):
                 minimum_samples=metadata_minimum_samples,
                 feature_ignore_subset_cols=splicing_feature_ignore_subset_cols,
                 feature_expression_id_col=splicing_feature_expression_id_col)
+        else:
+            self.splicing = None
 
         if spikein_data is not None:
             self.spikein = SpikeInData(
                 spikein_data, feature_data=spikein_feature_data,
                 technical_outliers=self.technical_outliers,
                 predictor_config_manager=self.predictor_config_manager)
+        else:
+            self.spikein = None
+        self.supplemental = SupplementalData(supplemental_data)
         sys.stdout.write("{}\tSuccessfully initialized a Study "
                          "object!\n".format(timestamp()))
 
@@ -377,9 +397,9 @@ class Study(object):
         for name in self._subsetable_data_types:
             try:
                 data_type = getattr(self, name)
+                feature_subsets[name] = data_type.feature_subsets
             except AttributeError:
                 continue
-            feature_subsets[name] = data_type.feature_subsets
         return feature_subsets
 
     @classmethod
@@ -397,8 +417,8 @@ class Study(object):
             requiring the following data resources: metadata,
             expression, splicing
         species_data_pacakge_base_url : str
-            Base URL to fetch species-specific gene and splicing event
-            metadata from.
+            Base URL to fetch species-specific _ and splicing event
+            metadata frnm.
             Default 'https://s3-us-west-2.amazonaws.com/flotilla-projects/'
 
         Returns
@@ -437,8 +457,33 @@ class Study(object):
             species_datapackage_base_url=species_datapackage_base_url)
 
     @staticmethod
-    def _is_absolute_path(location):
-        return location.startswith('http') or location.startswith('/')
+    def _filename_from_resource(resource, datapackage_dir,
+                                datapackage_name):
+        if 'url' in resource:
+            resource_url = resource['url']
+            if not _is_absolute_path(resource_url):
+                resource_url = '{}/{}'.format(datapackage_dir,
+                                              resource_url)
+            filename = check_if_already_downloaded(resource_url,
+                                                   datapackage_name)
+            return filename
+        elif 'path' in resource:
+            if resource['path'].startswith('http'):
+                filename = check_if_already_downloaded(resource['path'],
+                                                       datapackage_name)
+            else:
+                filename = resource['path']
+                if not _is_absolute_path(filename):
+                    filename = '{}/{}'.format(datapackage_dir,
+                                              filename)
+
+                # Test if the file exists, if not, then add the datapackage
+                # file
+                if not os.path.exists(filename):
+                    filename = os.path.join(datapackage_dir, filename)
+            return filename
+        else:
+            return None
 
     @classmethod
     def from_datapackage(
@@ -461,45 +506,45 @@ class Study(object):
                          'object\n'.format(timestamp()))
         dfs = {}
         kwargs = {}
+        supplemental_data = {}
         datapackage_name = datapackage['name']
 
         for resource in datapackage['resources']:
-            if 'url' in resource:
-                resource_url = resource['url']
-                if not cls._is_absolute_path(resource_url):
-                    resource_url = '{}/{}'.format(datapackage_dir,
-                                                  resource_url)
-                filename = check_if_already_downloaded(resource_url,
-                                                       datapackage_name)
-            else:
-                if resource['path'].startswith('http'):
-                    filename = check_if_already_downloaded(resource['path'],
+            filename = cls._filename_from_resource(resource, datapackage_dir,
+                                                   datapackage_name)
+            if filename is None:
+                # This is supplemental data
+                for supplemental in resource[u'resources']:
+                    filename = cls._filename_from_resource(supplemental,
+                                                           datapackage_dir,
                                                            datapackage_name)
-                else:
-                    filename = resource['path']
-                    if not cls._is_absolute_path(filename):
-                        filename = '{}/{}'.format(datapackage_dir,
-                                                  filename)
+                    name = supplemental['name']
 
-                    # Test if the file exists, if not, then add the datapackage
-                    # file
-                    if not os.path.exists(filename):
-                        filename = os.path.join(datapackage_dir, filename)
+                    reader = cls.readers[supplemental['format']]
+                    compression = None if 'compression' not in \
+                                          supplemental else \
+                        supplemental['compression']
+                    header = supplemental.pop('header', 0)
+                    index_col = supplemental.pop('index_col', 0)
+                    df = reader(filename, compression=compression,
+                                header=header, index_col=index_col)
+                    supplemental_data[name] = df
+            else:
 
-            name = resource['name']
+                name = resource['name']
 
-            reader = cls.readers[resource['format']]
-            compression = None if 'compression' not in resource else \
-                resource['compression']
-            header = resource.pop('header', 0)
-            index_col = resource.pop('index_col', 0)
+                reader = cls.readers[resource['format']]
+                compression = None if 'compression' not in resource else \
+                    resource['compression']
+                header = resource.pop('header', 0)
+                index_col = resource.pop('index_col', 0)
 
-            dfs[name] = reader(filename, compression=compression,
-                               header=header, index_col=index_col)
+                dfs[name] = reader(filename, compression=compression,
+                                   header=header, index_col=index_col)
 
-            for key in set(resource.keys()).difference(
-                    DATAPACKAGE_RESOURCE_COMMON_KWS):
-                kwargs['{}_{}'.format(name, key)] = resource[key]
+                for key in set(resource.keys()).difference(
+                        DATAPACKAGE_RESOURCE_COMMON_KWS):
+                    kwargs['{}_{}'.format(name, key)] = resource[key]
 
         species_kws = {}
         species = None if 'species' not in datapackage else datapackage[
@@ -536,7 +581,8 @@ class Study(object):
                 'version string'.format(version))
         study = Study(sample_metadata=sample_metadata, species=species,
                       license=license, title=title, sources=sources,
-                      version=version, **kwargs)
+                      version=version, supplemental_data=supplemental_data,
+                      **kwargs)
         return study
 
     @staticmethod
@@ -572,8 +618,9 @@ class Study(object):
                 for key in other_keys:
                     new_key = '{}_{}'.format(name_no_data, key)
                     dfs[new_key] = resource[key]
-        except (IOError, ValueError):
-            sys.stderr.write('Error loading species {} data '.format(species))
+        except (IOError, ValueError) as e:
+            sys.stderr.write('Error loading species {} data:'
+                             ' {}'.format(species, e))
         return dfs
 
     def detect_outliers(self, data_type='expression',
@@ -630,25 +677,6 @@ class Study(object):
         self.expression.outlier_samples = outliers
         self.splicing.outlier_samples = outliers
 
-    def jsd(self):
-        """Performs Jensen-Shannon Divergence on both splicing and expression
-        study_data
-
-        Jensen-Shannon divergence is a method of quantifying the amount of
-        change in distribution of one measurement (e.g. a splicing event or a
-        gene expression) from one celltype to another.
-        """
-        raise NotImplementedError
-        # TODO: Check if JSD has not already been calculated (memoize)
-        self.expression.jsd()
-        self.splicing.jsd()
-
-    def normalize_to_spikein(self):
-        raise NotImplementedError
-
-    def compute_expression_splicing_covariance(self):
-        raise NotImplementedError
-
     @staticmethod
     def maybe_make_directory(filename):
         # Make the directory if it's not already there
@@ -703,14 +731,14 @@ class Study(object):
 
         try:
             return self.metadata.sample_subsets[phenotype_subset]
-        except KeyError:
+        except (KeyError, TypeError):
             pass
 
-        ind = self.metadata.phenotype_series == phenotype_subset
-        if ind.sum() > 0:
-            return self.metadata.phenotype_series.index[ind]
-
         try:
+            ind = self.metadata.sample_id_to_phenotype == phenotype_subset
+            if ind.sum() > 0:
+                return self.metadata.sample_id_to_phenotype.index[ind]
+
             if phenotype_subset is None or 'all_samples'.startswith(
                     phenotype_subset):
                 sample_ind = np.ones(self.metadata.data.shape[0],
@@ -725,7 +753,7 @@ class Study(object):
                     self.metadata.data[phenotype_subset], dtype='bool')
             sample_ids = self.metadata.data.index[sample_ind]
             return sample_ids
-        except AttributeError:
+        except (AttributeError, ValueError):
             return phenotype_subset
 
     def plot_pca(self, data_type='expression', x_pc=1, y_pc=2,
@@ -899,24 +927,6 @@ class Study(object):
                 featurewise=featurewise,
                 **kwargs)
 
-    def plot_study_sample_legend(self):
-        markers = self.metadata.data.color.groupby(
-            self.metadata.data.marker
-            + "." + self.metadata.data.celltype).last()
-
-        f, ax = plt.subplots(1, 1, figsize=(3, len(markers)))
-
-        for i, point_type in enumerate(markers.iteritems(), ):
-            mrk, celltype = point_type[0].split('.')
-            ax.scatter(0, 0, marker=mrk, c=point_type[1],
-                       edgecolor='none', label=celltype,
-                       s=160)
-        ax.set_xlim(1, 2)
-        ax.set_ylim(1, 2)
-        ax.axis('off')
-        legend = ax.legend(title='cell type', fontsize=20, )
-        return legend
-
     def plot_classifier(self, trait, sample_subset=None,
                         feature_subset='all_genes',
                         data_type='expression', title='',
@@ -943,9 +953,14 @@ class Study(object):
             trait_ids = self.sample_subset_to_sample_ids(trait)
             trait_data = self.metadata.data.index.isin(trait_ids)
 
-        all_true = np.all(trait_data)
-        all_false = np.all(~trait_data)
-        too_few_categories = len(set(trait_data)) <= 1
+        if isinstance(trait_data.dtype, bool):
+            all_true = np.all(trait_data)
+            all_false = np.all(~trait_data)
+            too_few_categories = False
+        else:
+            all_false = False
+            all_true = False
+            too_few_categories = len(set(trait_data)) <= 1
         nothing_to_classify = all_true or all_false or too_few_categories
 
         if nothing_to_classify:
@@ -989,15 +1004,6 @@ class Study(object):
                 show_point_labels=show_point_labels, title=title,
                 order=order, color=color,
                 **kwargs)
-
-    def plot_regressor(self, data_type='expression', **kwargs):
-        """
-        """
-        raise NotImplementedError
-        if data_type == "expression":
-            self.expression.plot_regressor(**kwargs)
-        elif data_type == "splicing":
-            self.splicing.plot_regressor(**kwargs)
 
     def modality_assignments(self, sample_subset=None, feature_subset=None,
                              expression_thresh=-np.inf, min_samples=0.5):
@@ -1512,9 +1518,10 @@ class Study(object):
                 'splicing', feature_subset, rename=False)
             data = None
 
-        self.splicing.plot_lavalamp(sample_ids, feature_ids, data,
-                                    self.sample_id_to_phenotype,
-                                    self.phenotype_to_color,
+        self.splicing.plot_lavalamp(sample_ids=sample_ids,
+                                    feature_ids=feature_ids, data=data,
+                                    groupby=self.sample_id_to_phenotype,
+                                    phenotype_to_color=self.phenotype_to_color,
                                     order=self.phenotype_order)
 
     def plot_big_nmf_space_transitions(self, data_type='expression', n=5):
@@ -1651,9 +1658,9 @@ class Study(object):
             return self.splicing.big_nmf_space_transitions(
                 self.sample_id_to_phenotype, phenotype_transitions, n=n)
 
-    def save(self, name, flotilla_dir=FLOTILLA_DOWNLOAD_DIR):
+    def save(self, study_name, flotilla_dir=FLOTILLA_DOWNLOAD_DIR):
 
-        metadata = self.metadata.data
+        metadata = self.metadata.data_original
 
         metadata_kws = {'pooled_col': self.metadata.pooled_col,
                         'phenotype_col': self.metadata.phenotype_col,
@@ -1709,12 +1716,28 @@ class Study(object):
             spikein = None
 
         try:
+            gene_ontology = self.gene_ontology.data
+        except AttributeError:
+            gene_ontology = None
+
+        try:
             mapping_stats = self.mapping_stats.data_original
             mapping_stats_kws = {
-                'number_mapped_col': self.mapping_stats.number_mapped_col}
+                'number_mapped_col': self.mapping_stats.number_mapped_col,
+                'min_reads': self.mapping_stats.min_reads}
         except AttributeError:
             mapping_stats = None
             mapping_stats_kws = None
+
+        supplemental_attributes = inspect.getmembers(self.supplemental,
+                                                     lambda a: not
+                                                     (inspect.isroutine(a)))
+        supplemental_attributes = [a for a in supplemental_attributes
+                                   if not(a[0].startswith('__') and
+                                          a[0].endswith('__'))]
+        supplemental_kws = {}
+        for supplemental_name, df in supplemental_attributes:
+            supplemental_kws[supplemental_name] = df
 
         # Increase the version number
         version = semantic_version.Version(self.version)
@@ -1722,7 +1745,7 @@ class Study(object):
         version = str(version)
 
         return make_study_datapackage(
-            name, metadata, expression, splicing,
+            study_name, metadata, expression, splicing,
             spikein, mapping_stats, metadata_kws=metadata_kws,
             expression_kws=expression_kws, splicing_kws=splicing_kws,
             mapping_stats_kws=mapping_stats_kws,
@@ -1731,7 +1754,8 @@ class Study(object):
             splicing_feature_data=splicing_feature_data,
             splicing_feature_kws=splicing_feature_kws, species=self.species,
             license=self.license, title=self.title, sources=self.sources,
-            version=version, flotilla_dir=flotilla_dir)
+            version=version, flotilla_dir=flotilla_dir,
+            gene_ontology=gene_ontology, supplemental_kws=supplemental_kws)
 
     @staticmethod
     def _maybe_get_axis_name(df, axis=0, alt_name=None):
@@ -1854,6 +1878,44 @@ class Study(object):
         else:
             return self.splicing.data
 
+    def go_enrichment(self, feature_ids, background=None, domain=None,
+                      p_value_cutoff=1000000, min_feature_size=3,
+                      min_background_size=5):
+        """Calculate gene ontology enrichment of provided features
+
+        Parameters
+        ----------
+        feature_ids : list-like
+            Features to calculate gene ontology enrichment on
+        background : list-like, optional
+            Features to use as the background
+        domain : str or list, optional
+            Only calculate GO enrichment for a particular GO category or
+            subset of categories. Valid domains:
+            'biological_process', 'molecular_function', 'cellular_component'
+        p_value_cutoff : float, optional
+            Maximum accepted Bonferroni-corrected p-value
+        min_feature_size : int, optional
+            Minimum number of features of interest overlapping in a GO Term,
+            to calculate enrichment
+        min_background_size : int, optional
+            Minimum number of features in the background overlapping a GO Term
+        Returns
+        -------
+        enrichment : pandas.DataFrame
+            A (go_categories, columns) dataframe showing the GO
+            enrichment categories that were enriched in the features
+        """
+        if background is None:
+            warnings.warn('No background provided, defaulting to all '
+                          'expressed genes')
+            background = self.expression.data.columns
+        return self.gene_ontology.enrichment(
+            feature_ids, background=background,
+            cross_reference=self.expression.feature_renamer_series,
+            domain=domain, p_value_cutoff=p_value_cutoff,
+            min_feature_size=min_feature_size,
+            min_background_size=min_background_size)
 
 # Add interactive visualizations
 Study.interactive_classifier = Interactive.interactive_classifier

@@ -3,6 +3,7 @@ import sys
 import warnings
 
 import matplotlib as mpl
+import pandas as pd
 import seaborn as sns
 
 from .base import BaseData, subsets_from_metadata
@@ -26,6 +27,7 @@ class MetaData(BaseData):
         super(MetaData, self).__init__(
             data, outliers=None,
             predictor_config_manager=predictor_config_manager)
+        self.data_original = self.data
 
         self.phenotype_col = phenotype_col if phenotype_col is not None else \
             self._default_phenotype_col
@@ -122,7 +124,10 @@ class MetaData(BaseData):
     @property
     def _default_phenotype_to_color(self):
         colors = iter(self._colors)
-        color_factory = lambda: colors.next()
+
+        def color_factory():
+            return colors.next()
+
         return defaultdict(color_factory)
 
     @property
@@ -171,9 +176,10 @@ class MetaData(BaseData):
 
     @property
     def sample_id_to_color(self):
-        return dict((sample_id, self.phenotype_to_color[p])
-                    for sample_id, p in
-                    self.sample_id_to_phenotype.iteritems())
+        return pd.Series(
+            dict((sample_id, self.phenotype_to_color[p])
+                 for sample_id, p in
+                 self.sample_id_to_phenotype.iteritems()))
 
     @property
     def sample_subsets(self):
