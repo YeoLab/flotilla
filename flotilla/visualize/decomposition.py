@@ -201,6 +201,54 @@ class DecompositionViz(object):
              show_vector_labels=True,
              markersize=10, legend=True, bokeh=False, metadata=None,
              plot_loadings='heatmap', n_components=5):
+        """Plot reduced space
+
+        Figures can be saved with:
+
+        dv.plot()
+        dv.fig_reduced.savefig('decomposition.pdf')
+
+        Parameters
+        ----------
+        ax : matplotlib.axes.Axes object, optional
+            An axes object to plot the reduced space and the components onto
+        title : str, optional
+            Title to add to the plot
+        plot_violins : bool, optional
+            If True, also make a matplotlib.figure.Figure object of the top
+            features
+        show_point_labels : bool, optional
+            If True, show the labels of the points plotted onto the canvas. If
+            this was not featurewise (default), then the points are the
+            samples. If this was featurewise, then the points are the features
+        show_vectors : bool, optional
+            If True, plot the vectors with the highest magnitude in PC1 and PC2
+            space
+        show_vector_labels : bool, optional
+            If True, label the vectors with their features (if not
+            featurewise), else their samples
+        markersize : int, optional
+            Size of the plotting marker of the samples on the plot
+        legend : bool, optional
+            If True, plot a legend showing which celltype corresponds to which
+            color
+        bokeh : bool, optional
+            If True, attempt to plot this using interactive BokehJS plots
+            which allow for hovering tooltips
+        metadata : pandas.DataFrame, optional
+            If provided, all columns of this metadata will be shown when
+            hovering over the samples in the bokeh version of the plot
+        plot_loadings : 'heatmap' | 'scatter'
+            Whether to plot the loadings of features as a heatmap or a
+            scatterplot
+        n_components : int, optional
+            Number of components to plot on the heatmap
+
+        Returns
+        -------
+        self : DecompositionViz
+
+        """
 
         if bokeh:
             self._plot_bokeh(metadata, title)
