@@ -210,7 +210,7 @@ class TestSplicingData:
             phenotype]
 
         data = splicing._subset(splicing.data,
-                                      sample_ids=top_pc1_samples)
+                                sample_ids=top_pc1_samples)
         binned = splicing.binify(data)
         true_is_nmf_space_x_axis_included = bool(binned[event][0])
 
@@ -257,7 +257,7 @@ class TestSplicingData:
             groupby=groupby_params)
 
         data = splicing._subset(splicing.data, sample_ids,
-                                      feature_ids, require_min_samples=False)
+                                feature_ids, require_min_samples=False)
         if groupby_params is None:
             groupby_copy = pd.Series('all', index=data.index)
         else:
@@ -297,7 +297,7 @@ class TestSplicingData:
             sample_ids=sample_ids, feature_ids=feature_ids)
 
         assignments = splicing.modality_assignments(sample_ids,
-                                                          feature_ids)
+                                                    feature_ids)
         true_counts = assignments.apply(lambda x: x.groupby(x).size(), axis=1)
         pdt.assert_frame_equal(test_modality_counts, true_counts)
 
@@ -330,9 +330,8 @@ class TestSplicingData:
         features = splicing.data.columns[ind]
         feature1 = features[0]
         feature2 = features[1]
-        splicing.plot_two_features(feature1, feature2,
-                                         groupby=groupby,
-                                         label_to_color=group_to_color)
+        splicing.plot_two_features(feature1, feature2, groupby=groupby,
+                                   label_to_color=group_to_color)
 
     def test_plot_two_samples(self, splicing):
         samples = splicing.data.index[splicing.data.T.count() > 10]
