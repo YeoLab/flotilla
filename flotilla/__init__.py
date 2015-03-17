@@ -1,7 +1,7 @@
 import os
 
 from .data_model import Study, ExpressionData, SplicingData, MetaData, \
-    MappingStatsData, SpikeInData
+    MappingStatsData, SpikeInData, GeneOntologyData
 from .compute.predict import PredictorConfigManager, PredictorDataSetManager
 from .datapackage import make_study_datapackage, FLOTILLA_DOWNLOAD_DIR
 
@@ -10,9 +10,9 @@ __all__ = ['Study', 'PredictorConfigManager', 'PredictorDataSetManager',
            'make_study_datapackage', 'FLOTILLA_DOWNLOAD_DIR',
            'compute', 'data_model', 'visualize', 'Study', 'ExpressionData',
            'SplicingData', 'MetaData', 'SpikeInData', 'MappingStatsData',
-           'datapackage', 'go', 'util']
+           'datapackage', 'GeneOntologyData', 'go', 'util']
 
-__version__ = '0.2.5dev'
+__version__ = '0.2.6dev'
 
 # 18 cells, multiindex on the splicing data features, features already renamed
 # in the matrices
@@ -26,7 +26,8 @@ _brainspan = 'https://s3-us-west-2.amazonaws.com/flotilla/' \
              'brainspan_batch_corrected_for_amazon_s3/datapackage.json'
 
 
-def embark(study_name, load_species_data=True):
+def embark(study_name, load_species_data=True,
+           flotilla_dir=FLOTILLA_DOWNLOAD_DIR):
     """
     Begin your journey of data exploration.
 
@@ -47,7 +48,7 @@ def embark(study_name, load_species_data=True):
         except IOError:
             pass
         filename = os.path.abspath(os.path.expanduser(
-            '{}/{}/datapackage.json'.format(FLOTILLA_DOWNLOAD_DIR,
+            '{}/{}/datapackage.json'.format(flotilla_dir,
                                             study_name)))
         return Study.from_datapackage_file(filename,
                                            load_species_data=load_species_data)
