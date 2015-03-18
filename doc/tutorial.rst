@@ -24,8 +24,16 @@ Computing on splicing data
 
 .. toctree::
     :maxdepth: 2
-
     tutorial/modalities
+
+Day to day helpful tips
+-----------------------
+
+.. toctree::
+    :maxdepth: 2
+
+    tutorial/supplementaldata
+
 
 Plotting functions
 ------------------
