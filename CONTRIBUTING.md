@@ -115,3 +115,5 @@ before the pull request is merged.
 - [ ] Was a spellchecker run on the source code and documentation after
   changes were made?
 ```
+
+Note: This checklist was heavily borrowed from the [khmer](https://khmer.readthedocs.org/en/latest/dev/coding-guidelines-and-review.html#checklist) project.
