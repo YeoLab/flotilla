@@ -393,7 +393,7 @@ class DecompositionViz(object):
         ax.set_title(title)
 
         if legend:
-            ax.legend()
+            ax.legend(loc="best")
         sns.despine()
 
     def plot_loadings(self, pc='pc_1', n_features=50, ax=None):
