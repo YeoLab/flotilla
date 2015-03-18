@@ -31,3 +31,4 @@ Miscellaneous
 
 - Streamlined test suite to test fewer things at a time, which shortened the
   test suite from ~20 minutes to ~3 minutes, about 85% time savings.
+- Improved accuracy (fewer false positives) in splicing modality estimation
