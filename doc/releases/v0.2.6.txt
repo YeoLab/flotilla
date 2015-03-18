@@ -36,3 +36,4 @@ Miscellaneous
 - Improved accuracy (fewer false positives) in splicing modality estimation
 - Added requirement for new non-plotting features to at least be documented as
   IPython notebooks, so the knowledge is shared.
+- Change PCA plot to place legend in "best" place
