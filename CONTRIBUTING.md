@@ -98,7 +98,7 @@ before the pull request is merged.
 ```
 - [ ] Is it mergable?
 - [ ] Did it pass the tests?
-- [ ] If it introduces new functionality in scripts/ is it tested?
+- [ ] If it introduces new functionality in is it tested?
   Check for code coverage. To run code coverage on only the file you changed,
   for example `flotilla/compute/splicing.py`, use this command: 
   `py.test --cov flotilla/compute/splicing.py --cov-report term-missing flotilla/test/compute/test_splicing.py`
