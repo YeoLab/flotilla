@@ -18,7 +18,14 @@ Create a datapackage
     :maxdepth: 2
 
     tutorial/barebones_study_making
-    tutorial/advanced_study_making
+
+Computing on splicing data
+--------------------------
+
+.. toctree::
+    :maxdepth: 2
+
+    tutorial/modalities
 
 Plotting functions
 ------------------
