@@ -2,6 +2,7 @@
 Data models for "studies" studies include attributes about the data and are
 heavier in terms of data load
 """
+import inspect
 import json
 import os
 import sys
@@ -18,6 +19,7 @@ from .expression import ExpressionData, SpikeInData
 from .gene_ontology import GeneOntologyData
 from .quality_control import MappingStatsData, MIN_READS
 from .splicing import SplicingData, FRACTION_DIFF_THRESH
+from .supplemental import SupplementalData
 from ..compute.predict import PredictorConfigManager
 from ..datapackage import datapackage_url_to_dict, \
     check_if_already_downloaded, make_study_datapackage
@@ -32,6 +34,10 @@ SPECIES_DATA_PACKAGE_BASE_URL = 'https://s3-us-west-2.amazonaws.com/' \
                                 'flotilla-projects'
 DATAPACKAGE_RESOURCE_COMMON_KWS = ('url', 'path', 'format', 'compression',
                                    'name')
+
+
+def _is_absolute_path(location):
+    return location.startswith('http') or location.startswith('/')
 
 
 class Study(object):
@@ -96,7 +102,8 @@ class Study(object):
                  metadata_outlier_col=OUTLIER_COL,
                  license=None, title=None, sources=None,
                  default_sample_subset="all_samples",
-                 default_feature_subset="variant"):
+                 default_feature_subset="variant",
+                 supplemental_data=None):
         """Construct a biological study
 
         This class only accepts data, no filenames. All data must already
@@ -179,6 +186,9 @@ class Study(object):
         metadata_pooled_col : str
             Column in metadata_data which specifies as a boolean
             whether or not this sample was pooled.
+        supplemental_data : dict
+            str: dataframe mapping of the attribute name, and the pandas
+            dataframe
 
         Note
         ----
@@ -329,7 +339,7 @@ class Study(object):
                 predictor_config_manager=self.predictor_config_manager)
         else:
             self.spikein = None
-
+        self.supplemental = SupplementalData(supplemental_data)
         sys.stdout.write("{}\tSuccessfully initialized a Study "
                          "object!\n".format(timestamp()))
 
@@ -447,8 +457,33 @@ class Study(object):
             species_datapackage_base_url=species_datapackage_base_url)
 
     @staticmethod
-    def _is_absolute_path(location):
-        return location.startswith('http') or location.startswith('/')
+    def _filename_from_resource(resource, datapackage_dir,
+                                datapackage_name):
+        if 'url' in resource:
+            resource_url = resource['url']
+            if not _is_absolute_path(resource_url):
+                resource_url = '{}/{}'.format(datapackage_dir,
+                                              resource_url)
+            filename = check_if_already_downloaded(resource_url,
+                                                   datapackage_name)
+            return filename
+        elif 'path' in resource:
+            if resource['path'].startswith('http'):
+                filename = check_if_already_downloaded(resource['path'],
+                                                       datapackage_name)
+            else:
+                filename = resource['path']
+                if not _is_absolute_path(filename):
+                    filename = '{}/{}'.format(datapackage_dir,
+                                              filename)
+
+                # Test if the file exists, if not, then add the datapackage
+                # file
+                if not os.path.exists(filename):
+                    filename = os.path.join(datapackage_dir, filename)
+            return filename
+        else:
+            return None
 
     @classmethod
     def from_datapackage(
@@ -471,45 +506,45 @@ class Study(object):
                          'object\n'.format(timestamp()))
         dfs = {}
         kwargs = {}
+        supplemental_data = {}
         datapackage_name = datapackage['name']
 
         for resource in datapackage['resources']:
-            if 'url' in resource:
-                resource_url = resource['url']
-                if not cls._is_absolute_path(resource_url):
-                    resource_url = '{}/{}'.format(datapackage_dir,
-                                                  resource_url)
-                filename = check_if_already_downloaded(resource_url,
-                                                       datapackage_name)
-            else:
-                if resource['path'].startswith('http'):
-                    filename = check_if_already_downloaded(resource['path'],
+            filename = cls._filename_from_resource(resource, datapackage_dir,
+                                                   datapackage_name)
+            if filename is None:
+                # This is supplemental data
+                for supplemental in resource[u'resources']:
+                    filename = cls._filename_from_resource(supplemental,
+                                                           datapackage_dir,
                                                            datapackage_name)
-                else:
-                    filename = resource['path']
-                    if not cls._is_absolute_path(filename):
-                        filename = '{}/{}'.format(datapackage_dir,
-                                                  filename)
+                    name = supplemental['name']
 
-                    # Test if the file exists, if not, then add the datapackage
-                    # file
-                    if not os.path.exists(filename):
-                        filename = os.path.join(datapackage_dir, filename)
+                    reader = cls.readers[supplemental['format']]
+                    compression = None if 'compression' not in \
+                                          supplemental else \
+                        supplemental['compression']
+                    header = supplemental.pop('header', 0)
+                    index_col = supplemental.pop('index_col', 0)
+                    df = reader(filename, compression=compression,
+                                header=header, index_col=index_col)
+                    supplemental_data[name] = df
+            else:
 
-            name = resource['name']
+                name = resource['name']
 
-            reader = cls.readers[resource['format']]
-            compression = None if 'compression' not in resource else \
-                resource['compression']
-            header = resource.pop('header', 0)
-            index_col = resource.pop('index_col', 0)
+                reader = cls.readers[resource['format']]
+                compression = None if 'compression' not in resource else \
+                    resource['compression']
+                header = resource.pop('header', 0)
+                index_col = resource.pop('index_col', 0)
 
-            dfs[name] = reader(filename, compression=compression,
-                               header=header, index_col=index_col)
+                dfs[name] = reader(filename, compression=compression,
+                                   header=header, index_col=index_col)
 
-            for key in set(resource.keys()).difference(
-                    DATAPACKAGE_RESOURCE_COMMON_KWS):
-                kwargs['{}_{}'.format(name, key)] = resource[key]
+                for key in set(resource.keys()).difference(
+                        DATAPACKAGE_RESOURCE_COMMON_KWS):
+                    kwargs['{}_{}'.format(name, key)] = resource[key]
 
         species_kws = {}
         species = None if 'species' not in datapackage else datapackage[
@@ -546,7 +581,8 @@ class Study(object):
                 'version string'.format(version))
         study = Study(sample_metadata=sample_metadata, species=species,
                       license=license, title=title, sources=sources,
-                      version=version, **kwargs)
+                      version=version, supplemental_data=supplemental_data,
+                      **kwargs)
         return study
 
     @staticmethod
@@ -1621,7 +1657,7 @@ class Study(object):
             return self.splicing.big_nmf_space_transitions(
                 self.sample_id_to_phenotype, phenotype_transitions, n=n)
 
-    def save(self, name, flotilla_dir=FLOTILLA_DOWNLOAD_DIR, scrambled=False):
+    def save(self, study_name, flotilla_dir=FLOTILLA_DOWNLOAD_DIR):
 
         metadata = self.metadata.data_original
 
@@ -1692,13 +1728,23 @@ class Study(object):
             mapping_stats = None
             mapping_stats_kws = None
 
+        supplemental_attributes = inspect.getmembers(self.supplemental,
+                                                     lambda a: not
+                                                     (inspect.isroutine(a)))
+        supplemental_attributes = [a for a in supplemental_attributes
+                                   if not(a[0].startswith('__') and
+                                          a[0].endswith('__'))]
+        supplemental_kws = {}
+        for supplemental_name, df in supplemental_attributes:
+            supplemental_kws[supplemental_name] = df
+
         # Increase the version number
         version = semantic_version.Version(self.version)
         version.patch = version.patch + 1
         version = str(version)
 
         return make_study_datapackage(
-            name, metadata, expression, splicing,
+            study_name, metadata, expression, splicing,
             spikein, mapping_stats, metadata_kws=metadata_kws,
             expression_kws=expression_kws, splicing_kws=splicing_kws,
             mapping_stats_kws=mapping_stats_kws,
@@ -1708,7 +1754,7 @@ class Study(object):
             splicing_feature_kws=splicing_feature_kws, species=self.species,
             license=self.license, title=self.title, sources=self.sources,
             version=version, flotilla_dir=flotilla_dir,
-            gene_ontology=gene_ontology)
+            gene_ontology=gene_ontology, supplemental_kws=supplemental_kws)
 
     @staticmethod
     def _maybe_get_axis_name(df, axis=0, alt_name=None):

@@ -26,7 +26,8 @@ _brainspan = 'https://s3-us-west-2.amazonaws.com/flotilla/' \
              'brainspan_batch_corrected_for_amazon_s3/datapackage.json'
 
 
-def embark(study_name, load_species_data=True):
+def embark(study_name, load_species_data=True,
+           flotilla_dir=FLOTILLA_DOWNLOAD_DIR):
     """
     Begin your journey of data exploration.
 
@@ -47,7 +48,7 @@ def embark(study_name, load_species_data=True):
         except IOError:
             pass
         filename = os.path.abspath(os.path.expanduser(
-            '{}/{}/datapackage.json'.format(FLOTILLA_DOWNLOAD_DIR,
+            '{}/{}/datapackage.json'.format(flotilla_dir,
                                             study_name)))
         return Study.from_datapackage_file(filename,
                                            load_species_data=load_species_data)

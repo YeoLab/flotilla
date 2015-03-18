@@ -6,6 +6,9 @@ This is a patch release, with non-breaking changes from 0.2.5.
 New features
 ~~~~~~~~~~~~
 
+- Add a :py:class:`.data_model.SupplementalData` data type, which allows the
+  user to store any ``pandas.DataFrame`` on the :py:class:`.data_model.Study`
+  object as `study.supplemental`. This is essentially user-driven caching.
 
 Plotting functions
 ~~~~~~~~~~~~~~~~~~
