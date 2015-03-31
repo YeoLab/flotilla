@@ -1288,6 +1288,7 @@ class BaseData(object):
                               nmf_space=True, fig=fig, axesgrid=axesgrid)
 
     def plot_two_samples(self, sample1, sample2, fillna=None,
+                         na_value=None,
                          **kwargs):
         """
         Parameters
@@ -1296,8 +1297,12 @@ class BaseData(object):
             Name of the sample to plot on the x-axis
         sample2 : str
             Name of the sample to plot on the y-axis
-        fillna : float
+        fillna : float, optional
             Value to replace NAs with
+        na_value : float, optional
+            Values in the data equal to this will be removed where both samples
+            are equal to this value. Useful for removing features that have 0
+            expression in both samples, e.g. if na_value=0.
         Any other keyword arguments valid for seaborn.jointplot
 
         Returns
@@ -1312,6 +1317,14 @@ class BaseData(object):
         """
         x = self.data.ix[sample1]
         y = self.data.ix[sample2]
+
+        if na_value is not None:
+            x = x.replace(na_value, np.nan).dropna()
+            y = y.replace(na_value, np.nan).dropna()
+
+            x, y = x.align(y, 'outer')
+            x = x.fillna(na_value)
+            y = y.fillna(na_value)
 
         if fillna is not None:
             x = x.fillna(fillna)
