@@ -1537,6 +1537,7 @@ class Study(object):
                 self.phenotype_to_color, self.phenotype_to_marker, n=n)
 
     def plot_two_samples(self, sample1, sample2, data_type='expression',
+                         fillna=None, na_value=None,
                          **kwargs):
         """Plot a scatterplot of two samples' data
 
@@ -1548,6 +1549,12 @@ class Study(object):
             Name of the sample to plot on the y-axis
         data_type : "expression" | "splicing"
             Type of data to plot. Default "expression"
+        fillna : float, optional
+            Value to replace NAs with
+        na_value : float, optional
+            Values in the data equal to this will be removed where both samples
+            are equal to this value. Useful for removing features that have 0
+            expression in both samples, e.g. if na_value=0.
         Any other keyword arguments valid for seaborn.jointplot
 
         Returns
@@ -1561,9 +1568,13 @@ class Study(object):
 
         """
         if data_type == 'expression':
-            return self.expression.plot_two_samples(sample1, sample2, **kwargs)
+            return self.expression.plot_two_samples(sample1, sample2,
+                                                    fillna=fillna,
+                                                    na_value=na_value, **kwargs)
         elif data_type == 'splicing':
-            return self.splicing.plot_two_samples(sample1, sample2, **kwargs)
+            return self.splicing.plot_two_samples(sample1, sample2,
+                                                  fillna=fillna,
+                                                  na_value=na_value, **kwargs)
 
     def plot_two_features(self, feature1, feature2, data_type='expression',
                           **kwargs):
