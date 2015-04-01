@@ -252,6 +252,7 @@ def simple_twoway_scatter(sample1, sample2, **kwargs):
     ymin = max(ymin, sample2.min() - .1)
     jointgrid.ax_joint.set_xlim(xmin, xmax)
     jointgrid.ax_joint.set_ylim(ymin, ymax)
+    return jointgrid
 
 
 def barplot(data, color=None, x_order=None, ax=None, title='', **kwargs):
