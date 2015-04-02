@@ -271,15 +271,15 @@ class Study(object):
             species_kws = self.load_species_data(self.species, self.readers)
             if expression_feature_data is None:
                 expression_feature_data = species_kws.pop(
-                    'expression_feature_data', None)            
+                    'expression_feature_data', None)
                 expression_feature_rename_col = species_kws.pop(
                     'expression_feature_rename_col', None)
                 expression_feature_ignore_subset_cols = species_kws.pop(
                     'expression_feature_ignore_subset_cols', None)
-                
+
             if splicing_feature_data is None:
-                splicing_feature_data = species_kws.pop('splicing_feature_data',
-                                                        None)
+                splicing_feature_data = species_kws.pop(
+                    'splicing_feature_data', None)
                 splicing_feature_rename_col = species_kws.pop(
                     'splicing_feature_rename_col', None)
                 splicing_feature_expression_id_col = species_kws.pop(

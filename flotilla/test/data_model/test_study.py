@@ -27,9 +27,11 @@ def color_samples_by(request, metadata_phenotype_col):
     else:
         return request.param
 
+
 @pytest.fixture(params=['hg19', 'mm10'])
 def species(request):
     return request.param
+
 
 class TestStudy(object):
     # @pytest.fixture
