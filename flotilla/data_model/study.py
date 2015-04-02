@@ -31,7 +31,7 @@ from ..util import load_csv, load_json, load_tsv, load_gzip_pickle_df, \
 
 
 SPECIES_DATA_PACKAGE_BASE_URL = 'https://s3-us-west-2.amazonaws.com/' \
-                                'flotilla-projects'
+                                'flotilla'
 DATAPACKAGE_RESOURCE_COMMON_KWS = ('url', 'path', 'format', 'compression',
                                    'name')
 
@@ -209,8 +209,6 @@ class Study(object):
         # self.predictor_config_manager = None
 
         self.species = species
-        if gene_ontology_data is not None:
-            self.gene_ontology = GeneOntologyData(gene_ontology_data)
 
         self.license = license
         self.title = title
@@ -271,33 +269,27 @@ class Study(object):
             sys.stdout.write('{}\tLoading species metadata from '
                              '~/flotilla_packages\n'.format(timestamp()))
             species_kws = self.load_species_data(self.species, self.readers)
-            expression_feature_data = species_kws.pop(
-                'expression_feature_data',
-                None)
-            expression_feature_rename_col = species_kws.pop(
-                'expression_feature_rename_col', None)
-            splicing_feature_data = species_kws.pop('splicing_feature_data',
-                                                    None)
-            splicing_feature_rename_col = species_kws.pop(
-                'splicing_feature_rename_col', None)
-
             if expression_feature_data is None:
                 expression_feature_data = species_kws.pop(
-                    'expression_feature_data',
-                    None)
-
-            if expression_feature_rename_col is None:
+                    'expression_feature_data', None)            
                 expression_feature_rename_col = species_kws.pop(
                     'expression_feature_rename_col', None)
-
+                expression_feature_ignore_subset_cols = species_kws.pop(
+                    'expression_feature_ignore_subset_cols', None)
+                
             if splicing_feature_data is None:
-                splicing_feature_data = species_kws.pop(
-                    'splicing_feature_data',
-                    None)
-
-            if splicing_feature_rename_col is None:
+                splicing_feature_data = species_kws.pop('splicing_feature_data',
+                                                        None)
                 splicing_feature_rename_col = species_kws.pop(
                     'splicing_feature_rename_col', None)
+                splicing_feature_expression_id_col = species_kws.pop(
+                    'splicing_feature_expression_id_col', None)
+                splicing_feature_ignore_subset_cols = species_kws.pop(
+                    'splicing_feature_ignore_subset_cols', None)
+
+            if gene_ontology_data is None:
+                gene_ontology_data = species_kws.pop('gene_ontology_data',
+                                                     None)
 
         if expression_data is not None:
             sys.stdout.write(
@@ -341,6 +333,9 @@ class Study(object):
         else:
             self.spikein = None
         self.supplemental = SupplementalData(supplemental_data)
+        if gene_ontology_data is not None:
+            self.gene_ontology = GeneOntologyData(gene_ontology_data)
+
         sys.stdout.write("{}\tSuccessfully initialized a Study "
                          "object!\n".format(timestamp()))
 
@@ -612,7 +607,7 @@ class Study(object):
                     resource['compression']
                 name = resource['name']
                 dfs[name] = reader(filename,
-                                   compression=compression)
+                                   compression=compression, index_col=0)
                 other_keys = set(resource.keys()).difference(
                     DATAPACKAGE_RESOURCE_COMMON_KWS)
                 name_no_data = name.rstrip('_data')
