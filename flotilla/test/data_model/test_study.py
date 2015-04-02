@@ -231,7 +231,9 @@ class TestStudy(object):
 
     def test_load_species(self, species):
         from flotilla import Study
-        species_data = Study.load_species_data(species, Study.readers)
+
+        species_data = Study.load_species_data(species, Study.readers,
+                                               nrows=100)
 
         assert 'expression_feature_data' in species_data
         assert 'splicing_feature_data' in species_data
