@@ -584,7 +584,33 @@ class Study(object):
     @staticmethod
     def load_species_data(
             species, readers,
-            species_datapackage_base_url=SPECIES_DATA_PACKAGE_BASE_URL):
+            species_datapackage_base_url=SPECIES_DATA_PACKAGE_BASE_URL,
+            nrows=None):
+        """
+
+        Parameters
+        ----------
+        species : str
+            Name of the species with genoem build, e.g. "hg19" or "mm10"
+        readers : dict
+            Mapping of file types to pandas readers
+        species_datapackage_base_url : str, optional
+            Url where the species name and datapackage could be appended, i.e.:
+            species_datapackage_base_url/species/datapackage.json
+            is a valid location
+        nrows : int, optional
+            Number of rows to read in. Useful for reading chunks of large files
+
+        Returns
+        -------
+        data : dict
+            A string to dataframe or value mapping of all entries in the
+            species datapackage.
+
+        Raises
+        ------
+
+        """
         dfs = {}
 
         try:
@@ -607,7 +633,8 @@ class Study(object):
                     resource['compression']
                 name = resource['name']
                 dfs[name] = reader(filename,
-                                   compression=compression, index_col=0)
+                                   compression=compression, index_col=0,
+                                   nrows=nrows)
                 other_keys = set(resource.keys()).difference(
                     DATAPACKAGE_RESOURCE_COMMON_KWS)
                 name_no_data = name.rstrip('_data')
