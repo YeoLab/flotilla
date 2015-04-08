@@ -1060,6 +1060,7 @@ class BaseData(object):
         feature_ids = self.maybe_renamed_to_feature_id(feature_id)
         if phenotype_groupby is None:
             phenotype_groupby = pd.Series('all', index=self.data.index)
+        phenotype_groupby = pd.Series(phenotype_groupby)
 
         if not isinstance(feature_ids, pd.Index):
             feature_ids = [feature_id]
