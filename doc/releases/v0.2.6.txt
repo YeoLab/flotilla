@@ -36,4 +36,13 @@ Miscellaneous
 - Improved accuracy (fewer false positives) in splicing modality estimation
 - Added requirement for new non-plotting features to at least be documented as
   IPython notebooks, so the knowledge is shared.
-- Change PCA plot to place legend in "best" place
+- Changed PCA plot to place legend in "best" place
+- Changed default plotting marker from a circle to a randomly chosen symbol
+  from a list
+- Violinplots are now variable width and expand with the number of samples
+    - This was changed in :py:meth:`.data_model.Study.plot_gene`,
+    :py:meth:`.data_model.Study.plot_event` and
+    :py:meth:`.data_model.Study.plot_pca` when ``plot_violins=True``
+- Add info about data type when reporting that a feature was not found
+
+

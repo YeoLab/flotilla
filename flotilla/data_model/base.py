@@ -319,9 +319,10 @@ class BaseData(object):
         elif feature_id in self.data.columns:
             return feature_id
         else:
-            raise ValueError('{} is not a valid feature identifier (it may '
-                             'not have been measured in this dataset!)'
-                             .format(feature_id))
+            raise ValueError('{} is not a valid feature identifier for "{}" '
+                             'data (it may not have been measured in this '
+                             'dataset!)'
+                             .format(self.data_type, feature_id))
 
     @property
     def _var_cut(self):
@@ -1059,17 +1060,26 @@ class BaseData(object):
         feature_ids = self.maybe_renamed_to_feature_id(feature_id)
         if phenotype_groupby is None:
             phenotype_groupby = pd.Series('all', index=self.data.index)
+        phenotype_groupby = pd.Series(phenotype_groupby)
 
         if not isinstance(feature_ids, pd.Index):
             feature_ids = [feature_id]
 
+        grouped = phenotype_groupby.groupby(phenotype_groupby)
+        single_violin_width = 0.5
+        ax_width = max(4, single_violin_width*grouped.size().shape[0])
+
         if fig is None and axesgrid is None:
             nrows = len(feature_ids)
             ncols = 2 if nmf_space else 1
-            figsize = 4 * ncols, 4 * nrows
+            figsize = ax_width * ncols, 4 * nrows
+            gridspec_kw = {}
+            if nmf_space:
+                gridspec_kw['width_ratios'] = (ax_width, 4)
 
             fig, axesgrid = plt.subplots(nrows=nrows, ncols=ncols,
-                                         figsize=figsize)
+                                         figsize=figsize,
+                                         gridspec_kw=gridspec_kw)
             if nrows == 1:
                 axesgrid = [axesgrid]
 

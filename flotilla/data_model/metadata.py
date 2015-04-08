@@ -1,6 +1,7 @@
 from collections import defaultdict
 import sys
 import warnings
+from itertools import cycle
 
 import matplotlib as mpl
 import pandas as pd
@@ -65,20 +66,23 @@ class MetaData(BaseData):
                 self._phenotype_to_color[phenotype] = color
 
         self.phenotype_to_marker = phenotype_to_marker
+
+        markers = cycle(['o', '^', 's', 'v', '*', 'D', ])
         if self.phenotype_to_marker is not None:
             for phenotype in self.unique_phenotypes:
                 try:
                     marker = self.phenotype_to_marker[phenotype]
                 except KeyError:
+                    marker = markers.next()
                     sys.stderr.write(
                         '{} does not have marker style, '
-                        'falling back on "o" (circle)'.format(phenotype))
-                    marker = 'o'
+                        'falling back on "{}"'.format(phenotype, marker))
                 if marker not in mpl.markers.MarkerStyle.filled_markers:
+                    correct_marker = markers.next()
                     sys.stderr.write(
                         '{} is not a valid matplotlib marker style, '
-                        'falling back on "o" (circle)'.format(marker))
-                    marker = 'o'
+                        'falling back on "{}"'.format(marker, correct_marker))
+                    marker = correct_marker
                 self.phenotype_to_marker[phenotype] = marker
 
     @property
@@ -151,7 +155,11 @@ class MetaData(BaseData):
 
     @property
     def phenotype_to_marker(self):
-        _default_phenotype_to_marker = defaultdict(lambda: 'o')
+        markers = cycle(['o', '^', 's', 'v', '*', 'D', ])
+
+        def marker_factory():
+            return markers.next()
+        _default_phenotype_to_marker = defaultdict(marker_factory)
         all_phenotypes = self._phenotype_to_marker.keys()
         all_phenotypes.extend(self.phenotype_order)
         return dict((k, self._phenotype_to_marker[k])
@@ -165,10 +173,14 @@ class MetaData(BaseData):
             self._phenotype_to_marker = value
         else:
             sys.stderr.write('No phenotype to marker (matplotlib plotting '
-                             'symbol) was provided, so each phenotype will be '
-                             'plotted as a circle in visualizations.\n')
-            self._phenotype_to_marker = dict.fromkeys(self.unique_phenotypes,
-                                                      'o')
+                             'symbol) was provided, falling back on reasonable'
+                             ' defaults.\n')
+            markers = cycle(['o', '^', 's', 'v', '*', 'D', ])
+
+            def marker_factory():
+                return markers.next()
+
+            self._phenotype_to_marker = defaultdict(marker_factory)
 
     @property
     def phenotype_color_order(self):
