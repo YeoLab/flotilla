@@ -1,4 +1,5 @@
 from collections import defaultdict
+from itertools import cycle
 
 import matplotlib as mpl
 import numpy as np
@@ -66,8 +67,14 @@ class TestMetaData(object):
                 true_phenotype_to_color[phenotype] = color
 
         if phenotype_to_marker is None:
-            true_phenotype_to_marker = dict.fromkeys(
-                test_metadata.unique_phenotypes, 'o')
+            markers = cycle(['o', '^', 's', 'v', '*', 'D', ])
+
+            def marker_factory():
+                return markers.next()
+            true_phenotype_to_marker = defaultdict(marker_factory)
+            for x in true_phenotype_order:
+                true_phenotype_to_marker[x]
+
         else:
             true_phenotype_to_marker = phenotype_to_marker
 
