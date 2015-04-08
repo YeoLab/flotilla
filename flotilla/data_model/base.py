@@ -1063,13 +1063,20 @@ class BaseData(object):
         if not isinstance(feature_ids, pd.Index):
             feature_ids = [feature_id]
 
+        grouped = phenotype_groupby.groupby(phenotype_groupby)
+        single_violin_width = 0.5
+        ax_width = max(4, single_violin_width*grouped.size().shape[0])
+
         if fig is None and axesgrid is None:
             nrows = len(feature_ids)
             ncols = 2 if nmf_space else 1
-            figsize = 4 * ncols, 4 * nrows
+            figsize = ax_width * ncols, 4 * nrows
+            gridspec_kws = {}
+            if nmf_space:
+                gridspec_kws['width_ratios'] = (ax_width, 4)
 
             fig, axesgrid = plt.subplots(nrows=nrows, ncols=ncols,
-                                         figsize=figsize)
+                                         figsize=figsize, **gridspec_kws)
             if nrows == 1:
                 axesgrid = [axesgrid]
 
