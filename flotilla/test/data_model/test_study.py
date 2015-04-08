@@ -355,8 +355,13 @@ class TestStudy(object):
         true_figsize = ax_width * ncols, 4 * nrows
         npt.assert_array_equal(true_figsize, test_figsize)
 
-    def test_plot_pca(self, study, data_type):
-        study.plot_pca(feature_subset='all', data_type=data_type)
+    @pytest.fixture(params=[True, False])
+    def plot_violins(self, request):
+        return request.param
+
+    def test_plot_pca(self, study, data_type, plot_violins):
+        study.plot_pca(feature_subset='all', data_type=data_type,
+                       plot_violins=plot_violins)
         plt.close('all')
 
     # Too few features to test graph or classifier
