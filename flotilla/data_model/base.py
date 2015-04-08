@@ -319,9 +319,10 @@ class BaseData(object):
         elif feature_id in self.data.columns:
             return feature_id
         else:
-            raise ValueError('{} is not a valid feature identifier (it may '
-                             'not have been measured in this dataset!)'
-                             .format(feature_id))
+            raise ValueError('{} is not a valid feature identifier for "{}" '
+                             'data (it may not have been measured in this '
+                             'dataset!)'
+                             .format(self.data_type, feature_id))
 
     @property
     def _var_cut(self):
@@ -1076,7 +1077,8 @@ class BaseData(object):
                 gridspec_kws['width_ratios'] = (ax_width, 4)
 
             fig, axesgrid = plt.subplots(nrows=nrows, ncols=ncols,
-                                         figsize=figsize, **gridspec_kws)
+                                         figsize=figsize,
+                                         gridspec_kws=gridspec_kws)
             if nrows == 1:
                 axesgrid = [axesgrid]
 
