@@ -299,3 +299,47 @@ class TestBaseData:
         else:
             true_feature_ids = expression.data.columns
         pdt.assert_array_equal(test_feature_ids, true_feature_ids)
+
+def test_subsets_from_metadata(expression_feature_data):
+    from flotilla.data_model.base import subsets_from_metadata
+
+    minimum = 5
+    subset_type = 'expression'
+    metadata = expression_feature_data.copy()
+
+    test_subsets = subsets_from_metadata(metadata,
+                                         5, 'expression')
+
+    true_subsets = {}
+    sorted_bool = (False, True)
+    if true_subsets is not None:
+        for col in expression_feature_data:
+            if tuple(sorted(metadata[col].dropna().unique())) == sorted_bool:
+                series = metadata[col].dropna()
+                sample_subset = series[series].index
+                true_subsets[col] = sample_subset
+            else:
+                grouped = metadata.groupby(col)
+                sizes = grouped.size()
+                filtered_sizes = sizes[sizes >= minimum]
+                for group in filtered_sizes.keys():
+                    if isinstance(group, bool):
+                        continue
+                    name = '{}: {}'.format(col, group)
+                    true_subsets[name] = grouped.groups[group]
+        for sample_subset in true_subsets.keys():
+            name = 'not ({})'.format(sample_subset)
+            if 'False' in name or 'True' in name:
+                continue
+            if name not in true_subsets:
+                in_features = metadata.index.isin(true_subsets[
+                    sample_subset])
+                true_subsets[name] = metadata.index[~in_features]
+        true_subsets['all {}'.format(subset_type)] = metadata.index
+
+    pdt.assert_dict_equal(true_subsets, test_subsets)
+
+    # Make sure every column is in the subsets
+    for col in expression_feature_data:
+        if tuple(sorted(metadata[col].dropna().unique())) == sorted_bool:
+            assert col in test_subsets
