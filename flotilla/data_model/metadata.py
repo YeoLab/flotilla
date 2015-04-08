@@ -155,7 +155,11 @@ class MetaData(BaseData):
 
     @property
     def phenotype_to_marker(self):
-        _default_phenotype_to_marker = defaultdict(lambda: 'o')
+        markers = cycle(['o', '^', 's', 'v', '*', 'D', ])
+
+        def marker_factory():
+            return markers.next()
+        _default_phenotype_to_marker = defaultdict(marker_factory)
         all_phenotypes = self._phenotype_to_marker.keys()
         all_phenotypes.extend(self.phenotype_order)
         return dict((k, self._phenotype_to_marker[k])
