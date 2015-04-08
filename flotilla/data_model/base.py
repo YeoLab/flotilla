@@ -1072,13 +1072,13 @@ class BaseData(object):
             nrows = len(feature_ids)
             ncols = 2 if nmf_space else 1
             figsize = ax_width * ncols, 4 * nrows
-            gridspec_kws = {}
+            gridspec_kw = {}
             if nmf_space:
-                gridspec_kws['width_ratios'] = (ax_width, 4)
+                gridspec_kw['width_ratios'] = (ax_width, 4)
 
             fig, axesgrid = plt.subplots(nrows=nrows, ncols=ncols,
                                          figsize=figsize,
-                                         gridspec_kws=gridspec_kws)
+                                         gridspec_kw=gridspec_kw)
             if nrows == 1:
                 axesgrid = [axesgrid]
 
