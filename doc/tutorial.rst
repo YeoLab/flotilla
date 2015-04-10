@@ -36,17 +36,15 @@ Day to day helpful tips
     tutorial/supplementaldata
 
 
-Plotting functions
-------------------
-
-.. toctree::
-    :maxdepth: 1
-
-    tutorial/pca
-    tutorial/classification
-    tutorial/network
-    tutorial/expression_specific
-    tutorial/splicing_specific
+.. Plotting functions
+   ------------------
+   .. toctree::
+       :maxdepth: 1
+        tutorial/pca
+        tutorial/classification
+        tutorial/network
+        tutorial/expression_specific
+        tutorial/splicing_specific
 
 Recreated papers
 ----------------
