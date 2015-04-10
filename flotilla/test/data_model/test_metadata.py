@@ -10,15 +10,20 @@ import pandas.util.testing as pdt
 
 
 class TestMetaData(object):
-    n = 20
-    index = ['sample_{}'.format(i + 1) for i in range(n)]
-    metadata = pd.DataFrame(index=index)
-    phenotype_col = 'phenotype'
-    metadata[phenotype_col] = np.random.choice(list('ABC'), size=20)
-    metadata['subset1'] = np.random.choice([True, False], size=20)
+    @pytest.fixture
+    def metadata(self):
+        n = 20
+        index = ['sample_{}'.format(i + 1) for i in range(n)]
+        metadata = pd.DataFrame(index=index)
+        phenotype_col = 'phenotype'
+        metadata[phenotype_col] = np.random.choice(list('ABC'), size=20)
+        metadata['subset1'] = np.random.choice([True, False], size=20)
+        return metadata
 
-    kws = {'minimum_sample_subset': 2,
-           'phenotype_col': phenotype_col}
+    @pytest.fixture
+    def kws(self):
+        kws = {'minimum_sample_subset': 2,
+               'phenotype_col': phenotype_col}
 
     @pytest.fixture(params=[None, list('CAB')])
     def phenotype_order(self, request):
@@ -33,7 +38,7 @@ class TestMetaData(object):
     def phenotype_to_marker(self, request):
         return request.param
 
-    def test_init(self, phenotype_order, phenotype_to_color,
+    def test_init(self, metadata, phenotype_order, phenotype_to_color,
                   phenotype_to_marker):
         from flotilla.data_model.metadata import MetaData
         from flotilla.data_model.base import subsets_from_metadata
@@ -126,11 +131,29 @@ class TestMetaData(object):
         pdt.assert_dict_equal(test_metadata.sample_subsets,
                               true_sample_subsets)
 
-    def test_change_phenotype_col(self, phenotype_order, phenotype_to_color,
+    def test_ignore_subset_columns(self, metadata, phenotype_order,
+                                   phenotype_to_color, phenotype_to_marker,
+                                   kws):
+        from flotilla.data_model.metadata import MetaData
+
+        metadata = metadata.copy()
+        metadata['no_subset'] = np.arange(metadata.shape[0])
+        ignore_subset_columns = 'no_subset'
+
+        test_metadata = MetaData(metadata,
+                                 phenotype_order=phenotype_order,
+                                 phenotype_to_color=phenotype_to_color,
+                                 phenotype_to_marker=phenotype_to_marker,
+                                 **kws)
+        assert 'no_subset' not in test_metadata.sample_subsets
+
+
+    def test_change_phenotype_col(self, metadata,
+                                  phenotype_order, phenotype_to_color,
                                   phenotype_to_marker):
         from flotilla.data_model.metadata import MetaData
 
-        metadata = self.metadata.copy()
+        metadata = metadata.copy()
         metadata['phenotype2'] = np.random.choice(list('QXYZ'), size=self.n)
 
         test_metadata = MetaData(metadata, phenotype_order,
