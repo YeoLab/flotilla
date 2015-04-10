@@ -45,3 +45,4 @@ Miscellaneous
     :py:meth:`.data_model.Study.plot_event` and
     :py:meth:`.data_model.Study.plot_pca` when ``plot_violins=True``
 - Add info about data type when reporting that a feature was not found
+- Fix lack of tutorial on how to create a datapackage
