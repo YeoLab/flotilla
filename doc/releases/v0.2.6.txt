@@ -1,4 +1,4 @@
-v0.2.6 (...)
+v0.2.6 (April 10th, 2015)
 ------------------------
 
 This is a patch release, with non-breaking changes from 0.2.5.
@@ -14,10 +14,6 @@ Plotting functions
 ~~~~~~~~~~~~~~~~~~
 
 - Changed default loadings plot of PCA to a heatmap of the first 5 PCs
-
-API changes
-~~~~~~~~~~~
-
 
 Bug fixes
 ~~~~~~~~~
