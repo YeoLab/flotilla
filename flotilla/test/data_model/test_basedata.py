@@ -300,6 +300,7 @@ class TestBaseData:
             true_feature_ids = expression.data.columns
         pdt.assert_array_equal(test_feature_ids, true_feature_ids)
 
+
 def test_subsets_from_metadata(expression_feature_data):
     from flotilla.data_model.base import subsets_from_metadata
 
