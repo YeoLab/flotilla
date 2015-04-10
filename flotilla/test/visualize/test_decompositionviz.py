@@ -242,6 +242,7 @@ def test_plot(pca, kwargs):
     assert not hasattr(dv, 'ax_loading2')
     plt.close('all')
 
+
 def test_plot_loadings_scatter(pca, kwargs):
     from flotilla.visualize.decomposition import DecompositionViz
 
