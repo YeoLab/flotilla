@@ -7,5 +7,5 @@ and the outliers are plotted as grey shadows.
 
 """
 import flotilla
-study = flotilla.embark(flotilla._shalek2013)
-study.plot_gene('IRF7')
+study = flotilla.embark(flotilla._brainspan)
+study.plot_gene("FOXP1")
