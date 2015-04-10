@@ -105,7 +105,7 @@ class MetaData(BaseData):
     def phenotype_order(self):
         if len(set(self._phenotype_order) & set(self.unique_phenotypes)) > 0:
             return [v for v in self._phenotype_order if
-                    v in self.unique_phenotypes]
+                    v in self.unique_phenotypes] + list(set(self.unique_phenotypes) - set(self._phenotype_order))
         else:
             return self._default_phenotype_order
 
