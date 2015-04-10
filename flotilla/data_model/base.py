@@ -1465,13 +1465,15 @@ def subsets_from_metadata(metadata, minimum, subset_type, ignore=None):
         A name: row_ids mapping of which samples correspond to which group
     """
     subsets = {}
+    sorted_bool = (False, True)
     ignore = () if ignore is None else ignore
     if metadata is not None:
         for col in metadata:
             if col in ignore:
                 continue
-            if metadata[col].dtype == bool:
-                sample_subset = metadata.index[metadata[col]]
+            if tuple(sorted(metadata[col].dropna().unique())) == sorted_bool:
+                series = metadata[col].dropna()
+                sample_subset = series[series].index
                 subsets[col] = sample_subset
             else:
                 grouped = metadata.groupby(col)
