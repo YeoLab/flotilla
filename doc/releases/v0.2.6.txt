@@ -26,7 +26,10 @@ Bug fixes
     - Minimum number of mapped reads per sample
     - Minimum number of samples to use per feature, at the specified threshold
       (e.g. use features with TPM > 1 in at least 20 cells)
-
+- Fixed :py:func:`.data_model.base.subsets_from_metadata` to use boolean
+  columns properly, which allows for boolean columns in
+  :py:class:`.data_model.MetaData` and
+  :py:attr:`.data_model.BaseData.feature_data`
 
 Miscellaneous
 ~~~~~~~~~~~~~
