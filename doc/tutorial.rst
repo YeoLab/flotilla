@@ -24,6 +24,7 @@ Computing on splicing data
 
 .. toctree::
     :maxdepth: 1
+
     tutorial/modalities
 
 Day to day helpful tips
