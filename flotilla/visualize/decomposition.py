@@ -124,7 +124,12 @@ class DecompositionViz(object):
         self.distance = distance
         self.n_top_pc_features = n_top_pc_features
         self.featurewise = featurewise
-        self.feature_renamer = feature_renamer
+
+        def renamer(x):
+            return x
+
+        self.feature_renamer = renamer if \
+            feature_renamer is None else feature_renamer
         self.max_char_width = max_char_width
 
         if self.groupby is None:
@@ -199,35 +204,99 @@ class DecompositionViz(object):
              show_point_labels=False,
              show_vectors=True,
              show_vector_labels=True,
-             markersize=10, legend=True, bokeh=False, metadata=None):
+             markersize=10, legend=True, bokeh=False, metadata=None,
+             plot_loadings='heatmap', n_components=5):
+        """Plot reduced space
+
+        Figures can be saved with:
+
+        dv.plot()
+        dv.fig_reduced.savefig('decomposition.pdf')
+
+        Parameters
+        ----------
+        ax : matplotlib.axes.Axes object, optional
+            An axes object to plot the reduced space and the components onto
+        title : str, optional
+            Title to add to the plot
+        plot_violins : bool, optional
+            If True, also make a matplotlib.figure.Figure object of the top
+            features
+        show_point_labels : bool, optional
+            If True, show the labels of the points plotted onto the canvas. If
+            this was not featurewise (default), then the points are the
+            samples. If this was featurewise, then the points are the features
+        show_vectors : bool, optional
+            If True, plot the vectors with the highest magnitude in PC1 and PC2
+            space
+        show_vector_labels : bool, optional
+            If True, label the vectors with their features (if not
+            featurewise), else their samples
+        markersize : int, optional
+            Size of the plotting marker of the samples on the plot
+        legend : bool, optional
+            If True, plot a legend showing which celltype corresponds to which
+            color
+        bokeh : bool, optional
+            If True, attempt to plot this using interactive BokehJS plots
+            which allow for hovering tooltips
+        metadata : pandas.DataFrame, optional
+            If provided, all columns of this metadata will be shown when
+            hovering over the samples in the bokeh version of the plot
+        plot_loadings : 'heatmap' | 'scatter'
+            Whether to plot the loadings of features as a heatmap or a
+            scatterplot
+        n_components : int, optional
+            Number of components to plot on the heatmap
+
+        Returns
+        -------
+        self : DecompositionViz
+
+        """
 
         if bokeh:
             self._plot_bokeh(metadata, title)
         else:
-            gs_x = 14
-            gs_y = 12
+            nrows = 10
+            ncols = 10
 
             if ax is None:
                 self.fig_reduced, ax = plt.subplots(1, 1, figsize=(20, 10))
-                self.gs = GridSpec(gs_x, gs_y)
+                self.gs = GridSpec(nrows, ncols)
 
             else:
-                self.gs = GridSpecFromSubplotSpec(gs_x, gs_y,
+                self.gs = GridSpecFromSubplotSpec(nrows, ncols,
                                                   ax.get_subplotspec())
                 self.fig_reduced = plt.gcf()
 
             self.ax_components = plt.subplot(self.gs[:, :5])
-            self.ax_loading1 = plt.subplot(self.gs[:, 6:8])
-            self.ax_loading2 = plt.subplot(self.gs[:, 10:14])
 
             self.plot_samples(show_point_labels=show_point_labels,
                               title=title, show_vectors=show_vectors,
                               show_vector_labels=show_vector_labels,
                               markersize=markersize, legend=legend,
                               ax=self.ax_components)
-            self.plot_loadings(pc=self.x_pc, ax=self.ax_loading1)
-            self.plot_loadings(pc=self.y_pc, ax=self.ax_loading2)
-            sns.despine()
+            if plot_loadings == 'heatmap':
+                self.ax_explained_variance = plt.subplot(
+                    self.gs[0:2, 6:ncols-1])
+                self.ax_empty = plt.subplot(self.gs[0:2, ncols-1])
+                self.ax_pcs_heatmap = plt.subplot(self.gs[2:nrows, 6:ncols-1])
+                self.ax_pcs_colorbar = plt.subplot(self.gs[2:nrows, ncols-1])
+
+                # Zero out the one axes in the upper right corner
+                self.ax_empty.axis('off')  # self.fig_reduced = plt.gcf()
+
+                self.plot_loadings_heatmap(n_components=n_components)
+
+            else:
+                self.ax_loading1 = plt.subplot(self.gs[:, 6:8])
+                self.ax_loading2 = plt.subplot(self.gs[:, 8:ncols])
+                self.plot_loadings(pc=self.x_pc, ax=self.ax_loading1)
+                self.plot_loadings(pc=self.y_pc, ax=self.ax_loading2)
+                sns.despine(ax=self.ax_loading1)
+                sns.despine(ax=self.ax_loading2)
+            sns.despine(ax=self.ax_components)
             self.fig_reduced.tight_layout()
 
             singles_none = self.singles is None
@@ -428,6 +497,51 @@ class DecompositionViz(object):
         for lab in ax.get_xticklabels():
             lab.set_rotation(90)
         sns.despine(ax=ax)
+
+    def plot_loadings_heatmap(self, n_features=50, n_components=5):
+        """Plot the loadings of each feature in the top principal components
+
+        Creates a heatmap of the top features contributing to the first few
+        principal components, sorted by the features' contribution to PC1.
+
+        Parameters
+        ----------
+        n_features : int, optional
+            Total number of features to plot. Half of these will be the top
+            features contributing to the positive side of PC1, the other will
+            be the top features contributing to the negative side of PC2
+        n_components : int, optional
+            Number of components to plot
+        """
+        half = n_features/2
+        components = self.components_.T
+        components = components.sort(columns='pc_1', ascending=False)
+        components_subset = pd.concat(
+            [components.iloc[:half, :n_components],
+             components.iloc[-half:, :n_components]])
+        components_subset = components_subset.rename(
+            index=self.feature_renamer)
+
+        # Plot explained variance
+        ymax = self.explained_variance_ratio_[:n_components]
+        ymin = np.zeros(ymax.shape)
+        x = np.arange(ymax.shape[0])
+        self.ax_explained_variance.plot(ymax, 'o-', color='#262626')
+        self.ax_explained_variance.fill_between(x, ymin, ymax,
+                                                color='lightgrey')
+        self.ax_explained_variance.set_ylabel('Explained\nvariance\nratio')
+        # ax_explained_variance.set_xlabel('Principal component')
+        self.ax_explained_variance.set_xticks(x)
+        self.ax_explained_variance.set_xlim(-0.5, x.max() + 0.5)
+        self.ax_explained_variance.set_xticklabels(components_subset.columns)
+        sns.despine(ax=self.ax_explained_variance)
+
+        sns.heatmap(components_subset, ax=self.ax_pcs_heatmap,
+                    cbar_ax=self.ax_pcs_colorbar,
+                    cbar_kws=dict(label='Contribution to Principal Component'))
+        for ytl in self.ax_pcs_heatmap.get_yticklabels():
+            ytl.set(size=11)
+        self.ax_pcs_colorbar.yaxis.set_ticks_position('right')
 
     def plot_explained_variance(self, title="PCA explained variance"):
         """If the reducer is a form of PCA, then plot the explained variance
