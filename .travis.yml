@@ -44,7 +44,7 @@ script:
 
 after_script:
   - coveralls
-  - conda install --yes jsonschema ipython
+  - conda install --yes jsonschema ipython matplotlib
   # For building the docs
   - MASTER=doc_ipynb_fixes
   - if [[ $TRAVIS_BRANCH == v*.*.* ]] ; then export DEPLOY_HTML_DIR=docs ; fi

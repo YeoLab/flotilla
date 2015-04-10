@@ -15,7 +15,7 @@ Create a datapackage
 --------------------
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
     tutorial/barebones_study_making
 
@@ -23,7 +23,7 @@ Computing on splicing data
 --------------------------
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
     tutorial/modalities
 
 Day to day helpful tips
@@ -39,7 +39,7 @@ Plotting functions
 ------------------
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
     tutorial/pca
     tutorial/classification
@@ -51,6 +51,6 @@ Recreated papers
 ----------------
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
     tutorial/shalek2013
