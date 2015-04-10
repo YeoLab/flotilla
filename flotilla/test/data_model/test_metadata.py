@@ -11,19 +11,22 @@ import pandas.util.testing as pdt
 
 class TestMetaData(object):
     @pytest.fixture
-    def metadata(self):
-        n = 20
+    def phenotype_col(self):
+        return 'phenotype'
+
+    @pytest.fixture
+    def n(self):
+        return 20
+
+    @pytest.fixture
+    def metadata(self, n, phenotype_col):
         index = ['sample_{}'.format(i + 1) for i in range(n)]
         metadata = pd.DataFrame(index=index)
-        phenotype_col = 'phenotype'
         metadata[phenotype_col] = np.random.choice(list('ABC'), size=20)
         metadata['subset1'] = np.random.choice([True, False], size=20)
         return metadata
 
-    @pytest.fixture
-    def kws(self):
-        kws = {'minimum_sample_subset': 2,
-               'phenotype_col': phenotype_col}
+
 
     @pytest.fixture(params=[None, list('CAB')])
     def phenotype_order(self, request):
@@ -38,17 +41,24 @@ class TestMetaData(object):
     def phenotype_to_marker(self, request):
         return request.param
 
-    def test_init(self, metadata, phenotype_order, phenotype_to_color,
-                  phenotype_to_marker):
+    @pytest.fixture
+    def kws(self, phenotype_col, phenotype_order, phenotype_to_color,
+            phenotype_to_marker):
+        return {'minimum_sample_subset': 2,
+               'phenotype_col': phenotype_col,
+               'phenotype_to_marker': phenotype_to_marker,
+               'phenotype_order': phenotype_order,
+               'phenotype_to_color': phenotype_to_color}
+
+
+    def test_init(self, metadata, phenotype_col,
+                  phenotype_order, phenotype_to_color,
+                  phenotype_to_marker, kws):
         from flotilla.data_model.metadata import MetaData
         from flotilla.data_model.base import subsets_from_metadata
         from flotilla.visualize.color import str_to_color
 
-        test_metadata = MetaData(self.metadata,
-                                 phenotype_order=phenotype_order,
-                                 phenotype_to_color=phenotype_to_color,
-                                 phenotype_to_marker=phenotype_to_marker,
-                                 **self.kws)
+        test_metadata = MetaData(metadata, **kws)
 
         if phenotype_order is None:
             true_phenotype_order = list(sorted(
@@ -85,7 +95,7 @@ class TestMetaData(object):
 
         true_phenotype_transitions = zip(true_phenotype_order[:-1],
                                          true_phenotype_order[1:])
-        true_unique_phenotypes = self.metadata[self.phenotype_col].unique()
+        true_unique_phenotypes = metadata[phenotype_col].unique()
         true_n_phenotypes = len(true_unique_phenotypes)
 
         true_colors = map(mpl.colors.rgb2hex,
@@ -94,17 +104,17 @@ class TestMetaData(object):
         colors = iter(true_colors)
         true_default_phenotype_to_color = defaultdict(lambda: colors.next())
 
-        true_sample_id_to_phenotype = self.metadata[self.phenotype_col]
+        true_sample_id_to_phenotype = metadata[phenotype_col]
         true_phenotype_color_order = [true_phenotype_to_color[p]
                                       for p in true_phenotype_order]
         true_sample_id_to_color = \
             dict((i, true_phenotype_to_color[true_sample_id_to_phenotype[i]])
-                 for i in self.metadata.index)
+                 for i in metadata.index)
 
         true_sample_subsets = subsets_from_metadata(
-            self.metadata, self.kws['minimum_sample_subset'], 'samples')
+            metadata, kws['minimum_sample_subset'], 'samples')
 
-        pdt.assert_frame_equal(test_metadata.data, self.metadata)
+        pdt.assert_frame_equal(test_metadata.data, metadata)
         pdt.assert_series_equal(test_metadata.sample_id_to_phenotype,
                                 true_sample_id_to_phenotype)
         pdt.assert_array_equal(test_metadata.unique_phenotypes,
@@ -132,6 +142,7 @@ class TestMetaData(object):
                               true_sample_subsets)
 
     def test_ignore_subset_columns(self, metadata, phenotype_order,
+                                   phenotype_col,
                                    phenotype_to_color, phenotype_to_marker,
                                    kws):
         from flotilla.data_model.metadata import MetaData
@@ -140,26 +151,19 @@ class TestMetaData(object):
         metadata['no_subset'] = np.arange(metadata.shape[0])
         ignore_subset_columns = 'no_subset'
 
-        test_metadata = MetaData(metadata,
-                                 phenotype_order=phenotype_order,
-                                 phenotype_to_color=phenotype_to_color,
-                                 phenotype_to_marker=phenotype_to_marker,
-                                 **kws)
+        test_metadata = MetaData(metadata, **kws)
         assert 'no_subset' not in test_metadata.sample_subsets
 
 
-    def test_change_phenotype_col(self, metadata,
+    def test_change_phenotype_col(self, metadata, n, phenotype_col,
                                   phenotype_order, phenotype_to_color,
-                                  phenotype_to_marker):
+                                  phenotype_to_marker, kws):
         from flotilla.data_model.metadata import MetaData
 
         metadata = metadata.copy()
-        metadata['phenotype2'] = np.random.choice(list('QXYZ'), size=self.n)
+        metadata['phenotype2'] = np.random.choice(list('QXYZ'), size=n)
 
-        test_metadata = MetaData(metadata, phenotype_order,
-                                 phenotype_to_color,
-                                 phenotype_to_marker,
-                                 phenotype_col='phenotype')
+        test_metadata = MetaData(metadata, **kws)
         test_metadata.phenotype_col = 'phenotype2'
 
         pdt.assert_array_equal(test_metadata.unique_phenotypes,
