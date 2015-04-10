@@ -38,7 +38,7 @@ before_script:
 
 # command to run tests
 script:
-  - make coverage
+#  - make coverage
   - make lint
   - make pep8
 
