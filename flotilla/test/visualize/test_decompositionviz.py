@@ -230,7 +230,29 @@ def test_plot(pca, kwargs):
                           pca.explained_variance_ratio_, **kwargs)
     dv.plot()
 
+    pdt.assert_equal(len(dv.fig_reduced.axes), 5)
+    pdt.assert_equal(len(dv.ax_components.lines),
+                     kwargs['n_vectors']+1)
+    pdt.assert_equal(len(dv.ax_explained_variance.lines), 1)
+    pdt.assert_equal(len(dv.ax_explained_variance.collections), 1)
+    pdt.assert_equal(len(dv.ax_empty.collections), 0)
+    pdt.assert_equal(len(dv.ax_pcs_heatmap.collections), 1)
+    pdt.assert_equal(len(dv.ax_pcs_colorbar.collections), 1)
+    assert not hasattr(dv, 'ax_loading1')
+    assert not hasattr(dv, 'ax_loading2')
+    plt.close('all')
+
+
+def test_plot_loadings_scatter(pca, kwargs):
+    from flotilla.visualize.decomposition import DecompositionViz
+
+    dv = DecompositionViz(pca.reduced_space, pca.components_,
+                          pca.explained_variance_ratio_, **kwargs)
+    dv.plot(plot_loadings='scatter')
+
     pdt.assert_equal(len(dv.fig_reduced.axes), 3)
+    pdt.assert_equal(len(dv.ax_loading1.collections), 1)
+    pdt.assert_equal(len(dv.ax_loading1.collections), 1)
     plt.close('all')
 
 

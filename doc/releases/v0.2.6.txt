@@ -13,6 +13,7 @@ New features
 Plotting functions
 ~~~~~~~~~~~~~~~~~~
 
+- Changed default loadings plot of PCA to a heatmap of the first 5 PCs
 
 API changes
 ~~~~~~~~~~~
@@ -44,5 +45,3 @@ Miscellaneous
     :py:meth:`.data_model.Study.plot_event` and
     :py:meth:`.data_model.Study.plot_pca` when ``plot_violins=True``
 - Add info about data type when reporting that a feature was not found
-
-
