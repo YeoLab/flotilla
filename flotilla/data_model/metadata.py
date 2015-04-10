@@ -83,7 +83,7 @@ class MetaData(BaseData):
                         '{} is not a valid matplotlib marker style, '
                         'falling back on "{}"'.format(marker, correct_marker))
                     marker = correct_marker
-                self.phenotype_to_marker[phenotype] = marker
+                self._phenotype_to_marker[phenotype] = marker
 
     @property
     def sample_id_to_phenotype(self):
