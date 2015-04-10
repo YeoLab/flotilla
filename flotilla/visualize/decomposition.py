@@ -128,8 +128,8 @@ class DecompositionViz(object):
         def renamer(x):
             return x
 
-        self.feature_renamer = renamer if feature_renamer is \
-                                          None else feature_renamer
+        self.feature_renamer = renamer if \
+            feature_renamer is None else feature_renamer
         self.max_char_width = max_char_width
 
         if self.groupby is None:
@@ -519,7 +519,8 @@ class DecompositionViz(object):
         components_subset = pd.concat(
             [components.iloc[:half, :n_components],
              components.iloc[-half:, :n_components]])
-        components_subset = components_subset.rename(index=self.feature_renamer)
+        components_subset = components_subset.rename(
+            index=self.feature_renamer)
 
         # Plot explained variance
         ymax = self.explained_variance_ratio_[:n_components]
