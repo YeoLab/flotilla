@@ -462,7 +462,7 @@ class DecompositionViz(object):
         ax.set_title(title)
 
         if legend:
-            ax.legend()
+            ax.legend(loc="best")
         sns.despine()
 
     def plot_loadings(self, pc='pc_1', n_features=50, ax=None):
@@ -569,14 +569,17 @@ class DecompositionViz(object):
         Must be called after plot_samples because it depends on the existence
         of the "self.magnitudes" attribute.
         """
-        ncols = 4
+        single_violin_width = 0.5
+        ax_width = max(4, single_violin_width*self.grouped.size().shape[0])
+        ncols = int(np.ceil(16/ax_width))
         nrows = 1
         vector_labels = list(set(self.magnitudes[:self.n_vectors].index.union(
             pd.Index(self.top_features))))
         while ncols * nrows < len(vector_labels):
             nrows += 1
         self.fig_violins, axes = plt.subplots(nrows=nrows, ncols=ncols,
-                                              figsize=(4 * ncols, 4 * nrows))
+                                              figsize=(ax_width * ncols,
+                                                       4 * nrows))
 
         if self.feature_renamer is not None:
             renamed_vectors = map(self.feature_renamer, vector_labels)

@@ -6,6 +6,9 @@ This is a patch release, with non-breaking changes from 0.2.5.
 New features
 ~~~~~~~~~~~~
 
+- Add a :py:class:`.data_model.SupplementalData` data type, which allows the
+  user to store any ``pandas.DataFrame`` on the :py:class:`.data_model.Study`
+  object as `study.supplemental`. This is essentially user-driven caching.
 
 Plotting functions
 ~~~~~~~~~~~~~~~~~~
@@ -22,6 +25,8 @@ Bug fixes
 - Fixed :py:func:`.data_model.Study.save()` to actually save:
     - Gene Ontology Data
     - Minimum number of mapped reads per sample
+    - Minimum number of samples to use per feature, at the specified threshold
+      (e.g. use features with TPM > 1 in at least 20 cells)
 
 
 Miscellaneous
@@ -29,3 +34,14 @@ Miscellaneous
 
 - Streamlined test suite to test fewer things at a time, which shortened the
   test suite from ~20 minutes to ~3 minutes, about 85% time savings.
+- Improved accuracy (fewer false positives) in splicing modality estimation
+- Added requirement for new non-plotting features to at least be documented as
+  IPython notebooks, so the knowledge is shared.
+- Changed PCA plot to place legend in "best" place
+- Changed default plotting marker from a circle to a randomly chosen symbol
+  from a list
+- Violinplots are now variable width and expand with the number of samples
+    - This was changed in :py:meth:`.data_model.Study.plot_gene`,
+    :py:meth:`.data_model.Study.plot_event` and
+    :py:meth:`.data_model.Study.plot_pca` when ``plot_violins=True``
+- Add info about data type when reporting that a feature was not found

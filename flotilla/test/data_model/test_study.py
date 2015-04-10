@@ -296,8 +296,72 @@ class TestStudy(object):
                 columns=columns, index=index, values='psi')
         pdt.assert_frame_equal(true_filtered_splicing, test_filtered_splicing)
 
-    def test_plot_pca(self, study, data_type):
-        study.plot_pca(feature_subset='all', data_type=data_type)
+    def test_plot_gene(self, study):
+        feature_id = study.expression.data.columns[0]
+        study.plot_gene(feature_id)
+
+        fig = plt.gcf()
+        test_figsize = fig.get_size_inches()
+
+        feature_ids = [feature_id]
+        groupby = study.sample_id_to_phenotype
+        grouped = groupby.groupby(groupby)
+        single_violin_width = 0.5
+        ax_width = max(4, single_violin_width*grouped.size().shape[0])
+        nrows = len(feature_ids)
+        ncols = 1
+        true_figsize = ax_width * ncols, 4 * nrows
+        npt.assert_array_equal(true_figsize, test_figsize)
+
+    @pytest.fixture(params=[True, False])
+    def nmf_space(self, request):
+        return request.param
+
+    def test_plot_event(self, study, nmf_space):
+        feature_id = study.splicing.data.columns[0]
+        study.plot_event(feature_id, nmf_space=nmf_space)
+
+        fig = plt.gcf()
+        test_figsize = fig.get_size_inches()
+
+        feature_ids = [feature_id]
+        groupby = study.sample_id_to_phenotype
+        grouped = groupby.groupby(groupby)
+        single_violin_width = 0.5
+        ax_width = max(4, single_violin_width*grouped.size().shape[0])
+        nrows = len(feature_ids)
+        ncols = 2 if nmf_space else 1
+        true_figsize = ax_width * ncols, 4 * nrows
+        npt.assert_array_equal(true_figsize, test_figsize)
+
+    def test_plot_event_multiple_events_per_id(self, study, nmf_space):
+        grouped = study.splicing.feature_data.groupby(
+            study.splicing.feature_rename_col)
+        ids_with_multiple_genes = grouped.filter(lambda x: len(x) > 1)
+        feature_id = ids_with_multiple_genes[
+            study.splicing.feature_rename_col].values[0]
+        study.plot_event(feature_id, nmf_space=nmf_space)
+
+        fig = plt.gcf()
+        test_figsize = fig.get_size_inches()
+
+        feature_ids = study.splicing.maybe_renamed_to_feature_id(feature_id)
+        groupby = study.sample_id_to_phenotype
+        grouped = groupby.groupby(groupby)
+        single_violin_width = 0.5
+        ax_width = max(4, single_violin_width*grouped.size().shape[0])
+        nrows = len(feature_ids)
+        ncols = 2 if nmf_space else 1
+        true_figsize = ax_width * ncols, 4 * nrows
+        npt.assert_array_equal(true_figsize, test_figsize)
+
+    @pytest.fixture(params=[True, False])
+    def plot_violins(self, request):
+        return request.param
+
+    def test_plot_pca(self, study, data_type, plot_violins):
+        study.plot_pca(feature_subset='all', data_type=data_type,
+                       plot_violins=plot_violins)
         plt.close('all')
 
     # Too few features to test graph or classifier
@@ -531,7 +595,7 @@ class TestStudy(object):
         from flotilla.datapackage import name_to_resource
 
         study_name = 'test_save'
-
+        study.supplemental.expression_corr = study.expression.data.corr()
         study.save(study_name, flotilla_dir=tmpdir)
 
         assert len(tmpdir.listdir()) == 1
@@ -590,6 +654,46 @@ class TestStudy(object):
         version.patch += 1
         assert str(version) == test_datapackage['datapackage_version']
         assert study_name == test_datapackage['name']
+
+    def test_save_supplemental(self, study, tmpdir):
+        from flotilla.datapackage import name_to_resource
+
+        study_name = 'test_save_supplemental'
+        study.supplemental.expression_corr = study.expression.data.corr()
+        study.save(study_name, flotilla_dir=tmpdir)
+
+        assert len(tmpdir.listdir()) == 1
+        save_dir = tmpdir.listdir()[0]
+
+        with open('{}/datapackage.json'.format(save_dir)) as f:
+            test_datapackage = json.load(f)
+
+        supplemental = name_to_resource(test_datapackage, 'supplemental')
+        for resource in supplemental['resources']:
+            name = resource['name']
+            path = '{}.csv.gz'.format(name)
+            assert resource['path'] == path
+            full_path = '{}/{}/{}'.format(tmpdir, study_name, path)
+            test_df = pd.read_csv(full_path, index_col=0, compression='gzip')
+            command = self.get_data_eval_command('supplemental', name)
+            true_df = eval(command)
+            pdt.assert_frame_equal(test_df, true_df)
+
+        version = semantic_version.Version(study.version)
+        version.patch += 1
+        assert str(version) == test_datapackage['datapackage_version']
+        assert study_name == test_datapackage['name']
+
+    def test_embark_supplemental(self, study, tmpdir):
+        import flotilla
+
+        study_name = 'test_save_supplemental'
+        study.supplemental.expression_corr = study.expression.data.corr()
+        study.save(study_name, flotilla_dir=tmpdir)
+
+        study2 = flotilla.embark(study_name, flotilla_dir=tmpdir)
+        pdt.assert_frame_equal(study2.supplemental.expression_corr,
+                               study.supplemental.expression_corr)
 
         # datapackage_keys_to_ignore = ['name', 'datapackage_version',
         #                               'resources']

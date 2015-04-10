@@ -98,7 +98,7 @@ before the pull request is merged.
 ```
 - [ ] Is it mergable?
 - [ ] Did it pass the tests?
-- [ ] If it introduces new functionality in scripts/ is it tested?
+- [ ] If it introduces new functionality in is it tested?
   Check for code coverage. To run code coverage on only the file you changed,
   for example `flotilla/compute/splicing.py`, use this command: 
   `py.test --cov flotilla/compute/splicing.py --cov-report term-missing flotilla/test/compute/test_splicing.py`
@@ -106,9 +106,14 @@ before the pull request is merged.
 - [ ] Do the new functions have descriptive 
   [numpydoc](https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt)
   style docstrings?
-- [ ] If it adds a new plot, is it documented in the gallery?
+- [ ] If it adds a new feature, is it documented as an IPython Notebook in 
+  `examples/`, and is that notebook added to `doc/tutorial.rst`?
+- [ ] If it adds a new plot, is it documented in the gallery, as a `.py` file 
+  in `examples/`?
 - [ ] Is it well formatted? Look at `make pep8` and `make lint` output
 - [ ] Is it documented in the doc/releases/?
 - [ ] Was a spellchecker run on the source code and documentation after
   changes were made?
 ```
+
+Note: This checklist was heavily borrowed from the [khmer](https://khmer.readthedocs.org/en/latest/dev/coding-guidelines-and-review.html#checklist) project.
