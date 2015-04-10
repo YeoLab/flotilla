@@ -41,9 +41,9 @@ class TestSplicingData:
         elif request.param == 'groupby_none':
             return None
 
-    @pytest.fixture(params=[0.2, 5])
-    def min_samples(self, request):
-        return request.param
+    # @pytest.fixture(params=[0.5, 12])
+    # def min_samples(self, request):
+    #     return request.param
 
     @pytest.fixture(params=[True, False])
     def percentages(self, request):
@@ -69,7 +69,8 @@ class TestSplicingData:
 
         pdt.assert_frame_equal(test_subset, true_subset)
 
-    def test__subset_and_standardize_rename_means(self, splicing, rename):
+    def test__subset_and_standardize_rename_means(self, splicing,
+                                                  rename):
         test_subset, test_means = splicing._subset_and_standardize(
             splicing.data, return_means=True, rename=rename)
 
@@ -208,7 +209,8 @@ class TestSplicingData:
         top_pc1_samples = splicing.data.groupby(groupby).groups[
             phenotype]
 
-        data = splicing._subset(splicing.data, sample_ids=top_pc1_samples)
+        data = splicing._subset(splicing.data,
+                                sample_ids=top_pc1_samples)
         binned = splicing.binify(data)
         true_is_nmf_space_x_axis_included = bool(binned[event][0])
 
@@ -247,31 +249,22 @@ class TestSplicingData:
             color_ordered, group_to_color, group_to_marker)
         plt.close('all')
 
-    def test_modality_assignments(self, splicing, groupby_params,
-                                  min_samples):
+    def test_modality_assignments(self, splicing, groupby_params):
         sample_ids = None
         feature_ids = None
         test_modality_assignments = splicing.modality_assignments(
             sample_ids=sample_ids, feature_ids=feature_ids,
-            groupby=groupby_params, min_samples=min_samples)
+            groupby=groupby_params)
 
-        data = splicing._subset(splicing.data, sample_ids, feature_ids,
-                                require_min_samples=False)
+        data = splicing._subset(splicing.data, sample_ids,
+                                feature_ids, require_min_samples=False)
         if groupby_params is None:
             groupby_copy = pd.Series('all', index=data.index)
         else:
             groupby_copy = groupby_params
 
         grouped = data.groupby(groupby_copy)
-        if isinstance(min_samples, int):
-            thresh = splicing._thresh_int
-        elif isinstance(min_samples, float):
-            thresh = splicing._thresh_float
-        else:
-            raise TypeError('Threshold for minimum samples for modality '
-                            'detection can only be int or float, '
-                            'not {}'.format(type(min_samples)))
-        data = pd.concat([df.dropna(thresh=thresh(df, min_samples), axis=1)
+        data = pd.concat([df.dropna(thresh=10, axis=1)
                          for name, df in grouped])
         true_assignments = data.groupby(groupby_copy).apply(
             splicing.modality_estimator.fit_transform)
@@ -332,7 +325,9 @@ class TestSplicingData:
 
     def test_plot_two_features(self, splicing, groupby,
                                group_to_color):
-        features = splicing.data.columns[splicing.data.count() > 10]
+        ind = splicing.data.count() > 10
+
+        features = splicing.data.columns[ind]
         feature1 = features[0]
         feature2 = features[1]
         splicing.plot_two_features(feature1, feature2, groupby=groupby,
