@@ -10,7 +10,7 @@ New features
 Plotting functions
 ~~~~~~~~~~~~~~~~~~
 
-- Changed default loadings plot of PCA to a heatmapadd
+- Changed default loadings plot of PCA to a heatmap of the first 5 PCs
 
 API changes
 ~~~~~~~~~~~
