@@ -100,6 +100,7 @@ class Study(object):
                  metadata_phenotype_to_color=None,
                  metadata_phenotype_to_marker=None,
                  metadata_outlier_col=OUTLIER_COL,
+                 metadata_ignore_subset_columns=None,
                  license=None, title=None, sources=None,
                  default_sample_subset="all_samples",
                  default_feature_subset="variant",
@@ -225,7 +226,8 @@ class Study(object):
             outlier_col=metadata_outlier_col,
             phenotype_col=metadata_phenotype_col,
             predictor_config_manager=self.predictor_config_manager,
-            minimum_sample_subset=metadata_minimum_samples)
+            minimum_sample_subset=metadata_minimum_samples,
+            ignore_subset_columns=metadata_ignore_subset_columns)
 
         self.default_feature_subset = default_feature_subset
         self.default_sample_subset = default_sample_subset
