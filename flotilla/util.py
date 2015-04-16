@@ -12,11 +12,16 @@ import sys
 import subprocess
 import functools
 import time
-import cPickle
 import gzip
 import tempfile
 
 import pandas as pd
+import six
+
+if six.PY2:
+    import cPickle as pickle
+elif six.PY3:
+    import pickle
 
 
 class TimeoutError(Exception):
@@ -226,7 +231,7 @@ def write_pickle_df(df, file_name):
 
 def load_gzip_pickle_df(file_name):
     with gzip.open(file_name, 'r') as f:
-        return cPickle.load(f)
+        return pickle.load(f)
 
 
 def write_gzip_pickle_df(df, file_name):
@@ -298,7 +303,7 @@ class AssertionError(StandardError):
 
 
 def link_to_list(link):
-    print 'link', link
+    print('link', link)
     try:
         assert link.startswith("http") or os.path.exists(os.path.abspath(link))
     except AssertionError:
