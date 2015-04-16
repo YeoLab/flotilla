@@ -241,6 +241,8 @@ def write_gzip_pickle_df(df, file_name):
     subprocess.call(['mv %s %s' % (tempfile, file_name)])
 
 
+
+
 def load_tsv(file_name, **kwargs):
     return pd.read_table(file_name, **kwargs)
 
@@ -290,7 +292,7 @@ def timestamp():
     return str(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
 
-class AssertionError(StandardError):
+class AssertionError(BaseException):
     """ Assertion failed. """
 
     def __init__(self, *args, **kwargs):  # real signature unknown
