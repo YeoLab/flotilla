@@ -19,7 +19,6 @@ default_classifier = 'ExtraTreesClassifier'
 default_regressor = 'ExtraTreesRegressor'
 default_score_coefficient = 2
 
-
 class Interactive(object):
     """
 
@@ -562,9 +561,9 @@ class Interactive(object):
                         kernel='rbf',
                         gamma=16,
                         nu=.2):
-            print "transforming input gamma by 2^-(input): %f" % gamma
+            print("transforming input gamma by 2^-(input): %f" % gamma)
             gamma = 2 ** -float(gamma)
-            print "transforming input nu by input/10: %f" % nu
+            print("transforming input nu by input/10: %f" % nu)
             nu = float(nu) / 10
             kernel = str(kernel)
             for k, v in locals().iteritems():
@@ -604,9 +603,9 @@ class Interactive(object):
                                     x_pc="pc_" + str(x_pc),
                                     y_pc="pc_" + str(y_pc))
 
-            print "total samples:", len(outlier_detector.outliers)
-            print "outlier samples:", outlier_detector.outliers.sum()
-            print "metadata column name:", outlier_detector.title
+            print("total samples:", len(outlier_detector.outliers))
+            print("outlier samples:", outlier_detector.outliers.sum())
+            print("metadata column name:", outlier_detector.title)
 
         if feature_subsets is None:
             feature_subsets = Interactive.get_feature_subsets(self, data_types)
@@ -636,9 +635,9 @@ class Interactive(object):
 
         def do_interact(**columns):
             if len(columns.keys()) == 0:
-                print "You have not specified any 'outlier_' columns in " \
+                print("You have not specified any 'outlier_' columns in " \
                       "study.metadata.data... \n" \
-                      "This function will do nothing to your data."
+                      "This function will do nothing to your data.")
             else:
                 self.metadata.set_outliers_by_merging_columns(
                     [k for (k, v) in columns.items() if v])
