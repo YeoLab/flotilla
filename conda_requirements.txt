@@ -24,5 +24,6 @@ six
 jinja2
 #fastcluster
 joblib >= 0.8.4
+ipython
 jsonschema
 pyyaml
