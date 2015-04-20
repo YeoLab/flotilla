@@ -24,20 +24,20 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../../../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
     <link rel="top" title="flotilla 0.2.7dev documentation" href="../../../index.html" />
-    <link rel="up" title="Module code" href="../../index.html" />
+    <link rel="up" title="flotilla" href="../../flotilla.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body role="document">
+  <body>
 
   <div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -172,7 +172,7 @@
 <span class="n">SCORE_COEFFICIENT</span> <span class="o">=</span> <span class="mi">2</span>
 
 
-<div class="viewcode-block" id="default_predictor_scoring_fun"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.default_predictor_scoring_fun">[docs]</a><span class="k">def</span> <span class="nf">default_predictor_scoring_fun</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+<div class="viewcode-block" id="default_predictor_scoring_fun"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.default_predictor_scoring_fun">[docs]</a><span class="k">def</span> <span class="nf">default_predictor_scoring_fun</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return scores of how important a feature is to the prediction</span>
 
 <span class="sd">    Most predictors score output coefficients in the variable</span>
@@ -194,7 +194,7 @@
     <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">feature_importances_</span>
 
 </div>
-<div class="viewcode-block" id="default_score_cutoff_fun"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.default_score_cutoff_fun">[docs]</a><span class="k">def</span> <span class="nf">default_score_cutoff_fun</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">std_multiplier</span><span class="o">=</span><span class="n">SCORE_COEFFICIENT</span><span class="p">):</span>
+<div class="viewcode-block" id="default_score_cutoff_fun"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.default_score_cutoff_fun">[docs]</a><span class="k">def</span> <span class="nf">default_score_cutoff_fun</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">std_multiplier</span><span class="o">=</span><span class="n">SCORE_COEFFICIENT</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculate a minimum score cutoff for the best features</span>
 
 <span class="sd">    By default, this function calculates: :math:`f(x) = mean(x) + 2 * std(x)`</span>
@@ -215,7 +215,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="o">+</span> <span class="n">std_multiplier</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="PredictorConfig"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.PredictorConfig">[docs]</a><span class="k">class</span> <span class="nc">PredictorConfig</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorConfig"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorConfig">[docs]</a><span class="k">class</span> <span class="nc">PredictorConfig</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A configuration for a predictor, names and tracks/sets parameters</span>
 
 <span class="sd">    Dynamically configures some args for predictor based on n_features</span>
@@ -266,7 +266,7 @@
                                                           <span class="bp">self</span><span class="o">.</span><span class="n">predictor_name</span><span class="p">))</span>
 
     <span class="nd">@memoize</span>
-<div class="viewcode-block" id="PredictorConfig.parameters"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.PredictorConfig.parameters">[docs]</a>    <span class="k">def</span> <span class="nf">parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_features</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorConfig.parameters"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorConfig.parameters">[docs]</a>    <span class="k">def</span> <span class="nf">parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_features</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Given a number of features, return the appropriately scaled keyword</span>
 <span class="sd">        arguments</span>
 
@@ -317,7 +317,7 @@
         <span class="k">return</span> <span class="n">predictor</span>
 
 </div>
-<div class="viewcode-block" id="PredictorConfigScalers"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.PredictorConfigScalers">[docs]</a><span class="k">class</span> <span class="nc">PredictorConfigScalers</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorConfigScalers"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorConfigScalers">[docs]</a><span class="k">class</span> <span class="nc">PredictorConfigScalers</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Scale parameters specified in the keyword arugments based on the</span>
 <span class="sd">    dataset size</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -326,7 +326,7 @@
     <span class="n">_default_nfeatures</span> <span class="o">=</span> <span class="mi">500</span>
 
     <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="PredictorConfigScalers.max_feature_scaler"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.PredictorConfigScalers.max_feature_scaler">[docs]</a>    <span class="k">def</span> <span class="nf">max_feature_scaler</span><span class="p">(</span><span class="n">n_features</span><span class="o">=</span><span class="n">_default_nfeatures</span><span class="p">,</span> <span class="n">coef</span><span class="o">=</span><span class="n">_default_coef</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorConfigScalers.max_feature_scaler"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorConfigScalers.max_feature_scaler">[docs]</a>    <span class="k">def</span> <span class="nf">max_feature_scaler</span><span class="p">(</span><span class="n">n_features</span><span class="o">=</span><span class="n">_default_nfeatures</span><span class="p">,</span> <span class="n">coef</span><span class="o">=</span><span class="n">_default_coef</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Scale the maximum number of features per estimator</span>
 
 <span class="sd">        # TODO: @mlovci what are the principles behind this scaler? to see each</span>
@@ -354,7 +354,7 @@
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">n_features</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="n">coef</span> <span class="o">+</span> <span class="o">.</span><span class="mi">3</span><span class="p">))))</span>
 </div>
     <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="PredictorConfigScalers.n_estimators_scaler"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.PredictorConfigScalers.n_estimators_scaler">[docs]</a>    <span class="k">def</span> <span class="nf">n_estimators_scaler</span><span class="p">(</span><span class="n">n_features</span><span class="o">=</span><span class="n">_default_nfeatures</span><span class="p">,</span> <span class="n">coef</span><span class="o">=</span><span class="n">_default_coef</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorConfigScalers.n_estimators_scaler"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorConfigScalers.n_estimators_scaler">[docs]</a>    <span class="k">def</span> <span class="nf">n_estimators_scaler</span><span class="p">(</span><span class="n">n_features</span><span class="o">=</span><span class="n">_default_nfeatures</span><span class="p">,</span> <span class="n">coef</span><span class="o">=</span><span class="n">_default_coef</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Scale the number of estimators based on the input features</span>
 
 <span class="sd">        # TODO: @mlovci what are the principles behind this scaler? to see each</span>
@@ -382,7 +382,7 @@
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">((</span><span class="n">n_features</span> <span class="o">/</span> <span class="mf">50.</span><span class="p">)</span> <span class="o">*</span> <span class="n">coef</span><span class="p">))</span>
 </div>
     <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="PredictorConfigScalers.n_jobs_scaler"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.PredictorConfigScalers.n_jobs_scaler">[docs]</a>    <span class="k">def</span> <span class="nf">n_jobs_scaler</span><span class="p">(</span><span class="n">n_features</span><span class="o">=</span><span class="n">_default_nfeatures</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorConfigScalers.n_jobs_scaler"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorConfigScalers.n_jobs_scaler">[docs]</a>    <span class="k">def</span> <span class="nf">n_jobs_scaler</span><span class="p">(</span><span class="n">n_features</span><span class="o">=</span><span class="n">_default_nfeatures</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Scale the number of jobs based on how many features are in the data</span>
 
 <span class="sd">        # TODO: @mlovci what are the principles behind this scaler? to see each</span>
@@ -409,13 +409,13 @@
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">n_features</span> <span class="o">/</span> <span class="mf">2000.</span><span class="p">)))</span>
 
 </div></div>
-<div class="viewcode-block" id="ConfigOptimizer"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.ConfigOptimizer">[docs]</a><span class="k">class</span> <span class="nc">ConfigOptimizer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="ConfigOptimizer"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.ConfigOptimizer">[docs]</a><span class="k">class</span> <span class="nc">ConfigOptimizer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;choose the coef that makes some result most likely at all n_features</span>
 <span class="sd">    (or some other function of the dataset)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="ConfigOptimizer.objective_average_times_seen"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.ConfigOptimizer.objective_average_times_seen">[docs]</a>    <span class="k">def</span> <span class="nf">objective_average_times_seen</span><span class="p">(</span>
+<div class="viewcode-block" id="ConfigOptimizer.objective_average_times_seen"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.ConfigOptimizer.objective_average_times_seen">[docs]</a>    <span class="k">def</span> <span class="nf">objective_average_times_seen</span><span class="p">(</span>
             <span class="n">n_features</span><span class="p">,</span> <span class="n">coef</span><span class="o">=</span><span class="n">PredictorConfigScalers</span><span class="o">.</span><span class="n">_default_coef</span><span class="p">,</span>
             <span class="n">max_feature_scaler</span><span class="o">=</span><span class="n">PredictorConfigScalers</span><span class="o">.</span><span class="n">max_feature_scaler</span><span class="p">,</span>
             <span class="n">n_estimators_scaler</span><span class="o">=</span><span class="n">PredictorConfigScalers</span><span class="o">.</span><span class="n">n_estimators_scaler</span><span class="p">):</span>
@@ -440,7 +440,7 @@
                 <span class="n">n_estimators_scaler</span><span class="p">(</span><span class="n">n_features</span><span class="p">,</span> <span class="n">coef</span><span class="p">))</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">n_features</span><span class="p">)</span>
 
 </div></div>
-<div class="viewcode-block" id="PredictorConfigManager"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.PredictorConfigManager">[docs]</a><span class="k">class</span> <span class="nc">PredictorConfigManager</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorConfigManager"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorConfigManager">[docs]</a><span class="k">class</span> <span class="nc">PredictorConfigManager</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Manage several predictor configurations</span>
 
 <span class="sd">    A container for predictor configurations, includes several built-ins</span>
@@ -512,21 +512,21 @@
                               <span class="o">**</span><span class="n">constant_boosting_kwargs</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">builtin_predictor_configs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorConfigManager.builtin_predictor_configs"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorConfigManager.builtin_predictor_configs">[docs]</a>    <span class="k">def</span> <span class="nf">builtin_predictor_configs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Names of the predictor configurations</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictor_configs</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-
+</div>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">predictor_configs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorConfigManager.predictor_configs"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorConfigManager.predictor_configs">[docs]</a>    <span class="k">def</span> <span class="nf">predictor_configs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Dict of predictor configurations</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;_predictors&#39;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_predictors</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_predictors</span>
-
-<div class="viewcode-block" id="PredictorConfigManager.predictor_config"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.PredictorConfigManager.predictor_config">[docs]</a>    <span class="k">def</span> <span class="nf">predictor_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="PredictorConfigManager.predictor_config"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorConfigManager.predictor_config">[docs]</a>    <span class="k">def</span> <span class="nf">predictor_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create a new predictor configuration, added to</span>
 <span class="sd">        :py:attr:`.predictors`</span>
 
@@ -552,7 +552,7 @@
         <span class="k">return</span> <span class="n">predictor</span>
 </div>
     <span class="nd">@memoize</span>
-<div class="viewcode-block" id="PredictorConfigManager.new_predictor_config"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.PredictorConfigManager.new_predictor_config">[docs]</a>    <span class="k">def</span> <span class="nf">new_predictor_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+<div class="viewcode-block" id="PredictorConfigManager.new_predictor_config"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorConfigManager.new_predictor_config">[docs]</a>    <span class="k">def</span> <span class="nf">new_predictor_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                              <span class="n">predictor_scoring_fun</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                              <span class="n">score_cutoff_fun</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                              <span class="n">n_features_dependent_kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
@@ -630,7 +630,7 @@
             <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 </div></div>
-<div class="viewcode-block" id="PredictorDataSet"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.PredictorDataSet">[docs]</a><span class="k">class</span> <span class="nc">PredictorDataSet</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorDataSet"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorDataSet">[docs]</a><span class="k">class</span> <span class="nc">PredictorDataSet</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span>
                  <span class="n">data_name</span><span class="o">=</span><span class="s">&quot;MyDataset&quot;</span><span class="p">,</span>
                  <span class="n">categorical_trait</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
@@ -696,33 +696,33 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_predictors</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">X</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorDataSet.X"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorDataSet.X">[docs]</a>    <span class="k">def</span> <span class="nf">X</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;(n_samples, n_features) matrix&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                                 <span class="n">join</span><span class="o">=</span><span class="s">&#39;inner&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-
+</div>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">y</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorDataSet.y"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorDataSet.y">[docs]</a>    <span class="k">def</span> <span class="nf">y</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;(n_samples,) vector of traits&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                                 <span class="n">join</span><span class="o">=</span><span class="s">&#39;inner&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
-
+</div>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">traitset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorDataSet.traitset"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorDataSet.traitset">[docs]</a>    <span class="k">def</span> <span class="nf">traitset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;All unique values in :py:attr:`self.trait`&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">trait</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trait</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-
+</div>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">predictors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorDataSet.predictors"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorDataSet.predictors">[docs]</a>    <span class="k">def</span> <span class="nf">predictors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;dict of PredictorConfig instances</span>
 
 <span class="sd">        The idea here is to keep the predictors tied to their datasets</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;_predictors&#39;</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_predictors</span>
-
+</div>
     <span class="nd">@memoize</span>
-<div class="viewcode-block" id="PredictorDataSet.predictor"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.PredictorDataSet.predictor">[docs]</a>    <span class="k">def</span> <span class="nf">predictor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorDataSet.predictor"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorDataSet.predictor">[docs]</a>    <span class="k">def</span> <span class="nf">predictor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A single, initialized PredictorConfig instance</span>
 
 <span class="sd">        Parameters</span>
@@ -744,7 +744,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">predictors</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">initialized</span>
         <span class="k">return</span> <span class="n">initialized</span>
 </div>
-<div class="viewcode-block" id="PredictorDataSet.check_if_equal"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.PredictorDataSet.check_if_equal">[docs]</a>    <span class="k">def</span> <span class="nf">check_if_equal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">categorical_trait</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorDataSet.check_if_equal"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorDataSet.check_if_equal">[docs]</a>    <span class="k">def</span> <span class="nf">check_if_equal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">categorical_trait</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Check if this is the same as another dataset.</span>
 
 <span class="sd">        Parameters</span>
@@ -766,7 +766,7 @@
         <span class="n">pdt</span><span class="o">.</span><span class="n">assert_equal</span><span class="p">(</span><span class="n">categorical_trait</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">categorical_trait</span><span class="p">)</span>
 
 </div></div>
-<div class="viewcode-block" id="PredictorDataSetManager"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.PredictorDataSetManager">[docs]</a><span class="k">class</span> <span class="nc">PredictorDataSetManager</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorDataSetManager"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorDataSetManager">[docs]</a><span class="k">class</span> <span class="nc">PredictorDataSetManager</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A collection of PredictorDataSet instances.</span>
 
 <span class="sd">    Parameters</span>
@@ -787,7 +787,7 @@
             <span class="k">else</span> <span class="n">PredictorConfigManager</span><span class="p">()</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">datasets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorDataSetManager.datasets"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorDataSetManager.datasets">[docs]</a>    <span class="k">def</span> <span class="nf">datasets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;3-layer deep dict of {data: {trait: {categorical: dataset}}}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;_datasets&#39;</span><span class="p">):</span>
@@ -796,8 +796,8 @@
             <span class="c"># both</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_datasets</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_datasets</span>
-
-<div class="viewcode-block" id="PredictorDataSetManager.dataset"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.PredictorDataSetManager.dataset">[docs]</a>    <span class="k">def</span> <span class="nf">dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_name</span><span class="p">,</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">categorical_trait</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+</div>
+<div class="viewcode-block" id="PredictorDataSetManager.dataset"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorDataSetManager.dataset">[docs]</a>    <span class="k">def</span> <span class="nf">dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_name</span><span class="p">,</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">categorical_trait</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;???? @mlovci please fill in</span>
 
@@ -844,7 +844,7 @@
         <span class="k">return</span> <span class="n">dataset</span>
 </div>
     <span class="nd">@memoize</span>
-<div class="viewcode-block" id="PredictorDataSetManager.new_dataset"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.PredictorDataSetManager.new_dataset">[docs]</a>    <span class="k">def</span> <span class="nf">new_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_name</span><span class="p">,</span> <span class="n">trait_name</span><span class="p">,</span>
+<div class="viewcode-block" id="PredictorDataSetManager.new_dataset"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorDataSetManager.new_dataset">[docs]</a>    <span class="k">def</span> <span class="nf">new_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_name</span><span class="p">,</span> <span class="n">trait_name</span><span class="p">,</span>
                     <span class="n">categorical_trait</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
                     <span class="n">data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">trait</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                     <span class="n">predictor_config_manager</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
@@ -902,7 +902,7 @@
             <span class="n">predictor_config_manager</span><span class="o">=</span><span class="n">predictor_config_manager</span><span class="p">)</span>
 
 </div></div>
-<div class="viewcode-block" id="PredictorBase"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.PredictorBase">[docs]</a><span class="k">class</span> <span class="nc">PredictorBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorBase"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorBase">[docs]</a><span class="k">class</span> <span class="nc">PredictorBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predictor_name</span><span class="p">,</span> <span class="n">data_name</span><span class="p">,</span> <span class="n">trait_name</span><span class="p">,</span>
                  <span class="n">X_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">trait</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
@@ -1007,30 +1007,30 @@
                                                    <span class="bp">self</span><span class="o">.</span><span class="n">predictor</span><span class="o">.</span><span class="n">__doc__</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorBase.dataset"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorBase.dataset">[docs]</a>    <span class="k">def</span> <span class="nf">dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Thin reference to `dataset`&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictor_data_manager</span><span class="o">.</span><span class="n">dataset</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">trait_name</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">trait</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trait</span><span class="p">,</span>
             <span class="n">categorical_trait</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">categorical_trait</span><span class="p">)</span>
-
+</div>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">X</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorBase.X"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorBase.X">[docs]</a>    <span class="k">def</span> <span class="nf">X</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Predictive variables, aligned with target.</span>
 
 <span class="sd">        Thin reference to `dataset.X`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">X</span>
-
+</div>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">y</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorBase.y"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorBase.y">[docs]</a>    <span class="k">def</span> <span class="nf">y</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Target variable, aligned with predictive variables</span>
 
 <span class="sd">        Thin reference to `dataset.y`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">y</span>
-
+</div>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">predictor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorBase.predictor"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorBase.predictor">[docs]</a>    <span class="k">def</span> <span class="nf">predictor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Thin reference to ``dataset.predictor``&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">predictor</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">predictor_name</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">predictor_obj</span><span class="p">,</span>
@@ -1038,8 +1038,8 @@
             <span class="n">score_cutoff_fun</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">score_cutoff_fun</span><span class="p">,</span>
             <span class="n">n_features_dependent_kwargs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_features_dependent_kwargs</span><span class="p">,</span>
             <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">constant_kwargs</span><span class="p">)</span>
-
-<div class="viewcode-block" id="PredictorBase.fit"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.PredictorBase.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="PredictorBase.fit"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorBase.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Fit predictor to the dataset&quot;&quot;&quot;</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
             <span class="s">&quot;Fitting a predictor for X:{}, y:{}, method:{}... please wait.</span><span class="se">\n</span><span class="s">&quot;</span>
@@ -1057,7 +1057,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">has_been_scored</span> <span class="o">=</span> <span class="bp">True</span>
 </div>
     <span class="nd">@memoize</span>
-<div class="viewcode-block" id="PredictorBase.predict"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.PredictorBase.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorBase.predict"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorBase.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Predict</span>
 
 <span class="sd">        Parameters</span>
@@ -1086,47 +1086,47 @@
                          <span class="n">index</span><span class="o">=</span><span class="n">other</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
 </div>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">oob_score_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorBase.oob_score_"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorBase.oob_score_">[docs]</a>    <span class="k">def</span> <span class="nf">oob_score_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Thin reference to `predictor.oob_score_`&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictor</span><span class="o">.</span><span class="n">oob_score_</span>
-
+</div>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">has_been_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Thin reference to `predictor.has_been_fit`&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictor</span><span class="o">.</span><span class="n">has_been_fit</span>
 
     <span class="nd">@has_been_fit.setter</span>
-    <span class="k">def</span> <span class="nf">has_been_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorBase.has_been_fit"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorBase.has_been_fit">[docs]</a>    <span class="k">def</span> <span class="nf">has_been_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set whether the predictor has been fit&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">predictor</span><span class="o">.</span><span class="n">has_been_fit</span> <span class="o">=</span> <span class="n">value</span>
-
+</div>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">has_been_scored</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Thin reference to :py:attr:`.predictor.has_been_scored`&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictor</span><span class="o">.</span><span class="n">has_been_scored</span>
 
     <span class="nd">@has_been_scored.setter</span>
-    <span class="k">def</span> <span class="nf">has_been_scored</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorBase.has_been_scored"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorBase.has_been_scored">[docs]</a>    <span class="k">def</span> <span class="nf">has_been_scored</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set whether the predictor has been scored&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">predictor</span><span class="o">.</span><span class="n">has_been_scored</span> <span class="o">=</span> <span class="n">value</span>
-
+</div>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">score_coefficient</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Thin reference to ``predictor._score_coefficient``&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictor</span><span class="o">.</span><span class="n">_score_coefficient</span>
 
     <span class="nd">@score_coefficient.setter</span>
-    <span class="k">def</span> <span class="nf">score_coefficient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorBase.score_coefficient"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorBase.score_coefficient">[docs]</a>    <span class="k">def</span> <span class="nf">score_coefficient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set the predictor&#39;s score coefficient&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">predictor</span><span class="o">.</span><span class="n">_score_coefficient</span> <span class="o">=</span> <span class="n">value</span>
-
+</div>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">scores_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Scores of these features&#39; importances in this predictor&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictor</span><span class="o">.</span><span class="n">scores_</span>
 
     <span class="nd">@scores_.setter</span>
-    <span class="k">def</span> <span class="nf">scores_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorBase.scores_"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorBase.scores_">[docs]</a>    <span class="k">def</span> <span class="nf">scores_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set the predictor scores</span>
 
 <span class="sd">        If zero important features found, raise a warning</span>
@@ -1140,40 +1140,40 @@
                         <span class="s">&quot;</span><span class="se">\&quot;</span><span class="s">ValueError: failed to create intent(&quot;</span>
                         <span class="s">&quot;cache|hide)|optional array-- must have defined &quot;</span>
                         <span class="s">&quot;dimensions but got (0,)</span><span class="se">\&quot;\n</span><span class="s">&quot;</span><span class="p">)</span>
-
+</div>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">score_cutoff_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorBase.score_cutoff_"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorBase.score_cutoff_">[docs]</a>    <span class="k">def</span> <span class="nf">score_cutoff_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the minimum score of the &#39;good&#39; features&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictor</span><span class="o">.</span><span class="n">score_cutoff_fun</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scores_</span><span class="p">,</span>
                                                <span class="bp">self</span><span class="o">.</span><span class="n">score_coefficient</span><span class="p">)</span>
-
+</div>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">important_features_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorBase.important_features_"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorBase.important_features_">[docs]</a>    <span class="k">def</span> <span class="nf">important_features_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get all features with scores greater than ``score_cutoff_``&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">scores_</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_cutoff_</span>
-
+</div>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">subset_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorBase.subset_"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorBase.subset_">[docs]</a>    <span class="k">def</span> <span class="nf">subset_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the subset of the data with only important features&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">ix</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">important_features_</span><span class="p">]</span>
-
+</div>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">n_good_features_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorBase.n_good_features_"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorBase.n_good_features_">[docs]</a>    <span class="k">def</span> <span class="nf">n_good_features_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the number of good features&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">important_features_</span><span class="p">)</span>
-
+</div>
     <span class="nd">@memoize</span>
-<div class="viewcode-block" id="PredictorBase.pca"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.PredictorBase.pca">[docs]</a>    <span class="k">def</span> <span class="nf">pca</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorBase.pca"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorBase.pca">[docs]</a>    <span class="k">def</span> <span class="nf">pca</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Perform PCA on the top-performing features&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">DataFramePCA</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subset_</span><span class="p">)</span>
 </div>
     <span class="nd">@memoize</span>
-<div class="viewcode-block" id="PredictorBase.nmf"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.PredictorBase.nmf">[docs]</a>    <span class="k">def</span> <span class="nf">nmf</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PredictorBase.nmf"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.PredictorBase.nmf">[docs]</a>    <span class="k">def</span> <span class="nf">nmf</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Perform NMF on the top-performing features&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">DataFrameNMF</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subset_</span><span class="p">)</span>
 
 </div></div>
-<div class="viewcode-block" id="Regressor"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.Regressor">[docs]</a><span class="k">class</span> <span class="nc">Regressor</span><span class="p">(</span><span class="n">PredictorBase</span><span class="p">):</span>
+<div class="viewcode-block" id="Regressor"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.Regressor">[docs]</a><span class="k">class</span> <span class="nc">Regressor</span><span class="p">(</span><span class="n">PredictorBase</span><span class="p">):</span>
 
     <span class="n">categorical</span> <span class="o">=</span> <span class="bp">False</span>
 
@@ -1190,7 +1190,7 @@
                                         <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="Classifier"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.Classifier">[docs]</a><span class="k">class</span> <span class="nc">Classifier</span><span class="p">(</span><span class="n">PredictorBase</span><span class="p">):</span>
+<div class="viewcode-block" id="Classifier"><a class="viewcode-back" href="../../../flotilla.compute.predict.html#flotilla.compute.predict.Classifier">[docs]</a><span class="k">class</span> <span class="nc">Classifier</span><span class="p">(</span><span class="n">PredictorBase</span><span class="p">):</span>
 
     <span class="n">categorical</span> <span class="o">=</span> <span class="bp">True</span>
 
@@ -1221,7 +1221,7 @@
     </p>
     <p>
         &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
     </p>
   </div>
 </footer>

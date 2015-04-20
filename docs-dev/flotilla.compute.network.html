@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
@@ -39,7 +39,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body role="document">
+  <body>
 
   <div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -162,15 +162,15 @@
 :py:mod:flotilla.visualize.network</p>
 <dl class="class">
 <dt id="flotilla.compute.network.Networker">
-<em class="property">class </em><code class="descclassname">flotilla.compute.network.</code><code class="descname">Networker</code><a class="reference internal" href="_modules/flotilla/compute/network.html#Networker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.network.Networker" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<em class="property">class </em><tt class="descclassname">flotilla.compute.network.</tt><tt class="descname">Networker</tt><a class="reference internal" href="_modules/flotilla/compute/network.html#Networker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.network.Networker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
 <p>Networks (the kind with nodes and edges), aka a graph</p>
 <p>Calculate the edges based on similarity between rows of PCA-reduced data</p>
 <p>Construct a Networker object with default node colors (dark teal)
 and sizes (all nodes at 300)</p>
 <dl class="method">
 <dt id="flotilla.compute.network.Networker.adjacency">
-<code class="descname">adjacency</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/compute/network.html#Networker.adjacency"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.network.Networker.adjacency" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">adjacency</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/network.html#Networker.adjacency"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.network.Networker.adjacency" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the adjacency graph, i.e. connectedness between nodes</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -219,7 +219,7 @@ the data</p>
 
 <dl class="method">
 <dt id="flotilla.compute.network.Networker.get_weight_fun">
-<code class="descname">get_weight_fun</code><span class="sig-paren">(</span><em>fun_name='no_weight'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/compute/network.html#Networker.get_weight_fun"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.network.Networker.get_weight_fun" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_weight_fun</tt><big>(</big><em>fun_name='no_weight'</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/network.html#Networker.get_weight_fun"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.network.Networker.get_weight_fun" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given a string, return the function</p>
 <p>Used to obtain functions that perform common transforms on distance</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -250,7 +250,7 @@ the data</p>
 
 <dl class="method">
 <dt id="flotilla.compute.network.Networker.graph">
-<code class="descname">graph</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/compute/network.html#Networker.graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.network.Networker.graph" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">graph</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/network.html#Networker.graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.network.Networker.graph" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a graph based on the adjacency matrix and other inputs</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -309,7 +309,7 @@ positions</p>
 
 <dl class="attribute">
 <dt id="flotilla.compute.network.Networker.weight_funs">
-<code class="descname">weight_funs</code><em class="property"> = ['no_weight', 'sq', 'arctan', 'arctan_sq']</em><a class="headerlink" href="#flotilla.compute.network.Networker.weight_funs" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">weight_funs</tt><em class="property"> = ['no_weight', 'sq', 'arctan', 'arctan_sq']</em><a class="headerlink" href="#flotilla.compute.network.Networker.weight_funs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -331,7 +331,7 @@ positions</p>
     </p>
     <p>
         &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
     </p>
   </div>
 </footer>

@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
@@ -38,7 +38,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body role="document">
+  <body>
 
   <div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -160,8 +160,8 @@
 <p>Calculate modalities of splicing events.</p>
 <dl class="class">
 <dt id="flotilla.compute.splicing.ModalityEstimator">
-<em class="property">class </em><code class="descclassname">flotilla.compute.splicing.</code><code class="descname">ModalityEstimator</code><span class="sig-paren">(</span><em>step</em>, <em>vmax</em>, <em>logbf_thresh=3</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/compute/splicing.html#ModalityEstimator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.ModalityEstimator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<em class="property">class </em><tt class="descclassname">flotilla.compute.splicing.</tt><tt class="descname">ModalityEstimator</tt><big>(</big><em>step</em>, <em>vmax</em>, <em>logbf_thresh=3</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/splicing.html#ModalityEstimator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.ModalityEstimator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
 <p>Use Bayesian methods to estimate modalities of splicing events</p>
 <p>Initialize an object with models to estimate splicing modality</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -187,7 +187,7 @@ to be significant</p>
 </table>
 <dl class="method">
 <dt id="flotilla.compute.splicing.ModalityEstimator.fit_transform">
-<code class="descname">fit_transform</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/compute/splicing.html#ModalityEstimator.fit_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.ModalityEstimator.fit_transform" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">fit_transform</tt><big>(</big><em>data</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/splicing.html#ModalityEstimator.fit_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.ModalityEstimator.fit_transform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the modality assignments of each splicing event in the data</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -209,7 +209,7 @@ event</p>
 </tr>
 <tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><strong>AssertionError</strong></p>
 <blockquote class="last">
-<div><p>If <code class="docutils literal"><span class="pre">data</span></code> does not fall only between 0 and 1.</p>
+<div><p>If <tt class="docutils literal"><span class="pre">data</span></tt> does not fall only between 0 and 1.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -221,24 +221,24 @@ event</p>
 
 <dl class="class">
 <dt id="flotilla.compute.splicing.ModalityModel">
-<em class="property">class </em><code class="descclassname">flotilla.compute.splicing.</code><code class="descname">ModalityModel</code><span class="sig-paren">(</span><em>alphas</em>, <em>betas</em>, <em>prior='uniform'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/compute/splicing.html#ModalityModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.ModalityModel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<em class="property">class </em><tt class="descclassname">flotilla.compute.splicing.</tt><tt class="descname">ModalityModel</tt><big>(</big><em>alphas</em>, <em>betas</em>, <em>prior='uniform'</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/splicing.html#ModalityModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.ModalityModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
 <p>Object to model modalities from beta distributions</p>
 <dl class="method">
 <dt id="flotilla.compute.splicing.ModalityModel.logliks">
-<code class="descname">logliks</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/compute/splicing.html#ModalityModel.logliks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.ModalityModel.logliks" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">logliks</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/splicing.html#ModalityModel.logliks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.ModalityModel.logliks" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="flotilla.compute.splicing.ModalityModel.logsumexp_logliks">
-<code class="descname">logsumexp_logliks</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/compute/splicing.html#ModalityModel.logsumexp_logliks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.ModalityModel.logsumexp_logliks" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">logsumexp_logliks</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/splicing.html#ModalityModel.logsumexp_logliks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.ModalityModel.logsumexp_logliks" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="function">
 <dt id="flotilla.compute.splicing.get_switchy_score_order">
-<code class="descclassname">flotilla.compute.splicing.</code><code class="descname">get_switchy_score_order</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/compute/splicing.html#get_switchy_score_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.get_switchy_score_order" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">flotilla.compute.splicing.</tt><tt class="descname">get_switchy_score_order</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/splicing.html#get_switchy_score_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.get_switchy_score_order" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply switchy scores to a 2D array of data scores</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -262,7 +262,7 @@ event</p>
 
 <dl class="function">
 <dt id="flotilla.compute.splicing.switchy_score">
-<code class="descclassname">flotilla.compute.splicing.</code><code class="descname">switchy_score</code><span class="sig-paren">(</span><em>array</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/compute/splicing.html#switchy_score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.switchy_score" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">flotilla.compute.splicing.</tt><tt class="descname">switchy_score</tt><big>(</big><em>array</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/splicing.html#switchy_score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.splicing.switchy_score" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transform a 1D array of data scores to a vector of &#8220;switchy scores&#8221;</p>
 <p>Calculates std deviation and mean of sine- and cosine-transformed
 versions of the array. Better than sorting by just the mean which doesn&#8217;t
@@ -305,7 +305,7 @@ other splicing event study_data</p>
     </p>
     <p>
         &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
     </p>
   </div>
 </footer>

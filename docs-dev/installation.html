@@ -24,14 +24,13 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
     <link rel="top" title="flotilla 0.2.7dev documentation" href="index.html" />
     <link rel="up" title="Flotilla tutorial" href="tutorial.html" />
-    <link rel="next" title="Create a barebones datapackage" href="tutorial/barebones_study_making.html" />
     <link rel="prev" title="Flotilla tutorial" href="tutorial.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -39,7 +38,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body role="document">
+  <body>
 
   <div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -166,7 +165,7 @@
 <h1>OS X Installation instructions<a class="headerlink" href="#os-x-installation-instructions" title="Permalink to this headline">¶</a></h1>
 <p>The following steps have been tested on a clean install of Mavericks
 10.9.4.</p>
-<p>All others must fend for themselves to install <code class="docutils literal"><span class="pre">matplotlib</span></code>, <code class="docutils literal"><span class="pre">scipy</span></code> and
+<p>All others must fend for themselves to install <tt class="docutils literal"><span class="pre">matplotlib</span></tt>, <tt class="docutils literal"><span class="pre">scipy</span></tt> and
 their third-party dependencies.</p>
 <p>To install, first install the <a class="reference external" href="http://continuum.io/downloads">Anaconda</a> Python Distribution, which comes
 pre-packaged with a bunch of the scientific packages we use all the time,
@@ -180,7 +179,7 @@ case something goes wrong with You can do this with</p>
 <div class="code highlight-python"><div class="highlight"><pre>conda create --yes flotilla_env pip numpy scipy cython matplotlib nose six scikit-learn ipython networkx pandas tornado statsmodels setuptools pytest pyzmq jinja2 pyyaml
 </pre></div>
 </div>
-<p>You&#8217;ve now just created a &#8220;virtual environment&#8221; called <code class="docutils literal"><span class="pre">flotilla_env</span></code> (the first
+<p>You&#8217;ve now just created a &#8220;virtual environment&#8221; called <tt class="docutils literal"><span class="pre">flotilla_env</span></tt> (the first
 argument). Now activate that environment with,</p>
 <div class="code highlight-python"><div class="highlight"><pre>source activate flotilla_env
 </pre></div>
@@ -189,7 +188,7 @@ argument). Now activate that environment with,</p>
 <div class="code highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="n">flotilla_env</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Which indicates that you are now in the <code class="docutils literal"><span class="pre">flotilla_env</span></code> virtual environment. Now
+<p>Which indicates that you are now in the <tt class="docutils literal"><span class="pre">flotilla_env</span></tt> virtual environment. Now
 that you&#8217;re in the environment, follow along with the non-sandbox
 installation instructions.</p>
 </div>
@@ -200,19 +199,19 @@ terminal, enter this command:</p>
 <div class="code highlight-python"><div class="highlight"><pre>conda update --yes pip numpy scipy cython matplotlib nose six scikit-learn ipython networkx pandas tornado statsmodels setuptools pytest pyzmq jinja2 pyyaml
 </pre></div>
 </div>
-<p>Not all packages are available using <code class="docutils literal"><span class="pre">conda</span></code>, so we&#8217;ll install the rest using
-<code class="docutils literal"><span class="pre">pip</span></code>, which is a Python package installer and installs from <a class="reference external" href="https://pypi.python.org/">PyPI</a>, the
+<p>Not all packages are available using <tt class="docutils literal"><span class="pre">conda</span></tt>, so we&#8217;ll install the rest using
+<tt class="docutils literal"><span class="pre">pip</span></tt>, which is a Python package installer and installs from <a class="reference external" href="https://pypi.python.org/">PyPI</a>, the
 Python Package Index.</p>
 <div class="code highlight-python"><div class="highlight"><pre>pip install seaborn fastcluster brewer2mpl pymongo gspread husl semantic_version joblib
 </pre></div>
 </div>
-<p>Next, to install the latest release of <code class="docutils literal"><span class="pre">flotilla</span></code>, do</p>
+<p>Next, to install the latest release of <tt class="docutils literal"><span class="pre">flotilla</span></tt>, do</p>
 <div class="code highlight-python"><div class="highlight"><pre>pip install flotilla
 </pre></div>
 </div>
 <p>If you want the bleeding-edge master version because you&#8217;re a developer or a
 super-user, (we work really hard to make sure it&#8217;s always working but could be
-buggy!), then install the <code class="docutils literal"><span class="pre">git</span></code> master with,</p>
+buggy!), then install the <tt class="docutils literal"><span class="pre">git</span></tt> master with,</p>
 <div class="code highlight-python"><div class="highlight"><pre>pip install git+git://github.com/yeolab/flotilla.git
 </pre></div>
 </div>
@@ -290,7 +289,7 @@ buggy!), then install the <code class="docutils literal"><span class="pre">git</
 </pre></div>
 </div>
 <ul class="simple">
-<li>create a new notebook by clicking <code class="docutils literal"><span class="pre">New</span> <span class="pre">Notebook</span></code></li>
+<li>create a new notebook by clicking <tt class="docutils literal"><span class="pre">New</span> <span class="pre">Notebook</span></tt></li>
 <li>rename your notebook from &#8220;Untitled&#8221; to something more informative by
 clicking the title panel.</li>
 </ul>
@@ -298,7 +297,7 @@ clicking the title panel.</li>
 <div class="section" id="docker-instructions">
 <h1>Docker Instructions<a class="headerlink" href="#docker-instructions" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="https://www.docker.com/whatisdocker/">Docker</a> is the preferred
-method to obtain the most up-to-date version of <code class="docutils literal"><span class="pre">flotilla</span></code>. Every
+method to obtain the most up-to-date version of <tt class="docutils literal"><span class="pre">flotilla</span></tt>. Every
 change we make to the source code triggers a new build of a virtual
 machine that contains flotilla and all its dependencies.</p>
 <p>Here are instructions to get an active docker image. These instructions
@@ -310,7 +309,7 @@ have not been tested on Windows or Linux.</p>
 appropriate for your
 system</a>.</p>
 </li>
-<li><p class="first">Then start flotilla on the command line (OS X <code class="docutils literal"><span class="pre">Terminal</span></code>
+<li><p class="first">Then start flotilla on the command line (OS X <tt class="docutils literal"><span class="pre">Terminal</span></tt>
 application):</p>
 <p>curl <a class="reference external" href="https://raw.githubusercontent.com/YeoLab/flotilla/master/docker/start_docker.py">https://raw.githubusercontent.com/YeoLab/flotilla/master/docker/start_docker.py</a> | python</p>
 </li>
@@ -338,7 +337,7 @@ study.interactive_pca()</div></blockquote>
     </p>
     <p>
         &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
     </p>
   </div>
 </footer>

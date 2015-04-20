@@ -24,20 +24,20 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../../../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
     <link rel="top" title="flotilla 0.2.7dev documentation" href="../../../index.html" />
-    <link rel="up" title="Module code" href="../../index.html" />
+    <link rel="up" title="flotilla.data_model" href="../data_model.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body role="document">
+  <body>
 
   <div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -167,7 +167,7 @@
 <span class="n">OUTLIER_COL</span> <span class="o">=</span> <span class="s">&#39;outlier&#39;</span>
 
 
-<div class="viewcode-block" id="MetaData"><a class="viewcode-back" href="../../../flotilla.data_model.metadata.html#flotilla.MetaData">[docs]</a><span class="k">class</span> <span class="nc">MetaData</span><span class="p">(</span><span class="n">BaseData</span><span class="p">):</span>
+<div class="viewcode-block" id="MetaData"><a class="viewcode-back" href="../../../flotilla.data_model.metadata.html#flotilla.data_model.metadata.MetaData">[docs]</a><span class="k">class</span> <span class="nc">MetaData</span><span class="p">(</span><span class="n">BaseData</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">phenotype_order</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">phenotype_to_color</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">phenotype_to_marker</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">phenotype_col</span><span class="o">=</span><span class="n">PHENOTYPE_COL</span><span class="p">,</span>
@@ -236,17 +236,17 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">phenotype_to_marker</span><span class="p">[</span><span class="n">phenotype</span><span class="p">]</span> <span class="o">=</span> <span class="n">marker</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">sample_id_to_phenotype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MetaData.sample_id_to_phenotype"><a class="viewcode-back" href="../../../flotilla.data_model.metadata.html#flotilla.data_model.metadata.MetaData.sample_id_to_phenotype">[docs]</a>    <span class="k">def</span> <span class="nf">sample_id_to_phenotype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">phenotype_col</span><span class="p">]</span>
-
+</div>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">unique_phenotypes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MetaData.unique_phenotypes"><a class="viewcode-back" href="../../../flotilla.data_model.metadata.html#flotilla.data_model.metadata.MetaData.unique_phenotypes">[docs]</a>    <span class="k">def</span> <span class="nf">unique_phenotypes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_id_to_phenotype</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
-
+</div>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">n_phenotypes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MetaData.n_phenotypes"><a class="viewcode-back" href="../../../flotilla.data_model.metadata.html#flotilla.data_model.metadata.MetaData.n_phenotypes">[docs]</a>    <span class="k">def</span> <span class="nf">n_phenotypes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_phenotypes</span><span class="p">)</span>
-
+</div>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_default_phenotype_order</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_phenotypes</span><span class="p">))</span>
@@ -260,16 +260,16 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_phenotype_order</span>
 
     <span class="nd">@phenotype_order.setter</span>
-    <span class="k">def</span> <span class="nf">phenotype_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<div class="viewcode-block" id="MetaData.phenotype_order"><a class="viewcode-back" href="../../../flotilla.data_model.metadata.html#flotilla.data_model.metadata.MetaData.phenotype_order">[docs]</a>    <span class="k">def</span> <span class="nf">phenotype_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_phenotype_order</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_phenotype_order</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_phenotype_order</span>
-
+</div>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">phenotype_transitions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MetaData.phenotype_transitions"><a class="viewcode-back" href="../../../flotilla.data_model.metadata.html#flotilla.data_model.metadata.MetaData.phenotype_transitions">[docs]</a>    <span class="k">def</span> <span class="nf">phenotype_transitions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phenotype_order</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">phenotype_order</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
-
+</div>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_colors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">rgb2hex</span><span class="p">,</span>
@@ -295,14 +295,14 @@
                     <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">all_phenotypes</span><span class="p">)</span>
 
     <span class="nd">@phenotype_to_color.setter</span>
-    <span class="k">def</span> <span class="nf">phenotype_to_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<div class="viewcode-block" id="MetaData.phenotype_to_color"><a class="viewcode-back" href="../../../flotilla.data_model.metadata.html#flotilla.data_model.metadata.MetaData.phenotype_to_color">[docs]</a>    <span class="k">def</span> <span class="nf">phenotype_to_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_phenotype_to_color</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;No phenotype to color mapping was provided, &#39;</span>
                              <span class="s">&#39;falling back on reasonable defaults.</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_phenotype_to_color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_phenotype_to_color</span>
-
+</div>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">phenotype_to_marker</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">markers</span> <span class="o">=</span> <span class="n">cycle</span><span class="p">([</span><span class="s">&#39;o&#39;</span><span class="p">,</span> <span class="s">&#39;^&#39;</span><span class="p">,</span> <span class="s">&#39;s&#39;</span><span class="p">,</span> <span class="s">&#39;v&#39;</span><span class="p">,</span> <span class="s">&#39;*&#39;</span><span class="p">,</span> <span class="s">&#39;D&#39;</span><span class="p">,</span> <span class="p">])</span>
@@ -318,7 +318,7 @@
                     <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">all_phenotypes</span><span class="p">)</span>
 
     <span class="nd">@phenotype_to_marker.setter</span>
-    <span class="k">def</span> <span class="nf">phenotype_to_marker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<div class="viewcode-block" id="MetaData.phenotype_to_marker"><a class="viewcode-back" href="../../../flotilla.data_model.metadata.html#flotilla.data_model.metadata.MetaData.phenotype_to_marker">[docs]</a>    <span class="k">def</span> <span class="nf">phenotype_to_marker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_phenotype_to_marker</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">else</span><span class="p">:</span>
@@ -331,27 +331,27 @@
                 <span class="k">return</span> <span class="n">markers</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_phenotype_to_marker</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="n">marker_factory</span><span class="p">)</span>
-
+</div>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">phenotype_color_order</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MetaData.phenotype_color_order"><a class="viewcode-back" href="../../../flotilla.data_model.metadata.html#flotilla.data_model.metadata.MetaData.phenotype_color_order">[docs]</a>    <span class="k">def</span> <span class="nf">phenotype_color_order</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">phenotype_to_color</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">phenotype_order</span><span class="p">]</span>
-
+</div>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">sample_id_to_color</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MetaData.sample_id_to_color"><a class="viewcode-back" href="../../../flotilla.data_model.metadata.html#flotilla.data_model.metadata.MetaData.sample_id_to_color">[docs]</a>    <span class="k">def</span> <span class="nf">sample_id_to_color</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
             <span class="nb">dict</span><span class="p">((</span><span class="n">sample_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">phenotype_to_color</span><span class="p">[</span><span class="n">p</span><span class="p">])</span>
                  <span class="k">for</span> <span class="n">sample_id</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span>
                  <span class="bp">self</span><span class="o">.</span><span class="n">sample_id_to_phenotype</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()))</span>
-
+</div>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">sample_subsets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MetaData.sample_subsets"><a class="viewcode-back" href="../../../flotilla.data_model.metadata.html#flotilla.data_model.metadata.MetaData.sample_subsets">[docs]</a>    <span class="k">def</span> <span class="nf">sample_subsets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">subsets_from_metadata</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">minimum_sample_subset</span><span class="p">,</span>
                                      <span class="s">&#39;samples&#39;</span><span class="p">)</span>
-
+</div>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">phenotype_series</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MetaData.phenotype_series"><a class="viewcode-back" href="../../../flotilla.data_model.metadata.html#flotilla.data_model.metadata.MetaData.phenotype_series">[docs]</a>    <span class="k">def</span> <span class="nf">phenotype_series</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;MetaData.phenotype_series will be deprecated in 0.3.0&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">phenotype_col</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">phenotype_col</span><span class="p">]</span></div></div>
 </pre></div>
 
     </div>
@@ -368,7 +368,7 @@
     </p>
     <p>
         &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
     </p>
   </div>
 </footer>

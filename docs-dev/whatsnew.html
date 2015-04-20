@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
@@ -37,7 +37,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body role="document">
+  <body>
 
   <div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -192,17 +192,17 @@
 <div class="section" id="plotting-functions">
 <h3>Plotting functions<a class="headerlink" href="#plotting-functions" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>New clustered heatmap and <code class="xref py py-func docutils literal"><span class="pre">data_model.Study.plot_clustermap()</span></code> and
-<code class="xref py py-func docutils literal"><span class="pre">data_model.Study.plot_correlations()</span></code></li>
+<li>New clustered heatmap and <tt class="xref py py-func docutils literal"><span class="pre">data_model.Study.plot_clustermap()</span></tt> and
+<tt class="xref py py-func docutils literal"><span class="pre">data_model.Study.plot_correlations()</span></tt></li>
 </ul>
 </div>
 <div class="section" id="api-changes">
 <h3>API changes<a class="headerlink" href="#api-changes" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><code class="xref py py-func docutils literal"><span class="pre">data_model.Study.save()</span></code> now saves relative instead of absolute
-paths, which makes for more portable <code class="docutils literal"><span class="pre">datapackages</span></code></li>
-<li>Underlying code for <code class="xref py py-class docutils literal"><span class="pre">visualize.DecompositionViz</span></code> and
-<code class="xref py py-class docutils literal"><span class="pre">visualize.ClassifierViz</span></code> now plots via <code class="docutils literal"><span class="pre">plot()</span></code></li>
+<li><tt class="xref py py-func docutils literal"><span class="pre">data_model.Study.save()</span></tt> now saves relative instead of absolute
+paths, which makes for more portable <tt class="docutils literal"><span class="pre">datapackages</span></tt></li>
+<li>Underlying code for <tt class="xref py py-class docutils literal"><span class="pre">visualize.DecompositionViz</span></tt> and
+<tt class="xref py py-class docutils literal"><span class="pre">visualize.ClassifierViz</span></tt> now plots via <tt class="docutils literal"><span class="pre">plot()</span></tt></li>
 </ul>
 </div>
 </div>
@@ -212,43 +212,43 @@ paths, which makes for more portable <code class="docutils literal"><span class=
 <div class="section" id="compute-functions">
 <h3>Compute functions<a class="headerlink" href="#compute-functions" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>Restore <code class="xref py py-func docutils literal"><span class="pre">Study.detect_outliers()</span></code>,
-<code class="xref py py-func docutils literal"><span class="pre">Study.interactive_choose_outliers()</span></code> and
-<code class="xref py py-func docutils literal"><span class="pre">Study.interactive_reset_outliers()</span></code></li>
+<li>Restore <tt class="xref py py-func docutils literal"><span class="pre">Study.detect_outliers()</span></tt>,
+<tt class="xref py py-func docutils literal"><span class="pre">Study.interactive_choose_outliers()</span></tt> and
+<tt class="xref py py-func docutils literal"><span class="pre">Study.interactive_reset_outliers()</span></tt></li>
 </ul>
 </div>
 <div class="section" id="id1">
 <h3>Plotting functions<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>Add <a class="reference internal" href="flotilla.html#flotilla.Study" title="flotilla.Study"><code class="xref py py-class docutils literal"><span class="pre">Study</span></code></a>-level NMF space transitions/positions</li>
+<li>Add <a class="reference internal" href="flotilla.html#flotilla.Study" title="flotilla.Study"><tt class="xref py py-class docutils literal"><span class="pre">Study</span></tt></a>-level NMF space transitions/positions</li>
 </ul>
 </div>
 <div class="section" id="bug-fixes">
 <h3>Bug Fixes<a class="headerlink" href="#bug-fixes" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><code class="xref py py-func docutils literal"><span class="pre">embark()</span></code> wouldn&#8217;t work if <cite>metadata</cite> didn&#8217;t have a <cite>pooled</cite> column,
+<li><tt class="xref py py-func docutils literal"><span class="pre">embark()</span></tt> wouldn&#8217;t work if <cite>metadata</cite> didn&#8217;t have a <cite>pooled</cite> column,
 now it does</li>
-<li><code class="xref py py-func docutils literal"><span class="pre">BaseData.drop_outliers()</span></code> would actually drop samples from the data,
+<li><tt class="xref py py-func docutils literal"><span class="pre">BaseData.drop_outliers()</span></tt> would actually drop samples from the data,
 but we never want to remove data, only mark it as something to be removed so
 all the original data is there</li>
-<li>For all <a class="reference internal" href="flotilla.compute.html#module-flotilla.compute" title="flotilla.compute"><code class="xref py py-mod docutils literal"><span class="pre">compute</span></code></a> submodules, add a check to make sure the input
+<li>For all <a class="reference internal" href="flotilla.compute.html#module-flotilla.compute" title="flotilla.compute"><tt class="xref py py-mod docutils literal"><span class="pre">compute</span></tt></a> submodules, add a check to make sure the input
 data is truly a probability distribution (non-negative, sums to 1)</li>
-<li><code class="xref py py-func docutils literal"><span class="pre">BaseData.plot_feature()</span></code> now plots all features with the same name
+<li><tt class="xref py py-func docutils literal"><span class="pre">BaseData.plot_feature()</span></tt> now plots all features with the same name
 (e.g. all splicing events within that gene) onto a single <cite>fig</cite> object</li>
 </ul>
 </div>
 <div class="section" id="documentation">
 <h3>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>Restore some lost documentation on <a class="reference internal" href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData" title="flotilla.data_model.base.BaseData"><code class="xref py py-class docutils literal"><span class="pre">BaseData</span></code></a> and
-<a class="reference internal" href="flotilla.html#flotilla.Study" title="flotilla.Study"><code class="xref py py-class docutils literal"><span class="pre">Study</span></code></a></li>
+<li>Restore some lost documentation on <a class="reference internal" href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData" title="flotilla.data_model.base.BaseData"><tt class="xref py py-class docutils literal"><span class="pre">BaseData</span></tt></a> and
+<a class="reference internal" href="flotilla.html#flotilla.Study" title="flotilla.Study"><tt class="xref py py-class docutils literal"><span class="pre">Study</span></tt></a></li>
 </ul>
 </div>
 <div class="section" id="other">
 <h3>Other<a class="headerlink" href="#other" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Rename modalities that couldn&#8217;t be assigned when <cite>bootstrapped=True</cite> in
-<code class="xref py py-class docutils literal"><span class="pre">compute.splicing.Modalities</span></code>, from &#8220;unassigned&#8221; to &#8220;ambiguous&#8221;</li>
+<tt class="xref py py-class docutils literal"><span class="pre">compute.splicing.Modalities</span></tt>, from &#8220;unassigned&#8221; to &#8220;ambiguous&#8221;</li>
 </ul>
 </div>
 </div>
@@ -283,23 +283,23 @@ data is truly a probability distribution (non-negative, sums to 1)</li>
 <h3>New features<a class="headerlink" href="#new-features" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Plot the expression or splicing of two <em>samples</em> with
-<a class="reference internal" href="flotilla.html#flotilla.Study.plot_two_samples" title="flotilla.Study.plot_two_samples"><code class="xref py py-meth docutils literal"><span class="pre">Study.plot_two_samples()</span></code></a></li>
+<a class="reference internal" href="flotilla.html#flotilla.Study.plot_two_samples" title="flotilla.Study.plot_two_samples"><tt class="xref py py-meth docutils literal"><span class="pre">Study.plot_two_samples()</span></tt></a></li>
 <li>Plot the expression or splicing of two <em>features</em> with
-<a class="reference internal" href="flotilla.html#flotilla.Study.plot_two_features" title="flotilla.Study.plot_two_features"><code class="xref py py-meth docutils literal"><span class="pre">Study.plot_two_features()</span></code></a></li>
-<li>Detect outliers with <a class="reference internal" href="generated/flotilla.Study.interactive_choose_outliers.html#flotilla.Study.interactive_choose_outliers" title="flotilla.Study.interactive_choose_outliers"><code class="xref py py-meth docutils literal"><span class="pre">Study.interactive_choose_outliers()</span></code></a> which
-performs a <code class="docutils literal"><span class="pre">OneClassSVM</span></code> on the PCA-reduced space of data (either
+<a class="reference internal" href="flotilla.html#flotilla.Study.plot_two_features" title="flotilla.Study.plot_two_features"><tt class="xref py py-meth docutils literal"><span class="pre">Study.plot_two_features()</span></tt></a></li>
+<li>Detect outliers with <a class="reference internal" href="generated/flotilla.Study.interactive_choose_outliers.html#flotilla.Study.interactive_choose_outliers" title="flotilla.Study.interactive_choose_outliers"><tt class="xref py py-meth docutils literal"><span class="pre">Study.interactive_choose_outliers()</span></tt></a> which
+performs a <tt class="docutils literal"><span class="pre">OneClassSVM</span></tt> on the PCA-reduced space of data (either
 expression or splicing), using the first three components</li>
-<li><a class="reference internal" href="flotilla.html#flotilla.Study" title="flotilla.Study"><code class="xref py py-class docutils literal"><span class="pre">Study</span></code></a> doesn&#8217;t filter out the pooled or outlier samples from the
+<li><a class="reference internal" href="flotilla.html#flotilla.Study" title="flotilla.Study"><tt class="xref py py-class docutils literal"><span class="pre">Study</span></tt></a> doesn&#8217;t filter out the pooled or outlier samples from the
 data, only technical outliers with fewer reads than specified in the
-argument <code class="docutils literal"><span class="pre">mapping_stats_min_reads</span></code>.</li>
+argument <tt class="docutils literal"><span class="pre">mapping_stats_min_reads</span></tt>.</li>
 <li>To filter expression or splicing data on the number of samples that must
-detect each feature, you can specify <code class="docutils literal"><span class="pre">expression_thresh</span></code>, and
-<code class="docutils literal"><span class="pre">metadata_min_samples</span></code> in the <a class="reference internal" href="flotilla.html#flotilla.Study" title="flotilla.Study"><code class="xref py py-class docutils literal"><span class="pre">Study</span></code></a> constructor.<ul>
-<li>For example, if <code class="docutils literal"><span class="pre">expression_thresh=1</span></code> and <code class="docutils literal"><span class="pre">metadata_min_samples=3</span></code>,
+detect each feature, you can specify <tt class="docutils literal"><span class="pre">expression_thresh</span></tt>, and
+<tt class="docutils literal"><span class="pre">metadata_min_samples</span></tt> in the <a class="reference internal" href="flotilla.html#flotilla.Study" title="flotilla.Study"><tt class="xref py py-class docutils literal"><span class="pre">Study</span></tt></a> constructor.<ul>
+<li>For example, if <tt class="docutils literal"><span class="pre">expression_thresh=1</span></tt> and <tt class="docutils literal"><span class="pre">metadata_min_samples=3</span></tt>,
 then we will only take genes which have expression values greater than
 1 in at least 3 samples. Additionally, we will also take splicing events
 which were detected in at least three cells, since
-<code class="docutils literal"><span class="pre">metadata_min_samples</span></code> applies to <em>all</em> data types.</li>
+<tt class="docutils literal"><span class="pre">metadata_min_samples</span></tt> applies to <em>all</em> data types.</li>
 </ul>
 </li>
 </ul>
@@ -307,31 +307,31 @@ which were detected in at least three cells, since
 <div class="section" id="id3">
 <h3>API changes<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The attribute <code class="docutils literal"><span class="pre">data</span></code> in <a class="reference internal" href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData" title="flotilla.data_model.base.BaseData"><code class="xref py py-class docutils literal"><span class="pre">BaseData</span></code></a> (i.e.
-<code class="xref py py-attr docutils literal"><span class="pre">BaseData.data</span></code>) now contains <strong>all</strong> the data, including pooled,
+<li>The attribute <tt class="docutils literal"><span class="pre">data</span></tt> in <a class="reference internal" href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData" title="flotilla.data_model.base.BaseData"><tt class="xref py py-class docutils literal"><span class="pre">BaseData</span></tt></a> (i.e.
+<tt class="xref py py-attr docutils literal"><span class="pre">BaseData.data</span></tt>) now contains <strong>all</strong> the data, including pooled,
 singles, and outliers</li>
-<li>The attribute <code class="docutils literal"><span class="pre">data_original</span></code> in <a class="reference internal" href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData" title="flotilla.data_model.base.BaseData"><code class="xref py py-class docutils literal"><span class="pre">BaseData</span></code></a> (i.e.
-<code class="xref py py-attr docutils literal"><span class="pre">BaseData.data_original</span></code>) contains the original, unfiltered
+<li>The attribute <tt class="docutils literal"><span class="pre">data_original</span></tt> in <a class="reference internal" href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData" title="flotilla.data_model.base.BaseData"><tt class="xref py py-class docutils literal"><span class="pre">BaseData</span></tt></a> (i.e.
+<tt class="xref py py-attr docutils literal"><span class="pre">BaseData.data_original</span></tt>) contains the original, unfiltered
 data. For example, before removing features detected in fewer than 3 samples
 with expression &gt; 1.</li>
-<li><a class="reference internal" href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData" title="flotilla.data_model.base.BaseData"><code class="xref py py-class docutils literal"><span class="pre">BaseData</span></code></a> now has the attributes
-<a class="reference internal" href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData.singles" title="flotilla.data_model.base.BaseData.singles"><code class="xref py py-attr docutils literal"><span class="pre">BaseData.singles</span></code></a>, <a class="reference internal" href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData.pooled" title="flotilla.data_model.base.BaseData.pooled"><code class="xref py py-attr docutils literal"><span class="pre">BaseData.pooled</span></code></a>, and
-<a class="reference internal" href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData.outliers" title="flotilla.data_model.base.BaseData.outliers"><code class="xref py py-attr docutils literal"><span class="pre">BaseData.outliers</span></code></a> which are on-the-fly subsets of
-<code class="xref py py-attr docutils literal"><span class="pre">BaseData.data</span></code>. This is to maintain data provenance, meaning if
+<li><a class="reference internal" href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData" title="flotilla.data_model.base.BaseData"><tt class="xref py py-class docutils literal"><span class="pre">BaseData</span></tt></a> now has the attributes
+<a class="reference internal" href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData.singles" title="flotilla.data_model.base.BaseData.singles"><tt class="xref py py-attr docutils literal"><span class="pre">BaseData.singles</span></tt></a>, <a class="reference internal" href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData.pooled" title="flotilla.data_model.base.BaseData.pooled"><tt class="xref py py-attr docutils literal"><span class="pre">BaseData.pooled</span></tt></a>, and
+<a class="reference internal" href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData.outliers" title="flotilla.data_model.base.BaseData.outliers"><tt class="xref py py-attr docutils literal"><span class="pre">BaseData.outliers</span></tt></a> which are on-the-fly subsets of
+<tt class="xref py py-attr docutils literal"><span class="pre">BaseData.data</span></tt>. This is to maintain data provenance, meaning if
 &#8220;outliers&#8221; is changed, this is also changed.</li>
-<li>In <a class="reference internal" href="flotilla.html#flotilla.Study" title="flotilla.Study"><code class="xref py py-class docutils literal"><span class="pre">Study</span></code></a>, you now must specify <code class="docutils literal"><span class="pre">expression_feature_rename_col</span></code>,
-<code class="docutils literal"><span class="pre">splicing_feature_rename_col</span></code>, <code class="docutils literal"><span class="pre">mapping_stats_number_mapped_col</span></code>
+<li>In <a class="reference internal" href="flotilla.html#flotilla.Study" title="flotilla.Study"><tt class="xref py py-class docutils literal"><span class="pre">Study</span></tt></a>, you now must specify <tt class="docutils literal"><span class="pre">expression_feature_rename_col</span></tt>,
+<tt class="docutils literal"><span class="pre">splicing_feature_rename_col</span></tt>, <tt class="docutils literal"><span class="pre">mapping_stats_number_mapped_col</span></tt>
 explicitly, they are no longer defaulting to,
-<code class="docutils literal"><span class="pre">{splicing,expression}_feature_rename_col=&quot;gene_name&quot;</span></code> and
-<code class="docutils literal"><span class="pre">mapping_stats_number_mapped_col=&quot;Uniquely</span> <span class="pre">mapped</span> <span class="pre">reads</span> <span class="pre">number&quot;</span></code></li>
+<tt class="docutils literal"><span class="pre">{splicing,expression}_feature_rename_col=&quot;gene_name&quot;</span></tt> and
+<tt class="docutils literal"><span class="pre">mapping_stats_number_mapped_col=&quot;Uniquely</span> <span class="pre">mapped</span> <span class="pre">reads</span> <span class="pre">number&quot;</span></tt></li>
 </ul>
 </div>
 <div class="section" id="other-changes">
 <h3>Other Changes<a class="headerlink" href="#other-changes" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>Status messages in <code class="xref py py-func docutils literal"><span class="pre">embark()</span></code> have been moved to <code class="docutils literal"><span class="pre">stdout</span></code> instead
-of <code class="docutils literal"><span class="pre">stderr</span></code> to avoid confusion that something is going wrong</li>
-<li>In <code class="xref py py-func docutils literal"><span class="pre">embark()</span></code>, user gets notified which samples are removed for having
+<li>Status messages in <tt class="xref py py-func docutils literal"><span class="pre">embark()</span></tt> have been moved to <tt class="docutils literal"><span class="pre">stdout</span></tt> instead
+of <tt class="docutils literal"><span class="pre">stderr</span></tt> to avoid confusion that something is going wrong</li>
+<li>In <tt class="xref py py-func docutils literal"><span class="pre">embark()</span></tt>, user gets notified which samples are removed for having
 too few reads (default minimum number of reads is <span class="math">\(5\times 10^5\)</span>, or
 half a million reads).</li>
 </ul>
@@ -354,7 +354,7 @@ half a million reads).</li>
     </p>
     <p>
         &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
     </p>
   </div>
 </footer>

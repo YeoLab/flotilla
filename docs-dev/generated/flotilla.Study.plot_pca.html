@@ -24,19 +24,22 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
     <link rel="top" title="flotilla 0.2.7dev documentation" href="../index.html" />
+    <link rel="up" title="API Reference" href="../api.html" />
+    <link rel="next" title="flotilla.Study.plot_classifier" href="flotilla.Study.plot_classifier.html" />
+    <link rel="prev" title="flotilla.Study.interactive_reset_outliers" href="flotilla.Study.interactive_reset_outliers.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body role="document">
+  <body>
 
   <div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -68,7 +71,7 @@
      href="../index.html">Site <b class="caret"></b></a>
   <ul class="dropdown-menu globaltoc"
       role="menu"
-      aria-labelledby="dLabelGlobalToc"><ul>
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../modules.html">flotilla</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../flotilla.html">flotilla package</a></li>
 </ul>
@@ -88,10 +91,10 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html#old-osx-installation-instructions">Old OSX Installation instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html#docker-instructions">Docker Instructions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../api.html">API Reference</a><ul>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../api.html#general-use-plots">General use plots</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#interactive-plots">Interactive plots</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#machine-learning-plots">Machine learning plots</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#machine-learning-plots">Machine learning plots</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#splicing-specific-plots">Splicing-specific plots</a></li>
 </ul>
 </li>
@@ -157,7 +160,7 @@
 <h1>flotilla.Study.plot_pca<a class="headerlink" href="#flotilla-study-plot-pca" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="flotilla.Study.plot_pca">
-<code class="descclassname">Study.</code><code class="descname">plot_pca</code><span class="sig-paren">(</span><em>data_type='expression'</em>, <em>x_pc=1</em>, <em>y_pc=2</em>, <em>sample_subset=None</em>, <em>feature_subset=None</em>, <em>title=''</em>, <em>featurewise=False</em>, <em>plot_violins=False</em>, <em>show_point_labels=False</em>, <em>reduce_kwargs=None</em>, <em>color_samples_by=None</em>, <em>bokeh=False</em>, <em>most_variant_features=False</em>, <em>std_multiplier=2</em>, <em>scale_by_variance=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flotilla/data_model/study.html#Study.plot_pca"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.Study.plot_pca" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">Study.</tt><tt class="descname">plot_pca</tt><big>(</big><em>data_type='expression'</em>, <em>x_pc=1</em>, <em>y_pc=2</em>, <em>sample_subset=None</em>, <em>feature_subset=None</em>, <em>title=''</em>, <em>featurewise=False</em>, <em>plot_violins=False</em>, <em>show_point_labels=False</em>, <em>reduce_kwargs=None</em>, <em>color_samples_by=None</em>, <em>bokeh=False</em>, <em>most_variant_features=False</em>, <em>std_multiplier=2</em>, <em>scale_by_variance=True</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#flotilla.Study.plot_pca" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performs DataFramePCA on both expression and splicing study_data</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -232,7 +235,7 @@ mean feature variance (default False)</p>
 </div></blockquote>
 <p><strong>std_multiplier</strong> : float, optional</p>
 <blockquote>
-<div><p>If <code class="docutils literal"><span class="pre">most_variant_features</span></code> is True, then use this as a cutoff
+<div><p>If <tt class="docutils literal"><span class="pre">most_variant_features</span></tt> is True, then use this as a cutoff
 for the minimum variance of a feature to be included (default 2)</p>
 </div></blockquote>
 <p><strong>scale_by_variance</strong> : bool, optional</p>
@@ -244,7 +247,7 @@ and its variations, not for NMF or tSNE. (default True)</p>
 <p><strong>kwargs</strong> : other keyword arguments</p>
 <blockquote class="last">
 <div><p>All other keyword arguments are passed to
-<code class="xref py py-meth docutils literal"><span class="pre">DecomopsitionViz.plot()</span></code></p>
+<tt class="xref py py-meth docutils literal"><span class="pre">DecomopsitionViz.plot()</span></tt></p>
 </div></blockquote>
 </td>
 </tr>
@@ -269,7 +272,7 @@ and its variations, not for NMF or tSNE. (default True)</p>
     </p>
     <p>
         &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
     </p>
   </div>
 </footer>

@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
@@ -39,7 +39,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body role="document">
+  <body>
 
   <div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -160,61 +160,61 @@
 <span id="flotilla-data-model-metadata-module"></span><h1>flotilla.data_model.metadata module<a class="headerlink" href="#module-flotilla.data_model.metadata" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="flotilla.data_model.metadata.MetaData">
-<em class="property">class </em><code class="descclassname">flotilla.data_model.metadata.</code><code class="descname">MetaData</code><span class="sig-paren">(</span><em>data</em>, <em>phenotype_order=None</em>, <em>phenotype_to_color=None</em>, <em>phenotype_to_marker=None</em>, <em>phenotype_col='phenotype'</em>, <em>pooled_col='pooled'</em>, <em>outlier_col='outlier'</em>, <em>predictor_config_manager=None</em>, <em>minimum_sample_subset=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/data_model/metadata.html#MetaData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.metadata.MetaData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData" title="flotilla.data_model.base.BaseData"><code class="xref py py-class docutils literal"><span class="pre">flotilla.data_model.base.BaseData</span></code></a></p>
+<em class="property">class </em><tt class="descclassname">flotilla.data_model.metadata.</tt><tt class="descname">MetaData</tt><big>(</big><em>data</em>, <em>phenotype_order=None</em>, <em>phenotype_to_color=None</em>, <em>phenotype_to_marker=None</em>, <em>phenotype_col='phenotype'</em>, <em>pooled_col='pooled'</em>, <em>outlier_col='outlier'</em>, <em>predictor_config_manager=None</em>, <em>minimum_sample_subset=10</em><big>)</big><a class="reference internal" href="_modules/flotilla/data_model/metadata.html#MetaData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.metadata.MetaData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData" title="flotilla.data_model.base.BaseData"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.data_model.base.BaseData</span></tt></a></p>
 <dl class="attribute">
 <dt id="flotilla.data_model.metadata.MetaData.n_phenotypes">
-<code class="descname">n_phenotypes</code><a class="headerlink" href="#flotilla.data_model.metadata.MetaData.n_phenotypes" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">n_phenotypes</tt><a class="reference internal" href="_modules/flotilla/data_model/metadata.html#MetaData.n_phenotypes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.metadata.MetaData.n_phenotypes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="flotilla.data_model.metadata.MetaData.phenotype_color_order">
-<code class="descname">phenotype_color_order</code><a class="headerlink" href="#flotilla.data_model.metadata.MetaData.phenotype_color_order" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">phenotype_color_order</tt><a class="reference internal" href="_modules/flotilla/data_model/metadata.html#MetaData.phenotype_color_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.metadata.MetaData.phenotype_color_order" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="flotilla.data_model.metadata.MetaData.phenotype_order">
-<code class="descname">phenotype_order</code><a class="headerlink" href="#flotilla.data_model.metadata.MetaData.phenotype_order" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">phenotype_order</tt><a class="reference internal" href="_modules/flotilla/data_model/metadata.html#MetaData.phenotype_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.metadata.MetaData.phenotype_order" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="flotilla.data_model.metadata.MetaData.phenotype_series">
-<code class="descname">phenotype_series</code><a class="headerlink" href="#flotilla.data_model.metadata.MetaData.phenotype_series" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">phenotype_series</tt><a class="reference internal" href="_modules/flotilla/data_model/metadata.html#MetaData.phenotype_series"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.metadata.MetaData.phenotype_series" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="flotilla.data_model.metadata.MetaData.phenotype_to_color">
-<code class="descname">phenotype_to_color</code><a class="headerlink" href="#flotilla.data_model.metadata.MetaData.phenotype_to_color" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">phenotype_to_color</tt><a class="reference internal" href="_modules/flotilla/data_model/metadata.html#MetaData.phenotype_to_color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.metadata.MetaData.phenotype_to_color" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="flotilla.data_model.metadata.MetaData.phenotype_to_marker">
-<code class="descname">phenotype_to_marker</code><a class="headerlink" href="#flotilla.data_model.metadata.MetaData.phenotype_to_marker" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">phenotype_to_marker</tt><a class="reference internal" href="_modules/flotilla/data_model/metadata.html#MetaData.phenotype_to_marker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.metadata.MetaData.phenotype_to_marker" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="flotilla.data_model.metadata.MetaData.phenotype_transitions">
-<code class="descname">phenotype_transitions</code><a class="headerlink" href="#flotilla.data_model.metadata.MetaData.phenotype_transitions" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">phenotype_transitions</tt><a class="reference internal" href="_modules/flotilla/data_model/metadata.html#MetaData.phenotype_transitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.metadata.MetaData.phenotype_transitions" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="flotilla.data_model.metadata.MetaData.sample_id_to_color">
-<code class="descname">sample_id_to_color</code><a class="headerlink" href="#flotilla.data_model.metadata.MetaData.sample_id_to_color" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">sample_id_to_color</tt><a class="reference internal" href="_modules/flotilla/data_model/metadata.html#MetaData.sample_id_to_color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.metadata.MetaData.sample_id_to_color" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="flotilla.data_model.metadata.MetaData.sample_id_to_phenotype">
-<code class="descname">sample_id_to_phenotype</code><a class="headerlink" href="#flotilla.data_model.metadata.MetaData.sample_id_to_phenotype" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">sample_id_to_phenotype</tt><a class="reference internal" href="_modules/flotilla/data_model/metadata.html#MetaData.sample_id_to_phenotype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.metadata.MetaData.sample_id_to_phenotype" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="flotilla.data_model.metadata.MetaData.sample_subsets">
-<code class="descname">sample_subsets</code><a class="headerlink" href="#flotilla.data_model.metadata.MetaData.sample_subsets" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">sample_subsets</tt><a class="reference internal" href="_modules/flotilla/data_model/metadata.html#MetaData.sample_subsets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.metadata.MetaData.sample_subsets" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="flotilla.data_model.metadata.MetaData.unique_phenotypes">
-<code class="descname">unique_phenotypes</code><a class="headerlink" href="#flotilla.data_model.metadata.MetaData.unique_phenotypes" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">unique_phenotypes</tt><a class="reference internal" href="_modules/flotilla/data_model/metadata.html#MetaData.unique_phenotypes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.data_model.metadata.MetaData.unique_phenotypes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -236,7 +236,7 @@
     </p>
     <p>
         &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
     </p>
   </div>
 </footer>

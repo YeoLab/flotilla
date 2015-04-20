@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
@@ -39,7 +39,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body role="document">
+  <body>
 
   <div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -160,8 +160,8 @@
 <span id="flotilla-visualize-expression-module"></span><h1>flotilla.visualize.expression module<a class="headerlink" href="#module-flotilla.visualize.expression" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="flotilla.visualize.expression.TwoWayScatterViz">
-<em class="property">class </em><code class="descclassname">flotilla.visualize.expression.</code><code class="descname">TwoWayScatterViz</code><span class="sig-paren">(</span><em>sample1_name</em>, <em>sample2_name</em>, <em>df</em>, <em>p_value_cutoff=0.001</em>, <em>local_fraction=0.1</em>, <em>bonferroni=True</em>, <em>fdr=None</em>, <em>dtype='RPKM'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/expression.html#TwoWayScatterViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.expression.TwoWayScatterViz" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="flotilla.compute.expression.html#flotilla.compute.expression.TwoWayGeneComparisonLocal" title="flotilla.compute.expression.TwoWayGeneComparisonLocal"><code class="xref py py-class docutils literal"><span class="pre">flotilla.compute.expression.TwoWayGeneComparisonLocal</span></code></a></p>
+<em class="property">class </em><tt class="descclassname">flotilla.visualize.expression.</tt><tt class="descname">TwoWayScatterViz</tt><big>(</big><em>sample1_name</em>, <em>sample2_name</em>, <em>df</em>, <em>p_value_cutoff=0.001</em>, <em>local_fraction=0.1</em>, <em>bonferroni=True</em>, <em>fdr=None</em>, <em>dtype='RPKM'</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/expression.html#TwoWayScatterViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.expression.TwoWayScatterViz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="flotilla.compute.expression.html#flotilla.compute.expression.TwoWayGeneComparisonLocal" title="flotilla.compute.expression.TwoWayGeneComparisonLocal"><tt class="xref py py-class docutils literal"><span class="pre">flotilla.compute.expression.TwoWayGeneComparisonLocal</span></tt></a></p>
 <p>Plots a scatter-plot of sample1 vs sample2, taken from df.
 Calculates differentially expressed genes with a Z-test from
 the closest (local_fraction * 100)%  points. Stores result from
@@ -213,7 +213,7 @@ caution. sometimes breaks :(</p>
 </table>
 <dl class="method">
 <dt id="flotilla.visualize.expression.TwoWayScatterViz.plot">
-<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/expression.html#TwoWayScatterViz.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.expression.TwoWayScatterViz.plot" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">plot</tt><big>(</big><em>ax=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/expression.html#TwoWayScatterViz.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.expression.TwoWayScatterViz.plot" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -235,7 +235,7 @@ caution. sometimes breaks :(</p>
     </p>
     <p>
         &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
     </p>
   </div>
 </footer>

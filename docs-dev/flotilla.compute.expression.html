@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
@@ -39,7 +39,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body role="document">
+  <body>
 
   <div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -160,8 +160,8 @@
 <span id="flotilla-compute-expression-module"></span><h1>flotilla.compute.expression module<a class="headerlink" href="#module-flotilla.compute.expression" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="flotilla.compute.expression.TwoWayGeneComparisonLocal">
-<em class="property">class </em><code class="descclassname">flotilla.compute.expression.</code><code class="descname">TwoWayGeneComparisonLocal</code><span class="sig-paren">(</span><em>sample1_name</em>, <em>sample2_name</em>, <em>df</em>, <em>p_value_cutoff=0.001</em>, <em>local_fraction=0.1</em>, <em>bonferroni=True</em>, <em>fdr=None</em>, <em>dtype='RPKM'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/compute/expression.html#TwoWayGeneComparisonLocal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.expression.TwoWayGeneComparisonLocal" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<em class="property">class </em><tt class="descclassname">flotilla.compute.expression.</tt><tt class="descname">TwoWayGeneComparisonLocal</tt><big>(</big><em>sample1_name</em>, <em>sample2_name</em>, <em>df</em>, <em>p_value_cutoff=0.001</em>, <em>local_fraction=0.1</em>, <em>bonferroni=True</em>, <em>fdr=None</em>, <em>dtype='RPKM'</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/expression.html#TwoWayGeneComparisonLocal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.expression.TwoWayGeneComparisonLocal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
 <p>Compare gene expression for two samples</p>
 <p>Plots a scatter-plot of sample1 vs sample2, taken from df.
 Calculates differentially expressed genes with a Z-test from
@@ -214,7 +214,7 @@ caution. sometimes breaks :(</p>
 </table>
 <dl class="method">
 <dt id="flotilla.compute.expression.TwoWayGeneComparisonLocal.gstats">
-<code class="descname">gstats</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/compute/expression.html#TwoWayGeneComparisonLocal.gstats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.expression.TwoWayGeneComparisonLocal.gstats" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">gstats</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flotilla/compute/expression.html#TwoWayGeneComparisonLocal.gstats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.expression.TwoWayGeneComparisonLocal.gstats" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write general statistics of the two-way comparison to standard output</p>
 </dd></dl>
 
@@ -222,7 +222,7 @@ caution. sometimes breaks :(</p>
 
 <dl class="function">
 <dt id="flotilla.compute.expression.benjamini_hochberg">
-<code class="descclassname">flotilla.compute.expression.</code><code class="descname">benjamini_hochberg</code><span class="sig-paren">(</span><em>p_values</em>, <em>fdr=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/compute/expression.html#benjamini_hochberg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.expression.benjamini_hochberg" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">flotilla.compute.expression.</tt><tt class="descname">benjamini_hochberg</tt><big>(</big><em>p_values</em>, <em>fdr=0.1</em><big>)</big><a class="reference internal" href="_modules/flotilla/compute/expression.html#benjamini_hochberg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.compute.expression.benjamini_hochberg" title="Permalink to this definition">¶</a></dt>
 <dd><p>Benjamini-Hochberg correction for multiple hypothesis testing</p>
 <p>From: <a class="reference external" href="http://udel.edu/~mcdonald/statmultcomp.html">http://udel.edu/~mcdonald/statmultcomp.html</a>
 One good technique for controlling the false discovery rate was briefly
@@ -275,7 +275,7 @@ given the FDR cutoff</p>
     </p>
     <p>
         &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
     </p>
   </div>
 </footer>

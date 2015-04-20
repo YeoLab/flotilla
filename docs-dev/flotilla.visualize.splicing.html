@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
@@ -39,7 +39,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body role="document">
+  <body>
 
   <div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -161,58 +161,58 @@
 <p>Splicing-specific visualization classes and methods</p>
 <dl class="class">
 <dt id="flotilla.visualize.splicing.ModalitiesViz">
-<em class="property">class </em><code class="descclassname">flotilla.visualize.splicing.</code><code class="descname">ModalitiesViz</code><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#ModalitiesViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<em class="property">class </em><tt class="descclassname">flotilla.visualize.splicing.</tt><tt class="descname">ModalitiesViz</tt><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#ModalitiesViz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
 <p>Visualize results of modality assignments</p>
 <dl class="method">
 <dt id="flotilla.visualize.splicing.ModalitiesViz.bar">
-<code class="descname">bar</code><span class="sig-paren">(</span><em>counts</em>, <em>phenotype_to_color=None</em>, <em>ax=None</em>, <em>percentages=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#ModalitiesViz.bar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.bar" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">bar</tt><big>(</big><em>counts</em>, <em>phenotype_to_color=None</em>, <em>ax=None</em>, <em>percentages=True</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#ModalitiesViz.bar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.bar" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draw barplots grouped by modality of modality percentage per group</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="flotilla.visualize.splicing.ModalitiesViz.colors">
-<code class="descname">colors</code><em class="property"> = [u'#4c72b0', u'#ccb974', u'#8172b2', u'#55a868', u'#c44e52']</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.colors" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">colors</tt><em class="property"> = [u'#4c72b0', u'#ccb974', u'#8172b2', u'#55a868', u'#c44e52']</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.colors" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="flotilla.visualize.splicing.ModalitiesViz.event_estimation">
-<code class="descname">event_estimation</code><span class="sig-paren">(</span><em>event</em>, <em>logliks</em>, <em>logsumexps</em>, <em>renamed=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#ModalitiesViz.event_estimation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.event_estimation" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">event_estimation</tt><big>(</big><em>event</em>, <em>logliks</em>, <em>logsumexps</em>, <em>renamed=''</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#ModalitiesViz.event_estimation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.event_estimation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Show the values underlying bayesian modality estimations of an event</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="flotilla.visualize.splicing.ModalitiesViz.modality">
-<code class="descname">modality</code><em class="property"> = 'included'</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.modality" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">modality</tt><em class="property"> = 'included'</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.modality" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="flotilla.visualize.splicing.ModalitiesViz.modality_colors">
-<code class="descname">modality_colors</code><em class="property"> = {'included': u'#c44e52', 'middle': u'#55a868', 'bimodal': u'#8172b2', 'excluded': u'#4c72b0', 'uniform': u'#ccb974'}</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.modality_colors" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">modality_colors</tt><em class="property"> = {'included': u'#c44e52', 'middle': u'#55a868', 'bimodal': u'#8172b2', 'excluded': u'#4c72b0', 'uniform': u'#ccb974'}</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.modality_colors" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="flotilla.visualize.splicing.ModalitiesViz.modality_order">
-<code class="descname">modality_order</code><em class="property"> = ['excluded', 'uniform', 'bimodal', 'middle', 'included']</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.modality_order" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">modality_order</tt><em class="property"> = ['excluded', 'uniform', 'bimodal', 'middle', 'included']</em><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.modality_order" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="flotilla.visualize.splicing.ModalitiesViz.plot_reduced_space">
-<code class="descname">plot_reduced_space</code><span class="sig-paren">(</span><em>binned_reduced</em>, <em>modality_assignments</em>, <em>ax=None</em>, <em>title=None</em>, <em>xlabel=''</em>, <em>ylabel=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#ModalitiesViz.plot_reduced_space"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.plot_reduced_space" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">plot_reduced_space</tt><big>(</big><em>binned_reduced</em>, <em>modality_assignments</em>, <em>ax=None</em>, <em>title=None</em>, <em>xlabel=''</em>, <em>ylabel=''</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#ModalitiesViz.plot_reduced_space"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.ModalitiesViz.plot_reduced_space" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="function">
 <dt id="flotilla.visualize.splicing.hist_single_vs_pooled_diff">
-<code class="descclassname">flotilla.visualize.splicing.</code><code class="descname">hist_single_vs_pooled_diff</code><span class="sig-paren">(</span><em>diff_from_singles</em>, <em>diff_from_singles_scaled</em>, <em>color=None</em>, <em>title=''</em>, <em>nbins=50</em>, <em>hist_kws=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#hist_single_vs_pooled_diff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.hist_single_vs_pooled_diff" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">flotilla.visualize.splicing.</tt><tt class="descname">hist_single_vs_pooled_diff</tt><big>(</big><em>diff_from_singles</em>, <em>diff_from_singles_scaled</em>, <em>color=None</em>, <em>title=''</em>, <em>nbins=50</em>, <em>hist_kws=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#hist_single_vs_pooled_diff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.hist_single_vs_pooled_diff" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot a histogram of both the original difference difference of psi
 scores from the pooled to the singles, and the scaled difference</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="flotilla.visualize.splicing.lavalamp">
-<code class="descclassname">flotilla.visualize.splicing.</code><code class="descname">lavalamp</code><span class="sig-paren">(</span><em>psi</em>, <em>color=None</em>, <em>x_offset=0</em>, <em>title=''</em>, <em>ax=None</em>, <em>switchy_score_psi=None</em>, <em>marker='o'</em>, <em>plot_kws=None</em>, <em>yticks=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#lavalamp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.lavalamp" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">flotilla.visualize.splicing.</tt><tt class="descname">lavalamp</tt><big>(</big><em>psi</em>, <em>color=None</em>, <em>x_offset=0</em>, <em>title=''</em>, <em>ax=None</em>, <em>switchy_score_psi=None</em>, <em>marker='o'</em>, <em>plot_kws=None</em>, <em>yticks=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#lavalamp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.lavalamp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make a &#8216;lavalamp&#8217; scatter plot of many splicing events</p>
 <p>Useful for visualizing many splicing events at once.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -269,7 +269,7 @@ the same plot, with the same events.</p>
 
 <dl class="function">
 <dt id="flotilla.visualize.splicing.lavalamp_pooled_inconsistent">
-<code class="descclassname">flotilla.visualize.splicing.</code><code class="descname">lavalamp_pooled_inconsistent</code><span class="sig-paren">(</span><em>singles</em>, <em>pooled</em>, <em>pooled_inconsistent</em>, <em>color=None</em>, <em>percent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#lavalamp_pooled_inconsistent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.lavalamp_pooled_inconsistent" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">flotilla.visualize.splicing.</tt><tt class="descname">lavalamp_pooled_inconsistent</tt><big>(</big><em>singles</em>, <em>pooled</em>, <em>pooled_inconsistent</em>, <em>color=None</em>, <em>percent=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/visualize/splicing.html#lavalamp_pooled_inconsistent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.visualize.splicing.lavalamp_pooled_inconsistent" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -289,7 +289,7 @@ the same plot, with the same events.</p>
     </p>
     <p>
         &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
     </p>
   </div>
 </footer>
