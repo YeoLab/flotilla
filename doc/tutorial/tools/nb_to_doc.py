@@ -10,9 +10,9 @@ import sys
 
 def convert_nb(nbname):
 
-    os.system("runipy --o %s.ipynb --matplotlib --quiet" % nbname)
-    os.system("ipython nbconvert --to rst %s.ipynb" % nbname)
-    os.system("tools/nbstripout %s.ipynb" % nbname)
+    os.system("runipy --o %s --matplotlib --quiet" % nbname)
+    os.system("ipython nbconvert --to rst %s" % nbname)
+    os.system("tools/nbstripout %s" % nbname)
 
 
 if __name__ == "__main__":
