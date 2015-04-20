@@ -39,7 +39,7 @@ before_script:
 
 # command to run tests and build documentation
 script:
-#  - make coverage
+  - make coverage
   - make lint
   - make pep8
   # For building the docs
