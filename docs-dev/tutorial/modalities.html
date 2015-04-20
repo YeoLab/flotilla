@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
@@ -39,7 +39,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body role="document">
+  <body>
 
   <div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -186,8 +186,21 @@ from flotilla.compute.splicing import ModalityEstimator, ModalityModel
 from flotilla.visualize.splicing import ModalitiesViz
 </pre></div>
 </div>
-<p>And initialize a <code class="docutils literal"><span class="pre">ModalityEstimator</span></code> for performing the calculations,
-and a <code class="docutils literal"><span class="pre">ModalityViz</span></code> for visualizing the results.</p>
+<div class="highlight-python"><div class="highlight"><pre>---------------------------------------------------------------------------
+ImportError                               Traceback (most recent call last)
+
+&lt;ipython-input-1-8b8f6dfbdb89&gt; in &lt;module&gt;()
+      9 sns.set(context=&#39;notebook&#39;, style=&#39;ticks&#39;)
+     10
+---&gt; 11 from flotilla.compute.splicing import ModalityEstimator, ModalityModel
+     12 from flotilla.visualize.splicing import ModalitiesViz
+
+
+ImportError: No module named flotilla.compute.splicing
+</pre></div>
+</div>
+<p>And initialize a <tt class="docutils literal"><span class="pre">ModalityEstimator</span></tt> for performing the calculations,
+and a <tt class="docutils literal"><span class="pre">ModalityViz</span></tt> for visualizing the results.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">modality_estimator</span> <span class="o">=</span> <span class="n">ModalityEstimator</span><span class="p">(</span><span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">modality_visualizer</span> <span class="o">=</span> <span class="n">ModalitiesViz</span><span class="p">()</span>
 </pre></div>
@@ -342,8 +355,8 @@ event, which uses the last parameterization of each model, which is the
 <img alt="../_images/modalities_15_0.png" src="../_images/modalities_15_0.png" />
 <p>Let&#8217;s estimate the modality of this event by calculating the
 log-likelihood of each parameterization using
-<code class="docutils literal"><span class="pre">modality_estimator._loglik</span></code>, and summing the results using
-<code class="docutils literal"><span class="pre">modality_estimator._logsumexp</span></code>.</p>
+<tt class="docutils literal"><span class="pre">modality_estimator._loglik</span></tt>, and summing the results using
+<tt class="docutils literal"><span class="pre">modality_estimator._logsumexp</span></tt>.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">logliks</span> <span class="o">=</span> <span class="n">modality_estimator</span><span class="o">.</span><span class="n">_loglik</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
 <span class="n">logsumexps</span> <span class="o">=</span> <span class="n">modality_estimator</span><span class="o">.</span><span class="n">_logsumexp</span><span class="p">(</span><span class="n">logliks</span><span class="p">)</span>
 
@@ -387,7 +400,7 @@ that changes the modality estimation.</p>
 uniform and bimodal distributions, which is what we want.</p>
 <p>Let&#8217;s use this idea of noise to estimate modalities. We&#8217;ll use 100 cells
 total, and do 5 iterations of adding noise from 0% to 50%. We will
-visualize each estimation using the same <code class="docutils literal"><span class="pre">modality_visualizer</span></code> for the
+visualize each estimation using the same <tt class="docutils literal"><span class="pre">modality_visualizer</span></tt> for the
 parameterizations. This will output quite a few plots.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="c"># We will be writing incrementally to this &quot;modality_guesses&quot; file, because if</span>
 <span class="c"># this is done with many iterations and many noise levels, the file gets too</span>
@@ -603,7 +616,7 @@ from looking at the events, I&#8217;m happy with these getting
     </p>
     <p>
         &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
     </p>
   </div>
 </footer>

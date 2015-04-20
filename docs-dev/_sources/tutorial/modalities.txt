@@ -28,6 +28,22 @@ First, let's import the modules we'll need.
     from flotilla.compute.splicing import ModalityEstimator, ModalityModel
     from flotilla.visualize.splicing import ModalitiesViz
 
+::
+
+
+    ---------------------------------------------------------------------------
+    ImportError                               Traceback (most recent call last)
+
+    <ipython-input-1-8b8f6dfbdb89> in <module>()
+          9 sns.set(context='notebook', style='ticks')
+         10 
+    ---> 11 from flotilla.compute.splicing import ModalityEstimator, ModalityModel
+         12 from flotilla.visualize.splicing import ModalitiesViz
+
+
+    ImportError: No module named flotilla.compute.splicing
+
+
 And initialize a ``ModalityEstimator`` for performing the calculations,
 and a ``ModalityViz`` for visualizing the results.
 
@@ -35,7 +51,6 @@ and a ``ModalityViz`` for visualizing the results.
 
     modality_estimator = ModalityEstimator(step=1, vmax=10)
     modality_visualizer = ModalitiesViz()
-
 Next, let's plot the modalities we are modeling as `violin
 plots <http://en.wikipedia.org/wiki/Violin_plot>`_. We model splicing
 events' "percent spliced-in" or Psi/:math:`\Psi` as following a `Beta
@@ -108,7 +123,6 @@ will use the uniform distribution as our null model for testing.
     fig.tight_layout()
 
 
-
 .. image:: modalities_files/modalities_6_0.png
 
 
@@ -138,7 +152,6 @@ parameterizations?
         ax.set_title(model_name)
     fig.tight_layout()
     sns.despine()
-
 
 
 .. image:: modalities_files/modalities_9_0.png
@@ -187,7 +200,6 @@ be called "bimodal," and we want to eliminate false postives in the
     sns.despine()
 
 
-
 .. image:: modalities_files/modalities_12_0.png
 
 
@@ -213,7 +225,6 @@ event, which uses the last parameterization of each model, which is the
     fig.tight_layout()
 
 
-
 .. image:: modalities_files/modalities_15_0.png
 
 
@@ -229,7 +240,6 @@ log-likelihood of each parameterization using
     
     # Visualize the events
     plotter = modality_visualizer.event_estimation(event, logliks, logsumexps)
-
 
 
 .. image:: modalities_files/modalities_17_0.png
@@ -261,7 +271,6 @@ that changes the modality estimation.
     fig.tight_layout()
 
 
-
 .. image:: modalities_files/modalities_19_0.png
 
 
@@ -272,7 +281,6 @@ that changes the modality estimation.
     
     # Visualize the events
     plotter = modality_visualizer.event_estimation(event_noisy, logliks, logsumexps)
-
 
 
 .. image:: modalities_files/modalities_20_0.png
@@ -332,7 +340,6 @@ parameterizations. This will output quite a few plots.
             modality_guesses = pd.DataFrame(rows, columns=columns)
             with open(modality_guesses_csv, 'a') as f:
                 modality_guesses.to_csv(f, header=False, index=False)
-
 
 
 .. image:: modalities_files/modalities_22_0.png
@@ -840,7 +847,6 @@ splicing events and their modality estimations.
     fg = sns.factorplot('n_rogue', y='counts', row='prior', col='true_modality', hue='guessed_modality', data=false_positives,
                    hue_order=('excluded', 'middle', 'included', 'bimodal', 'uniform'), palette='deep', size=6)
     fg.fig.savefig('percent_noise_vs_false_positives_factorplot.pdf')
-
 
 
 .. image:: modalities_files/modalities_24_0.png

@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
@@ -39,7 +39,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body role="document">
+  <body>
 
   <div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -127,7 +127,7 @@
 <li><a class="reference internal" href="#splicing-data">Splicing Data</a></li>
 <li><a class="reference internal" href="#metadata">Metadata</a></li>
 <li><a class="reference internal" href="#mapping-stats-data">Mapping stats data</a></li>
-<li><a class="reference internal" href="#create-a-flotilla-study">Create a <code class="docutils literal"><span class="pre">flotilla</span></code> Study!</a></li>
+<li><a class="reference internal" href="#create-a-flotilla-study">Create a <tt class="docutils literal"><span class="pre">flotilla</span></tt> Study!</a></li>
 </ul>
 </li>
 </ul>
@@ -178,7 +178,18 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>Couldn&#39;t import dot_parser, loading of dot files will not be possible.
+<div class="highlight-python"><div class="highlight"><pre>---------------------------------------------------------------------------
+ImportError                               Traceback (most recent call last)
+
+&lt;ipython-input-1-e6ce39486782&gt; in &lt;module&gt;()
+      1 # Import the flotilla package for biological data analysis
+----&gt; 2 import flotilla
+      3
+      4 # Import &quot;numerical python&quot; library for number crunching
+      5 import numpy as np
+
+
+ImportError: No module named flotilla
 </pre></div>
 </div>
 <div class="section" id="shalek-and-sujita-et-al-2013">
@@ -388,8 +399,8 @@ blog post if that sounds weird to you.</p>
 <p>These data are formatted with samples on the columns, and genes on the
 rows. But we want the opposite, with samples on the rows and genes on
 the columns. This follows
-<code class="docutils literal"><span class="pre">`scikit-learn</span></code> &lt;<a class="reference external" href="http://scikit-learn.org/stable/tutorial/basic/tutorial.html#loading-an-example-dataset">http://scikit-learn.org/stable/tutorial/basic/tutorial.html#loading-an-example-dataset</a>&gt;`_&#8217;s
-standard of data matrices with size (<code class="docutils literal"><span class="pre">n_samples</span></code>, <code class="docutils literal"><span class="pre">n_features</span></code>) as
+<tt class="docutils literal"><span class="pre">`scikit-learn</span></tt> &lt;<a class="reference external" href="http://scikit-learn.org/stable/tutorial/basic/tutorial.html#loading-an-example-dataset">http://scikit-learn.org/stable/tutorial/basic/tutorial.html#loading-an-example-dataset</a>&gt;`_&#8217;s
+standard of data matrices with size (<tt class="docutils literal"><span class="pre">n_samples</span></tt>, <tt class="docutils literal"><span class="pre">n_features</span></tt>) as
 each gene is a feature. So we will simply transpose this.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">expression</span> <span class="o">=</span> <span class="n">expression</span><span class="o">.</span><span class="n">T</span>
 <span class="n">expression</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -550,11 +561,11 @@ each gene is a feature. So we will simply transpose this.</p>
 </div><p>The authors filtered the expression data based on having at least 3
 single cells express genes with at TPM (transcripts per million, ) &gt; 1.
 We can express this in using the
-<code class="docutils literal"><span class="pre">`pandas</span></code> &lt;<a class="reference external" href="http://pandas.pydata.org">http://pandas.pydata.org</a>&gt;`_ DataFrames easily.</p>
+<tt class="docutils literal"><span class="pre">`pandas</span></tt> &lt;<a class="reference external" href="http://pandas.pydata.org">http://pandas.pydata.org</a>&gt;`_ DataFrames easily.</p>
 <p>First, from reading the paper and looking at the data, I know there are
 18 single cells, and there are 18 samples that start with the letter
-&#8220;S.&#8221; So I will extract the single samples from the <code class="docutils literal"><span class="pre">index</span></code> (row names)
-using a <code class="docutils literal"><span class="pre">lambda</span></code>, a tiny function which in this case, tells me whether
+&#8220;S.&#8221; So I will extract the single samples from the <tt class="docutils literal"><span class="pre">index</span></tt> (row names)
+using a <tt class="docutils literal"><span class="pre">lambda</span></tt>, a tiny function which in this case, tells me whether
 or not that sample id begins with the letter &#8220;S&#8221;.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">singles_ids</span> <span class="o">=</span> <span class="n">expression</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">expression</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;S&#39;</span><span class="p">))]</span>
 <span class="k">print</span><span class="p">(</span><span class="s">&#39;number of single cells:&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">singles_ids</span><span class="p">))</span>
@@ -572,29 +583,29 @@ or not that sample id begins with the letter &#8220;S&#8221;.</p>
 </pre></div>
 </div>
 <p>Hmm, that&#8217;s strange. The paper states that they had 6313 genes after
-filtering, but I get 6312. Even using &#8220;<code class="docutils literal"><span class="pre">singles</span> <span class="pre">&gt;=</span> <span class="pre">1</span></code>&#8221; doesn&#8217;t help.</p>
+filtering, but I get 6312. Even using &#8220;<tt class="docutils literal"><span class="pre">singles</span> <span class="pre">&gt;=</span> <span class="pre">1</span></tt>&#8221; doesn&#8217;t help.</p>
 <p>(I also tried this with the expression table provided in the
-supplementary data as &#8220;<code class="docutils literal"><span class="pre">SupplementaryTable2.xlsx</span></code>,&#8221; and got the same
+supplementary data as &#8220;<tt class="docutils literal"><span class="pre">SupplementaryTable2.xlsx</span></tt>,&#8221; and got the same
 results.)</p>
 <p>Now that we&#8217;ve taken care of importing and filtering the expression
 data, let&#8217;s do the feature data of the expression data.</p>
 </div>
 <div class="section" id="expression-feature-data">
 <h2>Expression feature data<a class="headerlink" href="#expression-feature-data" title="Permalink to this headline">¶</a></h2>
-<p>This is similar to the <code class="docutils literal"><span class="pre">fData</span></code> from <code class="docutils literal"><span class="pre">BioconductoR</span></code>, where there&#8217;s
+<p>This is similar to the <tt class="docutils literal"><span class="pre">fData</span></tt> from <tt class="docutils literal"><span class="pre">BioconductoR</span></tt>, where there&#8217;s
 some additional data on your features that you want to look at. They
 uploaded information about the features in their OTHER expression
-matrix, uploaded as a supplementary file, <code class="docutils literal"><span class="pre">Supplementary_Table2.xlsx</span></code>.</p>
-<p>Notice that this is a <code class="docutils literal"><span class="pre">csv</span></code> and not an <code class="docutils literal"><span class="pre">xlsx</span></code>. This is because Excel
-mangled the gene IDS that started with <code class="docutils literal"><span class="pre">201*</span></code> and assumed they were
+matrix, uploaded as a supplementary file, <tt class="docutils literal"><span class="pre">Supplementary_Table2.xlsx</span></tt>.</p>
+<p>Notice that this is a <tt class="docutils literal"><span class="pre">csv</span></tt> and not an <tt class="docutils literal"><span class="pre">xlsx</span></tt>. This is because Excel
+mangled the gene IDS that started with <tt class="docutils literal"><span class="pre">201*</span></tt> and assumed they were
 dates :(</p>
 <p>The workaround I did was to add another column to the sheet with the
-formula <code class="docutils literal"><span class="pre">=&quot;'&quot;</span> <span class="pre">&amp;</span> <span class="pre">A1</span></code>, press <code class="docutils literal"><span class="pre">Command</span></code>-<code class="docutils literal"><span class="pre">Shift</span></code>-<code class="docutils literal"><span class="pre">End</span></code> to select the
-end of the rows, and then do <code class="docutils literal"><span class="pre">Ctrl</span></code>-<code class="docutils literal"><span class="pre">D</span></code> to &#8220;fill down&#8221; to the bottom
+formula <tt class="docutils literal"><span class="pre">=&quot;'&quot;</span> <span class="pre">&amp;</span> <span class="pre">A1</span></tt>, press <tt class="docutils literal"><span class="pre">Command</span></tt>-<tt class="docutils literal"><span class="pre">Shift</span></tt>-<tt class="docutils literal"><span class="pre">End</span></tt> to select the
+end of the rows, and then do <tt class="docutils literal"><span class="pre">Ctrl</span></tt>-<tt class="docutils literal"><span class="pre">D</span></tt> to &#8220;fill down&#8221; to the bottom
 (thanks to
 <a class="reference external" href="http://superuser.com/questions/298276/excel-keyboard-shortcut-to-copy-fill-down-for-all-cells-with-non-blank-adjacent">this</a>
 stackoverflow post for teaching me how to Excel). Then, I saved the file
-as a <code class="docutils literal"><span class="pre">csv</span></code> for maximum portability and compatibility.</p>
+as a <tt class="docutils literal"><span class="pre">csv</span></tt> for maximum portability and compatibility.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">expression2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;nature12172-s1/Supplementary_Table2.csv&#39;</span><span class="p">,</span>
                             <span class="c"># Need to specify the index column as both the first and the last columns,</span>
                             <span class="c"># Because the last column is the &quot;Gene Category&quot;</span>
@@ -963,8 +974,8 @@ as a <code class="docutils literal"><span class="pre">csv</span></code> for maxi
   </tbody>
 </table>
 <p>5 rows × 27723 columns</p>
-</div><p>We want to create a <code class="docutils literal"><span class="pre">pandas.DataFrame</span></code> from the &#8220;Gene Category&#8221; row
-for our <code class="docutils literal"><span class="pre">expression_feature_data</span></code>, which we will do via:</p>
+</div><p>We want to create a <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> from the &#8220;Gene Category&#8221; row
+for our <tt class="docutils literal"><span class="pre">expression_feature_data</span></tt>, which we will do via:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">gene_ids</span><span class="p">,</span> <span class="n">gene_category</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">expression2</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 <span class="n">gene_categories</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">gene_category</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">gene_ids</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&#39;gene_category&#39;</span><span class="p">)</span>
 <span class="n">gene_categories</span>
@@ -1043,7 +1054,7 @@ Name: gene_category, Length: 27723, dtype: object
 <div class="section" id="splicing-data">
 <h2>Splicing Data<a class="headerlink" href="#splicing-data" title="Permalink to this headline">¶</a></h2>
 <p>We obtain the splicing data from this study from the supplementary
-information, specifically the <code class="docutils literal"><span class="pre">Supplementary_Table4.xls</span></code></p>
+information, specifically the <tt class="docutils literal"><span class="pre">Supplementary_Table4.xls</span></tt></p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">splicing</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s">&#39;nature12172-s1/Supplementary_Table4.xls&#39;</span><span class="p">,</span> <span class="s">&#39;splicingTable.txt&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
 <span class="n">splicing</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
@@ -1771,9 +1782,9 @@ data, so we have to fix that.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">Index</span><span class="p">([</span><span class="s">u&#39;10,000 cell Rep1 (P1)&#39;</span><span class="p">,</span> <span class="s">u&#39;10,000 cell Rep2 (P2)&#39;</span><span class="p">,</span> <span class="s">u&#39;10,000 cell Rep3 (P3)&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;object&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Since the pooled sample IDs are inconsistent with the <code class="docutils literal"><span class="pre">expression</span></code>
+<p>Since the pooled sample IDs are inconsistent with the <tt class="docutils literal"><span class="pre">expression</span></tt>
 data, we have to change them. We can get the &#8220;P&#8221; and the number after
-that using regular expressions, called <code class="docutils literal"><span class="pre">re</span></code> in the Python standard
+that using regular expressions, called <tt class="docutils literal"><span class="pre">re</span></tt> in the Python standard
 library, e.g.:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">re</span>
 <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">r&#39;P\d&#39;</span><span class="p">,</span> <span class="s">&#39;10,000 cell Rep1 (P1)&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
@@ -1797,7 +1808,7 @@ library, e.g.:</p>
        <span class="s">u&#39;P1&#39;</span><span class="p">,</span> <span class="s">u&#39;P2&#39;</span><span class="p">,</span> <span class="s">u&#39;P3&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>And now we assign this new index as our index to the <code class="docutils literal"><span class="pre">splicing</span></code>
+<p>And now we assign this new index as our index to the <tt class="docutils literal"><span class="pre">splicing</span></tt>
 dataframe</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">splicing</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">splicing</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">long_pooled_name_to_short</span><span class="p">)</span>
 <span class="n">splicing</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -1983,9 +1994,9 @@ dataframe</p>
 <div class="section" id="metadata">
 <h2>Metadata<a class="headerlink" href="#metadata" title="Permalink to this headline">¶</a></h2>
 <p>Now let&#8217;s get into creating a metadata dataframe. We&#8217;ll use the index
-from the <code class="docutils literal"><span class="pre">expression_filtered</span></code> data to create the minimum required
-column, <code class="docutils literal"><span class="pre">'phenotype'</span></code>, which has the name of the phenotype of that
-cell. And we&#8217;ll also add the column <code class="docutils literal"><span class="pre">'pooled'</span></code> to indicate whether
+from the <tt class="docutils literal"><span class="pre">expression_filtered</span></tt> data to create the minimum required
+column, <tt class="docutils literal"><span class="pre">'phenotype'</span></tt>, which has the name of the phenotype of that
+cell. And we&#8217;ll also add the column <tt class="docutils literal"><span class="pre">'pooled'</span></tt> to indicate whether
 this sample is pooled or not.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">metadata</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">expression_filtered</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
 <span class="n">metadata</span><span class="p">[</span><span class="s">&#39;phenotype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;BDMC&#39;</span>
@@ -2402,7 +2413,7 @@ this sample is pooled or not.</p>
 </table>
 </div></div>
 <div class="section" id="create-a-flotilla-study">
-<h2>Create a <code class="docutils literal"><span class="pre">flotilla</span></code> Study!<a class="headerlink" href="#create-a-flotilla-study" title="Permalink to this headline">¶</a></h2>
+<h2>Create a <tt class="docutils literal"><span class="pre">flotilla</span></tt> Study!<a class="headerlink" href="#create-a-flotilla-study" title="Permalink to this headline">¶</a></h2>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">study</span> <span class="o">=</span> <span class="n">flotilla</span><span class="o">.</span><span class="n">Study</span><span class="p">(</span><span class="c"># The metadata describing phenotype and pooled samples</span>
                        <span class="n">metadata</span><span class="p">,</span>
 
@@ -2455,7 +2466,7 @@ Removing technical outliers from consideration in splicing:
 </pre></div>
 </div>
 <p>As a side note, you can save this study to disk now, so you can
-&#8220;<code class="docutils literal"><span class="pre">embark</span></code>&#8221; later:</p>
+&#8220;<tt class="docutils literal"><span class="pre">embark</span></tt>&#8221; later:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">study</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#39;shalek2013&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -2463,9 +2474,9 @@ Removing technical outliers from consideration in splicing:
 </pre></div>
 </div>
 <p>Note that this is saved to my home directory, in
-<code class="docutils literal"><span class="pre">~/flotilla_projects/&lt;study_name&gt;/</span></code>. This will be saved in your home
+<tt class="docutils literal"><span class="pre">~/flotilla_projects/&lt;study_name&gt;/</span></tt>. This will be saved in your home
 directory, too.</p>
-<p>The <code class="docutils literal"><span class="pre">datapackage.json</span></code> file is what holds all the information relative
+<p>The <tt class="docutils literal"><span class="pre">datapackage.json</span></tt> file is what holds all the information relative
 to the study, and loosely follows the <a class="reference external" href="http://data.okfn.org/doc/data-package">datapackage
 spec</a> created by the Open
 Knowledge Foundation.</p>
@@ -2539,8 +2550,8 @@ Knowledge Foundation.</p>
 </pre></div>
 </div>
 <p>One thing to note is that when you save, the version number is bumped
-up. <code class="docutils literal"><span class="pre">study.version</span></code> (the one we just made) is <code class="docutils literal"><span class="pre">0.1.0</span></code>, but the one
-we saved is <code class="docutils literal"><span class="pre">0.1.1</span></code>, since we could have made some changes to the
+up. <tt class="docutils literal"><span class="pre">study.version</span></tt> (the one we just made) is <tt class="docutils literal"><span class="pre">0.1.0</span></tt>, but the one
+we saved is <tt class="docutils literal"><span class="pre">0.1.1</span></tt>, since we could have made some changes to the
 data.</p>
 <p>Let&#8217;s look at what else is in this folder:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">ls</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">olga</span><span class="o">/</span><span class="n">flotilla_projects</span><span class="o">/</span><span class="n">shalek2013</span>
@@ -2596,7 +2607,7 @@ having to open and process all those files again:</p>
     </p>
     <p>
         &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
     </p>
   </div>
 </footer>

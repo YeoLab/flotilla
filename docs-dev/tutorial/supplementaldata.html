@@ -24,14 +24,14 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
     <link rel="top" title="flotilla 0.2.7dev documentation" href="../index.html" />
     <link rel="up" title="Flotilla tutorial" href="../tutorial.html" />
-    <link rel="next" title="Shalek and Sujita, et al (2013)" href="shalek2013.html" />
+    <link rel="next" title="Shalek and Satija, et al (2013)" href="shalek2013.html" />
     <link rel="prev" title="Accurate estimation of alternative splicing modalities" href="modalities.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -39,7 +39,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body role="document">
+  <body>
 
   <div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -120,7 +120,7 @@
   <ul class="dropdown-menu localtoc"
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">Storing supplemental data on <code class="docutils literal"><span class="pre">Study</span></code> objects</a></li>
+<li><a class="reference internal" href="#">Storing supplemental data on <tt class="docutils literal"><span class="pre">Study</span></tt> objects</a></li>
 </ul>
 </ul>
 </li>
@@ -157,32 +157,25 @@
     <div class="col-md-12">
       
   <div class="section" id="storing-supplemental-data-on-study-objects">
-<h1>Storing supplemental data on <code class="docutils literal"><span class="pre">Study</span></code> objects<a class="headerlink" href="#storing-supplemental-data-on-study-objects" title="Permalink to this headline">¶</a></h1>
+<h1>Storing supplemental data on <tt class="docutils literal"><span class="pre">Study</span></tt> objects<a class="headerlink" href="#storing-supplemental-data-on-study-objects" title="Permalink to this headline">¶</a></h1>
 <p>A recently added feature is the ability to store any arbitrary pandas
-dataframe on <code class="docutils literal"><span class="pre">study.supplemental</span></code>, and this will get re-loaded every
-time you <code class="docutils literal"><span class="pre">embark</span></code> on that datapackage. Let&#8217;s start with the
+dataframe on <tt class="docutils literal"><span class="pre">study.supplemental</span></tt>, and this will get re-loaded every
+time you <tt class="docutils literal"><span class="pre">embark</span></tt> on that datapackage. Let&#8217;s start with the
 batch-corrected <a class="reference external" href="http://www.brainspan.org/">BrainSpan</a> Allen Brain
 Institute&#8217;s Brain Atlas data.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">flotilla</span>
 <span class="n">study</span> <span class="o">=</span> <span class="n">flotilla</span><span class="o">.</span><span class="n">embark</span><span class="p">(</span><span class="n">flotilla</span><span class="o">.</span><span class="n">_brainspan</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>2015-03-16 15:56:43 Parsing datapackage to create a Study object
-2015-03-16 15:56:48 Initializing Study
-2015-03-16 15:56:48 Initializing Predictor configuration manager for Study
-2015-03-16 15:56:48 Predictor ExtraTreesClassifier is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesClassifier&#39;&gt;
-2015-03-16 15:56:48 Added ExtraTreesClassifier to default predictors
-2015-03-16 15:56:48 Predictor ExtraTreesRegressor is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesRegressor&#39;&gt;
-2015-03-16 15:56:48 Added ExtraTreesRegressor to default predictors
-2015-03-16 15:56:48 Predictor GradientBoostingClassifier is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingClassifier&#39;&gt;
-2015-03-16 15:56:48 Added GradientBoostingClassifier to default predictors
-2015-03-16 15:56:48 Predictor GradientBoostingRegressor is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingRegressor&#39;&gt;
-2015-03-16 15:56:48 Added GradientBoostingRegressor to default predictors
-2015-03-16 15:56:48 Loading metadata
-2015-03-16 15:56:49 Loading expression data
-2015-03-16 15:56:49 Initializing expression
-2015-03-16 15:56:49 Done initializing expression
-2015-03-16 15:56:49 Successfully initialized a Study object!
+<div class="highlight-python"><div class="highlight"><pre>---------------------------------------------------------------------------
+ImportError                               Traceback (most recent call last)
+
+&lt;ipython-input-1-d66c17a20d55&gt; in &lt;module&gt;()
+----&gt; 1 import flotilla
+      2 study = flotilla.embark(flotilla._brainspan)
+
+
+ImportError: No module named flotilla
 </pre></div>
 </div>
 <p>Let&#8217;s take a look at how big this expression matrix is.</p>
@@ -216,12 +209,12 @@ Wall time: 317 ms
 </div>
 <p>That didn&#8217;t take <em>too</em> long, but I&#8217;m sure you can imagine it would take
 a really long time for ALL genes!</p>
-<p>Now let&#8217;s assign this to the <code class="docutils literal"><span class="pre">study.supplemental</span></code> object with a name
+<p>Now let&#8217;s assign this to the <tt class="docutils literal"><span class="pre">study.supplemental</span></tt> object with a name
 of our choice. To keep things simple, I&#8217;m gonna give it the same name.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">study</span><span class="o">.</span><span class="n">supplemental</span><span class="o">.</span><span class="n">variant_expression_corr</span> <span class="o">=</span> <span class="n">variant_expression_corr</span>
 </pre></div>
 </div>
-<p>Now let&#8217;s save the object and re-<code class="docutils literal"><span class="pre">embark</span></code> to make sure it&#8217;s there.</p>
+<p>Now let&#8217;s save the object and re-<tt class="docutils literal"><span class="pre">embark</span></tt> to make sure it&#8217;s there.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">study</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#39;brainspan2&#39;</span><span class="p">)</span>
 <span class="n">study2</span> <span class="o">=</span> <span class="n">flotilla</span><span class="o">.</span><span class="n">embark</span><span class="p">(</span><span class="s">&#39;brainspan2&#39;</span><span class="p">)</span>
 </pre></div>
@@ -246,7 +239,7 @@ of our choice. To keep things simple, I&#8217;m gonna give it the same name.</p>
 2015-03-16 15:57:50 Successfully initialized a Study object!
 </pre></div>
 </div>
-<p>Let&#8217;s make sure our <code class="docutils literal"><span class="pre">variant_expression_corr</span></code> dataframe is really
+<p>Let&#8217;s make sure our <tt class="docutils literal"><span class="pre">variant_expression_corr</span></tt> dataframe is really
 there.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">study2</span><span class="o">.</span><span class="n">supplemental</span><span class="o">.</span><span class="n">variant_expression_corr</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
@@ -421,7 +414,7 @@ there.</p>
     </p>
     <p>
         &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
     </p>
   </div>
 </footer>

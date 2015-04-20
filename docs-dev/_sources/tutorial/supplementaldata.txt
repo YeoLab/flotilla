@@ -13,25 +13,18 @@ Institute's Brain Atlas data.
     import flotilla
     study = flotilla.embark(flotilla._brainspan)
 
+::
 
-.. parsed-literal::
 
-    2015-03-16 15:56:43	Parsing datapackage to create a Study object
-    2015-03-16 15:56:48	Initializing Study
-    2015-03-16 15:56:48	Initializing Predictor configuration manager for Study
-    2015-03-16 15:56:48	Predictor ExtraTreesClassifier is of type <class 'sklearn.ensemble.forest.ExtraTreesClassifier'>
-    2015-03-16 15:56:48	Added ExtraTreesClassifier to default predictors
-    2015-03-16 15:56:48	Predictor ExtraTreesRegressor is of type <class 'sklearn.ensemble.forest.ExtraTreesRegressor'>
-    2015-03-16 15:56:48	Added ExtraTreesRegressor to default predictors
-    2015-03-16 15:56:48	Predictor GradientBoostingClassifier is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingClassifier'>
-    2015-03-16 15:56:48	Added GradientBoostingClassifier to default predictors
-    2015-03-16 15:56:48	Predictor GradientBoostingRegressor is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingRegressor'>
-    2015-03-16 15:56:48	Added GradientBoostingRegressor to default predictors
-    2015-03-16 15:56:48	Loading metadata
-    2015-03-16 15:56:49	Loading expression data
-    2015-03-16 15:56:49	Initializing expression
-    2015-03-16 15:56:49	Done initializing expression
-    2015-03-16 15:56:49	Successfully initialized a Study object!
+    ---------------------------------------------------------------------------
+    ImportError                               Traceback (most recent call last)
+
+    <ipython-input-1-d66c17a20d55> in <module>()
+    ----> 1 import flotilla
+          2 study = flotilla.embark(flotilla._brainspan)
+
+
+    ImportError: No module named flotilla
 
 
 Let's take a look at how big this expression matrix is.
@@ -39,7 +32,6 @@ Let's take a look at how big this expression matrix is.
 .. code:: python
 
     study.expression.data.shape
-
 
 
 
@@ -61,7 +53,6 @@ deviations away from the mean variance of all genes.
 
 
 
-
 .. parsed-literal::
 
     (519, 564)
@@ -76,7 +67,6 @@ this subset.
     %%time
     variant_expression_corr = variant_expression.corr()
     variant_expression_corr.head()
-
 
 .. parsed-literal::
 
@@ -93,14 +83,12 @@ of our choice. To keep things simple, I'm gonna give it the same name.
 .. code:: python
 
     study.supplemental.variant_expression_corr = variant_expression_corr
-
 Now let's save the object and re-``embark`` to make sure it's there.
 
 .. code:: python
 
     study.save('brainspan2')
     study2 = flotilla.embark('brainspan2')
-
 
 .. parsed-literal::
 
@@ -130,7 +118,6 @@ there.
 .. code:: python
 
     study2.supplemental.variant_expression_corr.head()
-
 
 
 

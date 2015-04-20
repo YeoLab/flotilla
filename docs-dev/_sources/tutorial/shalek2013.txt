@@ -4,12 +4,15 @@ In the interest of reproducibility, and to showcase our new package
 many figures from the landmark single-cell paper, `Single-cell
 transcriptomics reveals bimodality in expression and splicing in immune
 cells <http://www.ncbi.nlm.nih.gov/pubmed/23685454>`_ by Shalek and
-Sujita, *et al*. *Nature* (2013).
+Satija, *et al*. *Nature* (2013).
 
 Before we begin, let's import everything we need.
 
 .. code:: python
 
+    # Turn on inline plots with IPython
+    %matplotlib inline
+    
     # Import the flotilla package for biological data analysis
     import flotilla
     
@@ -24,23 +27,31 @@ Before we begin, let's import everything we need.
     # seaborn on github (v0.5.dev), installed via 
     # "pip install git+ssh://git@github.com/mwaskom/seaborn.git
     import seaborn as sns
-    
-    # Turn on inline plots with IPython
-    %matplotlib inline
+
+::
 
 
-.. parsed-literal::
+    ---------------------------------------------------------------------------
+    ImportError                               Traceback (most recent call last)
 
-    Couldn't import dot_parser, loading of dot files will not be possible.
+    <ipython-input-1-2a6f2a622bff> in <module>()
+          3 
+          4 # Import the flotilla package for biological data analysis
+    ----> 5 import flotilla
+          6 
+          7 # Import "numerical python" library for number crunching
 
 
-Shalek and Sujita, *et al* (2013)
+    ImportError: No module named flotilla
+
+
+Shalek and Satija, *et al* (2013)
 =================================
 
 In the 2013 paper, `Single-cell transcriptomics reveals bimodality in
 expression and splicing in immune
 cells <http://www.ncbi.nlm.nih.gov/pubmed/23685454>`_ (Shalek and
-Sujita, *et al*. *Nature* (2013)), Regev and colleagues performed
+Satija, *et al*. *Nature* (2013)), Regev and colleagues performed
 single-cell sequencing 18 bone marrow-derived dendritic cells (BMDCs),
 in addition to 3 pooled samples.
 
@@ -52,15 +63,15 @@ using,
 
 .. code:: python
 
-    ! wget ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE41nnn/GSE41265/suppl/GSE41265_allGenesTPM.txt.gz
-
+    %%bash
+    wget ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE41nnn/GSE41265/suppl/GSE41265_allGenesTPM.txt.gz
 
 .. parsed-literal::
 
-    --2014-11-10 12:35:20--  ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE41nnn/GSE41265/suppl/GSE41265_allGenesTPM.txt.gz
+    --2014-11-22 23:16:45--  ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE41nnn/GSE41265/suppl/GSE41265_allGenesTPM.txt.gz
                => 'GSE41265_allGenesTPM.txt.gz.1'
-    Resolving ftp.ncbi.nlm.nih.gov... 130.14.250.7, 2607:f220:41e:250::11
-    Connecting to ftp.ncbi.nlm.nih.gov|130.14.250.7|:21... connected.
+    Resolving ftp.ncbi.nlm.nih.gov... 130.14.250.13, 2607:f220:41e:250::12
+    Connecting to ftp.ncbi.nlm.nih.gov|130.14.250.13|:21... connected.
     Logging in as anonymous ... Logged in!
     ==> SYST ... done.    ==> PWD ... done.
     ==> TYPE I ... done.  ==> CWD (1) /geo/series/GSE41nnn/GSE41265/suppl ... done.
@@ -68,9 +79,9 @@ using,
     ==> PASV ... done.    ==> RETR GSE41265_allGenesTPM.txt.gz ... done.
     Length: 1099290 (1.0M) (unauthoritative)
     
-    100%[======================================>] 1,099,290   6.28MB/s   in 0.2s   
+    100%[======================================>] 1,099,290   2.09MB/s   in 0.5s   
     
-    2014-11-10 12:35:21 (6.28 MB/s) - 'GSE41265_allGenesTPM.txt.gz.1' saved [1099290]
+    2014-11-22 23:16:47 (2.09 MB/s) - 'GSE41265_allGenesTPM.txt.gz.1' saved [1099290]
     
 
 
@@ -78,39 +89,30 @@ We will also compare to the supplementary table 2 data, obtained using
 
 .. code:: python
 
-    ! wget http://www.nature.com/nature/journal/v498/n7453/extref/nature12172-s1.zip
-    ! unzip nature12172-s1.zip
-
+    %%bash
+    wget http://www.nature.com/nature/journal/v498/n7453/extref/nature12172-s1.zip
+    unzip nature12172-s1.zip
 
 .. parsed-literal::
 
-    --2014-11-10 12:35:22--  http://www.nature.com/nature/journal/v498/n7453/extref/nature12172-s1.zip
-    Resolving www.nature.com... 23.62.97.233, 23.62.97.227
-    Connecting to www.nature.com|23.62.97.233|:80... connected.
+    --2014-11-22 23:16:54--  http://www.nature.com/nature/journal/v498/n7453/extref/nature12172-s1.zip
+    Resolving www.nature.com... 23.62.236.35, 23.62.236.18
+    Connecting to www.nature.com|23.62.236.35|:80... connected.
     HTTP request sent, awaiting response... 200 OK
     Length: 4634226 (4.4M) [application/zip]
-    Saving to: 'nature12172-s1.zip'
+    Saving to: 'nature12172-s1.zip.1'
     
-    100%[======================================>] 4,634,226   1.17MB/s   in 3.8s   
+    100%[======================================>] 4,634,226    161KB/s   in 40s    
     
-    2014-11-10 12:35:26 (1.16 MB/s) - 'nature12172-s1.zip' saved [4634226/4634226]
+    2014-11-22 23:17:36 (113 KB/s) - 'nature12172-s1.zip.1' saved [4634226/4634226]
     
     Archive:  nature12172-s1.zip
-       creating: nature12172-s1/
-      inflating: nature12172-s1/Supplementary_Table1.xls  
-      inflating: nature12172-s1/Supplementary_Table2.xlsx  
-      inflating: nature12172-s1/Supplementary_Table3.xls  
-      inflating: nature12172-s1/Supplementary_Table4.xls  
-      inflating: nature12172-s1/Supplementary_Table5.xls  
-      inflating: nature12172-s1/Supplementary_Table6.xls  
-      inflating: nature12172-s1/Supplementary_Table7.xlsx  
-
+    replace nature12172-s1/Supplementary_Table1.xls? [y]es, [n]o, [A]ll, [N]one, [r]ename: 
 
 .. code:: python
 
     expression = pd.read_table("GSE41265_allGenesTPM.txt.gz", compression="gzip", index_col=0)
     expression.head()
-
 
 
 
@@ -314,7 +316,6 @@ each gene is a feature. So we will simply transpose this.
 
 
 
-
 .. raw:: html
 
     <div style="max-height:1000px;max-width:1500px;overflow:auto;">
@@ -494,7 +495,6 @@ or not that sample id begins with the letter "S".
     expression_filtered = np.log(expression_filtered + 1)
     expression_filtered.shape
 
-
 .. parsed-literal::
 
     ('number of single cells:', 18)
@@ -538,9 +538,13 @@ end of the rows, and then do ``Ctrl``-``D`` to "fill down" to the bottom
 stackoverflow post for teaching me how to Excel). Then, I saved the file
 as a ``csv`` for maximum portability and compatibility.
 
+So sorry, this requires some non-programming editing! But I've posted
+the csv to our `github repo <https://github.com/YeoLab/shalek2013>`_
+with all the data, and we'll access it from there.
+
 .. code:: python
 
-    expression2 = pd.read_csv('nature12172-s1/Supplementary_Table2.csv', 
+    expression2 = pd.read_csv('https://raw.githubusercontent.com/YeoLab/shalek2013/master/Supplementary_Table2.csv', 
                                 # Need to specify the index column as both the first and the last columns,
                                 # Because the last column is the "Gene Category"
                                 index_col=[0, -1], parse_dates=False, infer_datetime_format=False)
@@ -548,7 +552,6 @@ as a ``csv`` for maximum portability and compatibility.
     # This was also in features x samples format, so we need to transpose
     expression2 = expression2.T
     expression2.head()
-
 
 
 
@@ -741,7 +744,6 @@ Now we need to strip the single-quote I added to all the gene names:
     new_index, indexer = expression2.columns.reindex(map(lambda x: (x[0].lstrip("'"), x[1]), expression2.columns.values))
     expression2.columns = new_index
     expression2.head()
-
 
 
 
@@ -938,7 +940,6 @@ for our ``expression_feature_data``, which we will do via:
 
 
 
-
 .. parsed-literal::
 
     0610007L01RIK    NaN
@@ -980,7 +981,6 @@ for our ``expression_feature_data``, which we will do via:
 
     expression_feature_data = pd.DataFrame(gene_categories)
     expression_feature_data.head()
-
 
 
 
@@ -1031,7 +1031,6 @@ information, specifically the ``Supplementary_Table4.xls``
 
     splicing = pd.read_excel('nature12172-s1/Supplementary_Table4.xls', 'splicingTable.txt', index_col=(0,1))
     splicing.head()
-
 
 
 
@@ -1220,7 +1219,6 @@ information, specifically the ``Supplementary_Table4.xls``
 
     splicing = splicing.T
     splicing
-
 
 
 
@@ -1775,7 +1773,6 @@ data, so we have to fix that.
 
 
 
-
 .. parsed-literal::
 
     Index([u'10,000 cell Rep1 (P1)', u'10,000 cell Rep2 (P2)', u'10,000 cell Rep3 (P3)'], dtype='object')
@@ -1791,7 +1788,6 @@ library, e.g.:
 
     import re
     re.search(r'P\d', '10,000 cell Rep1 (P1)').group()
-
 
 
 
@@ -1814,7 +1810,6 @@ library, e.g.:
 
 
 
-
 .. parsed-literal::
 
     array([u'S1', u'S2', u'S3', u'S4', u'S5', u'S6', u'S7', u'S8', u'S9',
@@ -1830,7 +1825,6 @@ dataframe
 
     splicing.index = splicing.index.map(long_pooled_name_to_short)
     splicing.head()
-
 
 
 
@@ -2016,6 +2010,383 @@ dataframe
 
 
 
+Remove Multi-index columns
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Currently, ``flotilla`` only supports non-multi-index Dataframes. This
+means that we need to change the columns of ``splicing`` to just the
+unique event name. We'll save this data as ``splicing_feature_data``,
+which will rename the crazy feature id to the reasonable gene name.
+
+Splicing Feature Data
+~~~~~~~~~~~~~~~~~~~~~
+
+First, let's extract the event names and gene names from ``splicing``.
+
+.. code:: python
+
+    event_names, gene_names = zip(*splicing.columns.tolist())
+.. code:: python
+
+    event_names[:10]
+
+
+
+.. parsed-literal::
+
+    (u'chr10:126534988:126535177:-@chr10:126533971:126534135:-@chr10:126533686:126533798:-',
+     u'chr10:14403870:14403945:-@chr10:14395740:14395848:-@chr10:14387738:14387914:-',
+     u'chr10:20051892:20052067:+@chr10:20052202:20052363:+@chr10:20053198:20053697:+',
+     u'chr10:20052864:20053378:+@chr10:20054305:20054451:+@chr10:20059515:20059727:+',
+     u'chr10:58814831:58815007:+@chr10:58817088:58817158:+@chr10:58818098:58818168:+@chr10:58824609:58824708:+',
+     u'chr10:79173370:79173665:+@chr10:79174001:79174029:+@chr10:79174239:79174726:+',
+     u'chr10:79322526:79322700:+@chr10:79322862:79322939:+@chr10:79323569:79323862:+',
+     u'chr10:87376364:87376545:+@chr10:87378043:87378094:+@chr10:87393420:87399792:+',
+     u'chr10:92747514:92747722:-@chr10:92727625:92728425:-@chr10:92717434:92717556:-',
+     u'chr11:101438508:101438565:+@chr11:101439246:101439351:+@chr11:101441899:101443267:+')
+
+
+
+.. code:: python
+
+    gene_names[:10]
+
+
+
+.. parsed-literal::
+
+    (u'Os9',
+     u'Vta1',
+     u'Bclaf1',
+     u'Bclaf1',
+     u'P4ha1',
+     u'Bsg',
+     u'Ptbp1',
+     u'Igf1',
+     u'Elk3',
+     u'Nbr1')
+
+
+
+Now we can rename the columns of ``splicing`` easily
+
+.. code:: python
+
+    splicing.columns = event_names
+    splicing.head()
+
+
+
+.. raw:: html
+
+    <div style="max-height:1000px;max-width:1500px;overflow:auto;">
+    <table border="1" class="dataframe">
+      <thead>
+        <tr style="text-align: right;">
+          <th></th>
+          <th>chr10:126534988:126535177:-@chr10:126533971:126534135:-@chr10:126533686:126533798:-</th>
+          <th>chr10:14403870:14403945:-@chr10:14395740:14395848:-@chr10:14387738:14387914:-</th>
+          <th>chr10:20051892:20052067:+@chr10:20052202:20052363:+@chr10:20053198:20053697:+</th>
+          <th>chr10:20052864:20053378:+@chr10:20054305:20054451:+@chr10:20059515:20059727:+</th>
+          <th>chr10:58814831:58815007:+@chr10:58817088:58817158:+@chr10:58818098:58818168:+@chr10:58824609:58824708:+</th>
+          <th>chr10:79173370:79173665:+@chr10:79174001:79174029:+@chr10:79174239:79174726:+</th>
+          <th>chr10:79322526:79322700:+@chr10:79322862:79322939:+@chr10:79323569:79323862:+</th>
+          <th>chr10:87376364:87376545:+@chr10:87378043:87378094:+@chr10:87393420:87399792:+</th>
+          <th>chr10:92747514:92747722:-@chr10:92727625:92728425:-@chr10:92717434:92717556:-</th>
+          <th>chr11:101438508:101438565:+@chr11:101439246:101439351:+@chr11:101441899:101443267:+</th>
+          <th>...</th>
+          <th>chr8:126022488:126022598:+@chr8:126023892:126024007:+@chr8:126025133:126025333:+</th>
+          <th>chr14:51455667:51455879:-@chr14:51453589:51453752:-@chr14:51453129:51453242:-</th>
+          <th>chr17:29497858:29498102:+@chr17:29500656:29500887:+@chr17:29501856:29502226:+</th>
+          <th>chr2:94198908:94199094:-@chr2:94182784:94182954:-@chr2:94172950:94173209:-</th>
+          <th>chr9:21314438:21314697:-@chr9:21313375:21313558:-@chr9:21311823:21312835:-</th>
+          <th>chr9:21314438:21314697:-@chr9:21313375:21313795:-@chr9:21311823:21312835:-</th>
+          <th>chr10:79545360:79545471:-@chr10:79542698:79544127:-@chr10:79533365:79535263:-</th>
+          <th>chr17:5975579:5975881:+@chr17:5985972:5986242:+@chr17:5990136:5990361:+</th>
+          <th>chr2:29997782:29997941:+@chr2:30002172:30002382:+@chr2:30002882:30003045:+</th>
+          <th>chr7:119221306:119221473:+@chr7:119223686:119223745:+@chr7:119225944:119226075:+</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>S1</th>
+          <td> 0.84</td>
+          <td> 0.95</td>
+          <td>  NaN</td>
+          <td> 0.02</td>
+          <td> 0.42</td>
+          <td>NaN</td>
+          <td> 0.57</td>
+          <td> 0.31</td>
+          <td> 0.93</td>
+          <td> 0.57</td>
+          <td>...</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+        </tr>
+        <tr>
+          <th>S2</th>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td> 0.04</td>
+          <td> 0.98</td>
+          <td>  NaN</td>
+          <td>NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>...</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+        </tr>
+        <tr>
+          <th>S3</th>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td> 0.02</td>
+          <td> 0.55</td>
+          <td>  NaN</td>
+          <td>NaN</td>
+          <td>  NaN</td>
+          <td> 0.20</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>...</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+        </tr>
+        <tr>
+          <th>S4</th>
+          <td>  NaN</td>
+          <td> 0.84</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>NaN</td>
+          <td>  NaN</td>
+          <td> 0.95</td>
+          <td>  NaN</td>
+          <td> 0.04</td>
+          <td>...</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+        </tr>
+        <tr>
+          <th>S5</th>
+          <td>  NaN</td>
+          <td> 0.95</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td> 0.94</td>
+          <td>NaN</td>
+          <td>  NaN</td>
+          <td> 0.73</td>
+          <td>  NaN</td>
+          <td>  NaN</td>
+          <td>...</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>5 rows × 352 columns</p>
+    </div>
+
+
+
+Now let's create ``splicing_feature_data`` to map these event names to
+the gene names, and to the ``gene_category`` from before.
+
+.. code:: python
+
+    splicing_feature_data = pd.DataFrame(index=event_names)
+    splicing_feature_data['gene_name'] = gene_names
+    splicing_feature_data.head()
+
+
+
+.. raw:: html
+
+    <div style="max-height:1000px;max-width:1500px;overflow:auto;">
+    <table border="1" class="dataframe">
+      <thead>
+        <tr style="text-align: right;">
+          <th></th>
+          <th>gene_name</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>chr10:126534988:126535177:-@chr10:126533971:126534135:-@chr10:126533686:126533798:-</th>
+          <td>    Os9</td>
+        </tr>
+        <tr>
+          <th>chr10:14403870:14403945:-@chr10:14395740:14395848:-@chr10:14387738:14387914:-</th>
+          <td>   Vta1</td>
+        </tr>
+        <tr>
+          <th>chr10:20051892:20052067:+@chr10:20052202:20052363:+@chr10:20053198:20053697:+</th>
+          <td> Bclaf1</td>
+        </tr>
+        <tr>
+          <th>chr10:20052864:20053378:+@chr10:20054305:20054451:+@chr10:20059515:20059727:+</th>
+          <td> Bclaf1</td>
+        </tr>
+        <tr>
+          <th>chr10:58814831:58815007:+@chr10:58817088:58817158:+@chr10:58818098:58818168:+@chr10:58824609:58824708:+</th>
+          <td>  P4ha1</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+
+
+One thing we need to keep in mind is that the gene names in the
+``expression`` data were uppercase. We can convert our gene names to
+uppercase with,\`
+
+.. code:: python
+
+    splicing_feature_data['gene_name'] = splicing_feature_data['gene_name'].str.upper()
+    splicing_feature_data.head()
+
+
+
+.. raw:: html
+
+    <div style="max-height:1000px;max-width:1500px;overflow:auto;">
+    <table border="1" class="dataframe">
+      <thead>
+        <tr style="text-align: right;">
+          <th></th>
+          <th>gene_name</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>chr10:126534988:126535177:-@chr10:126533971:126534135:-@chr10:126533686:126533798:-</th>
+          <td>    OS9</td>
+        </tr>
+        <tr>
+          <th>chr10:14403870:14403945:-@chr10:14395740:14395848:-@chr10:14387738:14387914:-</th>
+          <td>   VTA1</td>
+        </tr>
+        <tr>
+          <th>chr10:20051892:20052067:+@chr10:20052202:20052363:+@chr10:20053198:20053697:+</th>
+          <td> BCLAF1</td>
+        </tr>
+        <tr>
+          <th>chr10:20052864:20053378:+@chr10:20054305:20054451:+@chr10:20059515:20059727:+</th>
+          <td> BCLAF1</td>
+        </tr>
+        <tr>
+          <th>chr10:58814831:58815007:+@chr10:58817088:58817158:+@chr10:58818098:58818168:+@chr10:58824609:58824708:+</th>
+          <td>  P4HA1</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+
+
+Now let's get the ``gene_category`` of these genes by doing a
+`join <http://pandas.pydata.org/pandas-docs/stable/merging.html>`_ on
+the splicing data and the expression data.
+
+.. code:: python
+
+    splicing_feature_data = splicing_feature_data.join(expression_feature_data, on='gene_name')
+    splicing_feature_data.head()
+
+
+
+.. raw:: html
+
+    <div style="max-height:1000px;max-width:1500px;overflow:auto;">
+    <table border="1" class="dataframe">
+      <thead>
+        <tr style="text-align: right;">
+          <th></th>
+          <th>gene_name</th>
+          <th>gene_category</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>chr10:126534988:126535177:-@chr10:126533971:126534135:-@chr10:126533686:126533798:-</th>
+          <td>    OS9</td>
+          <td>          NaN</td>
+        </tr>
+        <tr>
+          <th>chr10:14403870:14403945:-@chr10:14395740:14395848:-@chr10:14387738:14387914:-</th>
+          <td>   VTA1</td>
+          <td>          NaN</td>
+        </tr>
+        <tr>
+          <th>chr10:20051892:20052067:+@chr10:20052202:20052363:+@chr10:20053198:20053697:+</th>
+          <td> BCLAF1</td>
+          <td>          NaN</td>
+        </tr>
+        <tr>
+          <th>chr10:20052864:20053378:+@chr10:20054305:20054451:+@chr10:20059515:20059727:+</th>
+          <td> BCLAF1</td>
+          <td>          NaN</td>
+        </tr>
+        <tr>
+          <th>chr10:58814831:58815007:+@chr10:58817088:58817158:+@chr10:58818098:58818168:+@chr10:58824609:58824708:+</th>
+          <td>  P4HA1</td>
+          <td> LPS Response</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+
+
+Now we have the **gene\_category** encoded in the splicing data as well!
+
 Metadata
 --------
 
@@ -2032,7 +2403,6 @@ this sample is pooled or not.
     metadata['pooled'] = metadata.index.map(lambda x: x.startswith('P'))
     
     metadata
-
 
 
 
@@ -2166,7 +2536,6 @@ Mapping stats data
 
     mapping_stats = pd.read_excel('nature12172-s1/Supplementary_Table1.xls', sheetname='SuppTable1 2.txt')
     mapping_stats
-
 
 
 
@@ -2477,6 +2846,15 @@ Create a ``flotilla`` Study!
                            
                            # Dataframe of the splicing data
                            splicing_data=splicing, 
+    
+                           # Dataframe of the feature data of the splicing events
+                           splicing_feature_data=splicing_feature_data,
+    
+                           # Specify "gene_name" as the column we want to rename the splicing ids to
+                           splicing_feature_rename_col="gene_name",
+    
+                           # Specify "gene_name" as the column that links splicing ids to expression ids
+                           splicing_feature_expression_id_col="gene_name",
                            
                            # Dataframe of the mapping stats data
                            mapping_stats_data=mapping_stats, 
@@ -2484,27 +2862,26 @@ Create a ``flotilla`` Study!
                            # Which column in "mapping_stats" has the number of reads
                            mapping_stats_number_mapped_col='PF_READS')
 
-
 .. parsed-literal::
 
-    2014-11-10 12:36:35	Initializing Study
-    2014-11-10 12:36:35	Initializing Predictor configuration manager for Study
-    2014-11-10 12:36:35	Predictor ExtraTreesClassifier is of type <class 'sklearn.ensemble.forest.ExtraTreesClassifier'>
-    2014-11-10 12:36:35	Added ExtraTreesClassifier to default predictors
-    2014-11-10 12:36:35	Predictor ExtraTreesRegressor is of type <class 'sklearn.ensemble.forest.ExtraTreesRegressor'>
-    2014-11-10 12:36:35	Added ExtraTreesRegressor to default predictors
-    2014-11-10 12:36:35	Predictor GradientBoostingClassifier is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingClassifier'>
-    2014-11-10 12:36:35	Added GradientBoostingClassifier to default predictors
-    2014-11-10 12:36:35	Predictor GradientBoostingRegressor is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingRegressor'>
-    2014-11-10 12:36:35	Added GradientBoostingRegressor to default predictors
-    2014-11-10 12:36:35	Loading metadata
-    2014-11-10 12:36:35	Loading expression data
-    2014-11-10 12:36:35	Initializing expression
-    2014-11-10 12:36:35	Done initializing expression
-    2014-11-10 12:36:35	Loading splicing data
-    2014-11-10 12:36:35	Initializing splicing
-    2014-11-10 12:36:35	Done initializing splicing
-    2014-11-10 12:36:35	Successfully initialized a Study object!
+    2014-12-10 15:36:38	Initializing Study
+    2014-12-10 15:36:38	Initializing Predictor configuration manager for Study
+    2014-12-10 15:36:38	Predictor ExtraTreesClassifier is of type <class 'sklearn.ensemble.forest.ExtraTreesClassifier'>
+    2014-12-10 15:36:38	Added ExtraTreesClassifier to default predictors
+    2014-12-10 15:36:38	Predictor ExtraTreesRegressor is of type <class 'sklearn.ensemble.forest.ExtraTreesRegressor'>
+    2014-12-10 15:36:38	Added ExtraTreesRegressor to default predictors
+    2014-12-10 15:36:38	Predictor GradientBoostingClassifier is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingClassifier'>
+    2014-12-10 15:36:38	Added GradientBoostingClassifier to default predictors
+    2014-12-10 15:36:38	Predictor GradientBoostingRegressor is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingRegressor'>
+    2014-12-10 15:36:38	Added GradientBoostingRegressor to default predictors
+    2014-12-10 15:36:38	Loading metadata
+    2014-12-10 15:36:38	Loading expression data
+    2014-12-10 15:36:38	Initializing expression
+    2014-12-10 15:36:38	Done initializing expression
+    2014-12-10 15:36:38	Loading splicing data
+    2014-12-10 15:36:38	Initializing splicing
+    2014-12-10 15:36:38	Done initializing splicing
+    2014-12-10 15:36:38	Successfully initialized a Study object!
 
 
 .. parsed-literal::
@@ -2520,14 +2897,14 @@ As a side note, you can save this study to disk now, so you can
 
     study.save('shalek2013')
 
-
 .. parsed-literal::
 
     Wrote datapackage to /Users/olga/flotilla_projects/shalek2013/datapackage.json
 
 Note that this is saved to my home directory, in
-``~/flotilla_projects/<study_name>/``. This will be saved in your home
-directory, too.
+``~/flotilla_projects/<study_name>/`` (the "``~``" stands for my "home
+directory", in this case ``/Users/olga``). This will be saved in your
+home directory, too.
 
 The ``datapackage.json`` file is what holds all the information relative
 to the study, and loosely follows the `datapackage
@@ -2537,7 +2914,6 @@ Knowledge Foundation.
 .. code:: python
 
     cat /Users/olga/flotilla_projects/shalek2013/datapackage.json
-
 
 .. parsed-literal::
 
@@ -2549,18 +2925,14 @@ Knowledge Foundation.
       "licenses": null, 
       "resources": [
         {
-          "header": [
-            0, 
-            1
-          ], 
+          "path": "splicing.csv.gz", 
           "format": "csv", 
-          "compression": "gzip", 
           "name": "splicing", 
-          "path": "/Users/olga/flotilla_projects/shalek2013/splicing.csv.gz"
+          "compression": "gzip"
         }, 
         {
           "number_mapped_col": "PF_READS", 
-          "path": "/Users/olga/flotilla_projects/shalek2013/mapping_stats.csv.gz", 
+          "path": "mapping_stats.csv.gz", 
           "format": "csv", 
           "name": "mapping_stats", 
           "compression": "gzip"
@@ -2570,7 +2942,7 @@ Knowledge Foundation.
           "format": "csv", 
           "rename_col": null, 
           "ignore_subset_cols": [], 
-          "path": "/Users/olga/flotilla_projects/shalek2013/expression_feature.csv.gz", 
+          "path": "expression_feature.csv.gz", 
           "compression": "gzip"
         }, 
         {
@@ -2578,7 +2950,8 @@ Knowledge Foundation.
           "log_base": null, 
           "format": "csv", 
           "thresh": -Infinity, 
-          "path": "/Users/olga/flotilla_projects/shalek2013/expression.csv.gz", 
+          "plus_one": false, 
+          "path": "expression.csv.gz", 
           "compression": "gzip"
         }, 
         {
@@ -2586,7 +2959,8 @@ Knowledge Foundation.
           "format": "csv", 
           "rename_col": "gene_name", 
           "ignore_subset_cols": [], 
-          "path": "/Users/olga/flotilla_projects/shalek2013/splicing_feature.csv.gz", 
+          "path": "splicing_feature.csv.gz", 
+          "expression_id_col": "gene_name", 
           "compression": "gzip"
         }, 
         {
@@ -2600,7 +2974,7 @@ Knowledge Foundation.
           "phenotype_to_color": {
             "BDMC": "#1b9e77"
           }, 
-          "path": "/Users/olga/flotilla_projects/shalek2013/metadata.csv.gz", 
+          "path": "metadata.csv.gz", 
           "phenotype_col": "phenotype", 
           "phenotype_order": [
             "BDMC"
@@ -2621,11 +2995,11 @@ Let's look at what else is in this folder:
 
     ls /Users/olga/flotilla_projects/shalek2013
 
-
 .. parsed-literal::
 
-    datapackage.json           expression_feature.csv.gz  metadata.csv.gz            splicing_feature.csv.gz
-    expression.csv.gz          mapping_stats.csv.gz       splicing.csv.gz
+    datapackage.json           expression_feature.csv     mapping_stats.csv.gz       splicing.csv               splicing_feature.csv.gz
+    expression.csv             expression_feature.csv.gz  metadata.csv               splicing.csv.gz
+    expression.csv.gz          mapping_stats.csv          metadata.csv.gz            splicing_feature.csv
 
 
 So this is where all the other files are. Good to know!
@@ -2637,29 +3011,28 @@ having to open and process all those files again:
 
     study2 = flotilla.embark('shalek2013')
 
-
 .. parsed-literal::
 
-    2014-11-10 12:36:38	Reading datapackage from /Users/olga/flotilla_projects/shalek2013/datapackage.json
-    2014-11-10 12:36:38	Parsing datapackage to create a Study object
-    2014-11-10 12:36:39	Initializing Study
-    2014-11-10 12:36:39	Initializing Predictor configuration manager for Study
-    2014-11-10 12:36:39	Predictor ExtraTreesClassifier is of type <class 'sklearn.ensemble.forest.ExtraTreesClassifier'>
-    2014-11-10 12:36:39	Added ExtraTreesClassifier to default predictors
-    2014-11-10 12:36:39	Predictor ExtraTreesRegressor is of type <class 'sklearn.ensemble.forest.ExtraTreesRegressor'>
-    2014-11-10 12:36:39	Added ExtraTreesRegressor to default predictors
-    2014-11-10 12:36:39	Predictor GradientBoostingClassifier is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingClassifier'>
-    2014-11-10 12:36:39	Added GradientBoostingClassifier to default predictors
-    2014-11-10 12:36:39	Predictor GradientBoostingRegressor is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingRegressor'>
-    2014-11-10 12:36:39	Added GradientBoostingRegressor to default predictors
-    2014-11-10 12:36:39	Loading metadata
-    2014-11-10 12:36:39	Loading expression data
-    2014-11-10 12:36:39	Initializing expression
-    2014-11-10 12:36:39	Done initializing expression
-    2014-11-10 12:36:39	Loading splicing data
-    2014-11-10 12:36:39	Initializing splicing
-    2014-11-10 12:36:39	Done initializing splicing
-    2014-11-10 12:36:39	Successfully initialized a Study object!
+    2014-12-10 15:34:27	Reading datapackage from /Users/olga/flotilla_projects/shalek2013/datapackage.json
+    2014-12-10 15:34:27	Parsing datapackage to create a Study object
+    2014-12-10 15:34:27	Initializing Study
+    2014-12-10 15:34:27	Initializing Predictor configuration manager for Study
+    2014-12-10 15:34:27	Predictor ExtraTreesClassifier is of type <class 'sklearn.ensemble.forest.ExtraTreesClassifier'>
+    2014-12-10 15:34:27	Added ExtraTreesClassifier to default predictors
+    2014-12-10 15:34:27	Predictor ExtraTreesRegressor is of type <class 'sklearn.ensemble.forest.ExtraTreesRegressor'>
+    2014-12-10 15:34:27	Added ExtraTreesRegressor to default predictors
+    2014-12-10 15:34:27	Predictor GradientBoostingClassifier is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingClassifier'>
+    2014-12-10 15:34:27	Added GradientBoostingClassifier to default predictors
+    2014-12-10 15:34:27	Predictor GradientBoostingRegressor is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingRegressor'>
+    2014-12-10 15:34:27	Added GradientBoostingRegressor to default predictors
+    2014-12-10 15:34:27	Loading metadata
+    2014-12-10 15:34:27	Loading expression data
+    2014-12-10 15:34:27	Initializing expression
+    2014-12-10 15:34:27	Done initializing expression
+    2014-12-10 15:34:27	Loading splicing data
+    2014-12-10 15:34:27	Initializing splicing
+    2014-12-10 15:34:27	Done initializing splicing
+    2014-12-10 15:34:27	Successfully initialized a Study object!
 
 
 Now we can start creating figures!
@@ -2676,6 +3049,7 @@ where the original is:
    :alt: Original Figure 1
 
    Original Figure 1
+
 Figure 1a
 ~~~~~~~~~
 
@@ -2683,21 +3057,18 @@ Figure 1a
 
     study.plot_two_samples('P1', 'P2')
 
-
 .. parsed-literal::
 
-    /usr/local/lib/python2.7/site-packages/matplotlib/font_manager.py:1279: UserWarning: findfont: Font family ['Helvetica'] not found. Falling back to Bitstream Vera Sans
-      (prop.get_family(), self.defaultFamily[fontext]))
     /usr/local/lib/python2.7/site-packages/matplotlib/figure.py:1644: UserWarning: This figure includes Axes that are not compatible with tight_layout, so its results might be incorrect.
       warnings.warn("This figure includes Axes that are not "
 
 
 
-.. image:: shalek2013_files/shalek2013_52_1.png
+.. image:: shalek2013_files/shalek2013_72_1.png
 
 
 Without flotilla, you would do
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code:: python
 
@@ -2709,19 +3080,10 @@ Without flotilla, you would do
     jointgrid = sns.jointplot(x, y, joint_kws=dict(alpha=0.5))
     xmin, xmax, ymin, ymax = jointgrid.ax_joint.axis()
     jointgrid.ax_joint.set_xlim(0, xmax)
-    jointgrid.ax_joint.set_ylim(0, ymax)
+    jointgrid.ax_joint.set_ylim(0, ymax);
 
 
-
-
-.. parsed-literal::
-
-    (0, 12.0)
-
-
-
-
-.. image:: shalek2013_files/shalek2013_54_1.png
+.. image:: shalek2013_files/shalek2013_74_0.png
 
 
 Figure 1b
@@ -2734,12 +3096,11 @@ Paper: :math:`r=0.54`\ . Not sure at all what's going on here.
     study.plot_two_samples('S1', 'S2')
 
 
-
-.. image:: shalek2013_files/shalek2013_56_0.png
+.. image:: shalek2013_files/shalek2013_77_0.png
 
 
 Without ``flotilla``
-~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^
 
 .. code:: python
 
@@ -2753,19 +3114,10 @@ Without ``flotilla``
     # Adjust xmin, ymin to 0
     xmin, xmax, ymin, ymax = jointgrid.ax_joint.axis()
     jointgrid.ax_joint.set_xlim(0, xmax)
-    jointgrid.ax_joint.set_ylim(0, ymax)
+    jointgrid.ax_joint.set_ylim(0, ymax);
 
 
-
-
-.. parsed-literal::
-
-    (0, 12.0)
-
-
-
-
-.. image:: shalek2013_files/shalek2013_58_1.png
+.. image:: shalek2013_files/shalek2013_79_0.png
 
 
 By the way, you can do other kinds of plots with ``flotilla``, like a
@@ -2776,8 +3128,7 @@ kernel density estimate ("``kde``") plot:
     study.plot_two_samples('S1', 'S2', kind='kde')
 
 
-
-.. image:: shalek2013_files/shalek2013_60_0.png
+.. image:: shalek2013_files/shalek2013_81_0.png
 
 
 Or a binned hexagon plot ("``hexbin"``):
@@ -2787,8 +3138,7 @@ Or a binned hexagon plot ("``hexbin"``):
     study.plot_two_samples('S1', 'S2', kind='hexbin')
 
 
-
-.. image:: shalek2013_files/shalek2013_62_0.png
+.. image:: shalek2013_files/shalek2013_83_0.png
 
 
 Any inputs that are valid to ``seaborn``'s
@@ -2809,19 +3159,10 @@ Figure 1c
     # Adjust xmin, ymin to 0
     xmin, xmax, ymin, ymax = jointgrid.ax_joint.axis()
     jointgrid.ax_joint.set_xlim(0, xmax)
-    jointgrid.ax_joint.set_ylim(0, ymax)
+    jointgrid.ax_joint.set_ylim(0, ymax);
 
 
-
-
-.. parsed-literal::
-
-    (0, 12.0)
-
-
-
-
-.. image:: shalek2013_files/shalek2013_65_1.png
+.. image:: shalek2013_files/shalek2013_86_0.png
 
 
 Figure 2
@@ -2835,12 +3176,12 @@ Next, we will attempt to recreate the figures from `Figure
    :alt: Original figure 2
 
    Original figure 2
+
 Figure 2a
 ~~~~~~~~~
 
 For this figure, we will need the "LPS Response" and "Housekeeping" gene
-annotations, which weren't very trivial to obtain, so I've moved them to
-the Appendix.
+annotations, from the ``expression_feature_data`` that we created.
 
 .. code:: python
 
@@ -2870,19 +3211,10 @@ the Appendix.
     jointgrid.ax_joint.set_xlim(0, xmax)
     jointgrid.ax_joint.set_ylim(0, ymax)
     
-    jointgrid.ax_joint.fill_betweenx((ymin, ymax), 0, np.log(250), alpha=0.5, zorder=-1)
+    jointgrid.ax_joint.fill_betweenx((ymin, ymax), 0, np.log(250), alpha=0.5, zorder=-1);
 
 
-
-
-.. parsed-literal::
-
-    <matplotlib.collections.PolyCollection at 0x1132a0950>
-
-
-
-
-.. image:: shalek2013_files/shalek2013_67_1.png
+.. image:: shalek2013_files/shalek2013_91_0.png
 
 
 I couldn't find the data for the ``hESC``s for the right-side panel of
@@ -2904,7 +3236,6 @@ get 297 genes:
 
 
 
-
 .. parsed-literal::
 
     297
@@ -2921,7 +3252,6 @@ the original data to get this new subset.
 .. code:: python
 
     expression.ix[:, expression.ix[singles_ids].mean() > 250].shape
-
 
 
 
@@ -2959,27 +3289,19 @@ the original data to get this new subset.
     
     grouped = expression_highly_expressed.groupby(dict(zip(genes, mean_bins)), axis=1)
     cells_per_tpm_per_cv = grouped.apply(calculate_cells_per_tpm_per_cv, cv=cv)
-
 Here's how you would make the original figure from the paper:
 
 .. code:: python
 
+    import matplotlib.pyplot as plt
+    
     fig, ax = plt.subplots(figsize=(10, 10))
     sns.heatmap(cells_per_tpm_per_cv, linewidth=0, ax=ax, yticklabels=False)
     ax.set_yticks([])
-    ax.set_xlabel('ln(TPM, binned)')
+    ax.set_xlabel('ln(TPM, binned)');
 
 
-
-
-.. parsed-literal::
-
-    <matplotlib.text.Text at 0x11325df10>
-
-
-
-
-.. image:: shalek2013_files/shalek2013_74_1.png
+.. image:: shalek2013_files/shalek2013_100_0.png
 
 
 Doesn't quite look the same. Maybe the y-axis labels were opposite, and
@@ -3016,8 +3338,7 @@ is :math:`\ln`\ (TPM+1).
     sns.despine(ax=cv_ax, left=True, right=False)
 
 
-
-.. image:: shalek2013_files/shalek2013_76_0.png
+.. image:: shalek2013_files/shalek2013_102_0.png
 
 
 Figure 3
@@ -3046,8 +3367,7 @@ Figure 3b, top panel
     sns.despine()
 
 
-
-.. image:: shalek2013_files/shalek2013_79_0.png
+.. image:: shalek2013_files/shalek2013_106_0.png
 
 
 Figure 3b, bottom panel
@@ -3061,8 +3381,7 @@ Figure 3b, bottom panel
     sns.despine()
 
 
-
-.. image:: shalek2013_files/shalek2013_81_0.png
+.. image:: shalek2013_files/shalek2013_108_0.png
 
 
 Figure 4
@@ -3087,619 +3406,17 @@ different dimensionality reductions on the data.
 
     study.interactive_pca()
 
-
 .. parsed-literal::
 
-    savefile : data/last.pca.pdf
+    featurewise : False
     y_pc : 2
     data_type : expression
-    featurewise : False
     show_point_labels : False
-    sample_subset : pooled
+    sample_subset : all_samples
     feature_subset : variant
-    plot_violins : True
+    plot_violins : False
     x_pc : 1
     list_link : 
-    1100001G20RIK (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    1110002B05RIK (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    1600029D21RIK (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    2310016C08RIK (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    ACSL1 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    AK041746 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    ALDOC (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    AMICA1 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    APOOL (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    ARG2 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    ASF1B (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    ATP6V0D2 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    AW112010 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    BANF1 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    C1QB (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    CAR4 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    CAV1 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    CCL17 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    CCL2 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    CCL22 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    CCL7 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    CCR2 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    CCT3 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    CD200 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    CD200R1 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    CD302 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    CD69 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    CETN2 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    CHI3L3 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    CKS2 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    CLAST2 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    COPS5 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    COX5A (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    CXCL1 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    CXCL3 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    DHRS1 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    DYNLT1B (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    EAR11 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    EMR1 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    F10 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    FAM103A1 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    FCGR3 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    FLRT3 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    FPR1 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    FUCA2 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    GLIPR2 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    GNGT2 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    GPR141 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    H2-AB1 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    H2-EB1 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    HMGN2 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    HP (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    IFI30 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    IFIT1 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    IFIT2 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    IFITM1 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    IFNB1 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    IL1R2 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    IL23A (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    INSL6 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    IRGM1 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    KLK1B1 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    LAT2 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    LCN2 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    LGALS1 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    LSM3 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    LY86 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    LY96 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    MAD2L1 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    MED21 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    MGST3 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    MMP13 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    MMP8 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    MS4A7 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    N6AMT2 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    NAA38 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    NAGK (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    NCF4 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    NDUFA4 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    NUDT9 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    NUPR1 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    OASL1 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    OAZ1 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    PDZD11 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    PFN1 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    PMP22 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    PNP2 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    PPP1R15A (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    PTGS2 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    PTX3 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    QPCT (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    RAB9 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    RFC2 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    ROGDI (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    S100A4 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    SC4MOL (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    SELL (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    SEPP1 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    SERPINB6A (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    SERPINB9 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    SLFN1 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    SLPI (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    STMN1 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    TARM1 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    THBS1 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    TM7SF4 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    TMEM176A (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    TMEM176B (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    TMEM39A (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    TNFRSF9 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    TNFSF4 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    TRIM13 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    TUBA1A (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    TUBA1B (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    TUBB2C (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    UPP1 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    VAMP4 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    VPS25 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    WDR61 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
-    ZFP263 (18,)
-    verified_color [u'#1b9e77']
-    verified_order ['BDMC']
-    ['BDMC']
-    
 
 
 
@@ -3711,11 +3428,7 @@ different dimensionality reductions on the data.
 
 
 
-.. image:: shalek2013_files/shalek2013_84_2.png
-
-
-
-.. image:: shalek2013_files/shalek2013_84_3.png
+.. image:: shalek2013_files/shalek2013_113_2.png
 
 
 A "sequences shortened" version of this is available as a gif:
@@ -3731,20 +3444,151 @@ instead of using ``study.interactive_pca``:
 
 .. code:: python
 
-    study.plot_pca(feature_subset='gene_category: LPS Response', sample_subset='~pooled', plot_violins=False)
-
+    study.plot_pca(feature_subset='gene_category: LPS Response', sample_subset='not (pooled)', plot_violins=False, show_point_labels=True)
 
 
 
 .. parsed-literal::
 
-    <flotilla.visualize.decomposition.DecompositionViz at 0x11c9e5210>
+    <flotilla.visualize.decomposition.DecompositionViz at 0x1125d52d0>
 
 
 
 
-.. image:: shalek2013_files/shalek2013_87_1.png
+.. image:: shalek2013_files/shalek2013_116_1.png
 
+
+Mark immature cells as a new subset
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+As in the paper, the cells S12, S13, and S16 appear in a cluster that is
+separate from the remaining cells. From the paper, these were the
+"matured" bone-marrow derived dendritic cells, after stimulation with a
+lipopolysaccharide. We can mark these as mature in our metadata,
+
+.. code:: python
+
+    mature = ['S12', 'S13', 'S16']
+    study.metadata.data['maturity'] = metadata.index.map(lambda x: 'mature' if x in mature else 'immature')
+    study.metadata.data.head()
+
+
+
+.. raw:: html
+
+    <div style="max-height:1000px;max-width:1500px;overflow:auto;">
+    <table border="1" class="dataframe">
+      <thead>
+        <tr style="text-align: right;">
+          <th></th>
+          <th>phenotype</th>
+          <th>pooled</th>
+          <th>outlier</th>
+          <th>maturity</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>S1</th>
+          <td> BDMC</td>
+          <td> False</td>
+          <td> False</td>
+          <td> immature</td>
+        </tr>
+        <tr>
+          <th>S2</th>
+          <td> BDMC</td>
+          <td> False</td>
+          <td> False</td>
+          <td> immature</td>
+        </tr>
+        <tr>
+          <th>S3</th>
+          <td> BDMC</td>
+          <td> False</td>
+          <td> False</td>
+          <td> immature</td>
+        </tr>
+        <tr>
+          <th>S4</th>
+          <td> BDMC</td>
+          <td> False</td>
+          <td> False</td>
+          <td> immature</td>
+        </tr>
+        <tr>
+          <th>S5</th>
+          <td> BDMC</td>
+          <td> False</td>
+          <td> False</td>
+          <td> immature</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+
+
+Then, we can set **maturity** as the column we use for coloring the PCA,
+since before it was the "phenotype" column.
+
+.. code:: python
+
+    study.metadata.phenotype_col = 'maturity'
+    study.save('shalek2013')
+    study = flotilla.embark('shalek2013')
+
+.. parsed-literal::
+
+    Wrote datapackage to /Users/olga/flotilla_projects/shalek2013/datapackage.json2014-12-10 15:41:07	Reading datapackage from /Users/olga/flotilla_projects/shalek2013/datapackage.json
+    2014-12-10 15:41:07	Parsing datapackage to create a Study object
+    2014-12-10 15:41:07	Initializing Study
+    2014-12-10 15:41:07	Initializing Predictor configuration manager for Study
+    2014-12-10 15:41:07	Predictor ExtraTreesClassifier is of type <class 'sklearn.ensemble.forest.ExtraTreesClassifier'>
+    2014-12-10 15:41:07	Added ExtraTreesClassifier to default predictors
+    2014-12-10 15:41:07	Predictor ExtraTreesRegressor is of type <class 'sklearn.ensemble.forest.ExtraTreesRegressor'>
+    2014-12-10 15:41:07	Added ExtraTreesRegressor to default predictors
+    2014-12-10 15:41:07	Predictor GradientBoostingClassifier is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingClassifier'>
+    2014-12-10 15:41:07	Added GradientBoostingClassifier to default predictors
+    2014-12-10 15:41:07	Predictor GradientBoostingRegressor is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingRegressor'>
+    2014-12-10 15:41:07	Added GradientBoostingRegressor to default predictors
+    2014-12-10 15:41:07	Loading metadata
+    2014-12-10 15:41:07	Loading expression data
+    2014-12-10 15:41:07	Initializing expression
+    2014-12-10 15:41:07	Done initializing expression
+    2014-12-10 15:41:07	Loading splicing data
+    2014-12-10 15:41:07	Initializing splicing
+    2014-12-10 15:41:07	Done initializing splicing
+    2014-12-10 15:41:07	Successfully initialized a Study object!
+
+
+.. parsed-literal::
+
+    No color was assigned to the phenotype immature, assigning a random colorNo color was assigned to the phenotype mature, assigning a random colorimmature does not have marker style, falling back on "o" (circle)mature does not have marker style, falling back on "o" (circle)
+
+.. code:: python
+
+    study.plot_pca(feature_subset='gene_category: LPS Response', sample_subset='not (pooled)', plot_violins=False, show_point_labels=True)
+
+
+
+.. parsed-literal::
+
+    <flotilla.visualize.decomposition.DecompositionViz at 0x118468090>
+
+
+
+
+.. image:: shalek2013_files/shalek2013_122_1.png
+
+
+.. code:: python
+
+    study.save('shalek2013')
+
+.. parsed-literal::
+
+    Wrote datapackage to /Users/olga/flotilla_projects/shalek2013/datapackage.json
 
 Without ``flotilla``, ``plot_pca`` is quite a bit of code:
 
@@ -4055,12 +3899,12 @@ Without ``flotilla``, ``plot_pca`` is quite a bit of code:
             gs_y = 12
     
             if ax is None:
-                self.fig_reduced, ax = plt.subplots(1, 1, figsize=(20, 10))
+                self.reduced_fig, ax = plt.subplots(1, 1, figsize=(20, 10))
                 gs = GridSpec(gs_x, gs_y)
     
             else:
                 gs = GridSpecFromSubplotSpec(gs_x, gs_y, ax.get_subplotspec())
-                self.fig_reduced = plt.gcf()
+                self.reduced_fig = plt.gcf()
     
             ax_components = plt.subplot(gs[:, :5])
             ax_loading1 = plt.subplot(gs[:, 6:8])
@@ -4074,7 +3918,7 @@ Without ``flotilla``, ``plot_pca`` is quite a bit of code:
             self.plot_loadings(pc=self.x_pc, ax=ax_loading1)
             self.plot_loadings(pc=self.y_pc, ax=ax_loading2)
             sns.despine()
-            self.fig_reduced.tight_layout()
+            self.reduced_fig.tight_layout()
     
             if plot_violins and not self.featurewise and self.singles is not None:
                 self.plot_violins()
@@ -4254,7 +4098,7 @@ Without ``flotilla``, ``plot_pca`` is quite a bit of code:
                 pd.Index(self.top_features))))
             while ncols * nrows < len(vector_labels):
                 nrows += 1
-            self.fig_violins, axes = plt.subplots(nrows=nrows, ncols=ncols,
+            self.violins_fig, axes = plt.subplots(nrows=nrows, ncols=ncols,
                                                   figsize=(4 * ncols, 4 * nrows))
     
             if self.feature_renamer is not None:
@@ -4283,7 +4127,7 @@ Without ``flotilla``, ``plot_pca`` is quite a bit of code:
                 # Check if the plotting space is empty
                 if len(ax.collections) == 0 or len(ax.lines) == 0:
                     ax.axis('off')
-            self.fig_violins.tight_layout()
+            self.violins_fig.tight_layout()
     
     # Notice we're using the original data, nothing from "study"
     lps_response_genes = expression_feature_data.index[expression_feature_data.gene_category == 'LPS Response']
@@ -4294,19 +4138,10 @@ Without ``flotilla``, ``plot_pca`` is quite a bit of code:
     
     pca = DataFramePCA(subset_standardized)
     visualizer = DecompositionViz(pca.reduced_space, pca.components_, pca.explained_variance_ratio_)
-    visualizer()
+    visualizer();
 
 
-
-
-.. parsed-literal::
-
-    <__main__.DecompositionViz at 0x1137f8450>
-
-
-
-
-.. image:: shalek2013_files/shalek2013_89_1.png
+.. image:: shalek2013_files/shalek2013_125_0.png
 
 
 Figure 4b
@@ -4317,7 +4152,6 @@ Figure 4b
     lps_response_genes = study.expression.feature_subsets['gene_category: LPS Response']
     lps_response = study.expression.singles.ix[:, lps_response_genes].dropna(how='all', axis=1)
     lps_response.head()
-
 
 
 
@@ -4482,7 +4316,6 @@ Figure 4b
 .. code:: python
 
     lps_response_corr = lps_response.corr()
-
 "Elbow method" for determining number of clusters
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -4516,8 +4349,7 @@ easy.
     sns.despine()
 
 
-
-.. image:: shalek2013_files/shalek2013_95_0.png
+.. image:: shalek2013_files/shalek2013_131_0.png
 
 
 Not quite sure where the elbow is here. looks like there's a big drop
@@ -4534,37 +4366,36 @@ see with the :math:`k=5` clusters that they found was optimal.
 
 
 
-
 .. parsed-literal::
 
-    array([1, 1, 2, 4, 0, 1, 3, 4, 2, 4, 0, 3, 2, 2, 3, 3, 0, 1, 0, 3, 0, 1, 2,
-           0, 0, 3, 3, 2, 4, 4, 0, 4, 4, 0, 4, 0, 3, 4, 2, 1, 4, 4, 4, 3, 1, 4,
-           0, 0, 4, 1, 3, 3, 4, 0, 0, 2, 0, 0, 0, 4, 1, 3, 4, 3, 3, 4, 2, 2, 4,
-           3, 0, 4, 0, 3, 4, 2, 2, 4, 2, 3, 3, 3, 1, 1, 4, 1, 2, 2, 2, 1, 1, 3,
-           1, 1, 4, 3, 3, 3, 3, 1, 1, 4, 0, 2, 0, 0, 2, 3, 4, 4, 2, 0, 0, 3, 2,
-           4, 0, 2, 4, 3, 4, 2, 2, 4, 1, 4, 3, 0, 1, 2, 3, 3, 4, 4, 0, 0, 4, 3,
-           2, 1, 0, 4, 2, 0, 4, 2, 4, 0, 1, 0, 0, 3, 3, 3, 3, 1, 4, 3, 0, 2, 2,
-           3, 4, 1, 3, 4, 2, 2, 2, 3, 3, 3, 4, 0, 1, 3, 1, 0, 2, 1, 1, 0, 2, 4,
-           0, 1, 3, 2, 1, 3, 0, 1, 1, 2, 4, 3, 1, 0, 0, 0, 3, 3, 2, 1, 3, 1, 1,
-           4, 4, 3, 2, 3, 3, 1, 4, 3, 4, 3, 0, 1, 3, 3, 3, 3, 3, 1, 4, 1, 0, 3,
-           3, 2, 4, 3, 2, 0, 0, 3, 1, 1, 4, 3, 2, 4, 4, 3, 1, 1, 1, 0, 4, 1, 1,
-           0, 0, 4, 0, 0, 0, 3, 4, 3, 4, 3, 3, 3, 3, 0, 3, 4, 1, 2, 4, 1, 2, 2,
-           0, 0, 0, 4, 0, 2, 4, 0, 2, 4, 0, 4, 0, 3, 1, 3, 2, 3, 0, 3, 3, 3, 2,
-           1, 2, 2, 2, 2, 2, 4, 3, 2, 4, 3, 2, 2, 3, 1, 4, 1, 0, 0, 0, 0, 1, 4,
-           1, 4, 4, 3, 1, 1, 1, 1, 1, 2, 1, 2, 0, 4, 3, 4, 0, 3, 3, 3, 0, 3, 2,
-           2, 3, 0, 0, 2, 4, 4, 0, 1, 1, 3, 4, 2, 0, 3, 3, 0, 1, 0, 0, 4, 3, 2,
-           3, 3, 0, 2, 3, 3, 1, 1, 1, 3, 4, 2, 2, 2, 2, 3, 3, 2, 0, 1, 1, 1, 3,
-           3, 3, 4, 4, 0, 4, 3, 3, 1, 0, 0, 3, 3, 0, 3, 3, 0, 1, 4, 4, 4, 3, 4,
-           3, 1, 3, 1, 2, 2, 1, 4, 0, 1, 0, 3, 2, 0, 1, 1, 2, 4, 1, 0, 3, 0, 3,
-           3, 1, 3, 1, 4, 3, 1, 1, 2, 4, 1, 4, 2, 3, 0, 1, 4, 3, 2, 3, 3, 1, 1,
-           2, 3, 1, 2, 1, 0, 0, 4, 3, 3, 1, 3, 4, 0, 3, 0, 4, 0, 4, 1, 4, 0, 1,
-           3, 0, 1, 0, 4, 3, 2, 2, 3, 3, 1, 0, 2, 4, 1, 1, 4, 0, 2, 2, 3, 2, 4,
-           1, 0, 3, 4, 2, 1, 1, 3, 3, 0, 0, 0, 3, 3, 1, 0, 3, 2, 3, 3, 0, 2, 0,
-           1, 3, 0, 3, 4, 4, 1, 2, 4, 2, 3, 3, 3, 2, 3, 2, 4, 4, 1, 1, 4, 3, 2,
-           2, 4, 0, 1, 2, 0, 3, 0, 4, 0, 2, 1, 1, 3, 0, 2, 1, 3, 3, 1, 2, 0, 0,
-           1, 2, 0, 0, 4, 3, 4, 0, 1, 4, 1, 3, 0, 2, 2, 2, 0, 3, 1, 3, 1, 4, 3,
-           4, 2, 2, 3, 2, 0, 0, 4, 2, 1, 1, 1, 3, 3, 1, 2, 2, 0, 1, 2, 3, 0, 4,
-           1, 3, 2, 2, 2, 1, 2, 1, 4], dtype=int32)
+    array([3, 0, 4, 4, 1, 0, 3, 4, 2, 4, 1, 3, 2, 4, 3, 3, 1, 0, 1, 3, 1, 0, 2,
+           1, 1, 3, 3, 2, 4, 4, 1, 4, 4, 1, 4, 1, 3, 4, 2, 0, 2, 4, 2, 3, 0, 4,
+           1, 1, 4, 0, 0, 3, 4, 1, 1, 2, 1, 1, 1, 2, 0, 3, 4, 3, 3, 4, 2, 2, 4,
+           3, 1, 4, 1, 3, 4, 2, 2, 4, 2, 3, 3, 3, 0, 0, 4, 1, 2, 2, 2, 0, 0, 3,
+           0, 0, 4, 3, 3, 3, 3, 0, 0, 2, 1, 2, 1, 1, 2, 1, 2, 4, 2, 1, 1, 3, 4,
+           4, 1, 2, 4, 3, 4, 2, 2, 2, 0, 4, 4, 1, 0, 2, 3, 3, 4, 4, 1, 1, 4, 3,
+           2, 0, 1, 4, 2, 1, 4, 2, 4, 1, 0, 1, 1, 3, 3, 3, 3, 0, 0, 3, 1, 2, 2,
+           3, 4, 0, 0, 4, 2, 2, 2, 3, 3, 3, 3, 1, 3, 3, 0, 1, 2, 0, 0, 1, 2, 4,
+           1, 0, 3, 2, 0, 3, 1, 0, 0, 2, 4, 3, 0, 1, 1, 1, 3, 3, 2, 0, 3, 0, 4,
+           4, 4, 3, 2, 3, 3, 0, 4, 3, 4, 3, 1, 0, 3, 3, 3, 3, 3, 0, 4, 0, 1, 3,
+           3, 2, 4, 3, 4, 1, 1, 3, 0, 0, 2, 4, 2, 4, 4, 3, 0, 3, 0, 1, 4, 0, 0,
+           1, 1, 4, 1, 1, 1, 0, 4, 3, 4, 3, 3, 3, 3, 1, 3, 4, 4, 2, 2, 0, 2, 2,
+           1, 1, 1, 4, 1, 2, 4, 1, 2, 2, 1, 4, 1, 3, 0, 3, 2, 3, 1, 3, 3, 3, 2,
+           0, 2, 2, 2, 2, 4, 2, 3, 2, 4, 3, 2, 2, 3, 0, 4, 1, 1, 1, 1, 1, 0, 4,
+           0, 4, 4, 3, 0, 1, 1, 0, 0, 2, 0, 2, 1, 4, 3, 4, 1, 0, 3, 3, 1, 3, 2,
+           2, 3, 1, 1, 2, 4, 4, 1, 0, 0, 3, 4, 2, 1, 3, 3, 1, 0, 1, 1, 3, 3, 2,
+           3, 0, 1, 2, 3, 3, 0, 0, 0, 3, 4, 2, 2, 2, 2, 3, 3, 2, 1, 0, 0, 0, 0,
+           1, 3, 4, 4, 1, 4, 3, 3, 0, 1, 1, 1, 3, 1, 3, 3, 1, 0, 4, 4, 4, 3, 3,
+           3, 0, 3, 0, 2, 4, 0, 4, 1, 0, 1, 0, 0, 1, 0, 0, 2, 4, 0, 1, 3, 1, 3,
+           3, 0, 0, 0, 4, 3, 0, 0, 2, 3, 4, 4, 2, 3, 1, 0, 4, 3, 2, 3, 3, 0, 0,
+           2, 3, 0, 2, 0, 1, 1, 4, 3, 3, 0, 3, 4, 1, 0, 1, 4, 1, 4, 0, 4, 1, 0,
+           3, 1, 3, 1, 4, 3, 2, 2, 3, 3, 0, 1, 4, 4, 0, 0, 4, 1, 2, 2, 3, 2, 4,
+           0, 1, 3, 4, 2, 0, 0, 3, 3, 1, 1, 1, 3, 3, 0, 1, 3, 2, 3, 3, 1, 2, 1,
+           0, 3, 1, 3, 4, 4, 0, 2, 4, 2, 3, 4, 3, 4, 3, 4, 2, 4, 0, 0, 4, 3, 2,
+           2, 4, 1, 0, 2, 1, 3, 1, 3, 1, 2, 0, 0, 3, 1, 2, 0, 3, 3, 1, 2, 1, 1,
+           4, 2, 1, 3, 4, 3, 2, 1, 0, 4, 0, 3, 1, 4, 2, 2, 1, 3, 4, 3, 0, 4, 3,
+           4, 2, 2, 3, 2, 1, 1, 4, 2, 0, 0, 0, 3, 3, 3, 2, 2, 1, 0, 2, 3, 1, 4,
+           4, 3, 2, 2, 2, 0, 2, 0, 2], dtype=int32)
 
 
 
@@ -4585,7 +4416,6 @@ Now let's create a dataframe with these genes in their cluster orders.
 
 
 
-
 .. raw:: html
 
     <div style="max-height:1000px;max-width:1500px;overflow:auto;">
@@ -4593,27 +4423,27 @@ Now let's create a dataframe with these genes in their cluster orders.
       <thead>
         <tr style="text-align: right;">
           <th>GENE</th>
-          <th>1810029B16RIK</th>
-          <th>6330409N04RIK</th>
-          <th>A130040M12RIK</th>
-          <th>A630001G21RIK</th>
-          <th>AA467197</th>
-          <th>ACPP</th>
-          <th>ACSL1</th>
-          <th>AI607873</th>
-          <th>AK035387</th>
-          <th>AK042010</th>
+          <th>1110038F14RIK</th>
+          <th>2210009G21RIK</th>
+          <th>A430084P05RIK</th>
+          <th>AA960436</th>
+          <th>AK141659</th>
+          <th>AK163103</th>
+          <th>ALCAM</th>
+          <th>ALPK2</th>
+          <th>ARMC8</th>
+          <th>BC147527</th>
           <th>...</th>
-          <th>TAPBPL</th>
-          <th>TIMP1</th>
+          <th>TNFAIP2</th>
           <th>TNFSF4</th>
-          <th>TNFSF9</th>
           <th>TOR1AIP1</th>
+          <th>TRA2A</th>
+          <th>TRIM26</th>
           <th>TRIM34</th>
           <th>TTC39C</th>
           <th>USP12</th>
           <th>ZC3H12C</th>
-          <th>ZUFSP</th>
+          <th>ZC3HAV1</th>
         </tr>
         <tr>
           <th>GENE</th>
@@ -4642,124 +4472,124 @@ Now let's create a dataframe with these genes in their cluster orders.
       </thead>
       <tbody>
         <tr>
-          <th>1810029B16RIK</th>
+          <th>1110038F14RIK</th>
           <td> 1.000000</td>
-          <td>-0.394008</td>
-          <td> 0.178867</td>
-          <td> 0.271292</td>
-          <td> 0.150375</td>
-          <td> 0.106683</td>
-          <td> 0.182380</td>
-          <td> 0.076501</td>
-          <td> 0.032006</td>
-          <td> 0.335728</td>
+          <td> 0.175230</td>
+          <td> 0.043846</td>
+          <td> 0.240304</td>
+          <td> 0.150073</td>
+          <td>-0.007459</td>
+          <td>-0.075510</td>
+          <td> 0.001210</td>
+          <td> 0.078638</td>
+          <td>-0.073983</td>
           <td>...</td>
-          <td>-0.048557</td>
-          <td> 0.029439</td>
-          <td>-0.194118</td>
-          <td> 0.098728</td>
-          <td> 0.228197</td>
-          <td> 0.214306</td>
-          <td> 0.204341</td>
-          <td>-0.300112</td>
-          <td> 0.052816</td>
-          <td>-0.305531</td>
+          <td>-0.053588</td>
+          <td>-0.085191</td>
+          <td> 0.322774</td>
+          <td> 0.096905</td>
+          <td>-0.370932</td>
+          <td> 0.451829</td>
+          <td> 0.387727</td>
+          <td>-0.257008</td>
+          <td> 0.274102</td>
+          <td>-0.163423</td>
         </tr>
         <tr>
-          <th>6330409N04RIK</th>
-          <td>-0.394008</td>
+          <th>2210009G21RIK</th>
+          <td> 0.175230</td>
           <td> 1.000000</td>
-          <td> 0.212542</td>
-          <td>-0.293282</td>
-          <td> 0.119868</td>
-          <td> 0.468823</td>
-          <td> 0.298642</td>
-          <td> 0.320296</td>
-          <td> 0.158348</td>
-          <td> 0.273508</td>
+          <td> 0.301786</td>
+          <td> 0.454579</td>
+          <td>-0.106546</td>
+          <td>-0.122179</td>
+          <td> 0.177472</td>
+          <td> 0.215454</td>
+          <td> 0.540303</td>
+          <td> 0.078574</td>
           <td>...</td>
-          <td>-0.125377</td>
-          <td> 0.027740</td>
-          <td> 0.190240</td>
-          <td>-0.422914</td>
-          <td>-0.400675</td>
-          <td>-0.197247</td>
-          <td>-0.023442</td>
-          <td> 0.088776</td>
-          <td>-0.006295</td>
-          <td>-0.412691</td>
+          <td> 0.230309</td>
+          <td>-0.158622</td>
+          <td> 0.019694</td>
+          <td> 0.142045</td>
+          <td> 0.053967</td>
+          <td> 0.483106</td>
+          <td>-0.085604</td>
+          <td> 0.279262</td>
+          <td> 0.153934</td>
+          <td> 0.160710</td>
         </tr>
         <tr>
-          <th>A130040M12RIK</th>
-          <td> 0.178867</td>
-          <td> 0.212542</td>
+          <th>A430084P05RIK</th>
+          <td> 0.043846</td>
+          <td> 0.301786</td>
           <td> 1.000000</td>
-          <td> 0.135900</td>
-          <td> 0.262295</td>
-          <td> 0.591539</td>
-          <td> 0.101211</td>
-          <td> 0.198424</td>
-          <td>-0.061268</td>
-          <td> 0.261002</td>
+          <td> 0.001150</td>
+          <td> 0.060210</td>
+          <td>-0.173020</td>
+          <td> 0.150884</td>
+          <td> 0.429134</td>
+          <td> 0.131837</td>
+          <td>-0.069652</td>
           <td>...</td>
-          <td> 0.131664</td>
-          <td> 0.268447</td>
-          <td> 0.004338</td>
-          <td>-0.043116</td>
-          <td>-0.052081</td>
-          <td>-0.336334</td>
-          <td> 0.322725</td>
-          <td> 0.013706</td>
-          <td> 0.254403</td>
-          <td> 0.048982</td>
+          <td>-0.341757</td>
+          <td>-0.296639</td>
+          <td>-0.192074</td>
+          <td>-0.360383</td>
+          <td> 0.025340</td>
+          <td> 0.033636</td>
+          <td>-0.227960</td>
+          <td>-0.166541</td>
+          <td> 0.200579</td>
+          <td> 0.064736</td>
         </tr>
         <tr>
-          <th>A630001G21RIK</th>
-          <td> 0.271292</td>
-          <td>-0.293282</td>
-          <td> 0.135900</td>
+          <th>AA960436</th>
+          <td> 0.240304</td>
+          <td> 0.454579</td>
+          <td> 0.001150</td>
           <td> 1.000000</td>
-          <td> 0.420200</td>
-          <td> 0.317858</td>
-          <td>-0.312477</td>
-          <td> 0.030636</td>
-          <td> 0.260572</td>
-          <td> 0.030842</td>
+          <td>-0.361780</td>
+          <td> 0.206889</td>
+          <td> 0.174208</td>
+          <td> 0.075687</td>
+          <td> 0.394432</td>
+          <td> 0.163830</td>
           <td>...</td>
-          <td> 0.121712</td>
-          <td>-0.313992</td>
-          <td>-0.128168</td>
-          <td> 0.059445</td>
-          <td>-0.177031</td>
-          <td>-0.332522</td>
-          <td> 0.027750</td>
-          <td>-0.125732</td>
-          <td> 0.071474</td>
-          <td> 0.070166</td>
+          <td> 0.175022</td>
+          <td>-0.271395</td>
+          <td> 0.272221</td>
+          <td>-0.222182</td>
+          <td> 0.181522</td>
+          <td>-0.094028</td>
+          <td> 0.218182</td>
+          <td> 0.396040</td>
+          <td>-0.159072</td>
+          <td> 0.048122</td>
         </tr>
         <tr>
-          <th>AA467197</th>
-          <td> 0.150375</td>
-          <td> 0.119868</td>
-          <td> 0.262295</td>
-          <td> 0.420200</td>
+          <th>AK141659</th>
+          <td> 0.150073</td>
+          <td>-0.106546</td>
+          <td> 0.060210</td>
+          <td>-0.361780</td>
           <td> 1.000000</td>
-          <td> 0.277036</td>
-          <td> 0.020186</td>
-          <td> 0.747215</td>
-          <td> 0.404682</td>
-          <td> 0.342458</td>
+          <td>-0.287830</td>
+          <td>-0.370827</td>
+          <td> 0.143026</td>
+          <td>-0.019682</td>
+          <td>-0.157671</td>
           <td>...</td>
-          <td>-0.023484</td>
-          <td> 0.198358</td>
-          <td> 0.452022</td>
-          <td>-0.467622</td>
-          <td>-0.325064</td>
-          <td>-0.029880</td>
-          <td> 0.036769</td>
-          <td> 0.244542</td>
-          <td>-0.093778</td>
-          <td> 0.108472</td>
+          <td>-0.295535</td>
+          <td> 0.194073</td>
+          <td>-0.232992</td>
+          <td> 0.061276</td>
+          <td>-0.032583</td>
+          <td> 0.411637</td>
+          <td>-0.182131</td>
+          <td> 0.018036</td>
+          <td> 0.175434</td>
+          <td>-0.288042</td>
         </tr>
       </tbody>
     </table>
@@ -4775,14 +4605,12 @@ the LPS response genes. We can do this in ``flotilla`` using
 .. code:: python
 
     reduced = study.expression.reduce(singles_ids, feature_ids=lps_response_genes)
-
 We can get the principal components using ``reduced.components_``
 (similar interface as ``scikit-learn``).
 
 .. code:: python
 
     reduced.components_.head()
-
 
 
 
@@ -4951,7 +4779,6 @@ We can get the principal components using ``reduced.components_``
 
 
 
-
 .. raw:: html
 
     <div style="max-height:1000px;max-width:1500px;overflow:auto;">
@@ -4970,29 +4797,29 @@ We can get the principal components using ``reduced.components_``
       </thead>
       <tbody>
         <tr>
-          <th>1810029B16RIK</th>
-          <td> 0.042928</td>
-          <td>-0.005064</td>
+          <th>1110038F14RIK</th>
+          <td>-0.007729</td>
+          <td>-0.005858</td>
         </tr>
         <tr>
-          <th>6330409N04RIK</th>
-          <td> 0.033104</td>
-          <td>-0.015244</td>
+          <th>2210009G21RIK</th>
+          <td>-0.006981</td>
+          <td> 0.002916</td>
         </tr>
         <tr>
-          <th>A130040M12RIK</th>
-          <td> 0.043078</td>
-          <td> 0.016664</td>
+          <th>A430084P05RIK</th>
+          <td> 0.014550</td>
+          <td> 0.022191</td>
         </tr>
         <tr>
-          <th>A630001G21RIK</th>
-          <td> 0.023375</td>
-          <td>-0.007379</td>
+          <th>AA960436</th>
+          <td> 0.002159</td>
+          <td> 0.014470</td>
         </tr>
         <tr>
-          <th>AA467197</th>
-          <td> 0.054588</td>
-          <td> 0.018045</td>
+          <th>AK141659</th>
+          <td> 0.016902</td>
+          <td>-0.009151</td>
         </tr>
       </tbody>
     </table>
@@ -5025,15 +4852,14 @@ We can get the principal components using ``reduced.components_``
 
 
 
-
 .. parsed-literal::
 
-    <matplotlib.text.Text at 0x11cae66d0>
+    <matplotlib.text.Text at 0x10f37d5d0>
 
 
 
 
-.. image:: shalek2013_files/shalek2013_105_1.png
+.. image:: shalek2013_files/shalek2013_141_1.png
 
 
 This looks pretty similar, maybe just rearranged cluster order. Let's
@@ -5046,7 +4872,6 @@ Their PC scores and clusters for the genes
 
     gene_pc_clusters = pd.read_excel('nature12172-s1/Supplementary_Table5.xls', index_col=0)
     gene_pc_clusters.head()
-
 
 
 
@@ -5133,19 +4958,10 @@ Their PC scores and clusters for the genes
     corr_ax.set_yticks([])
     
     pc_ax.set_yticks([])
-    pc_ax.set_ylabel('')
+    pc_ax.set_ylabel('');
 
 
-
-
-.. parsed-literal::
-
-    <matplotlib.text.Text at 0x120ef2450>
-
-
-
-
-.. image:: shalek2013_files/shalek2013_109_1.png
+.. image:: shalek2013_files/shalek2013_145_0.png
 
 
 Sure enough, if I use their annotations, I get exactly that. Though
@@ -5156,14 +4972,13 @@ there were two genes in their file that I didn't have in the
 
     gene_pc_clusters.index.difference(lps_response_corr.index)
 
-
 ::
 
 
     ---------------------------------------------------------------------------
     TypeError                                 Traceback (most recent call last)
 
-    <ipython-input-57-f11acbabb21a> in <module>()
+    <ipython-input-53-f11acbabb21a> in <module>()
     ----> 1 gene_pc_clusters.index.difference(lps_response_corr.index)
     
 
@@ -5197,7 +5012,6 @@ instead thinks they are dates.
 
 
 
-
 .. parsed-literal::
 
     Counter({<type 'unicode'>: 631, <type 'datetime.datetime'>: 1})
@@ -5210,7 +5024,6 @@ Yep, it's just that one that got mangled.... oh well.
 
     gene_pc_clusters_genes = set(filter(lambda x: isinstance(x, unicode), gene_pc_clusters.index))
     gene_pc_clusters_genes.difference(lps_response_corr.index)
-
 
 
 
@@ -5251,7 +5064,6 @@ Supplementary Figure 1
     singles_mean = pd.DataFrame(singles_mean)
     singles_mean.head()
      
-
 
 
 
@@ -5306,7 +5118,6 @@ Supplementary Figure 1
     data_for_correlations.head()
     
     # %time sns.corrplot(data_for_correlations)
-
 
 
 
@@ -5499,8 +5310,7 @@ Supplementary Figure 1
     sns.despine()
 
 
-
-.. image:: shalek2013_files/shalek2013_123_0.png
+.. image:: shalek2013_files/shalek2013_159_0.png
 
 
 Notice that this is mostly red, while in the figure from the paper, it
@@ -5553,7 +5363,6 @@ Supplementary Figure 5d
 
     barcoded = pd.read_excel('nature12172-s1/Supplementary_Table7.xlsx')
     barcoded.head()
-
 
 
 
@@ -5645,7 +5454,6 @@ with the ``.dropna`` method, specifying ``axis=1`` for columns and
 
 
 
-
 .. raw:: html
 
     <div style="max-height:1000px;max-width:1500px;overflow:auto;">
@@ -5720,7 +5528,6 @@ sample ID names back next.
 
     barcoded = barcoded.drop('GENE', axis=0)
     barcoded.head()
-
 
 
 
@@ -5808,7 +5615,6 @@ We'll create a ``pandas.MultiIndex`` from the tuples of
 
 
 
-
 .. raw:: html
 
     <div style="max-height:1000px;max-width:1500px;overflow:auto;">
@@ -5889,7 +5695,6 @@ you know what this looks like, it's this.
 .. code:: python
 
     barcoded.T.reset_index().head()
-
 
 
 
@@ -6063,7 +5868,6 @@ measured, and its measurement value.
 
 
 
-
 .. raw:: html
 
     <div style="max-height:1000px;max-width:1500px;overflow:auto;">
@@ -6129,7 +5933,6 @@ Now let's rename these columns into something more useful, instead of
 
 
 
-
 .. raw:: html
 
     <div style="max-height:1000px;max-width:1500px;overflow:auto;">
@@ -6192,7 +5995,6 @@ me, it'll make the data easier.
 
     barcoded_tidy['TPM'] = barcoded_tidy.value[barcoded_tidy.measurement == 'TPM']
     barcoded_tidy['Unique Barcodes'] = barcoded_tidy.value[barcoded_tidy.measurement == 'Unique Barcodes']
-
 Fill the values of the "**TPM**"'s forwards, since they appear first,
 and fill the values of the "**Unique Barcodes**" backwards, since
 they're second
@@ -6202,7 +6004,6 @@ they're second
     barcoded_tidy.TPM = barcoded_tidy.TPM.ffill()
     barcoded_tidy['Unique Barcodes'] = barcoded_tidy['Unique Barcodes'].bfill()
     barcoded_tidy.head()
-
 
 
 
@@ -6283,7 +6084,6 @@ Drop the "**measurement**" column and drop duplicate rows.
 
 
 
-
 .. raw:: html
 
     <div style="max-height:1000px;max-width:1500px;overflow:auto;">
@@ -6349,7 +6149,6 @@ Drop the "**measurement**" column and drop duplicate rows.
 
     barcoded_tidy['log TPM'] = np.log(barcoded_tidy.TPM)
     barcoded_tidy['log Unique Barcodes'] = np.log(barcoded_tidy['Unique Barcodes'])
-
 Now we can use the convenient linear model plot (``lmplot``) in
 ``seaborn`` to plot these three samples together!
 
@@ -6359,15 +6158,14 @@ Now we can use the convenient linear model plot (``lmplot``) in
 
 
 
-
 .. parsed-literal::
 
-    <seaborn.axisgrid.FacetGrid at 0x129535d10>
+    <seaborn.axisgrid.FacetGrid at 0x123293390>
 
 
 
 
-.. image:: shalek2013_files/shalek2013_153_1.png
+.. image:: shalek2013_files/shalek2013_189_1.png
 
 
 Supplementary Figures 6-20
