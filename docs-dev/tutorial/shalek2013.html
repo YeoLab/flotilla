@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Shalek and Sujita, et al (2013) &mdash; flotilla 0.2.5dev documentation</title>
+    <title>Shalek and Sujita, et al (2013) &mdash; flotilla 0.2.7dev documentation</title>
     
     <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.5dev',
+        VERSION:     '0.2.7dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,21 +24,21 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
-    <link rel="top" title="flotilla 0.2.5dev documentation" href="../index.html" />
+    <link rel="top" title="flotilla 0.2.7dev documentation" href="../index.html" />
     <link rel="up" title="Flotilla tutorial" href="../tutorial.html" />
-    <link rel="prev" title="Create a barebones datapackage" href="barebones_study_making.html" />
+    <link rel="prev" title="Storing supplemental data on Study objects" href="supplementaldata.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body>
+  <body role="document">
 
   <div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -51,7 +51,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           Flotilla</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2.5dev</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.7dev</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -101,7 +101,8 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../tutorial.html">Flotilla tutorial</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../tutorial.html#install-flotilla">Install flotilla</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../tutorial.html#create-a-datapackage">Create a datapackage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#plotting-functions">Plotting functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#computing-on-splicing-data">Computing on splicing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#day-to-day-helpful-tips">Day to day helpful tips</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../tutorial.html#recreated-papers">Recreated papers</a></li>
 </ul>
 </li>
@@ -124,12 +125,12 @@
 <li><a class="reference internal" href="#splicing-data">Splicing Data</a></li>
 <li><a class="reference internal" href="#metadata">Metadata</a></li>
 <li><a class="reference internal" href="#mapping-stats-data">Mapping stats data</a></li>
-<li><a class="reference internal" href="#create-a-flotilla-study">Create a <tt class="docutils literal"><span class="pre">flotilla</span></tt> Study!</a></li>
+<li><a class="reference internal" href="#create-a-flotilla-study">Create a <code class="docutils literal"><span class="pre">flotilla</span></code> Study!</a></li>
 <li><a class="reference internal" href="#figure-1">Figure 1</a><ul>
 <li><a class="reference internal" href="#figure-1a">Figure 1a</a></li>
 <li><a class="reference internal" href="#without-flotilla-you-would-do">Without flotilla, you would do</a></li>
 <li><a class="reference internal" href="#figure-1b">Figure 1b</a></li>
-<li><a class="reference internal" href="#without-flotilla">Without <tt class="docutils literal"><span class="pre">flotilla</span></tt></a></li>
+<li><a class="reference internal" href="#without-flotilla">Without <code class="docutils literal"><span class="pre">flotilla</span></code></a></li>
 <li><a class="reference internal" href="#figure-1c">Figure 1c</a></li>
 </ul>
 </li>
@@ -202,7 +203,7 @@
     <div class="col-md-12">
       
   <p>In the interest of reproducibility, and to showcase our new package
-<tt class="docutils literal"><span class="pre">`flotilla</span></tt> &lt;<a class="reference external" href="http://github.com/yeolab/flotilla">http://github.com/yeolab/flotilla</a>&gt;`_, I&#8217;ve reproduced
+<code class="docutils literal"><span class="pre">`flotilla</span></code> &lt;<a class="reference external" href="http://github.com/yeolab/flotilla">http://github.com/yeolab/flotilla</a>&gt;`_, I&#8217;ve reproduced
 many figures from the landmark single-cell paper, <a class="reference external" href="http://www.ncbi.nlm.nih.gov/pubmed/23685454">Single-cell
 transcriptomics reveals bimodality in expression and splicing in immune
 cells</a> by Shalek and
@@ -474,8 +475,8 @@ blog post if that sounds weird to you.</p>
 <p>These data are formatted with samples on the columns, and genes on the
 rows. But we want the opposite, with samples on the rows and genes on
 the columns. This follows
-<tt class="docutils literal"><span class="pre">`scikit-learn</span></tt> &lt;<a class="reference external" href="http://scikit-learn.org/stable/tutorial/basic/tutorial.html#loading-an-example-dataset">http://scikit-learn.org/stable/tutorial/basic/tutorial.html#loading-an-example-dataset</a>&gt;`_&#8217;s
-standard of data matrices with size (<tt class="docutils literal"><span class="pre">n_samples</span></tt>, <tt class="docutils literal"><span class="pre">n_features</span></tt>) as
+<code class="docutils literal"><span class="pre">`scikit-learn</span></code> &lt;<a class="reference external" href="http://scikit-learn.org/stable/tutorial/basic/tutorial.html#loading-an-example-dataset">http://scikit-learn.org/stable/tutorial/basic/tutorial.html#loading-an-example-dataset</a>&gt;`_&#8217;s
+standard of data matrices with size (<code class="docutils literal"><span class="pre">n_samples</span></code>, <code class="docutils literal"><span class="pre">n_features</span></code>) as
 each gene is a feature. So we will simply transpose this.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">expression</span> <span class="o">=</span> <span class="n">expression</span><span class="o">.</span><span class="n">T</span>
 <span class="n">expression</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -636,11 +637,11 @@ each gene is a feature. So we will simply transpose this.</p>
 </div><p>The authors filtered the expression data based on having at least 3
 single cells express genes with at TPM (transcripts per million, ) &gt; 1.
 We can express this in using the
-<tt class="docutils literal"><span class="pre">`pandas</span></tt> &lt;<a class="reference external" href="http://pandas.pydata.org">http://pandas.pydata.org</a>&gt;`_ DataFrames easily.</p>
+<code class="docutils literal"><span class="pre">`pandas</span></code> &lt;<a class="reference external" href="http://pandas.pydata.org">http://pandas.pydata.org</a>&gt;`_ DataFrames easily.</p>
 <p>First, from reading the paper and looking at the data, I know there are
 18 single cells, and there are 18 samples that start with the letter
-&#8220;S.&#8221; So I will extract the single samples from the <tt class="docutils literal"><span class="pre">index</span></tt> (row names)
-using a <tt class="docutils literal"><span class="pre">lambda</span></tt>, a tiny function which in this case, tells me whether
+&#8220;S.&#8221; So I will extract the single samples from the <code class="docutils literal"><span class="pre">index</span></code> (row names)
+using a <code class="docutils literal"><span class="pre">lambda</span></code>, a tiny function which in this case, tells me whether
 or not that sample id begins with the letter &#8220;S&#8221;.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">singles_ids</span> <span class="o">=</span> <span class="n">expression</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">expression</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;S&#39;</span><span class="p">))]</span>
 <span class="k">print</span><span class="p">(</span><span class="s">&#39;number of single cells:&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">singles_ids</span><span class="p">))</span>
@@ -658,29 +659,29 @@ or not that sample id begins with the letter &#8220;S&#8221;.</p>
 </pre></div>
 </div>
 <p>Hmm, that&#8217;s strange. The paper states that they had 6313 genes after
-filtering, but I get 6312. Even using &#8220;<tt class="docutils literal"><span class="pre">singles</span> <span class="pre">&gt;=</span> <span class="pre">1</span></tt>&#8221; doesn&#8217;t help.</p>
+filtering, but I get 6312. Even using &#8220;<code class="docutils literal"><span class="pre">singles</span> <span class="pre">&gt;=</span> <span class="pre">1</span></code>&#8221; doesn&#8217;t help.</p>
 <p>(I also tried this with the expression table provided in the
-supplementary data as &#8220;<tt class="docutils literal"><span class="pre">SupplementaryTable2.xlsx</span></tt>,&#8221; and got the same
+supplementary data as &#8220;<code class="docutils literal"><span class="pre">SupplementaryTable2.xlsx</span></code>,&#8221; and got the same
 results.)</p>
 <p>Now that we&#8217;ve taken care of importing and filtering the expression
 data, let&#8217;s do the feature data of the expression data.</p>
 </div>
 <div class="section" id="expression-feature-data">
 <h2>Expression feature data<a class="headerlink" href="#expression-feature-data" title="Permalink to this headline">¶</a></h2>
-<p>This is similar to the <tt class="docutils literal"><span class="pre">fData</span></tt> from <tt class="docutils literal"><span class="pre">BioconductoR</span></tt>, where there&#8217;s
+<p>This is similar to the <code class="docutils literal"><span class="pre">fData</span></code> from <code class="docutils literal"><span class="pre">BioconductoR</span></code>, where there&#8217;s
 some additional data on your features that you want to look at. They
 uploaded information about the features in their OTHER expression
-matrix, uploaded as a supplementary file, <tt class="docutils literal"><span class="pre">Supplementary_Table2.xlsx</span></tt>.</p>
-<p>Notice that this is a <tt class="docutils literal"><span class="pre">csv</span></tt> and not an <tt class="docutils literal"><span class="pre">xlsx</span></tt>. This is because Excel
-mangled the gene IDS that started with <tt class="docutils literal"><span class="pre">201*</span></tt> and assumed they were
+matrix, uploaded as a supplementary file, <code class="docutils literal"><span class="pre">Supplementary_Table2.xlsx</span></code>.</p>
+<p>Notice that this is a <code class="docutils literal"><span class="pre">csv</span></code> and not an <code class="docutils literal"><span class="pre">xlsx</span></code>. This is because Excel
+mangled the gene IDS that started with <code class="docutils literal"><span class="pre">201*</span></code> and assumed they were
 dates :(</p>
 <p>The workaround I did was to add another column to the sheet with the
-formula <tt class="docutils literal"><span class="pre">=&quot;'&quot;</span> <span class="pre">&amp;</span> <span class="pre">A1</span></tt>, press <tt class="docutils literal"><span class="pre">Command</span></tt>-<tt class="docutils literal"><span class="pre">Shift</span></tt>-<tt class="docutils literal"><span class="pre">End</span></tt> to select the
-end of the rows, and then do <tt class="docutils literal"><span class="pre">Ctrl</span></tt>-<tt class="docutils literal"><span class="pre">D</span></tt> to &#8220;fill down&#8221; to the bottom
+formula <code class="docutils literal"><span class="pre">=&quot;'&quot;</span> <span class="pre">&amp;</span> <span class="pre">A1</span></code>, press <code class="docutils literal"><span class="pre">Command</span></code>-<code class="docutils literal"><span class="pre">Shift</span></code>-<code class="docutils literal"><span class="pre">End</span></code> to select the
+end of the rows, and then do <code class="docutils literal"><span class="pre">Ctrl</span></code>-<code class="docutils literal"><span class="pre">D</span></code> to &#8220;fill down&#8221; to the bottom
 (thanks to
 <a class="reference external" href="http://superuser.com/questions/298276/excel-keyboard-shortcut-to-copy-fill-down-for-all-cells-with-non-blank-adjacent">this</a>
 stackoverflow post for teaching me how to Excel). Then, I saved the file
-as a <tt class="docutils literal"><span class="pre">csv</span></tt> for maximum portability and compatibility.</p>
+as a <code class="docutils literal"><span class="pre">csv</span></code> for maximum portability and compatibility.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">expression2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;nature12172-s1/Supplementary_Table2.csv&#39;</span><span class="p">,</span>
                             <span class="c"># Need to specify the index column as both the first and the last columns,</span>
                             <span class="c"># Because the last column is the &quot;Gene Category&quot;</span>
@@ -1049,8 +1050,8 @@ as a <tt class="docutils literal"><span class="pre">csv</span></tt> for maximum 
   </tbody>
 </table>
 <p>5 rows × 27723 columns</p>
-</div><p>We want to create a <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> from the &#8220;Gene Category&#8221; row
-for our <tt class="docutils literal"><span class="pre">expression_feature_data</span></tt>, which we will do via:</p>
+</div><p>We want to create a <code class="docutils literal"><span class="pre">pandas.DataFrame</span></code> from the &#8220;Gene Category&#8221; row
+for our <code class="docutils literal"><span class="pre">expression_feature_data</span></code>, which we will do via:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">gene_ids</span><span class="p">,</span> <span class="n">gene_category</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">expression2</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 <span class="n">gene_categories</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">gene_category</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">gene_ids</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&#39;gene_category&#39;</span><span class="p">)</span>
 <span class="n">gene_categories</span>
@@ -1129,7 +1130,7 @@ Name: gene_category, Length: 27723, dtype: object
 <div class="section" id="splicing-data">
 <h2>Splicing Data<a class="headerlink" href="#splicing-data" title="Permalink to this headline">¶</a></h2>
 <p>We obtain the splicing data from this study from the supplementary
-information, specifically the <tt class="docutils literal"><span class="pre">Supplementary_Table4.xls</span></tt></p>
+information, specifically the <code class="docutils literal"><span class="pre">Supplementary_Table4.xls</span></code></p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">splicing</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s">&#39;nature12172-s1/Supplementary_Table4.xls&#39;</span><span class="p">,</span> <span class="s">&#39;splicingTable.txt&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
 <span class="n">splicing</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
@@ -1857,9 +1858,9 @@ data, so we have to fix that.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">Index</span><span class="p">([</span><span class="s">u&#39;10,000 cell Rep1 (P1)&#39;</span><span class="p">,</span> <span class="s">u&#39;10,000 cell Rep2 (P2)&#39;</span><span class="p">,</span> <span class="s">u&#39;10,000 cell Rep3 (P3)&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;object&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Since the pooled sample IDs are inconsistent with the <tt class="docutils literal"><span class="pre">expression</span></tt>
+<p>Since the pooled sample IDs are inconsistent with the <code class="docutils literal"><span class="pre">expression</span></code>
 data, we have to change them. We can get the &#8220;P&#8221; and the number after
-that using regular expressions, called <tt class="docutils literal"><span class="pre">re</span></tt> in the Python standard
+that using regular expressions, called <code class="docutils literal"><span class="pre">re</span></code> in the Python standard
 library, e.g.:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">re</span>
 <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">r&#39;P\d&#39;</span><span class="p">,</span> <span class="s">&#39;10,000 cell Rep1 (P1)&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
@@ -1883,7 +1884,7 @@ library, e.g.:</p>
        <span class="s">u&#39;P1&#39;</span><span class="p">,</span> <span class="s">u&#39;P2&#39;</span><span class="p">,</span> <span class="s">u&#39;P3&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>And now we assign this new index as our index to the <tt class="docutils literal"><span class="pre">splicing</span></tt>
+<p>And now we assign this new index as our index to the <code class="docutils literal"><span class="pre">splicing</span></code>
 dataframe</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">splicing</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">splicing</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">long_pooled_name_to_short</span><span class="p">)</span>
 <span class="n">splicing</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -2069,9 +2070,9 @@ dataframe</p>
 <div class="section" id="metadata">
 <h2>Metadata<a class="headerlink" href="#metadata" title="Permalink to this headline">¶</a></h2>
 <p>Now let&#8217;s get into creating a metadata dataframe. We&#8217;ll use the index
-from the <tt class="docutils literal"><span class="pre">expression_filtered</span></tt> data to create the minimum required
-column, <tt class="docutils literal"><span class="pre">'phenotype'</span></tt>, which has the name of the phenotype of that
-cell. And we&#8217;ll also add the column <tt class="docutils literal"><span class="pre">'pooled'</span></tt> to indicate whether
+from the <code class="docutils literal"><span class="pre">expression_filtered</span></code> data to create the minimum required
+column, <code class="docutils literal"><span class="pre">'phenotype'</span></code>, which has the name of the phenotype of that
+cell. And we&#8217;ll also add the column <code class="docutils literal"><span class="pre">'pooled'</span></code> to indicate whether
 this sample is pooled or not.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">metadata</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">expression_filtered</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
 <span class="n">metadata</span><span class="p">[</span><span class="s">&#39;phenotype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;BDMC&#39;</span>
@@ -2488,7 +2489,7 @@ this sample is pooled or not.</p>
 </table>
 </div></div>
 <div class="section" id="create-a-flotilla-study">
-<h2>Create a <tt class="docutils literal"><span class="pre">flotilla</span></tt> Study!<a class="headerlink" href="#create-a-flotilla-study" title="Permalink to this headline">¶</a></h2>
+<h2>Create a <code class="docutils literal"><span class="pre">flotilla</span></code> Study!<a class="headerlink" href="#create-a-flotilla-study" title="Permalink to this headline">¶</a></h2>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">study</span> <span class="o">=</span> <span class="n">flotilla</span><span class="o">.</span><span class="n">Study</span><span class="p">(</span><span class="c"># The metadata describing phenotype and pooled samples</span>
                        <span class="n">metadata</span><span class="p">,</span>
 
@@ -2536,7 +2537,7 @@ No phenotype to marker (matplotlib plotting symbol) was provided, so each phenot
 </pre></div>
 </div>
 <p>As a side note, you can save this study to disk now, so you can
-&#8220;<tt class="docutils literal"><span class="pre">embark</span></tt>&#8221; later:</p>
+&#8220;<code class="docutils literal"><span class="pre">embark</span></code>&#8221; later:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">study</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#39;shalek2013&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -2544,9 +2545,9 @@ No phenotype to marker (matplotlib plotting symbol) was provided, so each phenot
 </pre></div>
 </div>
 <p>Note that this is saved to my home directory, in
-<tt class="docutils literal"><span class="pre">~/flotilla_projects/&lt;study_name&gt;/</span></tt>. This will be saved in your home
+<code class="docutils literal"><span class="pre">~/flotilla_projects/&lt;study_name&gt;/</span></code>. This will be saved in your home
 directory, too.</p>
-<p>The <tt class="docutils literal"><span class="pre">datapackage.json</span></tt> file is what holds all the information relative
+<p>The <code class="docutils literal"><span class="pre">datapackage.json</span></code> file is what holds all the information relative
 to the study, and loosely follows the <a class="reference external" href="http://data.okfn.org/doc/data-package">datapackage
 spec</a> created by the Open
 Knowledge Foundation.</p>
@@ -2624,8 +2625,8 @@ Knowledge Foundation.</p>
 </pre></div>
 </div>
 <p>One thing to note is that when you save, the version number is bumped
-up. <tt class="docutils literal"><span class="pre">study.version</span></tt> (the one we just made) is <tt class="docutils literal"><span class="pre">0.1.0</span></tt>, but the one
-we saved is <tt class="docutils literal"><span class="pre">0.1.1</span></tt>, since we could have made some changes to the
+up. <code class="docutils literal"><span class="pre">study.version</span></code> (the one we just made) is <code class="docutils literal"><span class="pre">0.1.0</span></code>, but the one
+we saved is <code class="docutils literal"><span class="pre">0.1.1</span></code>, since we could have made some changes to the
 data.</p>
 <p>Let&#8217;s look at what else is in this folder:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">ls</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">olga</span><span class="o">/</span><span class="n">flotilla_projects</span><span class="o">/</span><span class="n">shalek2013</span>
@@ -2670,9 +2671,9 @@ having to open and process all those files again:</p>
 <p>Here, we will attempt to re-create the sub-panels in <a class="reference external" href="http://www.nature.com/nature/journal/v498/n7453/fig_tab/nature12172_F1.html">Figure
 1</a>,
 where the original is:</p>
-<div class="figure align-center">
+<div class="figure align-center" id="id29">
 <img alt="Original Figure 1" src="http://www.nature.com/nature/journal/v498/n7453/images/nature12172-f1.2.jpg" />
-<p class="caption">Original Figure 1</p>
+<p class="caption"><span class="caption-text">Original Figure 1</span></p>
 </div>
 <div class="section" id="figure-1a">
 <h3>Figure 1a<a class="headerlink" href="#figure-1a" title="Permalink to this headline">¶</a></h3>
@@ -2714,7 +2715,7 @@ where the original is:</p>
 <img alt="../_images/shalek2013_56_0.png" src="../_images/shalek2013_56_0.png" />
 </div>
 <div class="section" id="without-flotilla">
-<h3>Without <tt class="docutils literal"><span class="pre">flotilla</span></tt><a class="headerlink" href="#without-flotilla" title="Permalink to this headline">¶</a></h3>
+<h3>Without <code class="docutils literal"><span class="pre">flotilla</span></code><a class="headerlink" href="#without-flotilla" title="Permalink to this headline">¶</a></h3>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">seaborn</span> <span class="kn">as</span> <span class="nn">sns</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="s">&#39;ticks&#39;</span><span class="p">)</span>
 
@@ -2732,19 +2733,19 @@ where the original is:</p>
 </pre></div>
 </div>
 <img alt="../_images/shalek2013_58_1.png" src="../_images/shalek2013_58_1.png" />
-<p>By the way, you can do other kinds of plots with <tt class="docutils literal"><span class="pre">flotilla</span></tt>, like a
-kernel density estimate (&#8220;<tt class="docutils literal"><span class="pre">kde</span></tt>&#8221;) plot:</p>
+<p>By the way, you can do other kinds of plots with <code class="docutils literal"><span class="pre">flotilla</span></code>, like a
+kernel density estimate (&#8220;<code class="docutils literal"><span class="pre">kde</span></code>&#8221;) plot:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">study</span><span class="o">.</span><span class="n">plot_two_samples</span><span class="p">(</span><span class="s">&#39;S1&#39;</span><span class="p">,</span> <span class="s">&#39;S2&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s">&#39;kde&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="../_images/shalek2013_60_0.png" src="../_images/shalek2013_60_0.png" />
-<p>Or a binned hexagon plot (&#8220;<tt class="docutils literal"><span class="pre">hexbin&quot;</span></tt>):</p>
+<p>Or a binned hexagon plot (&#8220;<code class="docutils literal"><span class="pre">hexbin&quot;</span></code>):</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">study</span><span class="o">.</span><span class="n">plot_two_samples</span><span class="p">(</span><span class="s">&#39;S1&#39;</span><span class="p">,</span> <span class="s">&#39;S2&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s">&#39;hexbin&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="../_images/shalek2013_62_0.png" src="../_images/shalek2013_62_0.png" />
-<p>Any inputs that are valid to <tt class="docutils literal"><span class="pre">seaborn</span></tt>&#8216;s
-<tt class="docutils literal"><span class="pre">`jointplot</span></tt> &lt;<a class="reference external" href="http://web.stanford.edu/~mwaskom/software/seaborn/generated/seaborn.jointplot.html#seaborn.jointplot">http://web.stanford.edu/~mwaskom/software/seaborn/generated/seaborn.jointplot.html#seaborn.jointplot</a>&gt;`_
+<p>Any inputs that are valid to <code class="docutils literal"><span class="pre">seaborn</span></code>&#8216;s
+<code class="docutils literal"><span class="pre">`jointplot</span></code> &lt;<a class="reference external" href="http://web.stanford.edu/~mwaskom/software/seaborn/generated/seaborn.jointplot.html#seaborn.jointplot">http://web.stanford.edu/~mwaskom/software/seaborn/generated/seaborn.jointplot.html#seaborn.jointplot</a>&gt;`_
 are valid.</p>
 </div>
 <div class="section" id="figure-1c">
@@ -2771,9 +2772,9 @@ are valid.</p>
 <h2>Figure 2<a class="headerlink" href="#figure-2" title="Permalink to this headline">¶</a></h2>
 <p>Next, we will attempt to recreate the figures from <a class="reference external" href="http://www.nature.com/nature/journal/v498/n7453/fig_tab/nature12172_F2.html">Figure
 2</a>:</p>
-<div class="figure align-center">
+<div class="figure align-center" id="id30">
 <img alt="Original figure 2" src="http://www.nature.com/nature/journal/v498/n7453/images/nature12172-f2.2.jpg" />
-<p class="caption">Original figure 2</p>
+<p class="caption"><span class="caption-text">Original figure 2</span></p>
 </div>
 <div class="section" id="figure-2a">
 <h3>Figure 2a<a class="headerlink" href="#figure-2a" title="Permalink to this headline">¶</a></h3>
@@ -2918,13 +2919,13 @@ is <span class="math">\(\ln\)</span>(TPM+1).</p>
 <h2>Figure 3<a class="headerlink" href="#figure-3" title="Permalink to this headline">¶</a></h2>
 <p>We will attempt to re-create the sub-panel figures from <a class="reference external" href="http://www.nature.com/nature/journal/v498/n7453/fig_tab/nature12172_F3.html">Figure
 3</a>:</p>
-<div class="figure align-center">
+<div class="figure align-center" id="id31">
 <img alt="Original Figure 3" src="http://www.nature.com/nature/journal/v498/n7453/images/nature12172-f3.2.jpg" />
-<p class="caption">Original Figure 3</p>
+<p class="caption"><span class="caption-text">Original Figure 3</span></p>
 </div>
 <p>Since we can&#8217;t re-do the microscopy (Figure 3a) or the RNA-FISH counts
 (Figure 3c), we will make Figures 3b. These histograms are simple to do
-outside of <tt class="docutils literal"><span class="pre">flotilla</span></tt>, so we do not have them within flotilla.</p>
+outside of <code class="docutils literal"><span class="pre">flotilla</span></code>, so we do not have them within flotilla.</p>
 <div class="section" id="figure-3b-top-panel">
 <h3>Figure 3b, top panel<a class="headerlink" href="#figure-3b-top-panel" title="Permalink to this headline">¶</a></h3>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
@@ -2950,13 +2951,13 @@ outside of <tt class="docutils literal"><span class="pre">flotilla</span></tt>, 
 <h2>Figure 4<a class="headerlink" href="#figure-4" title="Permalink to this headline">¶</a></h2>
 <p>We will attempt to re-create the sub-panel figures from <a class="reference external" href="http://www.nature.com/nature/journal/v498/n7453/fig_tab/nature12172_F4.html">Figure
 4</a>:</p>
-<div class="figure align-center">
+<div class="figure align-center" id="id32">
 <img alt="Original Figure 4" src="http://www.nature.com/nature/journal/v498/n7453/images/nature12172-f4.2.jpg" />
-<p class="caption">Original Figure 4</p>
+<p class="caption"><span class="caption-text">Original Figure 4</span></p>
 </div>
 <div class="section" id="figure-4a">
 <h3>Figure 4a<a class="headerlink" href="#figure-4a" title="Permalink to this headline">¶</a></h3>
-<p>Here, we can use the &#8220;<tt class="docutils literal"><span class="pre">interactive_pca</span></tt>&#8221; function we have to explore
+<p>Here, we can use the &#8220;<code class="docutils literal"><span class="pre">interactive_pca</span></code>&#8221; function we have to explore
 different dimensionality reductions on the data.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">study</span><span class="o">.</span><span class="n">interactive_pca</span><span class="p">()</span>
 </pre></div>
@@ -3578,12 +3579,12 @@ verified_order [&#39;BDMC&#39;]
 <img alt="../_images/shalek2013_84_2.png" src="../_images/shalek2013_84_2.png" />
 <img alt="../_images/shalek2013_84_3.png" src="../_images/shalek2013_84_3.png" />
 <p>A &#8220;sequences shortened&#8221; version of this is available as a gif:</p>
-<div class="figure align-center">
+<div class="figure align-center" id="id33">
 <img alt="Imgur" src="http://i.imgur.com/fJKPQ7W.gif" />
-<p class="caption">Imgur</p>
+<p class="caption"><span class="caption-text">Imgur</span></p>
 </div>
 <p>Equivalently, I could have written out the plotting command by hand,
-instead of using <tt class="docutils literal"><span class="pre">study.interactive_pca</span></tt>:</p>
+instead of using <code class="docutils literal"><span class="pre">study.interactive_pca</span></code>:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">study</span><span class="o">.</span><span class="n">plot_pca</span><span class="p">(</span><span class="n">feature_subset</span><span class="o">=</span><span class="s">&#39;gene_category: LPS Response&#39;</span><span class="p">,</span> <span class="n">sample_subset</span><span class="o">=</span><span class="s">&#39;~pooled&#39;</span><span class="p">,</span> <span class="n">plot_violins</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -3591,7 +3592,7 @@ instead of using <tt class="docutils literal"><span class="pre">study.interactiv
 </pre></div>
 </div>
 <img alt="../_images/shalek2013_87_1.png" src="../_images/shalek2013_87_1.png" />
-<p>Without <tt class="docutils literal"><span class="pre">flotilla</span></tt>, <tt class="docutils literal"><span class="pre">plot_pca</span></tt> is quite a bit of code:</p>
+<p>Without <code class="docutils literal"><span class="pre">flotilla</span></code>, <code class="docutils literal"><span class="pre">plot_pca</span></code> is quite a bit of code:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">cycle</span>
@@ -4315,7 +4316,7 @@ Essentially, you try a bunch of different <span class="math">\(k\)</span>, and s
 there is a flattening out of the metric, like an elbow. There&#8217;s a few
 different variations on which metric to use, such as using the average
 distance to the cluster center, or the explained variance. Let&#8217;s try the
-distance to cluster center first, because <tt class="docutils literal"><span class="pre">scikit-learn</span></tt> makes it
+distance to cluster center first, because <code class="docutils literal"><span class="pre">scikit-learn</span></code> makes it
 easy.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="kn">import</span> <span class="n">KMeans</span>
 
@@ -4566,13 +4567,13 @@ see with the <span class="math">\(k=5\)</span> clusters that they found was opti
 </table>
 <p>5 rows × 630 columns</p>
 </div><p>The next step is to get the principal-component reduced data, using only
-the LPS response genes. We can do this in <tt class="docutils literal"><span class="pre">flotilla</span></tt> using
-<tt class="docutils literal"><span class="pre">study.expression.reduce</span></tt>.</p>
+the LPS response genes. We can do this in <code class="docutils literal"><span class="pre">flotilla</span></code> using
+<code class="docutils literal"><span class="pre">study.expression.reduce</span></code>.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">reduced</span> <span class="o">=</span> <span class="n">study</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">singles_ids</span><span class="p">,</span> <span class="n">feature_ids</span><span class="o">=</span><span class="n">lps_response_genes</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>We can get the principal components using <tt class="docutils literal"><span class="pre">reduced.components_</span></tt>
-(similar interface as <tt class="docutils literal"><span class="pre">scikit-learn</span></tt>).</p>
+<p>We can get the principal components using <code class="docutils literal"><span class="pre">reduced.components_</span></code>
+(similar interface as <code class="docutils literal"><span class="pre">scikit-learn</span></code>).</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">reduced</span><span class="o">.</span><span class="n">components_</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -4893,7 +4894,7 @@ check what their data looks like when you plot this.</p>
 <img alt="../_images/shalek2013_109_1.png" src="../_images/shalek2013_109_1.png" />
 <p>Sure enough, if I use their annotations, I get exactly that. Though
 there were two genes in their file that I didn&#8217;t have in the
-<tt class="docutils literal"><span class="pre">lps_response_corr</span></tt> data:</p>
+<code class="docutils literal"><span class="pre">lps_response_corr</span></code> data:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">gene_pc_clusters</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">lps_response_corr</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -4915,8 +4916,8 @@ TypeError                                 Traceback (most recent call last)
 TypeError: can&#39;t compare datetime.datetime to unicode
 </pre></div>
 </div>
-<p>Oh joy, another <tt class="docutils literal"><span class="pre">datetime</span></tt> error, just like we had with
-<tt class="docutils literal"><span class="pre">expression2</span></tt>... Looking back at the original Excel file, there is one
+<p>Oh joy, another <code class="docutils literal"><span class="pre">datetime</span></code> error, just like we had with
+<code class="docutils literal"><span class="pre">expression2</span></code>... Looking back at the original Excel file, there is one
 gene that Excel mangled to be a date:</p>
 <div class="figure align-center">
 <img alt="" src="https://raw.githubusercontent.com/olgabot/olgabot.github.io-source/master/content/images/shalek2013_supplementary_table_5_datetime_error.png" />
@@ -4939,7 +4940,7 @@ instead thinks they are dates.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="p">{</span><span class="s">u&#39;RPS6KA2&#39;</span><span class="p">}</span>
 </pre></div>
 </div>
-<p>So, &#8220;<tt class="docutils literal"><span class="pre">RPS6KA2</span></tt>&#8221; is the only gene that was in their list of genes and
+<p>So, &#8220;<code class="docutils literal"><span class="pre">RPS6KA2</span></code>&#8221; is the only gene that was in their list of genes and
 not in mine.</p>
 </div>
 </div>
@@ -4953,9 +4954,9 @@ not in mine.</p>
 really have the crucial information about the experiments.</p>
 <div class="section" id="supplementary-figure-1">
 <h3>Supplementary Figure 1<a class="headerlink" href="#supplementary-figure-1" title="Permalink to this headline">¶</a></h3>
-<div class="figure align-center">
+<div class="figure align-center" id="id34">
 <img alt="Supplementary figure 1, a correlation plot" src="https://raw.githubusercontent.com/olgabot/olgabot.github.io-source/master/content/images/shalek2013_sfig1.png" />
-<p class="caption">Supplementary figure 1, a correlation plot</p>
+<p class="caption"><span class="caption-text">Supplementary figure 1, a correlation plot</span></p>
 </div>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">singles_mean</span> <span class="o">=</span> <span class="n">study</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">singles</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 <span class="n">singles_mean</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s">&#39;Single cell average&#39;</span>
@@ -5306,8 +5307,8 @@ janitorial duties!</p>
 have molecular barcodes, and the last three columns are the integer
 counts of molecular barcodes from the three molecular barcode samples.</p>
 <p>Let&#8217;s remove the &#8220;Unnamed: 3&#8221; column which is all NaNs. We&#8217;ll do that
-with the <tt class="docutils literal"><span class="pre">.dropna</span></tt> method, specifying <tt class="docutils literal"><span class="pre">axis=1</span></tt> for columns and
-<tt class="docutils literal"><span class="pre">how=&quot;all&quot;</span></tt> to make sure only columns that have ALL NaNs are removed.</p>
+with the <code class="docutils literal"><span class="pre">.dropna</span></code> method, specifying <code class="docutils literal"><span class="pre">axis=1</span></code> for columns and
+<code class="docutils literal"><span class="pre">how=&quot;all&quot;</span></code> to make sure only columns that have ALL NaNs are removed.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">barcoded</span> <span class="o">=</span> <span class="n">barcoded</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">how</span><span class="o">=</span><span class="s">&#39;all&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">barcoded</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
@@ -5440,8 +5441,8 @@ sample ID names back next.</p>
     </tr>
   </tbody>
 </table>
-</div><p>We&#8217;ll create a <tt class="docutils literal"><span class="pre">pandas.MultiIndex</span></tt> from the tuples of
-<tt class="docutils literal"><span class="pre">(sample_id,</span> <span class="pre">measurement_type)</span></tt> pair.</p>
+</div><p>We&#8217;ll create a <code class="docutils literal"><span class="pre">pandas.MultiIndex</span></code> from the tuples of
+<code class="docutils literal"><span class="pre">(sample_id,</span> <span class="pre">measurement_type)</span></code> pair.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">columns</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_tuples</span><span class="p">([(</span><span class="s">&#39;MB_S1&#39;</span><span class="p">,</span> <span class="s">&#39;TPM&#39;</span><span class="p">),</span>
            <span class="p">(</span><span class="s">&#39;MB_S2&#39;</span><span class="p">,</span> <span class="s">&#39;TPM&#39;</span><span class="p">),</span>
            <span class="p">(</span><span class="s">&#39;MB_S3&#39;</span><span class="p">,</span> <span class="s">&#39;TPM&#39;</span><span class="p">),</span>
@@ -5520,8 +5521,8 @@ sample ID names back next.</p>
     </tr>
   </tbody>
 </table>
-</div><p>For the next move, we&#8217;re going to do some crazy <tt class="docutils literal"><span class="pre">pandas</span></tt>-fu. First
-we&#8217;re going to transpose, then <tt class="docutils literal"><span class="pre">reset_index</span></tt> of the transpose. Just so
+</div><p>For the next move, we&#8217;re going to do some crazy <code class="docutils literal"><span class="pre">pandas</span></code>-fu. First
+we&#8217;re going to transpose, then <code class="docutils literal"><span class="pre">reset_index</span></code> of the transpose. Just so
 you know what this looks like, it&#8217;s this.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">barcoded</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
@@ -5930,8 +5931,8 @@ they&#8217;re second</p>
 <span class="n">barcoded_tidy</span><span class="p">[</span><span class="s">&#39;log Unique Barcodes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">barcoded_tidy</span><span class="p">[</span><span class="s">&#39;Unique Barcodes&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
-<p>Now we can use the convenient linear model plot (<tt class="docutils literal"><span class="pre">lmplot</span></tt>) in
-<tt class="docutils literal"><span class="pre">seaborn</span></tt> to plot these three samples together!</p>
+<p>Now we can use the convenient linear model plot (<code class="docutils literal"><span class="pre">lmplot</span></code>) in
+<code class="docutils literal"><span class="pre">seaborn</span></code> to plot these three samples together!</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">sns</span><span class="o">.</span><span class="n">lmplot</span><span class="p">(</span><span class="s">&#39;log TPM&#39;</span><span class="p">,</span> <span class="s">&#39;log Unique Barcodes&#39;</span><span class="p">,</span> <span class="n">barcoded_tidy</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s">&#39;sample_id&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -5969,7 +5970,7 @@ this reproduction.</p>
 <h2>Conclusions<a class="headerlink" href="#conclusions" title="Permalink to this headline">¶</a></h2>
 <p>While there may be minor, undocumented, differences between the methods
 presented in the manuscript and the figures, the application of
-<tt class="docutils literal"><span class="pre">`flotilla</span></tt> &lt;<a class="reference external" href="https://github.com/YeoLab/flotilla">https://github.com/YeoLab/flotilla</a>&gt;`_ presents an
+<code class="docutils literal"><span class="pre">`flotilla</span></code> &lt;<a class="reference external" href="https://github.com/YeoLab/flotilla">https://github.com/YeoLab/flotilla</a>&gt;`_ presents an
 opportunity to avoid these types of inconsistencies by strictly
 documenting every change to code and every transformation of the data.
 The biology the authors found is clearly real, as they did the knockout
@@ -5994,7 +5995,7 @@ affected, and <em>Stat2</em> and <em>Irf7</em> had much lower expression, as wit
     </p>
     <p>
         &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.<br/>
     </p>
   </div>
 </footer>

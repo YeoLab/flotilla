@@ -8,5 +8,5 @@ See also
 
 """
 import flotilla
-study = flotilla.embark('shalek2013')
+study = flotilla.embark(flotilla._shalek2013)
 study.plot_modalities_lavalamps()

@@ -28,6 +28,7 @@ Before we begin, let's import everything we need.
     # Turn on inline plots with IPython
     %matplotlib inline
 
+
 .. parsed-literal::
 
     Couldn't import dot_parser, loading of dot files will not be possible.
@@ -52,6 +53,7 @@ using,
 .. code:: python
 
     ! wget ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE41nnn/GSE41265/suppl/GSE41265_allGenesTPM.txt.gz
+
 
 .. parsed-literal::
 
@@ -78,6 +80,7 @@ We will also compare to the supplementary table 2 data, obtained using
 
     ! wget http://www.nature.com/nature/journal/v498/n7453/extref/nature12172-s1.zip
     ! unzip nature12172-s1.zip
+
 
 .. parsed-literal::
 
@@ -107,6 +110,7 @@ We will also compare to the supplementary table 2 data, obtained using
 
     expression = pd.read_table("GSE41265_allGenesTPM.txt.gz", compression="gzip", index_col=0)
     expression.head()
+
 
 
 
@@ -310,6 +314,7 @@ each gene is a feature. So we will simply transpose this.
 
 
 
+
 .. raw:: html
 
     <div style="max-height:1000px;max-width:1500px;overflow:auto;">
@@ -489,6 +494,7 @@ or not that sample id begins with the letter "S".
     expression_filtered = np.log(expression_filtered + 1)
     expression_filtered.shape
 
+
 .. parsed-literal::
 
     ('number of single cells:', 18)
@@ -542,6 +548,7 @@ as a ``csv`` for maximum portability and compatibility.
     # This was also in features x samples format, so we need to transpose
     expression2 = expression2.T
     expression2.head()
+
 
 
 
@@ -734,6 +741,7 @@ Now we need to strip the single-quote I added to all the gene names:
     new_index, indexer = expression2.columns.reindex(map(lambda x: (x[0].lstrip("'"), x[1]), expression2.columns.values))
     expression2.columns = new_index
     expression2.head()
+
 
 
 
@@ -930,6 +938,7 @@ for our ``expression_feature_data``, which we will do via:
 
 
 
+
 .. parsed-literal::
 
     0610007L01RIK    NaN
@@ -971,6 +980,7 @@ for our ``expression_feature_data``, which we will do via:
 
     expression_feature_data = pd.DataFrame(gene_categories)
     expression_feature_data.head()
+
 
 
 
@@ -1021,6 +1031,7 @@ information, specifically the ``Supplementary_Table4.xls``
 
     splicing = pd.read_excel('nature12172-s1/Supplementary_Table4.xls', 'splicingTable.txt', index_col=(0,1))
     splicing.head()
+
 
 
 
@@ -1209,6 +1220,7 @@ information, specifically the ``Supplementary_Table4.xls``
 
     splicing = splicing.T
     splicing
+
 
 
 
@@ -1763,6 +1775,7 @@ data, so we have to fix that.
 
 
 
+
 .. parsed-literal::
 
     Index([u'10,000 cell Rep1 (P1)', u'10,000 cell Rep2 (P2)', u'10,000 cell Rep3 (P3)'], dtype='object')
@@ -1778,6 +1791,7 @@ library, e.g.:
 
     import re
     re.search(r'P\d', '10,000 cell Rep1 (P1)').group()
+
 
 
 
@@ -1800,6 +1814,7 @@ library, e.g.:
 
 
 
+
 .. parsed-literal::
 
     array([u'S1', u'S2', u'S3', u'S4', u'S5', u'S6', u'S7', u'S8', u'S9',
@@ -1815,6 +1830,7 @@ dataframe
 
     splicing.index = splicing.index.map(long_pooled_name_to_short)
     splicing.head()
+
 
 
 
@@ -2019,6 +2035,7 @@ this sample is pooled or not.
 
 
 
+
 .. raw:: html
 
     <div style="max-height:1000px;max-width:1500px;overflow:auto;">
@@ -2149,6 +2166,7 @@ Mapping stats data
 
     mapping_stats = pd.read_excel('nature12172-s1/Supplementary_Table1.xls', sheetname='SuppTable1 2.txt')
     mapping_stats
+
 
 
 
@@ -2466,6 +2484,7 @@ Create a ``flotilla`` Study!
                            # Which column in "mapping_stats" has the number of reads
                            mapping_stats_number_mapped_col='PF_READS')
 
+
 .. parsed-literal::
 
     2014-11-10 12:36:35	Initializing Study
@@ -2501,6 +2520,7 @@ As a side note, you can save this study to disk now, so you can
 
     study.save('shalek2013')
 
+
 .. parsed-literal::
 
     Wrote datapackage to /Users/olga/flotilla_projects/shalek2013/datapackage.json
@@ -2517,6 +2537,7 @@ Knowledge Foundation.
 .. code:: python
 
     cat /Users/olga/flotilla_projects/shalek2013/datapackage.json
+
 
 .. parsed-literal::
 
@@ -2600,6 +2621,7 @@ Let's look at what else is in this folder:
 
     ls /Users/olga/flotilla_projects/shalek2013
 
+
 .. parsed-literal::
 
     datapackage.json           expression_feature.csv.gz  metadata.csv.gz            splicing_feature.csv.gz
@@ -2614,6 +2636,7 @@ having to open and process all those files again:
 .. code:: python
 
     study2 = flotilla.embark('shalek2013')
+
 
 .. parsed-literal::
 
@@ -2660,6 +2683,7 @@ Figure 1a
 
     study.plot_two_samples('P1', 'P2')
 
+
 .. parsed-literal::
 
     /usr/local/lib/python2.7/site-packages/matplotlib/font_manager.py:1279: UserWarning: findfont: Font family ['Helvetica'] not found. Falling back to Bitstream Vera Sans
@@ -2689,6 +2713,7 @@ Without flotilla, you would do
 
 
 
+
 .. parsed-literal::
 
     (0, 12.0)
@@ -2707,6 +2732,7 @@ Paper: :math:`r=0.54`\ . Not sure at all what's going on here.
 .. code:: python
 
     study.plot_two_samples('S1', 'S2')
+
 
 
 .. image:: shalek2013_files/shalek2013_56_0.png
@@ -2731,6 +2757,7 @@ Without ``flotilla``
 
 
 
+
 .. parsed-literal::
 
     (0, 12.0)
@@ -2749,6 +2776,7 @@ kernel density estimate ("``kde``") plot:
     study.plot_two_samples('S1', 'S2', kind='kde')
 
 
+
 .. image:: shalek2013_files/shalek2013_60_0.png
 
 
@@ -2757,6 +2785,7 @@ Or a binned hexagon plot ("``hexbin"``):
 .. code:: python
 
     study.plot_two_samples('S1', 'S2', kind='hexbin')
+
 
 
 .. image:: shalek2013_files/shalek2013_62_0.png
@@ -2781,6 +2810,7 @@ Figure 1c
     xmin, xmax, ymin, ymax = jointgrid.ax_joint.axis()
     jointgrid.ax_joint.set_xlim(0, xmax)
     jointgrid.ax_joint.set_ylim(0, ymax)
+
 
 
 
@@ -2844,6 +2874,7 @@ the Appendix.
 
 
 
+
 .. parsed-literal::
 
     <matplotlib.collections.PolyCollection at 0x1132a0950>
@@ -2873,6 +2904,7 @@ get 297 genes:
 
 
 
+
 .. parsed-literal::
 
     297
@@ -2889,6 +2921,7 @@ the original data to get this new subset.
 .. code:: python
 
     expression.ix[:, expression.ix[singles_ids].mean() > 250].shape
+
 
 
 
@@ -2926,6 +2959,7 @@ the original data to get this new subset.
     
     grouped = expression_highly_expressed.groupby(dict(zip(genes, mean_bins)), axis=1)
     cells_per_tpm_per_cv = grouped.apply(calculate_cells_per_tpm_per_cv, cv=cv)
+
 Here's how you would make the original figure from the paper:
 
 .. code:: python
@@ -2934,6 +2968,7 @@ Here's how you would make the original figure from the paper:
     sns.heatmap(cells_per_tpm_per_cv, linewidth=0, ax=ax, yticklabels=False)
     ax.set_yticks([])
     ax.set_xlabel('ln(TPM, binned)')
+
 
 
 
@@ -2981,6 +3016,7 @@ is :math:`\ln`\ (TPM+1).
     sns.despine(ax=cv_ax, left=True, right=False)
 
 
+
 .. image:: shalek2013_files/shalek2013_76_0.png
 
 
@@ -3010,6 +3046,7 @@ Figure 3b, top panel
     sns.despine()
 
 
+
 .. image:: shalek2013_files/shalek2013_79_0.png
 
 
@@ -3022,6 +3059,7 @@ Figure 3b, bottom panel
     sns.distplot(study.splicing.pooled.values.flat, bins=np.arange(0, 1.05, 0.05), ax=ax, color='grey')
     ax.set_xlim(0, 1)
     sns.despine()
+
 
 
 .. image:: shalek2013_files/shalek2013_81_0.png
@@ -3048,6 +3086,7 @@ different dimensionality reductions on the data.
 .. code:: python
 
     study.interactive_pca()
+
 
 .. parsed-literal::
 
@@ -3696,6 +3735,7 @@ instead of using ``study.interactive_pca``:
 
 
 
+
 .. parsed-literal::
 
     <flotilla.visualize.decomposition.DecompositionViz at 0x11c9e5210>
@@ -4258,6 +4298,7 @@ Without ``flotilla``, ``plot_pca`` is quite a bit of code:
 
 
 
+
 .. parsed-literal::
 
     <__main__.DecompositionViz at 0x1137f8450>
@@ -4276,6 +4317,7 @@ Figure 4b
     lps_response_genes = study.expression.feature_subsets['gene_category: LPS Response']
     lps_response = study.expression.singles.ix[:, lps_response_genes].dropna(how='all', axis=1)
     lps_response.head()
+
 
 
 
@@ -4440,6 +4482,7 @@ Figure 4b
 .. code:: python
 
     lps_response_corr = lps_response.corr()
+
 "Elbow method" for determining number of clusters
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -4473,6 +4516,7 @@ easy.
     sns.despine()
 
 
+
 .. image:: shalek2013_files/shalek2013_95_0.png
 
 
@@ -4487,6 +4531,7 @@ see with the :math:`k=5` clusters that they found was optimal.
     kmeans = KMeans(n_clusters=5)
     lps_response_corr_clusters = kmeans.fit_predict(lps_response_corr.values)
     lps_response_corr_clusters
+
 
 
 
@@ -4537,6 +4582,7 @@ Now let's create a dataframe with these genes in their cluster orders.
     # Make symmetric, since we created this dataframe by smashing rows on top of each other, we need to reorder the columns
     lps_response_corr_ordered_by_clusters = lps_response_corr_ordered_by_clusters.ix[:, lps_response_corr_ordered_by_clusters.index]
     lps_response_corr_ordered_by_clusters.head()
+
 
 
 
@@ -4729,12 +4775,14 @@ the LPS response genes. We can do this in ``flotilla`` using
 .. code:: python
 
     reduced = study.expression.reduce(singles_ids, feature_ids=lps_response_genes)
+
 We can get the principal components using ``reduced.components_``
 (similar interface as ``scikit-learn``).
 
 .. code:: python
 
     reduced.components_.head()
+
 
 
 
@@ -4903,6 +4951,7 @@ We can get the principal components using ``reduced.components_``
 
 
 
+
 .. raw:: html
 
     <div style="max-height:1000px;max-width:1500px;overflow:auto;">
@@ -4976,6 +5025,7 @@ We can get the principal components using ``reduced.components_``
 
 
 
+
 .. parsed-literal::
 
     <matplotlib.text.Text at 0x11cae66d0>
@@ -4996,6 +5046,7 @@ Their PC scores and clusters for the genes
 
     gene_pc_clusters = pd.read_excel('nature12172-s1/Supplementary_Table5.xls', index_col=0)
     gene_pc_clusters.head()
+
 
 
 
@@ -5086,6 +5137,7 @@ Their PC scores and clusters for the genes
 
 
 
+
 .. parsed-literal::
 
     <matplotlib.text.Text at 0x120ef2450>
@@ -5103,6 +5155,7 @@ there were two genes in their file that I didn't have in the
 .. code:: python
 
     gene_pc_clusters.index.difference(lps_response_corr.index)
+
 
 ::
 
@@ -5144,6 +5197,7 @@ instead thinks they are dates.
 
 
 
+
 .. parsed-literal::
 
     Counter({<type 'unicode'>: 631, <type 'datetime.datetime'>: 1})
@@ -5156,6 +5210,7 @@ Yep, it's just that one that got mangled.... oh well.
 
     gene_pc_clusters_genes = set(filter(lambda x: isinstance(x, unicode), gene_pc_clusters.index))
     gene_pc_clusters_genes.difference(lps_response_corr.index)
+
 
 
 
@@ -5196,6 +5251,7 @@ Supplementary Figure 1
     singles_mean = pd.DataFrame(singles_mean)
     singles_mean.head()
      
+
 
 
 
@@ -5250,6 +5306,7 @@ Supplementary Figure 1
     data_for_correlations.head()
     
     # %time sns.corrplot(data_for_correlations)
+
 
 
 
@@ -5442,6 +5499,7 @@ Supplementary Figure 1
     sns.despine()
 
 
+
 .. image:: shalek2013_files/shalek2013_123_0.png
 
 
@@ -5495,6 +5553,7 @@ Supplementary Figure 5d
 
     barcoded = pd.read_excel('nature12172-s1/Supplementary_Table7.xlsx')
     barcoded.head()
+
 
 
 
@@ -5586,6 +5645,7 @@ with the ``.dropna`` method, specifying ``axis=1`` for columns and
 
 
 
+
 .. raw:: html
 
     <div style="max-height:1000px;max-width:1500px;overflow:auto;">
@@ -5660,6 +5720,7 @@ sample ID names back next.
 
     barcoded = barcoded.drop('GENE', axis=0)
     barcoded.head()
+
 
 
 
@@ -5747,6 +5808,7 @@ We'll create a ``pandas.MultiIndex`` from the tuples of
 
 
 
+
 .. raw:: html
 
     <div style="max-height:1000px;max-width:1500px;overflow:auto;">
@@ -5827,6 +5889,7 @@ you know what this looks like, it's this.
 .. code:: python
 
     barcoded.T.reset_index().head()
+
 
 
 
@@ -6000,6 +6063,7 @@ measured, and its measurement value.
 
 
 
+
 .. raw:: html
 
     <div style="max-height:1000px;max-width:1500px;overflow:auto;">
@@ -6065,6 +6129,7 @@ Now let's rename these columns into something more useful, instead of
 
 
 
+
 .. raw:: html
 
     <div style="max-height:1000px;max-width:1500px;overflow:auto;">
@@ -6127,6 +6192,7 @@ me, it'll make the data easier.
 
     barcoded_tidy['TPM'] = barcoded_tidy.value[barcoded_tidy.measurement == 'TPM']
     barcoded_tidy['Unique Barcodes'] = barcoded_tidy.value[barcoded_tidy.measurement == 'Unique Barcodes']
+
 Fill the values of the "**TPM**"'s forwards, since they appear first,
 and fill the values of the "**Unique Barcodes**" backwards, since
 they're second
@@ -6136,6 +6202,7 @@ they're second
     barcoded_tidy.TPM = barcoded_tidy.TPM.ffill()
     barcoded_tidy['Unique Barcodes'] = barcoded_tidy['Unique Barcodes'].bfill()
     barcoded_tidy.head()
+
 
 
 
@@ -6216,6 +6283,7 @@ Drop the "**measurement**" column and drop duplicate rows.
 
 
 
+
 .. raw:: html
 
     <div style="max-height:1000px;max-width:1500px;overflow:auto;">
@@ -6281,12 +6349,14 @@ Drop the "**measurement**" column and drop duplicate rows.
 
     barcoded_tidy['log TPM'] = np.log(barcoded_tidy.TPM)
     barcoded_tidy['log Unique Barcodes'] = np.log(barcoded_tidy['Unique Barcodes'])
+
 Now we can use the convenient linear model plot (``lmplot``) in
 ``seaborn`` to plot these three samples together!
 
 .. code:: python
 
     sns.lmplot('log TPM', 'log Unique Barcodes', barcoded_tidy, col='sample_id')
+
 
 
 

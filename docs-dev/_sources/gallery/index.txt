@@ -82,8 +82,6 @@ Example gallery
 
    ./plot_pca
 
-   ./plot_modalities_reduced
-
    ./plot_modalities_lavalamps
 
    ./plot_modalities_bars
@@ -150,19 +148,6 @@ Example gallery
     <div class='figure align-center'>
     <a href=./plot_pca.html>
     <img src=../_static/plot_pca_thumb.png>
-    <span class='figure-label'>
-    <p></p>
-    </span>
-    </a>
-    </div>
-
-
-
-.. raw:: html
-
-    <div class='figure align-center'>
-    <a href=./plot_modalities_reduced.html>
-    <img src=../_static/plot_modalities_reduced_thumb.png>
     <span class='figure-label'>
     <p></p>
     </span>

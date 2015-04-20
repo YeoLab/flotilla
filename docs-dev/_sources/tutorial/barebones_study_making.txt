@@ -15,6 +15,7 @@ Before we begin, let's import everything we need.
     # Import "panel data analysis" library for tabular data
     import pandas as pd
 
+
 .. parsed-literal::
 
     Couldn't import dot_parser, loading of dot files will not be possible.
@@ -51,6 +52,7 @@ We will also compare to the supplementary table 2 data, obtained using
 
     expression = pd.read_table("GSE41265_allGenesTPM.txt.gz", compression="gzip", index_col=0)
     expression.head()
+
 
 
 
@@ -254,6 +256,7 @@ each gene is a feature. So we will simply transpose this.
 
 
 
+
 .. raw:: html
 
     <div style="max-height:1000px;max-width:1500px;overflow:auto;">
@@ -433,6 +436,7 @@ or not that sample id begins with the letter "S".
     expression_filtered = np.log(expression_filtered + 1)
     expression_filtered.shape
 
+
 .. parsed-literal::
 
     ('number of single cells:', 18)
@@ -486,6 +490,7 @@ as a ``csv`` for maximum portability and compatibility.
     # This was also in features x samples format, so we need to transpose
     expression2 = expression2.T
     expression2.head()
+
 
 
 
@@ -678,6 +683,7 @@ Now we need to strip the single-quote I added to all the gene names:
     new_index, indexer = expression2.columns.reindex(map(lambda x: (x[0].lstrip("'"), x[1]), expression2.columns.values))
     expression2.columns = new_index
     expression2.head()
+
 
 
 
@@ -874,6 +880,7 @@ for our ``expression_feature_data``, which we will do via:
 
 
 
+
 .. parsed-literal::
 
     0610007L01RIK    NaN
@@ -915,6 +922,7 @@ for our ``expression_feature_data``, which we will do via:
 
     expression_feature_data = pd.DataFrame(gene_categories)
     expression_feature_data.head()
+
 
 
 
@@ -965,6 +973,7 @@ information, specifically the ``Supplementary_Table4.xls``
 
     splicing = pd.read_excel('nature12172-s1/Supplementary_Table4.xls', 'splicingTable.txt', index_col=(0,1))
     splicing.head()
+
 
 
 
@@ -1153,6 +1162,7 @@ information, specifically the ``Supplementary_Table4.xls``
 
     splicing = splicing.T
     splicing
+
 
 
 
@@ -1707,6 +1717,7 @@ data, so we have to fix that.
 
 
 
+
 .. parsed-literal::
 
     Index([u'10,000 cell Rep1 (P1)', u'10,000 cell Rep2 (P2)', u'10,000 cell Rep3 (P3)'], dtype='object')
@@ -1722,6 +1733,7 @@ library, e.g.:
 
     import re
     re.search(r'P\d', '10,000 cell Rep1 (P1)').group()
+
 
 
 
@@ -1744,6 +1756,7 @@ library, e.g.:
 
 
 
+
 .. parsed-literal::
 
     array([u'S1', u'S2', u'S3', u'S4', u'S5', u'S6', u'S7', u'S8', u'S9',
@@ -1759,6 +1772,7 @@ dataframe
 
     splicing.index = splicing.index.map(long_pooled_name_to_short)
     splicing.head()
+
 
 
 
@@ -1963,6 +1977,7 @@ this sample is pooled or not.
 
 
 
+
 .. raw:: html
 
     <div style="max-height:1000px;max-width:1500px;overflow:auto;">
@@ -2093,6 +2108,7 @@ Mapping stats data
 
     mapping_stats = pd.read_excel('nature12172-s1/Supplementary_Table1.xls', sheetname='SuppTable1 2.txt')
     mapping_stats
+
 
 
 
@@ -2410,6 +2426,7 @@ Create a ``flotilla`` Study!
                            # Which column in "mapping_stats" has the number of reads
                            mapping_stats_number_mapped_col='PF_READS')
 
+
 .. parsed-literal::
 
     2014-11-04 14:19:33	Initializing Study
@@ -2451,6 +2468,7 @@ As a side note, you can save this study to disk now, so you can
 
     study.save('shalek2013')
 
+
 .. parsed-literal::
 
     Wrote datapackage to /Users/olga/flotilla_projects/shalek2013/datapackage.json
@@ -2467,6 +2485,7 @@ Knowledge Foundation.
 .. code:: python
 
     cat /Users/olga/flotilla_projects/shalek2013/datapackage.json
+
 
 .. parsed-literal::
 
@@ -2546,6 +2565,7 @@ Let's look at what else is in this folder:
 
     ls /Users/olga/flotilla_projects/shalek2013
 
+
 .. parsed-literal::
 
     datapackage.json           expression_feature.csv.gz  metadata.csv.gz            splicing_feature.csv.gz
@@ -2560,6 +2580,7 @@ having to open and process all those files again:
 .. code:: python
 
     study2 = flotilla.embark('shalek2013')
+
 
 .. parsed-literal::
 

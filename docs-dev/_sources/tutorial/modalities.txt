@@ -1,0 +1,855 @@
+
+Accurate estimation of alternative splicing modalities
+======================================================
+
+As shown in previous work (`Shalek+Satija et al
+2013 <http://www.ncbi.nlm.nih.gov/pubmed/23685454>`_), the majority of
+alternative splicing in single cells is all or nothing - either the
+included isoform or the excluded isoform. Rarely are there genes whose
+included/excluded isoforms are held at a 50/50 ratio. However, it is
+unclear what fraction of transcripts are maintained at specific
+proportions across cells, and we aim to categorize these splicing events
+into five bins: included, middle, excluded, bimodal, and uniform.
+
+First, let's import the modules we'll need.
+
+.. code:: python
+
+    %matplotlib inline
+    
+    import os
+    
+    import matplotlib.pyplot as plt
+    import numpy as np
+    import pandas as pd
+    import seaborn as sns
+    sns.set(context='notebook', style='ticks')
+    
+    from flotilla.compute.splicing import ModalityEstimator, ModalityModel
+    from flotilla.visualize.splicing import ModalitiesViz
+
+And initialize a ``ModalityEstimator`` for performing the calculations,
+and a ``ModalityViz`` for visualizing the results.
+
+.. code:: python
+
+    modality_estimator = ModalityEstimator(step=1, vmax=10)
+    modality_visualizer = ModalitiesViz()
+
+Next, let's plot the modalities we are modeling as `violin
+plots <http://en.wikipedia.org/wiki/Violin_plot>`_. We model splicing
+events' "percent spliced-in" or Psi/:math:`\Psi` as following a `Beta
+distribution <http://en.wikipedia.org/wiki/Beta_distribution>`_:
+
+.. math::
+
+
+   \begin{align}
+   \Psi &\sim \text{Beta}\left(\alpha, \beta\right)\\
+   &= \frac{1}{B(\alpha, \beta)} x^{\alpha-1}(1-x)^{\beta-1}
+   \end{align}
+
+Where :math:`B(\alpha, \beta)` is the `Beta
+*function* <http://en.wikipedia.org/wiki/Beta_function>`_, from which
+the Beta *distribution* gets its name,
+
+.. math::
+
+
+   B\left(\alpha, \beta\right) = \int_0^1 t^{\alpha-1}(1-t)^{\beta-1}dt
+
+The Beta distribution is perfect for splicing scores because ...
+
+1. It is continuous between 0 and 1, so any and all new splicing events
+   we encounter are always valid by the model
+2. Its parameters, :math:`\alpha` and :math:`\beta` can be tuned to
+   create the characteristic modalities we are interested in
+
+Specifically, we can model the *included*, *middle*, *excluded*, or
+*bimodal* modalities. In the plot below, note that only the first four
+are actually in the model, and that the uniform distribution was
+separately created. This is because the uniform distribution cannot be
+parameterized, it is exactly when :math:`\alpha=1` and :math:`\beta=1`\ ,
+and as every splicing event has exactly the same probability under the
+uniform distribution, :math:`Pr_{\text{Uniform}}(\text{event})=1`\ , we
+will use the uniform distribution as our null model for testing.
+
+.. code:: python
+
+    fig, ax = plt.subplots(figsize=(2*5, 4))
+    
+    n = 10000
+    
+    # Use the last parameterization (we'll get to that next) in the model list of random variables "rvs"
+    model_data = pd.DataFrame({model_name: model.rvs[-1].rvs(n) for model_name, model in modality_estimator.models.items()})
+    model_params = pd.Series({model_name: model.rvs[-1].args for model_name, model in modality_estimator.models.items()})
+    
+    # Add the uniform distribution
+    model_data['uniform'] = np.linspace(0, 1, num=n)
+    
+    # Reorder the columns
+    columns_ordered = ['included', 'middle', 'bimodal', 'excluded', 'uniform']
+    model_data = model_data.reindex(columns=columns)
+    
+    # Get modality colors
+    colors = [modality_visualizer.modality_colors[m] for m in model_data.columns]
+    
+    # Rename the columns to include the alpha and beta parameters
+    modality_with_params_renamer = {model_name: '{}\n$\\alpha={:.2f}$\n$\\beta={:.2f}$'.format(model_name, alpha, beta) 
+     for model_name, (alpha, beta) in model_params.iteritems()}
+    modality_with_params_renamer['uniform'] = 'uniform\n$\\alpha=1$\n$\\beta=1$'
+    model_data = model_data.rename(columns=modality_with_params_renamer)
+    
+    sns.violinplot(model_data, bw=0.2, color=colors)
+    ax.set_ylim(0, 1)
+    ax.set_ylabel('$\Psi$')
+    ax.set_yticks([0, 0.5, 1])
+    sns.despine()
+    fig.tight_layout()
+
+
+
+.. image:: modalities_files/modalities_6_0.png
+
+
+Parameterizations of Bayesian model
+-----------------------------------
+
+We will employ a Bayesian model to do a (very non-exhaustive) "grid
+search" of parameter space for splicing events. Meaning, given a
+particular splicing event, does it match one of these modalities'
+parameterizations?
+
+.. code:: python
+
+    fig, axes = plt.subplots(nrows=nrows, ncols=1, figsize=(2*ncols, 4*nrows))
+    
+    n = 10000
+    
+    for ax, (model_name, model) in zip(axes, modality_estimator.models.items()):
+        parameterizations = [rv.rvs(n) for rv in model.rvs]
+        color = modality_visualizer.modality_colors[model_name]
+        xticklabels = ['$\\alpha={:.3f}$\n$\\beta={:.3f}$'.format(a, b) for a, b in zip(model.alphas, model.betas)]
+        sns.violinplot(parameterizations, bw=0.2, color=color, names=xticklabels, #color=colors, 
+                       ax=ax)
+        ax.set_ylim(0, 1)
+        ax.set_ylabel('$\Psi$')
+        ax.set_yticks([0, 0.5, 1])
+        ax.set_title(model_name)
+    fig.tight_layout()
+    sns.despine()
+
+
+
+.. image:: modalities_files/modalities_9_0.png
+
+
+Prior probability on parameterizations
+--------------------------------------
+
+We use a uniform prior on all parameterizations except the *bimodal*
+distribution. This is because through extensive testing, we have found
+that using a uniform prior on the *bimodal* distribution causes slightly
+noisy (+10% uniform noise) *included* and *excluded* splicing events to
+be called "bimodal," and we want to eliminate false postives in the
+*bimodal* category.
+
+.. code:: python
+
+    fig, axes = plt.subplots(nrows=nrows, ncols=1, figsize=(2*ncols, 4*nrows), sharey=True)
+    
+    n = 10000
+    
+    n_params = 10
+    
+    for ax, (model_name, model) in zip(axes, modality_estimator.models.items()):
+        color = modality_visualizer.modality_colors[model_name]
+        if model_name == 'bimodal':
+            ymax = np.exp(np.arange(len(modality_estimator.parameters))).astype(float)
+            ymax = ymax/ymax.sum()
+        else:
+            ymax = np.ones(len(modality_estimator.parameters)).astype(float)/len(modality_estimator.parameters)
+        ymin = np.zeros(ymax.shape)
+        x = np.arange(ymax.shape[0])
+        ax.plot(x, ymax, 'o-', color=color, linewidth=5, markersize=20)
+        ax.fill_between(x, ymin, ymax, color=color, alpha=0.75)
+        ax.set_xlim(0, x.max())
+        xticklabels = ['$\\alpha={:.3f}$\n$\\beta={:.3f}$'.format(a, b) for a, b in zip(model.alphas, model.betas)]
+        ax.set_xticks(x)
+    
+        ax.set_ylabel('Prior probability')
+    
+        ax.set_xticklabels(xticklabels)
+        ax.set_xlim(x.min()-0.5, x.max()+0.5)
+        ax.set_title(model_name)
+        
+    fig.tight_layout()
+    sns.despine()
+
+
+
+.. image:: modalities_files/modalities_12_0.png
+
+
+Testing modality estimation
+---------------------------
+
+To show that this framework is accurate, we start with a "perfect"
+event, which uses the last parameterization of each model, which is the
+"most extreme" version of that model under our assumptions.
+
+.. code:: python
+
+    n = 100
+    event = pd.Series(modality_estimator.inclusion_model.rvs[-1].rvs(n))
+    
+    
+    sns.set(style='ticks')
+    fig, ax = plt.subplots(figsize=(2, 4))
+    sns.violinplot(event, ax=ax, bw=0.2, color=modality_visualizer.modality_colors['included'])
+    ax.set_ylim(0, 1)
+    ax.set_yticks([0, 0.5, 1])
+    sns.despine()
+    fig.tight_layout()
+
+
+
+.. image:: modalities_files/modalities_15_0.png
+
+
+Let's estimate the modality of this event by calculating the
+log-likelihood of each parameterization using
+``modality_estimator._loglik``, and summing the results using
+``modality_estimator._logsumexp``.
+
+.. code:: python
+
+    logliks = modality_estimator._loglik(event)
+    logsumexps = modality_estimator._logsumexp(logliks)
+    
+    # Visualize the events
+    plotter = modality_visualizer.event_estimation(event, logliks, logsumexps)
+
+
+
+.. image:: modalities_files/modalities_17_0.png
+
+
+The left panel shows a violinplot of the event. The middle panel shows
+the log-likelihoods of different models at increasing parameterizations.
+The right panel shows the total summed `Bayes
+factors <http://en.wikipedia.org/wiki/Bayes_factor>`_ of how much more
+likely a model is over the uniform distribution, where the cutoff for a
+guessing that something is a uniform distribution is a
+:math:`\log_2\left(\text{Bayes factor}\right) > 3`\ .
+
+Let's add add random noise to the "perfect" included event, and see how
+that changes the modality estimation.
+
+.. code:: python
+
+    sns.set(style='ticks')
+    fig, ax = plt.subplots(figsize=(2, 4))
+    event_noisy = event.copy()
+    event_noisy[:50] = np.random.uniform(size=50)
+    
+    sns.violinplot(event_noisy, ax=ax, bw=0.2, color=modality_visualizer.modality_colors['included'])
+    ax.set_ylim(0, 1)
+    ax.set_yticks([0, 0.5, 1])
+    
+    sns.despine()
+    fig.tight_layout()
+
+
+
+.. image:: modalities_files/modalities_19_0.png
+
+
+.. code:: python
+
+    logliks = modality_estimator._loglik(event_noisy)
+    logsumexps = modality_estimator._logsumexp(logliks)
+    
+    # Visualize the events
+    plotter = modality_visualizer.event_estimation(event_noisy, logliks, logsumexps)
+
+
+
+.. image:: modalities_files/modalities_20_0.png
+
+
+The included modality becomes less likely, but it still beats out the
+uniform and bimodal distributions, which is what we want.
+
+Let's use this idea of noise to estimate modalities. We'll use 100 cells
+total, and do 5 iterations of adding noise from 0% to 50%. We will
+visualize each estimation using the same ``modality_visualizer`` for the
+parameterizations. This will output quite a few plots.
+
+.. code:: python
+
+    # We will be writing incrementally to this "modality_guesses" file, because if
+    # this is done with many iterations and many noise levels, the file gets too
+    # big and the IPython kernel crashes
+    modality_guesses_csv = 'modality_guesses.csv'
+    
+    # ALways start fresh with a new csv file
+    try:
+        os.remove(modality_guesses_csv)
+    except OSError:
+        pass
+    
+    n_cells = 100
+    n_cell = n_cells
+    n_noisys = np.arange(0, 60, 10)
+    
+    columns = ['prior', 'true_modality', 'guessed_modality', 'n_rogue', 'iteration']
+    
+    df = pd.DataFrame(columns=columns)
+    df.to_csv(modality_guesses_csv, index=False)
+    
+    for n_noisy in n_noisys:
+        for i in range(5):
+            rows = []
+            for model_name, model in modality_estimator.models.items():
+                rv = model.rvs[-1]
+                event = pd.Series(rv.rvs(n_cells))
+                event.name = 'True modality: {}'.format(model_name)
+    
+                event[:n_noisy] = np.random.uniform(size=n_noisy)
+                
+                n = len(modality_estimator.bimodal_model.prob_parameters)
+    
+                logliks = modality_estimator._loglik(event)
+                logsumexps = modality_estimator._logsumexp(logliks)
+                
+                # Visualize the events
+                plotter = modality_visualizer.event_estimation(event, logliks, logsumexps)
+                filename = '{}_nnoisy{}_iter{}_bimodal_exponential_other_uniform_prior.pdf'.format(model_name, n_cell, n_noisy, i)
+                plotter.fig.savefig(filename)
+                rows.append(['bimodal_exponential_other_uniform', model_name, logsumexps.argmax(), n_noisy, i])
+    
+            modality_guesses = pd.DataFrame(rows, columns=columns)
+            with open(modality_guesses_csv, 'a') as f:
+                modality_guesses.to_csv(f, header=False, index=False)
+
+
+
+.. image:: modalities_files/modalities_22_0.png
+
+
+
+.. image:: modalities_files/modalities_22_1.png
+
+
+
+.. image:: modalities_files/modalities_22_2.png
+
+
+
+.. image:: modalities_files/modalities_22_3.png
+
+
+
+.. image:: modalities_files/modalities_22_4.png
+
+
+
+.. image:: modalities_files/modalities_22_5.png
+
+
+
+.. image:: modalities_files/modalities_22_6.png
+
+
+
+.. image:: modalities_files/modalities_22_7.png
+
+
+
+.. image:: modalities_files/modalities_22_8.png
+
+
+
+.. image:: modalities_files/modalities_22_9.png
+
+
+
+.. image:: modalities_files/modalities_22_10.png
+
+
+
+.. image:: modalities_files/modalities_22_11.png
+
+
+
+.. image:: modalities_files/modalities_22_12.png
+
+
+
+.. image:: modalities_files/modalities_22_13.png
+
+
+
+.. image:: modalities_files/modalities_22_14.png
+
+
+
+.. image:: modalities_files/modalities_22_15.png
+
+
+
+.. image:: modalities_files/modalities_22_16.png
+
+
+
+.. image:: modalities_files/modalities_22_17.png
+
+
+
+.. image:: modalities_files/modalities_22_18.png
+
+
+
+.. image:: modalities_files/modalities_22_19.png
+
+
+
+.. image:: modalities_files/modalities_22_20.png
+
+
+
+.. image:: modalities_files/modalities_22_21.png
+
+
+
+.. image:: modalities_files/modalities_22_22.png
+
+
+
+.. image:: modalities_files/modalities_22_23.png
+
+
+
+.. image:: modalities_files/modalities_22_24.png
+
+
+
+.. image:: modalities_files/modalities_22_25.png
+
+
+
+.. image:: modalities_files/modalities_22_26.png
+
+
+
+.. image:: modalities_files/modalities_22_27.png
+
+
+
+.. image:: modalities_files/modalities_22_28.png
+
+
+
+.. image:: modalities_files/modalities_22_29.png
+
+
+
+.. image:: modalities_files/modalities_22_30.png
+
+
+
+.. image:: modalities_files/modalities_22_31.png
+
+
+
+.. image:: modalities_files/modalities_22_32.png
+
+
+
+.. image:: modalities_files/modalities_22_33.png
+
+
+
+.. image:: modalities_files/modalities_22_34.png
+
+
+
+.. image:: modalities_files/modalities_22_35.png
+
+
+
+.. image:: modalities_files/modalities_22_36.png
+
+
+
+.. image:: modalities_files/modalities_22_37.png
+
+
+
+.. image:: modalities_files/modalities_22_38.png
+
+
+
+.. image:: modalities_files/modalities_22_39.png
+
+
+
+.. image:: modalities_files/modalities_22_40.png
+
+
+
+.. image:: modalities_files/modalities_22_41.png
+
+
+
+.. image:: modalities_files/modalities_22_42.png
+
+
+
+.. image:: modalities_files/modalities_22_43.png
+
+
+
+.. image:: modalities_files/modalities_22_44.png
+
+
+
+.. image:: modalities_files/modalities_22_45.png
+
+
+
+.. image:: modalities_files/modalities_22_46.png
+
+
+
+.. image:: modalities_files/modalities_22_47.png
+
+
+
+.. image:: modalities_files/modalities_22_48.png
+
+
+
+.. image:: modalities_files/modalities_22_49.png
+
+
+
+.. image:: modalities_files/modalities_22_50.png
+
+
+
+.. image:: modalities_files/modalities_22_51.png
+
+
+
+.. image:: modalities_files/modalities_22_52.png
+
+
+
+.. image:: modalities_files/modalities_22_53.png
+
+
+
+.. image:: modalities_files/modalities_22_54.png
+
+
+
+.. image:: modalities_files/modalities_22_55.png
+
+
+
+.. image:: modalities_files/modalities_22_56.png
+
+
+
+.. image:: modalities_files/modalities_22_57.png
+
+
+
+.. image:: modalities_files/modalities_22_58.png
+
+
+
+.. image:: modalities_files/modalities_22_59.png
+
+
+
+.. image:: modalities_files/modalities_22_60.png
+
+
+
+.. image:: modalities_files/modalities_22_61.png
+
+
+
+.. image:: modalities_files/modalities_22_62.png
+
+
+
+.. image:: modalities_files/modalities_22_63.png
+
+
+
+.. image:: modalities_files/modalities_22_64.png
+
+
+
+.. image:: modalities_files/modalities_22_65.png
+
+
+
+.. image:: modalities_files/modalities_22_66.png
+
+
+
+.. image:: modalities_files/modalities_22_67.png
+
+
+
+.. image:: modalities_files/modalities_22_68.png
+
+
+
+.. image:: modalities_files/modalities_22_69.png
+
+
+
+.. image:: modalities_files/modalities_22_70.png
+
+
+
+.. image:: modalities_files/modalities_22_71.png
+
+
+
+.. image:: modalities_files/modalities_22_72.png
+
+
+
+.. image:: modalities_files/modalities_22_73.png
+
+
+
+.. image:: modalities_files/modalities_22_74.png
+
+
+
+.. image:: modalities_files/modalities_22_75.png
+
+
+
+.. image:: modalities_files/modalities_22_76.png
+
+
+
+.. image:: modalities_files/modalities_22_77.png
+
+
+
+.. image:: modalities_files/modalities_22_78.png
+
+
+
+.. image:: modalities_files/modalities_22_79.png
+
+
+
+.. image:: modalities_files/modalities_22_80.png
+
+
+
+.. image:: modalities_files/modalities_22_81.png
+
+
+
+.. image:: modalities_files/modalities_22_82.png
+
+
+
+.. image:: modalities_files/modalities_22_83.png
+
+
+
+.. image:: modalities_files/modalities_22_84.png
+
+
+
+.. image:: modalities_files/modalities_22_85.png
+
+
+
+.. image:: modalities_files/modalities_22_86.png
+
+
+
+.. image:: modalities_files/modalities_22_87.png
+
+
+
+.. image:: modalities_files/modalities_22_88.png
+
+
+
+.. image:: modalities_files/modalities_22_89.png
+
+
+
+.. image:: modalities_files/modalities_22_90.png
+
+
+
+.. image:: modalities_files/modalities_22_91.png
+
+
+
+.. image:: modalities_files/modalities_22_92.png
+
+
+
+.. image:: modalities_files/modalities_22_93.png
+
+
+
+.. image:: modalities_files/modalities_22_94.png
+
+
+
+.. image:: modalities_files/modalities_22_95.png
+
+
+
+.. image:: modalities_files/modalities_22_96.png
+
+
+
+.. image:: modalities_files/modalities_22_97.png
+
+
+
+.. image:: modalities_files/modalities_22_98.png
+
+
+
+.. image:: modalities_files/modalities_22_99.png
+
+
+
+.. image:: modalities_files/modalities_22_100.png
+
+
+
+.. image:: modalities_files/modalities_22_101.png
+
+
+
+.. image:: modalities_files/modalities_22_102.png
+
+
+
+.. image:: modalities_files/modalities_22_103.png
+
+
+
+.. image:: modalities_files/modalities_22_104.png
+
+
+
+.. image:: modalities_files/modalities_22_105.png
+
+
+
+.. image:: modalities_files/modalities_22_106.png
+
+
+
+.. image:: modalities_files/modalities_22_107.png
+
+
+
+.. image:: modalities_files/modalities_22_108.png
+
+
+
+.. image:: modalities_files/modalities_22_109.png
+
+
+
+.. image:: modalities_files/modalities_22_110.png
+
+
+
+.. image:: modalities_files/modalities_22_111.png
+
+
+
+.. image:: modalities_files/modalities_22_112.png
+
+
+
+.. image:: modalities_files/modalities_22_113.png
+
+
+
+.. image:: modalities_files/modalities_22_114.png
+
+
+
+.. image:: modalities_files/modalities_22_115.png
+
+
+
+.. image:: modalities_files/modalities_22_116.png
+
+
+
+.. image:: modalities_files/modalities_22_117.png
+
+
+
+.. image:: modalities_files/modalities_22_118.png
+
+
+
+.. image:: modalities_files/modalities_22_119.png
+
+
+Now let's plot the accuracy of the model on the increasingly noisy
+splicing events and their modality estimations.
+
+.. code:: python
+
+    modality_guesses = pd.read_csv(modality_guesses_csv)
+    
+    model_accuracy = modality_guesses.groupby(['prior', 'n_rogue', 
+                                               'true_modality']).apply(lambda x: (x.true_modality == x.guessed_modality).sum())/n_noisys.max()*n_cells
+    model_accuracy = model_accuracy.reset_index()
+    model_accuracy = model_accuracy.rename(columns={0: 'percentage'})
+    fg = sns.factorplot('n_rogue', col='prior', data=model_accuracy, y='percentage', hue='true_modality',
+                   hue_order=('excluded', 'middle', 'included', 'bimodal'), palette='deep', kind='point')
+    fg.fig.savefig('percent_noise_vs_true_positives.pdf')
+    
+    
+    false_positives = modality_guesses.groupby(['prior', 'n_rogue', 
+                                                'guessed_modality', 'true_modality']).apply(lambda x: (x.true_modality != x.guessed_modality).sum())/50
+    # false_positives = false_positives.unstack()
+    false_positives = false_positives.reset_index()
+    false_positives = false_positives.rename(columns={0: 'counts'})
+    false_positives.head()
+    
+    fg = sns.factorplot('n_rogue', y='counts', row='prior', col='true_modality', hue='guessed_modality', data=false_positives,
+                   hue_order=('excluded', 'middle', 'included', 'bimodal', 'uniform'), palette='deep', size=6)
+    fg.fig.savefig('percent_noise_vs_false_positives_factorplot.pdf')
+
+
+
+.. image:: modalities_files/modalities_24_0.png
+
+
+
+.. image:: modalities_files/modalities_24_1.png
+
+
+The "middle" modalities become less accurate at about 30% noise, but
+from looking at the events, I'm happy with these getting
+"mis-categorized" because they do truly look like "uniform" events.

@@ -1,0 +1,295 @@
+
+Storing supplemental data on ``Study`` objects
+==============================================
+
+A recently added feature is the ability to store any arbitrary pandas
+dataframe on ``study.supplemental``, and this will get re-loaded every
+time you ``embark`` on that datapackage. Let's start with the
+batch-corrected `BrainSpan <http://www.brainspan.org/>`_ Allen Brain
+Institute's Brain Atlas data.
+
+.. code:: python
+
+    import flotilla
+    study = flotilla.embark(flotilla._brainspan)
+
+
+.. parsed-literal::
+
+    2015-03-16 15:56:43	Parsing datapackage to create a Study object
+    2015-03-16 15:56:48	Initializing Study
+    2015-03-16 15:56:48	Initializing Predictor configuration manager for Study
+    2015-03-16 15:56:48	Predictor ExtraTreesClassifier is of type <class 'sklearn.ensemble.forest.ExtraTreesClassifier'>
+    2015-03-16 15:56:48	Added ExtraTreesClassifier to default predictors
+    2015-03-16 15:56:48	Predictor ExtraTreesRegressor is of type <class 'sklearn.ensemble.forest.ExtraTreesRegressor'>
+    2015-03-16 15:56:48	Added ExtraTreesRegressor to default predictors
+    2015-03-16 15:56:48	Predictor GradientBoostingClassifier is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingClassifier'>
+    2015-03-16 15:56:48	Added GradientBoostingClassifier to default predictors
+    2015-03-16 15:56:48	Predictor GradientBoostingRegressor is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingRegressor'>
+    2015-03-16 15:56:48	Added GradientBoostingRegressor to default predictors
+    2015-03-16 15:56:48	Loading metadata
+    2015-03-16 15:56:49	Loading expression data
+    2015-03-16 15:56:49	Initializing expression
+    2015-03-16 15:56:49	Done initializing expression
+    2015-03-16 15:56:49	Successfully initialized a Study object!
+
+
+Let's take a look at how big this expression matrix is.
+
+.. code:: python
+
+    study.expression.data.shape
+
+
+
+
+.. parsed-literal::
+
+    (519, 14321)
+
+
+
+Yikes, 14,321 features is a lot! Let's subset on just the most variant
+genes. By default, this is the genes whose variance is two standard
+deviations away from the mean variance of all genes.
+
+.. code:: python
+
+    variant_ids = study.expression.feature_subsets['variant']
+    variant_expression = study.expression.data.ix[:, variant_ids]
+    variant_expression.shape
+
+
+
+
+.. parsed-literal::
+
+    (519, 564)
+
+
+
+564 features isn't so bad. Let's correlate all features to each other in
+this subset.
+
+.. code:: python
+
+    %%time
+    variant_expression_corr = variant_expression.corr()
+    variant_expression_corr.head()
+
+
+.. parsed-literal::
+
+    CPU times: user 315 ms, sys: 3.16 ms, total: 318 ms
+    Wall time: 317 ms
+
+
+That didn't take *too* long, but I'm sure you can imagine it would take
+a really long time for ALL genes!
+
+Now let's assign this to the ``study.supplemental`` object with a name
+of our choice. To keep things simple, I'm gonna give it the same name.
+
+.. code:: python
+
+    study.supplemental.variant_expression_corr = variant_expression_corr
+
+Now let's save the object and re-``embark`` to make sure it's there.
+
+.. code:: python
+
+    study.save('brainspan2')
+    study2 = flotilla.embark('brainspan2')
+
+
+.. parsed-literal::
+
+    Wrote datapackage to /Users/olga/flotilla_projects/brainspan2/datapackage.json
+    2015-03-16 15:57:43	Reading datapackage from /Users/olga/flotilla_projects/brainspan2/datapackage.json
+    2015-03-16 15:57:43	Parsing datapackage to create a Study object
+    2015-03-16 15:57:49	Initializing Study
+    2015-03-16 15:57:49	Initializing Predictor configuration manager for Study
+    2015-03-16 15:57:49	Predictor ExtraTreesClassifier is of type <class 'sklearn.ensemble.forest.ExtraTreesClassifier'>
+    2015-03-16 15:57:49	Added ExtraTreesClassifier to default predictors
+    2015-03-16 15:57:49	Predictor ExtraTreesRegressor is of type <class 'sklearn.ensemble.forest.ExtraTreesRegressor'>
+    2015-03-16 15:57:49	Added ExtraTreesRegressor to default predictors
+    2015-03-16 15:57:49	Predictor GradientBoostingClassifier is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingClassifier'>
+    2015-03-16 15:57:49	Added GradientBoostingClassifier to default predictors
+    2015-03-16 15:57:49	Predictor GradientBoostingRegressor is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingRegressor'>
+    2015-03-16 15:57:49	Added GradientBoostingRegressor to default predictors
+    2015-03-16 15:57:49	Loading metadata
+    2015-03-16 15:57:49	Loading expression data
+    2015-03-16 15:57:49	Initializing expression
+    2015-03-16 15:57:49	Done initializing expression
+    2015-03-16 15:57:50	Successfully initialized a Study object!
+
+
+Let's make sure our ``variant_expression_corr`` dataframe is really
+there.
+
+.. code:: python
+
+    study2.supplemental.variant_expression_corr.head()
+
+
+
+
+.. raw:: html
+
+    <div style="max-height:1000px;max-width:1500px;overflow:auto;">
+    <table border="1" class="dataframe">
+      <thead>
+        <tr style="text-align: right;">
+          <th></th>
+          <th>ENSG00000003137</th>
+          <th>ENSG00000004848</th>
+          <th>ENSG00000006016</th>
+          <th>ENSG00000006116</th>
+          <th>ENSG00000006128</th>
+          <th>ENSG00000006377</th>
+          <th>ENSG00000007350</th>
+          <th>ENSG00000016082</th>
+          <th>ENSG00000041353</th>
+          <th>ENSG00000041982</th>
+          <th>...</th>
+          <th>ENSG00000258283</th>
+          <th>ENSG00000258403</th>
+          <th>ENSG00000258444</th>
+          <th>ENSG00000258518</th>
+          <th>ENSG00000258752</th>
+          <th>ENSG00000259190</th>
+          <th>ENSG00000259279</th>
+          <th>ENSG00000259373</th>
+          <th>ENSG00000259410</th>
+          <th>ENSG00000259603</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>ENSG00000003137</th>
+          <td> 1.000000</td>
+          <td>-0.083809</td>
+          <td> 0.119793</td>
+          <td> 0.076050</td>
+          <td>-0.035254</td>
+          <td>-0.170881</td>
+          <td> 0.078876</td>
+          <td>-0.164944</td>
+          <td>-0.102906</td>
+          <td>-0.021128</td>
+          <td>...</td>
+          <td>-0.214898</td>
+          <td> 0.018936</td>
+          <td>-0.108965</td>
+          <td>-0.366995</td>
+          <td>-0.136422</td>
+          <td> 0.282414</td>
+          <td> 0.163946</td>
+          <td> 0.487711</td>
+          <td> 0.483485</td>
+          <td> 0.088631</td>
+        </tr>
+        <tr>
+          <th>ENSG00000004848</th>
+          <td>-0.083809</td>
+          <td> 1.000000</td>
+          <td> 0.535174</td>
+          <td> 0.658786</td>
+          <td> 0.481359</td>
+          <td> 0.670307</td>
+          <td> 0.109242</td>
+          <td> 0.187309</td>
+          <td> 0.378170</td>
+          <td>-0.033828</td>
+          <td>...</td>
+          <td> 0.671103</td>
+          <td> 0.313143</td>
+          <td>-0.001566</td>
+          <td>-0.500766</td>
+          <td>-0.091005</td>
+          <td>-0.174027</td>
+          <td> 0.139083</td>
+          <td>-0.659290</td>
+          <td>-0.580665</td>
+          <td>-0.653537</td>
+        </tr>
+        <tr>
+          <th>ENSG00000006016</th>
+          <td> 0.119793</td>
+          <td> 0.535174</td>
+          <td> 1.000000</td>
+          <td> 0.622833</td>
+          <td> 0.582943</td>
+          <td> 0.415254</td>
+          <td> 0.041606</td>
+          <td> 0.102551</td>
+          <td> 0.418882</td>
+          <td> 0.051724</td>
+          <td>...</td>
+          <td> 0.637911</td>
+          <td> 0.300402</td>
+          <td> 0.243334</td>
+          <td>-0.345219</td>
+          <td> 0.053212</td>
+          <td>-0.279398</td>
+          <td> 0.069264</td>
+          <td>-0.309780</td>
+          <td>-0.303773</td>
+          <td>-0.267244</td>
+        </tr>
+        <tr>
+          <th>ENSG00000006116</th>
+          <td> 0.076050</td>
+          <td> 0.658786</td>
+          <td> 0.622833</td>
+          <td> 1.000000</td>
+          <td> 0.471186</td>
+          <td> 0.391800</td>
+          <td>-0.131698</td>
+          <td>-0.074954</td>
+          <td> 0.424003</td>
+          <td>-0.297513</td>
+          <td>...</td>
+          <td> 0.673116</td>
+          <td> 0.533787</td>
+          <td>-0.056825</td>
+          <td>-0.572178</td>
+          <td>-0.211297</td>
+          <td> 0.022135</td>
+          <td> 0.242858</td>
+          <td>-0.479994</td>
+          <td>-0.401955</td>
+          <td>-0.614655</td>
+        </tr>
+        <tr>
+          <th>ENSG00000006128</th>
+          <td>-0.035254</td>
+          <td> 0.481359</td>
+          <td> 0.582943</td>
+          <td> 0.471186</td>
+          <td> 1.000000</td>
+          <td> 0.690821</td>
+          <td>-0.054401</td>
+          <td> 0.427592</td>
+          <td> 0.575299</td>
+          <td> 0.115128</td>
+          <td>...</td>
+          <td> 0.688362</td>
+          <td> 0.404930</td>
+          <td> 0.292495</td>
+          <td>-0.190202</td>
+          <td> 0.151798</td>
+          <td>-0.423034</td>
+          <td>-0.093961</td>
+          <td>-0.293967</td>
+          <td>-0.312149</td>
+          <td>-0.171620</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>5 rows × 564 columns</p>
+    </div>
+
+
+
+Yay, it's here!

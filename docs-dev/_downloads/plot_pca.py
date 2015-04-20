@@ -8,5 +8,5 @@ See also
 
 """
 import flotilla
-study = flotilla.embark(flotilla._shalek2013)
+study = flotilla.embark(flotilla._brainspan)
 study.plot_pca(plot_violins=False)

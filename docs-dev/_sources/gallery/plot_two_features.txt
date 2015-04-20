@@ -2,7 +2,7 @@
 .. _plot_two_features:
 
 
-Compare gene expression in two samples
+Compare gene expression in two features
 ======================================
 
 
