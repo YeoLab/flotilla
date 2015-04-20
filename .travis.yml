@@ -44,9 +44,9 @@ script:
 
 after_script:
   - coveralls
-  - conda install --yes jsonschema ipython matplotlib
+  - conda install --yes jsonschema ipython matplotlib seaborn pandas
   # For building the docs
-  - MASTER=master
+  - MASTER=tutorial
   - if [[ $TRAVIS_BRANCH == v*.*.* ]] ; then export DEPLOY_HTML_DIR=docs ; fi
   - if [[ $TRAVIS_BRANCH == "$MASTER" ]] ; then export DEPLOY_HTML_DIR=docs-dev ; fi
   - if [[ $TRAVIS_BRANCH == v*.*.* ]] || [[ $TRAVIS_BRANCH == "$MASTER" ]] ; then sudo apt-get install pandoc; sudo pip install sphinx numpydoc sphinx_bootstrap_theme runipy; sudo pip install -r doc/requirements.txt; cd doc ; make setup_gh_pages ; make generate ; make deploy ; fi
