@@ -1,0 +1,4 @@
+runipy
+numpydoc
+sphinx
+fabric
