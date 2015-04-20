@@ -13,3 +13,6 @@ virtualenv
 .coverage
 .ipynb_checkpoints
 _build
+
+# Shalek and Satija data
+nature12172-s1

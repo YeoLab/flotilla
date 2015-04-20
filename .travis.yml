@@ -21,7 +21,8 @@ install:
   - conda create -n testenv --yes python=$TRAVIS_PYTHON_VERSION
   - source activate testenv
   # install as much as we can via conda
-  - conda install --yes pip numpy scipy cython matplotlib nose six scikit-learn ipython networkx pandas tornado statsmodels setuptools pytest pyzmq jinja2 pyyaml
+  - conda install --yes --file conda_requirements.txt
+  # Specific notebook version for documentaiton
   # Install the rest via pip (brewer2mpl, gspread, seaborn, etc)
   - pip install -r requirements.txt
   - pip install pep8
@@ -36,20 +37,19 @@ before_script:
   - . ./.travis/setup.sh # make any change needed for setup.sh
   - echo $DEPLOY_HTML_DIR
 
-# command to run tests
+# command to run tests and build documentation
 script:
-#  - make coverage
+  - make coverage
   - make lint
   - make pep8
-
-after_script:
-  - coveralls
-  - conda install --yes jsonschema ipython matplotlib
   # For building the docs
   - MASTER=master
   - if [[ $TRAVIS_BRANCH == v*.*.* ]] ; then export DEPLOY_HTML_DIR=docs ; fi
   - if [[ $TRAVIS_BRANCH == "$MASTER" ]] ; then export DEPLOY_HTML_DIR=docs-dev ; fi
-  - if [[ $TRAVIS_BRANCH == v*.*.* ]] || [[ $TRAVIS_BRANCH == "$MASTER" ]] ; then sudo apt-get install pandoc; sudo pip install sphinx numpydoc sphinx_bootstrap_theme runipy; sudo pip install -r doc/requirements.txt; cd doc ; make setup_gh_pages ; make generate ; make deploy ; fi
+  - if [[ $TRAVIS_BRANCH == v*.*.* ]] || [[ $TRAVIS_BRANCH == "$MASTER" ]] ; then sudo apt-get install pandoc; conda install --yes --file doc/conda_requirements.txt ; conda install --yes ipython-notebook=2; pip install -r doc/requirements.txt; cd doc ; make setup_gh_pages ; make generate ; make deploy ; fi
+
+after_script:
+  - coveralls
 
 # For slack notifications
 notifications:
