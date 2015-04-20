@@ -26,3 +26,4 @@ jinja2
 #fastcluster
 semantic_version
 joblib >= 0.8.4
+jsonschema
