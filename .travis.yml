@@ -23,7 +23,6 @@ install:
   # install as much as we can via conda
   - conda install --yes --file conda_requirements.txt
   # Specific notebook version for documentaiton
-  - conda install ipython-notebook=2
   # Install the rest via pip (brewer2mpl, gspread, seaborn, etc)
   - pip install -r requirements.txt
   - pip install pep8
