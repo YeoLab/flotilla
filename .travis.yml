@@ -21,7 +21,7 @@ install:
   - conda create -n testenv --yes python=$TRAVIS_PYTHON_VERSION
   - source activate testenv
   # install as much as we can via conda
-  - conda install --yes pip numpy scipy cython matplotlib nose six scikit-learn ipython networkx pandas tornado statsmodels setuptools pytest pyzmq jinja2 pyyaml
+  - conda install --yes pip numpy scipy cython matplotlib nose six scikit-learn ipython networkx pandas tornado statsmodels setuptools pytest pyzmq jinja2 pyyaml jsonschema
   # Install the rest via pip (brewer2mpl, gspread, seaborn, etc)
   - pip install -r requirements.txt
   - pip install pep8
@@ -41,15 +41,14 @@ script:
 #  - make coverage
   - make lint
   - make pep8
-
-after_script:
-  - coveralls
-  - conda install --yes jsonschema ipython matplotlib seaborn pandas
   # For building the docs
   - MASTER=tutorial
   - if [[ $TRAVIS_BRANCH == v*.*.* ]] ; then export DEPLOY_HTML_DIR=docs ; fi
   - if [[ $TRAVIS_BRANCH == "$MASTER" ]] ; then export DEPLOY_HTML_DIR=docs-dev ; fi
   - if [[ $TRAVIS_BRANCH == v*.*.* ]] || [[ $TRAVIS_BRANCH == "$MASTER" ]] ; then sudo apt-get install pandoc; pip install sphinx numpydoc sphinx_bootstrap_theme runipy; pip install -r doc/requirements.txt; cd doc ; make setup_gh_pages ; make generate ; make deploy ; fi
+
+after_script:
+  - coveralls
 
 # For slack notifications
 notifications:
