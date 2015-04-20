@@ -22,6 +22,8 @@ install:
   - source activate testenv
   # install as much as we can via conda
   - conda install --yes pip numpy scipy cython matplotlib nose six scikit-learn ipython networkx pandas tornado statsmodels setuptools pytest pyzmq jinja2 pyyaml jsonschema
+  # Specific notebook version for documentaiton
+  - conda install ipython-notebook=2
   # Install the rest via pip (brewer2mpl, gspread, seaborn, etc)
   - pip install -r requirements.txt
   - pip install pep8
@@ -36,7 +38,7 @@ before_script:
   - . ./.travis/setup.sh # make any change needed for setup.sh
   - echo $DEPLOY_HTML_DIR
 
-# command to run tests
+# command to run tests and build documentation
 script:
 #  - make coverage
   - make lint
