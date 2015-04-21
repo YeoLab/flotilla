@@ -28,6 +28,11 @@ def color_samples_by(request, metadata_phenotype_col):
         return request.param
 
 
+@pytest.fixture(params=['hg19', 'mm10'])
+def species(request):
+    return request.param
+
+
 class TestStudy(object):
     # @pytest.fixture
     # def n_groups(self):
@@ -223,6 +228,16 @@ class TestStudy(object):
                       **kwargs)
         pdt.assert_array_equal(study.splicing.data_original,
                                splicing_data)
+
+    def test_load_species(self, species):
+        from flotilla import Study
+
+        species_data = Study.load_species_data(species, Study.readers,
+                                               nrows=100)
+
+        assert 'expression_feature_data' in species_data
+        assert 'splicing_feature_data' in species_data
+        assert 'gene_ontology_data' in species_data
 
     def test_feature_subset_to_feature_ids(self, study, data_type,
                                            feature_subset):
