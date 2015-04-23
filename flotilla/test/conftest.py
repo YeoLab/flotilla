@@ -120,8 +120,8 @@ def colors(n_groups):
 # @pytest.fixture(scope='module')
 # def colors_fixed(n_groups_fixed):
 #     """Colors to use for the samples"""
-#     return map(mpl.colors.rgb2hex,
-#                sns.color_palette('husl', n_colors=n_groups_fixed))
+#     return list(map(mpl.colors.rgb2hex,
+#                sns.color_palette('husl', n_colors=n_groups_fixed)))
 
 
 @pytest.fixture(scope='module')

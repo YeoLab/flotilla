@@ -165,18 +165,18 @@ class NetworkerViz(Networker):
 
         nx.draw_networkx_nodes(
             graph, pos,
-            node_color=map(node_color_mapper, graph.nodes()),
-            node_size=map(node_size_mapper, graph.nodes()),
+            node_color=list(map(node_color_mapper, graph.nodes())),
+            node_size=list(map(node_size_mapper, graph.nodes())),
             ax=main_ax, alpha=0.5)
 
         try:
-            node_color = map(lambda x: pca.X[feature_id].ix[x], graph.nodes())
+            node_color = list(map(lambda x: pca.X[feature_id].ix[x], graph.nodes()))
 
             nx.draw_networkx_nodes(graph, pos, node_color=node_color,
                                    cmap=mpl.cm.Greys,
-                                   node_size=map(
+                                   node_size=list(map(
                                        lambda x: node_size_mapper(x) * .5,
-                                       graph.nodes()), ax=main_ax, alpha=1)
+                                       graph.nodes()), ax=main_ax, alpha=1))
         except (KeyError, ValueError):
             pass
 
@@ -322,18 +322,18 @@ class NetworkerViz(Networker):
         graph, positions = self.graph(adjacency, **graph_settings)
 
         nx.draw_networkx_nodes(graph, positions,
-                               node_color=map(node_color_mapper,
-                                              graph.nodes()),
-                               node_size=map(node_size_mapper, graph.nodes()),
+                               node_color=list(map(node_color_mapper,
+                                              graph.nodes())),
+                               node_size=list(map(node_size_mapper, graph.nodes()),
                                ax=main_ax, alpha=0.5)
         try:
-            node_color = map(lambda x: data[feature_id].ix[x],
-                             graph.nodes())
+            node_color = list(map(lambda x: data[feature_id].ix[x],
+                             graph.nodes()))
             nx.draw_networkx_nodes(graph, positions, node_color=node_color,
                                    cmap=plt.cm.Greys,
-                                   node_size=map(
+                                   node_size=list(map(
                                        lambda x: node_size_mapper(x) * .5,
-                                       graph.nodes()), ax=main_ax, alpha=1)
+                                       graph.nodes()), ax=main_ax, alpha=1))
         except (KeyError, ValueError):
             pass
 

@@ -11,7 +11,7 @@ import seaborn as sns
 from ..compute.splicing import get_switchy_score_order
 from ..util import as_numpy
 
-seaborn_colors = map(mpl.colors.rgb2hex, sns.color_palette('deep'))
+seaborn_colors = list(map(mpl.colors.rgb2hex, sns.color_palette('deep')))
 
 
 class _ModalityEstimatorPlotter(object):
