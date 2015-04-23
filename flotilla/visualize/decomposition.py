@@ -483,11 +483,11 @@ class DecompositionViz(object):
                     right=loadings.max() + x_offset)
 
         if self.feature_renamer is not None:
-            labels = list(map(self.feature_renamer, labels))
+            labels = map(self.feature_renamer, labels)
         else:
             labels = labels
 
-        labels = list(map(self.shorten, labels))
+        labels = map(self.shorten, labels)
         # ax.set_yticklabels(map(shorten, labels))
         ax.set_yticklabels(labels)
         for lab in ax.get_xticklabels():
@@ -578,7 +578,7 @@ class DecompositionViz(object):
                                                        4 * nrows))
 
         if self.feature_renamer is not None:
-            renamed_vectors = list(map(self.feature_renamer, vector_labels))
+            renamed_vectors = map(self.feature_renamer, vector_labels)
         else:
             renamed_vectors = vector_labels
         labels = [(y, x) for (y, x) in sorted(zip(renamed_vectors,
