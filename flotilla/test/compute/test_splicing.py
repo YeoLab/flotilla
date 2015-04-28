@@ -164,7 +164,7 @@ class TestModalityEstimator(object):
         test_loglik = estimator._loglik(event)
 
         true_loglik = dict((name, m.logliks(event))
-                           for name, m in estimator.models.iteritems())
+                           for name, m in estimator.models.items())
         pdt.assert_dict_equal(test_loglik, true_loglik)
 
     def test_logsumexp(self, event, estimator):
@@ -173,7 +173,7 @@ class TestModalityEstimator(object):
 
         true_logsumexp = pd.Series(
             dict((name, logsumexp(loglik))
-                 for name, loglik in logliks.iteritems()))
+                 for name, loglik in logliks.items()))
         true_logsumexp['uniform'] = estimator.logbf_thresh
         pdt.assert_series_equal(test_logsumexp, true_logsumexp)
 
