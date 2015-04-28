@@ -421,7 +421,8 @@ def expression_kws(expression_feature_data, expression_feature_rename_col,
 
 @pytest.fixture(scope='module')
 def true_modalities(events, modality_models, groups):
-    data = dict((e, dict((g, (np.random.choice(modality_models.keys())))
+    modality_names = list(modality_models.keys())
+    data = dict((e, dict((g, (np.random.choice(modality_names)))
                          for g in groups)) for e in events)
     return pd.DataFrame(data)
 
