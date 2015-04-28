@@ -668,8 +668,8 @@ class Study(object):
         outlier_detector.predict(reducer.reduced_space)
         outlier_detector.title = "_".join(
             ['outlier', data_type, sample_subset, feature_subset])
-        print "setting outlier type:\"{}\" in metadata".format(
-            outlier_detector.title)
+        print("setting outlier type:\"{}\" in metadata".format(
+            outlier_detector.title))
         if outlier_detector.title not in self.metadata.data:
             self.metadata.data[outlier_detector.title] = False
 
