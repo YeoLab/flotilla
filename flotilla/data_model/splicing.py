@@ -276,7 +276,7 @@ class SplicingData(BaseData):
             color = phenotype_to_color[phenotype]
             sample_ids = grouped.groups[phenotype]
             for modality, s in modalities.groupby(modalities):
-                ax = axes_iter.next()
+                ax = axes_iter.__next__()
                 psi = self.data.ix[sample_ids, s.index]
                 # if modality == 'excluded': import pdb; pdb.set_trace()
                 lavalamp(psi, color=color, ax=ax, yticks=yticks)
