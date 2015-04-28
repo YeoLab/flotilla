@@ -325,7 +325,7 @@ class NetworkerViz(Networker):
                                node_color=map(node_color_mapper,
                                               graph.nodes()),
                                node_size=map(node_size_mapper, graph.nodes()),
-                               ax=main_ax, alpha=0.5
+                               ax=main_ax, alpha=0.5)
         try:
             node_color = map(lambda x: data[feature_id].ix[x],
                              graph.nodes())
