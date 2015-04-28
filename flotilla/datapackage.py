@@ -7,7 +7,12 @@ import json
 import os
 import string
 import sys
-import urllib2
+
+import six
+if six.PY2:
+    import urllib2 as urllib
+elif six.PY3:
+    import urllib 
 
 import matplotlib as mpl
 
