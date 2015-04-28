@@ -53,7 +53,7 @@ class TestStudy(object):
                     ('expression', expression_kws),
                     ('splicing', splicing_kws))
         for data_type, kws in kw_pairs:
-            for kw_name, kw_value in kws.iteritems():
+            for kw_name, kw_value in kws.items():
                 kwargs['{}_{}'.format(data_type, kw_name)] = kw_value
 
         return Study(metadata,
