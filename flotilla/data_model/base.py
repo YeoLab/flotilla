@@ -1484,6 +1484,7 @@ def subsets_from_metadata(metadata, minimum, subset_type, ignore=None):
                         continue
                     name = '{}: {}'.format(col, group)
                     subsets[name] = grouped.groups[group]
+        not_subsets = {}
         for sample_subset in subsets.keys():
             name = 'not ({})'.format(sample_subset)
             if 'False' in name or 'True' in name:
@@ -1491,6 +1492,7 @@ def subsets_from_metadata(metadata, minimum, subset_type, ignore=None):
             if name not in subsets:
                 in_features = metadata.index.isin(subsets[
                     sample_subset])
-                subsets[name] = metadata.index[~in_features]
+                not_subsets[name] = metadata.index[~in_features]
+        subsets.update(not_subsets)
         subsets['all {}'.format(subset_type)] = metadata.index
     return subsets

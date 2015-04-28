@@ -328,6 +328,7 @@ def test_subsets_from_metadata(expression_feature_data):
                         continue
                     name = '{}: {}'.format(col, group)
                     true_subsets[name] = grouped.groups[group]
+        not_subsets = {}
         for sample_subset in true_subsets.keys():
             name = 'not ({})'.format(sample_subset)
             if 'False' in name or 'True' in name:
@@ -335,7 +336,8 @@ def test_subsets_from_metadata(expression_feature_data):
             if name not in true_subsets:
                 in_features = metadata.index.isin(true_subsets[
                     sample_subset])
-                true_subsets[name] = metadata.index[~in_features]
+                not_subsets[name] = metadata.index[~in_features]
+        true_subsets.update(not_subsets)
         true_subsets['all {}'.format(subset_type)] = metadata.index
 
     pdt.assert_dict_equal(true_subsets, test_subsets)
