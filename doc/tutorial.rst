@@ -27,9 +27,9 @@ Exploratory Analysis
 .. toctree::
     :maxdepth: 2
 
-    tutorial/modalities
-    tutorial/supplementaldata
     tutorial/brainspan
+    tutorial/supplementaldata
+    tutorial/modalities
 
 
 .. Plotting functions
