@@ -11,29 +11,25 @@ Install flotilla
 
     installation
 
-Create a datapackage
---------------------
-
-.. toctree::
-    :maxdepth: 1
-
-    tutorial/barebones_study_making
-
-Computing on splicing data
---------------------------
-
-.. toctree::
-    :maxdepth: 1
-
-    tutorial/modalities
-
-Day to day helpful tips
------------------------
+Getting Started: Downloading, cleaning, and importing data
+----------------------------------------------------------
 
 .. toctree::
     :maxdepth: 2
 
+    tutorial/getting_started_shalek2013
+    tutorial/getting_started_brainspan
+
+Exploratory Analysis
+--------------------
+
+
+.. toctree::
+    :maxdepth: 2
+
+    tutorial/modalities
     tutorial/supplementaldata
+    tutorial/brainspan
 
 
 .. Plotting functions
@@ -50,6 +46,6 @@ Recreated papers
 ----------------
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
 
     tutorial/shalek2013

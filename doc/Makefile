@@ -52,7 +52,6 @@ clean:
 	rm -rf modules.rst
 	rm -rf tutorial/*.rst
 	rm -rf tutorial/*_files
-	rm -rf tutorial/*.ipynb
 	rm -rf gallery*
 	rm -rf generated
 	rm -rf apidoc
