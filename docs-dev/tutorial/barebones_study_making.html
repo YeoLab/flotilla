@@ -30,9 +30,6 @@
     <script type="text/javascript" src="../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
     <link rel="top" title="flotilla 0.2.7 documentation" href="../index.html" />
-    <link rel="up" title="Flotilla tutorial" href="../tutorial.html" />
-    <link rel="next" title="Accurate estimation of alternative splicing modalities" href="modalities.html" />
-    <link rel="prev" title="OS X Installation instructions" href="../installation.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -71,7 +68,7 @@
      href="../index.html">Site <b class="caret"></b></a>
   <ul class="dropdown-menu globaltoc"
       role="menu"
-      aria-labelledby="dLabelGlobalToc"><ul class="current">
+      aria-labelledby="dLabelGlobalToc"><ul>
 <li class="toctree-l1"><a class="reference internal" href="../modules.html">flotilla</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../flotilla.html">flotilla package</a></li>
 </ul>
@@ -99,11 +96,10 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../create_datapackage.html">Create your very own datapackage!</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../tutorial.html">Flotilla tutorial</a><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Flotilla tutorial</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../tutorial.html#install-flotilla">Install flotilla</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../tutorial.html#create-a-datapackage">Create a datapackage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#computing-on-splicing-data">Computing on splicing data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#day-to-day-helpful-tips">Day to day helpful tips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#getting-started-downloading-cleaning-and-importing-data">Getting Started: Downloading, cleaning, and importing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#exploratory-analysis">Exploratory Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../tutorial.html#recreated-papers">Recreated papers</a></li>
 </ul>
 </li>
@@ -121,7 +117,7 @@
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
 <li><a class="reference internal" href="#">Create a barebones datapackage</a><ul>
-<li><a class="reference internal" href="#shalek-and-sujita-et-al-2013">Shalek and Sujita, <em>et al</em> (2013)</a></li>
+<li><a class="reference internal" href="#shalek-and-satija-et-al-2013">Shalek and Satija, <em>et al</em> (2013)</a></li>
 <li><a class="reference internal" href="#expression-data">Expression data</a></li>
 <li><a class="reference internal" href="#expression-feature-data">Expression feature data</a></li>
 <li><a class="reference internal" href="#splicing-data">Splicing Data</a></li>
@@ -178,12 +174,12 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 </pre></div>
 </div>
-<div class="section" id="shalek-and-sujita-et-al-2013">
-<h2>Shalek and Sujita, <em>et al</em> (2013)<a class="headerlink" href="#shalek-and-sujita-et-al-2013" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="shalek-and-satija-et-al-2013">
+<h2>Shalek and Satija, <em>et al</em> (2013)<a class="headerlink" href="#shalek-and-satija-et-al-2013" title="Permalink to this headline">¶</a></h2>
 <p>In the 2013 paper, <a class="reference external" href="http://www.ncbi.nlm.nih.gov/pubmed/23685454">Single-cell transcriptomics reveals bimodality in
 expression and splicing in immune
 cells</a> (Shalek and
-Sujita, <em>et al</em>. <em>Nature</em> (2013)), Regev and colleagues performed
+Satija, <em>et al</em>. <em>Nature</em> (2013)), Regev and colleagues performed
 single-cell sequencing 18 bone marrow-derived dendritic cells (BMDCs),
 in addition to 3 pooled samples.</p>
 </div>
@@ -312,123 +308,123 @@ each gene is a feature. So we will simply transpose this.</p>
   <tbody>
     <tr>
       <th>S1</th>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0.000000</td>
-      <td>  72.008590</td>
-      <td> 0.109249</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.000000</td>
+      <td>72.008590</td>
+      <td>0.109249</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
       <td>...</td>
-      <td> 0</td>
-      <td> 0.774638</td>
-      <td> 23.520936</td>
-      <td>   0.000000</td>
-      <td> 0</td>
-      <td>  460.316773</td>
-      <td> 0</td>
-      <td> 0.000000</td>
-      <td> 39.442566</td>
-      <td> 0</td>
+      <td>0</td>
+      <td>0.774638</td>
+      <td>23.520936</td>
+      <td>0.000000</td>
+      <td>0</td>
+      <td>460.316773</td>
+      <td>0</td>
+      <td>0.000000</td>
+      <td>39.442566</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>S2</th>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0.000000</td>
-      <td>   0.000000</td>
-      <td> 0.172009</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.172009</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
       <td>...</td>
-      <td> 0</td>
-      <td> 0.367391</td>
-      <td>  1.887873</td>
-      <td>   0.000000</td>
-      <td> 0</td>
-      <td>  823.890290</td>
-      <td> 0</td>
-      <td> 0.000000</td>
-      <td>  4.967412</td>
-      <td> 0</td>
+      <td>0</td>
+      <td>0.367391</td>
+      <td>1.887873</td>
+      <td>0.000000</td>
+      <td>0</td>
+      <td>823.890290</td>
+      <td>0</td>
+      <td>0.000000</td>
+      <td>4.967412</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>S3</th>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0.023441</td>
-      <td> 128.062012</td>
-      <td> 0.000000</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.023441</td>
+      <td>128.062012</td>
+      <td>0.000000</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
       <td>...</td>
-      <td> 0</td>
-      <td> 0.249858</td>
-      <td>  0.313510</td>
-      <td>   0.166772</td>
-      <td> 0</td>
-      <td> 1002.354241</td>
-      <td> 0</td>
-      <td> 0.000000</td>
-      <td>  0.000000</td>
-      <td> 0</td>
+      <td>0</td>
+      <td>0.249858</td>
+      <td>0.313510</td>
+      <td>0.166772</td>
+      <td>0</td>
+      <td>1002.354241</td>
+      <td>0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>S4</th>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0.000000</td>
-      <td>   0.095082</td>
-      <td> 0.000000</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.000000</td>
+      <td>0.095082</td>
+      <td>0.000000</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
       <td>...</td>
-      <td> 0</td>
-      <td> 0.354157</td>
-      <td>  0.000000</td>
-      <td>   0.887003</td>
-      <td> 0</td>
-      <td> 1230.766795</td>
-      <td> 0</td>
-      <td> 0.000000</td>
-      <td>  0.131215</td>
-      <td> 0</td>
+      <td>0</td>
+      <td>0.354157</td>
+      <td>0.000000</td>
+      <td>0.887003</td>
+      <td>0</td>
+      <td>1230.766795</td>
+      <td>0</td>
+      <td>0.000000</td>
+      <td>0.131215</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>S5</th>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0.000000</td>
-      <td>   0.000000</td>
-      <td> 0.182703</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.182703</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
       <td>...</td>
-      <td> 0</td>
-      <td> 0.039263</td>
-      <td>  0.000000</td>
-      <td> 131.077131</td>
-      <td> 0</td>
-      <td> 1614.749122</td>
-      <td> 0</td>
-      <td> 0.242179</td>
-      <td> 95.485743</td>
-      <td> 0</td>
+      <td>0</td>
+      <td>0.039263</td>
+      <td>0.000000</td>
+      <td>131.077131</td>
+      <td>0</td>
+      <td>1614.749122</td>
+      <td>0</td>
+      <td>0.242179</td>
+      <td>95.485743</td>
+      <td>0</td>
     </tr>
   </tbody>
 </table>
@@ -491,441 +487,84 @@ as a <tt class="docutils literal"><span class="pre">csv</span></tt> for maximum 
 <span class="n">expression2</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
-<div style="max-height:1000px;max-width:1500px;overflow:auto;">
-<table border="1" class="dataframe">
-  <thead>
-    <tr>
-      <th>'GENE</th>
-      <th>'0610007L01RIK</th>
-      <th>'0610007P14RIK</th>
-      <th>'0610007P22RIK</th>
-      <th>'0610008F07RIK</th>
-      <th>'0610009B22RIK</th>
-      <th>'0610009D07RIK</th>
-      <th>'0610009O20RIK</th>
-      <th>'0610010B08RIK</th>
-      <th>'0610010F05RIK</th>
-      <th>'0610010K06RIK</th>
-      <th>...</th>
-      <th>'ZWILCH</th>
-      <th>'ZWINT</th>
-      <th>'ZXDA</th>
-      <th>'ZXDB</th>
-      <th>'ZXDC</th>
-      <th>'ZYG11A</th>
-      <th>'ZYG11B</th>
-      <th>'ZYX</th>
-      <th>'ZZEF1</th>
-      <th>'ZZZ3</th>
-    </tr>
-    <tr>
-      <th>Gene Category</th>
-      <th>NaN</th>
-      <th>NaN</th>
-      <th>NaN</th>
-      <th>NaN</th>
-      <th>NaN</th>
-      <th>NaN</th>
-      <th>NaN</th>
-      <th>NaN</th>
-      <th>NaN</th>
-      <th>NaN</th>
-      <th>...</th>
-      <th>NaN</th>
-      <th>NaN</th>
-      <th>NaN</th>
-      <th>NaN</th>
-      <th>NaN</th>
-      <th>NaN</th>
-      <th>NaN</th>
-      <th>NaN</th>
-      <th>NaN</th>
-      <th>NaN</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>S1</th>
-      <td> 27.181570</td>
-      <td>  0.166794</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td>   0.000000</td>
-      <td> 178.852732</td>
-      <td> 0</td>
-      <td> 0.962417</td>
-      <td> 0.000000</td>
-      <td> 143.359550</td>
-      <td>...</td>
-      <td> 0.000000</td>
-      <td> 302.361227</td>
-      <td> 0.000000</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0.027717</td>
-      <td> 297.918756</td>
-      <td> 37.685501</td>
-      <td> 0.000000</td>
-    </tr>
-    <tr>
-      <th>S2</th>
-      <td> 37.682691</td>
-      <td>  0.263962</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td>   0.207921</td>
-      <td>   0.141099</td>
-      <td> 0</td>
-      <td> 0.000000</td>
-      <td> 0.000000</td>
-      <td>   0.255617</td>
-      <td>...</td>
-      <td> 0.000000</td>
-      <td>  96.033724</td>
-      <td> 0.020459</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0.042430</td>
-      <td>   0.242888</td>
-      <td>  0.000000</td>
-      <td> 0.000000</td>
-    </tr>
-    <tr>
-      <th>S3</th>
-      <td>  0.056916</td>
-      <td> 78.622459</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td>   0.145680</td>
-      <td>   0.396363</td>
-      <td> 0</td>
-      <td> 0.000000</td>
-      <td> 0.024692</td>
-      <td>  72.775846</td>
-      <td>...</td>
-      <td> 0.000000</td>
-      <td> 427.915555</td>
-      <td> 0.000000</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0.040407</td>
-      <td>   6.753530</td>
-      <td>  0.132011</td>
-      <td> 0.017615</td>
-    </tr>
-    <tr>
-      <th>S4</th>
-      <td> 55.649250</td>
-      <td>  0.228866</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td>   0.000000</td>
-      <td>  88.798158</td>
-      <td> 0</td>
-      <td> 0.000000</td>
-      <td> 0.000000</td>
-      <td>  93.825442</td>
-      <td>...</td>
-      <td> 0.000000</td>
-      <td>   9.788557</td>
-      <td> 0.017787</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0.013452</td>
-      <td>   0.274689</td>
-      <td>  9.724890</td>
-      <td> 0.000000</td>
-    </tr>
-    <tr>
-      <th>S5</th>
-      <td>  0.000000</td>
-      <td>  0.093117</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 131.326008</td>
-      <td> 155.936361</td>
-      <td> 0</td>
-      <td> 0.000000</td>
-      <td> 0.000000</td>
-      <td>   0.031029</td>
-      <td>...</td>
-      <td> 0.204522</td>
-      <td>  26.575760</td>
-      <td> 0.000000</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 1.101589</td>
-      <td>  59.256094</td>
-      <td> 44.430726</td>
-      <td> 0.000000</td>
-    </tr>
-  </tbody>
-</table>
-<p>5 rows × 27723 columns</p>
-</div><p>Now we need to strip the single-quote I added to all the gene names:</p>
+<div class="highlight-python"><div class="highlight"><pre>---------------------------------------------------------------------------
+IOError                                   Traceback (most recent call last)
+
+&lt;ipython-input-5-623c304ac226&gt; in &lt;module&gt;()
+      2                             # Need to specify the index column as both the first and the last columns,
+      3                             # Because the last column is the &quot;Gene Category&quot;
+----&gt; 4                             index_col=[0, -1], parse_dates=False, infer_datetime_format=False)
+      5
+      6 # This was also in features x samples format, so we need to transpose
+
+
+/Users/olga/anaconda/envs/flotilla_docs/lib/python2.7/site-packages/pandas/io/parsers.pyc in parser_f(filepath_or_buffer, sep, dialect, compression, doublequote, escapechar, quotechar, quoting, skipinitialspace, lineterminator, header, index_col, names, prefix, skiprows, skipfooter, skip_footer, na_values, na_fvalues, true_values, false_values, delimiter, converters, dtype, usecols, engine, delim_whitespace, as_recarray, na_filter, compact_ints, use_unsigned, low_memory, buffer_lines, warn_bad_lines, error_bad_lines, keep_default_na, thousands, comment, decimal, parse_dates, keep_date_col, dayfirst, date_parser, memory_map, float_precision, nrows, iterator, chunksize, verbose, encoding, squeeze, mangle_dupe_cols, tupleize_cols, infer_datetime_format, skip_blank_lines)
+    468                     skip_blank_lines=skip_blank_lines)
+    469
+--&gt; 470         return _read(filepath_or_buffer, kwds)
+    471
+    472     parser_f.__name__ = name
+
+
+/Users/olga/anaconda/envs/flotilla_docs/lib/python2.7/site-packages/pandas/io/parsers.pyc in _read(filepath_or_buffer, kwds)
+    244
+    245     # Create the parser.
+--&gt; 246     parser = TextFileReader(filepath_or_buffer, **kwds)
+    247
+    248     if (nrows is not None) and (chunksize is not None):
+
+
+/Users/olga/anaconda/envs/flotilla_docs/lib/python2.7/site-packages/pandas/io/parsers.pyc in __init__(self, f, engine, **kwds)
+    560             self.options[&#39;has_index_names&#39;] = kwds[&#39;has_index_names&#39;]
+    561
+--&gt; 562         self._make_engine(self.engine)
+    563
+    564     def _get_options_with_defaults(self, engine):
+
+
+/Users/olga/anaconda/envs/flotilla_docs/lib/python2.7/site-packages/pandas/io/parsers.pyc in _make_engine(self, engine)
+    697     def _make_engine(self, engine=&#39;c&#39;):
+    698         if engine == &#39;c&#39;:
+--&gt; 699             self._engine = CParserWrapper(self.f, **self.options)
+    700         else:
+    701             if engine == &#39;python&#39;:
+
+
+/Users/olga/anaconda/envs/flotilla_docs/lib/python2.7/site-packages/pandas/io/parsers.pyc in __init__(self, src, **kwds)
+   1064         kwds[&#39;allow_leading_cols&#39;] = self.index_col is not False
+   1065
+-&gt; 1066         self._reader = _parser.TextReader(src, **kwds)
+   1067
+   1068         # XXX
+
+
+/Users/olga/anaconda/envs/flotilla_docs/lib/python2.7/site-packages/pandas/parser.so in pandas.parser.TextReader.__cinit__ (pandas/parser.c:3163)()
+
+
+/Users/olga/anaconda/envs/flotilla_docs/lib/python2.7/site-packages/pandas/parser.so in pandas.parser.TextReader._setup_parser_source (pandas/parser.c:5779)()
+
+
+IOError: File nature12172-s1/Supplementary_Table2.csv does not exist
+</pre></div>
+</div>
+<p>Now we need to strip the single-quote I added to all the gene names:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">new_index</span><span class="p">,</span> <span class="n">indexer</span> <span class="o">=</span> <span class="n">expression2</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s">&quot;&#39;&quot;</span><span class="p">),</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">expression2</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
 <span class="n">expression2</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">new_index</span>
 <span class="n">expression2</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
-<div style="max-height:1000px;max-width:1500px;overflow:auto;">
-<table border="1" class="dataframe">
-  <thead>
-    <tr>
-      <th>'GENE</th>
-      <th>0610007L01RIK</th>
-      <th>0610007P14RIK</th>
-      <th>0610007P22RIK</th>
-      <th>0610008F07RIK</th>
-      <th>0610009B22RIK</th>
-      <th>0610009D07RIK</th>
-      <th>0610009O20RIK</th>
-      <th>0610010B08RIK</th>
-      <th>0610010F05RIK</th>
-      <th>0610010K06RIK</th>
-      <th>...</th>
-      <th>ZWILCH</th>
-      <th>ZWINT</th>
-      <th>ZXDA</th>
-      <th>ZXDB</th>
-      <th>ZXDC</th>
-      <th>ZYG11A</th>
-      <th>ZYG11B</th>
-      <th>ZYX</th>
-      <th>ZZEF1</th>
-      <th>ZZZ3</th>
-    </tr>
-    <tr>
-      <th>Gene Category</th>
-      <th>NaN</th>
-      <th>NaN</th>
-      <th>NaN</th>
-      <th>NaN</th>
-      <th>NaN</th>
-      <th>NaN</th>
-      <th>NaN</th>
-      <th>NaN</th>
-      <th>NaN</th>
-      <th>NaN</th>
-      <th>...</th>
-      <th>NaN</th>
-      <th>NaN</th>
-      <th>NaN</th>
-      <th>NaN</th>
-      <th>NaN</th>
-      <th>NaN</th>
-      <th>NaN</th>
-      <th>NaN</th>
-      <th>NaN</th>
-      <th>NaN</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>S1</th>
-      <td> 27.181570</td>
-      <td>  0.166794</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td>   0.000000</td>
-      <td> 178.852732</td>
-      <td> 0</td>
-      <td> 0.962417</td>
-      <td> 0.000000</td>
-      <td> 143.359550</td>
-      <td>...</td>
-      <td> 0.000000</td>
-      <td> 302.361227</td>
-      <td> 0.000000</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0.027717</td>
-      <td> 297.918756</td>
-      <td> 37.685501</td>
-      <td> 0.000000</td>
-    </tr>
-    <tr>
-      <th>S2</th>
-      <td> 37.682691</td>
-      <td>  0.263962</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td>   0.207921</td>
-      <td>   0.141099</td>
-      <td> 0</td>
-      <td> 0.000000</td>
-      <td> 0.000000</td>
-      <td>   0.255617</td>
-      <td>...</td>
-      <td> 0.000000</td>
-      <td>  96.033724</td>
-      <td> 0.020459</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0.042430</td>
-      <td>   0.242888</td>
-      <td>  0.000000</td>
-      <td> 0.000000</td>
-    </tr>
-    <tr>
-      <th>S3</th>
-      <td>  0.056916</td>
-      <td> 78.622459</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td>   0.145680</td>
-      <td>   0.396363</td>
-      <td> 0</td>
-      <td> 0.000000</td>
-      <td> 0.024692</td>
-      <td>  72.775846</td>
-      <td>...</td>
-      <td> 0.000000</td>
-      <td> 427.915555</td>
-      <td> 0.000000</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0.040407</td>
-      <td>   6.753530</td>
-      <td>  0.132011</td>
-      <td> 0.017615</td>
-    </tr>
-    <tr>
-      <th>S4</th>
-      <td> 55.649250</td>
-      <td>  0.228866</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td>   0.000000</td>
-      <td>  88.798158</td>
-      <td> 0</td>
-      <td> 0.000000</td>
-      <td> 0.000000</td>
-      <td>  93.825442</td>
-      <td>...</td>
-      <td> 0.000000</td>
-      <td>   9.788557</td>
-      <td> 0.017787</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0.013452</td>
-      <td>   0.274689</td>
-      <td>  9.724890</td>
-      <td> 0.000000</td>
-    </tr>
-    <tr>
-      <th>S5</th>
-      <td>  0.000000</td>
-      <td>  0.093117</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 131.326008</td>
-      <td> 155.936361</td>
-      <td> 0</td>
-      <td> 0.000000</td>
-      <td> 0.000000</td>
-      <td>   0.031029</td>
-      <td>...</td>
-      <td> 0.204522</td>
-      <td>  26.575760</td>
-      <td> 0.000000</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 0</td>
-      <td> 1.101589</td>
-      <td>  59.256094</td>
-      <td> 44.430726</td>
-      <td> 0.000000</td>
-    </tr>
-  </tbody>
-</table>
-<p>5 rows × 27723 columns</p>
-</div><p>We want to create a <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> from the &#8220;Gene Category&#8221; row
+<p>We want to create a <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> from the &#8220;Gene Category&#8221; row
 for our <tt class="docutils literal"><span class="pre">expression_feature_data</span></tt>, which we will do via:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">gene_ids</span><span class="p">,</span> <span class="n">gene_category</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">expression2</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 <span class="n">gene_categories</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">gene_category</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">gene_ids</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&#39;gene_category&#39;</span><span class="p">)</span>
 <span class="n">gene_categories</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>0610007L01RIK    NaN
-0610007P14RIK    NaN
-0610007P22RIK    NaN
-0610008F07RIK    NaN
-0610009B22RIK    NaN
-0610009D07RIK    NaN
-0610009O20RIK    NaN
-0610010B08RIK    NaN
-0610010F05RIK    NaN
-0610010K06RIK    NaN
-0610010K14RIK    NaN
-0610010O12RIK    NaN
-0610011F06RIK    NaN
-0610011L14RIK    NaN
-0610012G03RIK    NaN
-...
-ZSWIM5             NaN
-ZSWIM6             NaN
-ZSWIM7             NaN
-ZUFSP     LPS Response
-ZW10               NaN
-ZWILCH             NaN
-ZWINT              NaN
-ZXDA               NaN
-ZXDB               NaN
-ZXDC               NaN
-ZYG11A             NaN
-ZYG11B             NaN
-ZYX                NaN
-ZZEF1              NaN
-ZZZ3               NaN
-Name: gene_category, Length: 27723, dtype: object
-</pre></div>
-</div>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">expression_feature_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">gene_categories</span><span class="p">)</span>
 <span class="n">expression_feature_data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
-<div style="max-height:1000px;max-width:1500px;overflow:auto;">
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>gene_category</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0610007L01RIK</th>
-      <td> NaN</td>
-    </tr>
-    <tr>
-      <th>0610007P14RIK</th>
-      <td> NaN</td>
-    </tr>
-    <tr>
-      <th>0610007P22RIK</th>
-      <td> NaN</td>
-    </tr>
-    <tr>
-      <th>0610008F07RIK</th>
-      <td> NaN</td>
-    </tr>
-    <tr>
-      <th>0610009B22RIK</th>
-      <td> NaN</td>
-    </tr>
-  </tbody>
-</table>
-</div></div>
+</div>
 <div class="section" id="splicing-data">
 <h2>Splicing Data<a class="headerlink" href="#splicing-data" title="Permalink to this headline">¶</a></h2>
 <p>We obtain the splicing data from this study from the supplementary
@@ -934,727 +573,13 @@ information, specifically the <tt class="docutils literal"><span class="pre">Sup
 <span class="n">splicing</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
-<div style="max-height:1000px;max-width:1500px;overflow:auto;">
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th></th>
-      <th>S1</th>
-      <th>S2</th>
-      <th>S3</th>
-      <th>S4</th>
-      <th>S5</th>
-      <th>S6</th>
-      <th>S7</th>
-      <th>S8</th>
-      <th>S9</th>
-      <th>S10</th>
-      <th>S11</th>
-      <th>S13</th>
-      <th>S14</th>
-      <th>S15</th>
-      <th>S16</th>
-      <th>S17</th>
-      <th>S18</th>
-      <th>10,000 cell Rep1 (P1)</th>
-      <th>10,000 cell Rep2 (P2)</th>
-      <th>10,000 cell Rep3 (P3)</th>
-    </tr>
-    <tr>
-      <th>Event name</th>
-      <th>gene</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>chr10:126534988:126535177:-@chr10:126533971:126534135:-@chr10:126533686:126533798:-</th>
-      <th>Os9</th>
-      <td> 0.84</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td> 0.01</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>NaN</td>
-      <td> 0.03</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td> 0.02</td>
-      <td>NaN</td>
-      <td> 0.01</td>
-      <td>NaN</td>
-      <td> 0.27</td>
-      <td> 0.37</td>
-      <td> 0.31</td>
-    </tr>
-    <tr>
-      <th>chr10:14403870:14403945:-@chr10:14395740:14395848:-@chr10:14387738:14387914:-</th>
-      <th>Vta1</th>
-      <td> 0.95</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td> 0.84</td>
-      <td> 0.95</td>
-      <td> 0.91</td>
-      <td> 0.87</td>
-      <td> 0.86</td>
-      <td>  NaN</td>
-      <td>NaN</td>
-      <td> 0.93</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td> 0.96</td>
-      <td>NaN</td>
-      <td>  NaN</td>
-      <td>NaN</td>
-      <td> 0.83</td>
-      <td> 0.85</td>
-      <td> 0.64</td>
-    </tr>
-    <tr>
-      <th>chr10:20051892:20052067:+@chr10:20052202:20052363:+@chr10:20053198:20053697:+</th>
-      <th>Bclaf1</th>
-      <td>  NaN</td>
-      <td> 0.04</td>
-      <td> 0.02</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td> 0.14</td>
-      <td>  NaN</td>
-      <td> 0.02</td>
-      <td>  NaN</td>
-      <td>NaN</td>
-      <td>  NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td> 0.01</td>
-      <td>NaN</td>
-      <td>  NaN</td>
-      <td>NaN</td>
-      <td> 0.40</td>
-      <td> 0.49</td>
-      <td> 0.59</td>
-    </tr>
-    <tr>
-      <th>chr10:20052864:20053378:+@chr10:20054305:20054451:+@chr10:20059515:20059727:+</th>
-      <th>Bclaf1</th>
-      <td> 0.02</td>
-      <td> 0.98</td>
-      <td> 0.55</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td> 0.98</td>
-      <td>  NaN</td>
-      <td>NaN</td>
-      <td>  NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td> 0.06</td>
-      <td>NaN</td>
-      <td>  NaN</td>
-      <td>NaN</td>
-      <td> 0.62</td>
-      <td> 0.63</td>
-      <td> 0.70</td>
-    </tr>
-    <tr>
-      <th>chr10:58814831:58815007:+@chr10:58817088:58817158:+@chr10:58818098:58818168:+@chr10:58824609:58824708:+</th>
-      <th>P4ha1</th>
-      <td> 0.42</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td> 0.94</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td> 0.03</td>
-      <td> 0.97</td>
-      <td>NaN</td>
-      <td>  NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>  NaN</td>
-      <td>NaN</td>
-      <td>  NaN</td>
-      <td>NaN</td>
-      <td> 0.43</td>
-      <td> 0.36</td>
-      <td> 0.52</td>
-    </tr>
-  </tbody>
-</table>
-</div><div class="code python highlight-python"><div class="highlight"><pre><span class="n">splicing</span> <span class="o">=</span> <span class="n">splicing</span><span class="o">.</span><span class="n">T</span>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">splicing</span> <span class="o">=</span> <span class="n">splicing</span><span class="o">.</span><span class="n">T</span>
 <span class="n">splicing</span>
 </pre></div>
 </div>
-<div style="max-height:1000px;max-width:1500px;overflow:auto;">
-<table border="1" class="dataframe">
-  <thead>
-    <tr>
-      <th>Event name</th>
-      <th>chr10:126534988:126535177:-@chr10:126533971:126534135:-@chr10:126533686:126533798:-</th>
-      <th>chr10:14403870:14403945:-@chr10:14395740:14395848:-@chr10:14387738:14387914:-</th>
-      <th>chr10:20051892:20052067:+@chr10:20052202:20052363:+@chr10:20053198:20053697:+</th>
-      <th>chr10:20052864:20053378:+@chr10:20054305:20054451:+@chr10:20059515:20059727:+</th>
-      <th>chr10:58814831:58815007:+@chr10:58817088:58817158:+@chr10:58818098:58818168:+@chr10:58824609:58824708:+</th>
-      <th>chr10:79173370:79173665:+@chr10:79174001:79174029:+@chr10:79174239:79174726:+</th>
-      <th>chr10:79322526:79322700:+@chr10:79322862:79322939:+@chr10:79323569:79323862:+</th>
-      <th>chr10:87376364:87376545:+@chr10:87378043:87378094:+@chr10:87393420:87399792:+</th>
-      <th>chr10:92747514:92747722:-@chr10:92727625:92728425:-@chr10:92717434:92717556:-</th>
-      <th>chr11:101438508:101438565:+@chr11:101439246:101439351:+@chr11:101441899:101443267:+</th>
-      <th>...</th>
-      <th>chr8:126022488:126022598:+@chr8:126023892:126024007:+@chr8:126025133:126025333:+</th>
-      <th>chr14:51455667:51455879:-@chr14:51453589:51453752:-@chr14:51453129:51453242:-</th>
-      <th>chr17:29497858:29498102:+@chr17:29500656:29500887:+@chr17:29501856:29502226:+</th>
-      <th>chr2:94198908:94199094:-@chr2:94182784:94182954:-@chr2:94172950:94173209:-</th>
-      <th>chr9:21314438:21314697:-@chr9:21313375:21313558:-@chr9:21311823:21312835:-</th>
-      <th>chr9:21314438:21314697:-@chr9:21313375:21313795:-@chr9:21311823:21312835:-</th>
-      <th>chr10:79545360:79545471:-@chr10:79542698:79544127:-@chr10:79533365:79535263:-</th>
-      <th>chr17:5975579:5975881:+@chr17:5985972:5986242:+@chr17:5990136:5990361:+</th>
-      <th>chr2:29997782:29997941:+@chr2:30002172:30002382:+@chr2:30002882:30003045:+</th>
-      <th>chr7:119221306:119221473:+@chr7:119223686:119223745:+@chr7:119225944:119226075:+</th>
-    </tr>
-    <tr>
-      <th>gene</th>
-      <th>Os9</th>
-      <th>Vta1</th>
-      <th>Bclaf1</th>
-      <th>Bclaf1</th>
-      <th>P4ha1</th>
-      <th>Bsg</th>
-      <th>Ptbp1</th>
-      <th>Igf1</th>
-      <th>Elk3</th>
-      <th>Nbr1</th>
-      <th>...</th>
-      <th>Afg3l1</th>
-      <th>Tep1</th>
-      <th>Fgd2</th>
-      <th>Ttc17</th>
-      <th>Tmed1</th>
-      <th>Tmed1</th>
-      <th>Sbno2</th>
-      <th>Synj2</th>
-      <th>Tbc1d13</th>
-      <th>Usp47</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>S1</th>
-      <td> 0.84</td>
-      <td> 0.95</td>
-      <td>  NaN</td>
-      <td> 0.02</td>
-      <td> 0.42</td>
-      <td>  NaN</td>
-      <td> 0.57</td>
-      <td> 0.31</td>
-      <td> 0.93</td>
-      <td> 0.57</td>
-      <td>...</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-    </tr>
-    <tr>
-      <th>S2</th>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td> 0.04</td>
-      <td> 0.98</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>...</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-    </tr>
-    <tr>
-      <th>S3</th>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td> 0.02</td>
-      <td> 0.55</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td> 0.20</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>...</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-    </tr>
-    <tr>
-      <th>S4</th>
-      <td>  NaN</td>
-      <td> 0.84</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td> 0.95</td>
-      <td>  NaN</td>
-      <td> 0.04</td>
-      <td>...</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-    </tr>
-    <tr>
-      <th>S5</th>
-      <td>  NaN</td>
-      <td> 0.95</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td> 0.94</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td> 0.73</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>...</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-    </tr>
-    <tr>
-      <th>S6</th>
-      <td> 0.01</td>
-      <td> 0.91</td>
-      <td> 0.14</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td> 0.61</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>...</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-    </tr>
-    <tr>
-      <th>S7</th>
-      <td>  NaN</td>
-      <td> 0.87</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td> 0.62</td>
-      <td>  NaN</td>
-      <td> 0.85</td>
-      <td> 0.73</td>
-      <td> 0.55</td>
-      <td>...</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-    </tr>
-    <tr>
-      <th>S8</th>
-      <td>  NaN</td>
-      <td> 0.86</td>
-      <td> 0.02</td>
-      <td> 0.98</td>
-      <td> 0.03</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td> 0.89</td>
-      <td> 0.82</td>
-      <td> 0.83</td>
-      <td>...</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-    </tr>
-    <tr>
-      <th>S9</th>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td> 0.97</td>
-      <td>  NaN</td>
-      <td> 0.97</td>
-      <td>  NaN</td>
-      <td> 0.90</td>
-      <td>  NaN</td>
-      <td>...</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-    </tr>
-    <tr>
-      <th>S10</th>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td> 0.06</td>
-      <td> 0.98</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>...</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-    </tr>
-    <tr>
-      <th>S11</th>
-      <td> 0.03</td>
-      <td> 0.93</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td> 0.97</td>
-      <td>  NaN</td>
-      <td>...</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-    </tr>
-    <tr>
-      <th>S13</th>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>...</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-    </tr>
-    <tr>
-      <th>S14</th>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td> 0.88</td>
-      <td>...</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-    </tr>
-    <tr>
-      <th>S15</th>
-      <td> 0.02</td>
-      <td> 0.96</td>
-      <td> 0.01</td>
-      <td> 0.06</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td> 0.44</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>...</td>
-      <td> 0.91</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-    </tr>
-    <tr>
-      <th>S16</th>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>...</td>
-      <td>  NaN</td>
-      <td> 0.27</td>
-      <td> 0.99</td>
-      <td> 0.99</td>
-      <td> 0.98</td>
-      <td> 0.98</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-    </tr>
-    <tr>
-      <th>S17</th>
-      <td> 0.01</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>...</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td> 0.96</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td> 0.99</td>
-      <td> 0.98</td>
-      <td> 0.67</td>
-      <td> 0.07</td>
-    </tr>
-    <tr>
-      <th>S18</th>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>...</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-    </tr>
-    <tr>
-      <th>10,000 cell Rep1 (P1)</th>
-      <td> 0.27</td>
-      <td> 0.83</td>
-      <td> 0.40</td>
-      <td> 0.62</td>
-      <td> 0.43</td>
-      <td> 0.78</td>
-      <td>  NaN</td>
-      <td> 0.60</td>
-      <td> 0.76</td>
-      <td> 0.52</td>
-      <td>...</td>
-      <td> 0.92</td>
-      <td>  NaN</td>
-      <td> 0.81</td>
-      <td> 0.77</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td> 0.84</td>
-      <td> 0.50</td>
-      <td> 0.56</td>
-      <td>  NaN</td>
-    </tr>
-    <tr>
-      <th>10,000 cell Rep2 (P2)</th>
-      <td> 0.37</td>
-      <td> 0.85</td>
-      <td> 0.49</td>
-      <td> 0.63</td>
-      <td> 0.36</td>
-      <td> 0.72</td>
-      <td> 0.47</td>
-      <td> 0.60</td>
-      <td> 0.73</td>
-      <td> 0.68</td>
-      <td>...</td>
-      <td> 0.67</td>
-      <td> 0.15</td>
-      <td> 0.52</td>
-      <td> 0.67</td>
-      <td> 0.63</td>
-      <td> 0.73</td>
-      <td> 0.82</td>
-      <td> 0.90</td>
-      <td> 0.71</td>
-      <td> 0.55</td>
-    </tr>
-    <tr>
-      <th>10,000 cell Rep3 (P3)</th>
-      <td> 0.31</td>
-      <td> 0.64</td>
-      <td> 0.59</td>
-      <td> 0.70</td>
-      <td> 0.52</td>
-      <td> 0.79</td>
-      <td>  NaN</td>
-      <td> 0.65</td>
-      <td> 0.42</td>
-      <td> 0.64</td>
-      <td>...</td>
-      <td> 0.58</td>
-      <td> 0.79</td>
-      <td> 0.74</td>
-      <td> 0.85</td>
-      <td> 0.73</td>
-      <td> 0.39</td>
-      <td> 0.56</td>
-      <td>  NaN</td>
-      <td> 0.64</td>
-      <td>  NaN</td>
-    </tr>
-  </tbody>
-</table>
-<p>20 rows × 352 columns</p>
-</div><p>The three pooled samples aren&#8217;t named consistently with the expression
+<p>The three pooled samples aren&#8217;t named consistently with the expression
 data, so we have to fix that.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">splicing</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">splicing</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s">&#39;P&#39;</span> <span class="ow">in</span> <span class="n">x</span><span class="p">)]</span>
-</pre></div>
-</div>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">Index</span><span class="p">([</span><span class="s">u&#39;10,000 cell Rep1 (P1)&#39;</span><span class="p">,</span> <span class="s">u&#39;10,000 cell Rep2 (P2)&#39;</span><span class="p">,</span> <span class="s">u&#39;10,000 cell Rep3 (P3)&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;object&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Since the pooled sample IDs are inconsistent with the <tt class="docutils literal"><span class="pre">expression</span></tt>
@@ -1663,9 +588,6 @@ that using regular expressions, called <tt class="docutils literal"><span class=
 library, e.g.:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">re</span>
 <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">r&#39;P\d&#39;</span><span class="p">,</span> <span class="s">&#39;10,000 cell Rep1 (P1)&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
-</pre></div>
-</div>
-<div class="highlight-python"><div class="highlight"><pre><span class="s">&#39;P1&#39;</span>
 </pre></div>
 </div>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">long_pooled_name_to_short</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
@@ -1678,194 +600,13 @@ library, e.g.:</p>
 <span class="n">splicing</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">long_pooled_name_to_short</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">array</span><span class="p">([</span><span class="s">u&#39;S1&#39;</span><span class="p">,</span> <span class="s">u&#39;S2&#39;</span><span class="p">,</span> <span class="s">u&#39;S3&#39;</span><span class="p">,</span> <span class="s">u&#39;S4&#39;</span><span class="p">,</span> <span class="s">u&#39;S5&#39;</span><span class="p">,</span> <span class="s">u&#39;S6&#39;</span><span class="p">,</span> <span class="s">u&#39;S7&#39;</span><span class="p">,</span> <span class="s">u&#39;S8&#39;</span><span class="p">,</span> <span class="s">u&#39;S9&#39;</span><span class="p">,</span>
-       <span class="s">u&#39;S10&#39;</span><span class="p">,</span> <span class="s">u&#39;S11&#39;</span><span class="p">,</span> <span class="s">u&#39;S13&#39;</span><span class="p">,</span> <span class="s">u&#39;S14&#39;</span><span class="p">,</span> <span class="s">u&#39;S15&#39;</span><span class="p">,</span> <span class="s">u&#39;S16&#39;</span><span class="p">,</span> <span class="s">u&#39;S17&#39;</span><span class="p">,</span> <span class="s">u&#39;S18&#39;</span><span class="p">,</span>
-       <span class="s">u&#39;P1&#39;</span><span class="p">,</span> <span class="s">u&#39;P2&#39;</span><span class="p">,</span> <span class="s">u&#39;P3&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
-</pre></div>
-</div>
 <p>And now we assign this new index as our index to the <tt class="docutils literal"><span class="pre">splicing</span></tt>
 dataframe</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">splicing</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">splicing</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">long_pooled_name_to_short</span><span class="p">)</span>
 <span class="n">splicing</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
-<div style="max-height:1000px;max-width:1500px;overflow:auto;">
-<table border="1" class="dataframe">
-  <thead>
-    <tr>
-      <th>Event name</th>
-      <th>chr10:126534988:126535177:-@chr10:126533971:126534135:-@chr10:126533686:126533798:-</th>
-      <th>chr10:14403870:14403945:-@chr10:14395740:14395848:-@chr10:14387738:14387914:-</th>
-      <th>chr10:20051892:20052067:+@chr10:20052202:20052363:+@chr10:20053198:20053697:+</th>
-      <th>chr10:20052864:20053378:+@chr10:20054305:20054451:+@chr10:20059515:20059727:+</th>
-      <th>chr10:58814831:58815007:+@chr10:58817088:58817158:+@chr10:58818098:58818168:+@chr10:58824609:58824708:+</th>
-      <th>chr10:79173370:79173665:+@chr10:79174001:79174029:+@chr10:79174239:79174726:+</th>
-      <th>chr10:79322526:79322700:+@chr10:79322862:79322939:+@chr10:79323569:79323862:+</th>
-      <th>chr10:87376364:87376545:+@chr10:87378043:87378094:+@chr10:87393420:87399792:+</th>
-      <th>chr10:92747514:92747722:-@chr10:92727625:92728425:-@chr10:92717434:92717556:-</th>
-      <th>chr11:101438508:101438565:+@chr11:101439246:101439351:+@chr11:101441899:101443267:+</th>
-      <th>...</th>
-      <th>chr8:126022488:126022598:+@chr8:126023892:126024007:+@chr8:126025133:126025333:+</th>
-      <th>chr14:51455667:51455879:-@chr14:51453589:51453752:-@chr14:51453129:51453242:-</th>
-      <th>chr17:29497858:29498102:+@chr17:29500656:29500887:+@chr17:29501856:29502226:+</th>
-      <th>chr2:94198908:94199094:-@chr2:94182784:94182954:-@chr2:94172950:94173209:-</th>
-      <th>chr9:21314438:21314697:-@chr9:21313375:21313558:-@chr9:21311823:21312835:-</th>
-      <th>chr9:21314438:21314697:-@chr9:21313375:21313795:-@chr9:21311823:21312835:-</th>
-      <th>chr10:79545360:79545471:-@chr10:79542698:79544127:-@chr10:79533365:79535263:-</th>
-      <th>chr17:5975579:5975881:+@chr17:5985972:5986242:+@chr17:5990136:5990361:+</th>
-      <th>chr2:29997782:29997941:+@chr2:30002172:30002382:+@chr2:30002882:30003045:+</th>
-      <th>chr7:119221306:119221473:+@chr7:119223686:119223745:+@chr7:119225944:119226075:+</th>
-    </tr>
-    <tr>
-      <th>gene</th>
-      <th>Os9</th>
-      <th>Vta1</th>
-      <th>Bclaf1</th>
-      <th>Bclaf1</th>
-      <th>P4ha1</th>
-      <th>Bsg</th>
-      <th>Ptbp1</th>
-      <th>Igf1</th>
-      <th>Elk3</th>
-      <th>Nbr1</th>
-      <th>...</th>
-      <th>Afg3l1</th>
-      <th>Tep1</th>
-      <th>Fgd2</th>
-      <th>Ttc17</th>
-      <th>Tmed1</th>
-      <th>Tmed1</th>
-      <th>Sbno2</th>
-      <th>Synj2</th>
-      <th>Tbc1d13</th>
-      <th>Usp47</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>S1</th>
-      <td> 0.84</td>
-      <td> 0.95</td>
-      <td>  NaN</td>
-      <td> 0.02</td>
-      <td> 0.42</td>
-      <td>NaN</td>
-      <td> 0.57</td>
-      <td> 0.31</td>
-      <td> 0.93</td>
-      <td> 0.57</td>
-      <td>...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>S2</th>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td> 0.04</td>
-      <td> 0.98</td>
-      <td>  NaN</td>
-      <td>NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>S3</th>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td> 0.02</td>
-      <td> 0.55</td>
-      <td>  NaN</td>
-      <td>NaN</td>
-      <td>  NaN</td>
-      <td> 0.20</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>S4</th>
-      <td>  NaN</td>
-      <td> 0.84</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>NaN</td>
-      <td>  NaN</td>
-      <td> 0.95</td>
-      <td>  NaN</td>
-      <td> 0.04</td>
-      <td>...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>S5</th>
-      <td>  NaN</td>
-      <td> 0.95</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td> 0.94</td>
-      <td>NaN</td>
-      <td>  NaN</td>
-      <td> 0.73</td>
-      <td>  NaN</td>
-      <td>  NaN</td>
-      <td>...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-  </tbody>
-</table>
-<p>5 rows × 352 columns</p>
-</div></div>
+</div>
 <div class="section" id="metadata">
 <h2>Metadata<a class="headerlink" href="#metadata" title="Permalink to this headline">¶</a></h2>
 <p>Now let&#8217;s get into creating a metadata dataframe. We&#8217;ll use the index
@@ -1880,413 +621,14 @@ this sample is pooled or not.</p>
 <span class="n">metadata</span>
 </pre></div>
 </div>
-<div style="max-height:1000px;max-width:1500px;overflow:auto;">
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>phenotype</th>
-      <th>pooled</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>S1</th>
-      <td> BDMC</td>
-      <td> False</td>
-    </tr>
-    <tr>
-      <th>S2</th>
-      <td> BDMC</td>
-      <td> False</td>
-    </tr>
-    <tr>
-      <th>S3</th>
-      <td> BDMC</td>
-      <td> False</td>
-    </tr>
-    <tr>
-      <th>S4</th>
-      <td> BDMC</td>
-      <td> False</td>
-    </tr>
-    <tr>
-      <th>S5</th>
-      <td> BDMC</td>
-      <td> False</td>
-    </tr>
-    <tr>
-      <th>S6</th>
-      <td> BDMC</td>
-      <td> False</td>
-    </tr>
-    <tr>
-      <th>S7</th>
-      <td> BDMC</td>
-      <td> False</td>
-    </tr>
-    <tr>
-      <th>S8</th>
-      <td> BDMC</td>
-      <td> False</td>
-    </tr>
-    <tr>
-      <th>S9</th>
-      <td> BDMC</td>
-      <td> False</td>
-    </tr>
-    <tr>
-      <th>S10</th>
-      <td> BDMC</td>
-      <td> False</td>
-    </tr>
-    <tr>
-      <th>S11</th>
-      <td> BDMC</td>
-      <td> False</td>
-    </tr>
-    <tr>
-      <th>S12</th>
-      <td> BDMC</td>
-      <td> False</td>
-    </tr>
-    <tr>
-      <th>S13</th>
-      <td> BDMC</td>
-      <td> False</td>
-    </tr>
-    <tr>
-      <th>S14</th>
-      <td> BDMC</td>
-      <td> False</td>
-    </tr>
-    <tr>
-      <th>S15</th>
-      <td> BDMC</td>
-      <td> False</td>
-    </tr>
-    <tr>
-      <th>S16</th>
-      <td> BDMC</td>
-      <td> False</td>
-    </tr>
-    <tr>
-      <th>S17</th>
-      <td> BDMC</td>
-      <td> False</td>
-    </tr>
-    <tr>
-      <th>S18</th>
-      <td> BDMC</td>
-      <td> False</td>
-    </tr>
-    <tr>
-      <th>P1</th>
-      <td> BDMC</td>
-      <td>  True</td>
-    </tr>
-    <tr>
-      <th>P2</th>
-      <td> BDMC</td>
-      <td>  True</td>
-    </tr>
-    <tr>
-      <th>P3</th>
-      <td> BDMC</td>
-      <td>  True</td>
-    </tr>
-  </tbody>
-</table>
-</div></div>
+</div>
 <div class="section" id="mapping-stats-data">
 <h2>Mapping stats data<a class="headerlink" href="#mapping-stats-data" title="Permalink to this headline">¶</a></h2>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">mapping_stats</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s">&#39;nature12172-s1/Supplementary_Table1.xls&#39;</span><span class="p">,</span> <span class="n">sheetname</span><span class="o">=</span><span class="s">&#39;SuppTable1 2.txt&#39;</span><span class="p">)</span>
 <span class="n">mapping_stats</span>
 </pre></div>
 </div>
-<div style="max-height:1000px;max-width:1500px;overflow:auto;">
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Sample</th>
-      <th>PF_READS</th>
-      <th>PCT_MAPPED_GENOME</th>
-      <th>PCT_RIBOSOMAL_BASES</th>
-      <th>MEDIAN_CV_COVERAGE</th>
-      <th>MEDIAN_5PRIME_BIAS</th>
-      <th>MEDIAN_3PRIME_BIAS</th>
-      <th>MEDIAN_5PRIME_TO_3PRIME_BIAS</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0 </th>
-      <td>       S1</td>
-      <td> 21326048</td>
-      <td> 0.706590</td>
-      <td> 0.006820</td>
-      <td> 0.509939</td>
-      <td> 0.092679</td>
-      <td> 0.477321</td>
-      <td> 0.247741</td>
-    </tr>
-    <tr>
-      <th>1 </th>
-      <td>       S2</td>
-      <td> 27434011</td>
-      <td> 0.745385</td>
-      <td> 0.004111</td>
-      <td> 0.565732</td>
-      <td> 0.056583</td>
-      <td> 0.321053</td>
-      <td> 0.244062</td>
-    </tr>
-    <tr>
-      <th>2 </th>
-      <td>       S3</td>
-      <td> 31142391</td>
-      <td> 0.722087</td>
-      <td> 0.006428</td>
-      <td> 0.540341</td>
-      <td> 0.079551</td>
-      <td> 0.382286</td>
-      <td> 0.267367</td>
-    </tr>
-    <tr>
-      <th>3 </th>
-      <td>       S4</td>
-      <td> 26231852</td>
-      <td> 0.737854</td>
-      <td> 0.004959</td>
-      <td> 0.530978</td>
-      <td> 0.067041</td>
-      <td> 0.351670</td>
-      <td> 0.279782</td>
-    </tr>
-    <tr>
-      <th>4 </th>
-      <td>       S5</td>
-      <td> 29977214</td>
-      <td> 0.746466</td>
-      <td> 0.006121</td>
-      <td> 0.525598</td>
-      <td> 0.066543</td>
-      <td> 0.353995</td>
-      <td> 0.274252</td>
-    </tr>
-    <tr>
-      <th>5 </th>
-      <td>       S6</td>
-      <td> 24148387</td>
-      <td> 0.730079</td>
-      <td> 0.008794</td>
-      <td> 0.529650</td>
-      <td> 0.072095</td>
-      <td> 0.413696</td>
-      <td> 0.225929</td>
-    </tr>
-    <tr>
-      <th>6 </th>
-      <td>       S7</td>
-      <td> 24078116</td>
-      <td> 0.730638</td>
-      <td> 0.007945</td>
-      <td> 0.540913</td>
-      <td> 0.051991</td>
-      <td> 0.358597</td>
-      <td> 0.201984</td>
-    </tr>
-    <tr>
-      <th>7 </th>
-      <td>       S8</td>
-      <td> 25032126</td>
-      <td> 0.739989</td>
-      <td> 0.004133</td>
-      <td> 0.512725</td>
-      <td> 0.058783</td>
-      <td> 0.373509</td>
-      <td> 0.212337</td>
-    </tr>
-    <tr>
-      <th>8 </th>
-      <td>       S9</td>
-      <td> 22257682</td>
-      <td> 0.747427</td>
-      <td> 0.004869</td>
-      <td> 0.521622</td>
-      <td> 0.063566</td>
-      <td> 0.334294</td>
-      <td> 0.240641</td>
-    </tr>
-    <tr>
-      <th>9 </th>
-      <td>      S10</td>
-      <td> 29436289</td>
-      <td> 0.748795</td>
-      <td> 0.005499</td>
-      <td> 0.560454</td>
-      <td> 0.036219</td>
-      <td> 0.306729</td>
-      <td> 0.187479</td>
-    </tr>
-    <tr>
-      <th>10</th>
-      <td>      S11</td>
-      <td> 31130278</td>
-      <td> 0.741882</td>
-      <td> 0.002740</td>
-      <td> 0.558882</td>
-      <td> 0.049581</td>
-      <td> 0.349191</td>
-      <td> 0.211787</td>
-    </tr>
-    <tr>
-      <th>11</th>
-      <td>      S12</td>
-      <td> 21161595</td>
-      <td> 0.750782</td>
-      <td> 0.006837</td>
-      <td> 0.756339</td>
-      <td> 0.013878</td>
-      <td> 0.324264</td>
-      <td> 0.195430</td>
-    </tr>
-    <tr>
-      <th>12</th>
-      <td>      S13</td>
-      <td> 28612833</td>
-      <td> 0.733976</td>
-      <td> 0.011718</td>
-      <td> 0.598687</td>
-      <td> 0.035392</td>
-      <td> 0.357447</td>
-      <td> 0.198566</td>
-    </tr>
-    <tr>
-      <th>13</th>
-      <td>      S14</td>
-      <td> 26351189</td>
-      <td> 0.748323</td>
-      <td> 0.004106</td>
-      <td> 0.517518</td>
-      <td> 0.070293</td>
-      <td> 0.381095</td>
-      <td> 0.259122</td>
-    </tr>
-    <tr>
-      <th>14</th>
-      <td>      S15</td>
-      <td> 25739575</td>
-      <td> 0.748421</td>
-      <td> 0.003353</td>
-      <td> 0.526238</td>
-      <td> 0.050938</td>
-      <td> 0.324207</td>
-      <td> 0.212366</td>
-    </tr>
-    <tr>
-      <th>15</th>
-      <td>      S16</td>
-      <td> 26802346</td>
-      <td> 0.739833</td>
-      <td> 0.009370</td>
-      <td> 0.520287</td>
-      <td> 0.071503</td>
-      <td> 0.358758</td>
-      <td> 0.240009</td>
-    </tr>
-    <tr>
-      <th>16</th>
-      <td>      S17</td>
-      <td> 26343522</td>
-      <td> 0.749358</td>
-      <td> 0.003155</td>
-      <td> 0.673195</td>
-      <td> 0.024121</td>
-      <td> 0.301588</td>
-      <td> 0.245854</td>
-    </tr>
-    <tr>
-      <th>17</th>
-      <td>      S18</td>
-      <td> 25290073</td>
-      <td> 0.749358</td>
-      <td> 0.007465</td>
-      <td> 0.562382</td>
-      <td> 0.048528</td>
-      <td> 0.314776</td>
-      <td> 0.215160</td>
-    </tr>
-    <tr>
-      <th>18</th>
-      <td> 10k_rep1</td>
-      <td> 28247826</td>
-      <td> 0.688553</td>
-      <td> 0.018993</td>
-      <td> 0.547000</td>
-      <td> 0.056113</td>
-      <td> 0.484393</td>
-      <td> 0.140333</td>
-    </tr>
-    <tr>
-      <th>19</th>
-      <td> 10k_rep2</td>
-      <td> 39303876</td>
-      <td> 0.690313</td>
-      <td> 0.017328</td>
-      <td> 0.547621</td>
-      <td> 0.055600</td>
-      <td> 0.474634</td>
-      <td> 0.142889</td>
-    </tr>
-    <tr>
-      <th>20</th>
-      <td> 10k_rep3</td>
-      <td> 29831281</td>
-      <td> 0.710875</td>
-      <td> 0.010610</td>
-      <td> 0.518053</td>
-      <td> 0.066053</td>
-      <td> 0.488738</td>
-      <td> 0.168180</td>
-    </tr>
-    <tr>
-      <th>21</th>
-      <td>   MB_SC1</td>
-      <td> 13848219</td>
-      <td> 0.545000</td>
-      <td> 0.007000</td>
-      <td> 0.531495</td>
-      <td> 0.127934</td>
-      <td> 0.207841</td>
-      <td> 0.728980</td>
-    </tr>
-    <tr>
-      <th>22</th>
-      <td>   MB_SC2</td>
-      <td> 13550218</td>
-      <td> 0.458000</td>
-      <td> 0.010800</td>
-      <td> 0.569271</td>
-      <td> 0.102581</td>
-      <td> 0.179407</td>
-      <td> 0.694747</td>
-    </tr>
-    <tr>
-      <th>23</th>
-      <td>   MB_SC3</td>
-      <td> 26765848</td>
-      <td> 0.496000</td>
-      <td> 0.007900</td>
-      <td> 0.535192</td>
-      <td> 0.141893</td>
-      <td> 0.231068</td>
-      <td> 0.722080</td>
-    </tr>
-  </tbody>
-</table>
-</div></div>
+</div>
 <div class="section" id="create-a-flotilla-study">
 <h2>Create a <tt class="docutils literal"><span class="pre">flotilla</span></tt> Study!<a class="headerlink" href="#create-a-flotilla-study" title="Permalink to this headline">¶</a></h2>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">study</span> <span class="o">=</span> <span class="n">flotilla</span><span class="o">.</span><span class="n">Study</span><span class="p">(</span><span class="c"># The metadata describing phenotype and pooled samples</span>
@@ -2311,41 +653,9 @@ this sample is pooled or not.</p>
                        <span class="n">mapping_stats_number_mapped_col</span><span class="o">=</span><span class="s">&#39;PF_READS&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>2014-11-04 14:19:33 Initializing Study
-2014-11-04 14:19:33 Initializing Predictor configuration manager for Study
-2014-11-04 14:19:33 Predictor ExtraTreesClassifier is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesClassifier&#39;&gt;
-2014-11-04 14:19:33 Added ExtraTreesClassifier to default predictors
-2014-11-04 14:19:33 Predictor ExtraTreesRegressor is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesRegressor&#39;&gt;
-2014-11-04 14:19:33 Added ExtraTreesRegressor to default predictors
-2014-11-04 14:19:33 Predictor GradientBoostingClassifier is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingClassifier&#39;&gt;
-2014-11-04 14:19:33 Added GradientBoostingClassifier to default predictors
-2014-11-04 14:19:33 Predictor GradientBoostingRegressor is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingRegressor&#39;&gt;
-2014-11-04 14:19:33 Added GradientBoostingRegressor to default predictors
-2014-11-04 14:19:33 Loading metadata
-2014-11-04 14:19:33 Loading expression data
-2014-11-04 14:19:33 Initializing expression
-2014-11-04 14:19:33 Done initializing expression
-2014-11-04 14:19:33 Loading splicing data
-2014-11-04 14:19:33 Initializing splicing
-2014-11-04 14:19:33 Done initializing splicing
-2014-11-04 14:19:33 Successfully initialized a Study object!
-</pre></div>
-</div>
-<div class="highlight-python"><div class="highlight"><pre>No phenotype to color mapping was provided, so coming up with reasonable defaults
-No phenotype to marker (matplotlib plotting symbol) was provided, so each phenotype will be plotted as a circle in the PCA visualizations.
-samples had too few mapped reads (&lt;5.0e+05 reads):
-
-Removing technical outliers from consideration in expression:
-
-Removing technical outliers from consideration in splicing:
-</pre></div>
-</div>
 <p>As a side note, you can save this study to disk now, so you can
 &#8220;<tt class="docutils literal"><span class="pre">embark</span></tt>&#8221; later:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">study</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#39;shalek2013&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-python"><div class="highlight"><pre>Wrote datapackage to /Users/olga/flotilla_projects/shalek2013/datapackage.json
 </pre></div>
 </div>
 <p>Note that this is saved to my home directory, in
@@ -2358,72 +668,6 @@ Knowledge Foundation.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">cat</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">olga</span><span class="o">/</span><span class="n">flotilla_projects</span><span class="o">/</span><span class="n">shalek2013</span><span class="o">/</span><span class="n">datapackage</span><span class="o">.</span><span class="n">json</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
-  <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;shalek2013&quot;</span><span class="p">,</span>
-  <span class="s">&quot;title&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
-  <span class="s">&quot;datapackage_version&quot;</span><span class="p">:</span> <span class="s">&quot;0.1.1&quot;</span><span class="p">,</span>
-  <span class="s">&quot;sources&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
-  <span class="s">&quot;licenses&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
-  <span class="s">&quot;resources&quot;</span><span class="p">:</span> <span class="p">[</span>
-    <span class="p">{</span>
-      <span class="s">&quot;path&quot;</span><span class="p">:</span> <span class="s">&quot;/Users/olga/flotilla_projects/shalek2013/splicing.csv.gz&quot;</span><span class="p">,</span>
-      <span class="s">&quot;format&quot;</span><span class="p">:</span> <span class="s">&quot;csv&quot;</span><span class="p">,</span>
-      <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;splicing&quot;</span><span class="p">,</span>
-      <span class="s">&quot;compression&quot;</span><span class="p">:</span> <span class="s">&quot;gzip&quot;</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="s">&quot;number_mapped_col&quot;</span><span class="p">:</span> <span class="s">&quot;PF_READS&quot;</span><span class="p">,</span>
-      <span class="s">&quot;path&quot;</span><span class="p">:</span> <span class="s">&quot;/Users/olga/flotilla_projects/shalek2013/mapping_stats.csv.gz&quot;</span><span class="p">,</span>
-      <span class="s">&quot;format&quot;</span><span class="p">:</span> <span class="s">&quot;csv&quot;</span><span class="p">,</span>
-      <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;mapping_stats&quot;</span><span class="p">,</span>
-      <span class="s">&quot;compression&quot;</span><span class="p">:</span> <span class="s">&quot;gzip&quot;</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;expression_feature&quot;</span><span class="p">,</span>
-      <span class="s">&quot;format&quot;</span><span class="p">:</span> <span class="s">&quot;csv&quot;</span><span class="p">,</span>
-      <span class="s">&quot;rename_col&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
-      <span class="s">&quot;ignore_subset_cols&quot;</span><span class="p">:</span> <span class="p">[],</span>
-      <span class="s">&quot;path&quot;</span><span class="p">:</span> <span class="s">&quot;/Users/olga/flotilla_projects/shalek2013/expression_feature.csv.gz&quot;</span><span class="p">,</span>
-      <span class="s">&quot;compression&quot;</span><span class="p">:</span> <span class="s">&quot;gzip&quot;</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;expression&quot;</span><span class="p">,</span>
-      <span class="s">&quot;log_base&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
-      <span class="s">&quot;format&quot;</span><span class="p">:</span> <span class="s">&quot;csv&quot;</span><span class="p">,</span>
-      <span class="s">&quot;thresh&quot;</span><span class="p">:</span> <span class="o">-</span><span class="n">Infinity</span><span class="p">,</span>
-      <span class="s">&quot;path&quot;</span><span class="p">:</span> <span class="s">&quot;/Users/olga/flotilla_projects/shalek2013/expression.csv.gz&quot;</span><span class="p">,</span>
-      <span class="s">&quot;compression&quot;</span><span class="p">:</span> <span class="s">&quot;gzip&quot;</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;splicing_feature&quot;</span><span class="p">,</span>
-      <span class="s">&quot;format&quot;</span><span class="p">:</span> <span class="s">&quot;csv&quot;</span><span class="p">,</span>
-      <span class="s">&quot;rename_col&quot;</span><span class="p">:</span> <span class="s">&quot;gene_name&quot;</span><span class="p">,</span>
-      <span class="s">&quot;ignore_subset_cols&quot;</span><span class="p">:</span> <span class="p">[],</span>
-      <span class="s">&quot;path&quot;</span><span class="p">:</span> <span class="s">&quot;/Users/olga/flotilla_projects/shalek2013/splicing_feature.csv.gz&quot;</span><span class="p">,</span>
-      <span class="s">&quot;compression&quot;</span><span class="p">:</span> <span class="s">&quot;gzip&quot;</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="s">&quot;pooled_col&quot;</span><span class="p">:</span> <span class="s">&quot;pooled&quot;</span><span class="p">,</span>
-      <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;metadata&quot;</span><span class="p">,</span>
-      <span class="s">&quot;phenotype_to_marker&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s">&quot;BDMC&quot;</span><span class="p">:</span> <span class="s">&quot;o&quot;</span>
-      <span class="p">},</span>
-      <span class="s">&quot;format&quot;</span><span class="p">:</span> <span class="s">&quot;csv&quot;</span><span class="p">,</span>
-      <span class="s">&quot;minimum_samples&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-      <span class="s">&quot;phenotype_to_color&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s">&quot;BDMC&quot;</span><span class="p">:</span> <span class="s">&quot;#1b9e77&quot;</span>
-      <span class="p">},</span>
-      <span class="s">&quot;path&quot;</span><span class="p">:</span> <span class="s">&quot;/Users/olga/flotilla_projects/shalek2013/metadata.csv.gz&quot;</span><span class="p">,</span>
-      <span class="s">&quot;phenotype_col&quot;</span><span class="p">:</span> <span class="s">&quot;phenotype&quot;</span><span class="p">,</span>
-      <span class="s">&quot;phenotype_order&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="s">&quot;BDMC&quot;</span>
-      <span class="p">],</span>
-      <span class="s">&quot;compression&quot;</span><span class="p">:</span> <span class="s">&quot;gzip&quot;</span>
-    <span class="p">}</span>
-  <span class="p">]</span>
-<span class="p">}</span>
-</pre></div>
-</div>
 <p>One thing to note is that when you save, the version number is bumped
 up. <tt class="docutils literal"><span class="pre">study.version</span></tt> (the one we just made) is <tt class="docutils literal"><span class="pre">0.1.0</span></tt>, but the one
 we saved is <tt class="docutils literal"><span class="pre">0.1.1</span></tt>, since we could have made some changes to the
@@ -2432,36 +676,10 @@ data.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">ls</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">olga</span><span class="o">/</span><span class="n">flotilla_projects</span><span class="o">/</span><span class="n">shalek2013</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>datapackage.json           expression_feature.csv.gz  metadata.csv.gz            splicing_feature.csv.gz
-expression.csv.gz          mapping_stats.csv.gz       splicing.csv.gz
-</pre></div>
-</div>
 <p>So this is where all the other files are. Good to know!</p>
 <p>We can &#8220;embark&#8221; on this newly-saved study now very painlessly, without
 having to open and process all those files again:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">study2</span> <span class="o">=</span> <span class="n">flotilla</span><span class="o">.</span><span class="n">embark</span><span class="p">(</span><span class="s">&#39;shalek2013&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-python"><div class="highlight"><pre>2014-10-30 12:16:56 Reading datapackage from /Users/olga/flotilla_projects/shalek2013/datapackage.json
-2014-10-30 12:16:56 Parsing datapackage to create a Study object
-2014-10-30 12:16:56 Initializing Study
-2014-10-30 12:16:56 Initializing Predictor configuration manager for Study
-2014-10-30 12:16:56 Predictor ExtraTreesClassifier is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesClassifier&#39;&gt;
-2014-10-30 12:16:56 Added ExtraTreesClassifier to default predictors
-2014-10-30 12:16:56 Predictor ExtraTreesRegressor is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesRegressor&#39;&gt;
-2014-10-30 12:16:56 Added ExtraTreesRegressor to default predictors
-2014-10-30 12:16:56 Predictor GradientBoostingClassifier is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingClassifier&#39;&gt;
-2014-10-30 12:16:56 Added GradientBoostingClassifier to default predictors
-2014-10-30 12:16:56 Predictor GradientBoostingRegressor is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingRegressor&#39;&gt;
-2014-10-30 12:16:56 Added GradientBoostingRegressor to default predictors
-2014-10-30 12:16:56 Loading metadata
-2014-10-30 12:16:56 Loading expression data
-2014-10-30 12:16:56 Initializing expression
-2014-10-30 12:16:56 Done initializing expression
-2014-10-30 12:16:56 Loading splicing data
-2014-10-30 12:16:56 Initializing splicing
-2014-10-30 12:16:56 Done initializing splicing
-2014-10-30 12:16:56 Successfully initialized a Study object!
 </pre></div>
 </div>
 </div>
