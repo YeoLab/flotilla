@@ -14,24 +14,6 @@ Before we begin, let's import everything we need.
     
     # Import "panel data analysis" library for tabular data
     import pandas as pd
-
-::
-
-
-    ---------------------------------------------------------------------------
-    ImportError                               Traceback (most recent call last)
-
-    <ipython-input-1-e6ce39486782> in <module>()
-          1 # Import the flotilla package for biological data analysis
-    ----> 2 import flotilla
-          3 
-          4 # Import "numerical python" library for number crunching
-          5 import numpy as np
-
-
-    ImportError: No module named flotilla
-
-
 Shalek and Sujita, *et al* (2013)
 ---------------------------------
 
@@ -64,188 +46,72 @@ We will also compare to the supplementary table 2 data, obtained using
     expression = pd.read_table("GSE41265_allGenesTPM.txt.gz", compression="gzip", index_col=0)
     expression.head()
 
+::
 
 
-.. raw:: html
+    ---------------------------------------------------------------------------
+    IOError                                   Traceback (most recent call last)
 
-    <div style="max-height:1000px;max-width:1500px;overflow:auto;">
-    <table border="1" class="dataframe">
-      <thead>
-        <tr style="text-align: right;">
-          <th></th>
-          <th>S1</th>
-          <th>S2</th>
-          <th>S3</th>
-          <th>S4</th>
-          <th>S5</th>
-          <th>S6</th>
-          <th>S7</th>
-          <th>S8</th>
-          <th>S9</th>
-          <th>S10</th>
-          <th>...</th>
-          <th>S12</th>
-          <th>S13</th>
-          <th>S14</th>
-          <th>S15</th>
-          <th>S16</th>
-          <th>S17</th>
-          <th>S18</th>
-          <th>P1</th>
-          <th>P2</th>
-          <th>P3</th>
-        </tr>
-        <tr>
-          <th>GENE</th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th>XKR4</th>
-          <td>  0.000000</td>
-          <td> 0.000000</td>
-          <td>   0.000000</td>
-          <td> 0.000000</td>
-          <td> 0.000000</td>
-          <td> 0.000000</td>
-          <td>   0.000000</td>
-          <td>   0.000000</td>
-          <td> 0.000000</td>
-          <td> 0.000000</td>
-          <td>...</td>
-          <td> 0.000000</td>
-          <td> 0.000000</td>
-          <td> 0.000000</td>
-          <td> 0.000000</td>
-          <td> 0.000000</td>
-          <td> 0.000000</td>
-          <td>  0.000000</td>
-          <td> 0.000000</td>
-          <td> 0.019906</td>
-          <td>  0.000000</td>
-        </tr>
-        <tr>
-          <th>AB338584</th>
-          <td>  0.000000</td>
-          <td> 0.000000</td>
-          <td>   0.000000</td>
-          <td> 0.000000</td>
-          <td> 0.000000</td>
-          <td> 0.000000</td>
-          <td>   0.000000</td>
-          <td>   0.000000</td>
-          <td> 0.000000</td>
-          <td> 0.000000</td>
-          <td>...</td>
-          <td> 0.000000</td>
-          <td> 0.000000</td>
-          <td> 0.000000</td>
-          <td> 0.000000</td>
-          <td> 0.000000</td>
-          <td> 0.000000</td>
-          <td>  0.000000</td>
-          <td> 0.000000</td>
-          <td> 0.000000</td>
-          <td>  0.000000</td>
-        </tr>
-        <tr>
-          <th>B3GAT2</th>
-          <td>  0.000000</td>
-          <td> 0.000000</td>
-          <td>   0.023441</td>
-          <td> 0.000000</td>
-          <td> 0.000000</td>
-          <td> 0.029378</td>
-          <td>   0.000000</td>
-          <td>   0.055452</td>
-          <td> 0.000000</td>
-          <td> 0.029448</td>
-          <td>...</td>
-          <td> 0.000000</td>
-          <td> 0.000000</td>
-          <td> 0.031654</td>
-          <td> 0.000000</td>
-          <td> 0.000000</td>
-          <td> 0.000000</td>
-          <td> 42.150208</td>
-          <td> 0.680327</td>
-          <td> 0.022996</td>
-          <td>  0.110236</td>
-        </tr>
-        <tr>
-          <th>NPL</th>
-          <td> 72.008590</td>
-          <td> 0.000000</td>
-          <td> 128.062012</td>
-          <td> 0.095082</td>
-          <td> 0.000000</td>
-          <td> 0.000000</td>
-          <td> 112.310234</td>
-          <td> 104.329122</td>
-          <td> 0.119230</td>
-          <td> 0.000000</td>
-          <td>...</td>
-          <td> 0.000000</td>
-          <td> 0.116802</td>
-          <td> 0.104200</td>
-          <td> 0.106188</td>
-          <td> 0.229197</td>
-          <td> 0.110582</td>
-          <td>  0.000000</td>
-          <td> 7.109356</td>
-          <td> 6.727028</td>
-          <td> 14.525447</td>
-        </tr>
-        <tr>
-          <th>T2</th>
-          <td>  0.109249</td>
-          <td> 0.172009</td>
-          <td>   0.000000</td>
-          <td> 0.000000</td>
-          <td> 0.182703</td>
-          <td> 0.076012</td>
-          <td>   0.078698</td>
-          <td>   0.000000</td>
-          <td> 0.093698</td>
-          <td> 0.076583</td>
-          <td>...</td>
-          <td> 0.693459</td>
-          <td> 0.010137</td>
-          <td> 0.081936</td>
-          <td> 0.000000</td>
-          <td> 0.000000</td>
-          <td> 0.086879</td>
-          <td>  0.068174</td>
-          <td> 0.062063</td>
-          <td> 0.000000</td>
-          <td>  0.050605</td>
-        </tr>
-      </tbody>
-    </table>
-    <p>5 rows × 21 columns</p>
-    </div>
+    <ipython-input-2-b45e9120e279> in <module>()
+    ----> 1 expression = pd.read_table("GSE41265_allGenesTPM.txt.gz", compression="gzip", index_col=0)
+          2 expression.head()
 
+
+    /home/travis/miniconda/envs/testenv/lib/python2.7/site-packages/pandas/io/parsers.pyc in parser_f(filepath_or_buffer, sep, dialect, compression, doublequote, escapechar, quotechar, quoting, skipinitialspace, lineterminator, header, index_col, names, prefix, skiprows, skipfooter, skip_footer, na_values, na_fvalues, true_values, false_values, delimiter, converters, dtype, usecols, engine, delim_whitespace, as_recarray, na_filter, compact_ints, use_unsigned, low_memory, buffer_lines, warn_bad_lines, error_bad_lines, keep_default_na, thousands, comment, decimal, parse_dates, keep_date_col, dayfirst, date_parser, memory_map, float_precision, nrows, iterator, chunksize, verbose, encoding, squeeze, mangle_dupe_cols, tupleize_cols, infer_datetime_format, skip_blank_lines)
+        468                     skip_blank_lines=skip_blank_lines)
+        469 
+    --> 470         return _read(filepath_or_buffer, kwds)
+        471 
+        472     parser_f.__name__ = name
+
+
+    /home/travis/miniconda/envs/testenv/lib/python2.7/site-packages/pandas/io/parsers.pyc in _read(filepath_or_buffer, kwds)
+        244 
+        245     # Create the parser.
+    --> 246     parser = TextFileReader(filepath_or_buffer, **kwds)
+        247 
+        248     if (nrows is not None) and (chunksize is not None):
+
+
+    /home/travis/miniconda/envs/testenv/lib/python2.7/site-packages/pandas/io/parsers.pyc in __init__(self, f, engine, **kwds)
+        560             self.options['has_index_names'] = kwds['has_index_names']
+        561 
+    --> 562         self._make_engine(self.engine)
+        563 
+        564     def _get_options_with_defaults(self, engine):
+
+
+    /home/travis/miniconda/envs/testenv/lib/python2.7/site-packages/pandas/io/parsers.pyc in _make_engine(self, engine)
+        697     def _make_engine(self, engine='c'):
+        698         if engine == 'c':
+    --> 699             self._engine = CParserWrapper(self.f, **self.options)
+        700         else:
+        701             if engine == 'python':
+
+
+    /home/travis/miniconda/envs/testenv/lib/python2.7/site-packages/pandas/io/parsers.pyc in __init__(self, src, **kwds)
+       1064         kwds['allow_leading_cols'] = self.index_col is not False
+       1065 
+    -> 1066         self._reader = _parser.TextReader(src, **kwds)
+       1067 
+       1068         # XXX
+
+
+    /home/travis/miniconda/envs/testenv/lib/python2.7/site-packages/pandas/parser.so in pandas.parser.TextReader.__cinit__ (pandas/parser.c:3163)()
+
+
+    /home/travis/miniconda/envs/testenv/lib/python2.7/site-packages/pandas/parser.so in pandas.parser.TextReader._setup_parser_source (pandas/parser.c:5335)()
+
+
+    /home/travis/miniconda/envs/testenv/lib/python2.7/gzip.pyc in __init__(self, filename, mode, compresslevel, fileobj, mtime)
+         92             mode += 'b'
+         93         if fileobj is None:
+    ---> 94             fileobj = self.myfileobj = __builtin__.open(filename, mode or 'rb')
+         95         if filename is None:
+         96             # Issue #13781: os.fdopen() creates a fileobj with a bogus name
+
+
+    IOError: [Errno 2] No such file or directory: 'GSE41265_allGenesTPM.txt.gz'
 
 
 These data are in the "transcripts per million," aka TPM unit. See

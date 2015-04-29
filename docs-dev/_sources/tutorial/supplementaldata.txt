@@ -13,18 +13,34 @@ Institute's Brain Atlas data.
     import flotilla
     study = flotilla.embark(flotilla._brainspan)
 
-::
+.. parsed-literal::
 
-
-    ---------------------------------------------------------------------------
-    ImportError                               Traceback (most recent call last)
-
-    <ipython-input-1-d66c17a20d55> in <module>()
-    ----> 1 import flotilla
-          2 study = flotilla.embark(flotilla._brainspan)
-
-
-    ImportError: No module named flotilla
+    Creating a directory for saving your flotilla projects: /home/travis/flotilla_projects
+    Creating a directory for saving the data for this project: /home/travis/flotilla_projects/brainspan_filtered_and_markers_amazon
+    https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon_s3/datapackage.json has not been downloaded before.
+    	Downloading now to /home/travis/flotilla_projects/brainspan_filtered_and_markers_amazon/datapackage.json
+    2015-04-29 16:41:39	Parsing datapackage to create a Study object
+    https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon_s3/expression_feature.csv has not been downloaded before.
+    	Downloading now to /home/travis/flotilla_projects/brainspan_filtered_and_markers_amazon/expression_feature.csv
+    https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon_s3/expression.csv has not been downloaded before.
+    	Downloading now to /home/travis/flotilla_projects/brainspan_filtered_and_markers_amazon/expression.csv
+    https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon_s3/metadata.csv has not been downloaded before.
+    	Downloading now to /home/travis/flotilla_projects/brainspan_filtered_and_markers_amazon/metadata.csv
+    2015-04-29 16:41:55	Initializing Study
+    2015-04-29 16:41:55	Initializing Predictor configuration manager for Study
+    2015-04-29 16:41:55	Predictor ExtraTreesClassifier is of type <class 'sklearn.ensemble.forest.ExtraTreesClassifier'>
+    2015-04-29 16:41:55	Added ExtraTreesClassifier to default predictors
+    2015-04-29 16:41:55	Predictor ExtraTreesRegressor is of type <class 'sklearn.ensemble.forest.ExtraTreesRegressor'>
+    2015-04-29 16:41:55	Added ExtraTreesRegressor to default predictors
+    2015-04-29 16:41:55	Predictor GradientBoostingClassifier is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingClassifier'>
+    2015-04-29 16:41:55	Added GradientBoostingClassifier to default predictors
+    2015-04-29 16:41:55	Predictor GradientBoostingRegressor is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingRegressor'>
+    2015-04-29 16:41:55	Added GradientBoostingRegressor to default predictors
+    2015-04-29 16:41:55	Loading metadata
+    2015-04-29 16:41:56	Loading expression data
+    2015-04-29 16:41:56	Initializing expression
+    2015-04-29 16:41:56	Done initializing expression
+    2015-04-29 16:42:00	Successfully initialized a Study object!
 
 
 Let's take a look at how big this expression matrix is.
@@ -37,7 +53,7 @@ Let's take a look at how big this expression matrix is.
 
 .. parsed-literal::
 
-    (519, 14321)
+    (493, 14321)
 
 
 
@@ -55,7 +71,7 @@ deviations away from the mean variance of all genes.
 
 .. parsed-literal::
 
-    (519, 564)
+    (493, 553)
 
 
 
@@ -70,8 +86,8 @@ this subset.
 
 .. parsed-literal::
 
-    CPU times: user 315 ms, sys: 3.16 ms, total: 318 ms
-    Wall time: 317 ms
+    CPU times: user 488 ms, sys: 0 ns, total: 488 ms
+    Wall time: 486 ms
 
 
 That didn't take *too* long, but I'm sure you can imagine it would take
@@ -92,24 +108,24 @@ Now let's save the object and re-``embark`` to make sure it's there.
 
 .. parsed-literal::
 
-    Wrote datapackage to /Users/olga/flotilla_projects/brainspan2/datapackage.json
-    2015-03-16 15:57:43	Reading datapackage from /Users/olga/flotilla_projects/brainspan2/datapackage.json
-    2015-03-16 15:57:43	Parsing datapackage to create a Study object
-    2015-03-16 15:57:49	Initializing Study
-    2015-03-16 15:57:49	Initializing Predictor configuration manager for Study
-    2015-03-16 15:57:49	Predictor ExtraTreesClassifier is of type <class 'sklearn.ensemble.forest.ExtraTreesClassifier'>
-    2015-03-16 15:57:49	Added ExtraTreesClassifier to default predictors
-    2015-03-16 15:57:49	Predictor ExtraTreesRegressor is of type <class 'sklearn.ensemble.forest.ExtraTreesRegressor'>
-    2015-03-16 15:57:49	Added ExtraTreesRegressor to default predictors
-    2015-03-16 15:57:49	Predictor GradientBoostingClassifier is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingClassifier'>
-    2015-03-16 15:57:49	Added GradientBoostingClassifier to default predictors
-    2015-03-16 15:57:49	Predictor GradientBoostingRegressor is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingRegressor'>
-    2015-03-16 15:57:49	Added GradientBoostingRegressor to default predictors
-    2015-03-16 15:57:49	Loading metadata
-    2015-03-16 15:57:49	Loading expression data
-    2015-03-16 15:57:49	Initializing expression
-    2015-03-16 15:57:49	Done initializing expression
-    2015-03-16 15:57:50	Successfully initialized a Study object!
+    Wrote datapackage to /home/travis/flotilla_projects/brainspan2/datapackage.json
+    2015-04-29 16:43:18	Reading datapackage from /home/travis/flotilla_projects/brainspan2/datapackage.json
+    2015-04-29 16:43:18	Parsing datapackage to create a Study object
+    2015-04-29 16:43:28	Initializing Study
+    2015-04-29 16:43:28	Initializing Predictor configuration manager for Study
+    2015-04-29 16:43:28	Predictor ExtraTreesClassifier is of type <class 'sklearn.ensemble.forest.ExtraTreesClassifier'>
+    2015-04-29 16:43:28	Added ExtraTreesClassifier to default predictors
+    2015-04-29 16:43:28	Predictor ExtraTreesRegressor is of type <class 'sklearn.ensemble.forest.ExtraTreesRegressor'>
+    2015-04-29 16:43:28	Added ExtraTreesRegressor to default predictors
+    2015-04-29 16:43:28	Predictor GradientBoostingClassifier is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingClassifier'>
+    2015-04-29 16:43:28	Added GradientBoostingClassifier to default predictors
+    2015-04-29 16:43:28	Predictor GradientBoostingRegressor is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingRegressor'>
+    2015-04-29 16:43:28	Added GradientBoostingRegressor to default predictors
+    2015-04-29 16:43:28	Loading metadata
+    2015-04-29 16:43:28	Loading expression data
+    2015-04-29 16:43:28	Initializing expression
+    2015-04-29 16:43:29	Done initializing expression
+    2015-04-29 16:43:33	Successfully initialized a Study object!
 
 
 Let's make sure our ``variant_expression_corr`` dataframe is really
@@ -154,127 +170,127 @@ there.
       <tbody>
         <tr>
           <th>ENSG00000003137</th>
-          <td> 1.000000</td>
-          <td>-0.083809</td>
-          <td> 0.119793</td>
-          <td> 0.076050</td>
-          <td>-0.035254</td>
-          <td>-0.170881</td>
-          <td> 0.078876</td>
-          <td>-0.164944</td>
-          <td>-0.102906</td>
-          <td>-0.021128</td>
+          <td>1.000000</td>
+          <td>-0.046835</td>
+          <td>0.090661</td>
+          <td>0.053573</td>
+          <td>-0.047665</td>
+          <td>-0.155271</td>
+          <td>0.054222</td>
+          <td>-0.160111</td>
+          <td>-0.115487</td>
+          <td>-0.044074</td>
           <td>...</td>
-          <td>-0.214898</td>
-          <td> 0.018936</td>
-          <td>-0.108965</td>
-          <td>-0.366995</td>
-          <td>-0.136422</td>
-          <td> 0.282414</td>
-          <td> 0.163946</td>
-          <td> 0.487711</td>
-          <td> 0.483485</td>
-          <td> 0.088631</td>
+          <td>-0.224868</td>
+          <td>-0.019139</td>
+          <td>-0.121898</td>
+          <td>-0.392903</td>
+          <td>-0.122529</td>
+          <td>0.273103</td>
+          <td>0.136641</td>
+          <td>0.448154</td>
+          <td>0.445432</td>
+          <td>0.041884</td>
         </tr>
         <tr>
           <th>ENSG00000004848</th>
-          <td>-0.083809</td>
-          <td> 1.000000</td>
-          <td> 0.535174</td>
-          <td> 0.658786</td>
-          <td> 0.481359</td>
-          <td> 0.670307</td>
-          <td> 0.109242</td>
-          <td> 0.187309</td>
-          <td> 0.378170</td>
-          <td>-0.033828</td>
+          <td>-0.046835</td>
+          <td>1.000000</td>
+          <td>0.612271</td>
+          <td>0.707699</td>
+          <td>0.558755</td>
+          <td>0.671949</td>
+          <td>0.028770</td>
+          <td>0.148974</td>
+          <td>0.448605</td>
+          <td>0.001084</td>
           <td>...</td>
-          <td> 0.671103</td>
-          <td> 0.313143</td>
-          <td>-0.001566</td>
-          <td>-0.500766</td>
-          <td>-0.091005</td>
-          <td>-0.174027</td>
-          <td> 0.139083</td>
-          <td>-0.659290</td>
-          <td>-0.580665</td>
-          <td>-0.653537</td>
+          <td>0.701812</td>
+          <td>0.328554</td>
+          <td>0.040970</td>
+          <td>-0.478688</td>
+          <td>-0.082581</td>
+          <td>-0.196485</td>
+          <td>0.135765</td>
+          <td>-0.662072</td>
+          <td>-0.570054</td>
+          <td>-0.623628</td>
         </tr>
         <tr>
           <th>ENSG00000006016</th>
-          <td> 0.119793</td>
-          <td> 0.535174</td>
-          <td> 1.000000</td>
-          <td> 0.622833</td>
-          <td> 0.582943</td>
-          <td> 0.415254</td>
-          <td> 0.041606</td>
-          <td> 0.102551</td>
-          <td> 0.418882</td>
-          <td> 0.051724</td>
+          <td>0.090661</td>
+          <td>0.612271</td>
+          <td>1.000000</td>
+          <td>0.652296</td>
+          <td>0.585003</td>
+          <td>0.450687</td>
+          <td>0.037159</td>
+          <td>0.111290</td>
+          <td>0.414487</td>
+          <td>0.022681</td>
           <td>...</td>
-          <td> 0.637911</td>
-          <td> 0.300402</td>
-          <td> 0.243334</td>
-          <td>-0.345219</td>
-          <td> 0.053212</td>
-          <td>-0.279398</td>
-          <td> 0.069264</td>
-          <td>-0.309780</td>
-          <td>-0.303773</td>
-          <td>-0.267244</td>
+          <td>0.650395</td>
+          <td>0.300988</td>
+          <td>0.233828</td>
+          <td>-0.391661</td>
+          <td>0.055337</td>
+          <td>-0.289575</td>
+          <td>0.060468</td>
+          <td>-0.418865</td>
+          <td>-0.398856</td>
+          <td>-0.348691</td>
         </tr>
         <tr>
           <th>ENSG00000006116</th>
-          <td> 0.076050</td>
-          <td> 0.658786</td>
-          <td> 0.622833</td>
-          <td> 1.000000</td>
-          <td> 0.471186</td>
-          <td> 0.391800</td>
-          <td>-0.131698</td>
-          <td>-0.074954</td>
-          <td> 0.424003</td>
-          <td>-0.297513</td>
+          <td>0.053573</td>
+          <td>0.707699</td>
+          <td>0.652296</td>
+          <td>1.000000</td>
+          <td>0.516889</td>
+          <td>0.424020</td>
+          <td>-0.185337</td>
+          <td>-0.071044</td>
+          <td>0.469453</td>
+          <td>-0.299232</td>
           <td>...</td>
-          <td> 0.673116</td>
-          <td> 0.533787</td>
-          <td>-0.056825</td>
-          <td>-0.572178</td>
-          <td>-0.211297</td>
-          <td> 0.022135</td>
-          <td> 0.242858</td>
-          <td>-0.479994</td>
-          <td>-0.401955</td>
-          <td>-0.614655</td>
+          <td>0.687966</td>
+          <td>0.526633</td>
+          <td>-0.027971</td>
+          <td>-0.569975</td>
+          <td>-0.209932</td>
+          <td>-0.020450</td>
+          <td>0.220832</td>
+          <td>-0.560163</td>
+          <td>-0.465723</td>
+          <td>-0.655024</td>
         </tr>
         <tr>
           <th>ENSG00000006128</th>
-          <td>-0.035254</td>
-          <td> 0.481359</td>
-          <td> 0.582943</td>
-          <td> 0.471186</td>
-          <td> 1.000000</td>
-          <td> 0.690821</td>
-          <td>-0.054401</td>
-          <td> 0.427592</td>
-          <td> 0.575299</td>
-          <td> 0.115128</td>
+          <td>-0.047665</td>
+          <td>0.558755</td>
+          <td>0.585003</td>
+          <td>0.516889</td>
+          <td>1.000000</td>
+          <td>0.715297</td>
+          <td>0.000925</td>
+          <td>0.415798</td>
+          <td>0.564539</td>
+          <td>0.053909</td>
           <td>...</td>
-          <td> 0.688362</td>
-          <td> 0.404930</td>
-          <td> 0.292495</td>
-          <td>-0.190202</td>
-          <td> 0.151798</td>
-          <td>-0.423034</td>
-          <td>-0.093961</td>
-          <td>-0.293967</td>
-          <td>-0.312149</td>
-          <td>-0.171620</td>
+          <td>0.716306</td>
+          <td>0.429350</td>
+          <td>0.264993</td>
+          <td>-0.256103</td>
+          <td>0.155573</td>
+          <td>-0.431776</td>
+          <td>-0.079680</td>
+          <td>-0.378022</td>
+          <td>-0.389113</td>
+          <td>-0.255839</td>
         </tr>
       </tbody>
     </table>
-    <p>5 rows × 564 columns</p>
+    <p>5 rows × 553 columns</p>
     </div>
 
 

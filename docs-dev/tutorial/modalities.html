@@ -186,19 +186,6 @@ from flotilla.compute.splicing import ModalityEstimator, ModalityModel
 from flotilla.visualize.splicing import ModalitiesViz
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>---------------------------------------------------------------------------
-ImportError                               Traceback (most recent call last)
-
-&lt;ipython-input-1-8b8f6dfbdb89&gt; in &lt;module&gt;()
-      9 sns.set(context=&#39;notebook&#39;, style=&#39;ticks&#39;)
-     10
----&gt; 11 from flotilla.compute.splicing import ModalityEstimator, ModalityModel
-     12 from flotilla.visualize.splicing import ModalitiesViz
-
-
-ImportError: No module named flotilla.compute.splicing
-</pre></div>
-</div>
 <p>And initialize a <tt class="docutils literal"><span class="pre">ModalityEstimator</span></tt> for performing the calculations,
 and a <tt class="docutils literal"><span class="pre">ModalityViz</span></tt> for visualizing the results.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">modality_estimator</span> <span class="o">=</span> <span class="n">ModalityEstimator</span><span class="p">(</span><span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
@@ -266,7 +253,25 @@ will use the uniform distribution as our null model for testing.</p>
 <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<img alt="../_images/modalities_6_0.png" src="../_images/modalities_6_0.png" />
+<div class="highlight-python"><div class="highlight"><pre>---------------------------------------------------------------------------
+NameError                                 Traceback (most recent call last)
+
+&lt;ipython-input-3-11a1560f754c&gt; in &lt;module&gt;()
+     12 # Reorder the columns
+     13 columns_ordered = [&#39;included&#39;, &#39;middle&#39;, &#39;bimodal&#39;, &#39;excluded&#39;, &#39;uniform&#39;]
+---&gt; 14 model_data = model_data.reindex(columns=columns)
+     15
+     16 # Get modality colors
+
+
+NameError: name &#39;columns&#39; is not defined
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>/home/travis/miniconda/envs/testenv/lib/python2.7/site-packages/matplotlib/font_manager.py:1282: UserWarning: findfont: Font family [u&#39;Helvetica&#39;, u&#39;Arial&#39;] not found. Falling back to Bitstream Vera Sans
+  (prop.get_family(), self.defaultFamily[fontext]))
+</pre></div>
+</div>
+<img alt="../_images/modalities_6_2.png" src="../_images/modalities_6_2.png" />
 <div class="section" id="parameterizations-of-bayesian-model">
 <h2>Parameterizations of Bayesian model<a class="headerlink" href="#parameterizations-of-bayesian-model" title="Permalink to this headline">¶</a></h2>
 <p>We will employ a Bayesian model to do a (very non-exhaustive) &#8220;grid

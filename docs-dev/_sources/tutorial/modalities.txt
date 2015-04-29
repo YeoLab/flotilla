@@ -27,23 +27,6 @@ First, let's import the modules we'll need.
     
     from flotilla.compute.splicing import ModalityEstimator, ModalityModel
     from flotilla.visualize.splicing import ModalitiesViz
-
-::
-
-
-    ---------------------------------------------------------------------------
-    ImportError                               Traceback (most recent call last)
-
-    <ipython-input-1-8b8f6dfbdb89> in <module>()
-          9 sns.set(context='notebook', style='ticks')
-         10 
-    ---> 11 from flotilla.compute.splicing import ModalityEstimator, ModalityModel
-         12 from flotilla.visualize.splicing import ModalitiesViz
-
-
-    ImportError: No module named flotilla.compute.splicing
-
-
 And initialize a ``ModalityEstimator`` for performing the calculations,
 and a ``ModalityViz`` for visualizing the results.
 
@@ -122,8 +105,31 @@ will use the uniform distribution as our null model for testing.
     sns.despine()
     fig.tight_layout()
 
+::
 
-.. image:: modalities_files/modalities_6_0.png
+
+    ---------------------------------------------------------------------------
+    NameError                                 Traceback (most recent call last)
+
+    <ipython-input-3-11a1560f754c> in <module>()
+         12 # Reorder the columns
+         13 columns_ordered = ['included', 'middle', 'bimodal', 'excluded', 'uniform']
+    ---> 14 model_data = model_data.reindex(columns=columns)
+         15 
+         16 # Get modality colors
+
+
+    NameError: name 'columns' is not defined
+
+
+.. parsed-literal::
+
+    /home/travis/miniconda/envs/testenv/lib/python2.7/site-packages/matplotlib/font_manager.py:1282: UserWarning: findfont: Font family [u'Helvetica', u'Arial'] not found. Falling back to Bitstream Vera Sans
+      (prop.get_family(), self.defaultFamily[fontext]))
+
+
+
+.. image:: modalities_files/modalities_6_2.png
 
 
 Parameterizations of Bayesian model
