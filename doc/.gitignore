@@ -12,4 +12,3 @@ gallery_thumbs
 gallery
 tutorial/*files
 tutorial/*.rst
-tutorial/*.ipynb
