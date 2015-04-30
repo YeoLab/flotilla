@@ -48,4 +48,4 @@ Recreated papers
 .. toctree::
     :maxdepth: 2
 
-    tutorial/shalek2013
+    tutorial/reproduce_shalek2013
