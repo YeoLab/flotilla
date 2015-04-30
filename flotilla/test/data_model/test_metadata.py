@@ -70,7 +70,7 @@ class TestMetaData(object):
             markers = cycle(['o', '^', 's', 'v', '*', 'D', ])
 
             def marker_factory():
-                return markers.next()
+                return markers.__next__()
             true_phenotype_to_marker = defaultdict(marker_factory)
             for x in true_phenotype_order:
                 true_phenotype_to_marker[x]
