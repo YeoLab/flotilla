@@ -59,7 +59,7 @@ class TestMetaData(object):
                 for k in true_phenotype_order)
         else:
             true_phenotype_to_color = {}
-            for phenotype, color in phenotype_to_color.iteritems():
+            for phenotype, color in phenotype_to_color.items():
                 try:
                     color = str_to_color[color]
                 except KeyError:
