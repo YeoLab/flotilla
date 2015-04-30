@@ -114,7 +114,7 @@ class MetaData(BaseData):
     @phenotype_order.setter
     def phenotype_order(self, value):
         if value is not None:
-            self._phenotype_order = list(value)
+            self._phenotype_order = value
         else:
             self._phenotype_order = self._default_phenotype_order
 
