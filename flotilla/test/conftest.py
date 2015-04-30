@@ -152,13 +152,13 @@ def color_ordered(group_order, group_to_color):
 def group_to_marker(request):
     """Mapping of groups to plotting markers"""
     marker_iter = iter(list('ov^<>8sp*hHDd'))
-    return defaultdict(lambda: marker_iter.next())
+    return defaultdict(lambda: marker_iter.__next__())
 
 
 @pytest.fixture(scope='module')
 def group_transitions(group_order):
     """List of pairwise transitions between phenotypes, for NMF"""
-    return zip(group_order[:-1], group_order[1:])
+    return list(zip(group_order[:-1], group_order[1:]))
 
 #
 # @pytest.fixture(scope='module')
