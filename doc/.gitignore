@@ -13,3 +13,8 @@ gallery
 tutorial/*files
 tutorial/*.rst
 tutorial/*zip*
+tutorial/*gz*
+tutorial/nature12172*
+tutorial/*.csv
+tutorial/*.png
+tutorial/*.pdf
