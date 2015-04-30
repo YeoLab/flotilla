@@ -12,7 +12,7 @@ def convert_nb(nbname):
 
     # os.system("runipy --o %s --matplotlib --quiet" % nbname)
     os.system("ipython nbconvert --execute --ExecutePreprocessor.timeout=120"
-              " --template rst_format_output_cells.tpl --to rst %s" % nbname)
+              " --template rst_custom --to rst %s" % nbname)
     os.system("tools/nbstripout %s" % nbname)
 
 
