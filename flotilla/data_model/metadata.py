@@ -114,13 +114,13 @@ class MetaData(BaseData):
     @phenotype_order.setter
     def phenotype_order(self, value):
         if value is not None:
-            self._phenotype_order = value
+            self._phenotype_order = list(value)
         else:
             self._phenotype_order = self._default_phenotype_order
 
     @property
     def phenotype_transitions(self):
-        return zip(self.phenotype_order[:-1], self.phenotype_order[1:])
+        return list(zip(self.phenotype_order[:-1], self.phenotype_order[1:]))
 
     @property
     def _colors(self):
