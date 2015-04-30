@@ -12,7 +12,8 @@ def convert_nb(nbname):
 
     # os.system("runipy --o %s --matplotlib --quiet" % nbname)
     os.system("ipython nbconvert --execute --ExecutePreprocessor.timeout=120"
-              " --template rst_custom --to rst %s" % nbname)
+              " --template tools/rst_custom --to rst "
+              "--Exporter.preprocessors=\"['IPython.nbconvert.preprocessors.ExtractOutputPreprocessor']\"  %s" % nbname)
     os.system("tools/nbstripout %s" % nbname)
 
 
