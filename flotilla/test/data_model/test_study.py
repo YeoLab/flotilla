@@ -393,17 +393,21 @@ class TestStudy(object):
         plt.close('all')
 
     def test_plot_two_samples(self, study, data_type):
-        sample1 = study.expression.data.index[0]
-        sample2 = study.expression.data.index[-1]
+        if data_type == 'expression':
+            sample1 = study.expression.data.index[0]
+            sample2 = study.expression.data.index[1]
+        elif data_type == 'splicing':
+            sample1 = study.splicing.data.index[0]
+            sample2 = study.splicing.data.index[1]
         study.plot_two_samples(sample1, sample2, data_type=data_type)
 
     def test_plot_two_features(self, study, data_type):
         if data_type == 'expression':
             feature1 = study.expression.data.columns[0]
-            feature2 = study.expression.data.columns[-1]
+            feature2 = study.expression.data.columns[1]
         elif data_type == 'splicing':
             feature1 = study.splicing.data.columns[0]
-            feature2 = study.splicing.data.columns[-1]
+            feature2 = study.splicing.data.columns[1]
         study.plot_two_features(feature1, feature2, data_type=data_type)
 
     @pytest.fixture(params=[None, 'gene'])
