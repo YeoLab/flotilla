@@ -9,7 +9,7 @@
     
     <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/bootswatch-3.2.0/paper/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootswatch-3.2.0/journal/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     
     <script type="text/javascript">
@@ -31,8 +31,8 @@
     <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
     <link rel="top" title="flotilla 0.2.7 documentation" href="../index.html" />
     <link rel="up" title="Flotilla tutorial" href="../tutorial.html" />
-    <link rel="next" title="Shalek and Satija, et al (2013)" href="shalek2013.html" />
-    <link rel="prev" title="Accurate estimation of alternative splicing modalities" href="modalities.html" />
+    <link rel="next" title="Accurate estimation of alternative splicing modalities" href="modalities.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="getting_started_brainspan.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -129,12 +129,6 @@
             
             
             
-              <li class="hidden-sm">
-<div id="sourcelink">
-  <a href="../_sources/tutorial/supplementaldata.txt"
-     rel="nofollow">Source</a>
-</div></li>
-            
           </ul>
 
           
@@ -169,35 +163,45 @@ Institute&#8217;s Brain Atlas data.</p>
 <div class="highlight-python"><div class="highlight"><pre>Creating a directory for saving the data for this project: /home/travis/flotilla_projects/brainspan_filtered_and_markers_amazon
 https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon_s3/datapackage.json has not been downloaded before.
     Downloading now to /home/travis/flotilla_projects/brainspan_filtered_and_markers_amazon/datapackage.json
-2015-04-29 18:30:53 Parsing datapackage to create a Study object
-https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon_s3/expression_feature.csv has not been downloaded before.
+2015-05-01 18:31:19 Parsing datapackage to create a Study object
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon_s3/expression_feature.csv has not been downloaded before.
     Downloading now to /home/travis/flotilla_projects/brainspan_filtered_and_markers_amazon/expression_feature.csv
 https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon_s3/expression.csv has not been downloaded before.
     Downloading now to /home/travis/flotilla_projects/brainspan_filtered_and_markers_amazon/expression.csv
-https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon_s3/metadata.csv has not been downloaded before.
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon_s3/metadata.csv has not been downloaded before.
     Downloading now to /home/travis/flotilla_projects/brainspan_filtered_and_markers_amazon/metadata.csv
-2015-04-29 18:31:07 Initializing Study
-2015-04-29 18:31:07 Initializing Predictor configuration manager for Study
-2015-04-29 18:31:07 Predictor ExtraTreesClassifier is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesClassifier&#39;&gt;
-2015-04-29 18:31:07 Added ExtraTreesClassifier to default predictors
-2015-04-29 18:31:07 Predictor ExtraTreesRegressor is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesRegressor&#39;&gt;
-2015-04-29 18:31:07 Added ExtraTreesRegressor to default predictors
-2015-04-29 18:31:07 Predictor GradientBoostingClassifier is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingClassifier&#39;&gt;
-2015-04-29 18:31:07 Added GradientBoostingClassifier to default predictors
-2015-04-29 18:31:07 Predictor GradientBoostingRegressor is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingRegressor&#39;&gt;
-2015-04-29 18:31:07 Added GradientBoostingRegressor to default predictors
-2015-04-29 18:31:07 Loading metadata
-2015-04-29 18:31:07 Loading expression data
-2015-04-29 18:31:07 Initializing expression
-2015-04-29 18:31:08 Done initializing expression
-2015-04-29 18:31:11 Successfully initialized a Study object!
+2015-05-01 18:31:37 Initializing Study
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>2015-05-01 18:31:37 Initializing Predictor configuration manager for Study
+2015-05-01 18:31:37 Predictor ExtraTreesClassifier is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesClassifier&#39;&gt;
+2015-05-01 18:31:37 Added ExtraTreesClassifier to default predictors
+2015-05-01 18:31:37 Predictor ExtraTreesRegressor is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesRegressor&#39;&gt;
+2015-05-01 18:31:37 Added ExtraTreesRegressor to default predictors
+2015-05-01 18:31:37 Predictor GradientBoostingClassifier is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingClassifier&#39;&gt;
+2015-05-01 18:31:37 Added GradientBoostingClassifier to default predictors
+2015-05-01 18:31:37 Predictor GradientBoostingRegressor is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingRegressor&#39;&gt;
+2015-05-01 18:31:37 Added GradientBoostingRegressor to default predictors
+2015-05-01 18:31:37 Loading metadata
+2015-05-01 18:31:37 Loading expression data
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>2015-05-01 18:31:37 Initializing expression
+2015-05-01 18:31:38 Done initializing expression
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>2015-05-01 18:31:40 Successfully initialized a Study object!
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>:0: FutureWarning: IPython widgets are experimental and may change in the future.
 </pre></div>
 </div>
 <p>Let&#8217;s take a look at how big this expression matrix is.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">study</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span>
-</pre></div>
-</div>
-<div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="mi">493</span><span class="p">,</span> <span class="mi">14321</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Yikes, 14,321 features is a lot! Let&#8217;s subset on just the most variant
@@ -208,9 +212,6 @@ deviations away from the mean variance of all genes.</p>
 <span class="n">variant_expression</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="mi">493</span><span class="p">,</span> <span class="mi">553</span><span class="p">)</span>
-</pre></div>
-</div>
 <p>564 features isn&#8217;t so bad. Let&#8217;s correlate all features to each other in
 this subset.</p>
 <div class="code python highlight-python"><div class="highlight"><pre>%%time
@@ -218,8 +219,8 @@ variant_expression_corr = variant_expression.corr()
 variant_expression_corr.head()
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>CPU times: user 422 ms, sys: 0 ns, total: 422 ms
-Wall time: 424 ms
+<div class="highlight-python"><div class="highlight"><pre>CPU times: user 377 ms, sys: 0 ns, total: 377 ms
+Wall time: 374 ms
 </pre></div>
 </div>
 <p>That didn&#8217;t take <em>too</em> long, but I&#8217;m sure you can imagine it would take
@@ -235,23 +236,29 @@ of our choice. To keep things simple, I&#8217;m gonna give it the same name.</p>
 </pre></div>
 </div>
 <div class="highlight-python"><div class="highlight"><pre>Wrote datapackage to /home/travis/flotilla_projects/brainspan2/datapackage.json
-2015-04-29 18:32:13 Reading datapackage from /home/travis/flotilla_projects/brainspan2/datapackage.json
-2015-04-29 18:32:13 Parsing datapackage to create a Study object
-2015-04-29 18:32:21 Initializing Study
-2015-04-29 18:32:21 Initializing Predictor configuration manager for Study
-2015-04-29 18:32:21 Predictor ExtraTreesClassifier is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesClassifier&#39;&gt;
-2015-04-29 18:32:21 Added ExtraTreesClassifier to default predictors
-2015-04-29 18:32:21 Predictor ExtraTreesRegressor is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesRegressor&#39;&gt;
-2015-04-29 18:32:21 Added ExtraTreesRegressor to default predictors
-2015-04-29 18:32:21 Predictor GradientBoostingClassifier is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingClassifier&#39;&gt;
-2015-04-29 18:32:21 Added GradientBoostingClassifier to default predictors
-2015-04-29 18:32:21 Predictor GradientBoostingRegressor is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingRegressor&#39;&gt;
-2015-04-29 18:32:21 Added GradientBoostingRegressor to default predictors
-2015-04-29 18:32:21 Loading metadata
-2015-04-29 18:32:21 Loading expression data
-2015-04-29 18:32:21 Initializing expression
-2015-04-29 18:32:24 Done initializing expression
-2015-04-29 18:32:27 Successfully initialized a Study object!
+2015-05-01 18:32:37 Reading datapackage from /home/travis/flotilla_projects/brainspan2/datapackage.json
+2015-05-01 18:32:37 Parsing datapackage to create a Study object
+2015-05-01 18:32:44 Initializing Study
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>2015-05-01 18:32:44 Initializing Predictor configuration manager for Study
+2015-05-01 18:32:44 Predictor ExtraTreesClassifier is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesClassifier&#39;&gt;
+2015-05-01 18:32:44 Added ExtraTreesClassifier to default predictors
+2015-05-01 18:32:44 Predictor ExtraTreesRegressor is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesRegressor&#39;&gt;
+2015-05-01 18:32:44 Added ExtraTreesRegressor to default predictors
+2015-05-01 18:32:44 Predictor GradientBoostingClassifier is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingClassifier&#39;&gt;
+2015-05-01 18:32:44 Added GradientBoostingClassifier to default predictors
+2015-05-01 18:32:44 Predictor GradientBoostingRegressor is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingRegressor&#39;&gt;
+2015-05-01 18:32:44 Added GradientBoostingRegressor to default predictors
+2015-05-01 18:32:44 Loading metadata
+2015-05-01 18:32:45 Loading expression data
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>2015-05-01 18:32:45 Initializing expression
+2015-05-01 18:32:45 Done initializing expression
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>2015-05-01 18:32:48 Successfully initialized a Study object!
 </pre></div>
 </div>
 <p>Let&#8217;s make sure our <tt class="docutils literal"><span class="pre">variant_expression_corr</span></tt> dataframe is really
@@ -426,6 +433,13 @@ there.</p>
     <p class="pull-right">
       <a href="#">Back to top</a>
       
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/tutorial/supplementaldata.txt"
+     rel="nofollow">Source</a>
+</div>
+      
     </p>
     <p>
         &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
@@ -433,6 +447,17 @@ there.</p>
     </p>
   </div>
 </footer>
+    <p>
+    Stuck? Send questions, comments, and other feedback to:
+    <ul>
+        <li>The <a href="https://gitter.im/YeoLab/flotilla">Gitter</a> chat
+            room for immediate questions</li>
+        <li>The <a href="https://github.com/yeolab/flotilla/issues">Github
+            issues page</a> for feature requests</li>
+    </ul>
+    Or send an email to obotvinn@ucsd.edu if you're oldskool like that.
+    </p>
+
     <a href="http://olgabotvinnik.com/">Olga B. Botvinnik</a> is funded by the
     <a href="https://ndseg.asee.org/">NDSEG</a> fellowship and is a
     <a href="http://numfocus.org/">NumFOCUS</a>
@@ -445,6 +470,5 @@ there.</p>
     and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene
     Yeo</a>. <br/>
 
-    
   </body>
 </html>

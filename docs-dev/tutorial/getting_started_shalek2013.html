@@ -9,7 +9,7 @@
     
     <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/bootswatch-3.2.0/paper/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootswatch-3.2.0/journal/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     
     <script type="text/javascript">
@@ -31,7 +31,7 @@
     <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
     <link rel="top" title="flotilla 0.2.7 documentation" href="../index.html" />
     <link rel="up" title="Flotilla tutorial" href="../tutorial.html" />
-    <link rel="next" title="Accurate estimation of alternative splicing modalities" href="modalities.html" />
+    <link rel="next" title="&lt;no title&gt;" href="getting_started_brainspan.html" />
     <link rel="prev" title="OS X Installation instructions" href="../installation.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -140,12 +140,6 @@
             
             
             
-              <li class="hidden-sm">
-<div id="sourcelink">
-  <a href="../_sources/tutorial/getting_started_shalek2013.txt"
-     rel="nofollow">Source</a>
-</div></li>
-            
           </ul>
 
           
@@ -166,12 +160,9 @@
   <div class="row">
     <div class="col-md-12">
       
-  <blockquote>
-<div></div></blockquote>
-<div class="section" id="loading-data-from-shalek-and-satija-2013">
+  <div class="section" id="loading-data-from-shalek-and-satija-2013">
 <span id="getting-started-shalek2013"></span><h1>Loading data from Shalek and Satija (2013)<a class="headerlink" href="#loading-data-from-shalek-and-satija-2013" title="Permalink to this headline">¶</a></h1>
-<blockquote>
-<div>In the 2013 paper, <a class="reference external" href="http://www.ncbi.nlm.nih.gov/pubmed/23685454">Single-cell transcriptomics reveals bimodality in expression and splicing in immune cells</a> (Shalek and Satija, <em>et al</em>. <em>Nature</em> (2013)), Regev and colleagues performed single-cell sequencing 18 bone marrow-derived dendritic cells (BMDCs), in addition to 3 pooled samples.</div></blockquote>
+<p>In the 2013 paper, <a class="reference external" href="http://www.ncbi.nlm.nih.gov/pubmed/23685454">Single-cell transcriptomics reveals bimodality in expression and splicing in immune cells</a> (Shalek and Satija, <em>et al</em>. <em>Nature</em> (2013)), Regev and colleagues performed single-cell sequencing 18 bone marrow-derived dendritic cells (BMDCs), in addition to 3 pooled samples.</p>
 <p>This will show you the nitty-gritty of what files you need and in what format to get started with using <tt class="docutils literal"><span class="pre">`flotilla</span></tt> &lt;<a class="reference external" href="http://yeolab.github.io/flotilla/docs">http://yeolab.github.io/flotilla/docs</a>&gt;`_. In addition to being a tutorial explaining <tt class="docutils literal"><span class="pre">flotilla</span></tt> inputs, the goal of this document is also to expose every individual step of reformatting data.</p>
 <p>We will go over:</p>
 <ul>
@@ -214,18 +205,19 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 </pre></div>
 </div>
+<div class="highlight-python"><div class="highlight"><pre>:0: FutureWarning: IPython widgets are experimental and may change in the future.
+</pre></div>
+</div>
 <div class="section" id="expression-data">
 <h2>Expression data<a class="headerlink" href="#expression-data" title="Permalink to this headline">¶</a></h2>
-<blockquote>
-<div>First, we will read in the expression data. These data were obtained using the command <tt class="docutils literal"><span class="pre">wget</span></tt> to download files from the internet via the command line, like so:</div></blockquote>
+<p>First, we will read in the expression data. These data were obtained using the command <tt class="docutils literal"><span class="pre">wget</span></tt> to download files from the internet via the command line, like so:</p>
 <div class="code python highlight-python"><div class="highlight"><pre>%%bash
 wget ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE41nnn/GSE41265/suppl/GSE41265_allGenesTPM.txt.gz
 </pre></div>
 </div>
-<pre class="literal-block">
---2015-04-29 18:29:38--  <a class="reference external" href="ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE41nnn/GSE41265/suppl/GSE41265_allGenesTPM.txt.gz">ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE41nnn/GSE41265/suppl/GSE41265_allGenesTPM.txt.gz</a>
-           =&gt; <cite>GSE41265_allGenesTPM.txt.gz'
-Resolving ftp.ncbi.nlm.nih.gov (ftp.ncbi.nlm.nih.gov)... 2607:f220:41e:250::12, 130.14.250.11
+<div class="highlight-python"><div class="highlight"><pre>--2015-05-01 18:26:15--  ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE41nnn/GSE41265/suppl/GSE41265_allGenesTPM.txt.gz
+           =&gt; `GSE41265_allGenesTPM.txt.gz&#39;
+Resolving ftp.ncbi.nlm.nih.gov (ftp.ncbi.nlm.nih.gov)... 2607:f220:41e:250::12, 130.14.250.12
 Connecting to ftp.ncbi.nlm.nih.gov (ftp.ncbi.nlm.nih.gov)|2607:f220:41e:250::12|:21... connected.
 Logging in as anonymous ... Logged in!
 ==&gt; SYST ... done.    ==&gt; PWD ... done.
@@ -234,35 +226,33 @@ Logging in as anonymous ... Logged in!
 ==&gt; EPSV ... done.    ==&gt; RETR GSE41265_allGenesTPM.txt.gz ... done.
 Length: 1099290 (1.0M) (unauthoritative)
 
-     0K .......... .......... .......... .......... ..........  4% 1.16M 1s
-    50K .......... .......... .......... .......... ..........  9% 5.96M 0s
-   100K .......... .......... .......... .......... .......... 13% 6.46M 0s
-   150K .......... .......... .......... .......... .......... 18% 50.8M 0s
-   200K .......... .......... .......... .......... .......... 23% 6.10M 0s
-   250K .......... .......... .......... .......... .......... 27% 67.7M 0s
-   300K .......... .......... .......... .......... .......... 32% 7.06M 0s
-   350K .......... .......... .......... .......... .......... 37% 51.2M 0s
-   400K .......... .......... .......... .......... .......... 41%  124M 0s
-   450K .......... .......... .......... .......... .......... 46% 7.05M 0s
-   500K .......... .......... .......... .......... .......... 51% 91.8M 0s
-   550K .......... .......... .......... .......... .......... 55% 78.9M 0s
-   600K .......... .......... .......... .......... .......... 60% 8.01M 0s
-   650K .......... .......... .......... .......... .......... 65% 49.2M 0s
-   700K .......... .......... .......... .......... .......... 69%  140M 0s
-   750K .......... .......... .......... .......... .......... 74% 81.1M 0s
-   800K .......... .......... .......... .......... .......... 79%  122M 0s
-   850K .......... .......... .......... .......... .......... 83% 7.99M 0s
-   900K .......... .......... .......... .......... .......... 88% 85.4M 0s
-   950K .......... .......... .......... .......... .......... 93%  100M 0s
-  1000K .......... .......... .......... .......... .......... 97%  136M 0s
-  1050K .......... .......... ...                             100%  118M=0.1s
+     0K .......... .......... .......... .......... ..........  4% 1.20M 1s
+    50K .......... .......... .......... .......... ..........  9% 6.39M 0s
+   100K .......... .......... .......... .......... .......... 13% 6.52M 0s
+   150K .......... .......... .......... .......... .......... 18% 54.5M 0s
+   200K .......... .......... .......... .......... .......... 23% 6.68M 0s
+   250K .......... .......... .......... .......... .......... 27% 84.5M 0s
+   300K .......... .......... .......... .......... .......... 32% 7.03M 0s
+   350K .......... .......... .......... .......... .......... 37% 66.1M 0s
+   400K .......... .......... .......... .......... .......... 41%  117M 0s
+   450K .......... .......... .......... .......... .......... 46% 8.21M 0s
+   500K .......... .......... .......... .......... .......... 51% 31.2M 0s
+   550K .......... .......... .......... .......... .......... 55%  116M 0s
+   600K .......... .......... .......... .......... .......... 60% 93.2M 0s
+   650K .......... .......... .......... .......... .......... 65%  118M 0s
+   700K .......... .......... .......... .......... .......... 69% 7.39M 0s
+   750K .......... .......... .......... .......... .......... 74% 92.6M 0s
+   800K .......... .......... .......... .......... .......... 79%  163M 0s
+   850K .......... .......... .......... .......... .......... 83% 90.1M 0s
+   900K .......... .......... .......... .......... .......... 88%  119M 0s
+   950K .......... .......... .......... .......... .......... 93% 12.1M 0s
+  1000K .......... .......... .......... .......... .......... 97% 38.5M 0s
+  1050K .......... .......... ...                             100%  205M=0.1s
 
-2015-04-29 18:29:39 (10.5 MB/s) - `GSE41265_allGenesTPM.txt.gz' saved [1099290]
-
-
-
-            We will also compare to the supplementary table 2 data, obtained also using ``wget`</cite>.
-</pre>
+2015-05-01 18:26:15 (11.0 MB/s) - `GSE41265_allGenesTPM.txt.gz&#39; saved [1099290]
+</pre></div>
+</div>
+<p>We will also compare to the supplementary table 2 data, obtained also using <tt class="docutils literal"><span class="pre">wget</span></tt>.</p>
 <div class="code python highlight-python"><div class="highlight"><pre>%%bash
 wget http://www.nature.com/nature/journal/v498/n7453/extref/nature12172-s1.zip
 unzip nature12172-s1.zip
@@ -279,112 +269,109 @@ unzip nature12172-s1.zip
   inflating: nature12172-s1/Supplementary_Table7.xlsx
 </pre></div>
 </div>
-<pre class="literal-block">
---2015-04-29 18:29:39--  <a class="reference external" href="http://www.nature.com/nature/journal/v498/n7453/extref/nature12172-s1.zip">http://www.nature.com/nature/journal/v498/n7453/extref/nature12172-s1.zip</a>
-Resolving www.nature.com (www.nature.com)... 107.14.45.25, 107.14.45.48
-Connecting to www.nature.com (www.nature.com)|107.14.45.25|:80... connected.
+<div class="highlight-python"><div class="highlight"><pre>--2015-05-01 18:26:16--  http://www.nature.com/nature/journal/v498/n7453/extref/nature12172-s1.zip
+Resolving www.nature.com (www.nature.com)... 107.14.45.48, 107.14.45.25
+Connecting to www.nature.com (www.nature.com)|107.14.45.48|:80... connected.
 HTTP request sent, awaiting response... 200 OK
 Length: 4634226 (4.4M) [application/zip]
-Saving to: <cite>nature12172-s1.zip'
+Saving to: `nature12172-s1.zip&#39;
 
-     0K .......... .......... .......... .......... ..........  1% 9.00M 0s
-    50K .......... .......... .......... .......... ..........  2% 17.6M 0s
-   100K .......... .......... .......... .......... ..........  3% 16.9M 0s
-   150K .......... .......... .......... .......... ..........  4% 82.9M 0s
-   200K .......... .......... .......... .......... ..........  5% 19.1M 0s
-   250K .......... .......... .......... .......... ..........  6% 68.9M 0s
-   300K .......... .......... .......... .......... ..........  7% 23.4M 0s
-   350K .......... .......... .......... .......... ..........  8% 78.2M 0s
-   400K .......... .......... .......... .......... ..........  9% 24.9M 0s
-   450K .......... .......... .......... .......... .......... 11%  126M 0s
-   500K .......... .......... .......... .......... .......... 12% 86.0M 0s
-   550K .......... .......... .......... .......... .......... 13%  119M 0s
-   600K .......... .......... .......... .......... .......... 14% 26.8M 0s
-   650K .......... .......... .......... .......... .......... 15%  184M 0s
-   700K .......... .......... .......... .......... .......... 16% 93.0M 0s
-   750K .......... .......... .......... .......... .......... 17%  126M 0s
-   800K .......... .......... .......... .......... .......... 18% 16.4M 0s
-   850K .......... .......... .......... .......... .......... 19%  127M 0s
-   900K .......... .......... .......... .......... .......... 20% 49.5M 0s
-   950K .......... .......... .......... .......... .......... 22%  115M 0s
-  1000K .......... .......... .......... .......... .......... 23% 67.5M 0s
-  1050K .......... .......... .......... .......... .......... 24% 88.7M 0s
-  1100K .......... .......... .......... .......... .......... 25% 81.5M 0s
-  1150K .......... .......... .......... .......... .......... 26% 71.3M 0s
-  1200K .......... .......... .......... .......... .......... 27% 64.9M 0s
-  1250K .......... .......... .......... .......... .......... 28% 66.7M 0s
-  1300K .......... .......... .......... .......... .......... 29%  121M 0s
-  1350K .......... .......... .......... .......... .......... 30%  130M 0s
-  1400K .......... .......... .......... .......... .......... 32%  152M 0s
-  1450K .......... .......... .......... .......... .......... 33%  195M 0s
-  1500K .......... .......... .......... .......... .......... 34% 86.2M 0s
-  1550K .......... .......... .......... .......... .......... 35%  130M 0s
-  1600K .......... .......... .......... .......... .......... 36%  116M 0s
-  1650K .......... .......... .......... .......... .......... 37%  130M 0s
-  1700K .......... .......... .......... .......... .......... 38%  124M 0s
-  1750K .......... .......... .......... .......... .......... 39% 94.8M 0s
-  1800K .......... .......... .......... .......... .......... 40%  108M 0s
-  1850K .......... .......... .......... .......... .......... 41% 95.2M 0s
-  1900K .......... .......... .......... .......... .......... 43%  120M 0s
-  1950K .......... .......... .......... .......... .......... 44%  111M 0s
-  2000K .......... .......... .......... .......... .......... 45% 50.6M 0s
-  2050K .......... .......... .......... .......... .......... 46%  185M 0s
-  2100K .......... .......... .......... .......... .......... 47% 80.3M 0s
-  2150K .......... .......... .......... .......... .......... 48% 55.7M 0s
-  2200K .......... .......... .......... .......... .......... 49% 88.8M 0s
-  2250K .......... .......... .......... .......... .......... 50%  132M 0s
-  2300K .......... .......... .......... .......... .......... 51%  117M 0s
-  2350K .......... .......... .......... .......... .......... 53% 54.6M 0s
-  2400K .......... .......... .......... .......... .......... 54%  122M 0s
-  2450K .......... .......... .......... .......... .......... 55%  124M 0s
-  2500K .......... .......... .......... .......... .......... 56% 94.3M 0s
-  2550K .......... .......... .......... .......... .......... 57%  125M 0s
-  2600K .......... .......... .......... .......... .......... 58% 41.8M 0s
-  2650K .......... .......... .......... .......... .......... 59%  109M 0s
-  2700K .......... .......... .......... .......... .......... 60% 96.5M 0s
-  2750K .......... .......... .......... .......... .......... 61%  119M 0s
-  2800K .......... .......... .......... .......... .......... 62% 68.6M 0s
-  2850K .......... .......... .......... .......... .......... 64%  109M 0s
-  2900K .......... .......... .......... .......... .......... 65% 89.8M 0s
-  2950K .......... .......... .......... .......... .......... 66% 85.2M 0s
-  3000K .......... .......... .......... .......... .......... 67%  117M 0s
-  3050K .......... .......... .......... .......... .......... 68%  143M 0s
-  3100K .......... .......... .......... .......... .......... 69% 84.6M 0s
-  3150K .......... .......... .......... .......... .......... 70%  113M 0s
-  3200K .......... .......... .......... .......... .......... 71%  126M 0s
-  3250K .......... .......... .......... .......... .......... 72%  126M 0s
-  3300K .......... .......... .......... .......... .......... 74% 93.9M 0s
-  3350K .......... .......... .......... .......... .......... 75%  110M 0s
-  3400K .......... .......... .......... .......... .......... 76% 94.9M 0s
-  3450K .......... .......... .......... .......... .......... 77%  117M 0s
-  3500K .......... .......... .......... .......... .......... 78%  147M 0s
-  3550K .......... .......... .......... .......... .......... 79% 27.0M 0s
-  3600K .......... .......... .......... .......... .......... 80%  113M 0s
-  3650K .......... .......... .......... .......... .......... 81% 90.0M 0s
-  3700K .......... .......... .......... .......... .......... 82% 38.4M 0s
-  3750K .......... .......... .......... .......... .......... 83% 34.1M 0s
-  3800K .......... .......... .......... .......... .......... 85%  113M 0s
-  3850K .......... .......... .......... .......... .......... 86%  125M 0s
-  3900K .......... .......... .......... .......... .......... 87% 69.1M 0s
-  3950K .......... .......... .......... .......... .......... 88% 59.8M 0s
-  4000K .......... .......... .......... .......... .......... 89% 49.7M 0s
-  4050K .......... .......... .......... .......... .......... 90%  132M 0s
-  4100K .......... .......... .......... .......... .......... 91%  127M 0s
-  4150K .......... .......... .......... .......... .......... 92% 85.6M 0s
-  4200K .......... .......... .......... .......... .......... 93%  122M 0s
-  4250K .......... .......... .......... .......... .......... 95% 91.9M 0s
-  4300K .......... .......... .......... .......... .......... 96%  126M 0s
-  4350K .......... .......... .......... .......... .......... 97%  112M 0s
-  4400K .......... .......... .......... .......... .......... 98%  130M 0s
-  4450K .......... .......... .......... .......... .......... 99% 96.5M 0s
-  4500K .......... .......... .....                           100%  240M=0.07s
+     0K .......... .......... .......... .......... ..........  1%  122M 0s
+    50K .......... .......... .......... .......... ..........  2% 13.9M 0s
+   100K .......... .......... .......... .......... ..........  3% 19.2M 0s
+   150K .......... .......... .......... .......... ..........  4% 22.4M 0s
+   200K .......... .......... .......... .......... ..........  5% 61.2M 0s
+   250K .......... .......... .......... .......... ..........  6% 24.1M 0s
+   300K .......... .......... .......... .......... ..........  7% 63.8M 0s
+   350K .......... .......... .......... .......... ..........  8% 62.0M 0s
+   400K .......... .......... .......... .......... ..........  9% 30.7M 0s
+   450K .......... .......... .......... .......... .......... 11% 62.2M 0s
+   500K .......... .......... .......... .......... .......... 12% 99.8M 0s
+   550K .......... .......... .......... .......... .......... 13% 37.4M 0s
+   600K .......... .......... .......... .......... .......... 14% 63.3M 0s
+   650K .......... .......... .......... .......... .......... 15% 81.8M 0s
+   700K .......... .......... .......... .......... .......... 16% 80.7M 0s
+   750K .......... .......... .......... .......... .......... 17% 91.6M 0s
+   800K .......... .......... .......... .......... .......... 18% 38.3M 0s
+   850K .......... .......... .......... .......... .......... 19% 94.9M 0s
+   900K .......... .......... .......... .......... .......... 20% 76.5M 0s
+   950K .......... .......... .......... .......... .......... 22% 92.1M 0s
+  1000K .......... .......... .......... .......... .......... 23% 79.8M 0s
+  1050K .......... .......... .......... .......... .......... 24%  116M 0s
+  1100K .......... .......... .......... .......... .......... 25% 62.9M 0s
+  1150K .......... .......... .......... .......... .......... 26% 91.7M 0s
+  1200K .......... .......... .......... .......... .......... 27% 82.2M 0s
+  1250K .......... .......... .......... .......... .......... 28% 51.7M 0s
+  1300K .......... .......... .......... .......... .......... 29%  219M 0s
+  1350K .......... .......... .......... .......... .......... 30% 90.0M 0s
+  1400K .......... .......... .......... .......... .......... 32% 90.7M 0s
+  1450K .......... .......... .......... .......... .......... 33% 84.8M 0s
+  1500K .......... .......... .......... .......... .......... 34% 79.6M 0s
+  1550K .......... .......... .......... .......... .......... 35% 83.3M 0s
+  1600K .......... .......... .......... .......... .......... 36% 44.6M 0s
+  1650K .......... .......... .......... .......... .......... 37%  174M 0s
+  1700K .......... .......... .......... .......... .......... 38% 89.4M 0s
+  1750K .......... .......... .......... .......... .......... 39%  126M 0s
+  1800K .......... .......... .......... .......... .......... 40% 89.6M 0s
+  1850K .......... .......... .......... .......... .......... 41%  119M 0s
+  1900K .......... .......... .......... .......... .......... 43% 85.4M 0s
+  1950K .......... .......... .......... .......... .......... 44% 88.0M 0s
+  2000K .......... .......... .......... .......... .......... 45%  140M 0s
+  2050K .......... .......... .......... .......... .......... 46% 49.3M 0s
+  2100K .......... .......... .......... .......... .......... 47%  121M 0s
+  2150K .......... .......... .......... .......... .......... 48%  136M 0s
+  2200K .......... .......... .......... .......... .......... 49% 62.2M 0s
+  2250K .......... .......... .......... .......... .......... 50% 78.7M 0s
+  2300K .......... .......... .......... .......... .......... 51%  102M 0s
+  2350K .......... .......... .......... .......... .......... 53% 63.2M 0s
+  2400K .......... .......... .......... .......... .......... 54% 73.6M 0s
+  2450K .......... .......... .......... .......... .......... 55% 88.0M 0s
+  2500K .......... .......... .......... .......... .......... 56% 87.3M 0s
+  2550K .......... .......... .......... .......... .......... 57% 66.1M 0s
+  2600K .......... .......... .......... .......... .......... 58%  125M 0s
+  2650K .......... .......... .......... .......... .......... 59% 79.4M 0s
+  2700K .......... .......... .......... .......... .......... 60% 87.9M 0s
+  2750K .......... .......... .......... .......... .......... 61% 29.0M 0s
+  2800K .......... .......... .......... .......... .......... 62%  201M 0s
+  2850K .......... .......... .......... .......... .......... 64%  120M 0s
+  2900K .......... .......... .......... .......... .......... 65%  126M 0s
+  2950K .......... .......... .......... .......... .......... 66% 91.5M 0s
+  3000K .......... .......... .......... .......... .......... 67%  130M 0s
+  3050K .......... .......... .......... .......... .......... 68%  133M 0s
+  3100K .......... .......... .......... .......... .......... 69% 65.4M 0s
+  3150K .......... .......... .......... .......... .......... 70% 73.6M 0s
+  3200K .......... .......... .......... .......... .......... 71% 72.1M 0s
+  3250K .......... .......... .......... .......... .......... 72%  185M 0s
+  3300K .......... .......... .......... .......... .......... 74% 70.5M 0s
+  3350K .......... .......... .......... .......... .......... 75% 61.7M 0s
+  3400K .......... .......... .......... .......... .......... 76% 34.9M 0s
+  3450K .......... .......... .......... .......... .......... 77% 99.4M 0s
+  3500K .......... .......... .......... .......... .......... 78%  192M 0s
+  3550K .......... .......... .......... .......... .......... 79%  126M 0s
+  3600K .......... .......... .......... .......... .......... 80% 91.4M 0s
+  3650K .......... .......... .......... .......... .......... 81% 36.5M 0s
+  3700K .......... .......... .......... .......... .......... 82% 77.6M 0s
+  3750K .......... .......... .......... .......... .......... 83% 80.2M 0s
+  3800K .......... .......... .......... .......... .......... 85% 82.7M 0s
+  3850K .......... .......... .......... .......... .......... 86% 92.0M 0s
+  3900K .......... .......... .......... .......... .......... 87% 86.2M 0s
+  3950K .......... .......... .......... .......... .......... 88% 83.7M 0s
+  4000K .......... .......... .......... .......... .......... 89% 96.0M 0s
+  4050K .......... .......... .......... .......... .......... 90% 29.8M 0s
+  4100K .......... .......... .......... .......... .......... 91% 19.7M 0s
+  4150K .......... .......... .......... .......... .......... 92%  176M 0s
+  4200K .......... .......... .......... .......... .......... 93%  160M 0s
+  4250K .......... .......... .......... .......... .......... 95%  182M 0s
+  4300K .......... .......... .......... .......... .......... 96%  187M 0s
+  4350K .......... .......... .......... .......... .......... 97%  193M 0s
+  4400K .......... .......... .......... .......... .......... 98%  155M 0s
+  4450K .......... .......... .......... .......... .......... 99%  190M 0s
+  4500K .......... .......... .....                           100% 95.8M=0.07s
 
-2015-04-29 18:29:39 (65.2 MB/s) - `nature12172-s1.zip' saved [4634226/4634226]
-
-
-
-            Now we will read the data in using ```pandas`</cite> &lt;<a class="reference external" href="http://pandas.pydata.org">http://pandas.pydata.org</a>&gt;`_, indicating that the file is compressed via gzip, and that we want the first column to be the &quot;index&quot;, or row names of the table.
-</pre>
+2015-05-01 18:26:16 (67.6 MB/s) - `nature12172-s1.zip&#39; saved [4634226/4634226]
+</pre></div>
+</div>
+<p>Now we will read the data in using <tt class="docutils literal"><span class="pre">`pandas</span></tt> &lt;<a class="reference external" href="http://pandas.pydata.org">http://pandas.pydata.org</a>&gt;`_, indicating that the file is compressed via gzip, and that we want the first column to be the &#8220;index&#8221;, or row names of the table.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">expression</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="s">&quot;GSE41265_allGenesTPM.txt.gz&quot;</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s">&quot;gzip&quot;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">expression</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
@@ -565,11 +552,8 @@ Saving to: <cite>nature12172-s1.zip'
   </tbody>
 </table>
 <p>5 rows × 21 columns</p>
-</div>
-
-
-
-            These data are in the "transcripts per million," aka TPM unit. See `this blog post <http://haroldpimentel.wordpress.com/2014/05/08/what-the-fpkm-a-review-rna-seq-expression-units/>`_ if that sounds weird to you.<p>These data are formatted with samples on the columns, and genes on the rows. But we want the opposite, with samples on the rows and genes on the columns. This follows <tt class="docutils literal"><span class="pre">`scikit-learn</span></tt> &lt;<a class="reference external" href="http://scikit-learn.org/stable/tutorial/basic/tutorial.html#loading-an-example-dataset">http://scikit-learn.org/stable/tutorial/basic/tutorial.html#loading-an-example-dataset</a>&gt;`_&#8217;s standard of data matrices with size (<tt class="docutils literal"><span class="pre">n_samples</span></tt>, <tt class="docutils literal"><span class="pre">n_features</span></tt>) as each gene is a feature. So we will simply transpose this.</p>
+</div><p>These data are in the &#8220;transcripts per million,&#8221; aka TPM unit. See <a class="reference external" href="http://haroldpimentel.wordpress.com/2014/05/08/what-the-fpkm-a-review-rna-seq-expression-units/">this blog post</a> if that sounds weird to you.</p>
+<p>These data are formatted with samples on the columns, and genes on the rows. But we want the opposite, with samples on the rows and genes on the columns. This follows <tt class="docutils literal"><span class="pre">`scikit-learn</span></tt> &lt;<a class="reference external" href="http://scikit-learn.org/stable/tutorial/basic/tutorial.html#loading-an-example-dataset">http://scikit-learn.org/stable/tutorial/basic/tutorial.html#loading-an-example-dataset</a>&gt;`_&#8217;s standard of data matrices with size (<tt class="docutils literal"><span class="pre">n_samples</span></tt>, <tt class="docutils literal"><span class="pre">n_features</span></tt>) as each gene is a feature. So we will simply transpose this.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">expression</span> <span class="o">=</span> <span class="n">expression</span><span class="o">.</span><span class="n">T</span>
 <span class="n">expression</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
@@ -726,11 +710,8 @@ Saving to: <cite>nature12172-s1.zip'
   </tbody>
 </table>
 <p>5 rows × 27723 columns</p>
-</div>
-
-
-
-            The authors filtered the expression data based on having at least 3 single cells express genes with at TPM (transcripts per million, ) > 1. We can express this in using the ``pandas`` DataFrames easily.<p>First, from reading the paper and looking at the data, I know there are 18 single cells, and there are 18 samples that start with the letter &#8220;S.&#8221; So I will extract the single samples from the <tt class="docutils literal"><span class="pre">index</span></tt> (row names) using a <tt class="docutils literal"><span class="pre">lambda</span></tt>, a tiny function which in this case, tells me whether or not that sample id begins with the letter &#8220;S&#8221;.</p>
+</div><p>The authors filtered the expression data based on having at least 3 single cells express genes with at TPM (transcripts per million, ) &gt; 1. We can express this in using the <tt class="docutils literal"><span class="pre">pandas</span></tt> DataFrames easily.</p>
+<p>First, from reading the paper and looking at the data, I know there are 18 single cells, and there are 18 samples that start with the letter &#8220;S.&#8221; So I will extract the single samples from the <tt class="docutils literal"><span class="pre">index</span></tt> (row names) using a <tt class="docutils literal"><span class="pre">lambda</span></tt>, a tiny function which in this case, tells me whether or not that sample id begins with the letter &#8220;S&#8221;.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">singles_ids</span> <span class="o">=</span> <span class="n">expression</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">expression</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;S&#39;</span><span class="p">))]</span>
 <span class="k">print</span><span class="p">(</span><span class="s">&#39;number of single cells:&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">singles_ids</span><span class="p">))</span>
 <span class="n">singles</span> <span class="o">=</span> <span class="n">expression</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">singles_ids</span><span class="p">]</span>
@@ -743,90 +724,40 @@ Saving to: <cite>nature12172-s1.zip'
 <div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="s">&#39;number of single cells:&#39;</span><span class="p">,</span> <span class="mi">18</span><span class="p">)</span>
 </pre></div>
 </div>
-<pre class="literal-block">
-(21, 6312)
-
-
-
-            Hmm, that's strange. The paper states that they had 6313 genes after filtering, but I get 6312. Even using &quot;<cite>singles &gt;= 1</cite>&quot; doesn't help. I suppose it's one of the usual bioinformatics 1-off errors :)
-</pre>
+<p>Hmm, that&#8217;s strange. The paper states that they had 6313 genes after filtering, but I get 6312. Even using &#8220;<cite>singles &gt;= 1</cite>&#8221; doesn&#8217;t help. I suppose it&#8217;s one of the usual bioinformatics 1-off errors :)</p>
 <p>(I also tried this with the expression table provided in the supplementary data as &#8220;<cite>SupplementaryTable2.xlsx</cite>,&#8221; and got the same results.)</p>
 <p>Now that we&#8217;ve taken care of importing and filtering the expression data, let&#8217;s do the feature data of the expression data.</p>
 </div>
 <div class="section" id="expression-feature-data">
 <h2>Expression feature data<a class="headerlink" href="#expression-feature-data" title="Permalink to this headline">¶</a></h2>
-<blockquote>
-<div>The &#8220;Expresion feature data&#8221; is similar to the <tt class="docutils literal"><span class="pre">fData</span></tt> from <tt class="docutils literal"><span class="pre">BioconductoR</span></tt>, where there&#8217;s some additional data on your features that you want to look at. They uploaded information about the features in their OTHER expression matrix, uploaded as a supplementary file, <tt class="docutils literal"><span class="pre">Supplementary_Table2.xlsx</span></tt>.</div></blockquote>
-<div class="code python highlight-python"><div class="highlight"><pre>expression2 = pd.read_excel(&#39;nature12172-s1/Supplementary_Table2.xlsx&#39;)
+<p>The &#8220;Expresion feature data&#8221; is similar to the <tt class="docutils literal"><span class="pre">fData</span></tt> from <tt class="docutils literal"><span class="pre">BioconductoR</span></tt>, where there&#8217;s some additional data on your features that you want to look at. They uploaded information about the features in their OTHER expression matrix, uploaded as a supplementary file, <tt class="docutils literal"><span class="pre">Supplementary_Table2.xlsx</span></tt>.</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">expression2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s">&#39;nature12172-s1/Supplementary_Table2.xlsx&#39;</span><span class="p">)</span>
 
-# # This was also in features x samples format, so we need to transpose
-# expression2 = expression2.T
-# expression2.head()
-            Unfortunately, Excel mangled the gene names of the genes that started with a ``201``, and converted those into ``datetime.datetime`` objects, or if the gene ID was all numbers, then it was converted to an integer. We could go in to excel save the file as a csv which would fix this, but for now we&#39;ll just ignore those rows.
+<span class="c"># # This was also in features x samples format, so we need to transpose</span>
+<span class="c"># expression2 = expression2.T</span>
+<span class="c"># expression2.head()</span>
 </pre></div>
 </div>
+<p>Unfortunately, Excel mangled the gene names of the genes that started with a <tt class="docutils literal"><span class="pre">201</span></tt>, and converted those into <tt class="docutils literal"><span class="pre">datetime.datetime</span></tt> objects, or if the gene ID was all numbers, then it was converted to an integer. We could go in to excel save the file as a csv which would fix this, but for now we&#8217;ll just ignore those rows.</p>
 <p>See, not all the items in the <tt class="docutils literal"><span class="pre">GENE</span></tt> column are <tt class="docutils literal"><span class="pre">unicode</span></tt> string objects:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="nb">set</span><span class="p">([</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">expression2</span><span class="o">.</span><span class="n">GENE</span><span class="p">])</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>{int, unicode, datetime.datetime}
-
-
-
-            One is an integer:
-</pre></div>
-</div>
+<p>One is an integer:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="nb">set</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">expression2</span><span class="o">.</span><span class="n">GENE</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)])</span>
 </pre></div>
 </div>
-<pre class="literal-block">
-{100043387}
-
-
-
-            Several more were converted to <tt class="docutils literal"><span class="pre">datetime</span></tt> objects.
-</pre>
+<p>Several more were converted to <tt class="docutils literal"><span class="pre">datetime</span></tt> objects.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">datetime</span>
 
 <span class="nb">set</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">expression2</span><span class="o">.</span><span class="n">GENE</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">)])</span>
 </pre></div>
 </div>
-<pre class="literal-block">
-{datetime.datetime(2013, 3, 1, 0, 0),
- datetime.datetime(2013, 3, 2, 0, 0),
- datetime.datetime(2013, 3, 3, 0, 0),
- datetime.datetime(2013, 3, 4, 0, 0),
- datetime.datetime(2013, 3, 5, 0, 0),
- datetime.datetime(2013, 3, 6, 0, 0),
- datetime.datetime(2013, 3, 7, 0, 0),
- datetime.datetime(2013, 3, 8, 0, 0),
- datetime.datetime(2013, 3, 9, 0, 0),
- datetime.datetime(2013, 3, 10, 0, 0),
- datetime.datetime(2013, 3, 11, 0, 0),
- datetime.datetime(2013, 4, 3, 0, 0),
- datetime.datetime(2013, 9, 1, 0, 0),
- datetime.datetime(2013, 9, 2, 0, 0),
- datetime.datetime(2013, 9, 3, 0, 0),
- datetime.datetime(2013, 9, 4, 0, 0),
- datetime.datetime(2013, 9, 5, 0, 0),
- datetime.datetime(2013, 9, 6, 0, 0),
- datetime.datetime(2013, 9, 7, 0, 0),
- datetime.datetime(2013, 9, 8, 0, 0),
- datetime.datetime(2013, 9, 9, 0, 0),
- datetime.datetime(2013, 9, 10, 0, 0),
- datetime.datetime(2013, 9, 11, 0, 0),
- datetime.datetime(2013, 9, 12, 0, 0),
- datetime.datetime(2013, 9, 14, 0, 0),
- datetime.datetime(2013, 9, 15, 0, 0)}
-
-
-
-            To ignore those columns, we'll only use items in the <tt class="docutils literal"><span class="pre">GENE</span></tt> column if they are of the type <tt class="docutils literal"><span class="pre">unicode</span></tt>, as such:
-</pre>
-<div class="code python highlight-python"><div class="highlight"><pre>expression2.GENE = expression2.GENE[expression2.GENE.map(lambda x: isinstance(x, unicode))]
-            We can take a look at a subset and see that row 25&#39;s gene was replaced with an NaN, indicating that the gene there wasn&#39;t a string and didn&#39;t pass our filter.
+<p>To ignore those columns, we&#8217;ll only use items in the <tt class="docutils literal"><span class="pre">GENE</span></tt> column if they are of the type <tt class="docutils literal"><span class="pre">unicode</span></tt>, as such:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">expression2</span><span class="o">.</span><span class="n">GENE</span> <span class="o">=</span> <span class="n">expression2</span><span class="o">.</span><span class="n">GENE</span><span class="p">[</span><span class="n">expression2</span><span class="o">.</span><span class="n">GENE</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">unicode</span><span class="p">))]</span>
 </pre></div>
 </div>
+<p>We can take a look at a subset and see that row 25&#8217;s gene was replaced with an NaN, indicating that the gene there wasn&#8217;t a string and didn&#8217;t pass our filter.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">expression2</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="mi">20</span><span class="p">:</span><span class="mi">25</span><span class="p">,</span> <span class="p">:</span><span class="mi">5</span><span class="p">]</span>
 </pre></div>
 </div>
@@ -893,20 +824,11 @@ Saving to: <cite>nature12172-s1.zip'
     </tr>
   </tbody>
 </table>
-</div>
-
-
-
-            We can remove all the rows with an NaN using ``dropna`` and indicating we only want the function to pay attention to a ``subset`` of the columns. Let's check the ``shape`` of the dataframe so we can see if there were tons of columns removed.<div class="code python highlight-python"><div class="highlight"><pre><span class="n">expression2</span><span class="o">.</span><span class="n">shape</span>
+</div><p>We can remove all the rows with an NaN using <tt class="docutils literal"><span class="pre">dropna</span></tt> and indicating we only want the function to pay attention to a <tt class="docutils literal"><span class="pre">subset</span></tt> of the columns. Let&#8217;s check the <tt class="docutils literal"><span class="pre">shape</span></tt> of the dataframe so we can see if there were tons of columns removed.</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">expression2</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>(27723, 23)
-
-
-
-            Let&#39;s look at the 20th to 25th rows again to see if the NaN gene is still there.
-</pre></div>
-</div>
+<p>Let&#8217;s look at the 20th to 25th rows again to see if the NaN gene is still there.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">expression2</span> <span class="o">=</span> <span class="n">expression2</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;GENE&#39;</span><span class="p">])</span>
 <span class="n">expression2</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="mi">20</span><span class="p">:</span><span class="mi">25</span><span class="p">,</span> <span class="p">:</span><span class="mi">5</span><span class="p">]</span>
 </pre></div>
@@ -966,20 +888,11 @@ Saving to: <cite>nature12172-s1.zip'
     </tr>
   </tbody>
 </table>
-</div>
-
-
-
-            Nope, not there! How many columns did we end up removing?<div class="code python highlight-python"><div class="highlight"><pre><span class="n">expression2</span><span class="o">.</span><span class="n">shape</span>
+</div><p>Nope, not there! How many columns did we end up removing?</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">expression2</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>(27696, 23)
-
-
-
-            Not many, only 27 total genes. Shouldn&#39;t have a HUGE impact on the analysis. It&#39;s not like we know what those genes do anyway...
-</pre></div>
-</div>
+<p>Not many, only 27 total genes. Shouldn&#8217;t have a HUGE impact on the analysis. It&#8217;s not like we know what those genes do anyway...</p>
 <p>Now let&#8217;s get down to doing what we came here to do: making a table of the feature data. We&#8217;ll use the column &#8220;Gene Category&#8221; in this dataframe, which we can see is in the last column by subsetting on the first five rows with <tt class="docutils literal"><span class="pre">:5</span></tt> and the last five columns with <tt class="docutils literal"><span class="pre">-5:</span></tt>.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">expression2</span><span class="o">.</span><span class="n">ix</span><span class="p">[:</span><span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">:]</span>
 </pre></div>
@@ -1047,11 +960,8 @@ Saving to: <cite>nature12172-s1.zip'
     </tr>
   </tbody>
 </table>
-</div>
-
-
-
-            We can subset ``expression2`` on the two columns we want: the gene ID in ``GENE`` and the gene category:<div class="code python highlight-python"><div class="highlight"><pre><span class="n">gene_category</span> <span class="o">=</span> <span class="n">expression2</span><span class="p">[[</span><span class="s">&#39;GENE&#39;</span><span class="p">,</span> <span class="s">&#39;Gene Category&#39;</span><span class="p">]]</span>
+</div><p>We can subset <tt class="docutils literal"><span class="pre">expression2</span></tt> on the two columns we want: the gene ID in <tt class="docutils literal"><span class="pre">GENE</span></tt> and the gene category:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">gene_category</span> <span class="o">=</span> <span class="n">expression2</span><span class="p">[[</span><span class="s">&#39;GENE&#39;</span><span class="p">,</span> <span class="s">&#39;Gene Category&#39;</span><span class="p">]]</span>
 <span class="n">gene_category</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1092,11 +1002,8 @@ Saving to: <cite>nature12172-s1.zip'
     </tr>
   </tbody>
 </table>
-</div>
-
-
-
-            We want to create a ``pandas.DataFrame`` from the "Gene Category" row for our ``expression_feature_data``, which we will do via:<div class="code python highlight-python"><div class="highlight"><pre><span class="n">expression_feature_data</span> <span class="o">=</span> <span class="n">gene_category</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s">&#39;GENE&#39;</span><span class="p">)</span>
+</div><p>We want to create a <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> from the &#8220;Gene Category&#8221; row for our <tt class="docutils literal"><span class="pre">expression_feature_data</span></tt>, which we will do via:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">expression_feature_data</span> <span class="o">=</span> <span class="n">gene_category</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s">&#39;GENE&#39;</span><span class="p">)</span>
 <span class="n">expression_feature_data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1138,8 +1045,7 @@ Saving to: <cite>nature12172-s1.zip'
 </div></div>
 <div class="section" id="splicing-data">
 <h2>Splicing Data<a class="headerlink" href="#splicing-data" title="Permalink to this headline">¶</a></h2>
-<blockquote>
-<div>We obtain the splicing data from this study from the supplementary information, specifically the file, <tt class="docutils literal"><span class="pre">Supplementary_Table4.xls</span></tt></div></blockquote>
+<p>We obtain the splicing data from this study from the supplementary information, specifically the file, <tt class="docutils literal"><span class="pre">Supplementary_Table4.xls</span></tt></p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">splicing</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s">&#39;nature12172-s1/Supplementary_Table4.xls&#39;</span><span class="p">,</span> <span class="s">&#39;splicingTable.txt&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
 <span class="n">splicing</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
@@ -1859,25 +1765,13 @@ Saving to: <cite>nature12172-s1.zip'
   </tbody>
 </table>
 <p>20 rows × 352 columns</p>
-</div>
-
-
-
-            The three pooled samples aren't named consistently with the expression data, so we have to fix that.<div class="code python highlight-python"><div class="highlight"><pre><span class="n">splicing</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">splicing</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s">&#39;P&#39;</span> <span class="ow">in</span> <span class="n">x</span><span class="p">)]</span>
+</div><p>The three pooled samples aren&#8217;t named consistently with the expression data, so we have to fix that.</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">splicing</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">splicing</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s">&#39;P&#39;</span> <span class="ow">in</span> <span class="n">x</span><span class="p">)]</span>
 </pre></div>
 </div>
-<pre class="literal-block">
-Index([u'10,000 cell Rep1 (P1)', u'10,000 cell Rep2 (P2)', u'10,000 cell Rep3 (P3)'], dtype='object')
-
-
-
-            Since the pooled sample IDs are inconsistent with the <cite>expression</cite> data, we have to change them. We can get the &quot;P&quot; and the number after that using regular expressions, called <tt class="docutils literal"><span class="pre">re</span></tt> in the Python standard library, e.g.:
-</pre>
+<p>Since the pooled sample IDs are inconsistent with the <cite>expression</cite> data, we have to change them. We can get the &#8220;P&#8221; and the number after that using regular expressions, called <tt class="docutils literal"><span class="pre">re</span></tt> in the Python standard library, e.g.:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">re</span>
 <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">r&#39;P\d&#39;</span><span class="p">,</span> <span class="s">&#39;10,000 cell Rep1 (P1)&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
-</pre></div>
-</div>
-<div class="highlight-python"><div class="highlight"><pre><span class="s">&#39;P1&#39;</span>
 </pre></div>
 </div>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">long_pooled_name_to_short</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
@@ -1890,15 +1784,7 @@ Index([u'10,000 cell Rep1 (P1)', u'10,000 cell Rep2 (P2)', u'10,000 cell Rep3 (P
 <span class="n">splicing</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">long_pooled_name_to_short</span><span class="p">)</span>
 </pre></div>
 </div>
-<pre class="literal-block">
-array([u'S1', u'S2', u'S3', u'S4', u'S5', u'S6', u'S7', u'S8', u'S9',
-       u'S10', u'S11', u'S13', u'S14', u'S15', u'S16', u'S17', u'S18',
-       u'P1', u'P2', u'P3'], dtype=object)
-
-
-
-            And now we assign this new index as our index to the <tt class="docutils literal"><span class="pre">splicing</span></tt> dataframe.
-</pre>
+<p>And now we assign this new index as our index to the <tt class="docutils literal"><span class="pre">splicing</span></tt> dataframe.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">splicing</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">splicing</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">long_pooled_name_to_short</span><span class="p">)</span>
 <span class="n">splicing</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
@@ -2079,11 +1965,8 @@ array([u'S1', u'S2', u'S3', u'S4', u'S5', u'S6', u'S7', u'S8', u'S9',
   </tbody>
 </table>
 <p>5 rows × 352 columns</p>
-</div>
-
-
-
-            Right now, ``flotilla`` doesn't work with multi-indexed dataframes, so to deal with this, we'll use ``droplevel`` from ``pandas`` which will remove the gene name "level" from the column names. This is because the ``chr10:.....``-type thing is a unique identifier for splicing events, while the gene name is not (one gene may have many splicing events)<div class="code python highlight-python"><div class="highlight"><pre><span class="n">splicing</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">splicing</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">droplevel</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</div><p>Right now, <tt class="docutils literal"><span class="pre">flotilla</span></tt> doesn&#8217;t work with multi-indexed dataframes, so to deal with this, we&#8217;ll use <tt class="docutils literal"><span class="pre">droplevel</span></tt> from <tt class="docutils literal"><span class="pre">pandas</span></tt> which will remove the gene name &#8220;level&#8221; from the column names. This is because the <tt class="docutils literal"><span class="pre">chr10:.....</span></tt>-type thing is a unique identifier for splicing events, while the gene name is not (one gene may have many splicing events)</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">splicing</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">splicing</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">droplevel</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">splicing</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -2239,14 +2122,10 @@ array([u'S1', u'S2', u'S3', u'S4', u'S5', u'S6', u'S7', u'S8', u'S9',
   </tbody>
 </table>
 <p>5 rows × 352 columns</p>
-</div>
-
-
-
-            Great, now we have a perfectly formatted splicing dataframe!<div class="section" id="metadata">
+</div><p>Great, now we have a perfectly formatted splicing dataframe!</p>
+<div class="section" id="metadata">
 <h3>Metadata<a class="headerlink" href="#metadata" title="Permalink to this headline">¶</a></h3>
-<blockquote>
-<div>Now let&#8217;s get into creating a metadata dataframe. We&#8217;ll use the index from the <tt class="docutils literal"><span class="pre">expression_filtered</span></tt> data to create the minimum required column, <tt class="docutils literal"><span class="pre">'phenotype'</span></tt>, which has the name of the phenotype of that cell. And we&#8217;ll also add the column <tt class="docutils literal"><span class="pre">'pooled'</span></tt> to indicate whether this sample is pooled or not.</div></blockquote>
+<p>Now let&#8217;s get into creating a metadata dataframe. We&#8217;ll use the index from the <tt class="docutils literal"><span class="pre">expression_filtered</span></tt> data to create the minimum required column, <tt class="docutils literal"><span class="pre">'phenotype'</span></tt>, which has the name of the phenotype of that cell. And we&#8217;ll also add the column <tt class="docutils literal"><span class="pre">'pooled'</span></tt> to indicate whether this sample is pooled or not.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">metadata</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">expression_filtered</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
 <span class="n">metadata</span><span class="p">[</span><span class="s">&#39;phenotype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;BDMC&#39;</span>
 <span class="n">metadata</span><span class="p">[</span><span class="s">&#39;pooled&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;P&#39;</span><span class="p">))</span>
@@ -2375,8 +2254,7 @@ array([u'S1', u'S2', u'S3', u'S4', u'S5', u'S6', u'S7', u'S8', u'S9',
 </div>
 <div class="section" id="mapping-stats-data">
 <h2>Mapping stats data<a class="headerlink" href="#mapping-stats-data" title="Permalink to this headline">¶</a></h2>
-<blockquote>
-<div>We also want to include the information about how well each sample&#8217;s reads mapped to the genome, which the authors included as <tt class="docutils literal"><span class="pre">Supplementary_Table1.xls</span></tt></div></blockquote>
+<p>We also want to include the information about how well each sample&#8217;s reads mapped to the genome, which the authors included as <tt class="docutils literal"><span class="pre">Supplementary_Table1.xls</span></tt></p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">mapping_stats</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s">&#39;nature12172-s1/Supplementary_Table1.xls&#39;</span><span class="p">,</span> <span class="n">sheetname</span><span class="o">=</span><span class="s">&#39;SuppTable1 2.txt&#39;</span><span class="p">)</span>
 <span class="n">mapping_stats</span>
 </pre></div>
@@ -2666,8 +2544,7 @@ array([u'S1', u'S2', u'S3', u'S4', u'S5', u'S6', u'S7', u'S8', u'S9',
 </div></div>
 <div class="section" id="create-a-flotilla-study">
 <h2>Create a <tt class="docutils literal"><span class="pre">flotilla</span></tt> Study!<a class="headerlink" href="#create-a-flotilla-study" title="Permalink to this headline">¶</a></h2>
-<blockquote>
-<div>We&#8217;ve now prepared five (5!) different dataframes of information that together represent this body of work. They are:</div></blockquote>
+<p>We&#8217;ve now prepared five (5!) different dataframes of information that together represent this body of work. They are:</p>
 <ul class="simple">
 <li><tt class="docutils literal"><span class="pre">metadata</span></tt>: A table describing each individual sample</li>
 <li><tt class="docutils literal"><span class="pre">expression_filtered</span></tt>: A big matrix of gene expression values for each sample</li>
@@ -2697,95 +2574,86 @@ array([u'S1', u'S2', u'S3', u'S4', u'S5', u'S6', u'S7', u'S8', u'S9',
                        <span class="n">mapping_stats_number_mapped_col</span><span class="o">=</span><span class="s">&#39;PF_READS&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>2015-04-29 18:29:56 Initializing Study
-2015-04-29 18:29:56 Initializing Predictor configuration manager for Study
-2015-04-29 18:29:56 Predictor ExtraTreesClassifier is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesClassifier&#39;&gt;
-2015-04-29 18:29:56 Added ExtraTreesClassifier to default predictors
-2015-04-29 18:29:56 Predictor ExtraTreesRegressor is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesRegressor&#39;&gt;
-2015-04-29 18:29:56 Added ExtraTreesRegressor to default predictors
-2015-04-29 18:29:56 Predictor GradientBoostingClassifier is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingClassifier&#39;&gt;
-2015-04-29 18:29:56 Added GradientBoostingClassifier to default predictors
-2015-04-29 18:29:56 Predictor GradientBoostingRegressor is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingRegressor&#39;&gt;
-2015-04-29 18:29:56 Added GradientBoostingRegressor to default predictors
-2015-04-29 18:29:56 Loading metadata
-2015-04-29 18:29:56 Loading expression data
-2015-04-29 18:29:56 Initializing expression
-2015-04-29 18:29:56 Done initializing expression
-2015-04-29 18:29:56 Loading splicing data
-2015-04-29 18:29:56 Initializing splicing
-2015-04-29 18:29:56 Done initializing splicing
-2015-04-29 18:29:56 Successfully initialized a Study object!
+<div class="highlight-python"><div class="highlight"><pre>2015-05-01 18:26:32 Initializing Study
+2015-05-01 18:26:32 Initializing Predictor configuration manager for Study
+2015-05-01 18:26:32 Predictor ExtraTreesClassifier is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesClassifier&#39;&gt;
+2015-05-01 18:26:32 Added ExtraTreesClassifier to default predictors
+2015-05-01 18:26:32 Predictor ExtraTreesRegressor is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesRegressor&#39;&gt;
+2015-05-01 18:26:32 Added ExtraTreesRegressor to default predictors
+2015-05-01 18:26:32 Predictor GradientBoostingClassifier is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingClassifier&#39;&gt;
+2015-05-01 18:26:32 Added GradientBoostingClassifier to default predictors
+2015-05-01 18:26:32 Predictor GradientBoostingRegressor is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingRegressor&#39;&gt;
+2015-05-01 18:26:32 Added GradientBoostingRegressor to default predictors
+2015-05-01 18:26:32 Loading metadata
+2015-05-01 18:26:32 Loading expression data
+2015-05-01 18:26:32 Initializing expression
+2015-05-01 18:26:32 Done initializing expression
+2015-05-01 18:26:32 Loading splicing data
+2015-05-01 18:26:32 Initializing splicing
+2015-05-01 18:26:32 Done initializing splicing
+2015-05-01 18:26:33 Successfully initialized a Study object!
 </pre></div>
 </div>
-<pre class="literal-block">
-No phenotype to color mapping was provided, falling back on reasonable defaults.
+<div class="highlight-python"><div class="highlight"><pre>No phenotype to color mapping was provided, falling back on reasonable defaults.
 No phenotype to marker (matplotlib plotting symbol) was provided, falling back on reasonable defaults.
-
-
-            As a side note, you can save this study to disk now, so you can &quot;<tt class="docutils literal"><span class="pre">embark</span></tt>&quot; (load it) later:
-</pre>
+</pre></div>
+</div>
+<p>As a side note, you can save this study to disk now, so you can &#8220;<tt class="docutils literal"><span class="pre">embark</span></tt>&#8221; (load it) later:</p>
 </div>
 <div class="section" id="save-the-study-so-you-can-load-it-later">
 <h2>Save the study so you can load it later<a class="headerlink" href="#save-the-study-so-you-can-load-it-later" title="Permalink to this headline">¶</a></h2>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">study</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#39;shalek2013&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<pre class="literal-block">
-Wrote datapackage to /home/travis/flotilla_projects/shalek2013/datapackage.json
-
-
-            Note that this is saved to my home directory, in <tt class="docutils literal"><span class="pre">~/flotilla_projects/&lt;study_name&gt;/</span></tt>. This will be saved in your home directory, too.
-</pre>
+<div class="highlight-python"><div class="highlight"><pre>Wrote datapackage to /home/travis/flotilla_projects/shalek2013/datapackage.json
+</pre></div>
+</div>
+<p>Note that this is saved to my home directory, in <tt class="docutils literal"><span class="pre">~/flotilla_projects/&lt;study_name&gt;/</span></tt>. This will be saved in your home directory, too.</p>
 <p>The <tt class="docutils literal"><span class="pre">datapackage.json</span></tt> file is what holds all the information relative to the study, and loosely follows the <a class="reference external" href="http://data.okfn.org/doc/data-package">datapackage spec</a> created by the Open Knowledge Foundation.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">cat</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">olga</span><span class="o">/</span><span class="n">flotilla_projects</span><span class="o">/</span><span class="n">shalek2013</span><span class="o">/</span><span class="n">datapackage</span><span class="o">.</span><span class="n">json</span>
 </pre></div>
 </div>
-<pre class="literal-block">
-cat: /Users/olga/flotilla_projects/shalek2013/datapackage.json: No such file or directory
-
-
-            One thing to note is that when you save, the version number is bumped up. <tt class="docutils literal"><span class="pre">study.version</span></tt> (the one we just made) is <tt class="docutils literal"><span class="pre">0.1.0</span></tt>, but the one we saved is <tt class="docutils literal"><span class="pre">0.1.1</span></tt>, since we could have made some changes to the data.
-</pre>
+<div class="highlight-python"><div class="highlight"><pre>cat: /Users/olga/flotilla_projects/shalek2013/datapackage.json: No such file or directory
+</pre></div>
+</div>
+<p>One thing to note is that when you save, the version number is bumped up. <tt class="docutils literal"><span class="pre">study.version</span></tt> (the one we just made) is <tt class="docutils literal"><span class="pre">0.1.0</span></tt>, but the one we saved is <tt class="docutils literal"><span class="pre">0.1.1</span></tt>, since we could have made some changes to the data.</p>
 <p>Let&#8217;s look at what else is in this folder:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">ls</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">olga</span><span class="o">/</span><span class="n">flotilla_projects</span><span class="o">/</span><span class="n">shalek2013</span>
 </pre></div>
 </div>
 <div class="highlight-python"><div class="highlight"><pre>ls: cannot access /Users/olga/flotilla_projects/shalek2013: No such file or directory
-
-
-            So this is where all the other files are. Good to know!
 </pre></div>
 </div>
+<p>So this is where all the other files are. Good to know!</p>
 <p>We can &#8220;embark&#8221; on this newly-saved study now very painlessly, without having to open and process all those files again:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">study2</span> <span class="o">=</span> <span class="n">flotilla</span><span class="o">.</span><span class="n">embark</span><span class="p">(</span><span class="s">&#39;shalek2013&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>2015-04-29 18:29:59 Reading datapackage from /home/travis/flotilla_projects/shalek2013/datapackage.json
-2015-04-29 18:29:59 Parsing datapackage to create a Study object
-2015-04-29 18:29:59 Initializing Study
-2015-04-29 18:29:59 Initializing Predictor configuration manager for Study
-2015-04-29 18:29:59 Predictor ExtraTreesClassifier is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesClassifier&#39;&gt;
-2015-04-29 18:29:59 Added ExtraTreesClassifier to default predictors
-2015-04-29 18:29:59 Predictor ExtraTreesRegressor is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesRegressor&#39;&gt;
-2015-04-29 18:29:59 Added ExtraTreesRegressor to default predictors
-2015-04-29 18:29:59 Predictor GradientBoostingClassifier is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingClassifier&#39;&gt;
-2015-04-29 18:29:59 Added GradientBoostingClassifier to default predictors
-2015-04-29 18:29:59 Predictor GradientBoostingRegressor is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingRegressor&#39;&gt;
-2015-04-29 18:29:59 Added GradientBoostingRegressor to default predictors
-2015-04-29 18:29:59 Loading metadata
-2015-04-29 18:29:59 Loading expression data
-2015-04-29 18:29:59 Initializing expression
-2015-04-29 18:29:59 Done initializing expression
-2015-04-29 18:29:59 Loading splicing data
-2015-04-29 18:29:59 Initializing splicing
-2015-04-29 18:29:59 Done initializing splicing
-2015-04-29 18:29:59 Successfully initialized a Study object!
+<div class="highlight-python"><div class="highlight"><pre>2015-05-01 18:26:34 Reading datapackage from /home/travis/flotilla_projects/shalek2013/datapackage.json
+2015-05-01 18:26:34 Parsing datapackage to create a Study object
+2015-05-01 18:26:35 Initializing Study
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>2015-05-01 18:26:35 Initializing Predictor configuration manager for Study
+2015-05-01 18:26:35 Predictor ExtraTreesClassifier is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesClassifier&#39;&gt;
+2015-05-01 18:26:35 Added ExtraTreesClassifier to default predictors
+2015-05-01 18:26:35 Predictor ExtraTreesRegressor is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesRegressor&#39;&gt;
+2015-05-01 18:26:35 Added ExtraTreesRegressor to default predictors
+2015-05-01 18:26:35 Predictor GradientBoostingClassifier is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingClassifier&#39;&gt;
+2015-05-01 18:26:35 Added GradientBoostingClassifier to default predictors
+2015-05-01 18:26:35 Predictor GradientBoostingRegressor is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingRegressor&#39;&gt;
+2015-05-01 18:26:35 Added GradientBoostingRegressor to default predictors
+2015-05-01 18:26:35 Loading metadata
+2015-05-01 18:26:35 Loading expression data
+2015-05-01 18:26:35 Initializing expression
+2015-05-01 18:26:35 Done initializing expression
+2015-05-01 18:26:35 Loading splicing data
+2015-05-01 18:26:35 Initializing splicing
+2015-05-01 18:26:35 Done initializing splicing
+2015-05-01 18:26:35 Successfully initialized a Study object!
 </pre></div>
 </div>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">study</span> <span class="o">==</span> <span class="n">study2</span>
-</pre></div>
-</div>
-<div class="highlight-python"><div class="highlight"><pre><span class="bp">False</span>
 </pre></div>
 </div>
 </div>
@@ -2803,6 +2671,13 @@ cat: /Users/olga/flotilla_projects/shalek2013/datapackage.json: No such file or 
     <p class="pull-right">
       <a href="#">Back to top</a>
       
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/tutorial/getting_started_shalek2013.txt"
+     rel="nofollow">Source</a>
+</div>
+      
     </p>
     <p>
         &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
@@ -2810,6 +2685,17 @@ cat: /Users/olga/flotilla_projects/shalek2013/datapackage.json: No such file or 
     </p>
   </div>
 </footer>
+    <p>
+    Stuck? Send questions, comments, and other feedback to:
+    <ul>
+        <li>The <a href="https://gitter.im/YeoLab/flotilla">Gitter</a> chat
+            room for immediate questions</li>
+        <li>The <a href="https://github.com/yeolab/flotilla/issues">Github
+            issues page</a> for feature requests</li>
+    </ul>
+    Or send an email to obotvinn@ucsd.edu if you're oldskool like that.
+    </p>
+
     <a href="http://olgabotvinnik.com/">Olga B. Botvinnik</a> is funded by the
     <a href="https://ndseg.asee.org/">NDSEG</a> fellowship and is a
     <a href="http://numfocus.org/">NumFOCUS</a>
@@ -2822,6 +2708,5 @@ cat: /Users/olga/flotilla_projects/shalek2013/datapackage.json: No such file or 
     and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene
     Yeo</a>. <br/>
 
-    
   </body>
 </html>
