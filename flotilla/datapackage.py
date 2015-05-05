@@ -104,7 +104,7 @@ def make_study_datapackage(study_name, metadata,
     """Example code for making a datapackage for a Study"""
     if ' ' in study_name:
         raise ValueError("Datapackage name cannot have any spaces")
-    if set(string.uppercase) & set(study_name):
+    if set(string.ascii_uppercase) & set(study_name):
         raise ValueError("Datapackage can only contain lowercase letters")
 
     datapackage_dir = '{}/{}'.format(flotilla_dir, study_name)
@@ -142,7 +142,12 @@ def make_study_datapackage(study_name, metadata,
 
         basename = '{}.csv.gz'.format(resource_name)
         data_filename = '{}/{}'.format(datapackage_dir, basename)
-        with gzip.open(data_filename, 'wb') as f:
+        # if six.PY2:
+        #     mode = 'wb'
+        # else:
+        #     mode = 'wt'
+        mode = 'wb' if six.PY2 else 'wt'
+        with gzip.open(data_filename, mode) as f:
             data.to_csv(f)
 
         # if isinstance(data.columns, pd.MultiIndex):
@@ -161,12 +166,12 @@ def make_study_datapackage(study_name, metadata,
         resource['compression'] = 'gzip'
         resource['format'] = 'csv'
         if kws is not None:
-            for key, value in kws.iteritems():
+            for key, value in kws.items():
                 if key == 'phenotype_to_color':
                     value = dict((k, mpl.colors.rgb2hex(v))
                                  if isinstance(v, tuple) else
                                  (k, v)
-                                 for k, v in value.iteritems())
+                                 for k, v in value.items())
                 resource[key] = value
 
     datapackage['resources'].append({'name': 'supplemental'})
@@ -177,7 +182,8 @@ def make_study_datapackage(study_name, metadata,
 
         basename = '{}.csv.gz'.format(supplemental_name)
         data_filename = '{}/{}'.format(datapackage_dir, basename)
-        with gzip.open(data_filename, 'wb') as f:
+        mode = 'wb' if six.PY2 else 'wt'
+        with gzip.open(data_filename, mode) as f:
             data.to_csv(f)
 
         resource['name'] = supplemental_name
