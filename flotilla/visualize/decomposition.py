@@ -487,7 +487,7 @@ class DecompositionViz(object):
         else:
             labels = labels
 
-        labels = map(self.shorten, labels)
+        labels = list(map(self.shorten, labels))
         # ax.set_yticklabels(map(shorten, labels))
         ax.set_yticklabels(labels)
         for lab in ax.get_xticklabels():
