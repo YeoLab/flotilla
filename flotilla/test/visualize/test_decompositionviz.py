@@ -65,14 +65,14 @@ def test_init(pca, kwargs):
                                     n_colors=len(true_grouped)))
 
     def color_factory():
-        return colors.next()
+        return next(colors)
 
     true_label_to_color = defaultdict(color_factory)
 
     markers = cycle(['o', '^', 's', 'v', '*', 'D', 'h'])
 
     def marker_factory():
-        return markers.next()
+        return next(markers)
 
     true_label_to_marker = defaultdict(marker_factory)
     for group in true_grouped.groups:
