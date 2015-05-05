@@ -75,12 +75,12 @@ class MetaData(BaseData):
                 try:
                     marker = self.phenotype_to_marker[phenotype]
                 except KeyError:
-                    marker = markers.next()
+                    marker = next(markers)
                     sys.stderr.write(
                         '{} does not have marker style, '
                         'falling back on "{}"'.format(phenotype, marker))
                 if marker not in mpl.markers.MarkerStyle.filled_markers:
-                    correct_marker = markers.next()
+                    correct_marker = next(markers)
                     sys.stderr.write(
                         '{} is not a valid matplotlib marker style, '
                         'falling back on "{}"'.format(marker, correct_marker))
@@ -132,7 +132,7 @@ class MetaData(BaseData):
         colors = iter(self._colors)
 
         def color_factory():
-            return colors.__next__()
+            return next(colors)
 
         return defaultdict(color_factory)
 
@@ -160,7 +160,7 @@ class MetaData(BaseData):
         markers = cycle(['o', '^', 's', 'v', '*', 'D', ])
 
         def marker_factory():
-            return markers.__next__()
+            return next(markers)
         _default_phenotype_to_marker = defaultdict(marker_factory)
         all_phenotypes = list(self._phenotype_to_marker.keys())
         all_phenotypes.extend(self.phenotype_order)

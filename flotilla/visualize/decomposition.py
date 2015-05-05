@@ -145,7 +145,7 @@ class DecompositionViz(object):
             markers = cycle(['o', '^', 's', 'v', '*', 'D', 'h'])
 
             def marker_factory():
-                return markers.next()
+                return next(markers)
 
             self.label_to_marker = defaultdict(marker_factory)
 

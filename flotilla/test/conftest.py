@@ -152,7 +152,7 @@ def color_ordered(group_order, group_to_color):
 def group_to_marker(request):
     """Mapping of groups to plotting markers"""
     marker_iter = iter(list('ov^<>8sp*hHDd'))
-    return defaultdict(lambda: marker_iter.__next__())
+    return defaultdict(lambda: next(marker_iter))
 
 
 @pytest.fixture(scope='module')

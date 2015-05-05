@@ -70,7 +70,7 @@ class TestMetaData(object):
             markers = cycle(['o', '^', 's', 'v', '*', 'D', ])
 
             def marker_factory():
-                return markers.__next__()
+                return next(markers)
             true_phenotype_to_marker = defaultdict(marker_factory)
             for x in true_phenotype_order:
                 true_phenotype_to_marker[x]
@@ -87,7 +87,7 @@ class TestMetaData(object):
                           sns.color_palette('husl',
                                             n_colors=true_n_phenotypes)))
         colors = iter(true_colors)
-        true_default_phenotype_to_color = defaultdict(lambda: colors.next())
+        true_default_phenotype_to_color = defaultdict(lambda: colors.__next__())
 
         true_sample_id_to_phenotype = self.metadata[self.phenotype_col]
         true_phenotype_color_order = [true_phenotype_to_color[p]
