@@ -163,7 +163,7 @@ Institute&#8217;s Brain Atlas data.</p>
 <div class="highlight-python"><div class="highlight"><pre>Creating a directory for saving the data for this project: /home/travis/flotilla_projects/brainspan_filtered_and_markers_amazon
 https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon_s3/datapackage.json has not been downloaded before.
     Downloading now to /home/travis/flotilla_projects/brainspan_filtered_and_markers_amazon/datapackage.json
-2015-05-01 18:31:19 Parsing datapackage to create a Study object
+2015-05-06 00:10:34 Parsing datapackage to create a Study object
 </pre></div>
 </div>
 <div class="highlight-python"><div class="highlight"><pre>https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon_s3/expression_feature.csv has not been downloaded before.
@@ -174,27 +174,27 @@ https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon
 </div>
 <div class="highlight-python"><div class="highlight"><pre>https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon_s3/metadata.csv has not been downloaded before.
     Downloading now to /home/travis/flotilla_projects/brainspan_filtered_and_markers_amazon/metadata.csv
-2015-05-01 18:31:37 Initializing Study
+2015-05-06 00:10:52 Initializing Study
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>2015-05-01 18:31:37 Initializing Predictor configuration manager for Study
-2015-05-01 18:31:37 Predictor ExtraTreesClassifier is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesClassifier&#39;&gt;
-2015-05-01 18:31:37 Added ExtraTreesClassifier to default predictors
-2015-05-01 18:31:37 Predictor ExtraTreesRegressor is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesRegressor&#39;&gt;
-2015-05-01 18:31:37 Added ExtraTreesRegressor to default predictors
-2015-05-01 18:31:37 Predictor GradientBoostingClassifier is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingClassifier&#39;&gt;
-2015-05-01 18:31:37 Added GradientBoostingClassifier to default predictors
-2015-05-01 18:31:37 Predictor GradientBoostingRegressor is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingRegressor&#39;&gt;
-2015-05-01 18:31:37 Added GradientBoostingRegressor to default predictors
-2015-05-01 18:31:37 Loading metadata
-2015-05-01 18:31:37 Loading expression data
+<div class="highlight-python"><div class="highlight"><pre>2015-05-06 00:10:52 Initializing Predictor configuration manager for Study
+2015-05-06 00:10:52 Predictor ExtraTreesClassifier is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesClassifier&#39;&gt;
+2015-05-06 00:10:52 Added ExtraTreesClassifier to default predictors
+2015-05-06 00:10:52 Predictor ExtraTreesRegressor is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesRegressor&#39;&gt;
+2015-05-06 00:10:52 Added ExtraTreesRegressor to default predictors
+2015-05-06 00:10:52 Predictor GradientBoostingClassifier is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingClassifier&#39;&gt;
+2015-05-06 00:10:52 Added GradientBoostingClassifier to default predictors
+2015-05-06 00:10:52 Predictor GradientBoostingRegressor is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingRegressor&#39;&gt;
+2015-05-06 00:10:52 Added GradientBoostingRegressor to default predictors
+2015-05-06 00:10:52 Loading metadata
+2015-05-06 00:10:53 Loading expression data
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>2015-05-01 18:31:37 Initializing expression
-2015-05-01 18:31:38 Done initializing expression
+<div class="highlight-python"><div class="highlight"><pre>2015-05-06 00:10:53 Initializing expression
+2015-05-06 00:10:53 Done initializing expression
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>2015-05-01 18:31:40 Successfully initialized a Study object!
+<div class="highlight-python"><div class="highlight"><pre>2015-05-06 00:10:57 Successfully initialized a Study object!
 </pre></div>
 </div>
 <div class="highlight-python"><div class="highlight"><pre>:0: FutureWarning: IPython widgets are experimental and may change in the future.
@@ -219,8 +219,8 @@ variant_expression_corr = variant_expression.corr()
 variant_expression_corr.head()
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>CPU times: user 377 ms, sys: 0 ns, total: 377 ms
-Wall time: 374 ms
+<div class="highlight-python"><div class="highlight"><pre>CPU times: user 424 ms, sys: 5 ms, total: 429 ms
+Wall time: 430 ms
 </pre></div>
 </div>
 <p>That didn&#8217;t take <em>too</em> long, but I&#8217;m sure you can imagine it would take
@@ -236,29 +236,29 @@ of our choice. To keep things simple, I&#8217;m gonna give it the same name.</p>
 </pre></div>
 </div>
 <div class="highlight-python"><div class="highlight"><pre>Wrote datapackage to /home/travis/flotilla_projects/brainspan2/datapackage.json
-2015-05-01 18:32:37 Reading datapackage from /home/travis/flotilla_projects/brainspan2/datapackage.json
-2015-05-01 18:32:37 Parsing datapackage to create a Study object
-2015-05-01 18:32:44 Initializing Study
+2015-05-06 00:12:06 Reading datapackage from /home/travis/flotilla_projects/brainspan2/datapackage.json
+2015-05-06 00:12:06 Parsing datapackage to create a Study object
+2015-05-06 00:12:15 Initializing Study
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>2015-05-01 18:32:44 Initializing Predictor configuration manager for Study
-2015-05-01 18:32:44 Predictor ExtraTreesClassifier is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesClassifier&#39;&gt;
-2015-05-01 18:32:44 Added ExtraTreesClassifier to default predictors
-2015-05-01 18:32:44 Predictor ExtraTreesRegressor is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesRegressor&#39;&gt;
-2015-05-01 18:32:44 Added ExtraTreesRegressor to default predictors
-2015-05-01 18:32:44 Predictor GradientBoostingClassifier is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingClassifier&#39;&gt;
-2015-05-01 18:32:44 Added GradientBoostingClassifier to default predictors
-2015-05-01 18:32:44 Predictor GradientBoostingRegressor is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingRegressor&#39;&gt;
-2015-05-01 18:32:44 Added GradientBoostingRegressor to default predictors
-2015-05-01 18:32:44 Loading metadata
-2015-05-01 18:32:45 Loading expression data
+<div class="highlight-python"><div class="highlight"><pre>2015-05-06 00:12:15 Initializing Predictor configuration manager for Study
+2015-05-06 00:12:15 Predictor ExtraTreesClassifier is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesClassifier&#39;&gt;
+2015-05-06 00:12:15 Added ExtraTreesClassifier to default predictors
+2015-05-06 00:12:15 Predictor ExtraTreesRegressor is of type &lt;class &#39;sklearn.ensemble.forest.ExtraTreesRegressor&#39;&gt;
+2015-05-06 00:12:15 Added ExtraTreesRegressor to default predictors
+2015-05-06 00:12:15 Predictor GradientBoostingClassifier is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingClassifier&#39;&gt;
+2015-05-06 00:12:15 Added GradientBoostingClassifier to default predictors
+2015-05-06 00:12:15 Predictor GradientBoostingRegressor is of type &lt;class &#39;sklearn.ensemble.gradient_boosting.GradientBoostingRegressor&#39;&gt;
+2015-05-06 00:12:15 Added GradientBoostingRegressor to default predictors
+2015-05-06 00:12:15 Loading metadata
+2015-05-06 00:12:15 Loading expression data
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>2015-05-01 18:32:45 Initializing expression
-2015-05-01 18:32:45 Done initializing expression
+<div class="highlight-python"><div class="highlight"><pre>2015-05-06 00:12:15 Initializing expression
+2015-05-06 00:12:16 Done initializing expression
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>2015-05-01 18:32:48 Successfully initialized a Study object!
+<div class="highlight-python"><div class="highlight"><pre>2015-05-06 00:12:19 Successfully initialized a Study object!
 </pre></div>
 </div>
 <p>Let&#8217;s make sure our <tt class="docutils literal"><span class="pre">variant_expression_corr</span></tt> dataframe is really
