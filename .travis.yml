@@ -39,7 +39,6 @@ before_script:
 script:
   - make coverage
   - make lint
-  - make pep8
   # For building the docs
   - MASTER=master
   - if [[ $TRAVIS_BRANCH == v*.*.* ]] ; then export DEPLOY_HTML_DIR=docs ; fi
