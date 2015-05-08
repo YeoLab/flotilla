@@ -1,4 +1,10 @@
-.pre.nb-text-output {
-    background-color : 'lightseagreen';
+.nb-text-python {
+    background-color: #f9c7d3;
 
+}
+.navbar-inverse{
+    background-color: #007A6E;
+}
+h1, .h1 {
+  font-size: 36px;
 }
