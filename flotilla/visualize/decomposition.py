@@ -137,13 +137,9 @@ class DecompositionViz(object):
         self.grouped = self.reduced_space.groupby(self.groupby, axis=0)
 
         if self.label_to_color is None:
-            colors = iter(sns.color_palette('husl',
-                                            n_colors=len(self.grouped)))
-
-            def color_factory():
-                return colors.next()
-
-            self.label_to_color = defaultdict(color_factory)
+            self.label_to_color = dict(zip(
+                self.grouped.groups.keys(),
+                sns.color_palette('husl', n_colors=len(self.grouped))))
 
         if self.label_to_marker is None:
             markers = cycle(['o', '^', 's', 'v', '*', 'D', 'h'])
