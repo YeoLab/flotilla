@@ -27,3 +27,4 @@ jinja2
 semantic_version
 joblib >= 0.8.4
 jsonschema
+flake8
