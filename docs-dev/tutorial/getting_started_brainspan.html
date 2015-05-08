@@ -5,17 +5,18 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>&lt;no title&gt; &mdash; flotilla 0.2.7 documentation</title>
+    <title>&lt;no title&gt; &mdash; flotilla 0.2.8dev documentation</title>
     
     <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/bootswatch-3.2.0/journal/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootswatch-3.2.0/paper/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.7',
+        VERSION:     '0.2.8dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -29,10 +30,9 @@
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
-    <link rel="top" title="flotilla 0.2.7 documentation" href="../index.html" />
+    <link rel="top" title="flotilla 0.2.8dev documentation" href="../index.html" />
     <link rel="up" title="Flotilla tutorial" href="../tutorial.html" />
-    <link rel="next" title="Storing supplemental data on Study objects" href="supplementaldata.html" />
-    <link rel="prev" title="Loading data from Shalek and Satija (2013)" href="getting_started_shalek2013.html" />
+    <link rel="prev" title="OS X Installation instructions" href="../installation.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -52,7 +52,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           Flotilla</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2.7</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.8dev</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -148,17 +148,12 @@
   <div class="row">
     <div class="col-md-12">
       
-  <div class="code python highlight-python"><div class="highlight"><pre><span class="k">print</span><span class="p">(</span><span class="s">&quot;hello&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">hello</span>
-</pre></div>
-</div>
-<p>[BrainSpan](<a class="reference external" href="http://www.brainspan.org/">http://www.brainspan.org/</a>) is an interface to data from the developing human brain. They have samples extracted from many post-mortem brains, and the dataset I&#8217;m most interested in is the developmental transcriptome, which has tissues collected from 42 donors of ages ranging from post conception week 8 to 40 years old. This is an incredible resource for anyone interested in studying changes in gene expression within brain regions across developmental time.</p>
+  <p>[BrainSpan](<a class="reference external" href="http://www.brainspan.org/">http://www.brainspan.org/</a>) is an interface to data from the developing human brain. They have samples extracted from many post-mortem brains, and the dataset I&#8217;m most interested in is the developmental transcriptome, which has tissues collected from 42 donors of ages ranging from post conception week 8 to 40 years old. This is an incredible resource for anyone interested in studying changes in gene expression within brain regions across developmental time.</p>
 <p>One major issue is the &#8220;batch effects&#8221; that occur and skew the data because of factors unrelated to the biological phenomenon. For example, each donor was could have been collected at a different time, at different post-mortem times, from either fresh or frozen tissue, collected at different facilities, sectioned by a different scientist (who has their own unique style of dissecting tissue), and prepared tissue samples for sequencing libraries for RNA-sequencing differently.</p>
 <p>For BrainSpan, they have a detailed [white paper](<a class="reference external" href="http://help.brain-map.org/download/attachments/3506181/Transcriptome_Profiling.pdf">http://help.brain-map.org/download/attachments/3506181/Transcriptome_Profiling.pdf</a>) describing every step of their process, and they&#8217;ve controlled as many variables as they could, which is everything downstream of sectioning the tissue. Different people could have sectioned the different donor&#8217;s tissues, and some tissues were frozen (which had to be thawed) and some were fresh (which had to be chilled), so there&#8217;s a lot of factors that could affect the results that have nothing to do with the actual biology of the human brain.</p>
 <p>A commonly used software package for adjusting for batch effects is called ComBat, originally designed for microarray batches ([Johnson and Li, <em>Biostatistics</em> 2007]((<a class="reference external" href="http://biostatistics.oxfordjournals.org/content/8/1/118.abstract">http://biostatistics.oxfordjournals.org/content/8/1/118.abstract</a>)). Their software is available as part of an R package called [<cite>sva</cite>](<a class="reference external" href="http://www.bioconductor.org/packages/release/bioc/html/sva.html">http://www.bioconductor.org/packages/release/bioc/html/sva.html</a>) on [BioconductoR](<a class="reference external" href="http://www.bioconductor.org/">http://www.bioconductor.org/</a>). I wanted to use it for this BrainSpan data, because the donor-specific signals are much stronger than the tissue-specific signals, but I knew I&#8217;d have to use <cite>rpy2</cite> to call R and didn&#8217;t really want to do that. Thankfully, an [awesome human being](<a class="reference external" href="https://github.com/brentp">https://github.com/brentp</a>) ported the contents of <cite>combat</cite> to python to create [<cite>combat.py</cite>](<a class="reference external" href="https://github.com/brentp/combat.py">https://github.com/brentp/combat.py</a>)!</p>
 <p>In this blog post, I will use the BrainSpan data as an example of how to use <cite>combat.py</cite>. As a bonus, this feature has been added to the large-scale RNA-seq analysis software [<cite>flotilla</cite>](<a class="reference external" href="https://github.com/yeolab/flotilla">https://github.com/yeolab/flotilla</a>) so while you can do all this work yourself, you could also just tell <cite>flotilla</cite> to do it for you!</p>
+<p>Downloading the data is fairly straightforward, it&#8217;s all contained in a zip archive online. This is the <em>&#8220;RNA-Seq Gencode v10 summarized to genes&#8221;</em> download link from BrainSpan&#8217;s [Downloads](<a class="reference external" href="http://www.brainspan.org/static/download.html">http://www.brainspan.org/static/download.html</a>) page.</p>
 
 
     </div>

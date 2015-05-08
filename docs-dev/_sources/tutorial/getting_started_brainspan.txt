@@ -1,13 +1,4 @@
 
-.. code:: python
-
-    print("hello")
-
-
-.. parsed-literal::
-
-    hello
-
 
 [BrainSpan](http://www.brainspan.org/) is an interface to data from the developing human brain. They have samples extracted from many post-mortem brains, and the dataset I'm most interested in is the developmental transcriptome, which has tissues collected from 42 donors of ages ranging from post conception week 8 to 40 years old. This is an incredible resource for anyone interested in studying changes in gene expression within brain regions across developmental time. 
 
@@ -18,3 +9,6 @@ For BrainSpan, they have a detailed [white paper](http://help.brain-map.org/down
 A commonly used software package for adjusting for batch effects is called ComBat, originally designed for microarray batches ([Johnson and Li, *Biostatistics* 2007]((http://biostatistics.oxfordjournals.org/content/8/1/118.abstract)). Their software is available as part of an R package called [`sva`](http://www.bioconductor.org/packages/release/bioc/html/sva.html) on [BioconductoR](http://www.bioconductor.org/). I wanted to use it for this BrainSpan data, because the donor-specific signals are much stronger than the tissue-specific signals, but I knew I'd have to use `rpy2` to call R and didn't really want to do that. Thankfully, an [awesome human being](https://github.com/brentp) ported the contents of `combat` to python to create [`combat.py`](https://github.com/brentp/combat.py)!
 
 In this blog post, I will use the BrainSpan data as an example of how to use `combat.py`. As a bonus, this feature has been added to the large-scale RNA-seq analysis software [`flotilla`](https://github.com/yeolab/flotilla) so while you can do all this work yourself, you could also just tell `flotilla` to do it for you!
+
+Downloading the data is fairly straightforward, it's all contained in a zip archive online. This is the *"RNA-Seq Gencode v10 summarized to genes"* download link from BrainSpan's [Downloads](http://www.brainspan.org/static/download.html) page.
+
