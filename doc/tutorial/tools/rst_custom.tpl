@@ -1,7 +1,7 @@
 {%- extends 'rst.tpl' -%}
 
 {% block data_text scoped %}
-.. html::
+.. raw:: html
 
     <pre class='nb-text-output'>
 {{ output.data['text/plain'] | indent }}
