@@ -24,6 +24,7 @@ class MetaData(BaseData):
                  pooled_col=POOLED_COL,
                  outlier_col=OUTLIER_COL,
                  predictor_config_manager=None,
+                 ignore_subset_cols=None,
                  minimum_sample_subset=MINIMUM_SAMPLE_SUBSET):
         super(MetaData, self).__init__(
             data, outliers=None,
@@ -37,6 +38,7 @@ class MetaData(BaseData):
         self.pooled_col = pooled_col
         self.minimum_sample_subset = minimum_sample_subset
         self.outlier_col = outlier_col
+        self.ignore_subset_cols = ignore_subset_cols
 
         phenotypes_not_in_order = set(self.unique_phenotypes).difference(
             set(self.phenotype_order))
@@ -196,7 +198,7 @@ class MetaData(BaseData):
     @property
     def sample_subsets(self):
         return subsets_from_metadata(self.data, self.minimum_sample_subset,
-                                     'samples')
+                                     'samples', ignore=self.ignore_subset_cols)
 
     @property
     def phenotype_series(self):
