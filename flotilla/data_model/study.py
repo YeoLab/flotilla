@@ -617,7 +617,7 @@ class Study(object):
                 compression = None if 'compression' not in resource else \
                     resource['compression']
                 name = resource['name']
-                dfs[name] = reader(filename,
+                dfs[name] = reader(filename, index_col=0,
                                    compression=compression)
                 other_keys = set(resource.keys()).difference(
                     DATAPACKAGE_RESOURCE_COMMON_KWS)
