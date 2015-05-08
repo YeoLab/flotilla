@@ -73,13 +73,25 @@ class Study(object):
 
     _default_plot_kwargs = {'marker': 'o', 'color': blue}
 
-    def __init__(self, sample_metadata, version='0.1.0', expression_data=None,
+    def __init__(self, sample_metadata, version='0.1.0',
+                 metadata_pooled_col=POOLED_COL,
+                 metadata_minimum_samples=0,
+                 metadata_phenotype_col=PHENOTYPE_COL,
+                 metadata_phenotype_order=None,
+                 metadata_phenotype_to_color=None,
+                 metadata_phenotype_to_marker=None,
+                 metadata_outlier_col=OUTLIER_COL,
+                 metadata_ignore_subset_cols=None,
+                 metadata_batch_cols='batch',
+                 metadata_batch_min_samples=3,
+                 expression_data=None,
                  expression_feature_data=None,
                  expression_feature_rename_col=None,
                  expression_feature_ignore_subset_cols=None,
                  expression_log_base=None,
                  expression_thresh=-np.inf,
                  expression_plus_one=False,
+                 expression_correct_batch_effects=False,
                  splicing_data=None,
                  splicing_feature_data=None,
                  splicing_feature_rename_col=None,
@@ -93,13 +105,6 @@ class Study(object):
                  drop_outliers=True, species=None,
                  gene_ontology_data=None,
                  predictor_config_manager=None,
-                 metadata_pooled_col=POOLED_COL,
-                 metadata_minimum_samples=0,
-                 metadata_phenotype_col=PHENOTYPE_COL,
-                 metadata_phenotype_order=None,
-                 metadata_phenotype_to_color=None,
-                 metadata_phenotype_to_marker=None,
-                 metadata_outlier_col=OUTLIER_COL,
                  license=None, title=None, sources=None,
                  default_sample_subset="all_samples",
                  default_feature_subset="variant",
@@ -222,6 +227,7 @@ class Study(object):
             sample_metadata, metadata_phenotype_order,
             metadata_phenotype_to_color,
             metadata_phenotype_to_marker, pooled_col=metadata_pooled_col,
+            ignore_subset_cols=metadata_ignore_subset_cols,
             outlier_col=metadata_outlier_col,
             phenotype_col=metadata_phenotype_col,
             predictor_config_manager=self.predictor_config_manager,
@@ -611,7 +617,7 @@ class Study(object):
                 compression = None if 'compression' not in resource else \
                     resource['compression']
                 name = resource['name']
-                dfs[name] = reader(filename,
+                dfs[name] = reader(filename, index_col=0,
                                    compression=compression)
                 other_keys = set(resource.keys()).difference(
                     DATAPACKAGE_RESOURCE_COMMON_KWS)

@@ -11,7 +11,4 @@ coverage:
 	rm matplotlibrc
 
 lint:
-	pyflakes flotilla
-
-pep8:
-	pep8 flotilla
+	flake8 --exclude flotilla/external,doc flotilla

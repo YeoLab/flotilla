@@ -27,3 +27,4 @@ joblib >= 0.8.4
 ipython
 jsonschema
 pyyaml
+flake8
