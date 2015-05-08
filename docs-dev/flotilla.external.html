@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>flotilla.datapackage module &mdash; flotilla 0.2.7 documentation</title>
+    <title>flotilla.external package &mdash; flotilla 0.2.7 documentation</title>
     
     <link rel="stylesheet" href="_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -31,8 +31,8 @@
     <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
     <link rel="top" title="flotilla 0.2.7 documentation" href="index.html" />
     <link rel="up" title="flotilla package" href="flotilla.html" />
-    <link rel="next" title="flotilla.setup module" href="flotilla.setup.html" />
-    <link rel="prev" title="flotilla.visualize.splicing module" href="flotilla.visualize.splicing.html" />
+    <link rel="next" title="flotilla.external.combat module" href="flotilla.external.combat.html" />
+    <link rel="prev" title="flotilla.data_model.supplemental module" href="flotilla.data_model.supplemental.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -120,7 +120,11 @@
   <ul class="dropdown-menu localtoc"
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">flotilla.datapackage module</a></li>
+<li><a class="reference internal" href="#">flotilla.external package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-flotilla.external">Module contents</a></li>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -132,7 +136,7 @@
             
               <li class="hidden-sm">
 <div id="sourcelink">
-  <a href="_sources/flotilla.datapackage.txt"
+  <a href="_sources/flotilla.external.txt"
      rel="nofollow">Source</a>
 </div></li>
             
@@ -156,50 +160,19 @@
   <div class="row">
     <div class="col-md-12">
       
-  <div class="section" id="module-flotilla.datapackage">
-<span id="flotilla-datapackage-module"></span><h1>flotilla.datapackage module<a class="headerlink" href="#module-flotilla.datapackage" title="Permalink to this headline">¶</a></h1>
-<p>Functions to deal with creation and loading of datapackages</p>
-<dl class="function">
-<dt id="flotilla.datapackage.check_if_already_downloaded">
-<tt class="descclassname">flotilla.datapackage.</tt><tt class="descname">check_if_already_downloaded</tt><big>(</big><em>url</em>, <em>datapackage_name=None</em>, <em>download_dir='/home/travis/flotilla_projects'</em><big>)</big><a class="reference internal" href="_modules/flotilla/datapackage.html#check_if_already_downloaded"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.datapackage.check_if_already_downloaded" title="Permalink to this definition">¶</a></dt>
-<dd><p>If a url filename has already been downloaded, don&#8217;t download it again.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>url</strong> : str</p>
-<blockquote>
-<div><p>HTTP url of a file you want to downlaod</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
-<blockquote class="last">
-<div><p>Location of the file on your system</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="flotilla.datapackage.datapackage_url_to_dict">
-<tt class="descclassname">flotilla.datapackage.</tt><tt class="descname">datapackage_url_to_dict</tt><big>(</big><em>datapackage_url</em><big>)</big><a class="reference internal" href="_modules/flotilla/datapackage.html#datapackage_url_to_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.datapackage.datapackage_url_to_dict" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="flotilla.datapackage.make_study_datapackage">
-<tt class="descclassname">flotilla.datapackage.</tt><tt class="descname">make_study_datapackage</tt><big>(</big><em>study_name</em>, <em>metadata</em>, <em>expression_data=None</em>, <em>splicing_data=None</em>, <em>spikein_data=None</em>, <em>mapping_stats_data=None</em>, <em>title=''</em>, <em>sources=''</em>, <em>license=None</em>, <em>species=None</em>, <em>flotilla_dir='/home/travis/flotilla_projects'</em>, <em>metadata_kws=None</em>, <em>expression_kws=None</em>, <em>splicing_kws=None</em>, <em>spikein_kws=None</em>, <em>mapping_stats_kws=None</em>, <em>version=None</em>, <em>expression_feature_kws=None</em>, <em>expression_feature_data=None</em>, <em>splicing_feature_data=None</em>, <em>splicing_feature_kws=None</em>, <em>gene_ontology=None</em>, <em>supplemental_kws=None</em>, <em>host='https://s3-us-west-2.amazonaws.com/'</em>, <em>host_destination='flotilla-projects/'</em><big>)</big><a class="reference internal" href="_modules/flotilla/datapackage.html#make_study_datapackage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.datapackage.make_study_datapackage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Example code for making a datapackage for a Study</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="flotilla.datapackage.name_to_resource">
-<tt class="descclassname">flotilla.datapackage.</tt><tt class="descname">name_to_resource</tt><big>(</big><em>datapackage</em>, <em>name</em><big>)</big><a class="reference internal" href="_modules/flotilla/datapackage.html#name_to_resource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.datapackage.name_to_resource" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get resource with specified name in the datapackage</p>
-</dd></dl>
-
+  <div class="section" id="flotilla-external-package">
+<h1>flotilla.external package<a class="headerlink" href="#flotilla-external-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="flotilla.external.combat.html">flotilla.external.combat module</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="module-flotilla.external">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-flotilla.external" title="Permalink to this headline">¶</a></h2>
+</div>
 </div>
 
 

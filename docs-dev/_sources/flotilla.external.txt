@@ -1,0 +1,17 @@
+flotilla.external package
+=========================
+
+Submodules
+----------
+
+.. toctree::
+
+   flotilla.external.combat
+
+Module contents
+---------------
+
+.. automodule:: flotilla.external
+    :members:
+    :undoc-members:
+    :show-inheritance:

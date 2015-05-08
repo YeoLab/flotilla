@@ -8,6 +8,7 @@ Subpackages
 
     flotilla.compute
     flotilla.data_model
+    flotilla.external
     flotilla.test
     flotilla.visualize
 

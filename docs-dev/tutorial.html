@@ -9,7 +9,7 @@
     
     <link rel="stylesheet" href="_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/bootswatch-3.2.0/journal/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootswatch-3.2.0/paper/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     
     <script type="text/javascript">
@@ -100,8 +100,9 @@
 <li class="toctree-l1"><a class="reference internal" href="create_datapackage.html">Create your very own datapackage!</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">Flotilla tutorial</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#install-flotilla">Install flotilla</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#getting-started-downloading-cleaning-and-importing-data">Getting Started: Downloading, cleaning, and importing data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#exploratory-analysis">Exploratory Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#create-a-datapackage">Create a datapackage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#computing-on-splicing-data">Computing on splicing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#day-to-day-helpful-tips">Day to day helpful tips</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#recreated-papers">Recreated papers</a></li>
 </ul>
 </li>
@@ -120,8 +121,9 @@
       aria-labelledby="dLabelLocalToc"><ul>
 <li><a class="reference internal" href="#">Flotilla tutorial</a><ul>
 <li><a class="reference internal" href="#install-flotilla">Install flotilla</a></li>
-<li><a class="reference internal" href="#getting-started-downloading-cleaning-and-importing-data">Getting Started: Downloading, cleaning, and importing data</a></li>
-<li><a class="reference internal" href="#exploratory-analysis">Exploratory Analysis</a></li>
+<li><a class="reference internal" href="#create-a-datapackage">Create a datapackage</a></li>
+<li><a class="reference internal" href="#computing-on-splicing-data">Computing on splicing data</a></li>
+<li><a class="reference internal" href="#day-to-day-helpful-tips">Day to day helpful tips</a></li>
 <li><a class="reference internal" href="#recreated-papers">Recreated papers</a></li>
 </ul>
 </li>
@@ -133,6 +135,12 @@
             
             
             
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="_sources/tutorial.txt"
+     rel="nofollow">Source</a>
+</div></li>
             
           </ul>
 
@@ -170,40 +178,35 @@
 </ul>
 </div>
 </div>
-<div class="section" id="getting-started-downloading-cleaning-and-importing-data">
-<h2>Getting Started: Downloading, cleaning, and importing data<a class="headerlink" href="#getting-started-downloading-cleaning-and-importing-data" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="create-a-datapackage">
+<h2>Create a datapackage<a class="headerlink" href="#create-a-datapackage" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorial/getting_started_shalek2013.html">Loading data from Shalek and Satija (2013)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tutorial/getting_started_shalek2013.html#expression-data">Expression data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorial/getting_started_shalek2013.html#expression-feature-data">Expression feature data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorial/getting_started_shalek2013.html#splicing-data">Splicing Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorial/getting_started_shalek2013.html#mapping-stats-data">Mapping stats data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorial/getting_started_shalek2013.html#create-a-flotilla-study">Create a <tt class="docutils literal"><span class="pre">flotilla</span></tt> Study!</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorial/getting_started_shalek2013.html#save-the-study-so-you-can-load-it-later">Save the study so you can load it later</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/barebones_study_making.html">Create a barebones datapackage</a></li>
 </ul>
 </div>
 </div>
-<div class="section" id="exploratory-analysis">
-<h2>Exploratory Analysis<a class="headerlink" href="#exploratory-analysis" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="computing-on-splicing-data">
+<h2>Computing on splicing data<a class="headerlink" href="#computing-on-splicing-data" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/modalities.html">Accurate estimation of alternative splicing modalities</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="day-to-day-helpful-tips">
+<h2>Day to day helpful tips<a class="headerlink" href="#day-to-day-helpful-tips" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorial/supplementaldata.html">Storing supplemental data on <tt class="docutils literal"><span class="pre">Study</span></tt> objects</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial/modalities.html">Accurate estimation of alternative splicing modalities</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tutorial/modalities.html#parameterizations-of-bayesian-model">Parameterizations of Bayesian model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorial/modalities.html#prior-probability-on-parameterizations">Prior probability on parameterizations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorial/modalities.html#testing-modality-estimation">Testing modality estimation</a></li>
-</ul>
-</li>
 </ul>
 </div>
 </div>
 <div class="section" id="recreated-papers">
 <h2>Recreated papers<a class="headerlink" href="#recreated-papers" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
-<ul class="simple">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/shalek2013.html">Shalek and Satija, <em>et al</em> (2013)</a></li>
 </ul>
 </div>
 </div>
@@ -221,13 +224,6 @@
     <p class="pull-right">
       <a href="#">Back to top</a>
       
-        <br/>
-        
-<div id="sourcelink">
-  <a href="_sources/tutorial.txt"
-     rel="nofollow">Source</a>
-</div>
-      
     </p>
     <p>
         &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
@@ -235,17 +231,6 @@
     </p>
   </div>
 </footer>
-    <p>
-    Stuck? Send questions, comments, and other feedback to:
-    <ul>
-        <li>The <a href="https://gitter.im/YeoLab/flotilla">Gitter</a> chat
-            room for immediate questions</li>
-        <li>The <a href="https://github.com/yeolab/flotilla/issues">Github
-            issues page</a> for feature requests</li>
-    </ul>
-    Or send an email to obotvinn@ucsd.edu if you're oldskool like that.
-    </p>
-
     <a href="http://olgabotvinnik.com/">Olga B. Botvinnik</a> is funded by the
     <a href="https://ndseg.asee.org/">NDSEG</a> fellowship and is a
     <a href="http://numfocus.org/">NumFOCUS</a>
@@ -258,5 +243,6 @@
     and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene
     Yeo</a>. <br/>
 
+    
   </body>
 </html>

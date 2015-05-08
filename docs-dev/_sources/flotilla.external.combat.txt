@@ -1,0 +1,7 @@
+flotilla.external.combat module
+===============================
+
+.. automodule:: flotilla.external.combat
+    :members:
+    :undoc-members:
+    :show-inheritance:
