@@ -29,7 +29,7 @@ class DecompositionViz(object):
                  data_type='expression', label_to_color=None,
                  label_to_marker=None,
                  scale_by_variance=True, x_pc='pc_1',
-                 y_pc='pc_2', n_vectors=20, distance='L1',
+                 y_pc='pc_2', n_vectors=20, distance='L2',
                  n_top_pc_features=50, max_char_width=30):
         """Plot the results of a decomposition visualization
 
