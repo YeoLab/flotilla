@@ -74,52 +74,39 @@ Example gallery
 .. toctree::
    :hidden:
 
-   ./plot_gene
-
-   ./plot_pca_splicing
+   ./plot_two_samples
 
    ./plot_two_features
 
-   ./plot_modalities_bars
-
-   ./plot_graph
+   ./plot_pca_splicing
 
    ./plot_pca
 
    ./plot_modalities_lavalamps
 
-   ./plot_two_samples
+   ./plot_modalities_bars
 
-   ./plot_clustermap
+   ./plot_graph
 
-   ./plot_correlations
-
-   ./plot_classifier
+   ./plot_gene
 
    ./plot_event_modality_estimation
 
+   ./plot_correlations
+
+   ./plot_clustermap
+
+   ./plot_classifier
 
 
-
-
-.. raw:: html
-
-    <div class='figure align-center'>
-    <a href=./plot_gene.html>
-    <img src=../_static/plot_gene_thumb.png>
-    <span class='figure-label'>
-    <p></p>
-    </span>
-    </a>
-    </div>
 
 
 
 .. raw:: html
 
     <div class='figure align-center'>
-    <a href=./plot_pca_splicing.html>
-    <img src=../_static/plot_pca_splicing_thumb.png>
+    <a href=./plot_two_samples.html>
+    <img src=../_static/plot_two_samples_thumb.png>
     <span class='figure-label'>
     <p></p>
     </span>
@@ -144,21 +131,8 @@ Example gallery
 .. raw:: html
 
     <div class='figure align-center'>
-    <a href=./plot_modalities_bars.html>
-    <img src=../_static/plot_modalities_bars_thumb.png>
-    <span class='figure-label'>
-    <p></p>
-    </span>
-    </a>
-    </div>
-
-
-
-.. raw:: html
-
-    <div class='figure align-center'>
-    <a href=./plot_graph.html>
-    <img src=../_static/plot_graph_thumb.png>
+    <a href=./plot_pca_splicing.html>
+    <img src=../_static/plot_pca_splicing_thumb.png>
     <span class='figure-label'>
     <p></p>
     </span>
@@ -196,8 +170,8 @@ Example gallery
 .. raw:: html
 
     <div class='figure align-center'>
-    <a href=./plot_two_samples.html>
-    <img src=../_static/plot_two_samples_thumb.png>
+    <a href=./plot_modalities_bars.html>
+    <img src=../_static/plot_modalities_bars_thumb.png>
     <span class='figure-label'>
     <p></p>
     </span>
@@ -209,8 +183,34 @@ Example gallery
 .. raw:: html
 
     <div class='figure align-center'>
-    <a href=./plot_clustermap.html>
-    <img src=../_static/plot_clustermap_thumb.png>
+    <a href=./plot_graph.html>
+    <img src=../_static/plot_graph_thumb.png>
+    <span class='figure-label'>
+    <p></p>
+    </span>
+    </a>
+    </div>
+
+
+
+.. raw:: html
+
+    <div class='figure align-center'>
+    <a href=./plot_gene.html>
+    <img src=../_static/plot_gene_thumb.png>
+    <span class='figure-label'>
+    <p></p>
+    </span>
+    </a>
+    </div>
+
+
+
+.. raw:: html
+
+    <div class='figure align-center'>
+    <a href=./plot_event_modality_estimation.html>
+    <img src=../_static/plot_event_modality_estimation_thumb.png>
     <span class='figure-label'>
     <p></p>
     </span>
@@ -235,8 +235,8 @@ Example gallery
 .. raw:: html
 
     <div class='figure align-center'>
-    <a href=./plot_classifier.html>
-    <img src=../_static/plot_classifier_thumb.png>
+    <a href=./plot_clustermap.html>
+    <img src=../_static/plot_clustermap_thumb.png>
     <span class='figure-label'>
     <p></p>
     </span>
@@ -248,8 +248,8 @@ Example gallery
 .. raw:: html
 
     <div class='figure align-center'>
-    <a href=./plot_event_modality_estimation.html>
-    <img src=../_static/plot_event_modality_estimation_thumb.png>
+    <a href=./plot_classifier.html>
+    <img src=../_static/plot_classifier_thumb.png>
     <span class='figure-label'>
     <p></p>
     </span>
