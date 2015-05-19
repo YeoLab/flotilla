@@ -125,7 +125,7 @@ class MetaData(BaseData):
     @property
     def _colors(self):
         return list(map(mpl.colors.rgb2hex,
-                   sns.color_palette('husl', n_colors=self.n_phenotypes)))
+                        sns.color_palette('husl', n_colors=self.n_phenotypes)))
 
     @property
     def _default_phenotype_to_color(self):

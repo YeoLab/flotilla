@@ -7,14 +7,13 @@ import json
 import os
 import string
 import sys
+import matplotlib as mpl
 
 import six
 if six.PY2:
     import urllib2 as urllib
 elif six.PY3:
-    import urllib 
-
-import matplotlib as mpl
+    import urllib
 
 
 FLOTILLA_DOWNLOAD_DIR = os.path.expanduser('~/flotilla_projects')

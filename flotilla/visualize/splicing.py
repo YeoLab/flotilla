@@ -70,14 +70,13 @@ class ModalitiesViz(object):
     modality_order = ['excluded', 'uniform', 'bimodal', 'middle',
                       'included']  # , 'ambiguous']
 
-    @property 
+    @property
     def colors(self):
         return [self.modality_colors[modality] for modality in
-              self.modality_order]
-
+                self.modality_order]
 
     # colors = [self.modality_colors[modality] for modality in
-              # modality_order]
+    # modality_order]
 
     def plot_reduced_space(self, binned_reduced, modality_assignments,
                            ax=None, title=None, xlabel='', ylabel=''):

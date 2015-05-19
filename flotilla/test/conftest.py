@@ -114,7 +114,7 @@ def group_order(groups):
 def colors(n_groups):
     """Colors to use for the samples"""
     return list(map(mpl.colors.rgb2hex,
-               sns.color_palette('husl', n_colors=n_groups)))
+                    sns.color_palette('husl', n_colors=n_groups)))
 
 
 # @pytest.fixture(scope='module')

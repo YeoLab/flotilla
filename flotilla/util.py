@@ -241,8 +241,6 @@ def write_gzip_pickle_df(df, file_name):
     subprocess.call(['mv %s %s' % (tempfile, file_name)])
 
 
-
-
 def load_tsv(file_name, **kwargs):
     return pd.read_table(file_name, **kwargs)
 

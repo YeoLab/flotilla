@@ -11,9 +11,9 @@ sns.set_palette('deep')
 deep = sns.color_palette('deep')
 
 dark2 = list(map(mpl.colors.rgb2hex,
-            brewer2mpl.get_map('Dark2', 'qualitative', 8).mpl_colors))
+                 brewer2mpl.get_map('Dark2', 'qualitative', 8).mpl_colors))
 set1 = list(map(mpl.colors.rgb2hex,
-           brewer2mpl.get_map('Set1', 'qualitative', 9).mpl_colors))
+                brewer2mpl.get_map('Set1', 'qualitative', 9).mpl_colors))
 red = set1[0]
 blue = set1[1]
 green = set1[2]

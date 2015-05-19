@@ -7,6 +7,7 @@ import pandas as pd
 import pytest
 import seaborn as sns
 import pandas.util.testing as pdt
+import six
 
 
 class TestMetaData(object):
@@ -79,15 +80,15 @@ class TestMetaData(object):
             true_phenotype_to_marker = phenotype_to_marker
 
         true_phenotype_transitions = list(zip(true_phenotype_order[:-1],
-                                         true_phenotype_order[1:]))
+                                              true_phenotype_order[1:]))
         true_unique_phenotypes = self.metadata[self.phenotype_col].unique()
         true_n_phenotypes = len(true_unique_phenotypes)
 
         true_colors = list(map(mpl.colors.rgb2hex,
-                          sns.color_palette('husl',
-                                            n_colors=true_n_phenotypes)))
+                               sns.color_palette('husl',
+                                                 n_colors=true_n_phenotypes)))
         colors = iter(true_colors)
-        true_default_phenotype_to_color = defaultdict(lambda: colors.__next__())
+        true_default_phenotype_to_color = defaultdict(lambda: six.next(colors))
 
         true_sample_id_to_phenotype = self.metadata[self.phenotype_col]
         true_phenotype_color_order = [true_phenotype_to_color[p]

@@ -636,8 +636,8 @@ class Interactive(object):
 
         def do_interact(**columns):
             if len(columns.keys()) == 0:
-                print("You have not specified any 'outlier_' columns in " \
-                      "study.metadata.data... \n" \
+                print("You have not specified any 'outlier_' columns in "
+                      "study.metadata.data... \n"
                       "This function will do nothing to your data.")
             else:
                 self.metadata.set_outliers_by_merging_columns(
