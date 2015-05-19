@@ -4,7 +4,7 @@
 .. raw:: html
 
     <pre class='nb-text-output'>
-{{ output.data['text/plain'] | indent }}
+{{ output.text['text/plain'] | indent }}
     </pre>
 {% endblock data_text %}
 
@@ -12,6 +12,6 @@
 .. raw:: html
 
     <pre class='nb-text-output'>
-{{ output.data['text/plain'] | indent }}
+{{ output.text['text/plain'] | indent }}
     </pre>
 {% endblock stream %}
