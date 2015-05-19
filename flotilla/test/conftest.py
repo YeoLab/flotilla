@@ -291,8 +291,8 @@ def modality_models():
     return models
 
 
-@pytest.fixture(scope='module', params=[0., 1.], ids=['na_thresh0',
-                                                      'na_thresh1'])
+@pytest.fixture(scope='module', params=[0., 0.5], ids=['na_thresh0',
+                                                       'na_thresh5'])
 def na_thresh(request):
     return request.param
 

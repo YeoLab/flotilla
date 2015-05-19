@@ -40,7 +40,7 @@ before_script:
 # command to run tests and build documentation
 script:
   - make coverage
-  - make lint
+  - if [ ${TRAVIS_PYTHON_VERSION:0:1} == "2" ]; then make lint ; fi
   - make pep8
   # For building the docs
   - MASTER=master
