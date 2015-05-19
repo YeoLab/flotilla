@@ -39,7 +39,6 @@ before_script:
 script:
   - make coverage
   - if [ ${TRAVIS_PYTHON_VERSION:0:1} == "2" ]; then make lint ; fi
-  - make pep8
   # For building the docs
   - MASTER=master
   - if [[ $TRAVIS_BRANCH == v*.*.* ]] ; then export DEPLOY_HTML_DIR=docs ; fi
