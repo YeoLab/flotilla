@@ -1,9 +1,9 @@
-.nb-text-python {
+.nb-text-output {
     background-color: #f9c7d3;
-
 }
-.navbar-inverse{
+.navbar-default{
     background-color: #007A6E;
+    border-color: #007A6E;
 }
 h1, .h1 {
   font-size: 36px;
