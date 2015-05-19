@@ -441,8 +441,8 @@
     <span class="k">return</span> <span class="n">models</span>
 
 </div>
-<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span> <span class="n">ids</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;na_thresh0&#39;</span><span class="p">,</span>
-                                                      <span class="s">&#39;na_thresh1&#39;</span><span class="p">])</span>
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&#39;module&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span> <span class="n">ids</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;na_thresh0&#39;</span><span class="p">,</span>
+                                                       <span class="s">&#39;na_thresh5&#39;</span><span class="p">])</span>
 <div class="viewcode-block" id="na_thresh"><a class="viewcode-back" href="../../../flotilla.test.conftest.html#flotilla.test.conftest.na_thresh">[docs]</a><span class="k">def</span> <span class="nf">na_thresh</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span>
 

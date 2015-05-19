@@ -212,49 +212,49 @@ IOError                                   Traceback (most recent call last)
 
 
 /home/travis/miniconda/envs/testenv/lib/python2.7/site-packages/pandas/io/parsers.pyc in parser_f(filepath_or_buffer, sep, dialect, compression, doublequote, escapechar, quotechar, quoting, skipinitialspace, lineterminator, header, index_col, names, prefix, skiprows, skipfooter, skip_footer, na_values, na_fvalues, true_values, false_values, delimiter, converters, dtype, usecols, engine, delim_whitespace, as_recarray, na_filter, compact_ints, use_unsigned, low_memory, buffer_lines, warn_bad_lines, error_bad_lines, keep_default_na, thousands, comment, decimal, parse_dates, keep_date_col, dayfirst, date_parser, memory_map, float_precision, nrows, iterator, chunksize, verbose, encoding, squeeze, mangle_dupe_cols, tupleize_cols, infer_datetime_format, skip_blank_lines)
-    468                     skip_blank_lines=skip_blank_lines)
-    469
---&gt; 470         return _read(filepath_or_buffer, kwds)
-    471
-    472     parser_f.__name__ = name
+    472                     skip_blank_lines=skip_blank_lines)
+    473
+--&gt; 474         return _read(filepath_or_buffer, kwds)
+    475
+    476     parser_f.__name__ = name
 
 
 /home/travis/miniconda/envs/testenv/lib/python2.7/site-packages/pandas/io/parsers.pyc in _read(filepath_or_buffer, kwds)
-    244
-    245     # Create the parser.
---&gt; 246     parser = TextFileReader(filepath_or_buffer, **kwds)
-    247
-    248     if (nrows is not None) and (chunksize is not None):
+    248
+    249     # Create the parser.
+--&gt; 250     parser = TextFileReader(filepath_or_buffer, **kwds)
+    251
+    252     if (nrows is not None) and (chunksize is not None):
 
 
 /home/travis/miniconda/envs/testenv/lib/python2.7/site-packages/pandas/io/parsers.pyc in __init__(self, f, engine, **kwds)
-    560             self.options[&#39;has_index_names&#39;] = kwds[&#39;has_index_names&#39;]
-    561
---&gt; 562         self._make_engine(self.engine)
-    563
-    564     def _get_options_with_defaults(self, engine):
+    564             self.options[&#39;has_index_names&#39;] = kwds[&#39;has_index_names&#39;]
+    565
+--&gt; 566         self._make_engine(self.engine)
+    567
+    568     def _get_options_with_defaults(self, engine):
 
 
 /home/travis/miniconda/envs/testenv/lib/python2.7/site-packages/pandas/io/parsers.pyc in _make_engine(self, engine)
-    697     def _make_engine(self, engine=&#39;c&#39;):
-    698         if engine == &#39;c&#39;:
---&gt; 699             self._engine = CParserWrapper(self.f, **self.options)
-    700         else:
-    701             if engine == &#39;python&#39;:
+    703     def _make_engine(self, engine=&#39;c&#39;):
+    704         if engine == &#39;c&#39;:
+--&gt; 705             self._engine = CParserWrapper(self.f, **self.options)
+    706         else:
+    707             if engine == &#39;python&#39;:
 
 
 /home/travis/miniconda/envs/testenv/lib/python2.7/site-packages/pandas/io/parsers.pyc in __init__(self, src, **kwds)
-   1064         kwds[&#39;allow_leading_cols&#39;] = self.index_col is not False
-   1065
--&gt; 1066         self._reader = _parser.TextReader(src, **kwds)
-   1067
-   1068         # XXX
+   1070         kwds[&#39;allow_leading_cols&#39;] = self.index_col is not False
+   1071
+-&gt; 1072         self._reader = _parser.TextReader(src, **kwds)
+   1073
+   1074         # XXX
 
 
-/home/travis/miniconda/envs/testenv/lib/python2.7/site-packages/pandas/parser.so in pandas.parser.TextReader.__cinit__ (pandas/parser.c:3163)()
+/home/travis/miniconda/envs/testenv/lib/python2.7/site-packages/pandas/parser.so in pandas.parser.TextReader.__cinit__ (pandas/parser.c:3173)()
 
 
-/home/travis/miniconda/envs/testenv/lib/python2.7/site-packages/pandas/parser.so in pandas.parser.TextReader._setup_parser_source (pandas/parser.c:5335)()
+/home/travis/miniconda/envs/testenv/lib/python2.7/site-packages/pandas/parser.so in pandas.parser.TextReader._setup_parser_source (pandas/parser.c:5468)()
 
 
 /home/travis/miniconda/envs/testenv/lib/python2.7/gzip.pyc in __init__(self, filename, mode, compresslevel, fileobj, mtime)
