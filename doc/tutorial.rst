@@ -27,7 +27,7 @@ Exploratory Analysis
 .. toctree::
     :maxdepth: 2
 
-    tutorial/brainspan
+    tutorial/exploratoy_analysis_brainspan
     tutorial/supplementaldata
     tutorial/modalities
 
