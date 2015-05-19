@@ -1,11 +1,10 @@
+Contributing to `flotilla`
+==========================
 
-For developers
-==============
-
-Please put ALL import statements at the top of the `*.py` file (potentially underneath docstrings, of course).
-The only exception is if a package is not listed in `requirements.txt`,then a "function-only" import may be allowed.
-If this doesn't make sense to you, just put the import at the top of the file.
-
+You are an awesome human being for wanting to contribute to the `flotilla` 
+large-scale RNA-seq open-source software! Check out our guidelines below for
+how to best format your code and features so your sweet new idea can be added
+as soon as possible.
 
 Install in development mode
 ---------------------------
@@ -110,7 +109,7 @@ before the pull request is merged.
   `examples/`, and is that notebook added to `doc/tutorial.rst`?
 - [ ] If it adds a new plot, is it documented in the gallery, as a `.py` file 
   in `examples/`?
-- [ ] Is it well formatted? Look at `make pep8` and `make lint` output
+- [ ] Is it well formatted? Look at the output of `make lint`.
 - [ ] Is it documented in the doc/releases/?
 - [ ] Was a spellchecker run on the source code and documentation after
   changes were made?
