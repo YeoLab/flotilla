@@ -26,16 +26,13 @@ before_script:
 - ". ./.travis/setup.sh"
 - echo $DEPLOY_HTML_DIR
 script:
-- make coverage
-- if [ ${TRAVIS_PYTHON_VERSION:0:1} == "2" ]; then make lint ; fi
-- make pep8
-- MASTER=master
-- if [[ $TRAVIS_BRANCH == v*.*.* ]] ; then export DEPLOY_HTML_DIR=docs ; fi
-- if [[ $TRAVIS_BRANCH == "$MASTER" ]] ; then export DEPLOY_HTML_DIR=docs-dev ; fi
-- if [[ $TRAVIS_BRANCH == v*.*.* ]] || [[ $TRAVIS_BRANCH == "$MASTER" ]] ; then sudo
-  apt-get install pandoc; conda install --yes --file doc/conda_requirements.txt ;
-  conda install --yes ipython-notebook=2; pip install -r doc/requirements.txt; pip
-  install . ; cd doc ; make setup_gh_pages ; make generate ; make deploy ; fi
+  - make coverage
+  - if [ ${TRAVIS_PYTHON_VERSION:0:1} == "2" ]; then make lint ; fi
+  # For building the docs
+  - MASTER=master
+  - if [[ $TRAVIS_BRANCH == v*.*.* ]] ; then export DEPLOY_HTML_DIR=docs ; fi
+  - if [[ $TRAVIS_BRANCH == "$MASTER" ]] ; then export DEPLOY_HTML_DIR=docs-dev ; fi
+  - if [[ $TRAVIS_BRANCH == v*.*.* ]] || [[ $TRAVIS_BRANCH == "$MASTER" ]] ; then sudo apt-get install pandoc; conda install --yes --file doc/conda_requirements.txt ; conda install --yes ipython-notebook=2; pip install -r doc/requirements.txt; pip install . ; cd doc ; make setup_gh_pages ; make generate ; make deploy ; fi
 after_script:
 - coveralls
 notifications:
