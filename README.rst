@@ -4,17 +4,17 @@ flotilla
 ``flotilla`` is a Python package for visualizing transcriptome (RNA expression) data from hundreds of
 samples. We include utilities to perform common tasks on these large data matrices, including:
  
-  * Dimensionality reduction
-  * Classification and Regression
-  * Outlier detection
-  * Network graphs from covariance
-  * Hierarchical clustering
+* Dimensionality reduction
+* Classification and Regression
+* Outlier detection
+* Network graphs from covariance
+* Hierarchical clustering
   
 And common tasks for biological data including:
 
-  * Renaming database features to gene symbols
-  * Coloring/marking samples based on experimental phenotype
-  * Removing poor-quality samples (technical outliers)
+* Renaming database features to gene symbols
+* Coloring/marking samples based on experimental phenotype
+* Removing poor-quality samples (technical outliers)
   
   
 Finally, ``flotilla`` is a platform for active collaboration between bioinformatics scientists and 
