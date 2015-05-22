@@ -209,7 +209,7 @@ def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
     plot_kws.setdefault('linestyle', 'None')
     plot_kws.setdefault('markeredgecolor', '#262626')
     plot_kws.setdefault('markeredgewidth', .1)
-    plot_kws.setdefault('raster', True)
+    plot_kws.setdefault('rasterized', True)
 
     y = as_numpy(psi.dropna(how='all', axis=1))
 
