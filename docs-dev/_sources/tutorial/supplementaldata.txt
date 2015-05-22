@@ -19,28 +19,28 @@ Institute's Brain Atlas data.
     Creating a directory for saving the data for this project: /home/travis/flotilla_projects/brainspan_filtered_and_markers_amazon
     https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon_s3/datapackage.json has not been downloaded before.
     	Downloading now to /home/travis/flotilla_projects/brainspan_filtered_and_markers_amazon/datapackage.json
-    2015-05-22 20:12:27	Parsing datapackage to create a Study object
+    2015-05-22 20:32:46	Parsing datapackage to create a Study object
     https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon_s3/expression_feature.csv has not been downloaded before.
     	Downloading now to /home/travis/flotilla_projects/brainspan_filtered_and_markers_amazon/expression_feature.csv
     https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon_s3/expression.csv has not been downloaded before.
     	Downloading now to /home/travis/flotilla_projects/brainspan_filtered_and_markers_amazon/expression.csv
     https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon_s3/metadata.csv has not been downloaded before.
     	Downloading now to /home/travis/flotilla_projects/brainspan_filtered_and_markers_amazon/metadata.csv
-    2015-05-22 20:12:44	Initializing Study
-    2015-05-22 20:12:44	Initializing Predictor configuration manager for Study
-    2015-05-22 20:12:44	Predictor ExtraTreesClassifier is of type <class 'sklearn.ensemble.forest.ExtraTreesClassifier'>
-    2015-05-22 20:12:44	Added ExtraTreesClassifier to default predictors
-    2015-05-22 20:12:44	Predictor ExtraTreesRegressor is of type <class 'sklearn.ensemble.forest.ExtraTreesRegressor'>
-    2015-05-22 20:12:44	Added ExtraTreesRegressor to default predictors
-    2015-05-22 20:12:44	Predictor GradientBoostingClassifier is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingClassifier'>
-    2015-05-22 20:12:44	Added GradientBoostingClassifier to default predictors
-    2015-05-22 20:12:44	Predictor GradientBoostingRegressor is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingRegressor'>
-    2015-05-22 20:12:44	Added GradientBoostingRegressor to default predictors
-    2015-05-22 20:12:44	Loading metadata
-    2015-05-22 20:12:44	Loading expression data
-    2015-05-22 20:12:44	Initializing expression
-    2015-05-22 20:12:45	Done initializing expression
-    2015-05-22 20:12:49	Successfully initialized a Study object!
+    2015-05-22 20:33:26	Initializing Study
+    2015-05-22 20:33:26	Initializing Predictor configuration manager for Study
+    2015-05-22 20:33:26	Predictor ExtraTreesClassifier is of type <class 'sklearn.ensemble.forest.ExtraTreesClassifier'>
+    2015-05-22 20:33:26	Added ExtraTreesClassifier to default predictors
+    2015-05-22 20:33:26	Predictor ExtraTreesRegressor is of type <class 'sklearn.ensemble.forest.ExtraTreesRegressor'>
+    2015-05-22 20:33:26	Added ExtraTreesRegressor to default predictors
+    2015-05-22 20:33:26	Predictor GradientBoostingClassifier is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingClassifier'>
+    2015-05-22 20:33:26	Added GradientBoostingClassifier to default predictors
+    2015-05-22 20:33:26	Predictor GradientBoostingRegressor is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingRegressor'>
+    2015-05-22 20:33:26	Added GradientBoostingRegressor to default predictors
+    2015-05-22 20:33:26	Loading metadata
+    2015-05-22 20:33:26	Loading expression data
+    2015-05-22 20:33:26	Initializing expression
+    2015-05-22 20:33:27	Done initializing expression
+    2015-05-22 20:33:29	Successfully initialized a Study object!
 
 
 Let's take a look at how big this expression matrix is.
@@ -86,8 +86,8 @@ this subset.
 
 .. parsed-literal::
 
-    CPU times: user 524 ms, sys: 0 ns, total: 524 ms
-    Wall time: 523 ms
+    CPU times: user 381 ms, sys: 0 ns, total: 381 ms
+    Wall time: 382 ms
 
 
 That didn't take *too* long, but I'm sure you can imagine it would take
@@ -109,23 +109,23 @@ Now let's save the object and re-``embark`` to make sure it's there.
 .. parsed-literal::
 
     Wrote datapackage to /home/travis/flotilla_projects/brainspan2/datapackage.json
-    2015-05-22 20:13:51	Reading datapackage from /home/travis/flotilla_projects/brainspan2/datapackage.json
-    2015-05-22 20:13:51	Parsing datapackage to create a Study object
-    2015-05-22 20:14:01	Initializing Study
-    2015-05-22 20:14:01	Initializing Predictor configuration manager for Study
-    2015-05-22 20:14:01	Predictor ExtraTreesClassifier is of type <class 'sklearn.ensemble.forest.ExtraTreesClassifier'>
-    2015-05-22 20:14:01	Added ExtraTreesClassifier to default predictors
-    2015-05-22 20:14:01	Predictor ExtraTreesRegressor is of type <class 'sklearn.ensemble.forest.ExtraTreesRegressor'>
-    2015-05-22 20:14:01	Added ExtraTreesRegressor to default predictors
-    2015-05-22 20:14:01	Predictor GradientBoostingClassifier is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingClassifier'>
-    2015-05-22 20:14:01	Added GradientBoostingClassifier to default predictors
-    2015-05-22 20:14:01	Predictor GradientBoostingRegressor is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingRegressor'>
-    2015-05-22 20:14:01	Added GradientBoostingRegressor to default predictors
-    2015-05-22 20:14:01	Loading metadata
-    2015-05-22 20:14:01	Loading expression data
-    2015-05-22 20:14:01	Initializing expression
-    2015-05-22 20:14:03	Done initializing expression
-    2015-05-22 20:14:08	Successfully initialized a Study object!
+    2015-05-22 20:34:20	Reading datapackage from /home/travis/flotilla_projects/brainspan2/datapackage.json
+    2015-05-22 20:34:20	Parsing datapackage to create a Study object
+    2015-05-22 20:34:27	Initializing Study
+    2015-05-22 20:34:27	Initializing Predictor configuration manager for Study
+    2015-05-22 20:34:27	Predictor ExtraTreesClassifier is of type <class 'sklearn.ensemble.forest.ExtraTreesClassifier'>
+    2015-05-22 20:34:27	Added ExtraTreesClassifier to default predictors
+    2015-05-22 20:34:27	Predictor ExtraTreesRegressor is of type <class 'sklearn.ensemble.forest.ExtraTreesRegressor'>
+    2015-05-22 20:34:27	Added ExtraTreesRegressor to default predictors
+    2015-05-22 20:34:27	Predictor GradientBoostingClassifier is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingClassifier'>
+    2015-05-22 20:34:27	Added GradientBoostingClassifier to default predictors
+    2015-05-22 20:34:27	Predictor GradientBoostingRegressor is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingRegressor'>
+    2015-05-22 20:34:27	Added GradientBoostingRegressor to default predictors
+    2015-05-22 20:34:27	Loading metadata
+    2015-05-22 20:34:28	Loading expression data
+    2015-05-22 20:34:28	Initializing expression
+    2015-05-22 20:34:29	Done initializing expression
+    2015-05-22 20:34:33	Successfully initialized a Study object!
 
 
 Let's make sure our ``variant_expression_corr`` dataframe is really
