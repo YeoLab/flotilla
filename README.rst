@@ -1,115 +1,38 @@
-|Build Status|\ |Coverage Status|
-
 flotilla
 ========
 
-.. figure:: flotilla.png
-   :alt: flotilla Logo
+``flotilla`` is a Python package for visualizing transcriptome (RNA expression) data from hundreds of
+samples. We include utilities to perform common tasks on these large data matrices, including:
+ 
+  * Dimensionality reduction
+  * Classification and Regression
+  * Outlier detection
+  * Network graphs from covariance
+  * Hierarchical clustering
+  
+And common tasks for biological data including:
 
-   flotilla Logo
-Installation instructions
-=========================
+  * Renaming database features to gene symbols
+  * Coloring/marking samples based on experimental phenotype
+  * Removing poor-quality samples (technical outliers)
+  
+  
+Finally, ``flotilla`` is a platform for active collaboration between bioinformatics scientists and 
+traditional "wet lab" scientists. Leveraging `interactive widgets <https://github.com/ipython/ipython/tree/master/examples/Interactive%20Widgets>`_ 
+in the `IPython Notebook <http://ipython.org/notebook.html>`_, 
+we have created tools for simple and streamlined data exploration including:
 
-From a clean install of Mavericks 10.9.4, follow these steps.
+  * Subsetting sample groups and feature (genes/splicing events) groups
+  * Dynamically adjusting parameters for analysis
+  * Integrating external lists of features from the web or local files
 
-All others must fend for themselves to install matplotlib, scipy and
-their third-party dependencies.
+These empower the "wet lab" scientists to ask questions on their own and gives bioniformatics
+scientists a platform and share their analysis tools.
 
-*This part only needs to be done once*
 
--  `Install anaconda <https://store.continuum.io/cshop/anaconda/>`__
--  `Install Xcode (this can take an
-   hour) <https://itunes.apple.com/us/app/xcode/id497799835?mt=12>`__
--  Open Xcode and agree to terms and services (it is very important to
-   read them thoroughly)
--  Install `homebrew <http://brew.sh/>`__
+What flotilla is **not**
+-----------------------
 
-   ``ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"``
-
--  Install freetype:
-
-   ``brew install freetype``
-
--  Install heavy packages (this can take an hour or more)
-
-::
-
-    conda install pip numpy scipy cython matplotlib nose six scikit-learn ipython networkx pandas tornado statsmodels setuptools pytest pyzmq jinja2 pyyaml`
-
--  Create a virtual environment
-   ``conda create -n flotilla_env pip numpy scipy cython matplotlib nose six scikit-learn ipython networkx pandas tornado statsmodels setuptools pytest pyzmq jinja2 pyyaml```
-
--  Switch to virtual environment
-
-   ``source activate flotilla_env``
-
--  Install flotilla and its dependencies (this can take a few minutes):
-
-   ``pip install git+https://github.com/YeoLab/flotilla.git``
-
--  Create a scratch space for your work
-
-   ``mkdir ~/flotilla_scratch``
-
--  Make a place to store flotilla projects
-
-   ``mkdir ~/flotilla_projects``
-
--  Go back to the real world
-
-   ``source deactivate``
-
-Start using flotilla:
-=====================
-
-Use the above instructions to create a flotilla-friendly environment,
-then:
-
--  switch to virtual environment
-
-   ``source activate flotilla_env``
-
--  start an ipython notebook:
-
-   ``ipython notebook --notebook-dir=~/flotilla_scratch``
-
--  create a new notebook by clicking ``New Notebook``
--  rename your notebook from "Untitled" to something more informative by
-   clicking the title panel.
--  load matplotlib backend using every notebook must use this to display
-   inline output
-
-   ``%matplotlib inline``
-
-Test interactive features with example data:
---------------------------------------------
-
-We have prepared a slice of the full dataset for testing and
-demonstration purposes.
-
-Run each of the following code lines in its own ipython notebook cell
-for an interactive feature.
-
-::
-
-    import flotilla
-    test_study = flotilla.embark('http://sauron.ucsd.edu/flotilla_projects/neural_diff_chr22/datapackage.json')
-
-    test_study.interactive_pca()
-
-    test_study.interactive_graph()
-
-    test_study.interactive_classifier()
-
-    test_study.interactive_lavalamp_pooled_inconsistent()
-
-IMPORTANT NOTE: for this test,several failures are expected since the
-test set is small. Adjust parameters to explore valid parameter spaces.
-For example, you can manually select ``all_genes`` as the
-``feature_subset`` from the drop-down menu that appears after running
-these interactive functions.
-
-.. |Build Status| image:: https://travis-ci.org/YeoLab/flotilla.svg?branch=master
-   :target: https://travis-ci.org/YeoLab/flotilla
-.. |Coverage Status| image:: https://img.shields.io/coveralls/YeoLab/flotilla.svg
-   :target: https://coveralls.io/r/YeoLab/flotilla?branch=master
+``flotilla`` is not a genomics pipeline. We expect that you have already generated
+data tables for gene expression, isoform expression and metadata. ``flotilla`` only makes 
+it easy to integrate all those data parts together once you have the pieces.
