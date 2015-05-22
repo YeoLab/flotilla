@@ -22,9 +22,9 @@ traditional "wet lab" scientists. Leveraging `interactive widgets <https://githu
 in the `IPython Notebook <http://ipython.org/notebook.html>`_, 
 we have created tools for simple and streamlined data exploration including:
 
-  * Subsetting sample groups and feature (genes/splicing events) groups
-  * Dynamically adjusting parameters for analysis
-  * Integrating external lists of features from the web or local files
+* Subsetting sample groups and feature (genes/splicing events) groups
+* Dynamically adjusting parameters for analysis
+* Integrating external lists of features from the web or local files
 
 These empower the "wet lab" scientists to ask questions on their own and gives bioniformatics
 scientists a platform and share their analysis tools.
