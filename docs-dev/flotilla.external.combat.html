@@ -160,7 +160,7 @@
 <span id="flotilla-external-combat-module"></span><h1>flotilla.external.combat module<a class="headerlink" href="#module-flotilla.external.combat" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="flotilla.external.combat.adjust_nums">
-<tt class="descclassname">flotilla.external.combat.</tt><tt class="descname">adjust_nums</tt><big>(</big><em>numCovs</em>, <em>drop_idxs</em><big>)</big><a class="reference internal" href="_modules/flotilla/external/combat.html#adjust_nums"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.external.combat.adjust_nums" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">flotilla.external.combat.</tt><tt class="descname">adjust_nums</tt><big>(</big><em>numerical_covariates</em>, <em>drop_idxs</em><big>)</big><a class="reference internal" href="_modules/flotilla/external/combat.html#adjust_nums"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.external.combat.adjust_nums" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
@@ -175,12 +175,48 @@
 
 <dl class="function">
 <dt id="flotilla.external.combat.combat">
-<tt class="descclassname">flotilla.external.combat.</tt><tt class="descname">combat</tt><big>(</big><em>dat</em>, <em>batch</em>, <em>mod</em>, <em>numCovs=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/external/combat.html#combat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.external.combat.combat" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<tt class="descclassname">flotilla.external.combat.</tt><tt class="descname">combat</tt><big>(</big><em>data</em>, <em>batch</em>, <em>model=None</em>, <em>numerical_covariates=None</em><big>)</big><a class="reference internal" href="_modules/flotilla/external/combat.html#combat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.external.combat.combat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Correct for batch effects in a dataset</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>A (n_features, n_samples) dataframe of the expression or methylation
+data to batch correct</p>
+</div></blockquote>
+<p><strong>batch</strong> : List-like</p>
+<blockquote>
+<div><p>A column corresponding to the batches in the data, in the same order
+as the samples in <tt class="docutils literal"><span class="pre">data</span></tt></p>
+</div></blockquote>
+<p><strong>model</strong> : patsy.design_info.DesignMatrix, optional</p>
+<blockquote>
+<div><p>A model matrix describing metadata on the samples which could be
+causing batch effects. If not provided, then will attempt to coarsely
+correct just from the information provided in <tt class="docutils literal"><span class="pre">batch</span></tt></p>
+</div></blockquote>
+<p><strong>numerical_covariates</strong> : list-like</p>
+<blockquote>
+<div><p>List of covariates in the model which are numerical, rather than
+categorical</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>corrected</strong> : pandas.DataFrame</p>
+<blockquote class="last">
+<div><p>A (n_features, n_samples) dataframe of the batch-corrected data</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="flotilla.external.combat.design_mat">
-<tt class="descclassname">flotilla.external.combat.</tt><tt class="descname">design_mat</tt><big>(</big><em>mod</em>, <em>numCovs</em>, <em>batch_levels</em><big>)</big><a class="reference internal" href="_modules/flotilla/external/combat.html#design_mat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.external.combat.design_mat" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">flotilla.external.combat.</tt><tt class="descname">design_mat</tt><big>(</big><em>mod</em>, <em>numerical_covariates</em>, <em>batch_levels</em><big>)</big><a class="reference internal" href="_modules/flotilla/external/combat.html#design_mat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flotilla.external.combat.design_mat" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
