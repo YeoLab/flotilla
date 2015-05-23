@@ -1821,7 +1821,7 @@ class Study(object):
 
         splicing_tidy = splicing_tidy.dropna().reset_index()
         splicing_tidy = splicing_tidy.rename(columns={'index':
-                                                          self._event_name})
+            self._event_name})
 
         # Tidify expression
         expression = self.expression.data_original
