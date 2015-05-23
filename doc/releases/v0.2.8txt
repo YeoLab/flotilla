@@ -1,0 +1,10 @@
+v0.2.8 (........)
+------------------------
+
+
+Miscellaneous
+~~~~~~~~~~~~~
+
+- Rasterize lavalamp plot for visualizing many splicing events at once,
+  otherwise the image is too big
+
