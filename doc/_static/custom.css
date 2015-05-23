@@ -1,10 +1,10 @@
 .nb-text-output {
     background-color: #C5E2F8;
 }
-/*.navbar-inverse{*/
-    /*background-color: #007A6E;*/
+.navbar{
+    background-color: #007A6E;
     /*border-color: #007A6E;*/
-/*}*/
+}
 h1, .h1 {
   font-size: 39px;
 }
