@@ -17,6 +17,7 @@ install:
 - source activate testenv
 - conda install --yes --file conda_requirements.txt
 - pip install -r requirements.txt
+- pip install coverage
 - pip install coveralls
 before_script:
 - git config --global user.email "olga.botvinnik@gmail.com"
