@@ -317,23 +317,9 @@ class TestStudy(object):
         splicing_tidy = splicing_tidy.ix[event_name_to_ensembl_ids.index]
         splicing_tidy = splicing_tidy.join(event_name_to_ensembl_ids)
 
-        # # Create a column of the common id on which to join splicing
-        # # and expression
-        # splicing_names = splicing_tidy[splicing_columns_name]
-        # if isinstance(splicing_names, pd.Series):
-        # splicing_tidy[study._common_id] = splicing_tidy[
-        #         splicing_columns_name].map(splicing_common_id)
-        # else:
-        #     # Splicing ids are a multi-index, so the feature renamer will get
-        #     # the name of the feature.
-        #     splicing_tidy[study._common_id] = [
-        #         study.splicing.feature_renamer(x)
-        #         for x in splicing_names.itertuples(index=False)]
-
-
         splicing_tidy = splicing_tidy.dropna().reset_index()
         splicing_tidy = splicing_tidy.rename(columns={'index':
-                                                          study._event_name})
+            study._event_name})
 
         # Tidify expression
         expression = study.expression.data_original
@@ -349,10 +335,6 @@ class TestStudy(object):
             columns={'index': study._sample_id})
         expression_tidy = expression_tidy.dropna()
 
-        # splicing_tidy.set_index([study._sample_id, study._common_id],
-        #                         inplace=True)
-        # expression_tidy.set_index([study._sample_id, study._common_id],
-        #                           inplace=True)
         true = splicing_tidy.merge(
             expression_tidy, left_on=[study._sample_id, study._common_id],
             right_on=[study._sample_id, study._common_id])
