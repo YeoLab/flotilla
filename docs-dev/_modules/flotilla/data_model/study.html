@@ -153,6 +153,7 @@
 <span class="sd">heavier in terms of data load</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
@@ -1946,6 +1947,16 @@
                                 <span class="n">id_vars</span><span class="o">=</span><span class="n">splicing_index_name</span><span class="p">,</span>
                                 <span class="n">value_name</span><span class="o">=</span><span class="s">&#39;psi&#39;</span><span class="p">,</span>
                                 <span class="n">var_name</span><span class="o">=</span><span class="n">splicing_columns_name</span><span class="p">)</span>
+
+        <span class="n">s</span> <span class="o">=</span> <span class="n">splicing_common_id</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+
+        <span class="n">event_name_to_ensembl_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span>
+            <span class="o">*</span><span class="p">[</span><span class="nb">zip</span><span class="p">([</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">)),</span> <span class="n">v</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span>
+              <span class="n">s</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()]))</span>
+        <span class="n">index</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">event_name_to_ensembl_ids</span><span class="p">)</span>
+        <span class="n">event_name_to_ensembl_ids</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
+                                              <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_common_id</span><span class="p">)</span>
+
         <span class="n">rename_columns</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="n">splicing_index_name</span> <span class="o">==</span> <span class="s">&#39;index&#39;</span><span class="p">:</span>
             <span class="n">rename_columns</span><span class="p">[</span><span class="n">splicing_index_name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_id</span>
@@ -1954,20 +1965,13 @@
             <span class="n">splicing_columns_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event_name</span>
         <span class="n">splicing_tidy</span> <span class="o">=</span> <span class="n">splicing_tidy</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">rename_columns</span><span class="p">)</span>
 
-        <span class="c"># Create a column of the common id on which to join splicing</span>
-        <span class="c"># and expression</span>
-        <span class="n">splicing_names</span> <span class="o">=</span> <span class="n">splicing_tidy</span><span class="p">[</span><span class="n">splicing_columns_name</span><span class="p">]</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">splicing_names</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
-            <span class="n">splicing_tidy</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_common_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">splicing_tidy</span><span class="p">[</span>
-                <span class="n">splicing_columns_name</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">splicing_common_id</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c"># Splicing ids are a multi-index, so the feature renamer will get</span>
-            <span class="c"># the name of the feature.</span>
-            <span class="n">splicing_tidy</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_common_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">splicing</span><span class="o">.</span><span class="n">feature_renamer</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">splicing_names</span><span class="o">.</span><span class="n">itertuples</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="bp">False</span><span class="p">)]</span>
+        <span class="n">splicing_tidy</span> <span class="o">=</span> <span class="n">splicing_tidy</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">splicing_columns_name</span><span class="p">)</span>
+        <span class="n">splicing_tidy</span> <span class="o">=</span> <span class="n">splicing_tidy</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">event_name_to_ensembl_ids</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+        <span class="n">splicing_tidy</span> <span class="o">=</span> <span class="n">splicing_tidy</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">event_name_to_ensembl_ids</span><span class="p">)</span>
 
-        <span class="n">splicing_tidy</span> <span class="o">=</span> <span class="n">splicing_tidy</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+        <span class="n">splicing_tidy</span> <span class="o">=</span> <span class="n">splicing_tidy</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+        <span class="n">splicing_tidy</span> <span class="o">=</span> <span class="n">splicing_tidy</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;index&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_event_name</span><span class="p">})</span>
 
         <span class="c"># Tidify expression</span>
         <span class="n">expression</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">data_original</span>
@@ -1983,11 +1987,10 @@
             <span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;index&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_id</span><span class="p">})</span>
         <span class="n">expression_tidy</span> <span class="o">=</span> <span class="n">expression_tidy</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
 
-        <span class="n">splicing_tidy</span><span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_sample_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_common_id</span><span class="p">],</span>
-                                <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-        <span class="n">expression_tidy</span><span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_sample_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_common_id</span><span class="p">],</span>
-                                  <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">splicing_tidy</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">expression_tidy</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s">&#39;inner&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+        <span class="n">splicing_tidy_with_expression</span> <span class="o">=</span> <span class="n">splicing_tidy</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+            <span class="n">expression_tidy</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_sample_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_common_id</span><span class="p">],</span>
+            <span class="n">right_on</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_sample_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_common_id</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">splicing_tidy_with_expression</span>
 
 <div class="viewcode-block" id="Study.filter_splicing_on_expression"><a class="viewcode-back" href="../../../flotilla.data_model.study.html#flotilla.data_model.study.Study.filter_splicing_on_expression">[docs]</a>    <span class="k">def</span> <span class="nf">filter_splicing_on_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression_thresh</span><span class="p">,</span>
                                       <span class="n">sample_subset</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
