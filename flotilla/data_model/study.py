@@ -3,6 +3,7 @@ Data models for "studies" studies include attributes about the data and are
 heavier in terms of data load
 """
 import inspect
+import itertools
 import json
 import os
 import sys
@@ -1796,6 +1797,16 @@ class Study(object):
                                 id_vars=splicing_index_name,
                                 value_name='psi',
                                 var_name=splicing_columns_name)
+
+        s = splicing_common_id.dropna()
+
+        event_name_to_ensembl_ids = list(itertools.chain(
+            *[zip([k] * len(v.split(',')), v.split(',')) for k, v in
+              s.iteritems()]))
+        index, data = zip(*event_name_to_ensembl_ids)
+        event_name_to_ensembl_ids = pd.Series(data, index=index,
+                                              name=self._common_id)
+
         rename_columns = {}
         if splicing_index_name == 'index':
             rename_columns[splicing_index_name] = self._sample_id
@@ -1804,20 +1815,26 @@ class Study(object):
             splicing_columns_name = self._event_name
         splicing_tidy = splicing_tidy.rename(columns=rename_columns)
 
-        # Create a column of the common id on which to join splicing
-        # and expression
-        splicing_names = splicing_tidy[splicing_columns_name]
-        if isinstance(splicing_names, pd.Series):
-            splicing_tidy[self._common_id] = splicing_tidy[
-                splicing_columns_name].map(splicing_common_id)
-        else:
-            # Splicing ids are a multi-index, so the feature renamer will get
-            # the name of the feature.
-            splicing_tidy[self._common_id] = [
-                self.splicing.feature_renamer(x)
-                for x in splicing_names.itertuples(index=False)]
+        splicing_tidy = splicing_tidy.set_index(splicing_columns_name)
+        splicing_tidy = splicing_tidy.ix[event_name_to_ensembl_ids.index]
+        splicing_tidy = splicing_tidy.join(event_name_to_ensembl_ids)
 
-        splicing_tidy = splicing_tidy.dropna()
+        # # Create a column of the common id on which to join splicing
+        # # and expression
+        # splicing_names = splicing_tidy[splicing_columns_name]
+        # if isinstance(splicing_names, pd.Series):
+        #     splicing_tidy[self._common_id] = splicing_tidy[
+        #         splicing_columns_name].map(splicing_common_id)
+        # else:
+        #     # Splicing ids are a multi-index, so the feature renamer will get
+        #     # the name of the feature.
+        #     splicing_tidy[self._common_id] = [
+        #         self.splicing.feature_renamer(x)
+        #         for x in splicing_names.itertuples(index=False)]
+
+        splicing_tidy = splicing_tidy.dropna().reset_index()
+        splicing_tidy = splicing_tidy.rename(columns={'index':
+                                                          self._event_name})
 
         # Tidify expression
         expression = self.expression.data_original
@@ -1833,11 +1850,14 @@ class Study(object):
             columns={'index': self._sample_id})
         expression_tidy = expression_tidy.dropna()
 
-        splicing_tidy.set_index([self._sample_id, self._common_id],
-                                inplace=True)
-        expression_tidy.set_index([self._sample_id, self._common_id],
-                                  inplace=True)
-        return splicing_tidy.join(expression_tidy, how='inner').reset_index()
+        # splicing_tidy.set_index([self._sample_id, self._common_id],
+        #                         inplace=True)
+        # expression_tidy.set_index([self._sample_id, self._common_id],
+        #                           inplace=True)
+        splicing_tidy_with_expression = splicing_tidy.merge(
+            expression_tidy, left_on=[self._sample_id, self._common_id],
+            right_on=[self._sample_id, self._common_id])
+        return splicing_tidy_with_expression
 
     def filter_splicing_on_expression(self, expression_thresh,
                                       sample_subset=None):
