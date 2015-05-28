@@ -3,6 +3,7 @@ This tests whether the Study object was created correctly. No
 computation or visualization tests yet.
 """
 from collections import Iterable
+import itertools
 import json
 
 import matplotlib.pyplot as plt
@@ -266,6 +267,82 @@ class TestStudy(object):
                 true_sample_subset = sample_subset
 
         pdt.assert_array_equal(true_sample_subset, test_sample_subset)
+
+    @pytest.fixture(params=[True, False])
+    def multiple_genes_per_event(self, request):
+        return request.param
+
+    def test_tidy_splicing_with_expression(self, study, monkeypatch,
+                                           multiple_genes_per_event):
+        if multiple_genes_per_event:
+            df = study.splicing.feature_data.copy()
+            events = df.index[:5]
+            column = study.splicing.feature_expression_id_col
+            df.ix[events, column] = '{},{}'.format(
+                *study.expression.data.columns[:2])
+            monkeypatch.setattr(study.splicing, 'feature_data', df)
+        test = study.tidy_splicing_with_expression
+
+        splicing_common_id = study.splicing.feature_data[
+            study.splicing.feature_expression_id_col]
+
+        # Tidify splicing
+        splicing = study.splicing.data
+        splicing_index_name = study._maybe_get_axis_name(splicing, axis=0)
+        splicing_columns_name = study._maybe_get_axis_name(splicing, axis=1)
+
+        splicing_tidy = pd.melt(splicing.reset_index(),
+                                id_vars=splicing_index_name,
+                                value_name='psi',
+                                var_name=splicing_columns_name)
+
+        s = splicing_common_id.dropna()
+
+        event_name_to_ensembl_ids = list(itertools.chain(
+            *[zip([k] * len(v.split(',')), v.split(',')) for k, v in
+              s.iteritems()]))
+        index, data = zip(*event_name_to_ensembl_ids)
+        event_name_to_ensembl_ids = pd.Series(data, index=index,
+                                              name=study._common_id)
+
+        rename_columns = {}
+        if splicing_index_name == 'index':
+            rename_columns[splicing_index_name] = study._sample_id
+        if splicing_columns_name == 'columns':
+            rename_columns[splicing_columns_name] = study._event_name
+            splicing_columns_name = study._event_name
+        splicing_tidy = splicing_tidy.rename(columns=rename_columns)
+
+        splicing_tidy = splicing_tidy.set_index(splicing_columns_name)
+        splicing_tidy = splicing_tidy.ix[event_name_to_ensembl_ids.index]
+        splicing_tidy = splicing_tidy.join(event_name_to_ensembl_ids)
+
+        splicing_tidy = splicing_tidy.dropna().reset_index()
+        splicing_tidy = splicing_tidy.rename(
+            columns={'index': study._event_name})
+
+        # Tidify expression
+        expression = study.expression.data_original
+        expression_index_name = study._maybe_get_axis_name(expression, axis=0)
+
+        expression_tidy = pd.melt(expression.reset_index(),
+                                  id_vars=expression_index_name,
+                                  value_name='expression',
+                                  var_name=study._common_id)
+        # This will only do anything if there is a column named "index" so
+        # no need to check anything
+        expression_tidy = expression_tidy.rename(
+            columns={'index': study._sample_id})
+        expression_tidy = expression_tidy.dropna()
+
+        true = splicing_tidy.merge(
+            expression_tidy, left_on=[study._sample_id, study._common_id],
+            right_on=[study._sample_id, study._common_id])
+        pdt.assert_frame_equal(test, true)
+        assert 'event_name' in test
+        assert 'event_name' in true
+        assert 'common_id' in true
+        assert 'common_id' in test
 
     def test_filter_splicing_on_expression(self, study):
         expression_thresh = 5
