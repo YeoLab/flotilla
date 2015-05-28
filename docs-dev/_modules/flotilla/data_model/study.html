@@ -1970,8 +1970,8 @@
         <span class="n">splicing_tidy</span> <span class="o">=</span> <span class="n">splicing_tidy</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">event_name_to_ensembl_ids</span><span class="p">)</span>
 
         <span class="n">splicing_tidy</span> <span class="o">=</span> <span class="n">splicing_tidy</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
-        <span class="n">splicing_tidy</span> <span class="o">=</span> <span class="n">splicing_tidy</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;index&#39;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_event_name</span><span class="p">})</span>
+        <span class="n">splicing_tidy</span> <span class="o">=</span> <span class="n">splicing_tidy</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span>
+            <span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;index&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event_name</span><span class="p">})</span>
 
         <span class="c"># Tidify expression</span>
         <span class="n">expression</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">data_original</span>
