@@ -1,0 +1,14 @@
+v0.2.8 (........)
+------------------------
+
+Bug fixes
+~~~~~~~~~
+
+- ``Study.tidy_splicing_with_expression`` now deals with when splicing events
+  map to multiple gene names. Fixes #304 with #309.
+
+Miscellaneous
+~~~~~~~~~~~~~
+
+- Rasterize lavalamp plot for visualizing many splicing events at once,
+  otherwise the image is too big. PR #308
