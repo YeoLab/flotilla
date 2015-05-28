@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/bootswatch-3.2.0/paper/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -99,9 +100,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../create_datapackage.html">Create your very own datapackage!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Flotilla tutorial</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#install-flotilla">Install flotilla</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#create-a-datapackage">Create a datapackage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#computing-on-splicing-data">Computing on splicing data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#day-to-day-helpful-tips">Day to day helpful tips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#getting-started-downloading-cleaning-and-importing-data">Getting Started: Downloading, cleaning, and importing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#exploratory-analysis">Exploratory Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#recreated-papers">Recreated papers</a></li>
 </ul>
 </li>
@@ -124,8 +124,6 @@
             
             
             
-            
-              <li class="hidden-sm"></li>
             
           </ul>
 
@@ -500,6 +498,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">supplemental</span> <span class="o">=</span> <span class="n">SupplementalData</span><span class="p">(</span><span class="n">supplemental_data</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{}</span><span class="se">\t</span><span class="s">Successfully initialized a Study &quot;</span>
                          <span class="s">&quot;object!</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">timestamp</span><span class="p">()))</span>
+
+    <span class="k">def</span> <span class="nf">_get_supplemental_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">supplemental_attributes</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">supplemental</span><span class="p">,</span>
+                                                     <span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="ow">not</span>
+                                                     <span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">isroutine</span><span class="p">(</span><span class="n">a</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">supplemental_attributes</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;__&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;__&#39;</span><span class="p">))]</span>
 
     <span class="k">def</span> <span class="nf">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Check if the attribute already exists and warns on overwrite.</span>
@@ -1886,12 +1891,7 @@
             <span class="n">mapping_stats</span> <span class="o">=</span> <span class="bp">None</span>
             <span class="n">mapping_stats_kws</span> <span class="o">=</span> <span class="bp">None</span>
 
-        <span class="n">supplemental_attributes</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">supplemental</span><span class="p">,</span>
-                                                     <span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="ow">not</span>
-                                                     <span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">isroutine</span><span class="p">(</span><span class="n">a</span><span class="p">)))</span>
-        <span class="n">supplemental_attributes</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">supplemental_attributes</span>
-                                   <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;__&#39;</span><span class="p">)</span> <span class="ow">and</span>
-                                          <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;__&#39;</span><span class="p">))]</span>
+        <span class="n">supplemental_attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_supplemental_attributes</span><span class="p">()</span>
         <span class="n">supplemental_kws</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">supplemental_name</span><span class="p">,</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">supplemental_attributes</span><span class="p">:</span>
             <span class="n">supplemental_kws</span><span class="p">[</span><span class="n">supplemental_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span>
@@ -2100,6 +2100,9 @@
     <p class="pull-right">
       <a href="#">Back to top</a>
       
+        <br/>
+        
+      
     </p>
     <p>
         &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
@@ -2107,6 +2110,17 @@
     </p>
   </div>
 </footer>
+    <p>
+    Stuck? Send questions, comments, and other feedback to:
+    <ul>
+        <li>The <a href="https://gitter.im/YeoLab/flotilla">Gitter</a> chat
+            room for immediate questions</li>
+        <li>The <a href="https://github.com/yeolab/flotilla/issues">Github
+            issues page</a> for feature requests</li>
+    </ul>
+    Or send an email to obotvinn@ucsd.edu if you're oldskool like that.
+    </p>
+
     <a href="http://olgabotvinnik.com/">Olga B. Botvinnik</a> is funded by the
     <a href="https://ndseg.asee.org/">NDSEG</a> fellowship and is a
     <a href="http://numfocus.org/">NumFOCUS</a>
@@ -2119,6 +2133,5 @@
     and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene
     Yeo</a>. <br/>
 
-    
   </body>
 </html>

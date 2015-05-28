@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/bootswatch-3.2.0/paper/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -31,8 +32,7 @@
     <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
     <link rel="top" title="flotilla 0.2.8dev documentation" href="../index.html" />
     <link rel="up" title="Flotilla tutorial" href="../tutorial.html" />
-    <link rel="next" title="Storing supplemental data on Study objects" href="supplementaldata.html" />
-    <link rel="prev" title="Create a barebones datapackage" href="barebones_study_making.html" />
+    <link rel="prev" title="Storing supplemental data on Study objects" href="supplementaldata.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -101,9 +101,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../create_datapackage.html">Create your very own datapackage!</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../tutorial.html">Flotilla tutorial</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../tutorial.html#install-flotilla">Install flotilla</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#create-a-datapackage">Create a datapackage</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../tutorial.html#computing-on-splicing-data">Computing on splicing data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#day-to-day-helpful-tips">Day to day helpful tips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#getting-started-downloading-cleaning-and-importing-data">Getting Started: Downloading, cleaning, and importing data</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../tutorial.html#exploratory-analysis">Exploratory Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../tutorial.html#recreated-papers">Recreated papers</a></li>
 </ul>
 </li>
@@ -135,12 +134,6 @@
             
             
             
-              <li class="hidden-sm">
-<div id="sourcelink">
-  <a href="../_sources/tutorial/modalities.txt"
-     rel="nofollow">Source</a>
-</div></li>
-            
           </ul>
 
           
@@ -162,15 +155,8 @@
     <div class="col-md-12">
       
   <div class="section" id="accurate-estimation-of-alternative-splicing-modalities">
-<h1>Accurate estimation of alternative splicing modalities<a class="headerlink" href="#accurate-estimation-of-alternative-splicing-modalities" title="Permalink to this headline">¶</a></h1>
-<p>As shown in previous work (<a class="reference external" href="http://www.ncbi.nlm.nih.gov/pubmed/23685454">Shalek+Satija et al
-2013</a>), the majority of
-alternative splicing in single cells is all or nothing - either the
-included isoform or the excluded isoform. Rarely are there genes whose
-included/excluded isoforms are held at a 50/50 ratio. However, it is
-unclear what fraction of transcripts are maintained at specific
-proportions across cells, and we aim to categorize these splicing events
-into five bins: included, middle, excluded, bimodal, and uniform.</p>
+<span id="reproduce-shalek2013"></span><h1>Accurate estimation of alternative splicing modalities<a class="headerlink" href="#accurate-estimation-of-alternative-splicing-modalities" title="Permalink to this headline">¶</a></h1>
+<p>As shown in previous work (<a class="reference external" href="http://www.ncbi.nlm.nih.gov/pubmed/23685454">Shalek+Satija et al 2013</a>), the majority of alternative splicing in single cells is all or nothing - either the included isoform or the excluded isoform. Rarely are there genes whose included/excluded isoforms are held at a 50/50 ratio. However, it is unclear what fraction of transcripts are maintained at specific proportions across cells, and we aim to categorize these splicing events into five bins: included, middle, excluded, bimodal, and uniform.</p>
 <p>First, let&#8217;s import the modules we&#8217;ll need.</p>
 <div class="code python highlight-python"><div class="highlight"><pre>%matplotlib inline
 
@@ -186,41 +172,32 @@ from flotilla.compute.splicing import ModalityEstimator, ModalityModel
 from flotilla.visualize.splicing import ModalitiesViz
 </pre></div>
 </div>
-<p>And initialize a <tt class="docutils literal"><span class="pre">ModalityEstimator</span></tt> for performing the calculations,
-and a <tt class="docutils literal"><span class="pre">ModalityViz</span></tt> for visualizing the results.</p>
+<pre class='nb-text-output'>
+:0: FutureWarning: IPython widgets are experimental and may change in the future.
+
+</pre><p>Next, we will initialize a <tt class="docutils literal"><span class="pre">ModalityEstimator</span></tt> for performing the
+calculations, and a <tt class="docutils literal"><span class="pre">ModalityViz</span></tt> for visualizing the results.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">modality_estimator</span> <span class="o">=</span> <span class="n">ModalityEstimator</span><span class="p">(</span><span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">modality_visualizer</span> <span class="o">=</span> <span class="n">ModalitiesViz</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Next, let&#8217;s plot the modalities we are modeling as <a class="reference external" href="http://en.wikipedia.org/wiki/Violin_plot">violin
-plots</a>. We model splicing
-events&#8217; &#8220;percent spliced-in&#8221; or Psi/<span class="math">\(\Psi\)</span> as following a <a class="reference external" href="http://en.wikipedia.org/wiki/Beta_distribution">Beta
-distribution</a>:</p>
-<div class="math">
-\[\begin{split}\begin{align}
-\Psi &amp;\sim \text{Beta}\left(\alpha, \beta\right)\\
-&amp;= \frac{1}{B(\alpha, \beta)} x^{\alpha-1}(1-x)^{\beta-1}
-\end{align}\end{split}\]</div>
-<p>Where <span class="math">\(B(\alpha, \beta)\)</span> is the <a class="reference external" href="http://en.wikipedia.org/wiki/Beta_function">Beta
-*function*</a>, from which
-the Beta <em>distribution</em> gets its name,</p>
-<div class="math">
-\[B\left(\alpha, \beta\right) = \int_0^1 t^{\alpha-1}(1-t)^{\beta-1}dt\]</div>
+<p>Next, let&#8217;s plot the modalities we are modeling as <a class="reference external" href="http://en.wikipedia.org/wiki/Violin_plot">violin plots</a>. We model splicing events&#8217; &#8220;percent spliced-in&#8221; or Psi/$Psi$ as following a <a class="reference external" href="http://en.wikipedia.org/wiki/Beta_distribution">Beta distribution</a>:</p>
+<p>$$
+begin{align}
+Psi &amp;sim text{Beta}left(alpha, betaright)\
+&amp;= frac{1}{B(alpha, beta)} x^{alpha-1}(1-x)^{beta-1}
+end{align}
+$$</p>
+<p>Where $B(alpha, beta)$ is the [Beta <em>function</em>](<a class="reference external" href="http://en.wikipedia.org/wiki/Beta_function">http://en.wikipedia.org/wiki/Beta_function</a>), from which the Beta <em>distribution</em> gets its name,</p>
+<p>$$
+Bleft(alpha, betaright) = int_0^1 t^{alpha-1}(1-t)^{beta-1}dt
+$$</p>
 <p>The Beta distribution is perfect for splicing scores because ...</p>
 <ol class="arabic simple">
-<li>It is continuous between 0 and 1, so any and all new splicing events
-we encounter are always valid by the model</li>
-<li>Its parameters, <span class="math">\(\alpha\)</span> and <span class="math">\(\beta\)</span> can be tuned to
-create the characteristic modalities we are interested in</li>
+<li>It is continuous between 0 and 1, so any and all new splicing events we encounter are always valid by the model</li>
+<li>Its parameters, $alpha$ and $beta$ can be tuned to create the characteristic modalities we are interested in</li>
 </ol>
-<p>Specifically, we can model the <em>included</em>, <em>middle</em>, <em>excluded</em>, or
-<em>bimodal</em> modalities. In the plot below, note that only the first four
-are actually in the model, and that the uniform distribution was
-separately created. This is because the uniform distribution cannot be
-parameterized, it is exactly when <span class="math">\(\alpha=1\)</span> and <span class="math">\(\beta=1\)</span>,
-and as every splicing event has exactly the same probability under the
-uniform distribution, <span class="math">\(Pr_{\text{Uniform}}(\text{event})=1\)</span>, we
-will use the uniform distribution as our null model for testing.</p>
+<p>Specifically, we can model the <em>included</em>, <em>middle</em>, <em>excluded</em>, or <em>bimodal</em> modalities. In the plot below, note that only the first four are actually in the model, and that the uniform distribution was separately created. This is because the uniform distribution cannot be parameterized, it is exactly when $alpha=1$ and $beta=1$, and as every splicing event has exactly the same probability under the uniform distribution, $Pr_{text{Uniform}}(text{event})=1$, we will use the uniform distribution as our null model for testing.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
 
 <span class="n">n</span> <span class="o">=</span> <span class="mi">10000</span>
@@ -234,7 +211,7 @@ will use the uniform distribution as our null model for testing.</p>
 
 <span class="c"># Reorder the columns</span>
 <span class="n">columns_ordered</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;included&#39;</span><span class="p">,</span> <span class="s">&#39;middle&#39;</span><span class="p">,</span> <span class="s">&#39;bimodal&#39;</span><span class="p">,</span> <span class="s">&#39;excluded&#39;</span><span class="p">,</span> <span class="s">&#39;uniform&#39;</span><span class="p">]</span>
-<span class="n">model_data</span> <span class="o">=</span> <span class="n">model_data</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+<span class="n">model_data</span> <span class="o">=</span> <span class="n">model_data</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">columns_ordered</span><span class="p">)</span>
 
 <span class="c"># Get modality colors</span>
 <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">modality_visualizer</span><span class="o">.</span><span class="n">modality_colors</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">model_data</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
@@ -253,32 +230,18 @@ will use the uniform distribution as our null model for testing.</p>
 <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>---------------------------------------------------------------------------
-NameError                                 Traceback (most recent call last)
-
-&lt;ipython-input-3-11a1560f754c&gt; in &lt;module&gt;()
-     12 # Reorder the columns
-     13 columns_ordered = [&#39;included&#39;, &#39;middle&#39;, &#39;bimodal&#39;, &#39;excluded&#39;, &#39;uniform&#39;]
----&gt; 14 model_data = model_data.reindex(columns=columns)
-     15
-     16 # Get modality colors
-
-
-NameError: name &#39;columns&#39; is not defined
-</pre></div>
-</div>
-<div class="highlight-python"><div class="highlight"><pre>/home/travis/miniconda/envs/testenv/lib/python2.7/site-packages/matplotlib/font_manager.py:1282: UserWarning: findfont: Font family [u&#39;Helvetica&#39;, u&#39;Arial&#39;] not found. Falling back to Bitstream Vera Sans
+<pre class='nb-text-output'>
+/home/travis/miniconda/envs/testenv/lib/python2.7/site-packages/matplotlib/font_manager.py:1282: UserWarning: findfont: Font family [u'Helvetica', u'Arial'] not found. Falling back to Bitstream Vera Sans
   (prop.get_family(), self.defaultFamily[fontext]))
-</pre></div>
-</div>
-<img alt="../_images/modalities_6_2.png" src="../_images/modalities_6_2.png" />
+
+</pre><img alt="../_images/modalities_7_1.png" src="../_images/modalities_7_1.png" />
 <div class="section" id="parameterizations-of-bayesian-model">
 <h2>Parameterizations of Bayesian model<a class="headerlink" href="#parameterizations-of-bayesian-model" title="Permalink to this headline">¶</a></h2>
-<p>We will employ a Bayesian model to do a (very non-exhaustive) &#8220;grid
-search&#8221; of parameter space for splicing events. Meaning, given a
-particular splicing event, does it match one of these modalities&#8217;
-parameterizations?</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="n">nrows</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">ncols</span><span class="p">,</span> <span class="mi">4</span><span class="o">*</span><span class="n">nrows</span><span class="p">))</span>
+<p>We will employ a Bayesian model to do a (very non-exhaustive) &#8220;grid search&#8221; of parameter space for splicing events. Meaning, given a particular splicing event, does it match one of these modalities&#8217; parameterizations?</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">ncols</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">modality_estimator</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="s">&#39;included&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">alphas</span><span class="p">)</span>
+<span class="n">nrows</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">modality_estimator</span><span class="o">.</span><span class="n">models</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="n">nrows</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">ncols</span><span class="p">,</span> <span class="mi">4</span><span class="o">*</span><span class="n">nrows</span><span class="p">))</span>
 
 <span class="n">n</span> <span class="o">=</span> <span class="mi">10000</span>
 
@@ -296,7 +259,7 @@ parameterizations?</p>
 <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">()</span>
 </pre></div>
 </div>
-<img alt="../_images/modalities_9_0.png" src="../_images/modalities_9_0.png" />
+<img alt="../_images/modalities_10_0.png" src="../_images/modalities_10_0.png" />
 </div>
 <div class="section" id="prior-probability-on-parameterizations">
 <h2>Prior probability on parameterizations<a class="headerlink" href="#prior-probability-on-parameterizations" title="Permalink to this headline">¶</a></h2>
@@ -337,13 +300,11 @@ be called &#8220;bimodal,&#8221; and we want to eliminate false postives in the
 <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">()</span>
 </pre></div>
 </div>
-<img alt="../_images/modalities_12_0.png" src="../_images/modalities_12_0.png" />
+<img alt="../_images/modalities_13_0.png" src="../_images/modalities_13_0.png" />
 </div>
 <div class="section" id="testing-modality-estimation">
 <h2>Testing modality estimation<a class="headerlink" href="#testing-modality-estimation" title="Permalink to this headline">¶</a></h2>
-<p>To show that this framework is accurate, we start with a &#8220;perfect&#8221;
-event, which uses the last parameterization of each model, which is the
-&#8220;most extreme&#8221; version of that model under our assumptions.</p>
+<p>To show that this framework is accurate, we start with a &#8220;perfect&#8221; event, which uses the last parameterization of each model, which is the &#8220;most extreme&#8221; version of that model under our assumptions.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">n</span> <span class="o">=</span> <span class="mi">100</span>
 <span class="n">event</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">modality_estimator</span><span class="o">.</span><span class="n">inclusion_model</span><span class="o">.</span><span class="n">rvs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
 
@@ -357,11 +318,8 @@ event, which uses the last parameterization of each model, which is the
 <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<img alt="../_images/modalities_15_0.png" src="../_images/modalities_15_0.png" />
-<p>Let&#8217;s estimate the modality of this event by calculating the
-log-likelihood of each parameterization using
-<tt class="docutils literal"><span class="pre">modality_estimator._loglik</span></tt>, and summing the results using
-<tt class="docutils literal"><span class="pre">modality_estimator._logsumexp</span></tt>.</p>
+<img alt="../_images/modalities_16_0.png" src="../_images/modalities_16_0.png" />
+<p>Let&#8217;s estimate the modality of this event by calculating the log-likelihood of each parameterization using <tt class="docutils literal"><span class="pre">modality_estimator._loglik</span></tt>, and summing the results using <tt class="docutils literal"><span class="pre">modality_estimator._logsumexp</span></tt>.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">logliks</span> <span class="o">=</span> <span class="n">modality_estimator</span><span class="o">.</span><span class="n">_loglik</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
 <span class="n">logsumexps</span> <span class="o">=</span> <span class="n">modality_estimator</span><span class="o">.</span><span class="n">_logsumexp</span><span class="p">(</span><span class="n">logliks</span><span class="p">)</span>
 
@@ -369,16 +327,9 @@ log-likelihood of each parameterization using
 <span class="n">plotter</span> <span class="o">=</span> <span class="n">modality_visualizer</span><span class="o">.</span><span class="n">event_estimation</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">logliks</span><span class="p">,</span> <span class="n">logsumexps</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/modalities_17_0.png" src="../_images/modalities_17_0.png" />
-<p>The left panel shows a violinplot of the event. The middle panel shows
-the log-likelihoods of different models at increasing parameterizations.
-The right panel shows the total summed <a class="reference external" href="http://en.wikipedia.org/wiki/Bayes_factor">Bayes
-factors</a> of how much more
-likely a model is over the uniform distribution, where the cutoff for a
-guessing that something is a uniform distribution is a
-<span class="math">\(\log_2\left(\text{Bayes factor}\right) &gt; 3\)</span>.</p>
-<p>Let&#8217;s add add random noise to the &#8220;perfect&#8221; included event, and see how
-that changes the modality estimation.</p>
+<img alt="../_images/modalities_18_0.png" src="../_images/modalities_18_0.png" />
+<p>The left panel shows a violinplot of the event. The middle panel shows the log-likelihoods of different models at increasing parameterizations. The right panel shows the total summed <a class="reference external" href="http://en.wikipedia.org/wiki/Bayes_factor">Bayes factors</a> of how much more likely a model is over the uniform distribution, where the cutoff for a guessing that something is a uniform distribution is a $log_2left(text{Bayes factor}right) &gt; 3$.</p>
+<p>Let&#8217;s add add random noise to the &#8220;perfect&#8221; included event, and see how that changes the modality estimation.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">sns</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s">&#39;ticks&#39;</span><span class="p">)</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
 <span class="n">event_noisy</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -392,7 +343,7 @@ that changes the modality estimation.</p>
 <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<img alt="../_images/modalities_19_0.png" src="../_images/modalities_19_0.png" />
+<img alt="../_images/modalities_20_0.png" src="../_images/modalities_20_0.png" />
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">logliks</span> <span class="o">=</span> <span class="n">modality_estimator</span><span class="o">.</span><span class="n">_loglik</span><span class="p">(</span><span class="n">event_noisy</span><span class="p">)</span>
 <span class="n">logsumexps</span> <span class="o">=</span> <span class="n">modality_estimator</span><span class="o">.</span><span class="n">_logsumexp</span><span class="p">(</span><span class="n">logliks</span><span class="p">)</span>
 
@@ -400,13 +351,9 @@ that changes the modality estimation.</p>
 <span class="n">plotter</span> <span class="o">=</span> <span class="n">modality_visualizer</span><span class="o">.</span><span class="n">event_estimation</span><span class="p">(</span><span class="n">event_noisy</span><span class="p">,</span> <span class="n">logliks</span><span class="p">,</span> <span class="n">logsumexps</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/modalities_20_0.png" src="../_images/modalities_20_0.png" />
-<p>The included modality becomes less likely, but it still beats out the
-uniform and bimodal distributions, which is what we want.</p>
-<p>Let&#8217;s use this idea of noise to estimate modalities. We&#8217;ll use 100 cells
-total, and do 5 iterations of adding noise from 0% to 50%. We will
-visualize each estimation using the same <tt class="docutils literal"><span class="pre">modality_visualizer</span></tt> for the
-parameterizations. This will output quite a few plots.</p>
+<img alt="../_images/modalities_21_0.png" src="../_images/modalities_21_0.png" />
+<p>The included modality becomes less likely, but it still beats out the uniform and bimodal distributions, which is what we want.</p>
+<p>Let&#8217;s use this idea of noise to estimate modalities. We&#8217;ll use 100 cells total, and do 3 iterations of adding noise at 0%, 25%, and 50%. We will visualize each estimation using the same <tt class="docutils literal"><span class="pre">modality_visualizer</span></tt> for the parameterizations. This will output quite a few plots.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="c"># We will be writing incrementally to this &quot;modality_guesses&quot; file, because if</span>
 <span class="c"># this is done with many iterations and many noise levels, the file gets too</span>
 <span class="c"># big and the IPython kernel crashes</span>
@@ -420,7 +367,7 @@ parameterizations. This will output quite a few plots.</p>
 
 <span class="n">n_cells</span> <span class="o">=</span> <span class="mi">100</span>
 <span class="n">n_cell</span> <span class="o">=</span> <span class="n">n_cells</span>
-<span class="n">n_noisys</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">n_noisys</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
 
 <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;prior&#39;</span><span class="p">,</span> <span class="s">&#39;true_modality&#39;</span><span class="p">,</span> <span class="s">&#39;guessed_modality&#39;</span><span class="p">,</span> <span class="s">&#39;n_rogue&#39;</span><span class="p">,</span> <span class="s">&#39;iteration&#39;</span><span class="p">]</span>
 
@@ -453,128 +400,71 @@ parameterizations. This will output quite a few plots.</p>
             <span class="n">modality_guesses</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/modalities_22_0.png" src="../_images/modalities_22_0.png" />
-<img alt="../_images/modalities_22_1.png" src="../_images/modalities_22_1.png" />
-<img alt="../_images/modalities_22_2.png" src="../_images/modalities_22_2.png" />
-<img alt="../_images/modalities_22_3.png" src="../_images/modalities_22_3.png" />
-<img alt="../_images/modalities_22_4.png" src="../_images/modalities_22_4.png" />
-<img alt="../_images/modalities_22_5.png" src="../_images/modalities_22_5.png" />
-<img alt="../_images/modalities_22_6.png" src="../_images/modalities_22_6.png" />
-<img alt="../_images/modalities_22_7.png" src="../_images/modalities_22_7.png" />
-<img alt="../_images/modalities_22_8.png" src="../_images/modalities_22_8.png" />
-<img alt="../_images/modalities_22_9.png" src="../_images/modalities_22_9.png" />
-<img alt="../_images/modalities_22_10.png" src="../_images/modalities_22_10.png" />
-<img alt="../_images/modalities_22_11.png" src="../_images/modalities_22_11.png" />
-<img alt="../_images/modalities_22_12.png" src="../_images/modalities_22_12.png" />
-<img alt="../_images/modalities_22_13.png" src="../_images/modalities_22_13.png" />
-<img alt="../_images/modalities_22_14.png" src="../_images/modalities_22_14.png" />
-<img alt="../_images/modalities_22_15.png" src="../_images/modalities_22_15.png" />
-<img alt="../_images/modalities_22_16.png" src="../_images/modalities_22_16.png" />
-<img alt="../_images/modalities_22_17.png" src="../_images/modalities_22_17.png" />
-<img alt="../_images/modalities_22_18.png" src="../_images/modalities_22_18.png" />
-<img alt="../_images/modalities_22_19.png" src="../_images/modalities_22_19.png" />
-<img alt="../_images/modalities_22_20.png" src="../_images/modalities_22_20.png" />
-<img alt="../_images/modalities_22_21.png" src="../_images/modalities_22_21.png" />
-<img alt="../_images/modalities_22_22.png" src="../_images/modalities_22_22.png" />
-<img alt="../_images/modalities_22_23.png" src="../_images/modalities_22_23.png" />
-<img alt="../_images/modalities_22_24.png" src="../_images/modalities_22_24.png" />
-<img alt="../_images/modalities_22_25.png" src="../_images/modalities_22_25.png" />
-<img alt="../_images/modalities_22_26.png" src="../_images/modalities_22_26.png" />
-<img alt="../_images/modalities_22_27.png" src="../_images/modalities_22_27.png" />
-<img alt="../_images/modalities_22_28.png" src="../_images/modalities_22_28.png" />
-<img alt="../_images/modalities_22_29.png" src="../_images/modalities_22_29.png" />
-<img alt="../_images/modalities_22_30.png" src="../_images/modalities_22_30.png" />
-<img alt="../_images/modalities_22_31.png" src="../_images/modalities_22_31.png" />
-<img alt="../_images/modalities_22_32.png" src="../_images/modalities_22_32.png" />
-<img alt="../_images/modalities_22_33.png" src="../_images/modalities_22_33.png" />
-<img alt="../_images/modalities_22_34.png" src="../_images/modalities_22_34.png" />
-<img alt="../_images/modalities_22_35.png" src="../_images/modalities_22_35.png" />
-<img alt="../_images/modalities_22_36.png" src="../_images/modalities_22_36.png" />
-<img alt="../_images/modalities_22_37.png" src="../_images/modalities_22_37.png" />
-<img alt="../_images/modalities_22_38.png" src="../_images/modalities_22_38.png" />
-<img alt="../_images/modalities_22_39.png" src="../_images/modalities_22_39.png" />
-<img alt="../_images/modalities_22_40.png" src="../_images/modalities_22_40.png" />
-<img alt="../_images/modalities_22_41.png" src="../_images/modalities_22_41.png" />
-<img alt="../_images/modalities_22_42.png" src="../_images/modalities_22_42.png" />
-<img alt="../_images/modalities_22_43.png" src="../_images/modalities_22_43.png" />
-<img alt="../_images/modalities_22_44.png" src="../_images/modalities_22_44.png" />
-<img alt="../_images/modalities_22_45.png" src="../_images/modalities_22_45.png" />
-<img alt="../_images/modalities_22_46.png" src="../_images/modalities_22_46.png" />
-<img alt="../_images/modalities_22_47.png" src="../_images/modalities_22_47.png" />
-<img alt="../_images/modalities_22_48.png" src="../_images/modalities_22_48.png" />
-<img alt="../_images/modalities_22_49.png" src="../_images/modalities_22_49.png" />
-<img alt="../_images/modalities_22_50.png" src="../_images/modalities_22_50.png" />
-<img alt="../_images/modalities_22_51.png" src="../_images/modalities_22_51.png" />
-<img alt="../_images/modalities_22_52.png" src="../_images/modalities_22_52.png" />
-<img alt="../_images/modalities_22_53.png" src="../_images/modalities_22_53.png" />
-<img alt="../_images/modalities_22_54.png" src="../_images/modalities_22_54.png" />
-<img alt="../_images/modalities_22_55.png" src="../_images/modalities_22_55.png" />
-<img alt="../_images/modalities_22_56.png" src="../_images/modalities_22_56.png" />
-<img alt="../_images/modalities_22_57.png" src="../_images/modalities_22_57.png" />
-<img alt="../_images/modalities_22_58.png" src="../_images/modalities_22_58.png" />
-<img alt="../_images/modalities_22_59.png" src="../_images/modalities_22_59.png" />
-<img alt="../_images/modalities_22_60.png" src="../_images/modalities_22_60.png" />
-<img alt="../_images/modalities_22_61.png" src="../_images/modalities_22_61.png" />
-<img alt="../_images/modalities_22_62.png" src="../_images/modalities_22_62.png" />
-<img alt="../_images/modalities_22_63.png" src="../_images/modalities_22_63.png" />
-<img alt="../_images/modalities_22_64.png" src="../_images/modalities_22_64.png" />
-<img alt="../_images/modalities_22_65.png" src="../_images/modalities_22_65.png" />
-<img alt="../_images/modalities_22_66.png" src="../_images/modalities_22_66.png" />
-<img alt="../_images/modalities_22_67.png" src="../_images/modalities_22_67.png" />
-<img alt="../_images/modalities_22_68.png" src="../_images/modalities_22_68.png" />
-<img alt="../_images/modalities_22_69.png" src="../_images/modalities_22_69.png" />
-<img alt="../_images/modalities_22_70.png" src="../_images/modalities_22_70.png" />
-<img alt="../_images/modalities_22_71.png" src="../_images/modalities_22_71.png" />
-<img alt="../_images/modalities_22_72.png" src="../_images/modalities_22_72.png" />
-<img alt="../_images/modalities_22_73.png" src="../_images/modalities_22_73.png" />
-<img alt="../_images/modalities_22_74.png" src="../_images/modalities_22_74.png" />
-<img alt="../_images/modalities_22_75.png" src="../_images/modalities_22_75.png" />
-<img alt="../_images/modalities_22_76.png" src="../_images/modalities_22_76.png" />
-<img alt="../_images/modalities_22_77.png" src="../_images/modalities_22_77.png" />
-<img alt="../_images/modalities_22_78.png" src="../_images/modalities_22_78.png" />
-<img alt="../_images/modalities_22_79.png" src="../_images/modalities_22_79.png" />
-<img alt="../_images/modalities_22_80.png" src="../_images/modalities_22_80.png" />
-<img alt="../_images/modalities_22_81.png" src="../_images/modalities_22_81.png" />
-<img alt="../_images/modalities_22_82.png" src="../_images/modalities_22_82.png" />
-<img alt="../_images/modalities_22_83.png" src="../_images/modalities_22_83.png" />
-<img alt="../_images/modalities_22_84.png" src="../_images/modalities_22_84.png" />
-<img alt="../_images/modalities_22_85.png" src="../_images/modalities_22_85.png" />
-<img alt="../_images/modalities_22_86.png" src="../_images/modalities_22_86.png" />
-<img alt="../_images/modalities_22_87.png" src="../_images/modalities_22_87.png" />
-<img alt="../_images/modalities_22_88.png" src="../_images/modalities_22_88.png" />
-<img alt="../_images/modalities_22_89.png" src="../_images/modalities_22_89.png" />
-<img alt="../_images/modalities_22_90.png" src="../_images/modalities_22_90.png" />
-<img alt="../_images/modalities_22_91.png" src="../_images/modalities_22_91.png" />
-<img alt="../_images/modalities_22_92.png" src="../_images/modalities_22_92.png" />
-<img alt="../_images/modalities_22_93.png" src="../_images/modalities_22_93.png" />
-<img alt="../_images/modalities_22_94.png" src="../_images/modalities_22_94.png" />
-<img alt="../_images/modalities_22_95.png" src="../_images/modalities_22_95.png" />
-<img alt="../_images/modalities_22_96.png" src="../_images/modalities_22_96.png" />
-<img alt="../_images/modalities_22_97.png" src="../_images/modalities_22_97.png" />
-<img alt="../_images/modalities_22_98.png" src="../_images/modalities_22_98.png" />
-<img alt="../_images/modalities_22_99.png" src="../_images/modalities_22_99.png" />
-<img alt="../_images/modalities_22_100.png" src="../_images/modalities_22_100.png" />
-<img alt="../_images/modalities_22_101.png" src="../_images/modalities_22_101.png" />
-<img alt="../_images/modalities_22_102.png" src="../_images/modalities_22_102.png" />
-<img alt="../_images/modalities_22_103.png" src="../_images/modalities_22_103.png" />
-<img alt="../_images/modalities_22_104.png" src="../_images/modalities_22_104.png" />
-<img alt="../_images/modalities_22_105.png" src="../_images/modalities_22_105.png" />
-<img alt="../_images/modalities_22_106.png" src="../_images/modalities_22_106.png" />
-<img alt="../_images/modalities_22_107.png" src="../_images/modalities_22_107.png" />
-<img alt="../_images/modalities_22_108.png" src="../_images/modalities_22_108.png" />
-<img alt="../_images/modalities_22_109.png" src="../_images/modalities_22_109.png" />
-<img alt="../_images/modalities_22_110.png" src="../_images/modalities_22_110.png" />
-<img alt="../_images/modalities_22_111.png" src="../_images/modalities_22_111.png" />
-<img alt="../_images/modalities_22_112.png" src="../_images/modalities_22_112.png" />
-<img alt="../_images/modalities_22_113.png" src="../_images/modalities_22_113.png" />
-<img alt="../_images/modalities_22_114.png" src="../_images/modalities_22_114.png" />
-<img alt="../_images/modalities_22_115.png" src="../_images/modalities_22_115.png" />
-<img alt="../_images/modalities_22_116.png" src="../_images/modalities_22_116.png" />
-<img alt="../_images/modalities_22_117.png" src="../_images/modalities_22_117.png" />
-<img alt="../_images/modalities_22_118.png" src="../_images/modalities_22_118.png" />
-<img alt="../_images/modalities_22_119.png" src="../_images/modalities_22_119.png" />
-<p>Now let&#8217;s plot the accuracy of the model on the increasingly noisy
-splicing events and their modality estimations.</p>
+<pre class='nb-text-output'>
+/home/travis/miniconda/envs/testenv/lib/python2.7/site-packages/matplotlib/pyplot.py:424: RuntimeWarning: More than 20 figures have been opened. Figures created through the pyplot interface (`matplotlib.pyplot.figure`) are retained until explicitly closed and may consume too much memory. (To control this warning, see the rcParam `figure.max_open_warning`).
+  max_open_warning, RuntimeWarning)
+
+</pre><img alt="../_images/modalities_23_1.png" src="../_images/modalities_23_1.png" />
+<img alt="../_images/modalities_23_2.png" src="../_images/modalities_23_2.png" />
+<img alt="../_images/modalities_23_3.png" src="../_images/modalities_23_3.png" />
+<img alt="../_images/modalities_23_4.png" src="../_images/modalities_23_4.png" />
+<img alt="../_images/modalities_23_5.png" src="../_images/modalities_23_5.png" />
+<img alt="../_images/modalities_23_6.png" src="../_images/modalities_23_6.png" />
+<img alt="../_images/modalities_23_7.png" src="../_images/modalities_23_7.png" />
+<img alt="../_images/modalities_23_8.png" src="../_images/modalities_23_8.png" />
+<img alt="../_images/modalities_23_9.png" src="../_images/modalities_23_9.png" />
+<img alt="../_images/modalities_23_10.png" src="../_images/modalities_23_10.png" />
+<img alt="../_images/modalities_23_11.png" src="../_images/modalities_23_11.png" />
+<img alt="../_images/modalities_23_12.png" src="../_images/modalities_23_12.png" />
+<img alt="../_images/modalities_23_13.png" src="../_images/modalities_23_13.png" />
+<img alt="../_images/modalities_23_14.png" src="../_images/modalities_23_14.png" />
+<img alt="../_images/modalities_23_15.png" src="../_images/modalities_23_15.png" />
+<img alt="../_images/modalities_23_16.png" src="../_images/modalities_23_16.png" />
+<img alt="../_images/modalities_23_17.png" src="../_images/modalities_23_17.png" />
+<img alt="../_images/modalities_23_18.png" src="../_images/modalities_23_18.png" />
+<img alt="../_images/modalities_23_19.png" src="../_images/modalities_23_19.png" />
+<img alt="../_images/modalities_23_20.png" src="../_images/modalities_23_20.png" />
+<img alt="../_images/modalities_23_21.png" src="../_images/modalities_23_21.png" />
+<img alt="../_images/modalities_23_22.png" src="../_images/modalities_23_22.png" />
+<img alt="../_images/modalities_23_23.png" src="../_images/modalities_23_23.png" />
+<img alt="../_images/modalities_23_24.png" src="../_images/modalities_23_24.png" />
+<img alt="../_images/modalities_23_25.png" src="../_images/modalities_23_25.png" />
+<img alt="../_images/modalities_23_26.png" src="../_images/modalities_23_26.png" />
+<img alt="../_images/modalities_23_27.png" src="../_images/modalities_23_27.png" />
+<img alt="../_images/modalities_23_28.png" src="../_images/modalities_23_28.png" />
+<img alt="../_images/modalities_23_29.png" src="../_images/modalities_23_29.png" />
+<img alt="../_images/modalities_23_30.png" src="../_images/modalities_23_30.png" />
+<img alt="../_images/modalities_23_31.png" src="../_images/modalities_23_31.png" />
+<img alt="../_images/modalities_23_32.png" src="../_images/modalities_23_32.png" />
+<img alt="../_images/modalities_23_33.png" src="../_images/modalities_23_33.png" />
+<img alt="../_images/modalities_23_34.png" src="../_images/modalities_23_34.png" />
+<img alt="../_images/modalities_23_35.png" src="../_images/modalities_23_35.png" />
+<img alt="../_images/modalities_23_36.png" src="../_images/modalities_23_36.png" />
+<img alt="../_images/modalities_23_37.png" src="../_images/modalities_23_37.png" />
+<img alt="../_images/modalities_23_38.png" src="../_images/modalities_23_38.png" />
+<img alt="../_images/modalities_23_39.png" src="../_images/modalities_23_39.png" />
+<img alt="../_images/modalities_23_40.png" src="../_images/modalities_23_40.png" />
+<img alt="../_images/modalities_23_41.png" src="../_images/modalities_23_41.png" />
+<img alt="../_images/modalities_23_42.png" src="../_images/modalities_23_42.png" />
+<img alt="../_images/modalities_23_43.png" src="../_images/modalities_23_43.png" />
+<img alt="../_images/modalities_23_44.png" src="../_images/modalities_23_44.png" />
+<img alt="../_images/modalities_23_45.png" src="../_images/modalities_23_45.png" />
+<img alt="../_images/modalities_23_46.png" src="../_images/modalities_23_46.png" />
+<img alt="../_images/modalities_23_47.png" src="../_images/modalities_23_47.png" />
+<img alt="../_images/modalities_23_48.png" src="../_images/modalities_23_48.png" />
+<img alt="../_images/modalities_23_49.png" src="../_images/modalities_23_49.png" />
+<img alt="../_images/modalities_23_50.png" src="../_images/modalities_23_50.png" />
+<img alt="../_images/modalities_23_51.png" src="../_images/modalities_23_51.png" />
+<img alt="../_images/modalities_23_52.png" src="../_images/modalities_23_52.png" />
+<img alt="../_images/modalities_23_53.png" src="../_images/modalities_23_53.png" />
+<img alt="../_images/modalities_23_54.png" src="../_images/modalities_23_54.png" />
+<img alt="../_images/modalities_23_55.png" src="../_images/modalities_23_55.png" />
+<img alt="../_images/modalities_23_56.png" src="../_images/modalities_23_56.png" />
+<img alt="../_images/modalities_23_57.png" src="../_images/modalities_23_57.png" />
+<img alt="../_images/modalities_23_58.png" src="../_images/modalities_23_58.png" />
+<img alt="../_images/modalities_23_59.png" src="../_images/modalities_23_59.png" />
+<img alt="../_images/modalities_23_60.png" src="../_images/modalities_23_60.png" />
+<p>Now let&#8217;s plot the accuracy of the model on the increasingly noisy splicing events and their modality estimations.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">modality_guesses</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">modality_guesses_csv</span><span class="p">)</span>
 
 <span class="n">model_accuracy</span> <span class="o">=</span> <span class="n">modality_guesses</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s">&#39;prior&#39;</span><span class="p">,</span> <span class="s">&#39;n_rogue&#39;</span><span class="p">,</span>
@@ -598,11 +488,22 @@ splicing events and their modality estimations.</p>
 <span class="n">fg</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s">&#39;percent_noise_vs_false_positives_factorplot.pdf&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/modalities_24_0.png" src="../_images/modalities_24_0.png" />
-<img alt="../_images/modalities_24_1.png" src="../_images/modalities_24_1.png" />
-<p>The &#8220;middle&#8221; modalities become less accurate at about 30% noise, but
-from looking at the events, I&#8217;m happy with these getting
-&#8220;mis-categorized&#8221; because they do truly look like &#8220;uniform&#8221; events.</p>
+<div class="highlight-python"><div class="highlight"><pre>---------------------------------------------------------------------------
+
+AttributeError                            Traceback (most recent call last)
+
+&lt;ipython-input-11-47af08ce33bf&gt; in &lt;module&gt;()
+      2
+      3 model_accuracy = modality_guesses.groupby([&#39;prior&#39;, &#39;n_rogue&#39;,
+----&gt; 4                                            &#39;true_modality&#39;]).apply(lambda x: (x.true_modality == x.guessed_modality).sum())/n_noisys.max()*n_cells
+      5 model_accuracy = model_accuracy.reset_index()
+      6 model_accuracy = model_accuracy.rename(columns={0: &#39;percentage&#39;})
+
+
+AttributeError: &#39;tuple&#39; object has no attribute &#39;max&#39;
+</pre></div>
+</div>
+<p>The &#8220;middle&#8221; modalities become less accurate at about 30% noise, but from looking at the events, I&#8217;m happy with these getting &#8220;mis-categorized&#8221; because they do truly look like &#8220;uniform&#8221; events.</p>
 </div>
 </div>
 
@@ -618,6 +519,13 @@ from looking at the events, I&#8217;m happy with these getting
     <p class="pull-right">
       <a href="#">Back to top</a>
       
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/tutorial/modalities.txt"
+     rel="nofollow">Source</a>
+</div>
+      
     </p>
     <p>
         &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
@@ -625,6 +533,17 @@ from looking at the events, I&#8217;m happy with these getting
     </p>
   </div>
 </footer>
+    <p>
+    Stuck? Send questions, comments, and other feedback to:
+    <ul>
+        <li>The <a href="https://gitter.im/YeoLab/flotilla">Gitter</a> chat
+            room for immediate questions</li>
+        <li>The <a href="https://github.com/yeolab/flotilla/issues">Github
+            issues page</a> for feature requests</li>
+    </ul>
+    Or send an email to obotvinn@ucsd.edu if you're oldskool like that.
+    </p>
+
     <a href="http://olgabotvinnik.com/">Olga B. Botvinnik</a> is funded by the
     <a href="https://ndseg.asee.org/">NDSEG</a> fellowship and is a
     <a href="http://numfocus.org/">NumFOCUS</a>
@@ -637,6 +556,5 @@ from looking at the events, I&#8217;m happy with these getting
     and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene
     Yeo</a>. <br/>
 
-    
   </body>
 </html>

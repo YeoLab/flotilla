@@ -1,10 +1,28 @@
-.nb-text-python {
-    background-color: #f9c7d3;
-
+.nb-text-output {
+    background-color: #C5E2F8;
 }
-.navbar-inverse{
-    background-color: #007A6E;
-}
+/*.navbar-inverse{*/
+    /*background-color: #007A6E;*/
+    /*border-color: #007A6E;*/
+/*}*/
 h1, .h1 {
-  font-size: 36px;
+  font-size: 39px;
+}
+h2, .h2 {
+  font-size: 32px;
+}
+h3, .h3 {
+  font-size: 26px;
+}
+h4, .h4 {
+  font-size: 19px;
+}
+h5, .h5 {
+  font-size: 15px;
+}
+h6, .h6 {
+  font-size: 13px;
+}
+body, .body {
+  font-size: 15px;
 }

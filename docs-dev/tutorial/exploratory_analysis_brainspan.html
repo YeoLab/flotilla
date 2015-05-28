@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Hypothesis: The human brain uses different genes in different regions &mdash; flotilla 0.2.8dev documentation</title>
+    
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootswatch-3.2.0/paper/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.2.8dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="flotilla 0.2.8dev documentation" href="../index.html" />
+    <link rel="up" title="Flotilla tutorial" href="../tutorial.html" />
+    <link rel="next" title="Storing supplemental data on Study objects" href="supplementaldata.html" />
+    <link rel="prev" title="Downloading data from Shalek and Satija (2013)" href="getting_started_shalek2013.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          Flotilla</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.8dev</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../tutorial.html">Tutorial</a></li>
+                <li><a href="../gallery/index.html">Gallery</a></li>
+                <li><a href="http://yeolab.ucsd.edu">YeoLab@UCSD</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">flotilla</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../flotilla.html">flotilla package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What&#8217;s new in the package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../whatsnew.html#v0-2-4-november-23rd-2014">v0.2.4 (November 23rd, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../whatsnew.html#v0-2-3-november-17th-2014">v0.2.3 (November 17th, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../whatsnew.html#v0-2-2-november-7th-2014">v0.2.2 (November 7th, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../whatsnew.html#v0-2-1-november-6th-2014">v0.2.1 (November 6th, 2014)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../whatsnew.html#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">OS X Installation instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#create-a-flotilla-sandbox">Create a flotilla sandbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#install-and-update-all-packages-in-your-environment">Install and update all packages in your environment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html#old-osx-installation-instructions">Old OSX Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html#docker-instructions">Docker Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#general-use-plots">General use plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#interactive-plots">Interactive plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#machine-learning-plots">Machine learning plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#splicing-specific-plots">Splicing-specific plots</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../create_datapackage.html">Create your very own datapackage!</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorial.html">Flotilla tutorial</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#install-flotilla">Install flotilla</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#getting-started-downloading-cleaning-and-importing-data">Getting Started: Downloading, cleaning, and importing data</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../tutorial.html#exploratory-analysis">Exploratory Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#recreated-papers">Recreated papers</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Hypothesis: The human brain uses different genes in different regions</a><ul>
+<li><a class="reference internal" href="#the-data-allen-brain-institute">The data: Allen Brain Institute</a></li>
+<li><a class="reference internal" href="#rna-sequencing-is-accomplished-by-shattering-rna-transcripts-then-finding-where-they-are-in-the-genome">RNA sequencing is accomplished by shattering RNA transcripts, then finding where they are in the genome</a></li>
+<li><a class="reference internal" href="#load-the-data-into-flotilla-via-embark">Load the data into <tt class="docutils literal"><span class="pre">flotilla</span></tt> via <tt class="docutils literal"><span class="pre">embark</span></tt></a><ul>
+<li><a class="reference internal" href="#a-look-behind-the-magic">A look behind the magic</a></li>
+<li><a class="reference internal" href="#model-compute-view-controller">Model-Compute-View-Controller</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#back-to-the-hypothesis-the-human-brain-has-different-genes-expressed-in-different-regions">Back to the hypothesis: The human brain has different genes expressed in different regions</a><ul>
+<li><a class="reference internal" href="#principal-component-analysis-pca">Principal Component Analysis (PCA)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#hypothesis-cells-in-the-hippocampus-use-genes-unique-to-its-function">Hypothesis: Cells in the hippocampus use genes unique to its function</a></li>
+<li><a class="reference internal" href="#cilia-are-important-for-memory-development">Cilia are important for memory development</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <div class="section" id="hypothesis-the-human-brain-uses-different-genes-in-different-regions">
+<span id="exploratory-analysis-brainspan"></span><h1>Hypothesis: The human brain uses different genes in different regions<a class="headerlink" href="#hypothesis-the-human-brain-uses-different-genes-in-different-regions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="the-data-allen-brain-institute">
+<h2>The data: Allen Brain Institute<a class="headerlink" href="#the-data-allen-brain-institute" title="Permalink to this headline">¶</a></h2>
+<p>Disclaimer: I am not a neuroscientist, and my understanding of brain anatomy is very rudimentary, so please bear with me.</p>
+<p>We will use the <a class="reference external" href="http://www.brainspan.org/">**BrainSpan Atlas of the Developing Human Brain**</a>, which was an effort to establish molecular profiles of brain regions at varying points of developmental time.</p>
+<ul class="simple">
+<li>42 brain specimens, male and female</li>
+<li>13 developmental stages: post-conception week (pcw) 5-7 to 42 years old</li>
+</ul>
+</div>
+<div class="section" id="rna-sequencing-is-accomplished-by-shattering-rna-transcripts-then-finding-where-they-are-in-the-genome">
+<h2>RNA sequencing is accomplished by shattering RNA transcripts, then finding where they are in the genome<a class="headerlink" href="#rna-sequencing-is-accomplished-by-shattering-rna-transcripts-then-finding-where-they-are-in-the-genome" title="Permalink to this headline">¶</a></h2>
+<p>### Illumina sequencing machines</p>
+<p>![](<a class="reference external" href="http://dnatech.genomecenter.ucdavis.edu/wp-content/uploads/2013/05/hiseq_2000.jpg">http://dnatech.genomecenter.ucdavis.edu/wp-content/uploads/2013/05/hiseq_2000.jpg</a>)</p>
+</div>
+<div class="section" id="load-the-data-into-flotilla-via-embark">
+<h2>Load the data into <tt class="docutils literal"><span class="pre">flotilla</span></tt> via <tt class="docutils literal"><span class="pre">embark</span></tt><a class="headerlink" href="#load-the-data-into-flotilla-via-embark" title="Permalink to this headline">¶</a></h2>
+<div class="code python highlight-python"><div class="highlight"><pre>%matplotlib inline
+
+import flotilla
+study = flotilla.embark(flotilla._brainspan)
+</pre></div>
+</div>
+<pre class='nb-text-output'>
+Creating a directory for saving your flotilla projects: /home/travis/flotilla_projects
+Creating a directory for saving the data for this project: /home/travis/flotilla_projects/brainspan_filtered_and_markers_amazon
+
+</pre><pre class='nb-text-output'>
+https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon_s3/datapackage.json has not been downloaded before.
+    Downloading now to /home/travis/flotilla_projects/brainspan_filtered_and_markers_amazon/datapackage.json
+2015-05-28 19:17:44 Parsing datapackage to create a Study object
+
+</pre><pre class='nb-text-output'>
+https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon_s3/expression_feature.csv has not been downloaded before.
+    Downloading now to /home/travis/flotilla_projects/brainspan_filtered_and_markers_amazon/expression_feature.csv
+https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon_s3/expression.csv has not been downloaded before.
+    Downloading now to /home/travis/flotilla_projects/brainspan_filtered_and_markers_amazon/expression.csv
+
+</pre><pre class='nb-text-output'>
+https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon_s3/metadata.csv has not been downloaded before.
+    Downloading now to /home/travis/flotilla_projects/brainspan_filtered_and_markers_amazon/metadata.csv
+2015-05-28 19:18:02 Initializing Study
+
+</pre><pre class='nb-text-output'>
+2015-05-28 19:18:02 Initializing Predictor configuration manager for Study
+2015-05-28 19:18:02 Predictor ExtraTreesClassifier is of type <class 'sklearn.ensemble.forest.ExtraTreesClassifier'>
+2015-05-28 19:18:02 Added ExtraTreesClassifier to default predictors
+2015-05-28 19:18:02 Predictor ExtraTreesRegressor is of type <class 'sklearn.ensemble.forest.ExtraTreesRegressor'>
+2015-05-28 19:18:02 Added ExtraTreesRegressor to default predictors
+2015-05-28 19:18:02 Predictor GradientBoostingClassifier is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingClassifier'>
+2015-05-28 19:18:02 Added GradientBoostingClassifier to default predictors
+2015-05-28 19:18:02 Predictor GradientBoostingRegressor is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingRegressor'>
+2015-05-28 19:18:02 Added GradientBoostingRegressor to default predictors
+2015-05-28 19:18:02 Loading metadata
+2015-05-28 19:18:02 Loading expression data
+
+</pre><pre class='nb-text-output'>
+2015-05-28 19:18:02 Initializing expression
+2015-05-28 19:18:03 Done initializing expression
+
+</pre><pre class='nb-text-output'>
+2015-05-28 19:18:08 Successfully initialized a Study object!
+
+</pre><pre class='nb-text-output'>
+:0: FutureWarning: IPython widgets are experimental and may change in the future.
+
+</pre><div class="section" id="a-look-behind-the-magic">
+<h3>A look behind the magic<a class="headerlink" href="#a-look-behind-the-magic" title="Permalink to this headline">¶</a></h3>
+<p><tt class="docutils literal"><span class="pre">flotilla._brainspan</span></tt> is a link to a JSON file:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">flotilla</span><span class="o">.</span><span class="n">_brainspan</span>
+</pre></div>
+</div>
+<pre class='nb-text-output'>
+'https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon_s3/datapackage.json'
+</pre><p>This json follows the
+<a class="reference external" href="http://data.okfn.org/doc/data-package">datapackage</a> specification as
+outlined by the Open Knowledge foundation.</p>
+<div class="code python highlight-python"><div class="highlight"><pre>! curl https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon_s3/datapackage.json
+</pre></div>
+</div>
+<pre class='nb-text-output'>
+{
+  "name": "brainspan_filtered_and_markers_amazon",
+  "title": null,
+  "datapackage_version": "0.1.5",
+  "sources": null,
+  "licenses": null,
+  "resources": [
+    {
+      "name": "expression_feature",
+      "format": "csv",
+      "rename_col": "gene_symbol",
+      "ignore_subset_cols": [
+        "gene_id",
+        "gene_symbol",
+        "entrez_id"
+      ],
+      "url": "https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon_s3/expression_feature.csv"
+    },
+    {
+      "name": "expression",
+      "log_base": 2,
+      "format": "csv",
+      "thresh": -Infinity,
+      "plus_one": true,
+      "path": "https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon_s3/expression.csv"
+    },
+    {
+      "pooled_col": "pooled",
+      "name": "metadata",
+      "phenotype_to_marker": {
+        "M1C": "^",
+        "DTH": "D",
+        "A1C": "o",
+        "TCx": "s",
+        "VFC": "v",
+        "Ocx": "o",
+        "V1C": "s",
+        "HIP": "*",
+        "PCx": "^",
+        "MFC": "v",
+        "CBC": "s",
+        "CGE": "*",
+        "AMY": "^",
+        "OFC": "*",
+        "STC": "o",
+        "URL": "v",
+        "CB": "v",
+        "STR": "^",
+        "S1C": "D",
+        "DFC": "v",
+        "MD": "s",
+        "MGE": "s",
+        "M1C-S1C": "^",
+        "ITC": "o",
+        "LGE": "o",
+        "IPC": "D"
+      },
+      "format": "csv",
+      "minimum_samples": 0,
+      "phenotype_to_color": {
+        "M1C": "#34af87",
+        "DTH": "#a0a131",
+        "A1C": "#f77189",
+        "TCx": "#f35cf4",
+        "VFC": "#f66da6",
+        "Ocx": "#3aa5e2",
+        "V1C": "#f668be",
+        "HIP": "#8da631",
+        "PCx": "#639df4",
+        "MFC": "#36abb0",
+        "CBC": "#d38d32",
+        "CGE": "#c19632",
+        "AMY": "#f77461",
+        "OFC": "#39a8cc",
+        "STC": "#b486f4",
+        "URL": "#f563d7",
+        "CB": "#eb8032",
+        "STR": "#d276f4",
+        "S1C": "#9292f4",
+        "DFC": "#b19c32",
+        "MD": "#36ada4",
+        "MGE": "#37aabd",
+        "M1C-S1C": "#35ae97",
+        "ITC": "#31b332",
+        "LGE": "#33b16f",
+        "IPC": "#71ac31"
+      },
+      "outlier_col": "outlier",
+      "url": "https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon_s3/metadata.csv",
+      "phenotype_col": "structure_acronym",
+      "phenotype_order": [
+        "A1C",
+        "AMY",
+        "CB",
+        "CBC",
+        "CGE",
+        "DFC",
+        "DTH",
+        "HIP",
+        "IPC",
+        "ITC",
+        "LGE",
+        "M1C",
+        "M1C-S1C",
+        "MD",
+        "MFC",
+        "MGE",
+        "OFC",
+        "Ocx",
+        "PCx",
+        "S1C",
+        "STC",
+        "STR",
+        "TCx",
+        "URL",
+        "V1C",
+        "VFC"
+      ]
+},
+    {
+      "name": "supplemental",
+      "resources": []
+    }
+  ]
+}
+</pre><p>2.) A string that is a name of a folder in <tt class="docutils literal"><span class="pre">&quot;~/flotilla_projects&quot;</span></tt>. If
+you use this study here, change something, and want to keep it around
+for later, you can use <tt class="docutils literal"><span class="pre">study.save('project_name')</span></tt> and then embark on
+it later with <tt class="docutils literal"><span class="pre">flotilla.embark('project_name')</span></tt>.</p>
+</div>
+<div class="section" id="model-compute-view-controller">
+<h3>Model-Compute-View-Controller<a class="headerlink" href="#model-compute-view-controller" title="Permalink to this headline">¶</a></h3>
+<p>Modified image of MVC</p>
+<p>labeled: * Model = pandas * Compute = scikit-learn * View =
+matplotlib, seaborn * controller = IPython notebook + widgets</p>
+</div>
+</div>
+<div class="section" id="back-to-the-hypothesis-the-human-brain-has-different-genes-expressed-in-different-regions">
+<h2>Back to the hypothesis: The human brain has different genes expressed in different regions<a class="headerlink" href="#back-to-the-hypothesis-the-human-brain-has-different-genes-expressed-in-different-regions" title="Permalink to this headline">¶</a></h2>
+<p>To address the question of how the expression varies across regions, we
+will Principal component analysis.</p>
+<div class="section" id="principal-component-analysis-pca">
+<h3>Principal Component Analysis (PCA)<a class="headerlink" href="#principal-component-analysis-pca" title="Permalink to this headline">¶</a></h3>
+<p>Principal Component Analysis (PCA) is a dimensionality reduction
+algorithm which transforms a high-dimensional space like gene
+expression, to smaller dimensions, like just two for x- y- plotting.</p>
+<div class="figure align-center">
+<img alt="" src="http://www.nlpca.org/fig_pca_principal_component_analysis.png" />
+</div>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">pcaviz</span> <span class="o">=</span> <span class="n">study</span><span class="o">.</span><span class="n">plot_pca</span><span class="p">(</span><span class="n">color_samples_by</span><span class="o">=</span><span class="s">&#39;structure_name&#39;</span><span class="p">)</span>
+<span class="n">pcaviz</span><span class="o">.</span><span class="n">fig_reduced</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s">&#39;brainspan_pca.pdf&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<pre class='nb-text-output'>
+/home/travis/miniconda/envs/testenv/lib/python2.7/site-packages/pandas/core/index.py:834: FutureWarning: slice indexers when using iloc should be integers and not floating point
+  "and not floating point",FutureWarning)
+/home/travis/miniconda/envs/testenv/lib/python2.7/site-packages/matplotlib/font_manager.py:1282: UserWarning: findfont: Font family [u'Helvetica', u'Arial'] not found. Falling back to Bitstream Vera Sans
+  (prop.get_family(), self.defaultFamily[fontext]))
+
+</pre><img alt="../_images/exploratory_analysis_brainspan_15_1.png" src="../_images/exploratory_analysis_brainspan_15_1.png" />
+<p>Hmm, all those non-cerebellar cortex, non-striatum samples are really
+stacked on top of each other. What if we want to pull out genes that are
+associated with a particular structure, like the hippocampus?</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="c"># # Cerebellum markers from http://www.nature.com/nrn/journal/v16/n2/fig_tab/nrn3886_F3.html</span>
+
+<span class="n">cerebellar_markers</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;ALDOC&#39;</span><span class="p">,</span> <span class="s">&#39;PLCB3&#39;</span><span class="p">,</span> <span class="s">&#39;SLC1A6&#39;</span><span class="p">,</span> <span class="s">&#39;GABBR2&#39;</span><span class="p">,</span> <span class="s">&#39;NCS1&#39;</span><span class="p">,</span> <span class="s">&#39;PLCB4&#39;</span><span class="p">,</span> <span class="s">&#39;GRM1&#39;</span><span class="p">,</span> <span class="s">&#39;MAP1A&#39;</span><span class="p">,</span> <span class="s">&#39;NPTN&#39;</span><span class="p">,</span> <span class="s">&#39;NRGN&#39;</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">gene</span> <span class="ow">in</span> <span class="n">cerebellar_markers</span><span class="p">:</span>
+    <span class="n">study</span><span class="o">.</span><span class="n">plot_gene</span><span class="p">(</span><span class="n">gene</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../_images/exploratory_analysis_brainspan_17_0.png" src="../_images/exploratory_analysis_brainspan_17_0.png" />
+<img alt="../_images/exploratory_analysis_brainspan_17_1.png" src="../_images/exploratory_analysis_brainspan_17_1.png" />
+<img alt="../_images/exploratory_analysis_brainspan_17_2.png" src="../_images/exploratory_analysis_brainspan_17_2.png" />
+<img alt="../_images/exploratory_analysis_brainspan_17_3.png" src="../_images/exploratory_analysis_brainspan_17_3.png" />
+<img alt="../_images/exploratory_analysis_brainspan_17_4.png" src="../_images/exploratory_analysis_brainspan_17_4.png" />
+<img alt="../_images/exploratory_analysis_brainspan_17_5.png" src="../_images/exploratory_analysis_brainspan_17_5.png" />
+<img alt="../_images/exploratory_analysis_brainspan_17_6.png" src="../_images/exploratory_analysis_brainspan_17_6.png" />
+<img alt="../_images/exploratory_analysis_brainspan_17_7.png" src="../_images/exploratory_analysis_brainspan_17_7.png" />
+<img alt="../_images/exploratory_analysis_brainspan_17_8.png" src="../_images/exploratory_analysis_brainspan_17_8.png" />
+<img alt="../_images/exploratory_analysis_brainspan_17_9.png" src="../_images/exploratory_analysis_brainspan_17_9.png" />
+</div>
+</div>
+<div class="section" id="hypothesis-cells-in-the-hippocampus-use-genes-unique-to-its-function">
+<h2>Hypothesis: Cells in the hippocampus use genes unique to its function<a class="headerlink" href="#hypothesis-cells-in-the-hippocampus-use-genes-unique-to-its-function" title="Permalink to this headline">¶</a></h2>
+<p>The hippocampus is involved in memory, and we hypothesize that these
+cells have a unique molecular profile (set of genes that are
+expresssed). To accomplish this, we will use a classifier on our data to
+identify genes which separate hippocampal samples from non-hippocampal
+samples.</p>
+<p>By default, <tt class="docutils literal"><span class="pre">flotilla</span></tt> uses an &#8220;Extremely Randomised Trees&#8221; Classifier
+(<tt class="docutils literal"><span class="pre">ExtraTreesClassifier</span></tt>), which takes random subsets of the data many
+times to create decision trees, like this one for deciding whether to
+play outside:</p>
+<div class="figure align-center">
+<img alt="" src="http://thespread.us/images/Decision_tree_model.png" />
+</div>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">study</span><span class="o">.</span><span class="n">plot_classifier</span><span class="p">(</span><span class="s">&#39;structure_acronym: HIP&#39;</span><span class="p">,</span> <span class="n">feature_subset</span><span class="o">=</span><span class="s">&#39;all features&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<pre class='nb-text-output'>
+2015-05-28 19:19:09 Configuring predictor type: ExtraTreesClassifier with 14321 featuresFitting a predictor for X:none_all features, y:structure_acronym: HIP, method:ExtraTreesClassifier... please wait.
+
+</pre><pre class='nb-text-output'>
+[Parallel(n_jobs=4)]: Done   1 out of 201 | elapsed:    0.0s remaining:    7.6s
+[Parallel(n_jobs=4)]: Done 717 out of 717 | elapsed:    5.1s finished
+
+</pre><pre class='nb-text-output'>
+    Finished.
+
+</pre><pre class='nb-text-output'>
+<flotilla.visualize.predict.ClassifierViz at 0x2acf0978af10>
+</pre><img alt="../_images/exploratory_analysis_brainspan_19_4.png" src="../_images/exploratory_analysis_brainspan_19_4.png" />
+<ul class="simple">
+<li>Choose trait as &#8220;structure_acronym: HIP&#8221;</li>
+<li>Choose features as &#8220;all features&#8221;</li>
+</ul>
+</div>
+<div class="section" id="cilia-are-important-for-memory-development">
+<h2>Cilia are important for memory development<a class="headerlink" href="#cilia-are-important-for-memory-development" title="Permalink to this headline">¶</a></h2>
+<p>FOXJ1, C1orf88, TEKT1 are all involved in development of cilia, fingerlike protrusions from cells. Development of these cilia has been show to be important in memory formation.</p>
+<p>So it looks like our classifier picked up the right things!</p>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<div class="container">
+    
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/tutorial/exploratory_analysis_brainspan.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
+    </p>
+  </div>
+</footer>
+    <p>
+    Stuck? Send questions, comments, and other feedback to:
+    <ul>
+        <li>The <a href="https://gitter.im/YeoLab/flotilla">Gitter</a> chat
+            room for immediate questions</li>
+        <li>The <a href="https://github.com/yeolab/flotilla/issues">Github
+            issues page</a> for feature requests</li>
+    </ul>
+    Or send an email to obotvinn@ucsd.edu if you're oldskool like that.
+    </p>
+
+    <a href="http://olgabotvinnik.com/">Olga B. Botvinnik</a> is funded by the
+    <a href="https://ndseg.asee.org/">NDSEG</a> fellowship and is a
+    <a href="http://numfocus.org/">NumFOCUS</a>
+    <a href="http://numfocus.org/pages/john_hunter_fellowship_2014.html">John
+    Hunter Technology Fellow</a>.<br/>
+    Michael T. Lovci was partially funded by a fellowship from
+    <a href="http://www.gene.com/">Genentech</a>.</br>
+    Partially funded by <a href="http://www.nih.gov/">NIH</a> grants NS075449
+    and HG004659 and <a href="http://www.cirm.ca.gov/">CIRM</a> grants RB4-06045
+    and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene
+    Yeo</a>. <br/>
+
+  </body>
+</html>

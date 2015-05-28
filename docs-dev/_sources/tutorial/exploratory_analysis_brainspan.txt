@@ -1,0 +1,458 @@
+
+.. _exploratory_analysis_brainspan:
+
+.. currentmodule:: flotilla
+
+Hypothesis: The human brain uses different genes in different regions
+=====================================================================
+
+The data: Allen Brain Institute
+-------------------------------
+
+
+
+Disclaimer: I am not a neuroscientist, and my understanding of brain anatomy is very rudimentary, so please bear with me.
+
+.. image: http://community.brain-map.org/download/attachments/8257537/global.logo?version=2&modificationDate=1345754284219
+
+We will use the `**BrainSpan Atlas of the Developing Human Brain** <http://www.brainspan.org/>`_, which was an effort to establish molecular profiles of brain regions at varying points of developmental time.
+
+* 42 brain specimens, male and female
+* 13 developmental stages: post-conception week (pcw) 5-7 to 42 years old
+
+.. image: http://i.imgur.com/WnNlxVe.png
+
+RNA sequencing is accomplished by shattering RNA transcripts, then finding where they are in the genome
+-------------------------------------------------------------------------------------------------------
+
+.. image: http://i.imgur.com/MFVt27v.png
+
+### Illumina sequencing machines
+
+![](http://dnatech.genomecenter.ucdavis.edu/wp-content/uploads/2013/05/hiseq_2000.jpg)
+
+Load the data into ``flotilla`` via ``embark``
+----------------------------------------------
+
+.. code:: python
+
+    %matplotlib inline
+    
+    import flotilla
+    study = flotilla.embark(flotilla._brainspan)
+
+
+.. raw:: html
+
+    <pre class='nb-text-output'>
+    Creating a directory for saving your flotilla projects: /home/travis/flotilla_projects
+    Creating a directory for saving the data for this project: /home/travis/flotilla_projects/brainspan_filtered_and_markers_amazon
+
+    </pre>
+
+.. raw:: html
+
+    <pre class='nb-text-output'>
+    https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon_s3/datapackage.json has not been downloaded before.
+    	Downloading now to /home/travis/flotilla_projects/brainspan_filtered_and_markers_amazon/datapackage.json
+    2015-05-28 19:17:44	Parsing datapackage to create a Study object
+
+    </pre>
+
+.. raw:: html
+
+    <pre class='nb-text-output'>
+    https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon_s3/expression_feature.csv has not been downloaded before.
+    	Downloading now to /home/travis/flotilla_projects/brainspan_filtered_and_markers_amazon/expression_feature.csv
+    https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon_s3/expression.csv has not been downloaded before.
+    	Downloading now to /home/travis/flotilla_projects/brainspan_filtered_and_markers_amazon/expression.csv
+
+    </pre>
+
+.. raw:: html
+
+    <pre class='nb-text-output'>
+    https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon_s3/metadata.csv has not been downloaded before.
+    	Downloading now to /home/travis/flotilla_projects/brainspan_filtered_and_markers_amazon/metadata.csv
+    2015-05-28 19:18:02	Initializing Study
+
+    </pre>
+
+.. raw:: html
+
+    <pre class='nb-text-output'>
+    2015-05-28 19:18:02	Initializing Predictor configuration manager for Study
+    2015-05-28 19:18:02	Predictor ExtraTreesClassifier is of type <class 'sklearn.ensemble.forest.ExtraTreesClassifier'>
+    2015-05-28 19:18:02	Added ExtraTreesClassifier to default predictors
+    2015-05-28 19:18:02	Predictor ExtraTreesRegressor is of type <class 'sklearn.ensemble.forest.ExtraTreesRegressor'>
+    2015-05-28 19:18:02	Added ExtraTreesRegressor to default predictors
+    2015-05-28 19:18:02	Predictor GradientBoostingClassifier is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingClassifier'>
+    2015-05-28 19:18:02	Added GradientBoostingClassifier to default predictors
+    2015-05-28 19:18:02	Predictor GradientBoostingRegressor is of type <class 'sklearn.ensemble.gradient_boosting.GradientBoostingRegressor'>
+    2015-05-28 19:18:02	Added GradientBoostingRegressor to default predictors
+    2015-05-28 19:18:02	Loading metadata
+    2015-05-28 19:18:02	Loading expression data
+
+    </pre>
+
+.. raw:: html
+
+    <pre class='nb-text-output'>
+    2015-05-28 19:18:02	Initializing expression
+    2015-05-28 19:18:03	Done initializing expression
+
+    </pre>
+
+.. raw:: html
+
+    <pre class='nb-text-output'>
+    2015-05-28 19:18:08	Successfully initialized a Study object!
+
+    </pre>
+
+.. raw:: html
+
+    <pre class='nb-text-output'>
+    :0: FutureWarning: IPython widgets are experimental and may change in the future.
+
+    </pre>
+
+A look behind the magic
+~~~~~~~~~~~~~~~~~~~~~~~
+
+``flotilla._brainspan`` is a link to a JSON file:
+
+.. code:: python
+
+    flotilla._brainspan
+
+
+
+
+.. raw:: html
+
+    <pre class='nb-text-output'>
+    'https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon_s3/datapackage.json'
+    </pre>
+
+
+
+This json follows the
+`datapackage <http://data.okfn.org/doc/data-package>`_ specification as
+outlined by the Open Knowledge foundation.
+
+.. code:: python
+
+    ! curl https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon_s3/datapackage.json
+
+
+.. raw:: html
+
+    <pre class='nb-text-output'>
+    {
+      "name": "brainspan_filtered_and_markers_amazon", 
+      "title": null, 
+      "datapackage_version": "0.1.5", 
+      "sources": null, 
+      "licenses": null, 
+      "resources": [
+        {
+          "name": "expression_feature", 
+          "format": "csv", 
+          "rename_col": "gene_symbol", 
+          "ignore_subset_cols": [
+            "gene_id", 
+            "gene_symbol", 
+            "entrez_id"
+          ], 
+          "url": "https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon_s3/expression_feature.csv"
+        }, 
+        {
+          "name": "expression", 
+          "log_base": 2, 
+          "format": "csv", 
+          "thresh": -Infinity, 
+          "plus_one": true, 
+          "path": "https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon_s3/expression.csv"
+        }, 
+        {
+          "pooled_col": "pooled", 
+          "name": "metadata", 
+          "phenotype_to_marker": {
+            "M1C": "^", 
+            "DTH": "D", 
+            "A1C": "o", 
+            "TCx": "s", 
+            "VFC": "v", 
+            "Ocx": "o", 
+            "V1C": "s", 
+            "HIP": "*", 
+            "PCx": "^", 
+            "MFC": "v", 
+            "CBC": "s", 
+            "CGE": "*", 
+            "AMY": "^", 
+            "OFC": "*", 
+            "STC": "o", 
+            "URL": "v", 
+            "CB": "v", 
+            "STR": "^", 
+            "S1C": "D", 
+            "DFC": "v", 
+            "MD": "s", 
+            "MGE": "s", 
+            "M1C-S1C": "^", 
+            "ITC": "o", 
+            "LGE": "o", 
+            "IPC": "D"
+          }, 
+          "format": "csv", 
+          "minimum_samples": 0, 
+          "phenotype_to_color": {
+            "M1C": "#34af87", 
+            "DTH": "#a0a131", 
+            "A1C": "#f77189", 
+            "TCx": "#f35cf4", 
+            "VFC": "#f66da6", 
+            "Ocx": "#3aa5e2", 
+            "V1C": "#f668be", 
+            "HIP": "#8da631", 
+            "PCx": "#639df4", 
+            "MFC": "#36abb0", 
+            "CBC": "#d38d32", 
+            "CGE": "#c19632", 
+            "AMY": "#f77461", 
+            "OFC": "#39a8cc", 
+            "STC": "#b486f4", 
+            "URL": "#f563d7", 
+            "CB": "#eb8032", 
+            "STR": "#d276f4", 
+            "S1C": "#9292f4", 
+            "DFC": "#b19c32", 
+            "MD": "#36ada4", 
+            "MGE": "#37aabd", 
+            "M1C-S1C": "#35ae97", 
+            "ITC": "#31b332", 
+            "LGE": "#33b16f", 
+            "IPC": "#71ac31"
+          }, 
+          "outlier_col": "outlier", 
+          "url": "https://s3-us-west-2.amazonaws.com/flotilla/brainspan_batch_corrected_for_amazon_s3/metadata.csv", 
+          "phenotype_col": "structure_acronym", 
+          "phenotype_order": [
+            "A1C", 
+            "AMY", 
+            "CB", 
+            "CBC", 
+            "CGE", 
+            "DFC", 
+            "DTH", 
+            "HIP", 
+            "IPC", 
+            "ITC", 
+            "LGE", 
+            "M1C", 
+            "M1C-S1C", 
+            "MD", 
+            "MFC", 
+            "MGE", 
+            "OFC", 
+            "Ocx", 
+            "PCx", 
+            "S1C", 
+            "STC", 
+            "STR", 
+            "TCx", 
+            "URL", 
+            "V1C", 
+            "VFC"
+          ]
+    }, 
+        {
+          "name": "supplemental", 
+          "resources": []
+        }
+      ]
+    }
+    </pre>
+
+2.) A string that is a name of a folder in ``"~/flotilla_projects"``. If
+you use this study here, change something, and want to keep it around
+for later, you can use ``study.save('project_name')`` and then embark on
+it later with ``flotilla.embark('project_name')``.
+
+Model-Compute-View-Controller
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Modified image of MVC
+
+labeled: \* Model = pandas \* Compute = scikit-learn \* View =
+matplotlib, seaborn \* controller = IPython notebook + widgets
+
+Back to the hypothesis: The human brain has different genes expressed in different regions
+------------------------------------------------------------------------------------------
+
+To address the question of how the expression varies across regions, we
+will Principal component analysis.
+
+Principal Component Analysis (PCA)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Principal Component Analysis (PCA) is a dimensionality reduction
+algorithm which transforms a high-dimensional space like gene
+expression, to smaller dimensions, like just two for x- y- plotting.
+
+.. figure:: http://www.nlpca.org/fig_pca_principal_component_analysis.png
+   :align: center
+   :alt: 
+
+.. code:: python
+
+    pcaviz = study.plot_pca(color_samples_by='structure_name')
+    pcaviz.fig_reduced.savefig('brainspan_pca.pdf')
+
+
+.. raw:: html
+
+    <pre class='nb-text-output'>
+    /home/travis/miniconda/envs/testenv/lib/python2.7/site-packages/pandas/core/index.py:834: FutureWarning: slice indexers when using iloc should be integers and not floating point
+      "and not floating point",FutureWarning)
+    /home/travis/miniconda/envs/testenv/lib/python2.7/site-packages/matplotlib/font_manager.py:1282: UserWarning: findfont: Font family [u'Helvetica', u'Arial'] not found. Falling back to Bitstream Vera Sans
+      (prop.get_family(), self.defaultFamily[fontext]))
+
+    </pre>
+
+
+.. image:: exploratory_analysis_brainspan_files/exploratory_analysis_brainspan_15_1.png
+
+
+Hmm, all those non-cerebellar cortex, non-striatum samples are really
+stacked on top of each other. What if we want to pull out genes that are
+associated with a particular structure, like the hippocampus?
+
+.. code:: python
+
+    # # Cerebellum markers from http://www.nature.com/nrn/journal/v16/n2/fig_tab/nrn3886_F3.html
+    
+    cerebellar_markers = ['ALDOC', 'PLCB3', 'SLC1A6', 'GABBR2', 'NCS1', 'PLCB4', 'GRM1', 'MAP1A', 'NPTN', 'NRGN']
+    for gene in cerebellar_markers:
+        study.plot_gene(gene)
+
+
+
+.. image:: exploratory_analysis_brainspan_files/exploratory_analysis_brainspan_17_0.png
+
+
+
+.. image:: exploratory_analysis_brainspan_files/exploratory_analysis_brainspan_17_1.png
+
+
+
+.. image:: exploratory_analysis_brainspan_files/exploratory_analysis_brainspan_17_2.png
+
+
+
+.. image:: exploratory_analysis_brainspan_files/exploratory_analysis_brainspan_17_3.png
+
+
+
+.. image:: exploratory_analysis_brainspan_files/exploratory_analysis_brainspan_17_4.png
+
+
+
+.. image:: exploratory_analysis_brainspan_files/exploratory_analysis_brainspan_17_5.png
+
+
+
+.. image:: exploratory_analysis_brainspan_files/exploratory_analysis_brainspan_17_6.png
+
+
+
+.. image:: exploratory_analysis_brainspan_files/exploratory_analysis_brainspan_17_7.png
+
+
+
+.. image:: exploratory_analysis_brainspan_files/exploratory_analysis_brainspan_17_8.png
+
+
+
+.. image:: exploratory_analysis_brainspan_files/exploratory_analysis_brainspan_17_9.png
+
+
+Hypothesis: Cells in the hippocampus use genes unique to its function
+---------------------------------------------------------------------
+
+The hippocampus is involved in memory, and we hypothesize that these
+cells have a unique molecular profile (set of genes that are
+expresssed). To accomplish this, we will use a classifier on our data to
+identify genes which separate hippocampal samples from non-hippocampal
+samples.
+
+By default, ``flotilla`` uses an "Extremely Randomised Trees" Classifier
+(``ExtraTreesClassifier``), which takes random subsets of the data many
+times to create decision trees, like this one for deciding whether to
+play outside:
+
+.. figure:: http://thespread.us/images/Decision_tree_model.png
+   :align: center
+   :alt: 
+
+.. code:: python
+
+    study.plot_classifier('structure_acronym: HIP', feature_subset='all features')
+
+
+.. raw:: html
+
+    <pre class='nb-text-output'>
+    2015-05-28 19:19:09 Configuring predictor type: ExtraTreesClassifier with 14321 featuresFitting a predictor for X:none_all features, y:structure_acronym: HIP, method:ExtraTreesClassifier... please wait.
+
+    </pre>
+
+.. raw:: html
+
+    <pre class='nb-text-output'>
+    [Parallel(n_jobs=4)]: Done   1 out of 201 | elapsed:    0.0s remaining:    7.6s
+    [Parallel(n_jobs=4)]: Done 717 out of 717 | elapsed:    5.1s finished
+
+    </pre>
+
+.. raw:: html
+
+    <pre class='nb-text-output'>
+    	Finished.
+
+    </pre>
+
+
+
+.. raw:: html
+
+    <pre class='nb-text-output'>
+    <flotilla.visualize.predict.ClassifierViz at 0x2acf0978af10>
+    </pre>
+
+
+
+
+.. image:: exploratory_analysis_brainspan_files/exploratory_analysis_brainspan_19_4.png
+
+
+-  Choose trait as "structure\_acronym: HIP"
+-  Choose features as "all features"
+
+Cilia are important for memory development
+------------------------------------------
+
+FOXJ1, C1orf88, TEKT1 are all involved in development of cilia, fingerlike protrusions from cells. Development of these cilia has been show to be important in memory formation.
+
+So it looks like our classifier picked up the right things!
+
+.. image: http://www.scientificamerican.com/sciam/cache/file/89A885D8-42B9-4A07-8A1181629B9B5AD3.jpg
+
+.. image: http://i.imgur.com/SUkM6ev.png
+    :target: http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0106576
+
+                
+.. image: http://i.imgur.com/Da7HSnD.png
+    :target: http://www.jneurosci.org/content/31/27/9933.full
