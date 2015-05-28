@@ -318,8 +318,8 @@ class TestStudy(object):
         splicing_tidy = splicing_tidy.join(event_name_to_ensembl_ids)
 
         splicing_tidy = splicing_tidy.dropna().reset_index()
-        splicing_tidy = splicing_tidy.rename(columns={'index':
-            study._event_name})
+        splicing_tidy = splicing_tidy.rename(
+            columns={'index': study._event_name})
 
         # Tidify expression
         expression = study.expression.data_original
