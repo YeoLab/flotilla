@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/bootswatch-3.2.0/paper/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
-    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -76,6 +75,10 @@
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">What&#8217;s new in the package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#v0-2-8">v0.2.8 (........)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#v0-2-7-april-20th-2015">v0.2.7 (April 20th, 2015)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#v0-2-6-april-10th-2015">v0.2.6 (April 10th, 2015)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#v0-2-5-march-3rd-2015">v0.2.5 (March 3rd, 2015)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#v0-2-4-november-23rd-2014">v0.2.4 (November 23rd, 2014)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#v0-2-3-november-17th-2014">v0.2.3 (November 17th, 2014)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#v0-2-2-november-7th-2014">v0.2.2 (November 7th, 2014)</a></li>
@@ -100,8 +103,9 @@
 <li class="toctree-l1"><a class="reference internal" href="create_datapackage.html">Create your very own datapackage!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Flotilla tutorial</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tutorial.html#install-flotilla">Install flotilla</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorial.html#getting-started-downloading-cleaning-and-importing-data">Getting Started: Downloading, cleaning, and importing data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorial.html#exploratory-analysis">Exploratory Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#create-a-datapackage">Create a datapackage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#computing-on-splicing-data">Computing on splicing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#day-to-day-helpful-tips">Day to day helpful tips</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorial.html#recreated-papers">Recreated papers</a></li>
 </ul>
 </li>
@@ -119,15 +123,39 @@
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
 <li><a class="reference internal" href="#">What&#8217;s new in the package</a><ul>
-<li><a class="reference internal" href="#v0-2-4-november-23rd-2014">v0.2.4 (November 23rd, 2014)</a><ul>
+<li><a class="reference internal" href="#v0-2-8">v0.2.8 (........)</a><ul>
+<li><a class="reference internal" href="#bug-fixes">Bug fixes</a></li>
+<li><a class="reference internal" href="#miscellaneous">Miscellaneous</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#v0-2-7-april-20th-2015">v0.2.7 (April 20th, 2015)</a><ul>
+<li><a class="reference internal" href="#id1">Miscellaneous</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#v0-2-6-april-10th-2015">v0.2.6 (April 10th, 2015)</a><ul>
+<li><a class="reference internal" href="#new-features">New features</a></li>
 <li><a class="reference internal" href="#plotting-functions">Plotting functions</a></li>
+<li><a class="reference internal" href="#id2">Bug fixes</a></li>
+<li><a class="reference internal" href="#id3">Miscellaneous</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#v0-2-5-march-3rd-2015">v0.2.5 (March 3rd, 2015)</a><ul>
+<li><a class="reference internal" href="#id4">New features</a></li>
+<li><a class="reference internal" href="#id5">Plotting functions</a></li>
 <li><a class="reference internal" href="#api-changes">API changes</a></li>
+<li><a class="reference internal" href="#id6">Bug fixes</a></li>
+<li><a class="reference internal" href="#id7">Miscellaneous</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#v0-2-4-november-23rd-2014">v0.2.4 (November 23rd, 2014)</a><ul>
+<li><a class="reference internal" href="#id8">Plotting functions</a></li>
+<li><a class="reference internal" href="#id9">API changes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v0-2-3-november-17th-2014">v0.2.3 (November 17th, 2014)</a><ul>
 <li><a class="reference internal" href="#compute-functions">Compute functions</a></li>
-<li><a class="reference internal" href="#id1">Plotting functions</a></li>
-<li><a class="reference internal" href="#bug-fixes">Bug Fixes</a></li>
+<li><a class="reference internal" href="#id10">Plotting functions</a></li>
+<li><a class="reference internal" href="#id11">Bug Fixes</a></li>
 <li><a class="reference internal" href="#documentation">Documentation</a></li>
 <li><a class="reference internal" href="#other">Other</a></li>
 </ul>
@@ -137,12 +165,12 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#v0-2-1-november-6th-2014">v0.2.1 (November 6th, 2014)</a><ul>
-<li><a class="reference internal" href="#id2">Documentation updates</a></li>
+<li><a class="reference internal" href="#id12">Documentation updates</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v0-2-0-november-5th-2014">v0.2.0 (November 5th, 2014)</a><ul>
-<li><a class="reference internal" href="#new-features">New features</a></li>
-<li><a class="reference internal" href="#id3">API changes</a></li>
+<li><a class="reference internal" href="#id13">New features</a></li>
+<li><a class="reference internal" href="#id14">API changes</a></li>
 <li><a class="reference internal" href="#other-changes">Other Changes</a></li>
 </ul>
 </li>
@@ -156,6 +184,12 @@
             
             
             
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="_sources/whatsnew.txt"
+     rel="nofollow">Source</a>
+</div></li>
             
           </ul>
 
@@ -180,18 +214,200 @@
   <div class="section" id="what-s-new-in-the-package">
 <span id="whatsnew"></span><h1>What&#8217;s new in the package<a class="headerlink" href="#what-s-new-in-the-package" title="Permalink to this headline">¶</a></h1>
 <p>A catalog of new features, improvements, and bug-fixes in each release.</p>
+<div class="section" id="v0-2-8">
+<h2>v0.2.8 (........)<a class="headerlink" href="#v0-2-8" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="bug-fixes">
+<h3>Bug fixes<a class="headerlink" href="#bug-fixes" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">Study.tidy_splicing_with_expression</span></tt> now deals with when splicing events
+map to multiple gene names. Fixes #304 with #309.</li>
+</ul>
+</div>
+<div class="section" id="miscellaneous">
+<h3>Miscellaneous<a class="headerlink" href="#miscellaneous" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Rasterize lavalamp plot for visualizing many splicing events at once,
+otherwise the image is too big. PR #308</li>
+</ul>
+</div>
+</div>
+<div class="section" id="v0-2-7-april-20th-2015">
+<h2>v0.2.7 (April 20th, 2015)<a class="headerlink" href="#v0-2-7-april-20th-2015" title="Permalink to this headline">¶</a></h2>
+<p>This release doesn&#8217;t have any changes in code, and is just to update the
+documentation.</p>
+<div class="section" id="id1">
+<h3>Miscellaneous<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Fixed tutorial building on the documentation page</li>
+</ul>
+</div>
+</div>
+<div class="section" id="v0-2-6-april-10th-2015">
+<h2>v0.2.6 (April 10th, 2015)<a class="headerlink" href="#v0-2-6-april-10th-2015" title="Permalink to this headline">¶</a></h2>
+<p>This is a patch release, with non-breaking changes from 0.2.5.</p>
+<div class="section" id="new-features">
+<h3>New features<a class="headerlink" href="#new-features" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Add a <tt class="xref py py-class docutils literal"><span class="pre">data_model.SupplementalData</span></tt> data type, which allows the
+user to store any <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> on the <a class="reference internal" href="flotilla.data_model.html#flotilla.data_model.Study" title="flotilla.data_model.Study"><tt class="xref py py-class docutils literal"><span class="pre">data_model.Study</span></tt></a>
+object as <cite>study.supplemental</cite>. This is essentially user-driven caching.</li>
+</ul>
+</div>
+<div class="section" id="plotting-functions">
+<h3>Plotting functions<a class="headerlink" href="#plotting-functions" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Changed default loadings plot of PCA to a heatmap of the first 5 PCs</li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h3>Bug fixes<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><dl class="first docutils">
+<dt>Fixed <tt class="xref py py-func docutils literal"><span class="pre">data_model.Study.save()</span></tt> to actually save:</dt>
+<dd><ul class="first last simple">
+<li>Gene Ontology Data</li>
+<li>Minimum number of mapped reads per sample</li>
+<li>Minimum number of samples to use per feature, at the specified threshold
+(e.g. use features with TPM &gt; 1 in at least 20 cells)</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">Fixed <a class="reference internal" href="flotilla.data_model.base.html#flotilla.data_model.base.subsets_from_metadata" title="flotilla.data_model.base.subsets_from_metadata"><tt class="xref py py-func docutils literal"><span class="pre">data_model.base.subsets_from_metadata()</span></tt></a> to use boolean
+columns properly, which allows for boolean columns in
+<a class="reference internal" href="flotilla.data_model.html#flotilla.data_model.MetaData" title="flotilla.data_model.MetaData"><tt class="xref py py-class docutils literal"><span class="pre">data_model.MetaData</span></tt></a> and
+<tt class="xref py py-attr docutils literal"><span class="pre">data_model.BaseData.feature_data</span></tt></p>
+</li>
+</ul>
+</div>
+<div class="section" id="id3">
+<h3>Miscellaneous<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">Streamlined test suite to test fewer things at a time, which shortened the
+test suite from ~20 minutes to ~3 minutes, about 85% time savings.</p>
+</li>
+<li><p class="first">Improved accuracy (fewer false positives) in splicing modality estimation</p>
+</li>
+<li><p class="first">Added requirement for new non-plotting features to at least be documented as
+IPython notebooks, so the knowledge is shared.</p>
+</li>
+<li><p class="first">Changed PCA plot to place legend in &#8220;best&#8221; place</p>
+</li>
+<li><p class="first">Changed default plotting marker from a circle to a randomly chosen symbol
+from a list</p>
+</li>
+<li><dl class="first docutils">
+<dt>Violinplots are now variable width and expand with the number of samples</dt>
+<dd><ul class="first simple">
+<li>This was changed in <a class="reference internal" href="flotilla.data_model.html#flotilla.data_model.Study.plot_gene" title="flotilla.data_model.Study.plot_gene"><tt class="xref py py-meth docutils literal"><span class="pre">data_model.Study.plot_gene()</span></tt></a>,</li>
+</ul>
+<p class="last"><a class="reference internal" href="flotilla.data_model.html#flotilla.data_model.Study.plot_event" title="flotilla.data_model.Study.plot_event"><tt class="xref py py-meth docutils literal"><span class="pre">data_model.Study.plot_event()</span></tt></a> and
+<a class="reference internal" href="flotilla.data_model.html#flotilla.data_model.Study.plot_pca" title="flotilla.data_model.Study.plot_pca"><tt class="xref py py-meth docutils literal"><span class="pre">data_model.Study.plot_pca()</span></tt></a> when <tt class="docutils literal"><span class="pre">plot_violins=True</span></tt></p>
+</dd>
+</dl>
+</li>
+<li><p class="first">Add info about data type when reporting that a feature was not found</p>
+</li>
+<li><p class="first">Fix lack of tutorial on how to create a datapackage</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="v0-2-5-march-3rd-2015">
+<h2>v0.2.5 (March 3rd, 2015)<a class="headerlink" href="#v0-2-5-march-3rd-2015" title="Permalink to this headline">¶</a></h2>
+<p>This is a patch release, with non-breaking changes from v0.2.4. This includes
+many changes and bugfixes. Upgrading to this version is highly recommended.</p>
+<div class="section" id="id4">
+<h3>New features<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Added data structure and functions for calculating gene ontology enrichment
+in <cite>.data_model.Study.go_enrichment</cite>, using the data structure
+<cite>.gene_ontology.GeneOntologyData</cite></li>
+</ul>
+</div>
+<div class="section" id="id5">
+<h3>Plotting functions<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">New function
+<tt class="xref py py-func docutils literal"><span class="pre">data_model.Study.plot_expression_vs_inconsistent_splicing()</span></tt>
+shows the percent of splicing events in single cells that are inconsistent
+with the pooled samples. Has the option to choose an expression cutoff.</p>
+</li>
+<li><p class="first">Add options to <tt class="xref py py-func docutils literal"><span class="pre">data_model.Study.plot_pca()</span></tt> and
+<tt class="xref py py-func docutils literal"><span class="pre">data_model.Study.interactive_pca()</span></tt>
+- Keyword argument <tt class="docutils literal"><span class="pre">color_samples_by</span></tt> will take a column name from the</p>
+<blockquote>
+<div><p><tt class="docutils literal"><span class="pre">metadata</span></tt> DataFrame, to color samples by different columns in the
+metadata.</p>
+</div></blockquote>
+<ul class="simple">
+<li>Keyword argument <tt class="docutils literal"><span class="pre">scale_by_variance</span></tt> is a boolean which when <tt class="docutils literal"><span class="pre">True</span></tt>
+(default) will scale the <span class="math">\(x\)</span> and <span class="math">\(y\)</span> axes by the explained
+variance of their individual principal components (PC1 for <span class="math">\(x\)</span> and
+PC2 for <span class="math">\(y\)</span>). If <tt class="docutils literal"><span class="pre">False</span></tt>, then the axes are the same scale, by the
+variance in PC1. Often this will &#8220;squish&#8221; down the samples in the <span class="math">\(y\)</span>
+-axis.</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="api-changes">
+<h3>API changes<a class="headerlink" href="#api-changes" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><tt class="xref py py-func docutils literal"><span class="pre">data_model.Study.plot_classifier()</span></tt> returns a
+<tt class="xref py py-func docutils literal"><span class="pre">visualize.predict.ClassifierViz()</span></tt> object</li>
+<li>Multi-index columns for data matrices are no longer supported</li>
+<li>Modalities are now calculated using Bayesian methods</li>
+<li><tt class="xref py py-func docutils literal"><span class="pre">data_model.Splicing._subset_and_standardize()</span></tt> now doesn&#8217;t fill
+<tt class="docutils literal"><span class="pre">NA``s</span> <span class="pre">with</span> <span class="pre">the</span> <span class="pre">mean</span> <span class="pre">Percent</span> <span class="pre">spliced-in/Psi/:math:`\Psi`</span> <span class="pre">score</span> <span class="pre">for</span> <span class="pre">the</span>
+<span class="pre">event,</span> <span class="pre">but</span> <span class="pre">rather</span> <span class="pre">replaces</span> <span class="pre">``NA</span></tt> with the value 0.5. Then, all values for
+that event are transformed with <span class="math">\(\arccos\)</span>/<span class="math">\(\cos^{-1}\)</span>/arc cosine
+so that all values range from <span class="math">\(-\pi\)</span> to <span class="math">\(+\pi\)</span> and are centered
+around <span class="math">\(0\)</span>.</li>
+</ul>
+</div>
+<div class="section" id="id6">
+<h3>Bug fixes<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Fixed issue with
+<tt class="xref py py-func docutils literal"><span class="pre">data_model.Study.tidy_splicing_with_expression()</span></tt> and
+<tt class="xref py py-func docutils literal"><span class="pre">data_model.Study.filter_splicing_on_expression()</span></tt> which
+had an issue with when the index names are not <cite>&#8220;miso_id&#8221;</cite> or
+<cite>&#8220;sample_id&#8221;</cite>.</li>
+<li>Don&#8217;t cache <tt class="xref py py-func docutils literal"><span class="pre">data_model.BaseData.feature_renamer_series()</span></tt>, so you
+can change the column used to rename features</li>
+</ul>
+</div>
+<div class="section" id="id7">
+<h3>Miscellaneous<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Add link to PyData NYC talk</li>
+<li>Add scrambled dataset with ~300 samples and both expression and splicing</li>
+<li>Fix build status badge in README</li>
+<li>Removed auto-call to <tt class="docutils literal"><span class="pre">%matplotlib</span> <span class="pre">inline</span></tt> call within
+<a class="reference internal" href="flotilla.visualize.html#module-flotilla.visualize" title="flotilla.visualize"><tt class="xref py py-mod docutils literal"><span class="pre">flotilla.visualize</span></tt></a> because it messes up the <tt class="docutils literal"><span class="pre">make</span> <span class="pre">lint</span></tt> call
+and it&#8217;s dishonest to the user to be messing with their IPython under the
+hood. It&#8217;s possible they don&#8217;t want the plotting to be inline, but rather
+in a separate X-window as specified by their <tt class="docutils literal"><span class="pre">$DISPLAY</span></tt> environment
+variable.</li>
+<li>Reformatted all code to pass <tt class="docutils literal"><span class="pre">make</span> <span class="pre">lint</span></tt> and <tt class="docutils literal"><span class="pre">make</span> <span class="pre">pep8</span></tt>, and these
+standards will be enforced for all future enhancements.</li>
+<li>Add Gitter chat room badge to README</li>
+</ul>
+</div>
+</div>
 <div class="section" id="v0-2-4-november-23rd-2014">
 <h2>v0.2.4 (November 23rd, 2014)<a class="headerlink" href="#v0-2-4-november-23rd-2014" title="Permalink to this headline">¶</a></h2>
 <p>This is a patch release, with non-breaking changes from v0.2.3.</p>
-<div class="section" id="plotting-functions">
-<h3>Plotting functions<a class="headerlink" href="#plotting-functions" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id8">
+<h3>Plotting functions<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>New clustered heatmap and <tt class="xref py py-func docutils literal"><span class="pre">data_model.Study.plot_clustermap()</span></tt> and
 <tt class="xref py py-func docutils literal"><span class="pre">data_model.Study.plot_correlations()</span></tt></li>
 </ul>
 </div>
-<div class="section" id="api-changes">
-<h3>API changes<a class="headerlink" href="#api-changes" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id9">
+<h3>API changes<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><tt class="xref py py-func docutils literal"><span class="pre">data_model.Study.save()</span></tt> now saves relative instead of absolute
 paths, which makes for more portable <tt class="docutils literal"><span class="pre">datapackages</span></tt></li>
@@ -211,14 +427,14 @@ paths, which makes for more portable <tt class="docutils literal"><span class="p
 <tt class="xref py py-func docutils literal"><span class="pre">Study.interactive_reset_outliers()</span></tt></li>
 </ul>
 </div>
-<div class="section" id="id1">
-<h3>Plotting functions<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id10">
+<h3>Plotting functions<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Add <a class="reference internal" href="flotilla.html#flotilla.Study" title="flotilla.Study"><tt class="xref py py-class docutils literal"><span class="pre">Study</span></tt></a>-level NMF space transitions/positions</li>
 </ul>
 </div>
-<div class="section" id="bug-fixes">
-<h3>Bug Fixes<a class="headerlink" href="#bug-fixes" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id11">
+<h3>Bug Fixes<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><tt class="xref py py-func docutils literal"><span class="pre">embark()</span></tt> wouldn&#8217;t work if <cite>metadata</cite> didn&#8217;t have a <cite>pooled</cite> column,
 now it does</li>
@@ -262,8 +478,8 @@ data is truly a probability distribution (non-negative, sums to 1)</li>
 <div class="section" id="v0-2-1-november-6th-2014">
 <h2>v0.2.1 (November 6th, 2014)<a class="headerlink" href="#v0-2-1-november-6th-2014" title="Permalink to this headline">¶</a></h2>
 <p>This is a patch release, with non-breaking changes from v0.2.0.</p>
-<div class="section" id="id2">
-<h3>Documentation updates<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id12">
+<h3>Documentation updates<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Update <a class="reference external" href="../gallery">gallery</a></li>
 <li>Update tutorial for <a class="reference external" href="../tutorial/addvanced_study_making.ipynb">advanced study making</a></li>
@@ -273,8 +489,8 @@ data is truly a probability distribution (non-negative, sums to 1)</li>
 <div class="section" id="v0-2-0-november-5th-2014">
 <h2>v0.2.0 (November 5th, 2014)<a class="headerlink" href="#v0-2-0-november-5th-2014" title="Permalink to this headline">¶</a></h2>
 <p>This is a minor release, with some breaking changes from v0.1.1.</p>
-<div class="section" id="new-features">
-<h3>New features<a class="headerlink" href="#new-features" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id13">
+<h3>New features<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Plot the expression or splicing of two <em>samples</em> with
 <a class="reference internal" href="flotilla.html#flotilla.Study.plot_two_samples" title="flotilla.Study.plot_two_samples"><tt class="xref py py-meth docutils literal"><span class="pre">Study.plot_two_samples()</span></tt></a></li>
@@ -298,8 +514,8 @@ which were detected in at least three cells, since
 </li>
 </ul>
 </div>
-<div class="section" id="id3">
-<h3>API changes<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id14">
+<h3>API changes<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>The attribute <tt class="docutils literal"><span class="pre">data</span></tt> in <a class="reference internal" href="flotilla.data_model.base.html#flotilla.data_model.base.BaseData" title="flotilla.data_model.base.BaseData"><tt class="xref py py-class docutils literal"><span class="pre">BaseData</span></tt></a> (i.e.
 <tt class="xref py py-attr docutils literal"><span class="pre">BaseData.data</span></tt>) now contains <strong>all</strong> the data, including pooled,
@@ -345,13 +561,6 @@ half a million reads).</li>
     <p class="pull-right">
       <a href="#">Back to top</a>
       
-        <br/>
-        
-<div id="sourcelink">
-  <a href="_sources/whatsnew.txt"
-     rel="nofollow">Source</a>
-</div>
-      
     </p>
     <p>
         &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
@@ -359,17 +568,6 @@ half a million reads).</li>
     </p>
   </div>
 </footer>
-    <p>
-    Stuck? Send questions, comments, and other feedback to:
-    <ul>
-        <li>The <a href="https://gitter.im/YeoLab/flotilla">Gitter</a> chat
-            room for immediate questions</li>
-        <li>The <a href="https://github.com/yeolab/flotilla/issues">Github
-            issues page</a> for feature requests</li>
-    </ul>
-    Or send an email to obotvinn@ucsd.edu if you're oldskool like that.
-    </p>
-
     <a href="http://olgabotvinnik.com/">Olga B. Botvinnik</a> is funded by the
     <a href="https://ndseg.asee.org/">NDSEG</a> fellowship and is a
     <a href="http://numfocus.org/">NumFOCUS</a>
@@ -382,5 +580,6 @@ half a million reads).</li>
     and TR3-05676 to <a href="http://yeolab.ucsd.edu/yeolab/Home.html">Gene
     Yeo</a>. <br/>
 
+    
   </body>
 </html>
