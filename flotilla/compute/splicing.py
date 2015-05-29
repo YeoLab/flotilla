@@ -10,14 +10,14 @@ from scipy import stats
 from scipy.misc import logsumexp
 
 
-MODALITIES_NAMES = ['excluded', 'middle', 'included', 'bimodal',
-                    'uniform']
+MODALITIES_NAMES = ['Psi~0', 'middle', 'Psi~1', 'bimodal',
+                    'ambiguous']
 
 
 class ModalityModel(object):
     """Object to model modalities from beta distributions"""
 
-    def __init__(self, alphas, betas, prior='uniform'):
+    def __init__(self, alphas, betas):
         if not isinstance(alphas, Iterable) and not isinstance(betas,
                                                                Iterable):
             alphas = [alphas]
@@ -30,10 +30,7 @@ class ModalityModel(object):
 
         self.rvs = [stats.beta(a, b) for a, b in
                     zip(self.alphas, self.betas)]
-        if prior == 'uniform':
-            self.scores = np.ones(self.alphas.shape).astype(float)
-        elif prior == 'exponential':
-            self.scores = np.exp(np.arange(self.alphas.shape[0]))
+        self.scores = np.ones(self.alphas.shape).astype(float)
         self.prob_parameters = self.scores/self.scores.sum()
 
     def __eq__(self, other):
@@ -87,34 +84,12 @@ class ModalityEstimator(object):
         self.inclusion_model = ModalityModel(self.parameters, 1)
         self.middle_model = ModalityModel(self.parameters+3, self.parameters+3)
         self.bimodal_model = ModalityModel(1 / (self.parameters+3),
-                                           1 / (self.parameters+3),
-                                           prior='exponential')
+                                           1 / (self.parameters+3))
 
-        self.models = {'included': self.inclusion_model,
-                       'excluded': self.exclusion_model,
-                       'bimodal': self.bimodal_model,
-                       'middle': self.middle_model}
-
-    def _loglik(self, event):
-        """Calculate log-likelihoods of an event, given the modality models"""
-        return dict((name, m.logliks(event))
-                    for name, m in self.models.iteritems())
-
-    def _logsumexp(self, logliks):
-        """Calculate logsumexps of each modality's loglikelihood"""
-        logsumexps = pd.Series(dict((name, logsumexp(loglik))
-                                    for name, loglik in logliks.iteritems()))
-        logsumexps['uniform'] = self.logbf_thresh
-        return logsumexps
-
-    def _guess_modality(self, logsumexps):
-        """Guess the most likely modality.
-
-        If no modalilites have logsumexp'd logliks greater than the log Bayes
-        factor threshold, then they are assigned the 'uniform' modality,
-        which is the null hypothesis
-        """
-        return logsumexps.idxmax()
+        self.one_param_models = {'Psi~1': self.inclusion_model,
+                                 'Psi~0': self.exclusion_model}
+        self.two_param_models = {'bimodal': self.bimodal_model,
+                                 'middle': self.middle_model}
 
     def fit_transform(self, data):
         """Get the modality assignments of each splicing event in the data
@@ -139,13 +114,30 @@ class ModalityEstimator(object):
         assert np.all(data.values.flat[np.isfinite(data.values.flat)] <= 1)
         assert np.all(data.values.flat[np.isfinite(data.values.flat)] >= 0)
 
-        logsumexp_logliks = data.apply(lambda x:
-                                       pd.Series({k: v.logsumexp_logliks(x)
-                                                  for k, v in
-                                                  self.models.iteritems()}),
-                                       axis=0)
-        logsumexp_logliks.ix['uniform'] = self.logbf_thresh
-        return logsumexp_logliks.idxmax()
+        # Estimate Psi~0/Psi~1 first
+        logsumexp_logliks1 = data.apply(
+            lambda x: pd.Series(
+                {k: v.logsumexp_logliks(x)
+                 for k, v in self.one_param_models.iteritems()}), axis=0)
+        logsumexp_logliks1.ix['ambiguous'] = self.logbf_thresh
+        modality_assignments1 = logsumexp_logliks1.idxmax()
+
+        # Take everything that was ambiguous for included/excluded and estimate
+        # bimodal and middle
+        data2 = data.ix[:, modality_assignments1 == 'ambiguous']
+        logsumexp_logliks2 = data2.apply(
+            lambda x: pd.Series(
+                {k: v.logsumexp_logliks(x)
+                 for k, v in self.two_param_models.iteritems()}), axis=0)
+        logsumexp_logliks2.ix['ambiguous'] = self.logbf_thresh
+        modality_assignments2 = logsumexp_logliks2.idxmax()
+
+        # Combine the results
+        modality_assignments = modality_assignments1
+        modality_assignments[modality_assignments2.index] = \
+            modality_assignments1
+        return modality_assignments
+
 
 
 def switchy_score(array):
