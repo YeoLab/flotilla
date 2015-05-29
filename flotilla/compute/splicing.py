@@ -135,7 +135,7 @@ class ModalityEstimator(object):
         # Combine the results
         modality_assignments = modality_assignments1
         modality_assignments[modality_assignments2.index] = \
-            modality_assignments1
+            modality_assignments2.values
         return modality_assignments
 
 
