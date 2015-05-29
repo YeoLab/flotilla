@@ -61,14 +61,12 @@ class _ModalityEstimatorPlotter(object):
 class ModalitiesViz(object):
     """Visualize results of modality assignments"""
     modality_colors = {'bimodal': seaborn_colors[3],
-                       'excluded': seaborn_colors[0],
-                       'included': seaborn_colors[2],
+                       'Psi~0': seaborn_colors[0],
+                       'Psi~1': seaborn_colors[2],
                        'middle': seaborn_colors[1],
-                       # 'ambiguous': 'lightgrey',
-                       'uniform': seaborn_colors[4]}
+                       'ambiguous': seaborn_colors[4]}
 
-    modality_order = ['excluded', 'uniform', 'bimodal', 'middle',
-                      'included']  # , 'ambiguous']
+    modality_order = ['Psi~0', 'middle', 'Psi~1', 'bimodal', 'ambiguous']
 
     colors = [modality_colors[modality] for modality in
               modality_order]
