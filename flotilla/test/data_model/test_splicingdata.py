@@ -317,6 +317,11 @@ class TestSplicingData:
         splicing.plot_modalities_lavalamps(
             groupby=groupby, phenotype_to_color=group_to_color)
 
+    def test_plot_event_modality_estimation(self, splicing):
+        event_counts = (~splicing.data.isnull()).sum()
+        event_id = event_counts[event_counts > 10].index[0]
+        splicing.plot_event_modality_estimation(event_id)
+
     def test_plot_feature(self, splicing):
         splicing.plot_feature(splicing.data.columns[0])
 
