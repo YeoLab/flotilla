@@ -104,7 +104,7 @@ class ModalityEstimator(object):
         """Calculate logsumexps of each modality's loglikelihood"""
         logsumexps = pd.Series(dict((name, logsumexp(loglik))
                                     for name, loglik in logliks.iteritems()))
-        logsumexps['uniform'] = self.logbf_thresh
+        logsumexps['ambiguous'] = self.logbf_thresh
         return logsumexps
 
     def _guess_modality(self, logsumexps):
