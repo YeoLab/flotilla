@@ -164,7 +164,7 @@ class TestModalityEstimator(object):
         test_loglik = estimator._loglik(event)
 
         true_loglik = dict((name, m.logliks(event))
-                           for name, m in estimator.models.iteritems())
+                           for name, m in estimator.models.items())
         pdt.assert_dict_equal(test_loglik, true_loglik)
 
     def test_logsumexp(self, event, estimator):
@@ -173,7 +173,7 @@ class TestModalityEstimator(object):
 
         true_logsumexp = pd.Series(
             dict((name, logsumexp(loglik))
-                 for name, loglik in logliks.iteritems()))
+                 for name, loglik in logliks.items()))
         true_logsumexp['uniform'] = estimator.logbf_thresh
         pdt.assert_series_equal(test_logsumexp, true_logsumexp)
 
@@ -192,7 +192,7 @@ class TestModalityEstimator(object):
 
         logsumexp_logliks = splicing_data.apply(
             lambda x: pd.Series({k: v.logsumexp_logliks(x)
-                                 for k, v in estimator.models.iteritems()}),
+                                 for k, v in estimator.models.items()}),
             axis=0)
         logsumexp_logliks.ix['uniform'] = estimator.logbf_thresh
         true_fit_transform = logsumexp_logliks.idxmax()
@@ -204,7 +204,7 @@ class TestModalityEstimator(object):
 
         logsumexp_logliks = splicing_data.apply(
             lambda x: pd.Series({k: v.logsumexp_logliks(x)
-                                 for k, v in estimator.models.iteritems()}),
+                                 for k, v in estimator.models.items()}),
             axis=0)
         logsumexp_logliks.ix['uniform'] = estimator.logbf_thresh
         true_fit_transform = logsumexp_logliks.idxmax()

@@ -334,7 +334,7 @@ class NetworkerViz(Networker):
                                    node_size=map(
                                        lambda x: node_size_mapper(x) * .5,
                                        graph.nodes()), ax=main_ax, alpha=1)
-        except (KeyError, ValueError):
+        except (KeyError, ValueError) as err:
             pass
 
         def renamer(x):

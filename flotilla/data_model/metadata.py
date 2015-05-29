@@ -60,7 +60,7 @@ class MetaData(BaseData):
         # Convert color strings to non-default matplotlib colors
         if self.phenotype_to_color is not None:
             # colors = iter(self._colors)
-            for phenotype, color in self.phenotype_to_color.iteritems():
+            for phenotype, color in self.phenotype_to_color.items():
                 try:
                     color = str_to_color[color]
                 except KeyError:
@@ -75,12 +75,12 @@ class MetaData(BaseData):
                 try:
                     marker = self.phenotype_to_marker[phenotype]
                 except KeyError:
-                    marker = markers.next()
+                    marker = next(markers)
                     sys.stderr.write(
                         '{} does not have marker style, '
                         'falling back on "{}"'.format(phenotype, marker))
                 if marker not in mpl.markers.MarkerStyle.filled_markers:
-                    correct_marker = markers.next()
+                    correct_marker = next(markers)
                     sys.stderr.write(
                         '{} is not a valid matplotlib marker style, '
                         'falling back on "{}"'.format(marker, correct_marker))
@@ -120,26 +120,26 @@ class MetaData(BaseData):
 
     @property
     def phenotype_transitions(self):
-        return zip(self.phenotype_order[:-1], self.phenotype_order[1:])
+        return list(zip(self.phenotype_order[:-1], self.phenotype_order[1:]))
 
     @property
     def _colors(self):
-        return map(mpl.colors.rgb2hex,
-                   sns.color_palette('husl', n_colors=self.n_phenotypes))
+        return list(map(mpl.colors.rgb2hex,
+                        sns.color_palette('husl', n_colors=self.n_phenotypes)))
 
     @property
     def _default_phenotype_to_color(self):
         colors = iter(self._colors)
 
         def color_factory():
-            return colors.next()
+            return next(colors)
 
         return defaultdict(color_factory)
 
     @property
     def phenotype_to_color(self):
         _default_phenotype_to_color = self._default_phenotype_to_color
-        all_phenotypes = self._phenotype_to_color.keys()
+        all_phenotypes = list(self._phenotype_to_color.keys())
         all_phenotypes.extend(self.phenotype_order)
         return dict((k, self._phenotype_to_color[k])
                     if k in self._phenotype_to_color else
@@ -160,9 +160,9 @@ class MetaData(BaseData):
         markers = cycle(['o', '^', 's', 'v', '*', 'D', ])
 
         def marker_factory():
-            return markers.next()
+            return next(markers)
         _default_phenotype_to_marker = defaultdict(marker_factory)
-        all_phenotypes = self._phenotype_to_marker.keys()
+        all_phenotypes = list(self._phenotype_to_marker.keys())
         all_phenotypes.extend(self.phenotype_order)
         return dict((k, self._phenotype_to_marker[k])
                     if k in self._phenotype_to_marker else
@@ -180,7 +180,7 @@ class MetaData(BaseData):
             markers = cycle(['o', '^', 's', 'v', '*', 'D', ])
 
             def marker_factory():
-                return markers.next()
+                return markers.__next__()
 
             self._phenotype_to_marker = defaultdict(marker_factory)
 

@@ -98,12 +98,12 @@ class ModalityEstimator(object):
     def _loglik(self, event):
         """Calculate log-likelihoods of an event, given the modality models"""
         return dict((name, m.logliks(event))
-                    for name, m in self.models.iteritems())
+                    for name, m in self.models.items())
 
     def _logsumexp(self, logliks):
         """Calculate logsumexps of each modality's loglikelihood"""
         logsumexps = pd.Series(dict((name, logsumexp(loglik))
-                                    for name, loglik in logliks.iteritems()))
+                                    for name, loglik in logliks.items()))
         logsumexps['uniform'] = self.logbf_thresh
         return logsumexps
 
@@ -142,7 +142,7 @@ class ModalityEstimator(object):
         logsumexp_logliks = data.apply(lambda x:
                                        pd.Series({k: v.logsumexp_logliks(x)
                                                   for k, v in
-                                                  self.models.iteritems()}),
+                                                  self.models.items()}),
                                        axis=0)
         logsumexp_logliks.ix['uniform'] = self.logbf_thresh
         return logsumexp_logliks.idxmax()

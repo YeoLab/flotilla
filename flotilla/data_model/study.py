@@ -566,9 +566,9 @@ class Study(object):
         except KeyError:
             raise AttributeError('The datapackage.json file is required to '
                                  'have the "metadata" resource')
-        dfs = dict(('{}_data'.format(k), v) for k, v in dfs.iteritems())
+        dfs = dict(('{}_data'.format(k), v) for k, v in dfs.items())
 
-        nones = [k for k, v in kwargs.iteritems() if v is None]
+        nones = [k for k, v in kwargs.items() if v is None]
         for key in nones:
             kwargs.pop(key)
         kwargs.update(species_kws)
@@ -669,8 +669,8 @@ class Study(object):
         outlier_detector.predict(reducer.reduced_space)
         outlier_detector.title = "_".join(
             ['outlier', data_type, sample_subset, feature_subset])
-        print "setting outlier type:\"{}\" in metadata".format(
-            outlier_detector.title)
+        print("setting outlier type:\"{}\" in metadata".format(
+            outlier_detector.title))
         if outlier_detector.title not in self.metadata.data:
             self.metadata.data[outlier_detector.title] = False
 
@@ -1313,7 +1313,7 @@ class Study(object):
         feature_ids = self.feature_subset_to_feature_ids(
             'splicing', feature_subset=feature_subset)
 
-        celltype_and_sample_ids = celltype_groups.groups.iteritems()
+        celltype_and_sample_ids = celltype_groups.groups.items()
         for i, (phenotype, sample_ids) in enumerate(celltype_and_sample_ids):
             # import pdb; pdb.set_trace()
 
@@ -1345,7 +1345,7 @@ class Study(object):
         feature_ids = self.feature_subset_to_feature_ids(
             'splicing', feature_subset=feature_subset)
 
-        celltype_and_sample_ids = celltype_groups.groups.iteritems()
+        celltype_and_sample_ids = celltype_groups.groups.items()
         index = pd.MultiIndex.from_product([celltype_groups.groups.keys(),
                                             ['n_events', 'percent']])
         percents = pd.Series(index=index)

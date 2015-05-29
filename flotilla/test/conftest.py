@@ -113,15 +113,15 @@ def group_order(groups):
 @pytest.fixture(scope='module')
 def colors(n_groups):
     """Colors to use for the samples"""
-    return map(mpl.colors.rgb2hex,
-               sns.color_palette('husl', n_colors=n_groups))
+    return list(map(mpl.colors.rgb2hex,
+                    sns.color_palette('husl', n_colors=n_groups)))
 
 
 # @pytest.fixture(scope='module')
 # def colors_fixed(n_groups_fixed):
 #     """Colors to use for the samples"""
-#     return map(mpl.colors.rgb2hex,
-#                sns.color_palette('husl', n_colors=n_groups_fixed))
+#     return list(map(mpl.colors.rgb2hex,
+#                sns.color_palette('husl', n_colors=n_groups_fixed)))
 
 
 @pytest.fixture(scope='module')
@@ -152,13 +152,13 @@ def color_ordered(group_order, group_to_color):
 def group_to_marker(request):
     """Mapping of groups to plotting markers"""
     marker_iter = iter(list('ov^<>8sp*hHDd'))
-    return defaultdict(lambda: marker_iter.next())
+    return defaultdict(lambda: next(marker_iter))
 
 
 @pytest.fixture(scope='module')
 def group_transitions(group_order):
     """List of pairwise transitions between phenotypes, for NMF"""
-    return zip(group_order[:-1], group_order[1:])
+    return list(zip(group_order[:-1], group_order[1:]))
 
 #
 # @pytest.fixture(scope='module')
@@ -421,7 +421,8 @@ def expression_kws(expression_feature_data, expression_feature_rename_col,
 
 @pytest.fixture(scope='module')
 def true_modalities(events, modality_models, groups):
-    data = dict((e, dict((g, (np.random.choice(modality_models.keys())))
+    modality_names = list(modality_models.keys())
+    data = dict((e, dict((g, (np.random.choice(modality_names)))
                          for g in groups)) for e in events)
     return pd.DataFrame(data)
 

@@ -11,7 +11,7 @@ import seaborn as sns
 from ..compute.splicing import get_switchy_score_order
 from ..util import as_numpy
 
-seaborn_colors = map(mpl.colors.rgb2hex, sns.color_palette('deep'))
+seaborn_colors = list(map(mpl.colors.rgb2hex, sns.color_palette('deep')))
 
 
 class _ModalityEstimatorPlotter(object):
@@ -70,8 +70,13 @@ class ModalitiesViz(object):
     modality_order = ['excluded', 'uniform', 'bimodal', 'middle',
                       'included']  # , 'ambiguous']
 
-    colors = [modality_colors[modality] for modality in
-              modality_order]
+    @property
+    def colors(self):
+        return [self.modality_colors[modality] for modality in
+                self.modality_order]
+
+    # colors = [self.modality_colors[modality] for modality in
+    # modality_order]
 
     def plot_reduced_space(self, binned_reduced, modality_assignments,
                            ax=None, title=None, xlabel='', ylabel=''):
@@ -223,7 +228,7 @@ def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
 
     n_samples, n_events = y.shape
     # .astype(float) is to get rid of a deprecation warning
-    x = np.vstack((np.arange(n_events) for _ in xrange(n_samples)))
+    x = np.vstack((np.arange(n_events) for _ in range(n_samples)))
     x = x.astype(float)
     x += x_offset
 

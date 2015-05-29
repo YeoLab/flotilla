@@ -54,7 +54,7 @@ class TestStudy(object):
                     ('expression', expression_kws),
                     ('splicing', splicing_kws))
         for data_type, kws in kw_pairs:
-            for kw_name, kw_value in kws.iteritems():
+            for kw_name, kw_value in kws.items():
                 kwargs['{}_{}'.format(data_type, kw_name)] = kw_value
 
         return Study(metadata,
@@ -612,7 +612,7 @@ class TestStudy(object):
     #         datatype_to_key = {'metadata': metadata_none_key,
     #                            'expression': expression_none_key,
     #                            'splicing': splicing_none_key}
-    #         for datatype, key in datatype_to_key.iteritems():
+    #         for datatype, key in datatype_to_key.items():
     #             if key is not None:
     #                 resource = name_to_resource(datapackage, datatype)
     #                 if key in resource:
@@ -706,7 +706,7 @@ class TestStudy(object):
         resource_names = keys_from_study.keys()
 
         # Add auto-generated attributes into the true datapackage
-        for name, keys in keys_from_study.iteritems():
+        for name, keys in keys_from_study.items():
             resource = name_to_resource(test_datapackage, name)
             for key in keys:
                 command = self.get_data_eval_command(name, key)
