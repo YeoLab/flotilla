@@ -90,6 +90,37 @@ class ModalityEstimator(object):
                                  'Psi~0': self.exclusion_model}
         self.two_param_models = {'bimodal': self.bimodal_model,
                                  'middle': self.middle_model}
+        self.models = {'Psi~1': self.inclusion_model,
+                       'Psi~0': self.exclusion_model,
+                       'bimodal': self.bimodal_model,
+                       'middle': self.middle_model}
+
+    def _loglik(self, event):
+        """Calculate log-likelihoods of an event, given the modality models"""
+        return dict((name, m.logliks(event))
+                    for name, m in self.models.iteritems())
+
+    def _logsumexp(self, logliks):
+        """Calculate logsumexps of each modality's loglikelihood"""
+        logsumexps = pd.Series(dict((name, logsumexp(loglik))
+                                    for name, loglik in logliks.iteritems()))
+        logsumexps['uniform'] = self.logbf_thresh
+        return logsumexps
+
+    def _guess_modality(self, logsumexps):
+        """Guess the most likely modality.
+
+        If no modalilites have logsumexp'd logliks greater than the log Bayes
+        factor threshold, then they are assigned the 'uniform' modality,
+        which is the null hypothesis
+        """
+
+        if all(logsumexps[self.one_param_models.keys()] > self.logbf_thresh):
+            return logsumexps[self.one_param_models.keys()].idxmax()
+        else:
+            other_models = logsumexps.index.difference(
+                self.one_param_models.keys())
+            return logsumexps[other_models].idxmax()
 
     def fit_transform(self, data):
         """Get the modality assignments of each splicing event in the data
