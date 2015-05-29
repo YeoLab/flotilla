@@ -306,27 +306,34 @@ class TestSplicingData:
         splicing.plot_modalities_bars(
             groupby=groupby, percentages=percentages,
             phenotype_to_color=group_to_color)
+        plt.close('all')
+
 
     def test_plot_modalities_reduced(self, splicing, groupby,
                                      group_to_color):
         splicing.plot_modalities_bars(
             groupby=groupby, phenotype_to_color=group_to_color)
+        plt.close('all')
 
     def test_plot_modalities_lavalamps(self, splicing, groupby,
                                        group_to_color):
         splicing.plot_modalities_lavalamps(
             groupby=groupby, phenotype_to_color=group_to_color)
+        plt.close('all')
 
     def test_plot_event_modality_estimation(self, splicing):
         event_counts = (~splicing.data.isnull()).sum()
         event_id = event_counts[event_counts > 10].index[0]
         splicing.plot_event_modality_estimation(event_id)
+        plt.close('all')
 
     def test_plot_feature(self, splicing):
         splicing.plot_feature(splicing.data.columns[0])
+        plt.close('all')
 
     def test_plot_lavalamp(self, splicing, group_to_color):
         splicing.plot_lavalamp(group_to_color)
+        plt.close('all')
 
     def test_plot_two_features(self, splicing, groupby,
                                group_to_color):
@@ -337,9 +344,11 @@ class TestSplicingData:
         feature2 = features[1]
         splicing.plot_two_features(feature1, feature2, groupby=groupby,
                                    label_to_color=group_to_color)
+        plt.close('all')
 
     def test_plot_two_samples(self, splicing):
         samples = splicing.data.index[splicing.data.T.count() > 10]
         sample1 = samples[0]
         sample2 = samples[1]
         splicing.plot_two_samples(sample1, sample2)
+        plt.close('all')
