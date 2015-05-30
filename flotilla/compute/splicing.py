@@ -170,7 +170,6 @@ class ModalityEstimator(object):
         return modality_assignments
 
 
-
 def switchy_score(array):
     """Transform a 1D array of data scores to a vector of "switchy scores"
 

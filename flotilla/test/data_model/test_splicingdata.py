@@ -308,7 +308,6 @@ class TestSplicingData:
             phenotype_to_color=group_to_color)
         plt.close('all')
 
-
     def test_plot_modalities_reduced(self, splicing, groupby,
                                      group_to_color):
         splicing.plot_modalities_bars(
