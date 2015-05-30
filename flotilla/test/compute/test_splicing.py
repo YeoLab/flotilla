@@ -143,12 +143,11 @@ class TestModalityEstimator(object):
         true_inclusion = ModalityModel(true_parameters, 1)
         true_middle = ModalityModel(true_parameters+3, true_parameters+3)
         true_bimodal = ModalityModel(1 / (true_parameters+3),
-                                     1 / (true_parameters+3),
-                                     prior='exponential')
-        true_models = {'included': true_inclusion,
-                       'excluded': true_exclusion,
-                       'bimodal': true_bimodal,
-                       'middle': true_middle}
+                                     1 / (true_parameters+3))
+        true_one_param_models = {'Psi~1': true_inclusion,
+                                 'Psi~0': true_exclusion}
+        true_two_param_models = {'bimodal': true_bimodal,
+                                 'middle': true_middle}
 
         npt.assert_equal(estimator.step, step)
         npt.assert_equal(estimator.vmax, vmax)
@@ -158,58 +157,54 @@ class TestModalityEstimator(object):
         npt.assert_equal(estimator.inclusion_model, true_inclusion)
         npt.assert_equal(estimator.middle_model, true_middle)
         npt.assert_equal(estimator.bimodal_model, true_bimodal)
-        pdt.assert_dict_equal(estimator.models, true_models)
+        pdt.assert_dict_equal(estimator.one_param_models,
+                              true_one_param_models)
+        pdt.assert_dict_equal(estimator.two_param_models,
+                              true_two_param_models)
 
-    def test_loglik(self, event, estimator):
-        test_loglik = estimator._loglik(event)
-
-        true_loglik = dict((name, m.logliks(event))
-                           for name, m in estimator.models.iteritems())
-        pdt.assert_dict_equal(test_loglik, true_loglik)
-
-    def test_logsumexp(self, event, estimator):
-        logliks = estimator._loglik(event)
-        test_logsumexp = estimator._logsumexp(logliks)
-
-        true_logsumexp = pd.Series(
-            dict((name, logsumexp(loglik))
-                 for name, loglik in logliks.iteritems()))
-        true_logsumexp['uniform'] = estimator.logbf_thresh
-        pdt.assert_series_equal(test_logsumexp, true_logsumexp)
-
-    def test_guess_modality(self, event, estimator):
-        logsumexps = estimator._logsumexp(estimator._loglik(event))
-
-        test_guess_modality = estimator._guess_modality(logsumexps)
-
-        logsumexps['uniform'] = estimator.logbf_thresh
-        true_guess_modality = logsumexps.idxmax()
-
-        pdt.assert_equal(test_guess_modality, true_guess_modality)
-
-    def test_fit_transform_with_na(self, estimator, splicing_data):
+    def test_fit_transform(self, estimator, splicing_data):
         test_fit_transform = estimator.fit_transform(splicing_data)
 
-        logsumexp_logliks = splicing_data.apply(
-            lambda x: pd.Series({k: v.logsumexp_logliks(x)
-                                 for k, v in estimator.models.iteritems()}),
-            axis=0)
-        logsumexp_logliks.ix['uniform'] = estimator.logbf_thresh
-        true_fit_transform = logsumexp_logliks.idxmax()
+        # Estimate Psi~0/Psi~1 first
+        logsumexp_logliks1 = splicing_data.apply(
+            lambda x: pd.Series(
+                {k: v.logsumexp_logliks(x)
+                 for k, v in estimator.one_param_models.iteritems()}), axis=0)
+        logsumexp_logliks1.ix['ambiguous'] = estimator.logbf_thresh
+        modality_assignments1 = logsumexp_logliks1.idxmax()
+
+        # Take everything that was ambiguous for included/excluded and estimate
+        # bimodal and middle
+        data2 = splicing_data.ix[:, modality_assignments1 == 'ambiguous']
+        logsumexp_logliks2 = data2.apply(
+            lambda x: pd.Series(
+                {k: v.logsumexp_logliks(x)
+                 for k, v in estimator.two_param_models.iteritems()}), axis=0)
+        logsumexp_logliks2.ix['ambiguous'] = estimator.logbf_thresh
+        modality_assignments2 = logsumexp_logliks2.idxmax()
+
+        # Combine the results
+        true_fit_transform = modality_assignments1
+        true_fit_transform[modality_assignments2.index] = \
+            modality_assignments2.values
 
         pdt.assert_series_equal(test_fit_transform, true_fit_transform)
 
-    def test_fit_transform_no_na(self, estimator, splicing_data):
-        test_fit_transform = estimator.fit_transform(splicing_data)
+    @pytest.mark.xfail
+    def test_fit_transform_greater_than1(self, estimator):
+        nrows = 10
+        ncols = 5
+        data = pd.DataFrame(
+            np.abs(np.random.randn(nrows, ncols).reshape(nrows, ncols))+10)
+        estimator.fit_transform(data)
 
-        logsumexp_logliks = splicing_data.apply(
-            lambda x: pd.Series({k: v.logsumexp_logliks(x)
-                                 for k, v in estimator.models.iteritems()}),
-            axis=0)
-        logsumexp_logliks.ix['uniform'] = estimator.logbf_thresh
-        true_fit_transform = logsumexp_logliks.idxmax()
-
-        pdt.assert_series_equal(test_fit_transform, true_fit_transform)
+    @pytest.mark.xfail
+    def test_fit_transform_less_than1(self, estimator):
+        nrows = 10
+        ncols = 5
+        data = pd.DataFrame(
+            np.abs(np.random.randn(nrows, ncols).reshape(nrows, ncols))-10)
+        estimator.fit_transform(data)
 
 
 @pytest.fixture(params=['list', 'array', 'nan'])
