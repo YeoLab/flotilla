@@ -12,3 +12,7 @@ Miscellaneous
 
 - Rasterize lavalamp plot for visualizing many splicing events at once,
   otherwise the image is too big. PR #308
+- Change modality estimation to a two-step process: Estimate :math:`$\Psi~0` and :math:`$\Psi~1`
+  first, which change 1 parameter of the Beta distribution at a time,
+  then bimodal and middle, which change both parameters of the Beta
+  distribution at once.
