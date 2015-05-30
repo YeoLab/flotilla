@@ -228,6 +228,10 @@ map to multiple gene names. Fixes #304 with #309.</li>
 <ul class="simple">
 <li>Rasterize lavalamp plot for visualizing many splicing events at once,
 otherwise the image is too big. PR #308</li>
+<li>Change modality estimation to a two-step process: Estimate <span class="math">\($\Psi~0\)</span> and <span class="math">\($\Psi~1\)</span>
+first, which change 1 parameter of the Beta distribution at a time,
+then bimodal and middle, which change both parameters of the Beta
+distribution at once.</li>
 </ul>
 </div>
 </div>
