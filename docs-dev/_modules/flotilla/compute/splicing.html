@@ -9,7 +9,7 @@
     
     <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../../_static/bootswatch-3.2.0/paper/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootswatch-3.3.4/paper/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     
     <script type="text/javascript">
@@ -27,7 +27,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../../../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
     <link rel="top" title="flotilla 0.2.8dev documentation" href="../../../index.html" />
     <link rel="up" title="flotilla" href="../../flotilla.html" />
@@ -164,14 +164,14 @@
 <span class="kn">from</span> <span class="nn">scipy.misc</span> <span class="kn">import</span> <span class="n">logsumexp</span>
 
 
-<span class="n">MODALITIES_NAMES</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;excluded&#39;</span><span class="p">,</span> <span class="s">&#39;middle&#39;</span><span class="p">,</span> <span class="s">&#39;included&#39;</span><span class="p">,</span> <span class="s">&#39;bimodal&#39;</span><span class="p">,</span>
-                    <span class="s">&#39;uniform&#39;</span><span class="p">]</span>
+<span class="n">MODALITIES_NAMES</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Psi~0&#39;</span><span class="p">,</span> <span class="s">&#39;middle&#39;</span><span class="p">,</span> <span class="s">&#39;Psi~1&#39;</span><span class="p">,</span> <span class="s">&#39;bimodal&#39;</span><span class="p">,</span>
+                    <span class="s">&#39;ambiguous&#39;</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="ModalityModel"><a class="viewcode-back" href="../../../flotilla.compute.splicing.html#flotilla.compute.splicing.ModalityModel">[docs]</a><span class="k">class</span> <span class="nc">ModalityModel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Object to model modalities from beta distributions&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alphas</span><span class="p">,</span> <span class="n">betas</span><span class="p">,</span> <span class="n">prior</span><span class="o">=</span><span class="s">&#39;uniform&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alphas</span><span class="p">,</span> <span class="n">betas</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">alphas</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">betas</span><span class="p">,</span>
                                                                <span class="n">Iterable</span><span class="p">):</span>
             <span class="n">alphas</span> <span class="o">=</span> <span class="p">[</span><span class="n">alphas</span><span class="p">]</span>
@@ -184,10 +184,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">rvs</span> <span class="o">=</span> <span class="p">[</span><span class="n">stats</span><span class="o">.</span><span class="n">beta</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span>
                     <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alphas</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">betas</span><span class="p">)]</span>
-        <span class="k">if</span> <span class="n">prior</span> <span class="o">==</span> <span class="s">&#39;uniform&#39;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">scores</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alphas</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">prior</span> <span class="o">==</span> <span class="s">&#39;exponential&#39;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">scores</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alphas</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scores</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alphas</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">prob_parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scores</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">scores</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
@@ -241,11 +238,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">inclusion_model</span> <span class="o">=</span> <span class="n">ModalityModel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">middle_model</span> <span class="o">=</span> <span class="n">ModalityModel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">+</span><span class="mi">3</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">+</span><span class="mi">3</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bimodal_model</span> <span class="o">=</span> <span class="n">ModalityModel</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">+</span><span class="mi">3</span><span class="p">),</span>
-                                           <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">+</span><span class="mi">3</span><span class="p">),</span>
-                                           <span class="n">prior</span><span class="o">=</span><span class="s">&#39;exponential&#39;</span><span class="p">)</span>
+                                           <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">+</span><span class="mi">3</span><span class="p">))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">models</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;included&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inclusion_model</span><span class="p">,</span>
-                       <span class="s">&#39;excluded&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">exclusion_model</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">one_param_models</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;Psi~1&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inclusion_model</span><span class="p">,</span>
+                                 <span class="s">&#39;Psi~0&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">exclusion_model</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">two_param_models</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;bimodal&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">bimodal_model</span><span class="p">,</span>
+                                 <span class="s">&#39;middle&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">middle_model</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">models</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;Psi~1&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inclusion_model</span><span class="p">,</span>
+                       <span class="s">&#39;Psi~0&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">exclusion_model</span><span class="p">,</span>
                        <span class="s">&#39;bimodal&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">bimodal_model</span><span class="p">,</span>
                        <span class="s">&#39;middle&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">middle_model</span><span class="p">}</span>
 
@@ -258,7 +258,7 @@
         <span class="sd">&quot;&quot;&quot;Calculate logsumexps of each modality&#39;s loglikelihood&quot;&quot;&quot;</span>
         <span class="n">logsumexps</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="nb">dict</span><span class="p">((</span><span class="n">name</span><span class="p">,</span> <span class="n">logsumexp</span><span class="p">(</span><span class="n">loglik</span><span class="p">))</span>
                                     <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">loglik</span> <span class="ow">in</span> <span class="n">logliks</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()))</span>
-        <span class="n">logsumexps</span><span class="p">[</span><span class="s">&#39;uniform&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logbf_thresh</span>
+        <span class="n">logsumexps</span><span class="p">[</span><span class="s">&#39;ambiguous&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logbf_thresh</span>
         <span class="k">return</span> <span class="n">logsumexps</span>
 
     <span class="k">def</span> <span class="nf">_guess_modality</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logsumexps</span><span class="p">):</span>
@@ -268,7 +268,13 @@
 <span class="sd">        factor threshold, then they are assigned the &#39;uniform&#39; modality,</span>
 <span class="sd">        which is the null hypothesis</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">logsumexps</span><span class="o">.</span><span class="n">idxmax</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">logsumexps</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">one_param_models</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">logbf_thresh</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">logsumexps</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">one_param_models</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span><span class="o">.</span><span class="n">idxmax</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">other_models</span> <span class="o">=</span> <span class="n">logsumexps</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">one_param_models</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="k">return</span> <span class="n">logsumexps</span><span class="p">[</span><span class="n">other_models</span><span class="p">]</span><span class="o">.</span><span class="n">idxmax</span><span class="p">()</span>
 
 <div class="viewcode-block" id="ModalityEstimator.fit_transform"><a class="viewcode-back" href="../../../flotilla.compute.splicing.html#flotilla.compute.splicing.ModalityEstimator.fit_transform">[docs]</a>    <span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the modality assignments of each splicing event in the data</span>
@@ -293,13 +299,29 @@
         <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flat</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flat</span><span class="p">)]</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flat</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flat</span><span class="p">)]</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
 
-        <span class="n">logsumexp_logliks</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span>
-                                       <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">({</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">logsumexp_logliks</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-                                                  <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span>
-                                                  <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()}),</span>
-                                       <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">logsumexp_logliks</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="s">&#39;uniform&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logbf_thresh</span>
-        <span class="k">return</span> <span class="n">logsumexp_logliks</span><span class="o">.</span><span class="n">idxmax</span><span class="p">()</span>
+        <span class="c"># Estimate Psi~0/Psi~1 first</span>
+        <span class="n">logsumexp_logliks1</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
+                <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">logsumexp_logliks</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                 <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">one_param_models</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()}),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">logsumexp_logliks1</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="s">&#39;ambiguous&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logbf_thresh</span>
+        <span class="n">modality_assignments1</span> <span class="o">=</span> <span class="n">logsumexp_logliks1</span><span class="o">.</span><span class="n">idxmax</span><span class="p">()</span>
+
+        <span class="c"># Take everything that was ambiguous for included/excluded and estimate</span>
+        <span class="c"># bimodal and middle</span>
+        <span class="n">data2</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">ix</span><span class="p">[:,</span> <span class="n">modality_assignments1</span> <span class="o">==</span> <span class="s">&#39;ambiguous&#39;</span><span class="p">]</span>
+        <span class="n">logsumexp_logliks2</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
+                <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">logsumexp_logliks</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                 <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">two_param_models</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()}),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">logsumexp_logliks2</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="s">&#39;ambiguous&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logbf_thresh</span>
+        <span class="n">modality_assignments2</span> <span class="o">=</span> <span class="n">logsumexp_logliks2</span><span class="o">.</span><span class="n">idxmax</span><span class="p">()</span>
+
+        <span class="c"># Combine the results</span>
+        <span class="n">modality_assignments</span> <span class="o">=</span> <span class="n">modality_assignments1</span>
+        <span class="n">modality_assignments</span><span class="p">[</span><span class="n">modality_assignments2</span><span class="o">.</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="n">modality_assignments2</span><span class="o">.</span><span class="n">values</span>
+        <span class="k">return</span> <span class="n">modality_assignments</span>
 
 </div></div>
 <div class="viewcode-block" id="switchy_score"><a class="viewcode-back" href="../../../flotilla.compute.splicing.html#flotilla.compute.splicing.switchy_score">[docs]</a><span class="k">def</span> <span class="nf">switchy_score</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
@@ -358,7 +380,7 @@
     </p>
     <p>
         &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.<br/>
     </p>
   </div>
 </footer>

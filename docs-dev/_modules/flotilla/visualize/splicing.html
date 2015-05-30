@@ -9,7 +9,7 @@
     
     <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../../_static/bootswatch-3.2.0/paper/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootswatch-3.3.4/paper/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     
     <script type="text/javascript">
@@ -27,7 +27,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../../../_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
     <link rel="top" title="flotilla 0.2.8dev documentation" href="../../../index.html" />
     <link rel="up" title="flotilla.visualize" href="../visualize.html" />
@@ -215,14 +215,12 @@
 <div class="viewcode-block" id="ModalitiesViz"><a class="viewcode-back" href="../../../flotilla.visualize.splicing.html#flotilla.visualize.splicing.ModalitiesViz">[docs]</a><span class="k">class</span> <span class="nc">ModalitiesViz</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Visualize results of modality assignments&quot;&quot;&quot;</span>
     <span class="n">modality_colors</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;bimodal&#39;</span><span class="p">:</span> <span class="n">seaborn_colors</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
-                       <span class="s">&#39;excluded&#39;</span><span class="p">:</span> <span class="n">seaborn_colors</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                       <span class="s">&#39;included&#39;</span><span class="p">:</span> <span class="n">seaborn_colors</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                       <span class="s">&#39;Psi~0&#39;</span><span class="p">:</span> <span class="n">seaborn_colors</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                       <span class="s">&#39;Psi~1&#39;</span><span class="p">:</span> <span class="n">seaborn_colors</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
                        <span class="s">&#39;middle&#39;</span><span class="p">:</span> <span class="n">seaborn_colors</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                       <span class="c"># &#39;ambiguous&#39;: &#39;lightgrey&#39;,</span>
-                       <span class="s">&#39;uniform&#39;</span><span class="p">:</span> <span class="n">seaborn_colors</span><span class="p">[</span><span class="mi">4</span><span class="p">]}</span>
+                       <span class="s">&#39;ambiguous&#39;</span><span class="p">:</span> <span class="n">seaborn_colors</span><span class="p">[</span><span class="mi">4</span><span class="p">]}</span>
 
-    <span class="n">modality_order</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;excluded&#39;</span><span class="p">,</span> <span class="s">&#39;uniform&#39;</span><span class="p">,</span> <span class="s">&#39;bimodal&#39;</span><span class="p">,</span> <span class="s">&#39;middle&#39;</span><span class="p">,</span>
-                      <span class="s">&#39;included&#39;</span><span class="p">]</span>  <span class="c"># , &#39;ambiguous&#39;]</span>
+    <span class="n">modality_order</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Psi~0&#39;</span><span class="p">,</span> <span class="s">&#39;middle&#39;</span><span class="p">,</span> <span class="s">&#39;Psi~1&#39;</span><span class="p">,</span> <span class="s">&#39;bimodal&#39;</span><span class="p">,</span> <span class="s">&#39;ambiguous&#39;</span><span class="p">]</span>
 
     <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">modality_colors</span><span class="p">[</span><span class="n">modality</span><span class="p">]</span> <span class="k">for</span> <span class="n">modality</span> <span class="ow">in</span>
               <span class="n">modality_order</span><span class="p">]</span>
@@ -485,7 +483,7 @@
     </p>
     <p>
         &copy; Copyright 2014, Olga B. Botvinnik, Michael T. Lovci, Patrick Liu, Yan Song, and Gene Yeo.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.<br/>
     </p>
   </div>
 </footer>
