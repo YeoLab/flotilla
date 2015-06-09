@@ -249,12 +249,12 @@ class TestSplicingData:
             color_ordered, group_to_color, group_to_marker)
         plt.close('all')
 
-    def test_modality_assignments(self, splicing, groupby_params, n=n):
+    def test_modality_assignments(self, splicing, groupby_params):
         sample_ids = None
         feature_ids = None
         test_modality_assignments = splicing.modality_assignments(
             sample_ids=sample_ids, feature_ids=feature_ids,
-            groupby=groupby_params, n=n)
+            groupby=groupby_params)
 
         data = splicing._subset(splicing.data, sample_ids,
                                 feature_ids, require_min_samples=False)
@@ -263,7 +263,7 @@ class TestSplicingData:
         else:
             groupby_copy = groupby_params
         grouped = data.groupby(groupby_copy)
-        data = pd.concat([df.dropna(thresh=n, axis=1)
+        data = pd.concat([df.dropna(thresh=20, axis=1)
                          for name, df in grouped])
         true_assignments = data.groupby(groupby_copy).apply(
             splicing.modality_estimator.fit_transform)
@@ -272,7 +272,7 @@ class TestSplicingData:
 
     @pytest.mark.xfail
     def test_modality_assignments_all_inputs_not_none(self, splicing,
-                                                      groupby):
+                                                      groupby, n):
         sample_ids = None
         feature_ids = None
         splicing.modality_assignments(
