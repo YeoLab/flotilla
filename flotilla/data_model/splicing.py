@@ -13,7 +13,6 @@ from ..util import memoize, timestamp
 from ..visualize.splicing import lavalamp, hist_single_vs_pooled_diff, \
     lavalamp_pooled_inconsistent
 
-
 FRACTION_DIFF_THRESH = 0.1
 
 
@@ -24,8 +23,8 @@ class SplicingData(BaseData):
     n_components = 2
     _binsize = 0.1
 
-    included_label = 'included >>'
-    excluded_label = 'excluded >>'
+    included_label = '$\Psi~1$ >>'
+    excluded_label = '$\Psi~0$ >>'
 
     def __init__(self, data,
                  feature_data=None, binsize=0.1, outliers=None,
@@ -85,7 +84,7 @@ class SplicingData(BaseData):
 
     @memoize
     def modality_assignments(self, sample_ids=None, feature_ids=None,
-                             data=None, groupby=None, min_samples=10):
+                             data=None, groupby=None, min_samples=20):
         """Assigned modalities for these samples and features.
 
         Parameters
@@ -132,7 +131,7 @@ class SplicingData(BaseData):
 
     @memoize
     def modality_counts(self, sample_ids=None, feature_ids=None, data=None,
-                        groupby=None, min_samples=10):
+                        groupby=None, min_samples=20):
         """Count the number of each modalities of these samples and features
 
         Parameters
@@ -162,7 +161,7 @@ class SplicingData(BaseData):
 
     def plot_modalities_reduced(self, sample_ids=None, feature_ids=None,
                                 data=None, ax=None, title=None,
-                                min_samples=10):
+                                min_samples=20):
         """Plot events modality assignments in NMF space
 
         This will calculate modalities on all samples provided, without
@@ -201,7 +200,7 @@ class SplicingData(BaseData):
 
     def plot_modalities_bars(self, sample_ids=None, feature_ids=None,
                              data=None, groupby=None, phenotype_to_color=None,
-                             percentages=False, ax=None, min_samples=10):
+                             percentages=False, ax=None, min_samples=20):
         """Make grouped barplots of the number of modalities per group
 
         Parameters
@@ -231,7 +230,7 @@ class SplicingData(BaseData):
 
     def plot_modalities_lavalamps(self, sample_ids=None, feature_ids=None,
                                   data=None, groupby=None,
-                                  phenotype_to_color=None, min_samples=10):
+                                  phenotype_to_color=None, min_samples=20):
         """Plot "lavalamp" scatterplot of each event
 
         Parameters
@@ -286,7 +285,7 @@ class SplicingData(BaseData):
 
     def plot_event_modality_estimation(self, event_id, sample_ids=None,
                                        data=None,
-                                       groupby=None, min_samples=10):
+                                       groupby=None, min_samples=20):
         """Plots the mathematical reasoning for an event's modality assignment
 
         Parameters
@@ -362,10 +361,10 @@ class SplicingData(BaseData):
                      phenotype_to_color=None,
                      phenotype_to_marker=None, nmf_xlabel=None,
                      nmf_ylabel=None,
-                     nmf_space=False, fig=None, axesgrid=None):
+                     nmf_space=False, fig=None, axesgrid=None, n=20):
         if nmf_space:
             nmf_xlabel = self._nmf_space_xlabel(phenotype_groupby)
-            nmf_ylabel = self._nmf_space_xlabel(phenotype_groupby)
+            nmf_ylabel = self._nmf_space_ylabel(phenotype_groupby)
         else:
             nmf_ylabel = None
             nmf_xlabel = None
@@ -376,7 +375,8 @@ class SplicingData(BaseData):
                                                phenotype_to_color,
                                                phenotype_to_marker, nmf_xlabel,
                                                nmf_ylabel, nmf_space=nmf_space,
-                                               fig=fig, axesgrid=axesgrid)
+                                               fig=fig, axesgrid=axesgrid,
+                                               n=n)
 
     @memoize
     def pooled_inconsistent(self, data, feature_ids=None,
