@@ -28,7 +28,7 @@ def RANDOM_STATE():
 @pytest.fixture(scope='module')
 def n_samples():
     """Number of samples to create example data from"""
-    return 30
+    return 50
 
 
 @pytest.fixture(scope='module')
