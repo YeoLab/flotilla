@@ -16,3 +16,9 @@ Miscellaneous
   first, which change 1 parameter of the Beta distribution at a time,
   then bimodal and middle, which change both parameters of the Beta
   distribution at once.
+- Add more tutorials and separate out getting started and analyses
+  - Added advanced tutorial which uses COMBAT to correct for batch effects in
+    Allen Brain Institute's Developing Brain Transcriptome (Brainspan)
+  - Added initial investigation of Brainspan data involving using a classifier
+    on hippocampus tissues.
+  - Separated Shalek et al 2013 "getting started" and recreating figures

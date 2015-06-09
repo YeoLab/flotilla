@@ -52,13 +52,13 @@ clean:
 	rm -rf modules.rst
 	rm -rf tutorial/*.rst
 	rm -rf tutorial/*_files
-	rm -rf tutorial/*.ipynb
+	rm -rf tutorial/GSE41265_allGenesTPM.txt.gz*
+	rm -rf tutorial/nature12172-s1*
 	rm -rf gallery*
 	rm -rf generated
 	rm -rf apidoc
 
 html:
-	cp ../examples/*.ipynb tutorial/;
 	cd tutorial ; make notebooks ; cd ..
 	sphinx-apidoc -l -d 4 -e --force -o . ../flotilla
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html

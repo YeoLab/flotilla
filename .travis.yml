@@ -33,7 +33,7 @@ script:
   - MASTER=master
   - if [[ $TRAVIS_BRANCH == v*.*.* ]] ; then export DEPLOY_HTML_DIR=docs ; fi
   - if [[ $TRAVIS_BRANCH == "$MASTER" ]] ; then export DEPLOY_HTML_DIR=docs-dev ; fi
-  - if [[ $TRAVIS_BRANCH == v*.*.* ]] || [[ $TRAVIS_BRANCH == "$MASTER" ]] ; then sudo apt-get install pandoc; conda install --yes --file doc/conda_requirements.txt ; conda install --yes ipython-notebook=2; pip install -r doc/requirements.txt; pip install . ; cd doc ; make setup_gh_pages ; make generate ; make deploy ; fi
+  - if [[ $TRAVIS_BRANCH == v*.*.* ]] || [[ $TRAVIS_BRANCH == "$MASTER" ]] ; then sudo apt-get install pandoc; conda install --yes --file doc/conda_requirements.txt ; conda install --yes ipython-notebook=3; pip install -r doc/requirements.txt; pip install . ; cd doc ; make setup_gh_pages ; make generate ; make deploy ; fi
 after_script:
 - coveralls
 notifications:

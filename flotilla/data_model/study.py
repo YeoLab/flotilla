@@ -351,6 +351,13 @@ class Study(object):
         sys.stdout.write("{}\tSuccessfully initialized a Study "
                          "object!\n".format(timestamp()))
 
+    def _get_supplemental_attributes(self):
+        supplemental_attributes = inspect.getmembers(self.supplemental,
+                                                     lambda a: not
+                                                     (inspect.isroutine(a)))
+        return [a for a in supplemental_attributes
+                if not (a[0].startswith('__') and a[0].endswith('__'))]
+
     def __setattr__(self, key, value):
         """Check if the attribute already exists and warns on overwrite.
         """
@@ -1736,12 +1743,7 @@ class Study(object):
             mapping_stats = None
             mapping_stats_kws = None
 
-        supplemental_attributes = inspect.getmembers(self.supplemental,
-                                                     lambda a: not
-                                                     (inspect.isroutine(a)))
-        supplemental_attributes = [a for a in supplemental_attributes
-                                   if not(a[0].startswith('__') and
-                                          a[0].endswith('__'))]
+        supplemental_attributes = self._get_supplemental_attributes()
         supplemental_kws = {}
         for supplemental_name, df in supplemental_attributes:
             supplemental_kws[supplemental_name] = df

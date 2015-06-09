@@ -148,6 +148,8 @@ html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
 
 # Theme options are theme-specific and customize the look and feel of a
 # theme further.
+
+
 html_theme_options = {
     # Navigation bar title. (Default: ``project`` value)
     'navbar_title': "Flotilla",
@@ -189,7 +191,7 @@ html_theme_options = {
 
     # HTML navbar class (Default: "navbar") to attach to <div> element.
     # For black navbar, do "navbar navbar-inverse"
-    'navbar_class': "navbar",
+    'navbar_class': "navbar navbar-inverse",
 
     # Fix navigation bar to top of page?
     # Values: "true" (default) or "false"
@@ -197,7 +199,7 @@ html_theme_options = {
 
     # Location of link to source.
     # Options are "nav" (default), "footer" or anything else to exclude.
-    'source_link_position': "nav",
+    'source_link_position': "footer",
 
     # Bootswatch (http://bootswatch.com/) theme.
     #
