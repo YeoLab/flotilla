@@ -9,9 +9,9 @@ import pandas.util.testing as pdt
 import pytest
 
 
-@pytest.fixture(params=[None, 10], ids=['n_none', 'n_10'])
-def n(request):
-    return request.param
+@pytest.fixture
+def n():
+    return 10
 
 
 class TestSplicingData:
@@ -114,10 +114,10 @@ class TestSplicingData:
 
     def test_nmf_space_positions(self, splicing, groupby, n):
         if n is None:
-            n = 0.5
+            n = 20
 
             def thresh(x):
-                return n * x.shape[0]
+                return n
 
             test_positions = splicing.nmf_space_positions(groupby)
         else:
@@ -249,12 +249,12 @@ class TestSplicingData:
             color_ordered, group_to_color, group_to_marker)
         plt.close('all')
 
-    def test_modality_assignments(self, splicing, groupby_params):
+    def test_modality_assignments(self, splicing, groupby_params, n=n):
         sample_ids = None
         feature_ids = None
         test_modality_assignments = splicing.modality_assignments(
             sample_ids=sample_ids, feature_ids=feature_ids,
-            groupby=groupby_params)
+            groupby=groupby_params, n=n)
 
         data = splicing._subset(splicing.data, sample_ids,
                                 feature_ids, require_min_samples=False)
@@ -262,9 +262,8 @@ class TestSplicingData:
             groupby_copy = pd.Series('all', index=data.index)
         else:
             groupby_copy = groupby_params
-
         grouped = data.groupby(groupby_copy)
-        data = pd.concat([df.dropna(thresh=10, axis=1)
+        data = pd.concat([df.dropna(thresh=n, axis=1)
                          for name, df in grouped])
         true_assignments = data.groupby(groupby_copy).apply(
             splicing.modality_estimator.fit_transform)
