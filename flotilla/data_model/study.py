@@ -29,7 +29,6 @@ from ..datapackage import FLOTILLA_DOWNLOAD_DIR
 from ..util import load_csv, load_json, load_tsv, load_gzip_pickle_df, \
     load_pickle_df, timestamp, cached_property
 
-
 SPECIES_DATA_PACKAGE_BASE_URL = 'https://s3-us-west-2.amazonaws.com/' \
                                 'flotilla-projects'
 DATAPACKAGE_RESOURCE_COMMON_KWS = ('url', 'path', 'format', 'compression',
@@ -1271,7 +1270,7 @@ class Study(object):
             event_id, groupby=self.sample_id_to_phenotype,
             sample_ids=sample_ids, data=data)
 
-    def plot_event(self, feature_id, sample_subset=None, nmf_space=False):
+    def plot_event(self, feature_id, sample_subset=None, nmf_space=False, n=20):
         """Plot the violinplot and NMF transitions of a splicing event
         """
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
@@ -1281,7 +1280,8 @@ class Study(object):
             phenotype_order=self.phenotype_order,
             color=self.phenotype_color_ordered,
             phenotype_to_color=self.phenotype_to_color,
-            phenotype_to_marker=self.phenotype_to_marker, nmf_space=nmf_space)
+            phenotype_to_marker=self.phenotype_to_marker,
+            nmf_space=nmf_space, n=20)
 
     def plot_gene(self, feature_id, sample_subset=None, nmf_space=False):
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
@@ -1530,7 +1530,7 @@ class Study(object):
                                     phenotype_to_color=self.phenotype_to_color,
                                     order=self.phenotype_order)
 
-    def plot_big_nmf_space_transitions(self, data_type='expression', n=5):
+    def plot_big_nmf_space_transitions(self, data_type='expression', n=20):
         if data_type == 'expression':
             self.expression.plot_big_nmf_space_transitions(
                 self.sample_id_to_phenotype, self.phenotype_transitions,
@@ -1604,13 +1604,13 @@ class Study(object):
                 feature1, feature2, groupby=self.sample_id_to_phenotype,
                 label_to_color=self.phenotype_to_color, **kwargs)
 
-    def nmf_space_positions(self, data_type='splicing'):
+    def nmf_space_positions(self, data_type='splicing', n=20):
         if data_type == 'splicing':
             return self.splicing.nmf_space_positions(
-                self.sample_id_to_phenotype)
+                self.sample_id_to_phenotype, n=n)
 
     def nmf_space_transitions(self, phenotype_transitions='all',
-                              data_type='splicing', n=0.5):
+                              data_type='splicing', n=20):
         """The change in NMF space of splicing events across phenotypes
 
         Parameters
@@ -1636,7 +1636,7 @@ class Study(object):
                 self.sample_id_to_phenotype, phenotype_transitions, n=n)
 
     def big_nmf_space_transitions(self, phenotype_transitions='all',
-                                  data_type='splicing', n=0.5):
+                                  data_type='splicing', n=20):
         """Splicing events whose change in NMF space is large
 
         By large, we mean that difference is 2 standard deviations away from
