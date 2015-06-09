@@ -1053,7 +1053,7 @@ class BaseData(object):
                      phenotype_to_color=None,
                      phenotype_to_marker=None, nmf_xlabel=None,
                      nmf_ylabel=None,
-                     nmf_space=False, fig=None, axesgrid=None):
+                     nmf_space=False, fig=None, axesgrid=None, n=20):
         """
         Plot the violinplot of a feature. Have the option to show NMF movement
         """
@@ -1101,13 +1101,13 @@ class BaseData(object):
                         phenotype_to_color=phenotype_to_color,
                         phenotype_to_marker=phenotype_to_marker,
                         order=phenotype_order, ax=axes[1],
-                        xlabel=nmf_xlabel, ylabel=nmf_ylabel)
+                        xlabel=nmf_xlabel, ylabel=nmf_ylabel, n=n)
                 except KeyError:
                     continue
             sns.despine()
         fig.tight_layout()
 
-    def nmf_space_positions(self, groupby, n=0.5):
+    def nmf_space_positions(self, groupby, n=20):
         """Calculate NMF-space position of splicing events in phenotype groups
 
         Parameters
@@ -1146,8 +1146,8 @@ class BaseData(object):
     def plot_nmf_space_transitions(self, feature_id, groupby,
                                    phenotype_to_color,
                                    phenotype_to_marker, order, ax=None,
-                                   xlabel=None, ylabel=None):
-        nmf_space_positions = self.nmf_space_positions(groupby)
+                                   xlabel=None, ylabel=None, n=20):
+        nmf_space_positions = self.nmf_space_positions(groupby, n=n)
 
         nmf_space_transitions(nmf_space_positions, feature_id,
                               phenotype_to_color,
@@ -1186,7 +1186,7 @@ class BaseData(object):
                 pass
         return distances
 
-    def nmf_space_transitions(self, groupby, phenotype_transitions, n=0.5):
+    def nmf_space_transitions(self, groupby, phenotype_transitions, n=20):
         """Get distance in NMF space of different splicing events
 
         Parameters
@@ -1225,7 +1225,7 @@ class BaseData(object):
                                                              axis=0)
         return nmf_space_transitions
 
-    def big_nmf_space_transitions(self, groupby, phenotype_transitions, n=0.5):
+    def big_nmf_space_transitions(self, groupby, phenotype_transitions, n=20):
         """Get features whose change in NMF space between phenotypes is large
 
         Parameters
@@ -1260,7 +1260,7 @@ class BaseData(object):
                                        phenotype_transitions,
                                        phenotype_order, color,
                                        phenotype_to_color,
-                                       phenotype_to_marker, n=0.5):
+                                       phenotype_to_marker, n=20):
         """Violinplots and NMF transitions of features different in phenotypes
 
         Plot violinplots and NMF-space transitions of features that have large
