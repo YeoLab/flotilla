@@ -178,8 +178,7 @@ class ModalityEstimator(object):
             modality_assignments2.values
 
         # Add back the NA columns
-        modality_assignments = modality_assignments.reindex(
-            columns=data.columns)
+        modality_assignments = modality_assignments.reindex(data.columns)
         return modality_assignments
 
 
