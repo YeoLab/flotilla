@@ -151,6 +151,8 @@ class ModalityEstimator(object):
                 {k: v.logsumexp_logliks(x)
                  for k, v in self.one_param_models.iteritems()}), axis=0)
         logsumexp_logliks1.ix['ambiguous'] = self.logbf_thresh
+        na_columns1 = data.count() == 0
+        logsumexp_logliks1[na_columns1] = np.nan
         modality_assignments1 = logsumexp_logliks1.idxmax()
 
         # Take everything that was ambiguous for included/excluded and estimate
@@ -161,6 +163,8 @@ class ModalityEstimator(object):
                 {k: v.logsumexp_logliks(x)
                  for k, v in self.two_param_models.iteritems()}), axis=0)
         logsumexp_logliks2.ix['ambiguous'] = self.logbf_thresh
+        na_columns2 = data.count() == 0
+        logsumexp_logliks2[na_columns2] = np.nan
         modality_assignments2 = logsumexp_logliks2.idxmax()
 
         # Combine the results
