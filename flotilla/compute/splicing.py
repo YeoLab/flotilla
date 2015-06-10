@@ -146,7 +146,8 @@ class ModalityEstimator(object):
         assert np.all(data.values.flat[np.isfinite(data.values.flat)] >= 0)
 
         # Estimate Psi~0/Psi~1 first
-        non_na_columns = data.count() > 0
+        non_na = data.count() > 0
+        non_na_columns = non_na[non_na].index
         logsumexp_logliks1 = data[non_na_columns].apply(
             lambda x: pd.Series(
                 {k: v.logsumexp_logliks(x)
