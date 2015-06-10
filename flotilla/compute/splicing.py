@@ -162,7 +162,8 @@ class ModalityEstimator(object):
         ind = modality_assignments1 == 'ambiguous'
         ambiguous_columns = ind[ind].index
         data2 = data.ix[:, ambiguous_columns]
-        logsumexp_logliks2 = data2[non_na_columns].apply(
+        non_na_columns2 = non_na_columns.intersection(ambiguous_columns)
+        logsumexp_logliks2 = data2[non_na_columns2].apply(
             lambda x: pd.Series(
                 {k: v.logsumexp_logliks(x)
                  for k, v in self.two_param_models.iteritems()}), axis=0)
