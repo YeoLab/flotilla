@@ -122,6 +122,17 @@ class ModalityEstimator(object):
                 self.one_param_models.keys())
             return logsumexps[other_models].idxmax()
 
+    def _fit_transform_one_step(self, data, models):
+        non_na = data.count() > 0
+        non_na_columns = non_na[non_na].index
+        data_non_na = data[non_na_columns]
+        if data_non_na.empty:
+            return pd.DataFrame()
+        else:
+            return data_non_na.apply(lambda x: pd.Series(
+                {k: v.logsumexp_logliks(x)
+                 for k, v in models.iteritems()}), axis=0)
+
     def fit_transform(self, data):
         """Get the modality assignments of each splicing event in the data
 
@@ -145,32 +156,42 @@ class ModalityEstimator(object):
         assert np.all(data.values.flat[np.isfinite(data.values.flat)] <= 1)
         assert np.all(data.values.flat[np.isfinite(data.values.flat)] >= 0)
 
-        # Estimate Psi~0/Psi~1 first
-        non_na = data.count() > 0
-        non_na_columns = non_na[non_na].index
-        logsumexp_logliks1 = data[non_na_columns].apply(
-            lambda x: pd.Series(
-                {k: v.logsumexp_logliks(x)
-                 for k, v in self.one_param_models.iteritems()}), axis=0)
+        # Estimate Psi~0/Psi~1 first (only one parameter change with each
+        # paramterization)
+        # non_na = data.count() > 0
+        # non_na_columns = non_na[non_na].index
+        # logsumexp_logliks1 = data[non_na_columns].apply(
+        #     lambda x: pd.Series(
+        #         {k: v.logsumexp_logliks(x)
+        #          for k, v in self.one_param_models.iteritems()}), axis=0)
         # logsumexp_logliks1.ix['ambiguous'] = self.logbf_thresh
         # na_columns1 = data.count() == 0
         # logsumexp_logliks1[na_columns1] = np.nan
         # modality_assignments1 = logsumexp_logliks1.idxmax()
+        logbf_one_param = self._fit_transform_one_step(data,
+                                                       self.one_param_models)
 
-        # Take everything that was ambiguous for included/excluded and estimate
-        # bimodal and middle
-        # ind = modality_assignments1 == 'ambiguous'
-        ind = logsumexp_logliks1 < self.logbf_thresh
+        # Take everything that was below the threshold for included/excluded
+        # and estimate bimodal and middle (two parameters change in each
+        # parameterization
+        ind = (logbf_one_param < self.logbf_thresh).all()
         ambiguous_columns = ind[ind].index
         data2 = data.ix[:, ambiguous_columns]
-        non_na_columns2 = non_na_columns.intersection(ambiguous_columns)
-        logsumexp_logliks2 = data2[non_na_columns2].apply(
-            lambda x: pd.Series(
-                {k: v.logsumexp_logliks(x)
-                 for k, v in self.two_param_models.iteritems()}), axis=0)
-        bayes_factors = pd.concat([logsumexp_logliks1, logsumexp_logliks2],
-                                  axis=1)
-        bayes_factors.ix[data.count() == 0] = np.nan
+        # non_na_columns2 = non_na_columns.intersection(ambiguous_columns)
+        # logsumexp_logliks2 = data2[non_na_columns2].apply(
+        #     lambda x: pd.Series(
+        #         {k: v.logsumexp_logliks(x)
+        #          for k, v in self.two_param_models.iteritems()}), axis=0)
+        # bayes_factors = pd.concat([logsumexp_logliks1, logsumexp_logliks2],
+        #                           axis=1)
+        logbf_two_param = self._fit_transform_one_step(data2,
+                                                       self.two_param_models)
+        bayes_factors = pd.concat([logbf_one_param, logbf_two_param], axis=1)
+
+        # Make sure the returned dataframe has the same number of columns
+        empty = data.count() == 0
+        empty_columns = empty[empty].index
+        bayes_factors[empty_columns] = np.nan
         return bayes_factors
         # logsumexp_logliks2.ix['ambiguous'] = self.logbf_thresh
         # na_columns2 = data.count() == 0
