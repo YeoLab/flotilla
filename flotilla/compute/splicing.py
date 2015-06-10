@@ -146,31 +146,36 @@ class ModalityEstimator(object):
         assert np.all(data.values.flat[np.isfinite(data.values.flat)] >= 0)
 
         # Estimate Psi~0/Psi~1 first
-        logsumexp_logliks1 = data.apply(
+        non_na_columns = data.count() > 0
+        logsumexp_logliks1 = data[non_na_columns].apply(
             lambda x: pd.Series(
                 {k: v.logsumexp_logliks(x)
                  for k, v in self.one_param_models.iteritems()}), axis=0)
         logsumexp_logliks1.ix['ambiguous'] = self.logbf_thresh
-        na_columns1 = data.count() == 0
-        logsumexp_logliks1[na_columns1] = np.nan
+        # na_columns1 = data.count() == 0
+        # logsumexp_logliks1[na_columns1] = np.nan
         modality_assignments1 = logsumexp_logliks1.idxmax()
 
         # Take everything that was ambiguous for included/excluded and estimate
         # bimodal and middle
         data2 = data.ix[:, modality_assignments1 == 'ambiguous']
-        logsumexp_logliks2 = data2.apply(
+        logsumexp_logliks2 = data2[non_na_columns].apply(
             lambda x: pd.Series(
                 {k: v.logsumexp_logliks(x)
                  for k, v in self.two_param_models.iteritems()}), axis=0)
         logsumexp_logliks2.ix['ambiguous'] = self.logbf_thresh
-        na_columns2 = data.count() == 0
-        logsumexp_logliks2[na_columns2] = np.nan
+        # na_columns2 = data.count() == 0
+        # logsumexp_logliks2[na_columns2] = np.nan
         modality_assignments2 = logsumexp_logliks2.idxmax()
 
         # Combine the results
         modality_assignments = modality_assignments1
         modality_assignments[modality_assignments2.index] = \
             modality_assignments2.values
+
+        # Add back the NA columns
+        modality_assignments = modality_assignments.reindex_like(
+            columns=data.columns)
         return modality_assignments
 
 
