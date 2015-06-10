@@ -168,7 +168,10 @@ class ModalityEstimator(object):
             lambda x: pd.Series(
                 {k: v.logsumexp_logliks(x)
                  for k, v in self.two_param_models.iteritems()}), axis=0)
-        return pd.concat([logsumexp_logliks1, logsumexp_logliks1], axis=1)
+        bayes_factors = pd.concat([logsumexp_logliks1, logsumexp_logliks1],
+                                  axis=1)
+        bayes_factors.ix[data.count() == 0] = np.nan
+        return bayes_factors
         # logsumexp_logliks2.ix['ambiguous'] = self.logbf_thresh
         # na_columns2 = data.count() == 0
         # logsumexp_logliks2[na_columns2] = np.nan
