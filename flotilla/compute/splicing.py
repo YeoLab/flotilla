@@ -133,9 +133,9 @@ class ModalityEstimator(object):
 
         Returns
         -------
-        modality_assignments : pandas.Series
-            A (n_events,) series of the estimated modality for each splicing
-            event
+        bayes_factors : pandas.DataFrame
+            A (n_modalities, n_events) dataframe of the estimated bayes factor
+            for each splicing event, for each modality
 
         Raises
         ------
@@ -152,14 +152,15 @@ class ModalityEstimator(object):
             lambda x: pd.Series(
                 {k: v.logsumexp_logliks(x)
                  for k, v in self.one_param_models.iteritems()}), axis=0)
-        logsumexp_logliks1.ix['ambiguous'] = self.logbf_thresh
+        # logsumexp_logliks1.ix['ambiguous'] = self.logbf_thresh
         # na_columns1 = data.count() == 0
         # logsumexp_logliks1[na_columns1] = np.nan
-        modality_assignments1 = logsumexp_logliks1.idxmax()
+        # modality_assignments1 = logsumexp_logliks1.idxmax()
 
         # Take everything that was ambiguous for included/excluded and estimate
         # bimodal and middle
-        ind = modality_assignments1 == 'ambiguous'
+        # ind = modality_assignments1 == 'ambiguous'
+        ind = logsumexp_logliks1 < self.logbf_thresh
         ambiguous_columns = ind[ind].index
         data2 = data.ix[:, ambiguous_columns]
         non_na_columns2 = non_na_columns.intersection(ambiguous_columns)
@@ -167,19 +168,20 @@ class ModalityEstimator(object):
             lambda x: pd.Series(
                 {k: v.logsumexp_logliks(x)
                  for k, v in self.two_param_models.iteritems()}), axis=0)
-        logsumexp_logliks2.ix['ambiguous'] = self.logbf_thresh
+        return pd.concat([logsumexp_logliks1, logsumexp_logliks1], axis=1)
+        # logsumexp_logliks2.ix['ambiguous'] = self.logbf_thresh
         # na_columns2 = data.count() == 0
         # logsumexp_logliks2[na_columns2] = np.nan
-        modality_assignments2 = logsumexp_logliks2.idxmax()
-
-        # Combine the results
-        modality_assignments = modality_assignments1
-        modality_assignments[modality_assignments2.index] = \
-            modality_assignments2.values
-
-        # Add back the NA columns
-        modality_assignments = modality_assignments.reindex(data.columns)
-        return modality_assignments
+        # modality_assignments2 = logsumexp_logliks2.idxmax()
+        #
+        # # Combine the results
+        # modality_assignments = modality_assignments1
+        # modality_assignments[modality_assignments2.index] = \
+        #     modality_assignments2.values
+        #
+        # # Add back the NA columns
+        # modality_assignments = modality_assignments.reindex(data.columns)
+        # return modality_assignments
 
 
 def switchy_score(array):
