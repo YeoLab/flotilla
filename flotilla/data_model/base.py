@@ -1156,7 +1156,7 @@ class BaseData(object):
 
     @staticmethod
     def transition_distances(positions, transitions):
-        """Get NMF distance of features between phenotype transitions
+        """Get cartesian distance of phenotype transitions in NMF space
 
         Parameters
         ----------
