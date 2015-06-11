@@ -83,9 +83,9 @@ class SplicingData(BaseData):
         self.modality_visualizer = ModalitiesViz()
 
     @memoize
-    def modality_scores(self, sample_ids=None, feature_ids=None, data=None,
+    def modality_log2bf(self, sample_ids=None, feature_ids=None, data=None,
                         groupby=None, min_samples=20):
-        """Get scoring for each event in each modality
+        """Get log2 bayes factor of how well events fit to each modality
 
         Scores are in units of log2 bayes factors
 
@@ -146,7 +146,7 @@ class SplicingData(BaseData):
             The modality assignments of each feature, in each group of the
             groupby
         """
-        scores = self.modality_scores(sample_ids=sample_ids,
+        scores = self.modality_log2bf(sample_ids=sample_ids,
                                       feature_ids=feature_ids, groupby=groupby,
                                       data=data, min_samples=min_samples)
         return scores.groupby(level=0, axis=0).apply(
