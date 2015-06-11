@@ -213,7 +213,7 @@ class TestModalityEstimator(object):
         x = log2bf
         not_na = (x.notnull() > 0).any()
         not_na_columns = not_na[not_na].index
-        x.ix['ambiguous', not_na_columns] = self.logbf_thresh
+        x.ix['ambiguous', not_na_columns] = estimator.logbf_thresh
         true = x.idxmax()
 
         pdt.assert_series_equal(test, true)
