@@ -132,6 +132,20 @@ class TestModalityEstimator(object):
             x[x < 0.5] = np.nan
             return x
 
+    @pytest.fixture
+    def positive_control(self):
+        """Randomly generated positive controls for modality estimation"""
+        size = 20
+        psi0 = pd.Series(np.random.uniform(0, 0.1, size=size), name='Psi~0')
+        psi1 = pd.Series(np.random.uniform(0.9, 1, size=size), name='Psi~1')
+        middle = pd.Series(np.random.uniform(0.45, 0.55, size=size),
+                           name='middle')
+        bimodal = pd.Series(np.concatenate([
+            np.random.uniform(0, 0.1, size=size / 2),
+            np.random.uniform(0.9, 1, size=size / 2)]), name='bimodal')
+        df = pd.concat([psi0, psi1, middle, bimodal], axis=1)
+        return df
+
     def test_init(self, step, vmax, logbf_thresh):
         from flotilla.compute.splicing import ModalityEstimator, \
             ModalityModel
@@ -218,6 +232,11 @@ class TestModalityEstimator(object):
 
         pdt.assert_series_equal(test, true)
 
+    def test_positive_control(self, estimator, positive_control):
+        log2bf = estimator.fit_transform(positive_control)
+        test = estimator.assign_modalities(log2bf)
+
+        pdt.assert_almost_equal(test.values, test.index)
 
 @pytest.fixture(params=['list', 'array', 'nan'])
 def array(request):
