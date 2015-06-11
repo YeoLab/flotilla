@@ -283,10 +283,10 @@ def modality_models():
     rv_uniform = stats.uniform(0, 1)
     rv_bimodal = stats.beta(1. / parameter, 1. / parameter)
 
-    models = {'included': rv_included,
-              'excluded': rv_excluded,
+    models = {'Psi~1': rv_included,
+              'Psi~0': rv_excluded,
               'middle': rv_middle,
-              'uniform': rv_uniform,
+              'ambiguous': rv_uniform,
               'bimodal': rv_bimodal}
     return models
 
