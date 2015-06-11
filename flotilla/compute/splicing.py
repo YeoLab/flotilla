@@ -107,7 +107,7 @@ class ModalityEstimator(object):
         logsumexps['ambiguous'] = self.logbf_thresh
         return logsumexps
 
-    def assign_modalities(self, bayes_factors, reset_index=False):
+    def assign_modalities(self, log2_bayes_factors, reset_index=False):
         """Guess the most likely modality for each event
 
         For each event that has at least one non-NA value, if no modalilites
@@ -118,7 +118,7 @@ class ModalityEstimator(object):
 
         Parameters
         ----------
-        bayes_factors : pandas.DataFrame
+        log2_bayes_factors : pandas.DataFrame
             A (4, n_events) dataframe with bayes factors for the Psi~1, Psi~0,
             bimodal, and middle modalities. If an event has no bayes factors
             for any of those modalities, it is ignored
@@ -135,9 +135,9 @@ class ModalityEstimator(object):
 
         """
         if reset_index:
-            x = bayes_factors.reset_index(level=0, drop=True)
+            x = log2_bayes_factors.reset_index(level=0, drop=True)
         else:
-            x = bayes_factors
+            x = log2_bayes_factors
         not_na = (x.notnull() > 0).any()
         not_na_columns = not_na[not_na].index
         x.ix['ambiguous', not_na_columns] = self.logbf_thresh
@@ -165,9 +165,9 @@ class ModalityEstimator(object):
 
         Returns
         -------
-        bayes_factors : pandas.DataFrame
-            A (n_modalities, n_events) dataframe of the estimated bayes factor
-            for each splicing event, for each modality
+        log2_bayes_factors : pandas.DataFrame
+            A (n_modalities, n_events) dataframe of the estimated log2
+            bayes factor for each splicing event, for each modality
 
         Raises
         ------
@@ -190,15 +190,16 @@ class ModalityEstimator(object):
         data2 = data.ix[:, ambiguous_columns]
         logbf_two_param = self._fit_transform_one_step(data2,
                                                        self.two_param_models)
-        bayes_factors = pd.concat([logbf_one_param, logbf_two_param], axis=0)
+        log2_bayes_factors = pd.concat([logbf_one_param, logbf_two_param],
+                                       axis=0)
 
         # Make sure the returned dataframe has the same number of columns
         empty = data.count() == 0
         empty_columns = empty[empty].index
-        empty_df = pd.DataFrame(np.nan, index=bayes_factors.index,
+        empty_df = pd.DataFrame(np.nan, index=log2_bayes_factors.index,
                                 columns=empty_columns)
-        bayes_factors = pd.concat([bayes_factors, empty_df], axis=1)
-        return bayes_factors
+        log2_bayes_factors = pd.concat([log2_bayes_factors, empty_df], axis=1)
+        return log2_bayes_factors
 
     def assign_modality(self, bayes_factors):
         """Get the
