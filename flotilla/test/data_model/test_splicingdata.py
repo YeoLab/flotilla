@@ -279,17 +279,17 @@ class TestSplicingData:
         feature_ids = None
         min_samples = 20
 
-        test_modality_assignments = splicing.modality_assignments(
-            sample_ids=sample_ids, feature_ids=feature_ids,
-            groupby=groupby_params, min_samples=min_samples)
+        test = splicing.modality_assignments(sample_ids=sample_ids,
+                                             feature_ids=feature_ids,
+                                             groupby=groupby_params,
+                                             min_samples=min_samples)
 
-        true = true_modalities.copy()
-
-        # Only check for splicing events which had enough samples
-        true = true[splicing.data.groupby(groupby_params).count()
-                    >= min_samples]
-
-        pdt.assert_frame_equal(test_modality_assignments, true)
+        scores = splicing.modality_log2bf(sample_ids=sample_ids,
+                                          feature_ids=feature_ids, groupby=groupby_params,
+                                          min_samples=min_samples)
+        true = scores.groupby(level=0, axis=0).apply(
+            splicing.modality_estimator.assign_modalities, reset_index=True)
+        pdt.assert_frame_equal(test, true)
 
     @pytest.mark.xfail
     def test_modality_assignments_all_inputs_not_none(self, splicing, groupby):
