@@ -7,7 +7,7 @@ test:
 
 coverage:
 	cp testing/matplotlibrc .
-	coverage run --source flotilla --omit=test --module py.test
+	coverage run --source flotilla --omit=test --module py.test -v
 	rm matplotlibrc
 
 lint:
