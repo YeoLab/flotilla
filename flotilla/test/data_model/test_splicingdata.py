@@ -269,7 +269,7 @@ class TestSplicingData:
         data = pd.concat([df.dropna(thresh=min_samples, axis=1)
                           for name, df in grouped])
         true = data.groupby(groupby).apply(
-            self.modality_estimator.fit_transform)
+            splicing.modality_estimator.fit_transform)
 
         pdt.assert_frame_equal(test, true)
 
