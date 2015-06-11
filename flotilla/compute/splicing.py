@@ -186,12 +186,14 @@ class ModalityEstimator(object):
         #                           axis=1)
         logbf_two_param = self._fit_transform_one_step(data2,
                                                        self.two_param_models)
-        bayes_factors = pd.concat([logbf_one_param, logbf_two_param], axis=1)
+        bayes_factors = pd.concat([logbf_one_param, logbf_two_param], axis=0)
 
         # Make sure the returned dataframe has the same number of columns
         empty = data.count() == 0
         empty_columns = empty[empty].index
-        bayes_factors[empty_columns] = np.nan
+        empty_df = pd.DataFrame(np.nan, index=bayes_factors.index,
+                                columns=empty_columns)
+        bayes_factors = pd.concat([bayes_factors, empty_df], axis=1)
         return bayes_factors
         # logsumexp_logliks2.ix['ambiguous'] = self.logbf_thresh
         # na_columns2 = data.count() == 0
