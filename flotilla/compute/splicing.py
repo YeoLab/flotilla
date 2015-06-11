@@ -201,18 +201,6 @@ class ModalityEstimator(object):
         log2_bayes_factors = pd.concat([log2_bayes_factors, empty_df], axis=1)
         return log2_bayes_factors
 
-    def assign_modality(self, bayes_factors):
-        """Get the
-
-        :param bayes_factors:
-        :type bayes_factors:
-        :return:
-        :rtype:
-        """
-        grouped = bayes_factors.groupby(level=0, axis=0)
-        return grouped.apply(lambda x: x.reset_index(level=0,
-                                                     drop=True).idxmax())
-
 
 def switchy_score(array):
     """Transform a 1D array of data scores to a vector of "switchy scores"
