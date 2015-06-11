@@ -139,11 +139,10 @@ class TestSplicingData:
     def test_transition_distances(self, splicing, groupby, group_transitions):
         nmf_positions = splicing.nmf_space_positions(groupby=groupby)
 
-        test_distances = splicing.transition_distances(nmf_positions,
-                                                       group_transitions)
+        test = splicing.transition_distances(nmf_positions, group_transitions)
 
         nmf_positions.index = nmf_positions.index.droplevel(0)
-        true_distances = pd.Series(index=group_transitions)
+        true = pd.Series(index=group_transitions)
         for transition in group_transitions:
             try:
                 phenotype1, phenotype2 = transition
@@ -151,11 +150,11 @@ class TestSplicingData:
                     nmf_positions.ix[phenotype2] - nmf_positions.ix[
                         phenotype1])
                 # print phenotype1, phenotype2, norm
-                true_distances[transition] = norm
+                true[transition] = norm
             except KeyError:
                 pass
 
-        pdt.assert_series_equal(test_distances, true_distances)
+        pdt.assert_series_equal(test, true)
 
     def test_nmf_space_transitions(self, splicing, groupby, group_transitions):
         nmf_space_positions = splicing.nmf_space_positions(
