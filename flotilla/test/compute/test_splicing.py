@@ -188,7 +188,7 @@ class TestModalityEstimator(object):
                                 columns=empty_columns)
         true = pd.concat([log2_bayes_factors, empty_df], axis=1)
         
-        pdt.assert_series_equal(test, true)
+        pdt.assert_frame_equal(test, true)
 
     @pytest.mark.xfail
     def test_fit_transform_greater_than1(self, estimator):
@@ -206,10 +206,17 @@ class TestModalityEstimator(object):
             np.abs(np.random.randn(nrows, ncols).reshape(nrows, ncols))-10)
         estimator.fit_transform(data)
 
-    def test_assign_modalities(self, estimator, splicing_data,
-                               true_modalities):
+    def test_assign_modalities(self, estimator, splicing_data):
         log2bf = estimator.fit_transform(splicing_data)
+        test = estimator.assign_modalities(log2bf)
 
+        x = log2bf
+        not_na = (x.notnull() > 0).any()
+        not_na_columns = not_na[not_na].index
+        x.ix['ambiguous', not_na_columns] = self.logbf_thresh
+        true = x.idxmax()
+
+        pdt.assert_series_equal(test, true)
 
 
 @pytest.fixture(params=['list', 'array', 'nan'])
