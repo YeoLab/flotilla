@@ -1138,7 +1138,8 @@ class BaseData(object):
         #     lambda x: x if x.count() >= n else pd.Series(np.nan,
         #                                                  index=x.index))
         df = at_least_n_per_group_per_event.groupby(groupby).apply(
-            lambda x: self.binned_nmf_reduced(data=x))
+            lambda x: self.binned_nmf_reduced(data=x) if
+            x.notnull().sum().sum() > 0 else pd.DataFrame())
         df = df.swaplevel(0, 1)
         df = df.sort_index()
         return df
