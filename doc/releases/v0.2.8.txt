@@ -1,5 +1,11 @@
 v0.2.8 (........)
-------------------------
+-----------------
+
+New features
+~~~~~~~~~~~~
+
+- Added ``Study.modality_log2bf()`` which will get the log2 bayes factor
+  for each splicing event's fit to each modality in each phenotype
 
 Bug fixes
 ~~~~~~~~~
@@ -16,3 +22,6 @@ Miscellaneous
   first, which change 1 parameter of the Beta distribution at a time,
   then bimodal and middle, which change both parameters of the Beta
   distribution at once.
+- Make sure both modality estimation and NMF space calculation use at least
+  20 samples per event
+- Get rid of ``big_nmf_space_transitions`` for now

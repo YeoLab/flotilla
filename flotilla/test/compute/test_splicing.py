@@ -132,6 +132,20 @@ class TestModalityEstimator(object):
             x[x < 0.5] = np.nan
             return x
 
+    @pytest.fixture
+    def positive_control(self):
+        """Randomly generated positive controls for modality estimation"""
+        size = 20
+        psi0 = pd.Series(np.random.uniform(0, 0.1, size=size), name='Psi~0')
+        psi1 = pd.Series(np.random.uniform(0.9, 1, size=size), name='Psi~1')
+        middle = pd.Series(np.random.uniform(0.45, 0.55, size=size),
+                           name='middle')
+        bimodal = pd.Series(np.concatenate([
+            np.random.uniform(0, 0.1, size=size / 2),
+            np.random.uniform(0.9, 1, size=size / 2)]), name='bimodal')
+        df = pd.concat([psi0, psi1, middle, bimodal], axis=1)
+        return df
+
     def test_init(self, step, vmax, logbf_thresh):
         from flotilla.compute.splicing import ModalityEstimator, \
             ModalityModel
@@ -163,32 +177,32 @@ class TestModalityEstimator(object):
                               true_two_param_models)
 
     def test_fit_transform(self, estimator, splicing_data):
-        test_fit_transform = estimator.fit_transform(splicing_data)
+        test = estimator.fit_transform(splicing_data)
 
-        # Estimate Psi~0/Psi~1 first
-        logsumexp_logliks1 = splicing_data.apply(
-            lambda x: pd.Series(
-                {k: v.logsumexp_logliks(x)
-                 for k, v in estimator.one_param_models.iteritems()}), axis=0)
-        logsumexp_logliks1.ix['ambiguous'] = estimator.logbf_thresh
-        modality_assignments1 = logsumexp_logliks1.idxmax()
+        # Estimate Psi~0/Psi~1 first (only one parameter change with each
+        # paramterization)
+        logbf_one_param = estimator._fit_transform_one_step(
+            splicing_data, estimator.one_param_models)
 
-        # Take everything that was ambiguous for included/excluded and estimate
-        # bimodal and middle
-        data2 = splicing_data.ix[:, modality_assignments1 == 'ambiguous']
-        logsumexp_logliks2 = data2.apply(
-            lambda x: pd.Series(
-                {k: v.logsumexp_logliks(x)
-                 for k, v in estimator.two_param_models.iteritems()}), axis=0)
-        logsumexp_logliks2.ix['ambiguous'] = estimator.logbf_thresh
-        modality_assignments2 = logsumexp_logliks2.idxmax()
+        # Take everything that was below the threshold for included/excluded
+        # and estimate bimodal and middle (two parameters change in each
+        # parameterization
+        ind = (logbf_one_param < estimator.logbf_thresh).all()
+        ambiguous_columns = ind[ind].index
+        data2 = splicing_data.ix[:, ambiguous_columns]
+        logbf_two_param = estimator._fit_transform_one_step(
+            data2, estimator.two_param_models)
+        log2_bayes_factors = pd.concat([logbf_one_param, logbf_two_param],
+                                       axis=0)
 
-        # Combine the results
-        true_fit_transform = modality_assignments1
-        true_fit_transform[modality_assignments2.index] = \
-            modality_assignments2.values
+        # Make sure the returned dataframe has the same number of columns
+        empty = splicing_data.count() == 0
+        empty_columns = empty[empty].index
+        empty_df = pd.DataFrame(np.nan, index=log2_bayes_factors.index,
+                                columns=empty_columns)
+        true = pd.concat([log2_bayes_factors, empty_df], axis=1)
 
-        pdt.assert_series_equal(test_fit_transform, true_fit_transform)
+        pdt.assert_frame_equal(test, true)
 
     @pytest.mark.xfail
     def test_fit_transform_greater_than1(self, estimator):
@@ -205,6 +219,24 @@ class TestModalityEstimator(object):
         data = pd.DataFrame(
             np.abs(np.random.randn(nrows, ncols).reshape(nrows, ncols))-10)
         estimator.fit_transform(data)
+
+    def test_assign_modalities(self, estimator, splicing_data):
+        log2bf = estimator.fit_transform(splicing_data)
+        test = estimator.assign_modalities(log2bf)
+
+        x = log2bf
+        not_na = (x.notnull() > 0).any()
+        not_na_columns = not_na[not_na].index
+        x.ix['ambiguous', not_na_columns] = estimator.logbf_thresh
+        true = x.idxmax()
+
+        pdt.assert_series_equal(test, true)
+
+    def test_positive_control(self, estimator, positive_control):
+        log2bf = estimator.fit_transform(positive_control)
+        test = estimator.assign_modalities(log2bf)
+
+        pdt.assert_almost_equal(test.values, test.index)
 
 
 @pytest.fixture(params=['list', 'array', 'nan'])

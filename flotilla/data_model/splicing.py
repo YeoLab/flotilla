@@ -13,7 +13,6 @@ from ..util import memoize, timestamp
 from ..visualize.splicing import lavalamp, hist_single_vs_pooled_diff, \
     lavalamp_pooled_inconsistent
 
-
 FRACTION_DIFF_THRESH = 0.1
 
 
@@ -24,8 +23,8 @@ class SplicingData(BaseData):
     n_components = 2
     _binsize = 0.1
 
-    included_label = 'included >>'
-    excluded_label = 'excluded >>'
+    included_label = '$\Psi~1$ >>'
+    excluded_label = '$\Psi~0$ >>'
 
     def __init__(self, data,
                  feature_data=None, binsize=0.1, outliers=None,
@@ -84,9 +83,11 @@ class SplicingData(BaseData):
         self.modality_visualizer = ModalitiesViz()
 
     @memoize
-    def modality_assignments(self, sample_ids=None, feature_ids=None,
-                             data=None, groupby=None, min_samples=10):
-        """Assigned modalities for these samples and features.
+    def modality_log2bf(self, sample_ids=None, feature_ids=None, data=None,
+                        groupby=None, min_samples=20):
+        """Get log2 bayes factor of how well events fit to each modality
+
+        Scores are in units of log2 bayes factors
 
         Parameters
         ----------
@@ -98,7 +99,7 @@ class SplicingData(BaseData):
             If provided, use this dataframe instead of the sample_ids and
             feature_ids provided
         min_samples : int, optional
-            Minimum number of samples to use per grouped celltype. Default 10
+            Minimum number of samples to use per grouped celltype. Default 20
 
         Returns
         -------
@@ -116,23 +117,44 @@ class SplicingData(BaseData):
             groupby = pd.Series('all', index=data.index)
 
         grouped = data.groupby(groupby)
-        # if isinstance(min_samples, int) or min_samples > 1:
-        #     thresh = self._thresh_int
-        # elif isinstance(min_samples, float) or min_samples <= 1:
-        #     thresh = self._thresh_float
-        # else:
-        #     raise TypeError('Threshold for minimum samples for modality '
-        #                     'detection can only be int or float, '
-        #                     'not {}'.format(type(min_samples)))
         data = pd.concat([df.dropna(thresh=min_samples, axis=1)
                           for name, df in grouped])
-        assignments = data.groupby(groupby).apply(
+        scores = data.groupby(groupby).apply(
             self.modality_estimator.fit_transform)
-        return assignments
+        return scores
+
+    @memoize
+    def modality_assignments(self, sample_ids=None, feature_ids=None,
+                             data=None, groupby=None, min_samples=20):
+        """Assign a modality to each splicing event in each group
+
+        Parameters
+        ----------
+        sample_ids : list of str, optional
+            Which samples to use. If None, use all. Default None.
+        feature_ids : list of str, optional
+            Which features to use. If None, use all. Default None.
+        data : pandas.DataFrame, optional
+            If provided, use this dataframe instead of the sample_ids and
+            feature_ids provided
+        min_samples : int, optional
+            Minimum number of samples to use per grouped celltype. Default 10
+
+        Returns
+        -------
+        modality_assignments : pandas.DataFrame
+            The modality assignments of each feature, in each group of the
+            groupby
+        """
+        scores = self.modality_log2bf(sample_ids=sample_ids,
+                                      feature_ids=feature_ids, groupby=groupby,
+                                      data=data, min_samples=min_samples)
+        return scores.groupby(level=0, axis=0).apply(
+            self.modality_estimator.assign_modalities, reset_index=True)
 
     @memoize
     def modality_counts(self, sample_ids=None, feature_ids=None, data=None,
-                        groupby=None, min_samples=10):
+                        groupby=None, min_samples=20):
         """Count the number of each modalities of these samples and features
 
         Parameters
@@ -162,7 +184,7 @@ class SplicingData(BaseData):
 
     def plot_modalities_reduced(self, sample_ids=None, feature_ids=None,
                                 data=None, ax=None, title=None,
-                                min_samples=10):
+                                min_samples=20):
         """Plot events modality assignments in NMF space
 
         This will calculate modalities on all samples provided, without
@@ -201,7 +223,7 @@ class SplicingData(BaseData):
 
     def plot_modalities_bars(self, sample_ids=None, feature_ids=None,
                              data=None, groupby=None, phenotype_to_color=None,
-                             percentages=False, ax=None, min_samples=10):
+                             percentages=False, ax=None, min_samples=20):
         """Make grouped barplots of the number of modalities per group
 
         Parameters
@@ -231,7 +253,7 @@ class SplicingData(BaseData):
 
     def plot_modalities_lavalamps(self, sample_ids=None, feature_ids=None,
                                   data=None, groupby=None,
-                                  phenotype_to_color=None, min_samples=10):
+                                  phenotype_to_color=None, min_samples=20):
         """Plot "lavalamp" scatterplot of each event
 
         Parameters
@@ -286,7 +308,7 @@ class SplicingData(BaseData):
 
     def plot_event_modality_estimation(self, event_id, sample_ids=None,
                                        data=None,
-                                       groupby=None, min_samples=10):
+                                       groupby=None, min_samples=20):
         """Plots the mathematical reasoning for an event's modality assignment
 
         Parameters
@@ -362,10 +384,10 @@ class SplicingData(BaseData):
                      phenotype_to_color=None,
                      phenotype_to_marker=None, nmf_xlabel=None,
                      nmf_ylabel=None,
-                     nmf_space=False, fig=None, axesgrid=None):
+                     nmf_space=False, fig=None, axesgrid=None, n=20):
         if nmf_space:
             nmf_xlabel = self._nmf_space_xlabel(phenotype_groupby)
-            nmf_ylabel = self._nmf_space_xlabel(phenotype_groupby)
+            nmf_ylabel = self._nmf_space_ylabel(phenotype_groupby)
         else:
             nmf_ylabel = None
             nmf_xlabel = None
@@ -376,7 +398,8 @@ class SplicingData(BaseData):
                                                phenotype_to_color,
                                                phenotype_to_marker, nmf_xlabel,
                                                nmf_ylabel, nmf_space=nmf_space,
-                                               fig=fig, axesgrid=axesgrid)
+                                               fig=fig, axesgrid=axesgrid,
+                                               n=n)
 
     @memoize
     def pooled_inconsistent(self, data, feature_ids=None,
