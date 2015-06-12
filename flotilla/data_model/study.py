@@ -1271,7 +1271,8 @@ class Study(object):
             event_id, groupby=self.sample_id_to_phenotype,
             sample_ids=sample_ids, data=data)
 
-    def plot_event(self, feature_id, sample_subset=None, nmf_space=False, n=20):
+    def plot_event(self, feature_id, sample_subset=None, nmf_space=False,
+                   n=20):
         """Plot the violinplot and NMF transitions of a splicing event
         """
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)

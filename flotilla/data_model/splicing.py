@@ -152,7 +152,6 @@ class SplicingData(BaseData):
         return scores.groupby(level=0, axis=0).apply(
             self.modality_estimator.assign_modalities, reset_index=True)
 
-
     @memoize
     def modality_counts(self, sample_ids=None, feature_ids=None, data=None,
                         groupby=None, min_samples=20):
