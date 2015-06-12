@@ -255,7 +255,8 @@ class TestSplicingData:
                                              min_samples=min_samples)
 
         scores = splicing.modality_log2bf(sample_ids=sample_ids,
-                                          feature_ids=feature_ids, groupby=groupby_params,
+                                          feature_ids=feature_ids,
+                                          groupby=groupby_params,
                                           min_samples=min_samples)
         true = scores.groupby(level=0, axis=0).apply(
             splicing.modality_estimator.assign_modalities, reset_index=True)

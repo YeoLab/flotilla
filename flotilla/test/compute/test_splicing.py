@@ -201,7 +201,7 @@ class TestModalityEstimator(object):
         empty_df = pd.DataFrame(np.nan, index=log2_bayes_factors.index,
                                 columns=empty_columns)
         true = pd.concat([log2_bayes_factors, empty_df], axis=1)
-        
+
         pdt.assert_frame_equal(test, true)
 
     @pytest.mark.xfail
@@ -237,6 +237,7 @@ class TestModalityEstimator(object):
         test = estimator.assign_modalities(log2bf)
 
         pdt.assert_almost_equal(test.values, test.index)
+
 
 @pytest.fixture(params=['list', 'array', 'nan'])
 def array(request):
