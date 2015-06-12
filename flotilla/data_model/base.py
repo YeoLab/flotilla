@@ -1053,7 +1053,7 @@ class BaseData(object):
                      phenotype_to_color=None,
                      phenotype_to_marker=None, nmf_xlabel=None,
                      nmf_ylabel=None,
-                     nmf_space=False, fig=None, axesgrid=None):
+                     nmf_space=False, fig=None, axesgrid=None, n=20):
         """
         Plot the violinplot of a feature. Have the option to show NMF movement
         """
@@ -1101,13 +1101,13 @@ class BaseData(object):
                         phenotype_to_color=phenotype_to_color,
                         phenotype_to_marker=phenotype_to_marker,
                         order=phenotype_order, ax=axes[1],
-                        xlabel=nmf_xlabel, ylabel=nmf_ylabel)
+                        xlabel=nmf_xlabel, ylabel=nmf_ylabel, n=n)
                 except KeyError:
                     continue
             sns.despine()
         fig.tight_layout()
 
-    def nmf_space_positions(self, groupby, n=0.5):
+    def nmf_space_positions(self, groupby, n=20):
         """Calculate NMF-space position of splicing events in phenotype groups
 
         Parameters
@@ -1138,7 +1138,8 @@ class BaseData(object):
         #     lambda x: x if x.count() >= n else pd.Series(np.nan,
         #                                                  index=x.index))
         df = at_least_n_per_group_per_event.groupby(groupby).apply(
-            lambda x: self.binned_nmf_reduced(data=x))
+            lambda x: self.binned_nmf_reduced(data=x) if
+            x.notnull().sum().sum() > 0 else pd.DataFrame())
         df = df.swaplevel(0, 1)
         df = df.sort_index()
         return df
@@ -1146,8 +1147,8 @@ class BaseData(object):
     def plot_nmf_space_transitions(self, feature_id, groupby,
                                    phenotype_to_color,
                                    phenotype_to_marker, order, ax=None,
-                                   xlabel=None, ylabel=None):
-        nmf_space_positions = self.nmf_space_positions(groupby)
+                                   xlabel=None, ylabel=None, n=20):
+        nmf_space_positions = self.nmf_space_positions(groupby, n=n)
 
         nmf_space_transitions(nmf_space_positions, feature_id,
                               phenotype_to_color,
@@ -1156,7 +1157,7 @@ class BaseData(object):
 
     @staticmethod
     def transition_distances(positions, transitions):
-        """Get NMF distance of features between phenotype transitions
+        """Get cartesian distance of phenotype transitions in NMF space
 
         Parameters
         ----------
@@ -1186,7 +1187,7 @@ class BaseData(object):
                 pass
         return distances
 
-    def nmf_space_transitions(self, groupby, phenotype_transitions, n=0.5):
+    def nmf_space_transitions(self, groupby, phenotype_transitions, n=20):
         """Get distance in NMF space of different splicing events
 
         Parameters
@@ -1224,78 +1225,6 @@ class BaseData(object):
         nmf_space_transitions = nmf_space_transitions.dropna(how='all',
                                                              axis=0)
         return nmf_space_transitions
-
-    def big_nmf_space_transitions(self, groupby, phenotype_transitions, n=0.5):
-        """Get features whose change in NMF space between phenotypes is large
-
-        Parameters
-        ----------
-        groupby : mappable
-            A sample id to phenotype group mapping
-        phenotype_transitions : list of length-2 tuples of str
-            List of ('phenotype1', 'phenotype2') transitions whose change in
-            distribution you are interested in
-        n : int
-            Minimum number of samples per phenotype, per event
-
-        Returns
-        -------
-        big_transitions : pandas.DataFrame
-            A (n_events, n_transitions) dataframe of the NMF distances between
-            splicing events
-        """
-        nmf_space_transitions = self.nmf_space_transitions(
-            groupby, phenotype_transitions, n=n)
-
-        # get the mean and standard dev of the whole array
-        n = nmf_space_transitions.count().sum()
-        mean = nmf_space_transitions.sum().sum() / n
-        std = np.sqrt(np.square(nmf_space_transitions - mean).sum().sum() / n)
-
-        big_transitions = nmf_space_transitions[
-            nmf_space_transitions > (mean + std)].dropna(how='all')
-        return big_transitions
-
-    def plot_big_nmf_space_transitions(self, phenotype_groupby,
-                                       phenotype_transitions,
-                                       phenotype_order, color,
-                                       phenotype_to_color,
-                                       phenotype_to_marker, n=0.5):
-        """Violinplots and NMF transitions of features different in phenotypes
-
-        Plot violinplots and NMF-space transitions of features that have large
-        NMF-space transitions between different phenotypes
-
-        Parameters
-        ----------
-        n : int
-            Minimum number of samples per phenotype, per event
-
-
-        Returns
-        -------
-
-
-        Raises
-        ------
-        """
-        big_transitions = self.big_nmf_space_transitions(phenotype_groupby,
-                                                         phenotype_transitions,
-                                                         n=n)
-        nrows = big_transitions.shape[0]
-        ncols = 2
-        figsize = 4 * ncols, 4 * nrows
-
-        fig, axesgrid = plt.subplots(nrows=nrows, ncols=ncols,
-                                     figsize=figsize)
-        if nrows == 1:
-            axesgrid = [axesgrid]
-        for feature_id in big_transitions.index:
-            self.plot_feature(feature_id, phenotype_groupby=phenotype_groupby,
-                              phenotype_order=phenotype_order, color=color,
-                              phenotype_to_color=phenotype_to_color,
-                              phenotype_to_marker=phenotype_to_marker,
-                              nmf_space=True, fig=fig, axesgrid=axesgrid)
 
     def plot_two_samples(self, sample1, sample2, fillna=None,
                          **kwargs):
