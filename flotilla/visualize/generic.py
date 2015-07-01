@@ -54,7 +54,7 @@ def violinplot(singles, groupby, color_ordered=None, ax=None,
     if not singles.dropna().empty:
         sns.stripplot(x='phenotype', y=ylabel, data=tidy_singles,
                   jitter=True, order=order, ax=ax, palette=color_ordered)
-    if pooled is not None not pooled.dropna().empty:
+    if pooled is not None and not pooled.dropna().empty:
         sns.stripplot(x='phenotype', y=ylabel, data=tidy_pooled,
                       jitter=True, order=order, ax=ax, color='#262626')
     sizes = tidy_singles.groupby('phenotype').size()
