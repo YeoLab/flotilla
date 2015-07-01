@@ -995,7 +995,7 @@ class BaseData(object):
     def _violinplot(self, feature_id, sample_ids=None,
                     phenotype_groupby=None,
                     phenotype_order=None, ax=None, color=None,
-                    label_pooled=False):
+                    label_pooled=False, **kwargs):
         """For compatiblity across data types, can specify _violinplot
         """
         sample_ids = self.data.index if sample_ids is None else sample_ids
@@ -1021,8 +1021,8 @@ class BaseData(object):
 
         violinplot(singles, groupby=phenotype_groupby, color_ordered=color,
                    pooled_data=pooled, order=phenotype_order,
-                   title=title, data_type=self.data_type, ax=ax,
-                   label_pooled=label_pooled, outliers=outliers)
+                   title=title, ax=ax,
+                   outliers=outliers, **kwargs)
 
     @staticmethod
     def _thresh_int(df, n):
@@ -1053,7 +1053,8 @@ class BaseData(object):
                      phenotype_to_color=None,
                      phenotype_to_marker=None, nmf_xlabel=None,
                      nmf_ylabel=None,
-                     nmf_space=False, fig=None, axesgrid=None, n=20):
+                     nmf_space=False, fig=None, axesgrid=None, n=20,
+                     violinplot_kws=None):
         """
         Plot the violinplot of a feature. Have the option to show NMF movement
         """
@@ -1061,6 +1062,7 @@ class BaseData(object):
         if phenotype_groupby is None:
             phenotype_groupby = pd.Series('all', index=self.data.index)
         phenotype_groupby = pd.Series(phenotype_groupby)
+        violinplot_kws = {} if violinplot_kws is None else violinplot_kws
 
         if not isinstance(feature_ids, pd.Index):
             feature_ids = [feature_id]
@@ -1092,7 +1094,7 @@ class BaseData(object):
             self._violinplot(feature_id, sample_ids=sample_ids,
                              phenotype_groupby=phenotype_groupby,
                              phenotype_order=phenotype_order, ax=axes[0],
-                             color=color)
+                             color=color, **violinplot_kws)
 
             if nmf_space:
                 try:
