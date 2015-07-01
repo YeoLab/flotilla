@@ -5,23 +5,41 @@ import seaborn as sns
 
 def violinplot(singles, groupby, color_ordered=None, ax=None,
                pooled=None, ylabel='', bw=None,
-               order=None, title=None,
-               outliers=None, data_type=None):
+               order=None, title=None, ylim=None, yticks=None,
+               outliers=None, **kwargs):
     """
     Parameters
     ----------
-    data : pandas.Series
-        The main data to plot
-    groupby : dict-like
-        How to group the samples (e.g. by phenotype)
-    color_ordered : list
+    singles : pandas.Series
+        Gene expression or splicing values from single cells
+    groupby : pandas.Series
+        A sample to group mapping for each sample id
+    color_ordered : list, optional
+        List of colors in the correct phenotype order
+    ax : matplotlib.Axes object, optional
+        Axes to plot on
+    pooled : pandas.Series
+        Gene expression or splicing values from pooled samples
+    ylabel : str
+        How to label the y-axis
+    bw : float
+        Width of the bandwidths for estimating the kernel density
+    order : list
+        Which order to plot the groups in
+    title : str
+        Title of the plot
+    ylim : tuple
+        Length 2 tuple specifying the minimum and maxmimum values to
+        be plotted on the y-axis
+    yticks : list
+        Where to position yticks
+    outliers : pandas.Series
+        Gene expression or splicing values from outlier cells
 
     Returns
     -------
-
-
-    Raises
-    ------
+    ax : matplotlib.Axes object
+        Axes with violinplot plotted
     """
     if ax is None:
         ax = plt.gca()
@@ -42,24 +60,28 @@ def violinplot(singles, groupby, color_ordered=None, ax=None,
 
     if outliers is not None and not outliers.dropna().empty:
         sns.violinplot(x='phenotype', y=ylabel, data=tidy_outliers,
-                   bw=0.2, order=order, inner=None, cut=0,
-                   linewidth=1, scale='width', color='lightgrey', ax=ax)
+                       bw=bw, order=order, inner=None, cut=0,
+                       linewidth=1, scale='width', color='lightgrey', ax=ax,
+                       **kwargs)
     if not singles.dropna().empty:
         sns.violinplot(x='phenotype', y=ylabel, data=tidy_singles,
-                   bw=0.2, order=order, inner=None, cut=0,
-                   linewidth=1, scale='width', palette=color_ordered, ax=ax)
+                       bw=bw, order=order, inner=None, cut=0,
+                       linewidth=1, scale='width', palette=color_ordered, ax=ax,
+                       **kwargs)
     if outliers is not None and not outliers.dropna().empty:
         sns.stripplot(x='phenotype', y=ylabel, data=tidy_outliers,
-                  jitter=True, order=order, ax=ax, color='grey')
+                      jitter=True, order=order, ax=ax, color='grey')
     if not singles.dropna().empty:
         sns.stripplot(x='phenotype', y=ylabel, data=tidy_singles,
-                  jitter=True, order=order, ax=ax, palette=color_ordered)
+                      jitter=True, order=order, ax=ax, palette=color_ordered)
     if pooled is not None and not pooled.dropna().empty:
         sns.stripplot(x='phenotype', y=ylabel, data=tidy_pooled,
                       jitter=True, order=order, ax=ax, color='#262626')
     sizes = tidy_singles.groupby('phenotype').size()
 
-    ax.set_xticklabels(['{0}\nn={1}'.format(group, sizes[group]) if group in sizes else group for group in order])
+    ax.set_xticklabels(['{0}\nn={1}'.format(group, sizes[group])
+                        if group in sizes else group for group in order])
+    ax.set(title=title, yticks=yticks, ylim=ylim)
     return ax
 
 def nmf_space_transitions(nmf_space_positions, feature_id,
