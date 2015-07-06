@@ -15,7 +15,8 @@ import pandas as pd
 import semantic_version
 import seaborn as sns
 
-from .data_model.metadata import MetaData, PHENOTYPE_COL, POOLED_COL, OUTLIER_COL
+from .data_model.metadata import MetaData, PHENOTYPE_COL, POOLED_COL, \
+    OUTLIER_COL
 from .data_model.expression import ExpressionData
 from .data_model.gene_ontology import GeneOntologyData
 from .data_model.quality_control import MappingStatsData, MIN_READS
