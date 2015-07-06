@@ -85,7 +85,10 @@ def violinplot(singles, groupby, color_ordered=None, ax=None,
 
     ax.set_xticklabels(['{0}\nn={1}'.format(group, sizes[group])
                         if group in sizes else group for group in order])
-    ax.set(title=title, yticks=yticks, ylim=ylim)
+
+    to_set = {'title': title, 'yticks': yticks, 'ylim': ylim}
+    to_set = {k: v for k, v in to_set.items() if v is not None}
+    ax.set(**to_set)
     return ax
 
 
