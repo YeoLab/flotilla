@@ -1765,7 +1765,7 @@ class Study(object):
 
         return make_study_datapackage(
             study_name, metadata, expression, splicing,
-            mapping_stats=mapping_stats, metadata_kws=metadata_kws,
+            mapping_stats, metadata_kws=metadata_kws,
             expression_kws=expression_kws, splicing_kws=splicing_kws,
             mapping_stats_kws=mapping_stats_kws,
             expression_feature_kws=expression_feature_kws,
