@@ -1,6 +1,5 @@
 """
 Data types related to gene expression, e.g. from RNA-Seq or microarrays.
-Included SpikeIn data.
 """
 import sys
 

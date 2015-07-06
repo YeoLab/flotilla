@@ -77,7 +77,6 @@ def check_if_already_downloaded(url,
 def make_study_datapackage(study_name, metadata,
                            expression_data=None,
                            splicing_data=None,
-                           spikein_data=None,
                            mapping_stats_data=None,
                            title='',
                            sources='', license=None, species=None,
@@ -85,7 +84,6 @@ def make_study_datapackage(study_name, metadata,
                            metadata_kws=None,
                            expression_kws=None,
                            splicing_kws=None,
-                           spikein_kws=None,
                            mapping_stats_kws=None,
                            version=None,
                            expression_feature_kws=None,
@@ -119,7 +117,6 @@ def make_study_datapackage(study_name, metadata,
     resources = {'metadata': (metadata, metadata_kws),
                  'expression': (expression_data, expression_kws),
                  'splicing': (splicing_data, splicing_kws),
-                 'spikein': (spikein_data, spikein_kws),
                  'mapping_stats': (mapping_stats_data, mapping_stats_kws),
                  'expression_feature': (expression_feature_data,
                                         expression_feature_kws),
@@ -139,19 +136,6 @@ def make_study_datapackage(study_name, metadata,
         data_filename = '{}/{}'.format(datapackage_dir, basename)
         with gzip.open(data_filename, 'wb') as f:
             data.to_csv(f)
-
-        # if isinstance(data.columns, pd.MultiIndex):
-        #     resource['header'] = range(len(data.columns.levels))
-        # if isinstance(data.index, pd.MultiIndex):
-        #     resource['index_col'] = range(len(data.index.levels))
-        # try:
-        # # TODO: only transmit data if it has been updated
-        # subprocess.call(
-        # "scp {} {}:{}{}.".format(data_filename, host, host_destination,
-        #                                  name), shell=True)
-        # except Exception as e:
-        #     sys.stderr.write("error sending data to host: {}".format(e))
-
         resource['path'] = basename
         resource['compression'] = 'gzip'
         resource['format'] = 'csv'
