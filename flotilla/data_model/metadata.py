@@ -10,7 +10,6 @@ import seaborn as sns
 from .base import BaseData, subsets_from_metadata
 from ..visualize.color import str_to_color
 
-
 POOLED_COL = 'pooled'
 PHENOTYPE_COL = 'phenotype'
 MINIMUM_SAMPLE_SUBSET = 10
@@ -69,24 +68,6 @@ class MetaData(BaseData):
 
         self.phenotype_to_marker = phenotype_to_marker
 
-        markers = cycle(['o', '^', 's', 'v', '*', 'D', ])
-        if self.phenotype_to_marker is not None:
-            for phenotype in self.unique_phenotypes:
-                try:
-                    marker = self.phenotype_to_marker[phenotype]
-                except KeyError:
-                    marker = markers.next()
-                    sys.stderr.write(
-                        '{} does not have marker style, '
-                        'falling back on "{}"'.format(phenotype, marker))
-                if marker not in mpl.markers.MarkerStyle.filled_markers:
-                    correct_marker = markers.next()
-                    sys.stderr.write(
-                        '{} is not a valid matplotlib marker style, '
-                        'falling back on "{}"'.format(marker, correct_marker))
-                    marker = correct_marker
-                self.phenotype_to_marker[phenotype] = marker
-
     @property
     def sample_id_to_phenotype(self):
         return self.data[self.phenotype_col]
@@ -105,9 +86,11 @@ class MetaData(BaseData):
 
     @property
     def phenotype_order(self):
-        if len(set(self._phenotype_order) & set(self.unique_phenotypes)) > 0:
+        new_phenotypes = set(self.unique_phenotypes).difference(
+            set(self._phenotype_order))
+        if len(new_phenotypes) > 0:
             return [v for v in self._phenotype_order if
-                    v in self.unique_phenotypes]
+                    v in self.unique_phenotypes] + list(new_phenotypes)
         else:
             return self._default_phenotype_order
 
@@ -161,6 +144,7 @@ class MetaData(BaseData):
 
         def marker_factory():
             return markers.next()
+
         _default_phenotype_to_marker = defaultdict(marker_factory)
         all_phenotypes = self._phenotype_to_marker.keys()
         all_phenotypes.extend(self.phenotype_order)
