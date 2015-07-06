@@ -44,6 +44,8 @@ def violinplot(singles, groupby, color_ordered=None, ax=None,
     if ax is None:
         ax = plt.gca()
 
+    if groupby.name is None:
+        groupby.name = 'phenotype'
     tidy_singles = singles.dropna().to_frame().join(groupby)
     tidy_singles = tidy_singles.reset_index()
     tidy_singles = tidy_singles.rename(columns={singles.name:ylabel,})
@@ -59,25 +61,25 @@ def violinplot(singles, groupby, color_ordered=None, ax=None,
         tidy_outliers = tidy_outliers.rename(columns={outliers.namename:ylabel,})
 
     if outliers is not None and not outliers.dropna().empty:
-        sns.violinplot(x='phenotype', y=ylabel, data=tidy_outliers,
+        sns.violinplot(x=groupby.name, y=ylabel, data=tidy_outliers,
                        bw=bw, order=order, inner=None, cut=0,
                        linewidth=1, scale='width', color='lightgrey', ax=ax,
                        **kwargs)
     if not singles.dropna().empty:
-        sns.violinplot(x='phenotype', y=ylabel, data=tidy_singles,
+        sns.violinplot(x=groupby.name, y=ylabel, data=tidy_singles,
                        bw=bw, order=order, inner=None, cut=0,
                        linewidth=1, scale='width', palette=color_ordered, ax=ax,
                        **kwargs)
     if outliers is not None and not outliers.dropna().empty:
-        sns.stripplot(x='phenotype', y=ylabel, data=tidy_outliers,
+        sns.stripplot(x=groupby.name, y=ylabel, data=tidy_outliers,
                       jitter=True, order=order, ax=ax, color='grey')
     if not singles.dropna().empty:
-        sns.stripplot(x='phenotype', y=ylabel, data=tidy_singles,
+        sns.stripplot(x=groupby.name, y=ylabel, data=tidy_singles,
                       jitter=True, order=order, ax=ax, palette=color_ordered)
     if pooled is not None and not pooled.dropna().empty:
-        sns.stripplot(x='phenotype', y=ylabel, data=tidy_pooled,
+        sns.stripplot(x=groupby.name, y=ylabel, data=tidy_pooled,
                       jitter=True, order=order, ax=ax, color='#262626')
-    sizes = tidy_singles.groupby('phenotype').size()
+    sizes = tidy_singles.groupby(groupby.name).size()
 
     ax.set_xticklabels(['{0}\nn={1}'.format(group, sizes[group])
                         if group in sizes else group for group in order])
