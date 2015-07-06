@@ -723,12 +723,11 @@ class SplicingData(BaseData):
                                                              axis=0)
         return nmf_space_transitions
 
-
     def plot_clustermap(self, sample_ids=None, feature_ids=None, data=None,
                         feature_colors=None, sample_id_to_color=None,
                         metric='euclidean', method='average',
                         scale_fig_by_data=True, **kwargs):
-        super(self, SplicingData).plot_clustermap(
+        super(SplicingData, self).plot_clustermap(
             sample_ids=sample_ids, feature_ids=feature_ids, data=data,
             feature_colors=feature_colors, sample_id_to_color=sample_id_to_color,
             metric=metric, method=method, scale_fig_by_data=scale_fig_by_data,
