@@ -1034,9 +1034,8 @@ class BaseData(object):
                      phenotype_groupby=None,
                      phenotype_order=None, color=None,
                      phenotype_to_color=None,
-                     phenotype_to_marker=None, nmf_xlabel=None,
-                     nmf_ylabel=None,
-                     nmf_space=False, fig=None, axesgrid=None, n=20,
+                     phenotype_to_marker=None,
+                     fig=None, axesgrid=None, n=20,
                      violinplot_kws=None):
         """
         Plot the violinplot of a feature. Have the option to show NMF movement
@@ -1056,39 +1055,23 @@ class BaseData(object):
 
         if fig is None and axesgrid is None:
             nrows = len(feature_ids)
-            ncols = 2 if nmf_space else 1
+            ncols = 4
             figsize = ax_width * ncols, 4 * nrows
             gridspec_kw = {}
-            if nmf_space:
-                gridspec_kw['width_ratios'] = (ax_width, 4)
-
             fig, axesgrid = plt.subplots(nrows=nrows, ncols=ncols,
                                          figsize=figsize,
                                          gridspec_kw=gridspec_kw)
             if nrows == 1:
-                axesgrid = [axesgrid]
+                axesgrid = np.array([axesgrid])
 
-        for feature_id, axes in zip(feature_ids, axesgrid):
-            if not nmf_space:
-                axes = [axes]
+        for feature_id, ax in zip(feature_ids, axesgrid.flat):
             # if self.data_type == 'expression':
             # axes = [axes]
 
             self._violinplot(feature_id, sample_ids=sample_ids,
                              phenotype_groupby=phenotype_groupby,
-                             phenotype_order=phenotype_order, ax=axes[0],
+                             phenotype_order=phenotype_order, ax=ax,
                              color=color, **violinplot_kws)
-
-            if nmf_space:
-                try:
-                    self.plot_nmf_space_transitions(
-                        feature_id, groupby=phenotype_groupby,
-                        phenotype_to_color=phenotype_to_color,
-                        phenotype_to_marker=phenotype_to_marker,
-                        order=phenotype_order, ax=axes[1],
-                        xlabel=nmf_xlabel, ylabel=nmf_ylabel, n=n)
-                except KeyError:
-                    continue
             sns.despine()
         fig.tight_layout()
 
