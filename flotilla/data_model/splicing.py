@@ -320,16 +320,8 @@ class SplicingData(BaseData):
                      phenotype_groupby=None,
                      phenotype_order=None, color=None,
                      phenotype_to_color=None,
-                     phenotype_to_marker=None, nmf_xlabel=None,
-                     nmf_ylabel=None,
-                     nmf_space=False, fig=None, axesgrid=None, n=20,
+                     phenotype_to_marker=None, fig=None, axesgrid=None, n=20,
                      violinplot_kws=None):
-        if nmf_space:
-            nmf_xlabel = self._nmf_space_xlabel(phenotype_groupby)
-            nmf_ylabel = self._nmf_space_ylabel(phenotype_groupby)
-        else:
-            nmf_ylabel = None
-            nmf_xlabel = None
         violinplot_kws = {} if violinplot_kws is None else violinplot_kws
         violinplot_kws.setdefault('bw', 0.2)
         violinplot_kws.setdefault('ylim', (0, 1))
@@ -339,8 +331,7 @@ class SplicingData(BaseData):
                                                phenotype_groupby,
                                                phenotype_order, color,
                                                phenotype_to_color,
-                                               phenotype_to_marker, nmf_xlabel,
-                                               nmf_ylabel, nmf_space=nmf_space,
+                                               phenotype_to_marker,
                                                fig=fig, axesgrid=axesgrid,
                                                n=n,
                                                violinplot_kws=violinplot_kws)
