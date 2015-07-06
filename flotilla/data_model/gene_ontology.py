@@ -44,7 +44,7 @@ class GeneOntologyData(object):
             self.ontology[go]['name'] = df['GO Term Name'].values[0]
             self.ontology[go]['domain'] = df['GO domain'].values[0]
             self.ontology[go]['n_genes'] = len(self.ontology[go]['genes'])
-        sys.stdout.write('{}\t\tDone.'.format(timestamp()))
+        sys.stdout.write('{}\t\tDone.\n'.format(timestamp()))
 
         self.all_genes = self.data['Ensembl Gene ID'].unique()
 
