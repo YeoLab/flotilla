@@ -7,11 +7,12 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 from .base import BaseData
+from ..compute.decomposition import DataFrameNMF
 from ..compute.splicing import ModalityEstimator
 from ..visualize.splicing import ModalitiesViz
-from ..util import memoize, timestamp
+from ..util import memoize, timestamp, cached_property
 from ..visualize.splicing import lavalamp, hist_single_vs_pooled_diff, \
-    lavalamp_pooled_inconsistent
+    lavalamp_pooled_inconsistent, nmf_space_transitions
 
 FRACTION_DIFF_THRESH = 0.1
 
@@ -329,6 +330,21 @@ class SplicingData(BaseData):
         logsumexps = self.modality_estimator._logsumexp(logliks)
         self.modality_visualizer.event_estimation(event, logliks, logsumexps,
                                                   renamed=renamed)
+
+    @cached_property()
+    def nmf(self):
+        data = self._subset(self.data)
+        return DataFrameNMF(self.binify(data).T, n_components=2)
+
+    # @memoize
+    def binned_nmf_reduced(self, sample_ids=None, feature_ids=None,
+                           data=None):
+        if data is None:
+            data = self._subset(self.data, sample_ids, feature_ids,
+                                require_min_samples=False)
+        binned = self.binify(data)
+        reduced = self.nmf.transform(binned.T)
+        return reduced
 
     @memoize
     def _is_nmf_space_x_axis_excluded(self, phenotype_groupby):
@@ -649,6 +665,127 @@ class SplicingData(BaseData):
         ylim = kwargs.pop('ylim', (0, 1))
         return super(SplicingData, self).plot_two_samples(
             sample1, sample2, xlim=xlim, ylim=ylim, **kwargs)
+
+    def nmf_space_positions(self, groupby, n=20):
+        """Calculate NMF-space position of splicing events in phenotype groups
+
+        Parameters
+        ----------
+        groupby : mappable
+            A sample id to phenotype mapping
+        n : int or float
+            If int, then this is the absolute number of cells that are minimum
+            required to calculate modalities. If a float, then require this
+            fraction of samples to calculate modalities, e.g. if 0.6, then at
+            least 60% of samples must have an event detected for modality
+            detection
+
+        Returns
+        -------
+        df : pandas.DataFrame
+            A (n_events, n_groups) dataframe of NMF positions
+        """
+        grouped = self.singles.groupby(groupby)
+        if isinstance(n, int):
+            thresh = self._thresh_int
+        elif isinstance(n, float):
+            thresh = self._thresh_float
+
+        at_least_n_per_group_per_event = pd.concat(
+            [df.dropna(thresh=thresh(df, n), axis=1) for name, df in grouped])
+        at_least_n_per_group_per_event = at_least_n_per_group_per_event.dropna(
+            how='all', axis=1)
+        # at_least_n_per_group_per_event = grouped.transform(
+        #     lambda x: x if x.count() >= n else pd.Series(np.nan,
+        #                                                  index=x.index))
+        df = at_least_n_per_group_per_event.groupby(groupby).apply(
+            lambda x: self.binned_nmf_reduced(data=x)
+            if x.count().sum() > 0 else pd.DataFrame())
+        df = df.swaplevel(0, 1)
+        df = df.sort_index()
+        return df
+
+    def plot_nmf_space_transitions(self, feature_id, groupby,
+                                   phenotype_to_color,
+                                   phenotype_to_marker, order, ax=None,
+                                   xlabel=None, ylabel=None, n=20):
+        nmf_space_positions = self.nmf_space_positions(groupby, n=n)
+
+        nmf_space_transitions(nmf_space_positions, feature_id,
+                              phenotype_to_color,
+                              phenotype_to_marker, order,
+                              ax, xlabel, ylabel)
+
+    @staticmethod
+    def transition_distances(positions, transitions):
+        """Get NMF distance of features between phenotype transitions
+
+        Parameters
+        ----------
+        positions : pandas.DataFrame
+            A ((n_features, phenotypes), 2) MultiIndex dataframe of the NMF
+            positions of splicing events for different phenotypes
+        transitions : list of 2-string tuples
+            List of (phenotype1, phenotype2) transitions
+
+        Returns
+        -------
+        transitions : pandas.DataFrame
+            A (n_features, n_transitions) DataFrame of the NMF distances
+            of features between different phenotypes
+        """
+        positions_phenotype = positions.copy()
+        positions_phenotype.index = positions_phenotype.index.droplevel(0)
+        distances = pd.Series(index=transitions)
+        for transition in transitions:
+            try:
+                phenotype1, phenotype2 = transition
+                norm = np.linalg.norm(positions_phenotype.ix[phenotype2] -
+                                      positions_phenotype.ix[phenotype1])
+                # print phenotype1, phenotype2, norm
+                distances[transition] = norm
+            except KeyError:
+                pass
+        return distances
+
+    def nmf_space_transitions(self, groupby, phenotype_transitions, n=20):
+        """Get distance in NMF space of different splicing events
+
+        Parameters
+        ----------
+        groupby : mappable
+            A sample id to phenotype mapping
+        phenotype_transitions : list of str pairs
+            Which phenotype follows from one to the next, for calculating
+            distances between
+        n : int or float
+            If int, then this is the absolute number of cells that are minimum
+            required to calculate modalities. If a float, then require this
+            fraction of samples to calculate modalities, e.g. if 0.6, then at
+            least 60% of samples must have an event detected for modality
+            detection
+
+        Returns
+        -------
+        nmf_space_transitions : pandas.DataFrame
+            A (n_events, n_phenotype_transitions) sized DataFrame of the
+            distances of these events in NMF space
+        """
+        nmf_space_positions = self.nmf_space_positions(groupby, n=n)
+
+        # Take only splicing events that have at least two phenotypes
+        nmf_space_positions = nmf_space_positions.groupby(
+            level=0, axis=0).filter(lambda x: len(x) > 1)
+
+        nmf_space_transitions = nmf_space_positions.groupby(
+            level=0, axis=0, as_index=True, group_keys=False).apply(
+            self.transition_distances, transitions=phenotype_transitions)
+
+        # Remove any events that didn't have phenotype pairs from
+        # the transitions
+        nmf_space_transitions = nmf_space_transitions.dropna(how='all',
+                                                             axis=0)
+        return nmf_space_transitions
 
 
 # class SpliceJunctionData(SplicingData):

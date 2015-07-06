@@ -313,3 +313,37 @@ def lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
     ax_consistent.set_title('Pooled splicing events consistent with singles{}'
                             .format(title_suffix))
     sns.despine()
+
+    def nmf_space_transitions(nmf_space_positions, feature_id,
+                              phenotype_to_color, phenotype_to_marker, order,
+                              ax=None, xlabel=None, ylabel=None):
+
+
+df = nmf_space_positions.ix[feature_id]
+
+if ax is None:
+    ax = plt.gcf()
+
+for color, s in df.groupby(phenotype_to_color, axis=0):
+    phenotype = s.index[0]
+    marker = phenotype_to_marker[phenotype]
+    ax.plot(s.pc_1, s.pc_2, color=color, marker=marker, markersize=14,
+            alpha=0.75, label=phenotype, linestyle='none')
+
+# ax.scatter(df.ix[:, 0], df.ix[:, 1], color=color, s=100, alpha=0.75)
+# ax.legend(points, df.index.tolist())
+ax.set_xlim(0, nmf_space_positions.ix[:, 0].max() * 1.05)
+ax.set_ylim(0, nmf_space_positions.ix[:, 1].max() * 1.05)
+
+x = [df.ix[pheno, 0] for pheno in order if pheno in df.index]
+y = [df.ix[pheno, 1] for pheno in order if pheno in df.index]
+
+ax.plot(x, y, zorder=-1, color='#262626', alpha=0.5, linewidth=1)
+ax.legend()
+
+if xlabel is not None:
+    ax.set_xlabel(xlabel)
+    ax.set_xticks([])
+if ylabel is not None:
+    ax.set_ylabel(ylabel)
+    ax.set_yticks([])
