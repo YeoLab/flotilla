@@ -46,17 +46,17 @@ def violinplot(singles, groupby, color_ordered=None, ax=None,
 
     tidy_singles = singles.dropna().to_frame().join(groupby)
     tidy_singles = tidy_singles.reset_index()
-    tidy_singles = tidy_singles.rename(columns={singles.name:ylabel,})
+    tidy_singles = tidy_singles.rename(columns={singles.name: ylabel})
 
     if pooled is not None:
         tidy_pooled = pooled.dropna().to_frame().join(groupby)
         tidy_pooled = tidy_pooled.reset_index()
-        tidy_pooled = tidy_pooled.rename(columns={pooled.name:ylabel,})
+        tidy_pooled = tidy_pooled.rename(columns={pooled.name: ylabel})
 
     if outliers is not None:
         tidy_outliers = outliers.dropna().to_frame().join(groupby)
         tidy_outliers = tidy_outliers.reset_index()
-        tidy_outliers = tidy_outliers.rename(columns={outliers.namename:ylabel,})
+        tidy_outliers = tidy_outliers.rename(columns={outliers.name: ylabel})
 
     if outliers is not None and not outliers.dropna().empty:
         sns.violinplot(x='phenotype', y=ylabel, data=tidy_outliers,
@@ -66,7 +66,8 @@ def violinplot(singles, groupby, color_ordered=None, ax=None,
     if not singles.dropna().empty:
         sns.violinplot(x='phenotype', y=ylabel, data=tidy_singles,
                        bw=bw, order=order, inner=None, cut=0,
-                       linewidth=1, scale='width', palette=color_ordered, ax=ax,
+                       linewidth=1, scale='width', palette=color_ordered,
+                       ax=ax,
                        **kwargs)
     if outliers is not None and not outliers.dropna().empty:
         sns.stripplot(x='phenotype', y=ylabel, data=tidy_outliers,
@@ -83,6 +84,7 @@ def violinplot(singles, groupby, color_ordered=None, ax=None,
                         if group in sizes else group for group in order])
     ax.set(title=title, yticks=yticks, ylim=ylim)
     return ax
+
 
 def nmf_space_transitions(nmf_space_positions, feature_id,
                           phenotype_to_color, phenotype_to_marker, order,
