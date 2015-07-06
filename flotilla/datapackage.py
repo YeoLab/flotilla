@@ -10,11 +10,7 @@ import sys
 import matplotlib as mpl
 
 import six
-if six.PY2:
-    import urllib2 as urllib
-elif six.PY3:
-    import urllib
-
+from six.moves import urllib
 
 FLOTILLA_DOWNLOAD_DIR = os.path.expanduser('~/flotilla_projects')
 
@@ -50,8 +46,8 @@ def check_if_already_downloaded(url,
         pass
 
     if datapackage_name is None:
-        req = urllib2.Request(url)
-        opener = urllib2.build_opener()
+        req = urllib.Request(url)
+        opener = urllib.build_opener()
         opened_url = opener.open(req)
         datapackage = json.loads(opened_url.read())
         datapackage_name = datapackage['name']
@@ -70,8 +66,8 @@ def check_if_already_downloaded(url,
     if not os.path.isfile(filename):
         sys.stdout.write('{} has not been downloaded before.\n\tDownloading '
                          'now to {}\n'.format(url, filename))
-        req = urllib2.Request(url)
-        opener = urllib2.build_opener()
+        req = urllib.Request(url)
+        opener = urllib.build_opener()
         opened_url = opener.open(req)
         with open(filename, 'w') as f:
             f.write(opened_url.read())
