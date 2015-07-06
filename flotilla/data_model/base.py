@@ -1037,7 +1037,7 @@ class BaseData(object):
                      phenotype_to_marker=None,
                      violinplot_kws=None, col_wrap=4):
         """
-        Plot the violinplot of a feature. Have the option to show NMF movement
+        Plot the violinplot of a feature.
         """
         feature_ids = self.maybe_renamed_to_feature_id(feature_id)
         if phenotype_groupby is None:
@@ -1052,22 +1052,21 @@ class BaseData(object):
         single_violin_width = 0.5
         ax_width = max(4, single_violin_width*grouped.size().shape[0])
 
-        if fig is None and axesgrid is None:
-            naxes = len(feature_ids)
-            nrows = 1
-            ncols = 1
-            while nrows * ncols < naxes:
-                if ncols > col_wrap:
-                    nrows += 1
-                else:
-                    ncols += 1
-            figsize = ax_width * ncols, 4 * nrows
-            gridspec_kw = {}
-            fig, axesgrid = plt.subplots(nrows=nrows, ncols=ncols,
-                                         figsize=figsize,
-                                         gridspec_kw=gridspec_kw)
-            if nrows == 1:
-                axesgrid = np.array([axesgrid])
+        naxes = len(feature_ids)
+        nrows = 1
+        ncols = 1
+        while nrows * ncols < naxes:
+            if ncols > col_wrap:
+                nrows += 1
+            else:
+                ncols += 1
+        figsize = ax_width * ncols, 4 * nrows
+        gridspec_kw = {}
+        fig, axesgrid = plt.subplots(nrows=nrows, ncols=ncols,
+                                     figsize=figsize,
+                                     gridspec_kw=gridspec_kw)
+        if nrows == 1:
+            axesgrid = np.array([axesgrid])
 
         for feature_id, ax in zip(feature_ids, axesgrid.flat):
             # if self.data_type == 'expression':
