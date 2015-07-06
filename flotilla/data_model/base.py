@@ -1036,7 +1036,7 @@ class BaseData(object):
                      phenotype_to_color=None,
                      phenotype_to_marker=None,
                      fig=None, axesgrid=None, n=20,
-                     violinplot_kws=None):
+                     violinplot_kws=None, col_wrap=4):
         """
         Plot the violinplot of a feature. Have the option to show NMF movement
         """
@@ -1054,8 +1054,13 @@ class BaseData(object):
         ax_width = max(4, single_violin_width*grouped.size().shape[0])
 
         if fig is None and axesgrid is None:
-            nrows = len(feature_ids)
-            ncols = 4
+            naxes = len(feature_ids)
+            nrows = 1
+            ncols = 1
+            while nrows * ncols < naxes:
+                ncols += 1
+                if ncols > col_wrap:
+                    nrows += 1
             figsize = ax_width * ncols, 4 * nrows
             gridspec_kw = {}
             fig, axesgrid = plt.subplots(nrows=nrows, ncols=ncols,
