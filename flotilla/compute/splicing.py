@@ -162,7 +162,9 @@ class ModalityEstimator(object):
 
         # Take everything that was ambiguous for included/excluded and estimate
         # bimodal and middle
-        data2 = data.ix[:, modality_assignments1 == 'ambiguous']
+        series = modality_assignments1 == 'ambiguous'
+        ind = series[series].index
+        data2 = data.ix[:, ind]
         non_na_columns = data2.count() > 0
         logsumexp_logliks2 = data2.ix[:, non_na_columns].apply(
             lambda x: pd.Series(
