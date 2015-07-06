@@ -7,7 +7,7 @@ import sys
 import numpy as np
 
 from .base import BaseData
-from ..util import memoize, timestamp
+from ..util import timestamp
 
 EXPRESSION_THRESH = -np.inf
 
