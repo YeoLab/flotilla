@@ -1058,9 +1058,10 @@ class BaseData(object):
             nrows = 1
             ncols = 1
             while nrows * ncols < naxes:
-                ncols += 1
                 if ncols > col_wrap:
                     nrows += 1
+                else:
+                    ncols += 1
             figsize = ax_width * ncols, 4 * nrows
             gridspec_kw = {}
             fig, axesgrid = plt.subplots(nrows=nrows, ncols=ncols,
