@@ -1035,7 +1035,6 @@ class BaseData(object):
                      phenotype_order=None, color=None,
                      phenotype_to_color=None,
                      phenotype_to_marker=None,
-                     fig=None, axesgrid=None, n=20,
                      violinplot_kws=None, col_wrap=4):
         """
         Plot the violinplot of a feature. Have the option to show NMF movement
