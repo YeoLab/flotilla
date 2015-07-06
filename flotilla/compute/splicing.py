@@ -147,7 +147,7 @@ class ModalityEstimator(object):
 
         # Estimate Psi~0/Psi~1 first
         non_na_columns = data.count() > 0
-        logsumexp_logliks1 = data[non_na_columns].apply(
+        logsumexp_logliks1 = data.ix[:, non_na_columns].apply(
             lambda x: pd.Series(
                 {k: v.logsumexp_logliks(x)
                  for k, v in self.one_param_models.iteritems()}), axis=0)
@@ -159,7 +159,8 @@ class ModalityEstimator(object):
         # Take everything that was ambiguous for included/excluded and estimate
         # bimodal and middle
         data2 = data.ix[:, modality_assignments1 == 'ambiguous']
-        logsumexp_logliks2 = data2[non_na_columns].apply(
+        non_na_columns = data2.count() > 0
+        logsumexp_logliks2 = data2.ix[:, non_na_columns].apply(
             lambda x: pd.Series(
                 {k: v.logsumexp_logliks(x)
                  for k, v in self.two_param_models.iteritems()}), axis=0)
@@ -174,8 +175,8 @@ class ModalityEstimator(object):
             modality_assignments2.values
 
         # Add back the NA columns
-        modality_assignments = modality_assignments.reindex_like(
-            columns=data.columns)
+        modality_assignments = modality_assignments.reindex(data.columns,
+                                                            axis=1)
         return modality_assignments
 
 
