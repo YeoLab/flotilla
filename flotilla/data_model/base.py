@@ -1161,7 +1161,7 @@ class BaseData(object):
             # Try to get close to 0 center, unit variance for each feature
             x = data
             x[x <= 0] = np.min(x[x > 0]).min()
-            z = whiten(x.apply(lambda x: np.log2(x / x.mean(axis=0)), 0))
+            z = whiten(x.apply(lambda y: np.log2(y / y.mean(axis=0)), 0))
             data = z
 
         data = data.fillna(data.mean())
@@ -1174,6 +1174,8 @@ class BaseData(object):
 
         if scale_fig_by_data:
             figsize = self._figsizer(data.shape)
+
+            # Ignore figsize in the kwargs
             kwargs.pop('figsize')
         else:
             figsize = kwargs.pop('figsize', None)
