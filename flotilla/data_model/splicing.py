@@ -331,7 +331,8 @@ class SplicingData(BaseData):
                                                phenotype_groupby,
                                                phenotype_order, color,
                                                phenotype_to_color,
-                                               phenotype_to_marker,col_wrap=col_wrap,
+                                               phenotype_to_marker,
+                                               col_wrap=col_wrap,
                                                violinplot_kws=violinplot_kws)
 
     @memoize
@@ -727,6 +728,7 @@ class SplicingData(BaseData):
                         scale_fig_by_data=True, **kwargs):
         super(SplicingData, self).plot_clustermap(
             sample_ids=sample_ids, feature_ids=feature_ids, data=data,
-            feature_colors=feature_colors, sample_id_to_color=sample_id_to_color,
+            feature_colors=feature_colors,
+            sample_id_to_color=sample_id_to_color,
             metric=metric, method=method, scale_fig_by_data=scale_fig_by_data,
             norm_features=False, **kwargs)

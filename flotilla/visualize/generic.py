@@ -52,12 +52,12 @@ def violinplot(singles, groupby, color_ordered=None, ax=None,
         groupby.name = 'phenotype'
     tidy_singles = singles.dropna().to_frame().join(groupby)
     tidy_singles = tidy_singles.reset_index()
-    tidy_singles = tidy_singles.rename(columns={singles.name: ylabel,})
+    tidy_singles = tidy_singles.rename(columns={singles.name: ylabel})
 
     if pooled is not None:
         tidy_pooled = pooled.dropna().to_frame().join(groupby)
         tidy_pooled = tidy_pooled.reset_index()
-        tidy_pooled = tidy_pooled.rename(columns={pooled.name: ylabel,})
+        tidy_pooled = tidy_pooled.rename(columns={pooled.name: ylabel})
 
     if outliers is not None:
         tidy_outliers = outliers.dropna().to_frame().join(groupby)
@@ -72,8 +72,8 @@ def violinplot(singles, groupby, color_ordered=None, ax=None,
     if not singles.dropna().empty:
         sns.violinplot(x=groupby.name, y=ylabel, data=tidy_singles,
                        bw=bw, order=order, inner=None, cut=0,
-                       linewidth=1, scale='width', palette=color_ordered, ax=ax,
-                       **kwargs)
+                       linewidth=1, scale='width', palette=color_ordered,
+                       ax=ax, **kwargs)
     if outliers is not None and not outliers.dropna().empty:
         sns.stripplot(x=groupby.name, y=ylabel, data=tidy_outliers,
                       jitter=True, order=order, ax=ax, color='grey')
