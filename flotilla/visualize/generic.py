@@ -80,6 +80,8 @@ def violinplot(singles, groupby, color_ordered=None, ax=None,
         sns.stripplot(x=groupby.name, y=ylabel, data=tidy_pooled,
                       jitter=True, order=order, ax=ax, color='#262626')
     sizes = tidy_singles.groupby(groupby.name).size()
+    if order is None:
+        order = sizes.keys()
 
     ax.set_xticklabels(['{0}\nn={1}'.format(group, sizes[group])
                         if group in sizes else group for group in order])
