@@ -10,8 +10,8 @@ import sys
 import urllib2
 
 import pandas as pd
-import matplotlib as mpl
 
+import matplotlib as mpl
 
 FLOTILLA_DOWNLOAD_DIR = os.path.expanduser('~/flotilla_projects')
 
@@ -174,4 +174,3 @@ def name_to_resource(datapackage, name):
         if resource['name'] == name:
             return resource
     raise ValueError('No resource named {} in this datapackage'.format(name))
-2
