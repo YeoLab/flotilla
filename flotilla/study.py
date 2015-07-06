@@ -15,19 +15,19 @@ import pandas as pd
 import semantic_version
 import seaborn as sns
 
-from .metadata import MetaData, PHENOTYPE_COL, POOLED_COL, OUTLIER_COL
-from .expression import ExpressionData, SpikeInData
-from .gene_ontology import GeneOntologyData
-from .quality_control import MappingStatsData, MIN_READS
-from .splicing import SplicingData, FRACTION_DIFF_THRESH
-from .supplemental import SupplementalData
-from ..compute.predict import PredictorConfigManager
-from ..datapackage import datapackage_url_to_dict, \
+from flotilla.data_model.metadata import MetaData, PHENOTYPE_COL, POOLED_COL, OUTLIER_COL
+from flotilla.data_model.expression import ExpressionData, SpikeInData
+from flotilla.data_model.gene_ontology import GeneOntologyData
+from flotilla.data_model.quality_control import MappingStatsData, MIN_READS
+from flotilla.data_model.splicing import SplicingData, FRACTION_DIFF_THRESH
+from flotilla.data_model.supplemental import SupplementalData
+from flotilla.compute.predict import PredictorConfigManager
+from flotilla.datapackage import datapackage_url_to_dict, \
     check_if_already_downloaded, make_study_datapackage
-from ..visualize.color import blue
-from ..visualize.ipython_interact import Interactive
-from ..datapackage import FLOTILLA_DOWNLOAD_DIR
-from ..util import load_csv, load_json, load_tsv, load_gzip_pickle_df, \
+from flotilla.visualize.color import blue
+from flotilla.visualize.ipython_interact import Interactive
+from flotilla.datapackage import FLOTILLA_DOWNLOAD_DIR
+from flotilla.util import load_csv, load_json, load_tsv, load_gzip_pickle_df, \
     load_pickle_df, timestamp, cached_property
 
 SPECIES_DATA_PACKAGE_BASE_URL = 'https://s3-us-west-2.amazonaws.com/' \

@@ -1,9 +1,10 @@
 import os
 
-from .data_model import Study, ExpressionData, SplicingData, MetaData, \
-    MappingStatsData, SpikeInData, GeneOntologyData
+from .data_model import ExpressionData, SplicingData, MetaData, \
+    MappingStatsData, GeneOntologyData
 from .compute.predict import PredictorConfigManager, PredictorDataSetManager
 from .datapackage import make_study_datapackage, FLOTILLA_DOWNLOAD_DIR
+from .study import Study
 
 
 __all__ = ['Study', 'PredictorConfigManager', 'PredictorDataSetManager',
