@@ -1037,7 +1037,7 @@ class BaseData(object):
         data = self._subset(self.data)
         return DataFrameNMF(self.binify(data).T, n_components=2)
 
-    @memoize
+    # @memoize
     def binned_nmf_reduced(self, sample_ids=None, feature_ids=None,
                            data=None):
         if data is None:
@@ -1136,11 +1136,14 @@ class BaseData(object):
 
         at_least_n_per_group_per_event = pd.concat(
             [df.dropna(thresh=thresh(df, n), axis=1) for name, df in grouped])
+        at_least_n_per_group_per_event = at_least_n_per_group_per_event.dropna(
+            how='all', axis=1)
         # at_least_n_per_group_per_event = grouped.transform(
         #     lambda x: x if x.count() >= n else pd.Series(np.nan,
         #                                                  index=x.index))
         df = at_least_n_per_group_per_event.groupby(groupby).apply(
-            lambda x: self.binned_nmf_reduced(data=x))
+            lambda x: self.binned_nmf_reduced(data=x)
+            if x.count().sum() > 0 else pd.DataFrame())
         df = df.swaplevel(0, 1)
         df = df.sort_index()
         return df
