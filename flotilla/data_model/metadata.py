@@ -6,10 +6,10 @@ from itertools import cycle
 import matplotlib as mpl
 import pandas as pd
 import seaborn as sns
+import six
 
 from .base import BaseData, subsets_from_metadata
 from ..visualize.color import str_to_color
-
 
 POOLED_COL = 'pooled'
 PHENOTYPE_COL = 'phenotype'
@@ -38,7 +38,10 @@ class MetaData(BaseData):
         self.pooled_col = pooled_col
         self.minimum_sample_subset = minimum_sample_subset
         self.outlier_col = outlier_col
-        self.ignore_subset_columns = ignore_subset_columns
+        if isinstance(ignore_subset_columns, six.string_types):
+            self.ignore_subset_columns = [ignore_subset_columns]
+        else:
+            self.ignore_subset_columns = ignore_subset_columns
 
         phenotypes_not_in_order = set(self.unique_phenotypes).difference(
             set(self.phenotype_order))

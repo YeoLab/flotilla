@@ -138,18 +138,18 @@ class TestMetaData(object):
         pdt.assert_dict_equal(test_metadata.sample_subsets,
                               true_sample_subsets)
 
-    def test_ignore_subset_columns(self, metadata, phenotype_order,
-                                   phenotype_col,
-                                   phenotype_to_color, phenotype_to_marker,
+    def test_ignore_subset_columns(self, metadata,
                                    kws):
         from flotilla.data_model.metadata import MetaData
 
         metadata = metadata.copy()
-        metadata['no_subset'] = np.arange(metadata.shape[0])
         ignore_subset_columns = 'no_subset'
+        metadata[ignore_subset_columns] = np.arange(metadata.shape[0])
 
-        test_metadata = MetaData(metadata, **kws)
-        assert 'no_subset' not in test_metadata.sample_subsets
+        test_metadata = MetaData(metadata,
+                                 ignore_subset_columns=ignore_subset_columns,
+                                 **kws)
+        assert ignore_subset_columns not in test_metadata.sample_subsets
 
     def test_change_phenotype_col(self, metadata, n, phenotype_col,
                                   phenotype_order, phenotype_to_color,
