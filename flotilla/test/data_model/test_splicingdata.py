@@ -179,25 +179,6 @@ class TestSplicingData:
         pdt.assert_frame_equal(test_transitions, true_transitions)
 
     # @pytest.mark.parameterize('n_groups', 2)
-    def test_big_nmf_space_transitions(self, splicing, groupby,
-                                       group_transitions):
-        test_big_transitions = splicing.big_nmf_space_transitions(
-            groupby, group_transitions)
-
-        nmf_space_transitions = splicing.nmf_space_transitions(
-            groupby, group_transitions)
-
-        # get the mean and standard dev of the whole array
-        n = nmf_space_transitions.count().sum()
-        mean = nmf_space_transitions.sum().sum() / n
-        std = np.sqrt(np.square(nmf_space_transitions - mean).sum().sum() / n)
-
-        true_big_transitions = nmf_space_transitions[
-            nmf_space_transitions > (mean + std)].dropna(how='all')
-
-        pdt.assert_frame_equal(test_big_transitions, true_big_transitions)
-
-    # @pytest.mark.parameterize('n_groups', 2)
     def test_is_nmf_space_x_axis_included(self, splicing, groupby):
         test_is_nmf_space_x_axis_included = \
             splicing._is_nmf_space_x_axis_excluded(groupby)
@@ -238,16 +219,6 @@ class TestSplicingData:
             true_ylabel = splicing.excluded_label
 
         pdt.assert_equal(test_ylabel, true_ylabel)
-
-    # @pytest.mark.parameterize(n_groups=3)
-    def test_plot_big_nmf_space(self, splicing,
-                                groupby, group_to_color,
-                                group_order, group_transitions,
-                                color_ordered, group_to_marker):
-        splicing.plot_big_nmf_space_transitions(
-            groupby, group_transitions, group_order,
-            color_ordered, group_to_color, group_to_marker)
-        plt.close('all')
 
     def test_modality_assignments(self, splicing, groupby_params):
         sample_ids = None
