@@ -384,14 +384,19 @@ class SplicingData(BaseData):
                      phenotype_to_color=None,
                      phenotype_to_marker=None, nmf_xlabel=None,
                      nmf_ylabel=None,
-                     nmf_space=False, fig=None, axesgrid=None, n=20):
+                     nmf_space=False, fig=None, axesgrid=None, n=20,
+                     violinplot_kws=None):
         if nmf_space:
             nmf_xlabel = self._nmf_space_xlabel(phenotype_groupby)
             nmf_ylabel = self._nmf_space_ylabel(phenotype_groupby)
         else:
             nmf_ylabel = None
             nmf_xlabel = None
-
+        violinplot_kws = {} if violinplot_kws is None else violinplot_kws
+        violinplot_kws.setdefault('bw', 0.2)
+        violinplot_kws.setdefault('ylim', (0, 1))
+        violinplot_kws.setdefault('yticks', (0, 0.5, 1))
+        violinplot_kws.setdefault('ylabel', '$\Psi$')
         super(SplicingData, self).plot_feature(feature_id, sample_ids,
                                                phenotype_groupby,
                                                phenotype_order, color,
@@ -399,7 +404,8 @@ class SplicingData(BaseData):
                                                phenotype_to_marker, nmf_xlabel,
                                                nmf_ylabel, nmf_space=nmf_space,
                                                fig=fig, axesgrid=axesgrid,
-                                               n=n)
+                                               n=n,
+                                               violinplot_kws=violinplot_kws)
 
     @memoize
     def pooled_inconsistent(self, data, feature_ids=None,

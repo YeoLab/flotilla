@@ -1331,7 +1331,7 @@ class Study(object):
             color=self.phenotype_color_ordered,
             phenotype_to_color=self.phenotype_to_color,
             phenotype_to_marker=self.phenotype_to_marker,
-            nmf_space=nmf_space, n=20)
+            nmf_space=nmf_space, n=n)
 
     def plot_gene(self, feature_id, sample_subset=None, nmf_space=False):
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
