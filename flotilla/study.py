@@ -1257,7 +1257,7 @@ class Study(object):
             event_id, groupby=self.sample_id_to_phenotype,
             sample_ids=sample_ids, data=data)
 
-    def plot_event(self, feature_id, sample_subset=None):
+    def plot_event(self, feature_id, sample_subset=None, col_wrap=4):
         """Plot the violinplot and NMF transitions of a splicing event
         """
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
@@ -1267,9 +1267,9 @@ class Study(object):
             phenotype_order=self.phenotype_order,
             color=self.phenotype_color_ordered,
             phenotype_to_color=self.phenotype_to_color,
-            phenotype_to_marker=self.phenotype_to_marker)
+            phenotype_to_marker=self.phenotype_to_marker, col_wrap=col_wrap)
 
-    def plot_gene(self, feature_id, sample_subset=None):
+    def plot_gene(self, feature_id, sample_subset=None, col_wrap=4):
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
         self.expression.plot_feature(
             feature_id, sample_ids,
@@ -1277,7 +1277,7 @@ class Study(object):
             phenotype_order=self.phenotype_order,
             color=self.phenotype_color_ordered,
             phenotype_to_color=self.phenotype_to_color,
-            phenotype_to_marker=self.phenotype_to_marker)
+            phenotype_to_marker=self.phenotype_to_marker, col_wrap=col_wrap)
 
     def plot_lavalamp_pooled_inconsistent(
             self, sample_subset=None, feature_subset=None,
