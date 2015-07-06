@@ -48,17 +48,17 @@ def violinplot(singles, groupby, color_ordered=None, ax=None,
         groupby.name = 'phenotype'
     tidy_singles = singles.dropna().to_frame().join(groupby)
     tidy_singles = tidy_singles.reset_index()
-    tidy_singles = tidy_singles.rename(columns={singles.name:ylabel,})
+    tidy_singles = tidy_singles.rename(columns={singles.name: ylabel,})
 
     if pooled is not None:
         tidy_pooled = pooled.dropna().to_frame().join(groupby)
         tidy_pooled = tidy_pooled.reset_index()
-        tidy_pooled = tidy_pooled.rename(columns={pooled.name:ylabel,})
+        tidy_pooled = tidy_pooled.rename(columns={pooled.name: ylabel,})
 
     if outliers is not None:
         tidy_outliers = outliers.dropna().to_frame().join(groupby)
         tidy_outliers = tidy_outliers.reset_index()
-        tidy_outliers = tidy_outliers.rename(columns={outliers.namename:ylabel,})
+        tidy_outliers = tidy_outliers.rename(columns={outliers.name: ylabel})
 
     if outliers is not None and not outliers.dropna().empty:
         sns.violinplot(x=groupby.name, y=ylabel, data=tidy_outliers,
