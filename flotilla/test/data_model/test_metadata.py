@@ -26,8 +26,6 @@ class TestMetaData(object):
         metadata['subset1'] = np.random.choice([True, False], size=20)
         return metadata
 
-
-
     @pytest.fixture(params=[None, list('CAB')])
     def phenotype_order(self, request):
         return request.param
@@ -45,11 +43,10 @@ class TestMetaData(object):
     def kws(self, phenotype_col, phenotype_order, phenotype_to_color,
             phenotype_to_marker):
         return {'minimum_sample_subset': 2,
-               'phenotype_col': phenotype_col,
-               'phenotype_to_marker': phenotype_to_marker,
-               'phenotype_order': phenotype_order,
-               'phenotype_to_color': phenotype_to_color}
-
+                'phenotype_col': phenotype_col,
+                'phenotype_to_marker': phenotype_to_marker,
+                'phenotype_order': phenotype_order,
+                'phenotype_to_color': phenotype_to_color}
 
     def test_init(self, metadata, phenotype_col,
                   phenotype_order, phenotype_to_color,
@@ -153,7 +150,6 @@ class TestMetaData(object):
 
         test_metadata = MetaData(metadata, **kws)
         assert 'no_subset' not in test_metadata.sample_subsets
-
 
     def test_change_phenotype_col(self, metadata, n, phenotype_col,
                                   phenotype_order, phenotype_to_color,
