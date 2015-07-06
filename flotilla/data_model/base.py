@@ -1171,6 +1171,7 @@ class BaseData(object):
         col_colors = feature_colors
         row_colors = sample_colors
         data.columns = data.columns.map(self.feature_renamer)
+        mask.columns = data.columns
 
         if scale_fig_by_data:
             figsize = self._figsizer(data.shape)
