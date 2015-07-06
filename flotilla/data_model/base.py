@@ -1212,6 +1212,8 @@ class BaseData(object):
         if featurewise:
             corr.index = corr.index.map(self.feature_renamer)
             corr.columns = corr.columns.map(self.feature_renamer)
+            mask.index = corr.index
+            mask.columns = corr.columns
 
         if scale_fig_by_data:
             figsize = self._figsizer(corr.shape)
