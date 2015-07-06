@@ -1474,15 +1474,31 @@ class Study(object):
 
         Parameters
         ----------
-
+        sample_subset : list-like, optional
+            List of samples to use
+        feature_subset : list-like, optional
+            List of feature IDs to use
+        data_type : 'expression' | 'splicing', optional
+            Which data type to cluster
+        metric : str, optional
+            Any valid distance metric for scipy.spatial.distance
+        method : 'average' | 'single' | 'complete' | 'ward'
+            Linkage method for assigning clusters
+        figsize : tuple, optional
+            A (width, height) tuple of the figure size
+        featurewise : bool, optional
+            If true, cluster on features rather than samples
+        scale_fig_by_data : bool, optional
+            If True, size the figure to reflect the size of the dataframe
 
         Returns
         -------
+        clustergrid : seaborn.ClusterGrid
+            A grid of axes objects with the plotted data
 
-
-        Raises
-        ------
-
+        Notes
+        -----
+        To save a figure, use `clustergrid.savefig()`
         """
 
         if feature_subset is None:
