@@ -11,7 +11,6 @@ import urllib2
 
 import matplotlib as mpl
 
-
 FLOTILLA_DOWNLOAD_DIR = os.path.expanduser('~/flotilla_projects')
 
 
@@ -95,8 +94,8 @@ def make_study_datapackage(study_name, metadata,
                            host="https://s3-us-west-2.amazonaws.com/",
                            host_destination='flotilla-projects/'):
     """Example code for making a datapackage for a Study"""
-    if ' ' in study_name:
-        raise ValueError("Datapackage name cannot have any spaces")
+    if len(study_name.split()) > 1:
+        raise ValueError("Datapackage name cannot have any whitespace")
     if set(string.uppercase) & set(study_name):
         raise ValueError("Datapackage can only contain lowercase letters")
 
