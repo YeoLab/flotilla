@@ -14,7 +14,6 @@ from .network import NetworkerViz
 from .color import str_to_color
 from ..util import natural_sort, link_to_list
 
-
 default_classifier = 'ExtraTreesClassifier'
 default_regressor = 'ExtraTreesRegressor'
 default_score_coefficient = 2
@@ -166,6 +165,8 @@ class Interactive(object):
             filename, extension = os.path.splitext(savefile.value)
             self.maybe_make_directory(savefile.value)
 
+            extension = extension.lstrip('.')
+
             gui.widget.result.fig_reduced.savefig(savefile.value,
                                                   format=extension)
 
@@ -175,7 +176,7 @@ class Interactive(object):
                                           extension)
             try:
                 gui.widget.result.fig_violins.savefig(
-                    violins_file, format=extension.lstrip('.'))
+                    violins_file, format=extension)
             except AttributeError:
                 pass
 
@@ -228,17 +229,14 @@ class Interactive(object):
                 assert (feature_subset in
                         self.splicing.feature_subsets.keys())
 
-            self.plot_graph(data_type=data_type,
-                            sample_subset=sample_subset,
-                            feature_subset=feature_subset,
-                            featurewise=featurewise, draw_labels=draw_labels,
-                            degree_cut=degree_cut, cov_std_cut=cov_std_cut,
-                            n_pcs=n_pcs,
-                            feature_of_interest=feature_of_interest,
-                            use_pc_1=use_pc_1, use_pc_2=use_pc_2,
-                            use_pc_3=use_pc_3,
-                            use_pc_4=use_pc_4,
-                            weight_function=weight_fun)
+            return self.plot_graph(
+                data_type=data_type, sample_subset=sample_subset,
+                feature_subset=feature_subset, featurewise=featurewise,
+                draw_labels=draw_labels, degree_cut=degree_cut,
+                cov_std_cut=cov_std_cut, n_pcs=n_pcs,
+                feature_of_interest=feature_of_interest,
+                use_pc_1=use_pc_1, use_pc_2=use_pc_2, use_pc_3=use_pc_3,
+                use_pc_4=use_pc_4, weight_function=weight_fun)
 
         if feature_subsets is None:
             feature_subsets = Interactive.get_feature_subsets(self, data_types)
@@ -284,12 +282,14 @@ class Interactive(object):
                                predictor_types=None,
                                score_coefficient=(0.1, 20),
                                draw_labels=False):
+        # Get the second one, because the first one is always "all_samples"
+        categorical_variable = self.default_sample_subsets[1]
 
         def do_interact(data_type,
                         sample_subset,
                         feature_subset,
                         predictor_type=default_classifier,
-                        categorical_variable='outlier',
+                        categorical_variable=categorical_variable,
                         score_coefficient=2,
                         plot_violins=False,
                         show_point_labels=False):
@@ -299,14 +299,15 @@ class Interactive(object):
                     continue
                 sys.stdout.write('{} : {}\n'.format(k, v))
 
-            self.plot_classifier(trait=categorical_variable,
-                                 feature_subset=feature_subset,
-                                 sample_subset=sample_subset,
-                                 predictor_name=predictor_type,
-                                 score_coefficient=score_coefficient,
-                                 data_type=data_type,
-                                 plot_violins=plot_violins,
-                                 show_point_labels=show_point_labels)
+            return self.plot_classifier(
+                trait=categorical_variable,
+                feature_subset=feature_subset,
+                sample_subset=sample_subset,
+                predictor_name=predictor_type,
+                score_coefficient=score_coefficient,
+                data_type=data_type,
+                plot_violins=plot_violins,
+                show_point_labels=show_point_labels)
 
         if feature_subsets is None:
             feature_subsets = Interactive.get_feature_subsets(self, data_types)
@@ -337,18 +338,19 @@ class Interactive(object):
         def save(w):
             # Make the directory if it's not already there
             filename, extension = os.path.splitext(savefile.value)
+            extension = extension.lstrip('.')
             self.maybe_make_directory(savefile.value)
 
-            gui.widget.result.fig_reduced.savefig(savefile.value,
-                                                  format=extension)
+            gui.widget.result.pcaviz.fig_reduced.savefig(
+                savefile.value, format=extension)
 
             # add "violins" after the provided filename, but before the
             # extension
             violins_file = '{}.{}'.format("_".join([filename, 'violins']),
                                           extension)
             try:
-                gui.widget.result.fig_violins.savefig(
-                    violins_file, format=extension.lstrip('.'))
+                gui.widget.result.pcaviz.fig_violins.savefig(
+                    violins_file, format=extension)
             except AttributeError:
                 pass
 
@@ -480,7 +482,7 @@ class Interactive(object):
                                       format=extension.lstrip('.'))
 
         savefile = TextWidget(description='savefile',
-                              value='figures/clustermap.pdf')
+                              value='figures/modalities_lavalamps.pdf')
         save_widget = ButtonWidget(description='save')
         gui.widget.children = list(gui.widget.children) + [savefile,
                                                            save_widget]
@@ -669,7 +671,7 @@ class Interactive(object):
                 raise ValueError("use a custom list name please")
 
             if feature_subset == 'custom':
-                feature_subset = list_link
+                feature_subset = link_to_list(list_link)
             elif feature_subset not in self.default_feature_subsets[data_type]:
                 warnings.warn("This feature_subset ('{}') is not available in "
                               "this data type ('{}'). Falling back on all "
@@ -729,7 +731,7 @@ class Interactive(object):
                 raise ValueError("use a custom list name please")
 
             if feature_subset == 'custom':
-                feature_subset = list_link
+                feature_subset = link_to_list(list_link)
             elif feature_subset not in self.default_feature_subsets[data_type]:
                 warnings.warn("This feature_subset ('{}') is not available in "
                               "this data type ('{}'). Falling back on all "

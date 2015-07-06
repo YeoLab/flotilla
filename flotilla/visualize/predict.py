@@ -63,15 +63,13 @@ class PredictorBaseViz(PredictorBase):
         else:
             groupby = self.y
 
-        pcaviz = DecompositionViz(pca.reduced_space, pca.components_,
-                                  pca.explained_variance_ratio_,
-                                  feature_renamer=self.feature_renamer,
-                                  groupby=groupby,
-                                  singles=self.singles,
-                                  pooled=self.pooled,
-                                  outliers=self.outliers)
-        pcaviz.plot(ax=ax, **local_plotting_kwargs)
-        return pcaviz
+        self.pcaviz = DecompositionViz(
+            pca.reduced_space, pca.components_,
+            pca.explained_variance_ratio_,
+            feature_renamer=self.feature_renamer,
+            groupby=groupby, singles=self.singles, pooled=self.pooled,
+            outliers=self.outliers)
+        self.pcaviz.plot(ax=ax, **local_plotting_kwargs)
 
     def plot_scores(self, ax=None):
 

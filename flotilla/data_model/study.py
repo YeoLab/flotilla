@@ -971,9 +971,10 @@ class Study(object):
         nothing_to_classify = all_true or all_false or too_few_categories
 
         if nothing_to_classify:
-            raise ValueError("All samples are True (or all samples are "
+            raise ValueError("With the trait '{}', all samples are True "
+                             "(or all samples are "
                              "False) or all are the same, cannot classify"
-                             "when all samples are the same")
+                             " when all samples are the same".format(trait))
         trait_data = pd.Series(trait_data, name=trait,
                                index=self.metadata.data.index)
 

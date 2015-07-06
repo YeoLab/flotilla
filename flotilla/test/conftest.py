@@ -618,7 +618,7 @@ def base_data(expression_data):
     return BaseData(expression_data)
 
 
-@pytest.fixture(params=[None, 'half', 'all'], scope='module')
+@pytest.fixture(params=[None, 'half'], scope='module')
 def sample_ids(request, base_data):
     if request.param is None:
         return request.param
@@ -629,7 +629,7 @@ def sample_ids(request, base_data):
         return base_data.data.index
 
 
-@pytest.fixture(params=[None, 'half', 'all'], scope='module')
+@pytest.fixture(params=[None, 'half', "all"], scope='module')
 def feature_ids(request, base_data):
     if request.param is None:
         return request.param
