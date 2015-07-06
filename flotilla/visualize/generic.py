@@ -84,6 +84,7 @@ def violinplot(singles, groupby, color_ordered=None, ax=None,
     ax.set(title=title, yticks=yticks, ylim=ylim)
     return ax
 
+
 def simple_twoway_scatter(sample1, sample2, **kwargs):
     """Plot a two-dimensional scatterplot between two samples
 
