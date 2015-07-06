@@ -14,7 +14,6 @@ from .network import NetworkerViz
 from .color import str_to_color
 from ..util import natural_sort, link_to_list
 
-
 default_classifier = 'ExtraTreesClassifier'
 default_regressor = 'ExtraTreesRegressor'
 default_score_coefficient = 2
@@ -230,17 +229,14 @@ class Interactive(object):
                 assert (feature_subset in
                         self.splicing.feature_subsets.keys())
 
-            return self.plot_graph(data_type=data_type,
-                            sample_subset=sample_subset,
-                            feature_subset=feature_subset,
-                            featurewise=featurewise, draw_labels=draw_labels,
-                            degree_cut=degree_cut, cov_std_cut=cov_std_cut,
-                            n_pcs=n_pcs,
-                            feature_of_interest=feature_of_interest,
-                            use_pc_1=use_pc_1, use_pc_2=use_pc_2,
-                            use_pc_3=use_pc_3,
-                            use_pc_4=use_pc_4,
-                            weight_function=weight_fun)
+            return self.plot_graph(
+                data_type=data_type, sample_subset=sample_subset,
+                feature_subset=feature_subset, featurewise=featurewise,
+                draw_labels=draw_labels, degree_cut=degree_cut,
+                cov_std_cut=cov_std_cut, n_pcs=n_pcs,
+                feature_of_interest=feature_of_interest,
+                use_pc_1=use_pc_1, use_pc_2=use_pc_2, use_pc_3=use_pc_3,
+                use_pc_4=use_pc_4, weight_function=weight_fun)
 
         if feature_subsets is None:
             feature_subsets = Interactive.get_feature_subsets(self, data_types)
@@ -303,14 +299,15 @@ class Interactive(object):
                     continue
                 sys.stdout.write('{} : {}\n'.format(k, v))
 
-            return self.plot_classifier(trait=categorical_variable,
-                                 feature_subset=feature_subset,
-                                 sample_subset=sample_subset,
-                                 predictor_name=predictor_type,
-                                 score_coefficient=score_coefficient,
-                                 data_type=data_type,
-                                 plot_violins=plot_violins,
-                                 show_point_labels=show_point_labels)
+            return self.plot_classifier(
+                trait=categorical_variable,
+                feature_subset=feature_subset,
+                sample_subset=sample_subset,
+                predictor_name=predictor_type,
+                score_coefficient=score_coefficient,
+                data_type=data_type,
+                plot_violins=plot_violins,
+                show_point_labels=show_point_labels)
 
         if feature_subsets is None:
             feature_subsets = Interactive.get_feature_subsets(self, data_types)
@@ -344,8 +341,8 @@ class Interactive(object):
             extension = extension.lstrip('.')
             self.maybe_make_directory(savefile.value)
 
-            gui.widget.result.pcaviz.fig_reduced.savefig(savefile.value,
-                                                  format=extension)
+            gui.widget.result.pcaviz.fig_reduced.savefig(
+                savefile.value, format=extension)
 
             # add "violins" after the provided filename, but before the
             # extension
