@@ -463,10 +463,6 @@ class TestStudy(object):
         study.plot_lavalamps()
         plt.close('all')
 
-    def test_plot_big_nmf_space_transitions(self, study):
-        study.plot_big_nmf_space_transitions('splicing')
-        plt.close('all')
-
     def test_plot_two_samples(self, study, data_type):
         sample1 = study.expression.data.index[0]
         sample2 = study.expression.data.index[-1]
