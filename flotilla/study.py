@@ -15,19 +15,19 @@ import pandas as pd
 import semantic_version
 import seaborn as sns
 
-from flotilla.data_model.metadata import MetaData, PHENOTYPE_COL, POOLED_COL, OUTLIER_COL
-from flotilla.data_model.expression import ExpressionData, SpikeInData
-from flotilla.data_model.gene_ontology import GeneOntologyData
-from flotilla.data_model.quality_control import MappingStatsData, MIN_READS
-from flotilla.data_model.splicing import SplicingData, FRACTION_DIFF_THRESH
-from flotilla.data_model.supplemental import SupplementalData
-from flotilla.compute.predict import PredictorConfigManager
-from flotilla.datapackage import datapackage_url_to_dict, \
+from .data_model.metadata import MetaData, PHENOTYPE_COL, POOLED_COL, OUTLIER_COL
+from .data_model.expression import ExpressionData
+from .data_model.gene_ontology import GeneOntologyData
+from .data_model.quality_control import MappingStatsData, MIN_READS
+from .data_model.splicing import SplicingData, FRACTION_DIFF_THRESH
+from .data_model.supplemental import SupplementalData
+from .compute.predict import PredictorConfigManager
+from .datapackage import datapackage_url_to_dict, \
     check_if_already_downloaded, make_study_datapackage
-from flotilla.visualize.color import blue
-from flotilla.visualize.ipython_interact import Interactive
-from flotilla.datapackage import FLOTILLA_DOWNLOAD_DIR
-from flotilla.util import load_csv, load_json, load_tsv, load_gzip_pickle_df, \
+from .visualize.color import blue
+from .visualize.ipython_interact import Interactive
+from .datapackage import FLOTILLA_DOWNLOAD_DIR
+from .util import load_csv, load_json, load_tsv, load_gzip_pickle_df, \
     load_pickle_df, timestamp, cached_property
 
 SPECIES_DATA_PACKAGE_BASE_URL = 'https://s3-us-west-2.amazonaws.com/' \
@@ -48,15 +48,14 @@ class Study(object):
 
     # Data types with enough data that we'd probably reduce them, and even
     # then we might want to take subsets. E.g. most variant genes for
-    # expression. But we don't expect to do this for spikein or mapping_stats
+    # expression. But we don't expect to do this for mapping_stats
     # data
     _subsetable_data_types = ['expression', 'splicing']
 
     initializers = {'metadata_data': MetaData,
                     'expression_data': ExpressionData,
                     'splicing_data': SplicingData,
-                    'mapping_stats_data': MappingStatsData,
-                    'spikein_data': SpikeInData}
+                    'mapping_stats_data': MappingStatsData}
 
     readers = {'tsv': load_tsv,
                'csv': load_csv,
@@ -100,8 +99,6 @@ class Study(object):
                  mapping_stats_data=None,
                  mapping_stats_number_mapped_col=None,
                  mapping_stats_min_reads=MIN_READS,
-                 spikein_data=None,
-                 spikein_feature_data=None,
                  drop_outliers=True, species=None,
                  gene_ontology_data=None,
                  predictor_config_manager=None,
@@ -174,11 +171,6 @@ class Study(object):
             A column name in the mapping_stats_data which specifies the
             number of (uniquely or not) mapped reads. Default "Uniquely
             mapped reads number"
-        spikein_data : pandas.DataFrame
-            samples x features DataFrame of spike-in expression values
-        spikein_feature_data : pandas.DataFrame
-            Features x other_features dataframe, e.g. of the molecular
-            concentration of particular spikein transcripts
         drop_outliers : bool
             Whether or not to drop samples indicated as outliers in the
             sample_metadata from the other data, i.e. with a column
@@ -339,13 +331,6 @@ class Study(object):
         else:
             self.splicing = None
 
-        if spikein_data is not None:
-            self.spikein = SpikeInData(
-                spikein_data, feature_data=spikein_feature_data,
-                technical_outliers=self.technical_outliers,
-                predictor_config_manager=self.predictor_config_manager)
-        else:
-            self.spikein = None
         self.supplemental = SupplementalData(supplemental_data)
         sys.stdout.write("{}\tSuccessfully initialized a Study "
                          "object!\n".format(timestamp()))
@@ -1718,11 +1703,6 @@ class Study(object):
             splicing_feature_kws = None
 
         try:
-            spikein = self.spikein.data_original
-        except AttributeError:
-            spikein = None
-
-        try:
             gene_ontology = self.gene_ontology.data
         except AttributeError:
             gene_ontology = None
@@ -1753,7 +1733,7 @@ class Study(object):
 
         return make_study_datapackage(
             study_name, metadata, expression, splicing,
-            spikein, mapping_stats, metadata_kws=metadata_kws,
+            mapping_stats=mapping_stats, metadata_kws=metadata_kws,
             expression_kws=expression_kws, splicing_kws=splicing_kws,
             mapping_stats_kws=mapping_stats_kws,
             expression_feature_kws=expression_feature_kws,

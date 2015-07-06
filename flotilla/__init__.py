@@ -10,7 +10,7 @@ from .study import Study
 __all__ = ['Study', 'PredictorConfigManager', 'PredictorDataSetManager',
            'make_study_datapackage', 'FLOTILLA_DOWNLOAD_DIR',
            'compute', 'data_model', 'visualize', 'Study', 'ExpressionData',
-           'SplicingData', 'MetaData', 'SpikeInData', 'MappingStatsData',
+           'SplicingData', 'MetaData', 'MappingStatsData',
            'datapackage', 'GeneOntologyData', 'go', 'util']
 
 __version__ = '0.2.8dev'
