@@ -10,7 +10,6 @@ import seaborn as sns
 from .base import BaseData, subsets_from_metadata
 from ..visualize.color import str_to_color
 
-
 POOLED_COL = 'pooled'
 PHENOTYPE_COL = 'phenotype'
 MINIMUM_SAMPLE_SUBSET = 10
@@ -85,11 +84,11 @@ class MetaData(BaseData):
 
     @property
     def phenotype_order(self):
-        if len(set(self._phenotype_order) & set(self.unique_phenotypes)) > 0:
+        new_phenotypes = set(self.unique_phenotypes).difference(
+            set(self._phenotype_order))
+        if len(new_phenotypes) > 0:
             return [v for v in self._phenotype_order if
-                    v in self.unique_phenotypes] + \
-                   list(set(self.unique_phenotypes)
-                        - set(self._phenotype_order))
+                    v in self.unique_phenotypes] + list(new_phenotypes)
         else:
             return self._default_phenotype_order
 
