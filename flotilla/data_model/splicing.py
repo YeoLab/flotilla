@@ -229,61 +229,6 @@ class SplicingData(BaseData):
         return self.modality_visualizer.bar(counts, phenotype_to_color,
                                             percentages=percentages, ax=ax)
 
-    def plot_modalities_lavalamps(self, sample_ids=None, feature_ids=None,
-                                  data=None, groupby=None,
-                                  phenotype_to_color=None, min_samples=20):
-        """Plot "lavalamp" scatterplot of each event
-
-        Parameters
-        ----------
-        sample_ids : None or list of str
-            Which samples to use. If None, use all
-        feature_ids : None or list of str
-            Which features to use. If None, use all
-        color : None or matplotlib color
-            Which color to use for plotting the lavalamps of these features
-            and samples
-        x_offset : numeric
-            How much to offset the x-axis of each event. Useful if you want
-            to plot the same event, but in several iterations with different
-            celltypes or colors
-        min_samples : int, optional
-            Minimum number of samples to use per grouped celltype. Default 10
-        """
-        if groupby is None:
-            groupby = pd.Series('all', index=self.data.index)
-
-        assignments = self.modality_assignments(
-            sample_ids, feature_ids, data=data, groupby=groupby,
-            min_samples=min_samples)
-
-        # make sure this is always a dataframe
-        if isinstance(assignments, pd.Series):
-            assignments = pd.DataFrame([assignments.values],
-                                       index=assignments.name,
-                                       columns=assignments.index)
-
-        grouped = self.singles.groupby(groupby)
-        nrows = assignments.groupby(
-            level=0, axis=0).apply(
-            lambda x: np.unique(x.values)).apply(lambda x: len(x)).sum()
-        figsize = 10, nrows * 4
-        fig, axes = plt.subplots(nrows=nrows, figsize=figsize)
-        axes_iter = axes.flat
-
-        yticks = [0, self.excluded_max, self.included_min, 1]
-        for phenotype, modalities in assignments.iterrows():
-            color = phenotype_to_color[phenotype]
-            sample_ids = grouped.groups[phenotype]
-            for modality, s in modalities.groupby(modalities):
-                ax = axes_iter.next()
-                psi = self.data.ix[sample_ids, s.index]
-                # if modality == 'excluded': import pdb; pdb.set_trace()
-                lavalamp(psi, color=color, ax=ax, yticks=yticks)
-                ax.set_title('{} {}'.format(phenotype, modality))
-        sns.despine()
-        fig.tight_layout()
-
     def plot_event_modality_estimation(self, event_id, sample_ids=None,
                                        data=None,
                                        groupby=None, min_samples=20):
