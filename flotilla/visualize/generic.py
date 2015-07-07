@@ -1,214 +1,99 @@
-import matplotlib as mpl
 from matplotlib import pyplot as plt
 import numpy as np
+import pandas as pd
 import seaborn as sns
 
 
-def violinplot(data, groupby=None, color_ordered=None, ax=None,
-               pooled_data=None,
-               order=None, violinplot_kws=None, title=None,
-               label_pooled=False, outliers=None, data_type=None):
+def violinplot(singles, groupby, color_ordered=None, ax=None,
+               pooled=None, ylabel='', bw=None,
+               order=None, title=None, ylim=None, yticks=None,
+               outliers=None, **kwargs):
     """
     Parameters
     ----------
-    data : pandas.Series
-        The main data to plot
-    groupby : dict-like
-        How to group the samples (e.g. by phenotype)
-    color_ordered : list
+    singles : pandas.Series
+        Gene expression or splicing values from single cells
+    groupby : pandas.Series
+        A sample to group mapping for each sample id
+    color_ordered : list, optional
+        List of colors in the correct phenotype order
+    ax : matplotlib.Axes object, optional
+        Axes to plot on
+    pooled : pandas.Series
+        Gene expression or splicing values from pooled samples
+    ylabel : str
+        How to label the y-axis
+    bw : float
+        Width of the bandwidths for estimating the kernel density
+    order : list
+        Which order to plot the groups in
+    title : str
+        Title of the plot
+    ylim : tuple
+        Length 2 tuple specifying the minimum and maxmimum values to
+        be plotted on the y-axis
+    yticks : list
+        Where to position yticks
+    outliers : pandas.Series
+        Gene expression or splicing values from outlier cells
 
     Returns
     -------
-
-
-    Raises
-    ------
+    ax : matplotlib.Axes object
+        Axes with violinplot plotted
     """
-    data_type = 'none' if data_type is None else data_type
-    splicing = data_type == 'splicing'
-
-    violinplot_kws = {} if violinplot_kws is None else violinplot_kws
-    violinplot_kws.setdefault('alpha', 0.75)
-
     if ax is None:
         ax = plt.gca()
 
-    _violinplot_single_dataset(data, groupby=groupby, color=color_ordered,
-                               ax=ax, order=order,
-                               violinplot_kws=violinplot_kws,
-                               splicing=splicing)
-    if pooled_data is not None and groupby is not None:
-        grouped = pooled_data.groupby(groupby)
-        if order is not None:
-            for i, name in enumerate(order):
-                try:
-                    subset = pooled_data.ix[grouped.groups[name]]
-                    plot_pooled_dot(ax, subset, x_offset=i, label=label_pooled)
-                except KeyError:
-                    pass
-        else:
-            plot_pooled_dot(ax, pooled_data)
+    if not isinstance(groupby, pd.Series):
+        groupby = pd.Series(groupby)
+
+    if groupby.name is None:
+        groupby.name = 'phenotype'
+    tidy_singles = singles.dropna().to_frame().join(groupby)
+    tidy_singles = tidy_singles.reset_index()
+    tidy_singles = tidy_singles.rename(columns={singles.name: ylabel})
+
+    if pooled is not None:
+        tidy_pooled = pooled.dropna().to_frame().join(groupby)
+        tidy_pooled = tidy_pooled.reset_index()
+        tidy_pooled = tidy_pooled.rename(columns={pooled.name: ylabel})
 
     if outliers is not None:
-        outlier_violinplot_kws = violinplot_kws
+        tidy_outliers = outliers.dropna().to_frame().join(groupby)
+        tidy_outliers = tidy_outliers.reset_index()
+        tidy_outliers = tidy_outliers.rename(columns={outliers.name: ylabel})
 
-        # make sure this is behind the non outlier data
-        outlier_violinplot_kws['zorder'] = -1
-        _violinplot_single_dataset(outliers, groupby=groupby,
-                                   color='lightgrey', ax=ax, order=order,
-                                   violinplot_kws=outlier_violinplot_kws,
-                                   splicing=splicing)
+    if outliers is not None and not outliers.dropna().empty:
+        sns.violinplot(x=groupby.name, y=ylabel, data=tidy_outliers,
+                       bw=bw, order=order, inner=None, cut=0,
+                       linewidth=1, scale='width', color='lightgrey', ax=ax,
+                       **kwargs)
+    if not singles.dropna().empty:
+        sns.violinplot(x=groupby.name, y=ylabel, data=tidy_singles,
+                       bw=bw, order=order, inner=None, cut=0,
+                       linewidth=1, scale='width', palette=color_ordered,
+                       ax=ax, **kwargs)
+    if outliers is not None and not outliers.dropna().empty:
+        sns.stripplot(x=groupby.name, y=ylabel, data=tidy_outliers,
+                      jitter=True, order=order, ax=ax, color='grey')
+    if not singles.dropna().empty:
+        sns.stripplot(x=groupby.name, y=ylabel, data=tidy_singles,
+                      jitter=True, order=order, ax=ax, palette=color_ordered)
+    if pooled is not None and not pooled.dropna().empty:
+        sns.stripplot(x=groupby.name, y=ylabel, data=tidy_pooled,
+                      jitter=True, order=order, ax=ax, color='#262626')
+    sizes = tidy_singles.groupby(groupby.name).size()
+    if order is None:
+        order = sizes.keys()
 
-    if splicing:
-        ax.set_ylim(0, 1)
-        ax.set_yticks([0, 0.5, 1])
-        ax.set_ylabel('$\Psi$')
+    ax.set_xticklabels(['{0}\nn={1}'.format(group, sizes[group])
+                        if group in sizes else group for group in order])
 
-    if title is not None:
-        ax.set_title(title)
-
-    if order is not None:
-        ax.set_xlim(-.5, len(order) - .5)
-
-    if groupby is not None and order is not None:
-        sizes = data.dropna().groupby(groupby).size()
-        xticks = range(len(order))
-        xticklabels = ['{}\nn={}'.format(group, sizes[group])
-                       if group in sizes else '{}\nn=0'.format(group)
-                       for group in order]
-        ax.set_xticks(xticks)
-        ax.set_xticklabels(xticklabels)
-    sns.despine()
-
-
-def _violinplot_single_dataset(data, groupby=None, order=None,
-                               violinplot_kws=None, color=None, ax=None,
-                               splicing=False):
-    """Plot a single set of violinplot.
-
-    Separated out so real data plotting and outlier plotting works the same
-    """
-    data = data.dropna()
-    if data.empty:
-        return
-
-    single_points = data.groupby(groupby).filter(lambda x: len(x) < 2)
-    data = data.groupby(groupby).filter(lambda x: len(x) > 1)
-
-    # Check that all the groups are represented, if not, add some data out of
-    # range to the missing group
-    verified_color = color
-    if groupby is not None and order is not None:
-        verified_groups = data.groupby(groupby).size().keys()
-        verified_order = [x for x in order if x in verified_groups]
-
-        positions = [i for i, x in enumerate(order) if x in verified_groups]
-
-        single_groups = single_points.groupby(groupby).size().keys()
-        single_positions = dict((x, i) for i, x in enumerate(order) if
-                                x in single_groups)
-
-        if not mpl.colors.is_color_like(color):
-            verified_color = [x for i, x in enumerate(color)
-                              if order[i] in verified_groups]
-            single_color = dict((group, c) for i, (c, group) in
-                                enumerate(zip(color, single_groups))
-                                if group in single_groups)
-        else:
-            single_color = dict((group, color) for group in single_groups if
-                                group in single_groups)
-    else:
-        verified_order = order
-        positions = None
-
-        single_positions = None
-        single_color = None
-
-    violinplot_kws = {} if violinplot_kws is None else violinplot_kws
-
-    # Add a tiny amount of random noise in case the values are all identical,
-    # Otherwise we get a LinAlg error.
-    data += np.random.uniform(0, 0.001, data.shape[0])
-
-    inner = 'points' if splicing else 'box'
-    if len(data) > 0:
-        sns.violinplot(data, groupby=groupby, bw=0.1, inner=inner,
-                       color=verified_color, linewidth=0.5,
-                       order=verified_order,
-                       ax=ax, positions=positions, **violinplot_kws)
-
-    if single_points is not None:
-        for group, y in single_points.groupby(groupby):
-            x = single_positions[group]
-            c = single_color[group]
-            ax.scatter([x], [y], color=c, s=50)
-            ax.annotate(y.index[0], (x, y), textcoords='offset points',
-                        xytext=(7, 0), fontsize=14)
-
-
-def plot_pooled_dot(ax, pooled, x_offset=0, label=False):
-    """
-    Parameters
-    ----------
-    ax : matplotlib.axes.Axes
-        Axes object to plot on
-    pooled : pandas.Series
-        Pooled data of this gene
-
-    Returns
-    -------
-
-
-    Raises
-    ------
-    """
-    pooled = pooled.dropna()
-    try:
-        xs = np.zeros(pooled.shape[0])
-    except AttributeError:
-        xs = np.zeros(1)
-    xs += x_offset
-    ax.plot(xs, pooled, 'o', color='#262626')
-
-    if label:
-        for x, y in zip(xs, pooled):
-            if np.isnan(y):
-                continue
-            ax.annotate('pooled', (x, y), textcoords='offset points',
-                        xytext=(7, 0), fontsize=14)
-
-
-def nmf_space_transitions(nmf_space_positions, feature_id,
-                          phenotype_to_color, phenotype_to_marker, order,
-                          ax=None, xlabel=None, ylabel=None):
-    df = nmf_space_positions.ix[feature_id]
-
-    if ax is None:
-        ax = plt.gcf()
-
-    for color, s in df.groupby(phenotype_to_color, axis=0):
-        phenotype = s.index[0]
-        marker = phenotype_to_marker[phenotype]
-        ax.plot(s.pc_1, s.pc_2, color=color, marker=marker, markersize=14,
-                alpha=0.75, label=phenotype, linestyle='none')
-
-    # ax.scatter(df.ix[:, 0], df.ix[:, 1], color=color, s=100, alpha=0.75)
-    # ax.legend(points, df.index.tolist())
-    ax.set_xlim(0, nmf_space_positions.ix[:, 0].max() * 1.05)
-    ax.set_ylim(0, nmf_space_positions.ix[:, 1].max() * 1.05)
-
-    x = [df.ix[pheno, 0] for pheno in order if pheno in df.index]
-    y = [df.ix[pheno, 1] for pheno in order if pheno in df.index]
-
-    ax.plot(x, y, zorder=-1, color='#262626', alpha=0.5, linewidth=1)
-    ax.legend()
-
-    if xlabel is not None:
-        ax.set_xlabel(xlabel)
-        ax.set_xticks([])
-    if ylabel is not None:
-        ax.set_ylabel(ylabel)
-        ax.set_yticks([])
+    to_set = {'title': title, 'yticks': yticks, 'ylim': ylim}
+    to_set = {k: v for k, v in to_set.items() if v is not None}
+    ax.set(**to_set)
+    return ax
 
 
 def simple_twoway_scatter(sample1, sample2, **kwargs):

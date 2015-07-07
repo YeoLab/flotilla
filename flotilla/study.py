@@ -15,19 +15,20 @@ import pandas as pd
 import semantic_version
 import seaborn as sns
 
-from .metadata import MetaData, PHENOTYPE_COL, POOLED_COL, OUTLIER_COL
-from .expression import ExpressionData, SpikeInData
-from .gene_ontology import GeneOntologyData
-from .quality_control import MappingStatsData, MIN_READS
-from .splicing import SplicingData, FRACTION_DIFF_THRESH
-from .supplemental import SupplementalData
-from ..compute.predict import PredictorConfigManager
-from ..datapackage import datapackage_url_to_dict, \
+from .data_model.metadata import MetaData, PHENOTYPE_COL, POOLED_COL, \
+    OUTLIER_COL
+from .data_model.expression import ExpressionData
+from .data_model.gene_ontology import GeneOntologyData
+from .data_model.quality_control import MappingStatsData, MIN_READS
+from .data_model.splicing import SplicingData, FRACTION_DIFF_THRESH
+from .data_model.supplemental import SupplementalData
+from .compute.predict import PredictorConfigManager
+from .datapackage import datapackage_url_to_dict, \
     check_if_already_downloaded, make_study_datapackage
-from ..visualize.color import blue
-from ..visualize.ipython_interact import Interactive
-from ..datapackage import FLOTILLA_DOWNLOAD_DIR
-from ..util import load_csv, load_json, load_tsv, load_gzip_pickle_df, \
+from .visualize.color import blue
+from .visualize.ipython_interact import Interactive
+from .datapackage import FLOTILLA_DOWNLOAD_DIR
+from .util import load_csv, load_json, load_tsv, load_gzip_pickle_df, \
     load_pickle_df, timestamp, cached_property
 
 SPECIES_DATA_PACKAGE_BASE_URL = 'https://s3-us-west-2.amazonaws.com/' \
@@ -48,15 +49,14 @@ class Study(object):
 
     # Data types with enough data that we'd probably reduce them, and even
     # then we might want to take subsets. E.g. most variant genes for
-    # expression. But we don't expect to do this for spikein or mapping_stats
+    # expression. But we don't expect to do this for mapping_stats
     # data
     _subsetable_data_types = ['expression', 'splicing']
 
     initializers = {'metadata_data': MetaData,
                     'expression_data': ExpressionData,
                     'splicing_data': SplicingData,
-                    'mapping_stats_data': MappingStatsData,
-                    'spikein_data': SpikeInData}
+                    'mapping_stats_data': MappingStatsData}
 
     readers = {'tsv': load_tsv,
                'csv': load_csv,
@@ -100,8 +100,6 @@ class Study(object):
                  mapping_stats_data=None,
                  mapping_stats_number_mapped_col=None,
                  mapping_stats_min_reads=MIN_READS,
-                 spikein_data=None,
-                 spikein_feature_data=None,
                  drop_outliers=True, species=None,
                  gene_ontology_data=None,
                  predictor_config_manager=None,
@@ -174,11 +172,6 @@ class Study(object):
             A column name in the mapping_stats_data which specifies the
             number of (uniquely or not) mapped reads. Default "Uniquely
             mapped reads number"
-        spikein_data : pandas.DataFrame
-            samples x features DataFrame of spike-in expression values
-        spikein_feature_data : pandas.DataFrame
-            Features x other_features dataframe, e.g. of the molecular
-            concentration of particular spikein transcripts
         drop_outliers : bool
             Whether or not to drop samples indicated as outliers in the
             sample_metadata from the other data, i.e. with a column
@@ -339,13 +332,6 @@ class Study(object):
         else:
             self.splicing = None
 
-        if spikein_data is not None:
-            self.spikein = SpikeInData(
-                spikein_data, feature_data=spikein_feature_data,
-                technical_outliers=self.technical_outliers,
-                predictor_config_manager=self.predictor_config_manager)
-        else:
-            self.spikein = None
         self.supplemental = SupplementalData(supplemental_data)
         sys.stdout.write("{}\tSuccessfully initialized a Study "
                          "object!\n".format(timestamp()))
@@ -1319,8 +1305,7 @@ class Study(object):
             event_id, groupby=self.sample_id_to_phenotype,
             sample_ids=sample_ids, data=data)
 
-    def plot_event(self, feature_id, sample_subset=None, nmf_space=False,
-                   n=20):
+    def plot_event(self, feature_id, sample_subset=None, col_wrap=4):
         """Plot the violinplot and NMF transitions of a splicing event
         """
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
@@ -1330,10 +1315,9 @@ class Study(object):
             phenotype_order=self.phenotype_order,
             color=self.phenotype_color_ordered,
             phenotype_to_color=self.phenotype_to_color,
-            phenotype_to_marker=self.phenotype_to_marker,
-            nmf_space=nmf_space, n=20)
+            phenotype_to_marker=self.phenotype_to_marker, col_wrap=col_wrap)
 
-    def plot_gene(self, feature_id, sample_subset=None, nmf_space=False):
+    def plot_gene(self, feature_id, sample_subset=None, col_wrap=4):
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
         self.expression.plot_feature(
             feature_id, sample_ids,
@@ -1341,7 +1325,7 @@ class Study(object):
             phenotype_order=self.phenotype_order,
             color=self.phenotype_color_ordered,
             phenotype_to_color=self.phenotype_to_color,
-            phenotype_to_marker=self.phenotype_to_marker, nmf_space=nmf_space)
+            phenotype_to_marker=self.phenotype_to_marker, col_wrap=col_wrap)
 
     def plot_lavalamp_pooled_inconsistent(
             self, sample_subset=None, feature_subset=None,
@@ -1484,14 +1468,29 @@ class Study(object):
 
         Parameters
         ----------
-
+        sample_subset : list-like, optional
+            List of samples to use
+        feature_subset : list-like, optional
+            List of feature IDs to use
+        data_type : 'expression' | 'splicing', optional
+            Which data type to cluster
+        metric : str, optional
+            Any valid distance metric for scipy.spatial.distance
+        method : 'average' | 'single' | 'complete' | 'ward'
+            Linkage method for assigning clusters
+        figsize : tuple, optional
+            A (width, height) tuple of the figure size
+        scale_fig_by_data : bool, optional
+            If True, size the figure to reflect the size of the dataframe
 
         Returns
         -------
+        clustergrid : seaborn.ClusterGrid
+            A grid of axes objects with the plotted data
 
-
-        Raises
-        ------
+        Notes
+        -----
+        To save a figure, use `clustergrid.savefig()`
         """
 
         if feature_subset is None:
@@ -1523,15 +1522,31 @@ class Study(object):
 
         Parameters
         ----------
-
+        sample_subset : list-like, optional
+            List of samples to use
+        feature_subset : list-like, optional
+            List of feature IDs to use
+        data_type : 'expression' | 'splicing', optional
+            Which data type to cluster
+        metric : str, optional
+            Any valid distance metric for scipy.spatial.distance
+        method : 'average' | 'single' | 'complete' | 'ward'
+            Linkage method for assigning clusters
+        figsize : tuple, optional
+            A (width, height) tuple of the figure size
+        featurewise : bool, optional
+            If true, cluster on features rather than samples
+        scale_fig_by_data : bool, optional
+            If True, size the figure to reflect the size of the dataframe
 
         Returns
         -------
+        clustergrid : seaborn.ClusterGrid
+            A grid of axes objects with the plotted data
 
-
-        Raises
-        ------
-
+        Notes
+        -----
+        To save a figure, use `clustergrid.savefig()`
         """
 
         if feature_subset is None:
@@ -1579,18 +1594,6 @@ class Study(object):
                                     groupby=self.sample_id_to_phenotype,
                                     phenotype_to_color=self.phenotype_to_color,
                                     order=self.phenotype_order)
-
-    def plot_big_nmf_space_transitions(self, data_type='expression', n=20):
-        if data_type == 'expression':
-            self.expression.plot_big_nmf_space_transitions(
-                self.sample_id_to_phenotype, self.phenotype_transitions,
-                self.phenotype_order, self.phenotype_color_ordered,
-                self.phenotype_to_color, self.phenotype_to_marker, n=n)
-        if data_type == 'splicing':
-            self.splicing.plot_big_nmf_space_transitions(
-                self.sample_id_to_phenotype, self.phenotype_transitions,
-                self.phenotype_order, self.phenotype_color_ordered,
-                self.phenotype_to_color, self.phenotype_to_marker, n=n)
 
     def plot_two_samples(self, sample1, sample2, data_type='expression',
                          **kwargs):
@@ -1685,35 +1688,6 @@ class Study(object):
             return self.splicing.nmf_space_transitions(
                 self.sample_id_to_phenotype, phenotype_transitions, n=n)
 
-    def big_nmf_space_transitions(self, phenotype_transitions='all',
-                                  data_type='splicing', n=20):
-        """Splicing events whose change in NMF space is large
-
-        By large, we mean that difference is 2 standard deviations away from
-        the mean
-
-        Parameters
-        ----------
-        phenotype_transitions : list of length-2 tuples of str
-            List of ('phenotype1', 'phenotype2') transitions whose change in
-            distribution you are interested in
-        data_type : 'splicing' | 'expression'
-            Which data type to calculate this on. (default='splicing')
-        n : int
-            Minimum number of samples per phenotype, per event
-
-        Returns
-        -------
-        big_transitions : pandas.DataFrame
-            A (n_events, n_transitions) dataframe of the NMF distances between
-            splicing events
-        """
-        if phenotype_transitions == 'all':
-            phenotype_transitions = self.phenotype_transitions
-        if data_type == 'splicing':
-            return self.splicing.big_nmf_space_transitions(
-                self.sample_id_to_phenotype, phenotype_transitions, n=n)
-
     def save(self, study_name, flotilla_dir=FLOTILLA_DOWNLOAD_DIR):
 
         metadata = self.metadata.data_original
@@ -1767,11 +1741,6 @@ class Study(object):
             splicing_feature_kws = None
 
         try:
-            spikein = self.spikein.data_original
-        except AttributeError:
-            spikein = None
-
-        try:
             gene_ontology = self.gene_ontology.data
         except AttributeError:
             gene_ontology = None
@@ -1802,7 +1771,7 @@ class Study(object):
 
         return make_study_datapackage(
             study_name, metadata, expression, splicing,
-            spikein, mapping_stats, metadata_kws=metadata_kws,
+            mapping_stats, metadata_kws=metadata_kws,
             expression_kws=expression_kws, splicing_kws=splicing_kws,
             mapping_stats_kws=mapping_stats_kws,
             expression_feature_kws=expression_feature_kws,

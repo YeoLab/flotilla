@@ -1,18 +1,19 @@
 import os
 
-from .data_model import Study, ExpressionData, SplicingData, MetaData, \
-    MappingStatsData, SpikeInData, GeneOntologyData
+from .data_model import ExpressionData, SplicingData, MetaData, \
+    MappingStatsData, GeneOntologyData
 from .compute.predict import PredictorConfigManager, PredictorDataSetManager
 from .datapackage import make_study_datapackage, FLOTILLA_DOWNLOAD_DIR
+from .study import Study
 
 
 __all__ = ['Study', 'PredictorConfigManager', 'PredictorDataSetManager',
            'make_study_datapackage', 'FLOTILLA_DOWNLOAD_DIR',
            'compute', 'data_model', 'visualize', 'Study', 'ExpressionData',
-           'SplicingData', 'MetaData', 'SpikeInData', 'MappingStatsData',
+           'SplicingData', 'MetaData', 'MappingStatsData',
            'datapackage', 'GeneOntologyData', 'go', 'util']
 
-__version__ = '0.2.8dev'
+__version__ = '0.3.0'
 
 # 18 cells, multiindex on the splicing data features, features already renamed
 # in the matrices

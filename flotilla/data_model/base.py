@@ -11,13 +11,12 @@ import seaborn as sns
 from sklearn.preprocessing import StandardScaler
 from scipy.cluster.vq import whiten
 
-from ..compute.decomposition import DataFramePCA, DataFrameNMF
+from ..compute.decomposition import DataFramePCA
 from ..compute.infotheory import binify, cross_phenotype_jsd, jsd_df_to_2d
 from ..compute.predict import PredictorConfigManager, \
     PredictorDataSetManager, CLASSIFIER
 from ..visualize.decomposition import DecompositionViz
-from ..visualize.generic import violinplot, nmf_space_transitions, \
-    simple_twoway_scatter
+from ..visualize.generic import violinplot, simple_twoway_scatter
 from ..visualize.network import NetworkerViz
 from ..visualize.predict import ClassifierViz
 from ..util import memoize, cached_property
@@ -995,7 +994,7 @@ class BaseData(object):
     def _violinplot(self, feature_id, sample_ids=None,
                     phenotype_groupby=None,
                     phenotype_order=None, ax=None, color=None,
-                    label_pooled=False):
+                    label_pooled=False, **kwargs):
         """For compatiblity across data types, can specify _violinplot
         """
         sample_ids = self.data.index if sample_ids is None else sample_ids
@@ -1021,8 +1020,8 @@ class BaseData(object):
 
         violinplot(singles, groupby=phenotype_groupby, color_ordered=color,
                    pooled_data=pooled, order=phenotype_order,
-                   title=title, data_type=self.data_type, ax=ax,
-                   label_pooled=label_pooled, outliers=outliers)
+                   title=title, ax=ax,
+                   outliers=outliers, **kwargs)
 
     @staticmethod
     def _thresh_int(df, n):
@@ -1032,35 +1031,20 @@ class BaseData(object):
     def _thresh_float(df, f):
         return f * df.shape[0]
 
-    @cached_property()
-    def nmf(self):
-        data = self._subset(self.data)
-        return DataFrameNMF(self.binify(data).T, n_components=2)
-
-    @memoize
-    def binned_nmf_reduced(self, sample_ids=None, feature_ids=None,
-                           data=None):
-        if data is None:
-            data = self._subset(self.data, sample_ids, feature_ids,
-                                require_min_samples=False)
-        binned = self.binify(data)
-        reduced = self.nmf.transform(binned.T)
-        return reduced
-
     def plot_feature(self, feature_id, sample_ids=None,
                      phenotype_groupby=None,
                      phenotype_order=None, color=None,
                      phenotype_to_color=None,
-                     phenotype_to_marker=None, nmf_xlabel=None,
-                     nmf_ylabel=None,
-                     nmf_space=False, fig=None, axesgrid=None, n=20):
+                     phenotype_to_marker=None,
+                     violinplot_kws=None, col_wrap=4):
         """
-        Plot the violinplot of a feature. Have the option to show NMF movement
+        Plot the violinplot of a feature.
         """
         feature_ids = self.maybe_renamed_to_feature_id(feature_id)
         if phenotype_groupby is None:
             phenotype_groupby = pd.Series('all', index=self.data.index)
         phenotype_groupby = pd.Series(phenotype_groupby)
+        violinplot_kws = {} if violinplot_kws is None else violinplot_kws
 
         if not isinstance(feature_ids, pd.Index):
             feature_ids = [feature_id]
@@ -1069,162 +1053,32 @@ class BaseData(object):
         single_violin_width = 0.5
         ax_width = max(4, single_violin_width*grouped.size().shape[0])
 
-        if fig is None and axesgrid is None:
-            nrows = len(feature_ids)
-            ncols = 2 if nmf_space else 1
-            figsize = ax_width * ncols, 4 * nrows
-            gridspec_kw = {}
-            if nmf_space:
-                gridspec_kw['width_ratios'] = (ax_width, 4)
+        naxes = len(feature_ids)
+        nrows = 1
+        ncols = 1
+        while nrows * ncols < naxes:
+            if ncols > col_wrap:
+                nrows += 1
+            else:
+                ncols += 1
+        figsize = ax_width * ncols, 4 * nrows
+        gridspec_kw = {}
+        fig, axesgrid = plt.subplots(nrows=nrows, ncols=ncols,
+                                     figsize=figsize,
+                                     gridspec_kw=gridspec_kw)
+        if nrows == 1:
+            axesgrid = np.array([axesgrid])
 
-            fig, axesgrid = plt.subplots(nrows=nrows, ncols=ncols,
-                                         figsize=figsize,
-                                         gridspec_kw=gridspec_kw)
-            if nrows == 1:
-                axesgrid = [axesgrid]
-
-        for feature_id, axes in zip(feature_ids, axesgrid):
-            if not nmf_space:
-                axes = [axes]
+        for feature_id, ax in zip(feature_ids, axesgrid.flat):
             # if self.data_type == 'expression':
             # axes = [axes]
 
             self._violinplot(feature_id, sample_ids=sample_ids,
                              phenotype_groupby=phenotype_groupby,
-                             phenotype_order=phenotype_order, ax=axes[0],
-                             color=color)
-
-            if nmf_space:
-                try:
-                    self.plot_nmf_space_transitions(
-                        feature_id, groupby=phenotype_groupby,
-                        phenotype_to_color=phenotype_to_color,
-                        phenotype_to_marker=phenotype_to_marker,
-                        order=phenotype_order, ax=axes[1],
-                        xlabel=nmf_xlabel, ylabel=nmf_ylabel, n=n)
-                except KeyError:
-                    continue
+                             phenotype_order=phenotype_order, ax=ax,
+                             color=color, **violinplot_kws)
             sns.despine()
         fig.tight_layout()
-
-    def nmf_space_positions(self, groupby, n=20):
-        """Calculate NMF-space position of splicing events in phenotype groups
-
-        Parameters
-        ----------
-        groupby : mappable
-            A sample id to phenotype mapping
-        n : int or float
-            If int, then this is the absolute number of cells that are minimum
-            required to calculate modalities. If a float, then require this
-            fraction of samples to calculate modalities, e.g. if 0.6, then at
-            least 60% of samples must have an event detected for modality
-            detection
-
-        Returns
-        -------
-        df : pandas.DataFrame
-            A (n_events, n_groups) dataframe of NMF positions
-        """
-        grouped = self.singles.groupby(groupby)
-        if isinstance(n, int):
-            thresh = self._thresh_int
-        elif isinstance(n, float):
-            thresh = self._thresh_float
-
-        at_least_n_per_group_per_event = pd.concat(
-            [df.dropna(thresh=thresh(df, n), axis=1) for name, df in grouped])
-        # at_least_n_per_group_per_event = grouped.transform(
-        #     lambda x: x if x.count() >= n else pd.Series(np.nan,
-        #                                                  index=x.index))
-        df = at_least_n_per_group_per_event.groupby(groupby).apply(
-            lambda x: self.binned_nmf_reduced(data=x) if
-            x.notnull().sum().sum() > 0 else pd.DataFrame())
-        df = df.swaplevel(0, 1)
-        df = df.sort_index()
-        return df
-
-    def plot_nmf_space_transitions(self, feature_id, groupby,
-                                   phenotype_to_color,
-                                   phenotype_to_marker, order, ax=None,
-                                   xlabel=None, ylabel=None, n=20):
-        nmf_space_positions = self.nmf_space_positions(groupby, n=n)
-
-        nmf_space_transitions(nmf_space_positions, feature_id,
-                              phenotype_to_color,
-                              phenotype_to_marker, order,
-                              ax, xlabel, ylabel)
-
-    @staticmethod
-    def transition_distances(positions, transitions):
-        """Get cartesian distance of phenotype transitions in NMF space
-
-        Parameters
-        ----------
-        positions : pandas.DataFrame
-            A ((n_features, phenotypes), 2) MultiIndex dataframe of the NMF
-            positions of splicing events for different phenotypes
-        transitions : list of 2-string tuples
-            List of (phenotype1, phenotype2) transitions
-
-        Returns
-        -------
-        transitions : pandas.DataFrame
-            A (n_features, n_transitions) DataFrame of the NMF distances
-            of features between different phenotypes
-        """
-        positions_phenotype = positions.copy()
-        positions_phenotype.index = positions_phenotype.index.droplevel(0)
-        distances = pd.Series(index=transitions)
-        for transition in transitions:
-            try:
-                phenotype1, phenotype2 = transition
-                norm = np.linalg.norm(positions_phenotype.ix[phenotype2] -
-                                      positions_phenotype.ix[phenotype1])
-                # print phenotype1, phenotype2, norm
-                distances[transition] = norm
-            except KeyError:
-                pass
-        return distances
-
-    def nmf_space_transitions(self, groupby, phenotype_transitions, n=20):
-        """Get distance in NMF space of different splicing events
-
-        Parameters
-        ----------
-        groupby : mappable
-            A sample id to phenotype mapping
-        phenotype_transitions : list of str pairs
-            Which phenotype follows from one to the next, for calculating
-            distances between
-        n : int or float
-            If int, then this is the absolute number of cells that are minimum
-            required to calculate modalities. If a float, then require this
-            fraction of samples to calculate modalities, e.g. if 0.6, then at
-            least 60% of samples must have an event detected for modality
-            detection
-
-        Returns
-        -------
-        nmf_space_transitions : pandas.DataFrame
-            A (n_events, n_phenotype_transitions) sized DataFrame of the
-            distances of these events in NMF space
-        """
-        nmf_space_positions = self.nmf_space_positions(groupby, n=n)
-
-        # Take only splicing events that have at least two phenotypes
-        nmf_space_positions = nmf_space_positions.groupby(
-            level=0, axis=0).filter(lambda x: len(x) > 1)
-
-        nmf_space_transitions = nmf_space_positions.groupby(
-            level=0, axis=0, as_index=True, group_keys=False).apply(
-            self.transition_distances, transitions=phenotype_transitions)
-
-        # Remove any events that didn't have phenotype pairs from
-        # the transitions
-        nmf_space_transitions = nmf_space_transitions.dropna(how='all',
-                                                             axis=0)
-        return nmf_space_transitions
 
     def plot_two_samples(self, sample1, sample2, fillna=None,
                          **kwargs):
@@ -1312,7 +1166,7 @@ class BaseData(object):
             # Try to get close to 0 center, unit variance for each feature
             x = data
             x[x <= 0] = np.min(x[x > 0]).min()
-            z = whiten(x.apply(lambda x: np.log2(x / x.mean(axis=0)), 0))
+            z = whiten(x.apply(lambda y: np.log2(y / y.mean(axis=0)), 0))
             data = z
 
         data = data.fillna(data.mean())
@@ -1322,9 +1176,12 @@ class BaseData(object):
         col_colors = feature_colors
         row_colors = sample_colors
         data.columns = data.columns.map(self.feature_renamer)
+        mask.columns = data.columns
 
         if scale_fig_by_data:
             figsize = self._figsizer(data.shape)
+
+            # Ignore figsize in the kwargs
             kwargs.pop('figsize')
         else:
             figsize = kwargs.pop('figsize', None)
@@ -1360,6 +1217,8 @@ class BaseData(object):
         if featurewise:
             corr.index = corr.index.map(self.feature_renamer)
             corr.columns = corr.columns.map(self.feature_renamer)
+            mask.index = corr.index
+            mask.columns = corr.columns
 
         if scale_fig_by_data:
             figsize = self._figsizer(corr.shape)
